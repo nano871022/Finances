@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    >
+    <item
+        android:id="@+id/item_menu_side_quoteCredit"
+        android:enabled="true"
+        android:icon="@drawable/ic_sum"
+        android:title="@string/quote_credit"
+
+        android:visible="true" />
+
+    <item
+        android:id="@+id/item_menu_side_quoteCreditVariable"
+        android:enabled="true"
+        android:icon="@drawable/ic_sum"
+        android:title="@string/quote_credit_variable"
+
+        android:visible="true" />
+</menu>

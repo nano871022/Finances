@@ -1,0 +1,42 @@
+<resources>
+    <string name="app_name">Finanzas</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="navigation_drawer_open">1</string>
+    <string name="navigation_drawer_close">0</string>
+    <string name="build_by">Alejandro Parra - JAPL.co</string>
+    <string name="quote_credit">Cuota del Crédito</string>
+    <string name="quote_credit_hint">0.00</string>
+    <string name="quote_credit_variable">Cuota del Crédito Variable</string>
+    <string name="tax">Tasa</string>
+    <string name="months">Meses</string>
+    <string name="months_number_hint">000</string>
+    <string name="credit_value">Valor del Credito</string>
+    <string name="months_number">Número de Meses</string>
+    <string name="tax_percent">Tasa % </string>
+    <string name="interest_value_hint">0.00 </string>
+    <string name="percent_symbol">%</string>
+    <string name="calc">Calcular</string>
+    <string name="quote_value">Valor de la cuota</string>
+    <string name="clear">Limpiar</string>
+    <string name="error_calc">Se presento un error en el calculo </string>
+    <string name="capital_value">Valor a capital</string>
+    <string name="interest_value">Valor a intereses</string>
+    <string name="total_value">Valor total</string>
+    <string name="save">Guardar</string>
+    <string name="quote_credit_save">Guardar - Cuota Credito Fija</string>
+    <string name="name">Nombre</string>
+    <string name="cancel">Cancelar</string>
+    <string name="dont_able_to_save">No se logro guardar</string>
+    <string name="success_save_quote_credit">Se almaceno correctamente</string>
+    <string name="close">Cerrar</string>
+    <string name="title_activity_main2">MainActivity2</string>
+    <!-- Strings used for fragments for navigation -->
+    <string name="first_fragment_label">First Fragment</string>
+    <string name="second_fragment_label">Second Fragment</string>
+    <string name="next">Next</string>
+    <string name="previous">Previous</string>
+
+    <string name="hello_first_fragment">Hello first fragment</string>
+    <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
+</resources>
