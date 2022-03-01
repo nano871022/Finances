@@ -9,7 +9,8 @@ data class CalcDTO (
     ,var interest:Double
     ,var period:Long
     ,var quoteCredit:BigDecimal
-
+    ,var type:String
+    ,var id:Int
 )
 
 object CalcDB{
@@ -20,5 +21,6 @@ object CalcDB{
         const val COLUMN_INTEREST = "num_interest"
         const val COLUMN_PERIOD = "num_period"
         const val COLUMN_QUOTE_CREDIT = "num_quote_credit"
+        const val COLUMN_TYPE = "str_type"
     }
 }

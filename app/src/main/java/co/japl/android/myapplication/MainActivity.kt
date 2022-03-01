@@ -13,6 +13,7 @@ import androidx.core.view.allViews
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
+import co.japl.android.myapplication.controller.ListSave
 import co.japl.android.myapplication.controller.QuoteCredit
 import co.japl.android.myapplication.controller.QuoteCreditVariable
 import com.google.android.material.navigation.NavigationView
@@ -67,6 +68,10 @@ class MainActivity : AppCompatActivity(),NavigationView.OnNavigationItemSelected
             R.id.item_menu_side_quoteCreditVariable
             -> {
                 supportFragmentManager.beginTransaction().replace(R.id.fragment_initial,QuoteCreditVariable()).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE).addToBackStack(null).commit()
+                true
+            }
+            R.id.item_menu_side_listsave->{
+                supportFragmentManager.beginTransaction().replace(R.id.fragment_initial,ListSave()).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE).addToBackStack(null).commit()
                 true
             }
             else->{

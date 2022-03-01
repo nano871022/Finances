@@ -6,6 +6,7 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.FragmentTransaction
 import co.japl.android.myapplication.R
 import co.japl.android.myapplication.bussiness.DTO.CalcDTO
 import co.japl.android.myapplication.bussiness.SaveSvc
@@ -27,6 +28,7 @@ class QuoteCreditSave :  AppCompatActivity(), View.OnClickListener{
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_main)
         setContentView(R.layout.quote_credit_save)
         dbConnect = DBConnect(this)
         saveSvc = SaveImpl(dbConnect)
@@ -70,12 +72,14 @@ class QuoteCreditSave :  AppCompatActivity(), View.OnClickListener{
         btnCancel.setOnClickListener(this)
     }
 
-    fun getCalcDTO():CalcDTO{
+    private fun getCalcDTO():CalcDTO{
         return CalcDTO(etName.text.toString()
             ,tvValueCredit.text.toString().replace(" $ ","").replace(",","").toBigDecimal()
             ,tvInterest.text.toString().replace(",","").toDouble()
             ,tvMonths.text.toString().toLong()
-            ,tvQuoteCredit.text.toString().replace(" $ ","").replace(",","").toBigDecimal())
+            ,tvQuoteCredit.text.toString().replace(" $ ","").replace(",","").toBigDecimal()
+            ,"fix"
+            ,0)
     }
 
     override fun onClick(view: View?) {

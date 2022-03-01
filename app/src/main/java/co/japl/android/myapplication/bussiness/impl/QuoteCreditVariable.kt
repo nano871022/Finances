@@ -9,7 +9,6 @@ class QuoteCreditVariable : Calc{
 
     override fun calc(value: BigDecimal, period: Long, tax: Double): BigDecimal {
         println("Credit Value $value")
-        val taxDouble = getTax(tax)
         println("$value / $period")
         val response = value.divide(BigDecimal(period),2,RoundingMode.HALF_EVEN)
         return response

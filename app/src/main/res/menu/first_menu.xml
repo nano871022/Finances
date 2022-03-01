@@ -20,4 +20,12 @@
         android:title="@string/quote_credit_variable"
 
         android:visible="true" />
+
+    <item
+        android:id="@+id/item_menu_side_listsave"
+        android:enabled="true"
+        android:icon="@drawable/ic_sum"
+        android:title="@string/list_save"
+
+        android:visible="true" />
 </menu>
