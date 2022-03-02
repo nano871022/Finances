@@ -3,15 +3,19 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="../../../../layout/custom_preview.xml" value="0.17291666666666666" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.35625" />
         <entry key="app/src/main/res/layout/drawable.xml" value="0.1" />
         <entry key="app/src/main/res/layout/fragment_first.xml" value="0.17325227963525835" />
+        <entry key="app/src/main/res/layout/fragment_list_save.xml" value="0.33" />
         <entry key="app/src/main/res/layout/fragment_principal_fragment.xml" value="0.18177083333333333" />
         <entry key="app/src/main/res/layout/fragment_second.xml" value="0.25" />
         <entry key="app/src/main/res/layout/header_side.xml" value="0.5" />
         <entry key="app/src/main/res/layout/quote_credit.xml" value="0.25" />
         <entry key="app/src/main/res/layout/quote_credit_save.xml" value="0.5" />
-        <entry key="app/src/main/res/layout/quote_credit_variable.xml" value="0.5" />
+        <entry key="app/src/main/res/layout/quote_credit_save_item_list.xml" value="0.5" />
+        <entry key="app/src/main/res/layout/quote_credit_save_variable.xml" value="0.6825053995680346" />
+        <entry key="app/src/main/res/layout/quote_credit_variable.xml" value="0.33" />
         <entry key="app/src/main/res/layout/spinner1.xml" value="0.17346014492753623" />
         <entry key="app/src/main/res/menu/first_menu.xml" value="0.340625" />
       </map>

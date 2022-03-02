@@ -1,5 +1,7 @@
 package co.japl.android.myapplication.controller
 
+import android.content.Context
+import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -13,11 +15,10 @@ import co.japl.android.myapplication.bussiness.CalcInterest
 import co.japl.android.myapplication.bussiness.impl.QuoteCreditVariable
 import co.japl.android.myapplication.bussiness.impl.QuoteCreditVariableInterest
 import co.japl.android.myapplication.bussiness.impl.QuoteCreditVariableInterestQuote
+import co.japl.android.myapplication.utils.Constants
 import java.math.BigDecimal
 import java.math.RoundingMode
 import java.text.DecimalFormat
-import java.util.*
-import kotlin.collections.ArrayList
 
 class QuoteCreditVariable : Fragment(), View.OnClickListener,AdapterView.OnItemSelectedListener{
     private lateinit var etValueCredit: EditText
@@ -32,11 +33,13 @@ class QuoteCreditVariable : Fragment(), View.OnClickListener,AdapterView.OnItemS
     private lateinit var lyTotalValue: LinearLayout
     private lateinit var spMonth:Spinner
     private lateinit var listMonths:MutableList<String>
+    private lateinit var contexto: Context
 
     private val calc: Calc = QuoteCreditVariable()
     private val calcInt: Calc = QuoteCreditVariableInterest()
     private val calcQuoteInt: CalcInterest = QuoteCreditVariableInterestQuote()
     private lateinit var context: View
+    private lateinit var btnSave:Button
 
 
     override fun onCreateView(
@@ -45,6 +48,7 @@ class QuoteCreditVariable : Fragment(), View.OnClickListener,AdapterView.OnItemS
     ): View? {
         val rootView = inflater.inflate(R.layout.quote_credit_variable, container, false)
         context = rootView
+        contexto = rootView.context
         loadFields(rootView)
         clear()
         return rootView
@@ -55,7 +59,24 @@ class QuoteCreditVariable : Fragment(), View.OnClickListener,AdapterView.OnItemS
      when(view.id){
          R.id.btnCalc->calc()
          R.id.btnClear->clear()
+         R.id.btnSaveVariable->save()
      }
+    }
+
+    private fun save(){
+        val value = etValueCredit.text.toString().toBigDecimal()
+        val period = etMonths.text.toString().toLong()
+        val tax = etTax.text.toString().toDouble()
+        val response = calc.calc(value, period, tax)
+        val responseInt = calcInt.calc(value, period, tax)
+        val quoteCreditSave: Intent = Intent(contexto,QuoteCreditSaveVariable::class.java)
+        quoteCreditSave.putExtra(Constants.valueCredit,value)
+        quoteCreditSave.putExtra(Constants.period,period)
+        quoteCreditSave.putExtra(Constants.interest,tax)
+        quoteCreditSave.putExtra(Constants.quoteCredit,response.plus(responseInt))
+        quoteCreditSave.putExtra(Constants.interestValue,responseInt)
+        quoteCreditSave.putExtra(Constants.capitalValue,response)
+        startActivity(quoteCreditSave)
     }
 
     private fun calc(){
@@ -96,6 +117,7 @@ class QuoteCreditVariable : Fragment(), View.OnClickListener,AdapterView.OnItemS
                 tvTotalValue.text = format.format(totalValue.setScale(2, RoundingMode.HALF_EVEN))
             }
         }
+        btnSave.visibility = View.VISIBLE
     }
 
     private fun validate():Boolean{
@@ -126,6 +148,7 @@ class QuoteCreditVariable : Fragment(), View.OnClickListener,AdapterView.OnItemS
         etValueCredit.setBackgroundColor(Color.WHITE)
         etTax.setBackgroundColor(Color.WHITE)
         etMonths.setBackgroundColor(Color.WHITE)
+        btnSave.visibility = View.INVISIBLE
     }
 
     private fun loadFields( container: View){
@@ -135,7 +158,7 @@ class QuoteCreditVariable : Fragment(), View.OnClickListener,AdapterView.OnItemS
                 etMonths = container.findViewById(R.id.etMonths)!!
                 tvCapitalValue = container.findViewById(R.id.tvCapitalValue)!!
                 lyCapitalCredit = container.findViewById(R.id.lyCapitalValue)!!
-                tvInterestValue = container.findViewById(R.id.tvInterestValue)!!
+                tvInterestValue = container.findViewById(R.id.tvInterestValueList)!!
                 lyInterestCredit = container.findViewById(R.id.lyInterestValue)!!
                 tvTotalValue = container.findViewById(R.id.tvTotalValue)!!
                 lyTotalValue = container.findViewById(R.id.lyTotalValue)!!
@@ -145,6 +168,9 @@ class QuoteCreditVariable : Fragment(), View.OnClickListener,AdapterView.OnItemS
                 btnClear.setOnClickListener(this)
                 val btnCalc:Button = container.findViewById(R.id.btnCalc)
                 btnCalc.setOnClickListener(this)
+                btnSave = container.findViewById(R.id.btnSaveVariable)
+                btnSave.setOnClickListener(this)
+                btnSave.visibility = View.INVISIBLE
                 spMonth.onItemSelectedListener = this
             }
 

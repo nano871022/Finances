@@ -8,6 +8,7 @@
     <string name="quote_credit">Cuota del Crédito</string>
     <string name="quote_credit_hint">0.00</string>
     <string name="quote_credit_variable">Cuota del Crédito Variable</string>
+    <string name="list_save">Lista calculos almacenados</string>
     <string name="tax">Tasa</string>
     <string name="months">Meses</string>
     <string name="months_number_hint">000</string>
@@ -25,6 +26,7 @@
     <string name="total_value">Valor total</string>
     <string name="save">Guardar</string>
     <string name="quote_credit_save">Guardar - Cuota Credito Fija</string>
+    <string name="quote_credit_save_variable">Guardar - Cuota Credito Variable</string>
     <string name="name">Nombre</string>
     <string name="cancel">Cancelar</string>
     <string name="dont_able_to_save">No se logro guardar</string>
@@ -39,4 +41,6 @@
 
     <string name="hello_first_fragment">Hello first fragment</string>
     <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
+    <string name="delete_successfull">Se elimino correctamente</string>
+    <string name="dont_deleted">No se logro eliminar</string>
 </resources>

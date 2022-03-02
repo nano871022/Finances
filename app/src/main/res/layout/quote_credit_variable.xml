@@ -138,12 +138,6 @@
             android:layout_weight="1"
             android:text="@string/calc" />
 
-        <Button
-            android:id="@+id/btnClear"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/clear" />
     </LinearLayout>
 
     <LinearLayout
@@ -238,7 +232,7 @@
             android:textAlignment="textEnd" />
 
         <TextView
-            android:id="@+id/tvInterestValue"
+            android:id="@+id/tvInterestValueList"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -282,6 +276,31 @@
             android:text="@string/total_value"
             android:textSize="16sp" />
 
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="0dp"
+        android:layout_weight="1"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        tools:layout_editor_absoluteX="294dp">
+
+        <Button
+            android:id="@+id/btnSaveVariable"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="10dp"
+            android:layout_weight="1"
+            android:text="@string/save" />
+
+        <Button
+            android:id="@+id/btnClear"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/clear" />
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -8,6 +8,7 @@ interface SaveSvc  {
 
     fun save(calc:CalcDTO):Boolean
 
+    fun getAll():List<CalcDTO>
 
-
+    fun delete(id:Int):Boolean
 }
