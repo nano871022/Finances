@@ -1,4 +1,4 @@
-package co.japl.android.myapplication.bussiness.impl.mapping
+package co.japl.android.myapplication.bussiness.mapping
 
 import android.content.ContentValues
 import android.database.Cursor
@@ -14,16 +14,20 @@ class CalcMap {
             put(CalcDB.CalcEntry.COLUMN_QUOTE_CREDIT,dto.quoteCredit.toDouble())
             put(CalcDB.CalcEntry.COLUMN_VALUE_CREDIT,dto.valueCredit.toDouble())
             put(CalcDB.CalcEntry.COLUMN_TYPE,dto.type)
+            put(CalcDB.CalcEntry.COLUMN_INTEREST_VALUE,dto.interestValue.toDouble())
+            put(CalcDB.CalcEntry.COLUMN_CAPITAL_VALUE,dto.capitalValue.toDouble())
         }
     }
 
     fun mapping(cursor:Cursor):CalcDTO{
         val name = cursor.getString(1)
-        val value = cursor.getString(5).toString().toBigDecimal()
+        val value = cursor.getString(6).toString().toBigDecimal()
         val interest = cursor.getString(3).toDouble()
         val period = cursor.getString(4).toLong()
-        val quote = cursor.getString(6).toBigDecimal()
+        val quote = cursor.getString(5).toBigDecimal()
         var type = cursor.getString(2)
+        var interestValue = cursor.getString(7).toBigDecimal()
+        var capitalValue = cursor.getString(8).toBigDecimal()
         if(type == null || type.isBlank()){
             type = "fix"
         }
@@ -34,6 +38,8 @@ class CalcMap {
             ,period
             ,quote
             ,type
-            ,id)
+            ,id
+            ,interestValue
+            ,capitalValue )
     }
 }

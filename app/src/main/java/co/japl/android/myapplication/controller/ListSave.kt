@@ -12,9 +12,9 @@ import co.japl.android.myapplication.R
 import co.japl.android.myapplication.bussiness.DTO.CalcDTO
 import co.japl.android.myapplication.bussiness.SaveSvc
 import co.japl.android.myapplication.bussiness.impl.DBConnect
-import co.japl.android.myapplication.bussiness.impl.ListSaveAdapter
+import co.japl.android.myapplication.bussiness.adapter.ListSaveAdapter
 import co.japl.android.myapplication.bussiness.impl.SaveImpl
-import co.japl.android.myapplication.bussiness.impl.ViewHolder
+import co.japl.android.myapplication.bussiness.adapter.ViewHolder
 
 class ListSave : Fragment() {
     lateinit var recyclerView:RecyclerView

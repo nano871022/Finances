@@ -1,8 +1,8 @@
-package co.japl.android.myapplication.bussiness.impl
+package co.japl.android.myapplication.bussiness.adapter
 
 import android.view.View
-import android.widget.Button
 import android.widget.ImageButton
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import co.japl.android.myapplication.R
@@ -15,6 +15,10 @@ class ViewHolder(itemView:View) : RecyclerView.ViewHolder(itemView) {
     lateinit var tvNameListSaveItem:TextView
     lateinit var tvTypeListSaveItem:TextView
     lateinit var btnDelete:ImageButton
+    lateinit var tvCapitalValue:TextView
+    lateinit var tvInterestValue:TextView
+    lateinit var llCapitalValue:LinearLayout
+    lateinit var llInterestValue:LinearLayout
 
     fun loadFields(view:View){
         tvCreditValueListSaveItem = view.findViewById(R.id.tvCreditValueListSaveItem)
@@ -24,5 +28,11 @@ class ViewHolder(itemView:View) : RecyclerView.ViewHolder(itemView) {
         tvQuoteCreditListSaveItem = view.findViewById(R.id.tvQuoteCreditListSaveItem)
         tvTypeListSaveItem = view.findViewById(R.id.tvTypeListSaveItem)
         btnDelete = view.findViewById(R.id.btnDelete)
+        tvCapitalValue = view.findViewById(R.id.tvCapitalValueList)
+        tvInterestValue = view.findViewById(R.id.tvInterestValueList)
+        llCapitalValue = view.findViewById(R.id.llCapitalValue)
+        llInterestValue = view.findViewById(R.id.llInterestValue)
+        llCapitalValue.visibility = View.INVISIBLE
+        llInterestValue.visibility = View.INVISIBLE
     }
 }
