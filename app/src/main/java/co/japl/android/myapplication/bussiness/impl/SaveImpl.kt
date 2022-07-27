@@ -1,13 +1,14 @@
 package co.japl.android.myapplication.bussiness.impl
 
+import android.database.sqlite.SQLiteOpenHelper
 import android.provider.BaseColumns
 import co.japl.android.myapplication.bussiness.DTO.CalcDB
 import co.japl.android.myapplication.bussiness.DTO.CalcDTO
-import co.japl.android.myapplication.bussiness.SaveSvc
+import co.japl.android.myapplication.bussiness.interfaces.SaveSvc
 import co.japl.android.myapplication.bussiness.mapping.CalcMap
 import co.japl.android.myapplication.utils.DatabaseConstants
 
-class SaveImpl(override var dbConnect: DBConnect) : SaveSvc {
+class SaveImpl(override var dbConnect: SQLiteOpenHelper) : SaveSvc<CalcDTO> {
     private val COLUMNS_CALC = arrayOf(BaseColumns._ID
         ,CalcDB.CalcEntry.COLUMN_ALIAS
         ,CalcDB.CalcEntry.COLUMN_TYPE
@@ -39,6 +40,6 @@ class SaveImpl(override var dbConnect: DBConnect) : SaveSvc {
 
     override fun delete(id:Int):Boolean{
         val db = dbConnect.writableDatabase
-        return db.delete(CalcDB.CalcEntry.TABLE_NAME,DatabaseConstants.SQL_DELETE_CALC_ID, arrayOf(id.toString())) > 0
+        return db.delete(CalcDB.CalcEntry.TABLE_NAME, DatabaseConstants.SQL_DELETE_CALC_ID, arrayOf(id.toString())) > 0
     }
 }

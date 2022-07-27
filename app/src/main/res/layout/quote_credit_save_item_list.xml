@@ -16,7 +16,7 @@
     app:layout_dodgeInsetEdges="all">
 
     <LinearLayout
-        android:id="@+id/linearLayout5"
+        android:id="@+id/llTitleBought"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
@@ -70,15 +70,15 @@
         android:layout_height="1dp"
         android:layout_weight="1"
         android:background="?android:attr/listDivider"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout5"
+        app:layout_constraintTop_toBottomOf="@+id/llTitleBought"
         tools:layout_editor_absoluteX="65dp" />
 
     <LinearLayout
-        android:id="@+id/linearLayout7"
+        android:id="@+id/llProductValueBought"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout5"
+        app:layout_constraintTop_toBottomOf="@+id/llTitleBought"
         tools:layout_editor_absoluteX="1dp">
 
         <TextView
@@ -99,11 +99,11 @@
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/linearLayout8"
+        android:id="@+id/llQuotesBought"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout7"
+        app:layout_constraintTop_toBottomOf="@+id/llProductValueBought"
         tools:layout_editor_absoluteX="1dp">
 
         <TextView
@@ -140,11 +140,11 @@
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/llCapitalValue"
+        android:id="@+id/llCapitalBought"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout8"
+        app:layout_constraintTop_toBottomOf="@+id/llQuotesBought"
         tools:layout_editor_absoluteX="5dp">
 
         <TextView
@@ -164,11 +164,11 @@
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/llInterestValue"
+        android:id="@+id/llInterestBought"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintTop_toBottomOf="@+id/llCapitalValue"
+        app:layout_constraintTop_toBottomOf="@+id/llCapitalBought"
         tools:layout_editor_absoluteX="5dp">
 
         <TextView
@@ -188,11 +188,11 @@
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/linearLayout6"
+        android:id="@+id/llTotalQuoteBought"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintTop_toBottomOf="@+id/llInterestValue"
+        app:layout_constraintTop_toBottomOf="@+id/llInterestBought"
         tools:layout_editor_absoluteX="1dp">
 
         <TextView

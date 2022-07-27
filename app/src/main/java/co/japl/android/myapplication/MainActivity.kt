@@ -3,6 +3,7 @@ package co.japl.android.myapplication
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
@@ -13,9 +14,8 @@ import androidx.core.view.allViews
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
+import co.japl.android.myapplication.controller.*
 import co.japl.android.myapplication.controller.ListSave
-import co.japl.android.myapplication.controller.QuoteCredit
-import co.japl.android.myapplication.controller.QuoteCreditVariable
 import com.google.android.material.navigation.NavigationView
 
 class MainActivity : AppCompatActivity(),NavigationView.OnNavigationItemSelectedListener {
@@ -58,6 +58,28 @@ class MainActivity : AppCompatActivity(),NavigationView.OnNavigationItemSelected
         }
     }
 
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+         menuInflater.inflate(R.menu.setting_menu,menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when(item.itemId){
+            R.id.item_menu_setting_credit_card-> {
+                supportFragmentManager.beginTransaction().replace(R.id.fragment_initial,CreateCreditCard()).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE).addToBackStack(null).commit()
+                true
+            }
+            R.id.item_menu_setting_taxes-> {
+                supportFragmentManager.beginTransaction().replace(R.id.fragment_initial,Taxes()).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE).addToBackStack(null).commit()
+                true
+            }
+            else -> {
+                Toast.makeText(this,"Invalid Option",Toast.LENGTH_LONG).show()
+                true
+            }
+        }
+    }
+
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
 
         return when(item.itemId){
@@ -74,8 +96,12 @@ class MainActivity : AppCompatActivity(),NavigationView.OnNavigationItemSelected
                 supportFragmentManager.beginTransaction().replace(R.id.fragment_initial,ListSave()).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE).addToBackStack(null).commit()
                 true
             }
+            R.id.item_menu_side_boughtmade->{
+                supportFragmentManager.beginTransaction().replace(R.id.fragment_initial,ListCreditCardQuote()).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE).addToBackStack(null).commit()
+                true
+            }
             else->{
-                Toast.makeText(this,"Invalid Option",Toast.LENGTH_LONG)
+                Toast.makeText(this,"Invalid Option",Toast.LENGTH_LONG).show()
                 true
             }
         }

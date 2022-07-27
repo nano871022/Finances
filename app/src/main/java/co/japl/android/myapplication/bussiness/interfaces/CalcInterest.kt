@@ -1,4 +1,4 @@
-package co.japl.android.myapplication.bussiness
+package co.japl.android.myapplication.bussiness.interfaces
 
 import java.math.BigDecimal
 

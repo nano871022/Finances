@@ -10,8 +10,8 @@ import android.view.ViewGroup
 import android.widget.*
 import androidx.fragment.app.Fragment
 import co.japl.android.myapplication.R
-import co.japl.android.myapplication.bussiness.Calc
-import co.japl.android.myapplication.bussiness.CalcInterest
+import co.japl.android.myapplication.bussiness.interfaces.Calc
+import co.japl.android.myapplication.bussiness.interfaces.CalcInterest
 import co.japl.android.myapplication.bussiness.impl.QuoteCreditVariable
 import co.japl.android.myapplication.bussiness.impl.QuoteCreditVariableInterest
 import co.japl.android.myapplication.bussiness.impl.QuoteCreditVariableInterestQuote
@@ -153,7 +153,7 @@ class QuoteCreditVariable : Fragment(), View.OnClickListener,AdapterView.OnItemS
 
     private fun loadFields( container: View){
             if(container != null) {
-                etValueCredit = container.findViewById(R.id.etValueCredit)
+                etValueCredit = container.findViewById(R.id.etNameItem)
                 etTax = container.findViewById(R.id.etTax)!!
                 etMonths = container.findViewById(R.id.etMonths)!!
                 tvCapitalValue = container.findViewById(R.id.tvCapitalValue)!!

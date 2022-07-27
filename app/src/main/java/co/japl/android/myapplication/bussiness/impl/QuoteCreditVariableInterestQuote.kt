@@ -1,11 +1,10 @@
 package co.japl.android.myapplication.bussiness.impl
 
-import co.japl.android.myapplication.bussiness.Calc
-import co.japl.android.myapplication.bussiness.CalcInterest
+import co.japl.android.myapplication.bussiness.interfaces.CalcInterest
 import java.math.BigDecimal
 import java.math.RoundingMode
 
-class QuoteCreditVariableInterestQuote : CalcInterest{
+class QuoteCreditVariableInterestQuote : CalcInterest {
 
     override fun calc(value: BigDecimal, period: Long, tax: Double,quoteNumber:Long): BigDecimal {
         println("Credit Value $value")

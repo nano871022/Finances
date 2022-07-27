@@ -9,7 +9,7 @@ import android.view.ViewGroup
 import android.widget.*
 import androidx.fragment.app.Fragment
 import co.japl.android.myapplication.R
-import co.japl.android.myapplication.bussiness.Calc
+import co.japl.android.myapplication.bussiness.interfaces.Calc
 import co.japl.android.myapplication.bussiness.impl.QuoteCredit
 import co.japl.android.myapplication.utils.Constants
 import java.math.RoundingMode
@@ -104,7 +104,7 @@ class QuoteCredit : Fragment(), View.OnClickListener{
 
     private fun loadFields( container: View){
             if(container != null) {
-                etValueCredit = container.findViewById(R.id.etValueCredit)
+                etValueCredit = container.findViewById(R.id.etNameItem)
                 etTax = container?.findViewById(R.id.etTax)!!
                 etMonths = container?.findViewById(R.id.etMonths)!!
                 tvQuoteValue = container?.findViewById(R.id.tvQuoteValue)!!

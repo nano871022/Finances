@@ -1,4 +1,4 @@
-package co.japl.android.myapplication.bussiness.adapter
+package co.japl.android.myapplication.adapter
 
 import android.view.View
 import android.widget.ImageButton
@@ -30,8 +30,8 @@ class ViewHolder(itemView:View) : RecyclerView.ViewHolder(itemView) {
         btnDelete = view.findViewById(R.id.btnDelete)
         tvCapitalValue = view.findViewById(R.id.tvCapitalValueList)
         tvInterestValue = view.findViewById(R.id.tvInterestValueList)
-        llCapitalValue = view.findViewById(R.id.llCapitalValue)
-        llInterestValue = view.findViewById(R.id.llInterestValue)
+        llCapitalValue = view.findViewById(R.id.llCapitalBought)
+        llInterestValue = view.findViewById(R.id.llInterestBought)
         llCapitalValue.visibility = View.INVISIBLE
         llInterestValue.visibility = View.INVISIBLE
     }

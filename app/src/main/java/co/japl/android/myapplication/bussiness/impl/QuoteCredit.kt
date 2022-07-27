@@ -1,10 +1,10 @@
 package co.japl.android.myapplication.bussiness.impl
 
-import co.japl.android.myapplication.bussiness.Calc
+import co.japl.android.myapplication.bussiness.interfaces.Calc
 import java.math.BigDecimal
 import kotlin.math.pow
 
-class QuoteCredit : Calc{
+class QuoteCredit : Calc {
 
     override fun calc(value: BigDecimal, period: Long, tax: Double): BigDecimal {
         println("Credit Value $value")

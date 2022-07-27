@@ -43,4 +43,67 @@
     <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
     <string name="delete_successfull">Se elimino correctamente</string>
     <string name="dont_deleted">No se logro eliminar</string>
+    <string name="bought_made">Compra Realizada</string>
+    <string name="product_name">Nombre Producto</string>
+    <string name="product_value">Valor Producto</string>
+    <string name="bought_date_time">Fecha Compra</string>
+    <string name="total_quotes">Cuotas Totales</string>
+    <string name="bought_quotes">Cuotas Pagadas</string>
+    <string name="quotes_value">Valor Por Cuota</string>
+    <string name="assing_credit_Card">Tarjeta Asignada</string>
+    <string name="bought_quote">Cuota Pagada</string>
+    <string name="cut_off_date">Fecha de Corte</string>
+    <string name="count_items_quotes">A Cuotas</string>
+    <string name="count_items_1_quote">A 1 Cuota</string>
+    <string name="integer_hint">00</string>
+    <string name="money_hint">$ 0\'000.00</string>
+    <string name="date_hint">dd/MM/yyyy</string>
+
+    <string name="add_buy">Agregar Compra</string>
+    <string name="add_cash_advance">Agregar Avance</string>
+    <string name="add_buy_wallet">Agregar Compra Cartera</string>
+    <string name="bought">Pagado</string>
+    <string name="format_date">dd/mm/yyyy</string>
+
+    <string name="remainderCutOffDate">Dias restantes para fecha de corte</string>
+    <string name="last_month_bought">Ultimo mes Pagado</string>
+    <string name="capital_quotes">Capital Cuotas</string>
+    <string name="capital_quote">Capital Sin Cuotas</string>
+    <string name="last_month_interes">Intereses</string>
+    <string name="bought_history">Pagos</string>
+    <string name="cut_off_history">Periodos</string>
+    <string name="quote_bought">Cuotas Pagadas</string>
+    <string name="pending_to_pay">Pendiente por Pagar</string>
+
+    <string name="capital_value_short">Capital</string>
+    <string name="interest_value_short">Interes</string>
+    <string name="pending_to_pay_short">Pendiente</string>
+    <string name="total_quote_value_short">Cuota</string>
+
+    <string name="create_credit_card">Crear Nueva Tarjeta Credito</string>
+    <string name="cut_off_day">Dia de Corte</string>
+    <string name="warning_quote_value">Valor alerta cuota</string>
+
+    <string name="taxes_credit_card">Tasas Tarjeta Credito</string>
+    <string name="credit_card">Tarjeta de Credito</string>
+    <string name="month">Mes</string>
+    <string name="year">Año</string>
+    <string name="year_hint">0.000</string>
+
+    <string-array name="Months">
+        <item>--- Seleccionar --- </item>
+        <item>Enero</item>
+        <item>Febrero</item>
+        <item>Marzo</item>
+        <item>Abril</item>
+        <item>Mayo</item>
+        <item>Junio</item>
+        <item>Julio</item>
+        <item>Agosto</item>
+        <item>Septiembre</item>
+        <item>Octubre</item>
+        <item>Noviembre</item>
+        <item>Diciembre</item>
+    </string-array>
+
 </resources>

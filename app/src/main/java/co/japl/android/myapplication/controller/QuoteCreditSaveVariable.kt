@@ -8,8 +8,8 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import co.japl.android.myapplication.R
 import co.japl.android.myapplication.bussiness.DTO.CalcDTO
-import co.japl.android.myapplication.bussiness.SaveSvc
-import co.japl.android.myapplication.bussiness.impl.DBConnect
+import co.japl.android.myapplication.bussiness.interfaces.SaveSvc
+import co.japl.android.myapplication.bussiness.DB.connections.CalculationConnectDB
 import co.japl.android.myapplication.bussiness.impl.SaveImpl
 import co.japl.android.myapplication.utils.CalcEnum
 import co.japl.android.myapplication.utils.Constants
@@ -25,13 +25,13 @@ class QuoteCreditSaveVariable :  AppCompatActivity(), View.OnClickListener{
     private lateinit var tvQuoteCredit:TextView
     private lateinit var tvInterestValue:TextView
     private lateinit var tvCapitalValue:TextView
-    private lateinit var dbConnect: DBConnect
-    private lateinit var saveSvc:SaveSvc
+    private lateinit var dbConnect: CalculationConnectDB
+    private lateinit var saveSvc: SaveSvc<CalcDTO>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.quote_credit_save_variable)
-        dbConnect = DBConnect(this)
+        dbConnect = CalculationConnectDB(this)
         saveSvc = SaveImpl(dbConnect)
         loadFields()
         actionBar?.setDisplayHomeAsUpEnabled(true)
