@@ -10,6 +10,7 @@ import co.japl.android.myapplication.R
 import co.japl.android.myapplication.bussiness.DTO.CalcDTO
 import co.japl.android.myapplication.bussiness.interfaces.SaveSvc
 import co.japl.android.myapplication.bussiness.DB.connections.CalculationConnectDB
+import co.japl.android.myapplication.bussiness.DB.connections.ConnectDB
 import co.japl.android.myapplication.bussiness.impl.SaveImpl
 import co.japl.android.myapplication.utils.CalcEnum
 import co.japl.android.myapplication.utils.Constants
@@ -23,14 +24,14 @@ class QuoteCreditSave :  AppCompatActivity(), View.OnClickListener{
     private lateinit var tvInterest:TextView
     private lateinit var tvMonths:TextView
     private lateinit var tvQuoteCredit:TextView
-    private lateinit var dbConnect: CalculationConnectDB
+    private lateinit var dbConnect: ConnectDB
     private lateinit var saveSvc: SaveSvc<CalcDTO>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setContentView(R.layout.quote_credit_save)
-        dbConnect = CalculationConnectDB(this)
+        dbConnect = ConnectDB(this)
         saveSvc = SaveImpl(dbConnect)
         loadFields()
         actionBar?.setDisplayHomeAsUpEnabled(true)

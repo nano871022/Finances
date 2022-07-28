@@ -50,11 +50,11 @@ class TaxesHolder(var view:View) : IHolder<TaxDTO>,AdapterView.OnItemSelectedLis
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun downLoadFields(): TaxDTO {
-        val year:Int = tax.text.toString().toInt()
-        val tax:Double = tax.text.toString().toDouble()
+        val years:Int = year.editableText.toString().toInt()
+        val taxs:Double = tax.text.toString().toDouble()
         val create:LocalDateTime = LocalDateTime.now()
         val status:Short = 1
-        val dto = TaxDTO(0,monthCode.get().toShort(),year,status,creditCardCode.get(),create,tax)
+        val dto = TaxDTO(0,monthCode.get().toShort(),years,status,creditCardCode.get(),create,taxs)
         return dto
     }
 

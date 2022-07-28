@@ -12,6 +12,7 @@ import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import co.japl.android.myapplication.R
+import co.japl.android.myapplication.bussiness.DB.connections.ConnectDB
 import co.japl.android.myapplication.bussiness.DB.connections.CreditCardBoughtConnectDB
 import co.japl.android.myapplication.bussiness.interfaces.Calc
 import co.japl.android.myapplication.bussiness.interfaces.ConfigSvc
@@ -54,7 +55,7 @@ class QuoteBought : Fragment(), View.OnClickListener {
     ): View? {
         val rootView = inflater.inflate(R.layout.buys_credit_card, container, false)
         contexto = rootView.context
-        val connect: SQLiteOpenHelper = CreditCardBoughtConnectDB(rootView.context)
+        val connect: SQLiteOpenHelper = ConnectDB(rootView.context)
         saveSvc = SaveCreditCardBoughtImpl(connect)
         taxMonthly = config.variableTaxCreditMonthly()
         cutOffDate = config.nextCutOff()

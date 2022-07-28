@@ -15,13 +15,14 @@ import co.japl.android.myapplication.bussiness.DB.connections.CalculationConnect
 import co.japl.android.myapplication.adapter.ListSaveAdapter
 import co.japl.android.myapplication.bussiness.impl.SaveImpl
 import co.japl.android.myapplication.adapter.ViewHolder
+import co.japl.android.myapplication.bussiness.DB.connections.ConnectDB
 
 class ListSave : Fragment() {
     lateinit var recyclerView:RecyclerView
     lateinit var adapter:RecyclerView.Adapter<ViewHolder>
     lateinit var list:List<CalcDTO>
     lateinit var contexts:Context
-    lateinit var dbConnect: CalculationConnectDB
+    lateinit var dbConnect: ConnectDB
     lateinit var saveSvc: SaveSvc<CalcDTO>
 
     override fun onCreateView(
@@ -42,7 +43,7 @@ class ListSave : Fragment() {
         recyclerView.adapter = adapter
     }
     private fun connectDB(){
-        dbConnect = CalculationConnectDB(contexts)
+        dbConnect = ConnectDB(contexts)
         saveSvc = SaveImpl(dbConnect)
         list = saveSvc.getAll()
     }

@@ -24,9 +24,14 @@ class TaxImpl(override var dbConnect: SQLiteOpenHelper) :  SaveSvc<TaxDTO>{
     private val mapper:IMapper<TaxDTO> = TaxMap()
     @RequiresApi(Build.VERSION_CODES.O)
     override fun save(dto: TaxDTO): Boolean {
+        Log.i(this.javaClass.name,"<<<== save - Start")
+        try{
         val db = dbConnect.writableDatabase
         val columns = mapper.mapping(dto)
         return db.insert(TaxDB.TaxEntry.TABLE_NAME,null,columns) > 0
+        }finally{
+            Log.i(this.javaClass.name,"<<<=== save - End ")
+        }
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -59,9 +64,14 @@ class TaxImpl(override var dbConnect: SQLiteOpenHelper) :  SaveSvc<TaxDTO>{
     }
 
     override fun delete(id: Int): Boolean {
+        Log.i(this.javaClass.name,"<<<=== delete - Start - $id")
+        try{
         val db = dbConnect.writableDatabase
         return db.delete(TaxDB.TaxEntry.TABLE_NAME, DatabaseConstants.SQL_DELETE_CALC_ID,
             arrayOf(id.toString())) > 0
+        }finally {
+            Log.i(this.javaClass.name, "<<<=== delete - End - $id")
+        }
     }
 
 }

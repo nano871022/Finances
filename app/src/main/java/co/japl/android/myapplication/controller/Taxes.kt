@@ -12,6 +12,7 @@ import android.widget.SpinnerAdapter
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import co.japl.android.myapplication.R
+import co.japl.android.myapplication.bussiness.DB.connections.ConnectDB
 import co.japl.android.myapplication.bussiness.DB.connections.CreditCardConnectDB
 import co.japl.android.myapplication.bussiness.DB.connections.TaxConnectDB
 import co.japl.android.myapplication.bussiness.DTO.CreditCardDTO
@@ -24,6 +25,8 @@ import co.japl.android.myapplication.bussiness.interfaces.SaveSvc
 import co.japl.android.myapplication.holders.TaxesHolder
 import co.japl.android.myapplication.putParams.TaxesParams.Params.ARG_PARAM1
 import co.japl.android.myapplication.putParams.TaxesParams.Params.ARG_PARAM2
+import java.time.LocalDate
+import java.time.LocalDateTime
 import java.util.stream.Collectors
 
 class Taxes : Fragment() , View.OnClickListener{
@@ -43,7 +46,7 @@ class Taxes : Fragment() , View.OnClickListener{
         }
     }
 
-    @RequiresApi(Build.VERSION_CODES.N)
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -51,12 +54,13 @@ class Taxes : Fragment() , View.OnClickListener{
         val view = inflater.inflate(R.layout.fragment_taxes, container, false)
         holder = TaxesHolder(view)
         holder.setFields(this)
-        service = TaxImpl(TaxConnectDB(view.context))
-        creditCardSvc = CreditCardImpl(CreditCardConnectDB(view.context))
+        service = TaxImpl(ConnectDB(view.context))
+        creditCardSvc = CreditCardImpl( ConnectDB(view.context))
         listCreditCard  = creditCardSvc.getAll()
         listCreditCardNames = listCreditCard.stream().map { it.name }.collect(Collectors.toList())
         listCreditCardNames.add(0,"--- Seleccionar ---")
-
+        val today = LocalDate.now()
+        holder.loadFields(TaxDTO(0,today.month.value.toShort(),today.year,0,0, LocalDateTime.now(),2.0))
 
         (holder as ISpinnerHolder<TaxesHolder>).lists{
                 it.creditCard.adapter = ArrayAdapter(this.requireContext(),R.layout.spinner_simple,R.id.tvValueSp,

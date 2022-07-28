@@ -4,16 +4,17 @@ import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import android.util.Log
+import co.japl.android.myapplication.bussiness.interfaces.IConnectDB
 import co.japl.android.myapplication.bussiness.queries.CreditCardBoughtQuery
 import co.japl.android.myapplication.bussiness.queries.CreditCardQuery
 import co.japl.android.myapplication.utils.DatabaseConstants
 
-class CreditCardConnectDB(context: Context):SQLiteOpenHelper(context,
-    DatabaseConstants.DATA_BASE_NAME,null, DatabaseConstants.DATA_BASE_VERSION) {
+class CreditCardConnectDB: IConnectDB {
 
     override fun onCreate(p0: SQLiteDatabase?) {
         Log.i(this.javaClass.name,"<<<=== onCreate - Start")
-        p0?.execSQL(CreditCardQuery.SQL_CREATE_ENTRIES)
+        val query = CreditCardQuery.SQL_CREATE_ENTRIES
+        p0?.execSQL(query)
         Log.i(this.javaClass.name,"<<<=== onCreate - End")
     }
 
@@ -24,4 +25,12 @@ class CreditCardConnectDB(context: Context):SQLiteOpenHelper(context,
         Log.i(this.javaClass.name,"<<<=== onUpgrade - End")
     }
 
-}
+    override fun onDowngrade(db: SQLiteDatabase?, oldVersion: Int, newVersion: Int) {
+        Log.i(this.javaClass.name,"<<<=== onDowngrade - Start $oldVersion - $newVersion")
+        db?.execSQL(CreditCardQuery.SQL_DELETE_ENTRIES)
+        onCreate(db)
+        Log.i(this.javaClass.name,"<<<=== onDowngrade - End")
+    }
+
+
+    }

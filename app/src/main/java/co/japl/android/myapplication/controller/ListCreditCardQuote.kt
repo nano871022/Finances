@@ -11,6 +11,7 @@ import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import co.japl.android.myapplication.R
+import co.japl.android.myapplication.bussiness.DB.connections.ConnectDB
 import co.japl.android.myapplication.bussiness.DB.connections.CreditCardBoughtConnectDB
 import co.japl.android.myapplication.bussiness.interfaces.ConfigSvc
 import co.japl.android.myapplication.bussiness.DTO.CreditCardBoughtDTO
@@ -84,7 +85,7 @@ class ListCreditCardQuote : Fragment(), View.OnClickListener{
 
     @RequiresApi(Build.VERSION_CODES.O)
     private fun loadData(context: Context){
-        val conecction = CreditCardBoughtConnectDB(context)
+        val conecction = ConnectDB(context)
         saveSvc = SaveCreditCardBoughtImpl(conecction)
         searchSvc = saveSvc as SearchSvc<CreditCardBoughtDTO>
         val capital = searchSvc.getCapital(codeCreaditCard.toInt(),cutOff)

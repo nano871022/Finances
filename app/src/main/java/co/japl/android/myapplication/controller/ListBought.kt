@@ -16,6 +16,7 @@ import co.japl.android.myapplication.bussiness.DTO.CreditCardBoughtDTO
 import co.japl.android.myapplication.bussiness.interfaces.SearchSvc
 import co.japl.android.myapplication.adapter.BoughtViewHolder
 import co.japl.android.myapplication.adapter.ListBoughtAdapter
+import co.japl.android.myapplication.bussiness.DB.connections.ConnectDB
 import co.japl.android.myapplication.bussiness.DB.connections.CreditCardBoughtConnectDB
 import co.japl.android.myapplication.bussiness.impl.*
 import co.japl.android.myapplication.utils.DateUtils
@@ -30,7 +31,7 @@ class ListBought : Fragment() {
     lateinit var adapter:RecyclerView.Adapter<BoughtViewHolder>
     lateinit var list:List<CreditCardBoughtDTO>
     lateinit var contexts:Context
-    lateinit var dbConnect: CreditCardBoughtConnectDB
+    lateinit var dbConnect: ConnectDB
     lateinit var saveSvc: SearchSvc<CreditCardBoughtDTO>
     private lateinit var codeCreditCard:Optional<Int>
     private lateinit var cutOff:LocalDateTime
@@ -77,7 +78,7 @@ class ListBought : Fragment() {
     @RequiresApi(Build.VERSION_CODES.N)
     private fun connectDB(){
         context.let {
-            dbConnect = CreditCardBoughtConnectDB(it!!)
+            dbConnect = ConnectDB(it!!)
         }
         saveSvc = SaveCreditCardBoughtImpl(dbConnect)
         val list = saveSvc.getToDate(codeCreditCard.get(),cutOff)

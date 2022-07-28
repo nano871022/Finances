@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import co.japl.android.myapplication.R
+import co.japl.android.myapplication.bussiness.DB.connections.ConnectDB
 import co.japl.android.myapplication.bussiness.DB.connections.CreditCardConnectDB
 import co.japl.android.myapplication.bussiness.DTO.CreditCardDB
 import co.japl.android.myapplication.bussiness.DTO.CreditCardDTO
@@ -38,7 +39,7 @@ class CreateCreditCard : Fragment(),View.OnClickListener {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_create_credit_card, container, false)
-        service = CreditCardImpl(CreditCardConnectDB(view.context))
+        service = CreditCardImpl(ConnectDB(view.context))
         holder = CreditCardHolder(view)
         holder.setFields(this)
 
