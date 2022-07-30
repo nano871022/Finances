@@ -6,5 +6,5 @@ interface ConfigSvc {
 
     fun variableTaxCreditMonthly(): Double
 
-    fun nextCutOff():LocalDateTime
+    fun nextCutOff(cutOffDay:Int):LocalDateTime
 }

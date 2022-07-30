@@ -37,6 +37,7 @@ class ListCreditCardQuote : Fragment(), AdapterView.OnItemSelectedListener{
     private lateinit var contexto: Context
     private lateinit var holder:IHolder<CreditCard>
     private lateinit var listCreditCard:List<CreditCardDTO>
+    private val configSvc:ConfigSvc = Config()
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreateView(
@@ -118,7 +119,7 @@ class ListCreditCardQuote : Fragment(), AdapterView.OnItemSelectedListener{
                 pojo.nameCreditCard = Optional.ofNullable(creditCard?.name)
                 pojo.cutOff =
                 Optional.ofNullable(creditCard?.cutOffDay?.toInt()
-                    ?.let { it1 -> LocalDateTime.of(now.year, now.month, it1, 0, 0, 0) })
+                    ?.let { it1 -> configSvc.nextCutOff( it1) })
             }
                 taxSvc.get(now.monthValue,now.year).ifPresent{
                 pojo.lastTax = Optional.ofNullable(it.value)

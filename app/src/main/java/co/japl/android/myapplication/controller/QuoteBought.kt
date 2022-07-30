@@ -42,6 +42,7 @@ class QuoteBought : Fragment(), View.OnClickListener {
     private lateinit var btnSave: Button
     private var calcTax: Calc = QuoteCreditVariableInterest()
     private var calc: Calc = QuoteCreditVariable()
+    private var config:ConfigSvc = Config()
     private var taxMonthly: Double = 0.0
     private lateinit var taxSvc: ITaxSvc
     private lateinit var creditCardSvc:SaveSvc<CreditCardDTO>
@@ -83,7 +84,7 @@ class QuoteBought : Fragment(), View.OnClickListener {
             val tax = taxSvc.get(now.month.value,now.year)
             if(tax.isPresent){
                 taxMonthly = tax.get().value
-                cutOffDate = LocalDateTime.of(now.year,now.month,creditCard.get().cutOffDay.toInt(),0,0,0)
+                cutOffDate = config.nextCutOff(creditCard.get().cutOffDay.toInt())
                 tvCardAssing.text = creditCard.get().name
                 loadField()
             }else{
