@@ -11,6 +11,7 @@ import android.widget.BaseAdapter
 import android.widget.SpinnerAdapter
 import android.widget.Toast
 import androidx.annotation.RequiresApi
+import androidx.fragment.app.FragmentTransaction
 import co.japl.android.myapplication.R
 import co.japl.android.myapplication.bussiness.DB.connections.ConnectDB
 import co.japl.android.myapplication.bussiness.DB.connections.CreditCardConnectDB
@@ -81,6 +82,8 @@ class Taxes : Fragment() , View.OnClickListener{
             dto.codCreditCard = creditCard.get().id
             if(service.save(dto)){
                 Toast.makeText(this.context,"Record Saved",Toast.LENGTH_LONG).show()
+                parentFragmentManager.beginTransaction().replace(R.id.fragment_initial, ListTaxCreditCard()).setTransition(
+                    FragmentTransaction.TRANSIT_FRAGMENT_FADE).addToBackStack(null).commit()
             }else{
                 Toast.makeText(this.context,"Record did not Save",Toast.LENGTH_LONG).show()
             }

@@ -1,10 +1,9 @@
 package co.japl.android.myapplication.putParams
 
 import android.os.Bundle
-import co.japl.android.myapplication.controller.CreateCreditCard
 import co.japl.android.myapplication.controller.Taxes
-import co.japl.android.myapplication.putParams.CreditCardParams.Params.ARG_PARAM1
-import co.japl.android.myapplication.putParams.CreditCardParams.Params.ARG_PARAM2
+import co.japl.android.myapplication.putParams.TaxesParams.Params.ARG_PARAM1
+import co.japl.android.myapplication.putParams.TaxesParams.Params.ARG_PARAM2
 
 class TaxesParams {
     object Params {

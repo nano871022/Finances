@@ -8,8 +8,9 @@
         android:id="@+id/item_menu_setting_credit_card"
         android:enabled="true"
         android:icon="@drawable/ic_credit_card_foreground"
-        android:title="@string/create_credit_card"
-        android:visible="true" />
+        android:title="@string/credit_cards"
+        android:visible="true"
+        app:showAsAction="withText" />
 
     <item
         android:id="@+id/item_menu_setting_taxes"

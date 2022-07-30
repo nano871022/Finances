@@ -3,6 +3,7 @@ package co.japl.android.myapplication.bussiness.mapping
 import android.content.ContentValues
 import android.database.Cursor
 import android.os.Build
+import android.util.Log
 import androidx.annotation.RequiresApi
 import co.japl.android.myapplication.bussiness.DTO.*
 import co.japl.android.myapplication.bussiness.interfaces.IMapper
@@ -26,12 +27,13 @@ class TaxMap : IMapper<TaxDTO>{
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun mapping(cursor:Cursor):TaxDTO{
+        Log.d(this.javaClass.name,"${cursor.getString(6)}")
         val tax = cursor.getDouble(1)
         val month = cursor.getShort(2)
         val year = cursor.getInt(3)
         val status = cursor.getShort(4)
-        val createDate = DateUtils.toLocalDateTime(cursor.getString(5))
-        val codCreditCard = cursor.getInt(6)
+        val createDate = DateUtils.toLocalDateTime(cursor.getString(6))
+        val codCreditCard = cursor.getInt(5)
         val id = cursor.getString(0).toInt()
         return  TaxDTO(
             id,

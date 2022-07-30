@@ -7,11 +7,12 @@ import android.view.ViewGroup
 import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.RecyclerView
 import co.japl.android.myapplication.R
+import co.japl.android.myapplication.bussiness.DB.connections.ConnectDB
 import co.japl.android.myapplication.bussiness.DTO.CreditCardBoughtDTO
 import co.japl.android.myapplication.bussiness.interfaces.SaveSvc
 import co.japl.android.myapplication.bussiness.interfaces.SearchSvc
-import co.japl.android.myapplication.bussiness.DB.connections.CreditCardBoughtConnectDB
 import co.japl.android.myapplication.bussiness.impl.SaveCreditCardBoughtImpl
+import co.japl.android.myapplication.holders.view.BoughtViewHolder
 import co.japl.android.myapplication.utils.DateUtils
 import co.japl.android.myapplication.utils.NumbersUtil
 import com.google.android.material.snackbar.Snackbar
@@ -20,12 +21,12 @@ import java.math.RoundingMode
 import java.time.LocalDateTime
 
 class ListBoughtAdapter(private val data:List<CreditCardBoughtDTO>,private val cutOff:LocalDateTime) : RecyclerView.Adapter<BoughtViewHolder>() {
-    lateinit var dbConnect: CreditCardBoughtConnectDB
+    lateinit var dbConnect: ConnectDB
     lateinit var saveSvc: SaveSvc<CreditCardBoughtDTO>
     lateinit var searchSvc: SearchSvc<CreditCardBoughtDTO>
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BoughtViewHolder {
-        dbConnect = CreditCardBoughtConnectDB(parent.context)
+        dbConnect = ConnectDB(parent.context)
         saveSvc = SaveCreditCardBoughtImpl(dbConnect)
         searchSvc = saveSvc as SearchSvc<CreditCardBoughtDTO>
         val view =

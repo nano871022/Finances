@@ -7,18 +7,19 @@ import androidx.recyclerview.widget.RecyclerView
 import co.japl.android.myapplication.R
 import co.japl.android.myapplication.bussiness.DTO.CalcDTO
 import co.japl.android.myapplication.bussiness.interfaces.SaveSvc
-import co.japl.android.myapplication.bussiness.DB.connections.CalculationConnectDB
+import co.japl.android.myapplication.bussiness.DB.connections.ConnectDB
 import co.japl.android.myapplication.bussiness.impl.SaveImpl
+import co.japl.android.myapplication.holders.view.ViewHolder
 import co.japl.android.myapplication.utils.CalcEnum
 import com.google.android.material.snackbar.Snackbar
 import java.text.DecimalFormat
 
 class ListSaveAdapter(private val data:List<CalcDTO>) : RecyclerView.Adapter<ViewHolder>() {
-    lateinit var dbConnect: CalculationConnectDB
+    lateinit var dbConnect: ConnectDB
     lateinit var saveSvc: SaveSvc<CalcDTO>
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        dbConnect = CalculationConnectDB(parent.context)
+        dbConnect = ConnectDB(parent.context)
         saveSvc = SaveImpl(dbConnect)
         val view =
             LayoutInflater.from(parent.context).inflate(R.layout.quote_credit_save_item_list, parent, false)

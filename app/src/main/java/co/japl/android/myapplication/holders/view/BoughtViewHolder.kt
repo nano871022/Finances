@@ -1,4 +1,4 @@
-package co.japl.android.myapplication.adapter
+package co.japl.android.myapplication.holders.view
 
 import android.view.View
 import android.widget.ImageButton

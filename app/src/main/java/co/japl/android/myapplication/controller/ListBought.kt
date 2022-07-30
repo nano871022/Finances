@@ -14,10 +14,9 @@ import androidx.recyclerview.widget.RecyclerView
 import co.japl.android.myapplication.R
 import co.japl.android.myapplication.bussiness.DTO.CreditCardBoughtDTO
 import co.japl.android.myapplication.bussiness.interfaces.SearchSvc
-import co.japl.android.myapplication.adapter.BoughtViewHolder
+import co.japl.android.myapplication.holders.view.BoughtViewHolder
 import co.japl.android.myapplication.adapter.ListBoughtAdapter
 import co.japl.android.myapplication.bussiness.DB.connections.ConnectDB
-import co.japl.android.myapplication.bussiness.DB.connections.CreditCardBoughtConnectDB
 import co.japl.android.myapplication.bussiness.impl.*
 import co.japl.android.myapplication.utils.DateUtils
 import co.japl.android.myapplication.utils.NumbersUtil

@@ -6,14 +6,19 @@ import android.os.Build
 import android.provider.BaseColumns
 import android.util.Log
 import androidx.annotation.RequiresApi
+import co.japl.android.myapplication.bussiness.DTO.CreditCardBoughtDB
+import co.japl.android.myapplication.bussiness.DTO.CreditCardBoughtDTO
 import co.japl.android.myapplication.bussiness.DTO.TaxDB
 import co.japl.android.myapplication.bussiness.DTO.TaxDTO
 import co.japl.android.myapplication.bussiness.interfaces.IMapper
+import co.japl.android.myapplication.bussiness.interfaces.ITaxSvc
 import co.japl.android.myapplication.bussiness.interfaces.SaveSvc
+import co.japl.android.myapplication.bussiness.mapping.CreditCardBoughtMap
 import co.japl.android.myapplication.bussiness.mapping.TaxMap
 import co.japl.android.myapplication.utils.DatabaseConstants
+import java.util.*
 
-class TaxImpl(override var dbConnect: SQLiteOpenHelper) :  SaveSvc<TaxDTO>{
+class TaxImpl(override var dbConnect: SQLiteOpenHelper) :  SaveSvc<TaxDTO>,ITaxSvc{
     private val COLUMNS = arrayOf(BaseColumns._ID,
                                   TaxDB.TaxEntry.COLUMN_TAX,
                                   TaxDB.TaxEntry.COLUMN_MONTH,
@@ -72,6 +77,46 @@ class TaxImpl(override var dbConnect: SQLiteOpenHelper) :  SaveSvc<TaxDTO>{
         }finally {
             Log.i(this.javaClass.name, "<<<=== delete - End - $id")
         }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    override fun get(id: Int): Optional<TaxDTO> {
+        val db = dbConnect.writableDatabase
+        val cursor = db.query(
+            TaxDB.TaxEntry.TABLE_NAME,
+            COLUMNS,
+            " id = ?",
+            arrayOf(id.toString()),
+            null,
+            null,
+            null
+        )
+        with(cursor) {
+            while (moveToNext()) {
+                return Optional.ofNullable(mapper.mapping(this))
+            }
+        }
+        return Optional.empty()
+    }
+
+    @RequiresApi(Build.VERSION_CODES.N)
+    override fun get(month:Int, year:Int):Optional<TaxDTO>{
+        val db = dbConnect.writableDatabase
+        val cursor = db.query(
+            TaxDB.TaxEntry.TABLE_NAME,
+            COLUMNS,
+            " ${TaxDB.TaxEntry.COLUMN_MONTH} = ? and ${TaxDB.TaxEntry.COLUMN_YEAR} = ?",
+            arrayOf(month.toString(),year.toString()),
+            null,
+            null,
+            null
+        )
+        with(cursor) {
+            while (moveToNext()) {
+                return Optional.ofNullable(mapper.mapping(this))
+            }
+        }
+        return Optional.empty()
     }
 
 }

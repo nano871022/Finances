@@ -66,11 +66,11 @@ class MainActivity : AppCompatActivity(),NavigationView.OnNavigationItemSelected
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when(item.itemId){
             R.id.item_menu_setting_credit_card-> {
-                supportFragmentManager.beginTransaction().replace(R.id.fragment_initial,CreateCreditCard()).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE).addToBackStack(null).commit()
+                supportFragmentManager.beginTransaction().replace(R.id.fragment_initial,ListCreditCard()).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE).addToBackStack(null).commit()
                 true
             }
             R.id.item_menu_setting_taxes-> {
-                supportFragmentManager.beginTransaction().replace(R.id.fragment_initial,Taxes()).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE).addToBackStack(null).commit()
+                supportFragmentManager.beginTransaction().replace(R.id.fragment_initial,ListTaxCreditCard()).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE).addToBackStack(null).commit()
                 true
             }
             else -> {

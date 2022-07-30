@@ -7,6 +7,8 @@ import android.util.Log
 import androidx.annotation.RequiresApi
 import co.japl.android.myapplication.bussiness.DTO.CreditCardBoughtDB
 import co.japl.android.myapplication.bussiness.DTO.CreditCardBoughtDTO
+import co.japl.android.myapplication.bussiness.DTO.CreditCardDB
+import co.japl.android.myapplication.bussiness.DTO.CreditCardDTO
 import co.japl.android.myapplication.bussiness.interfaces.SaveSvc
 import co.japl.android.myapplication.bussiness.interfaces.SearchSvc
 import co.japl.android.myapplication.bussiness.mapping.CreditCardBoughtMap
@@ -27,7 +29,8 @@ class SaveCreditCardBoughtImpl(override var dbConnect: SQLiteOpenHelper) : SaveS
         ,CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_MONTH
         ,CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_BOUGHT_DATE
         ,CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_CUT_OUT_DATE
-        ,CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_CREATE_DATE)
+        ,CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_CREATE_DATE
+        ,CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_RECURRENT)
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun save(dto: CreditCardBoughtDTO): Boolean {
@@ -104,7 +107,7 @@ class SaveCreditCardBoughtImpl(override var dbConnect: SQLiteOpenHelper) : SaveS
             with(cursor) {
                 while (moveToNext()) {
                     val record = CreditCardBoughtMap().mapping(this)
-                    if (record.boughtDate.isBefore(cutOffDate) and record.boughtDate.isAfter(
+                    if ( record.boughtDate == cutOffDate || record.boughtDate == startDate || record.boughtDate.isBefore(cutOffDate) and record.boughtDate.isAfter(
                             startDate
                         )
                     ) {
@@ -320,5 +323,25 @@ class SaveCreditCardBoughtImpl(override var dbConnect: SQLiteOpenHelper) : SaveS
         }finally{
             Log.v(this.javaClass.name,"<<<=== getPendingToPayQuotes - End")
         }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    override fun get(id: Int): Optional<CreditCardBoughtDTO> {
+        val db = dbConnect.writableDatabase
+        val cursor = db.query(
+            CreditCardBoughtDB.CreditCardBoughtEntry.TABLE_NAME,
+            COLUMNS_CALC,
+            " id = ?",
+            arrayOf(id.toString()),
+            null,
+            null,
+            null
+        )
+        with(cursor) {
+            while (moveToNext()) {
+                return Optional.ofNullable(CreditCardBoughtMap().mapping(this))
+            }
+        }
+        return Optional.empty()
     }
 }

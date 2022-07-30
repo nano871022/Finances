@@ -1,6 +1,7 @@
 package co.japl.android.myapplication.bussiness.interfaces
 
 import android.database.sqlite.SQLiteOpenHelper
+import java.util.*
 
 interface SaveSvc<T>  {
     var dbConnect: SQLiteOpenHelper
@@ -10,4 +11,6 @@ interface SaveSvc<T>  {
     fun getAll():List<T>
 
     fun delete(id:Int):Boolean
+
+    fun get(id:Int):Optional<T>
 }

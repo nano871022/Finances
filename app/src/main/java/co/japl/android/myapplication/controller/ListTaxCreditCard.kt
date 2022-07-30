@@ -1,59 +1,104 @@
 package co.japl.android.myapplication.controller
 
+import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
+import android.widget.LinearLayout
+import androidx.annotation.RequiresApi
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import co.japl.android.myapplication.R
+import co.japl.android.myapplication.adapter.ListTaxAdapter
+import co.japl.android.myapplication.bussiness.DB.connections.ConnectDB
+import co.japl.android.myapplication.bussiness.DTO.CreditCardDTO
+import co.japl.android.myapplication.bussiness.DTO.TaxDTO
+import co.japl.android.myapplication.bussiness.impl.CreditCardImpl
+import co.japl.android.myapplication.bussiness.impl.TaxImpl
+import co.japl.android.myapplication.bussiness.interfaces.SaveSvc
+import co.japl.android.myapplication.holders.TaxHolder
+import kotlinx.coroutines.selects.select
+import java.util.stream.Collectors
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
+class ListTaxCreditCard : Fragment() , AdapterView.OnItemSelectedListener{
 
-/**
- * A simple [Fragment] subclass.
- * Use the [ListTaxCreditCard.newInstance] factory method to
- * create an instance of this fragment.
- */
-class ListTaxCreditCard : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
+
+    private lateinit var list:MutableList<TaxDTO>
+    private lateinit var holder:TaxHolder
+    private lateinit var searchCCSvc: SaveSvc<CreditCardDTO>
+    private lateinit var searchTaxSvc: SaveSvc<TaxDTO>
+    private lateinit var listCC:List<CreditCardDTO>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
     }
 
+    @RequiresApi(Build.VERSION_CODES.N)
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_list_tax_credit_card, container, false)
+        val view = inflater.inflate(R.layout.fragment_list_tax_credit_card, container, false)
+        val connect = ConnectDB(view.context)
+        list = ArrayList<TaxDTO>()
+        searchCCSvc = CreditCardImpl(connect)
+        searchTaxSvc = TaxImpl(connect)
+        setField(view)
+        return view
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment ListTaxCreditCard.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            ListTaxCreditCard().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
+    @RequiresApi(Build.VERSION_CODES.N)
+    fun setField(view:View){
+        view.let{
+            holder = TaxHolder(it,parentFragmentManager)
+            holder.setFields(null)
+            listCC = searchCCSvc.getAll()
+            val list = listCC.toMutableList().stream().map { it.name }.collect(Collectors.toList())
+            list.add(0,"-- Seleccionar --")
+            holder.lists{
+                it.creditCard.adapter = ArrayAdapter(view.context,R.layout.spinner_simple,R.id.tvValueSp,list.toTypedArray())
+                it.creditCard.onItemSelectedListener = this
+                loadRecycleView(it.recyclerView)
             }
+        }
+    }
+
+    fun loadRecycleView(recyclerView:RecyclerView){
+        view.let {
+            recyclerView.let { rv ->
+                Log.d(this.javaClass.name,"Create RecyclerVire with $list")
+                rv.layoutManager = LinearLayoutManager(it?.context,LinearLayoutManager.VERTICAL,false)
+                rv.adapter = ListTaxAdapter(list)
+
+            }
+        }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.N)
+    override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+        Log.d(this.javaClass.name,"Selected item $position")
+        if(position != 0)
+        parent.let {
+            val selected = it?.getItemAtPosition(position)
+            val found = listCC.stream().filter{
+                it.name == selected.toString()
+            }.findAny()
+            if(found.isPresent) {
+                list = searchTaxSvc.getAll().stream().filter {
+                    it.codCreditCard == found.get().id
+                }.collect(Collectors.toList())
+                //loadRecycleView(holder.recyclerView)
+                holder.recyclerView.adapter = ListTaxAdapter(list)
+            }
+        }
+    }
+
+    override fun onNothingSelected(parent: AdapterView<*>?) {
+        TODO("Not yet implemented")
     }
 }

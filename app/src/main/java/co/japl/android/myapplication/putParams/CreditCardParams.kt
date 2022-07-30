@@ -1,22 +1,22 @@
 package co.japl.android.myapplication.putParams
 
 import android.os.Bundle
+import androidx.core.os.bundleOf
+import androidx.fragment.app.FragmentManager
 import co.japl.android.myapplication.controller.CreateCreditCard
-import co.japl.android.myapplication.putParams.CreditCardParams.Params.ARG_PARAM1
-import co.japl.android.myapplication.putParams.CreditCardParams.Params.ARG_PARAM2
+import co.japl.android.myapplication.putParams.CreditCardParams.Params.ARG_PARAM_CODE
+import co.japl.android.myapplication.utils.DateUtils
 
-class CreditCardParams {
+class CreditCardParams(var parentFragmentManagers: FragmentManager) {
     object Params {
-        val ARG_PARAM1 = "param1"
-        val ARG_PARAM2 = "param2"
+        val ARG_PARAM_CODE = "code_credit_card"
     }
     companion object {
         @JvmStatic
-        fun newInstance(param1: String, param2: String) =
+        fun newInstance(param1: String) =
             CreateCreditCard().apply {
                 arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
+                    putString(ARG_PARAM_CODE, param1)
                 }
             }
     }

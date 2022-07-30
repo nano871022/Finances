@@ -1,12 +1,18 @@
 package co.japl.android.myapplication.bussiness.impl
 
 import android.database.sqlite.SQLiteOpenHelper
+import android.os.Build
 import android.provider.BaseColumns
+import androidx.annotation.RequiresApi
 import co.japl.android.myapplication.bussiness.DTO.CalcDB
 import co.japl.android.myapplication.bussiness.DTO.CalcDTO
+import co.japl.android.myapplication.bussiness.DTO.CreditCardBoughtDTO
+import co.japl.android.myapplication.bussiness.DTO.CreditCardDB
 import co.japl.android.myapplication.bussiness.interfaces.SaveSvc
 import co.japl.android.myapplication.bussiness.mapping.CalcMap
+import co.japl.android.myapplication.bussiness.mapping.CreditCardBoughtMap
 import co.japl.android.myapplication.utils.DatabaseConstants
+import java.util.*
 
 class SaveImpl(override var dbConnect: SQLiteOpenHelper) : SaveSvc<CalcDTO> {
     private val COLUMNS_CALC = arrayOf(BaseColumns._ID
@@ -41,5 +47,25 @@ class SaveImpl(override var dbConnect: SQLiteOpenHelper) : SaveSvc<CalcDTO> {
     override fun delete(id:Int):Boolean{
         val db = dbConnect.writableDatabase
         return db.delete(CalcDB.CalcEntry.TABLE_NAME, DatabaseConstants.SQL_DELETE_CALC_ID, arrayOf(id.toString())) > 0
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    override fun get(id: Int): Optional<CalcDTO> {
+        val db = dbConnect.writableDatabase
+        val cursor = db.query(
+            CalcDB.CalcEntry.TABLE_NAME,
+            COLUMNS_CALC,
+            " id = ?",
+            arrayOf(id.toString()),
+            null,
+            null,
+            null
+        )
+        with(cursor) {
+            while (moveToNext()) {
+                return Optional.ofNullable(CalcMap().mapping(this))
+            }
+        }
+        return Optional.empty()
     }
 }

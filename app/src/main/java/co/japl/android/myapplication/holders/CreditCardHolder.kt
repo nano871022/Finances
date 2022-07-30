@@ -12,6 +12,7 @@ import co.japl.android.myapplication.bussiness.DTO.CreditCardDTO
 import co.japl.android.myapplication.bussiness.interfaces.IHolder
 import java.math.BigDecimal
 import java.time.LocalDateTime
+import java.util.*
 
 class CreditCardHolder(var view:View) : IHolder<CreditCardDTO> {
     lateinit var name:EditText
@@ -19,8 +20,10 @@ class CreditCardHolder(var view:View) : IHolder<CreditCardDTO> {
     lateinit var warningQuote:EditText
     lateinit var save:Button
     lateinit var clear:Button
+    private lateinit var id:Optional<Int>
 
-    override fun setFields(action: View.OnClickListener) {
+    @RequiresApi(Build.VERSION_CODES.N)
+    override fun setFields(action: View.OnClickListener?) {
         name = view.findViewById(R.id.etNameCCC)
         cutOffDay = view.findViewById(R.id.edCutOffDayCCC)
         warningQuote = view.findViewById(R.id.edWarningQuoteCCC)
@@ -28,12 +31,15 @@ class CreditCardHolder(var view:View) : IHolder<CreditCardDTO> {
         clear = view.findViewById(R.id.btnCleanCCC)
         save.setOnClickListener(action)
         clear.setOnClickListener(action)
+        id = Optional.empty()
     }
 
+    @RequiresApi(Build.VERSION_CODES.N)
     override fun loadFields(values: CreditCardDTO) {
         name.setText(values.name)
         cutOffDay.setText(values.cutOffDay.toString())
         warningQuote.setText(values.warningValue.toString())
+        id = Optional.ofNullable(values.id)
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -43,7 +49,7 @@ class CreditCardHolder(var view:View) : IHolder<CreditCardDTO> {
         val warningQuote:BigDecimal = warningQuote.text.toString().toBigDecimal()
         val create:LocalDateTime = LocalDateTime.now()
         val status:Short = 1
-        val dto = CreditCardDTO(0,name,cutOffDay,warningQuote,create,status)
+        val dto = CreditCardDTO(id.orElse(0),name,cutOffDay,warningQuote,create,status)
         return dto
     }
 

@@ -30,7 +30,7 @@ class TaxesHolder(var view:View) : IHolder<TaxDTO>,AdapterView.OnItemSelectedLis
     lateinit var creditCardCode:Optional<Int>
     lateinit var monthCode:Optional<Int>
 
-    override fun setFields(action: View.OnClickListener) {
+    override fun setFields(action: View.OnClickListener?) {
         creditCard = view.findViewById(R.id.spCreditCardTaxes)
         month = view.findViewById(R.id.spMonthTaxes)
         tax = view.findViewById(R.id.edTaxesTaxes)

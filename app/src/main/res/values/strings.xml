@@ -89,7 +89,11 @@
     <string name="month">Mes</string>
     <string name="year">Año</string>
     <string name="year_hint">0.000</string>
-
+    <string name="status">Estado</string>
+    <string name="credit_cards">Tarjetas de Credito</string>
+    <string name="add_credit_card">Agregar Tarjeta Credito</string>
+    <string name="add_tax">Agregar Tasa</string>
+    <string name="taxs_credit_card">Tasas de Tarjeta de Credito</string>
     <string-array name="Months">
         <item>--- Seleccionar --- </item>
         <item>Enero</item>
