@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/FirstFragment"
-        android:name="co.japl.android.finanzas.FirstFragment"
+        android:name="co.japl.android.myapplication.FirstFragment"
         android:label="@string/first_fragment_label"
         tools:layout="@layout/fragment_first">
 
@@ -17,7 +17,7 @@
     </fragment>
     <fragment
         android:id="@+id/Second2Fragment"
-        android:name="co.japl.android.finanzas.Second2Fragment"
+        android:name="co.japl.android.myapplication.Second2Fragment"
         android:label="@string/second_fragment_label"
         tools:layout="@layout/fragment_second2">
 

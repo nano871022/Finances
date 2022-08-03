@@ -10,7 +10,7 @@ android {
         applicationId "co.japl.android.myapplication"
         minSdk 21
         targetSdk 31
-        versionCode 3
+        versionCode 4
         versionName "Added bought with credit card"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
