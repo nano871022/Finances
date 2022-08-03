@@ -7,15 +7,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
-import android.widget.BaseAdapter
-import android.widget.SpinnerAdapter
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.FragmentTransaction
 import co.japl.android.finanzas.R
 import co.japl.android.finanzas.bussiness.DB.connections.ConnectDB
-import co.japl.android.finanzas.bussiness.DB.connections.CreditCardConnectDB
-import co.japl.android.finanzas.bussiness.DB.connections.TaxConnectDB
 import co.japl.android.finanzas.bussiness.DTO.CreditCardDTO
 import co.japl.android.finanzas.bussiness.DTO.TaxDTO
 import co.japl.android.finanzas.bussiness.impl.CreditCardImpl
@@ -64,7 +60,7 @@ class Taxes : Fragment() , View.OnClickListener{
         holder.loadFields(TaxDTO(0,today.month.value.toShort(),today.year,0,0, LocalDateTime.now(),2.0))
 
         (holder as ISpinnerHolder<TaxesHolder>).lists{
-                it.creditCard.adapter = ArrayAdapter(this.requireContext(),R.layout.spinner_simple,R.id.tvValueSp,
+                it.creditCard.adapter = ArrayAdapter(this.requireContext(),R.layout.spinner_simple,R.id.tvValueBigSp,
                     listCreditCardNames.toTypedArray())
                 ArrayAdapter.createFromResource(this.requireContext(),R.array.Months,R.layout.spinner1).also { adapter ->
                     adapter.setDropDownViewResource(R.layout.spinner1)

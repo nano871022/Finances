@@ -95,7 +95,7 @@ class ListBought : Fragment() {
         this.interest = interest.orElse(BigDecimal(0)).plus(interestQuotes.orElse(BigDecimal(0)))
         this.pendingToPay = pendingToPay.orElse(BigDecimal(0)).plus(pendingToPayQuotes.orElse(BigDecimal(0)))
         this.totalQuote = this.capital.plus(this.interest)
-        this.list = joinList
+        this.list = joinList.sortedByDescending { it.boughtDate }
     }
 
     private fun loadField(container:View){

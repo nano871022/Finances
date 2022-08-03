@@ -34,7 +34,7 @@ class DateUtils {
             val period = Period.between(startDate.toLocalDate(),endDate.toLocalDate())
             val month = period.months
             val years = period.years
-            var value = (years * 12) + month - 1
+            var value = (years * 12) + month
             if(value < 0){
                 value = 0
             }

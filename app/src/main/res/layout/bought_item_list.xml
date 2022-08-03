@@ -133,11 +133,62 @@
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/llCapitalBought"
+        android:id="@+id/llPendingToPay"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         app:layout_constraintTop_toBottomOf="@+id/llQuotesBought"
+        tools:layout_editor_absoluteX="5dp">
+
+        <TextView
+            android:id="@+id/lbPendingToPay"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/pending_to_pay"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tvPendingToPay"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/money_hint"
+            android:textAlignment="textEnd" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/llTaxBoughtICC"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toBottomOf="@+id/llPendingToPay"
+        tools:layout_editor_absoluteX="5dp"
+        tools:layout_editor_absoluteY="5dp">
+
+        <TextView
+            android:id="@+id/lbTaxBoughtICC"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/tax"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tvTaxBoughtICC"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/interest_value_hint"
+            android:textAlignment="textEnd" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/llCapitalBought"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toBottomOf="@+id/llTaxBoughtICC"
         tools:layout_editor_absoluteX="5dp">
 
         <TextView
@@ -183,36 +234,11 @@
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/llPendingToPay"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintTop_toBottomOf="@+id/llInterestBought"
-        tools:layout_editor_absoluteX="5dp">
-
-        <TextView
-            android:id="@+id/lbPendingToPay"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/pending_to_pay"
-            android:textStyle="bold" />
-
-        <TextView
-            android:id="@+id/tvPendingToPay"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/money_hint"
-            android:textAlignment="textEnd" />
-    </LinearLayout>
-
-    <LinearLayout
         android:id="@+id/llTotalQuoteBought"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintTop_toBottomOf="@+id/llPendingToPay"
+        app:layout_constraintTop_toBottomOf="@+id/llInterestBought"
         tools:layout_editor_absoluteX="1dp">
 
         <TextView

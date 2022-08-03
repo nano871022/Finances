@@ -10,11 +10,9 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.RecyclerView
 import co.japl.android.finanzas.R
-import co.japl.android.finanzas.bussiness.DTO.CreditCardDTO
 import co.japl.android.finanzas.bussiness.DTO.TaxDTO
 import co.japl.android.finanzas.bussiness.interfaces.IHolder
 import co.japl.android.finanzas.bussiness.interfaces.ISpinnerHolder
-import co.japl.android.finanzas.controller.CreateCreditCard
 import co.japl.android.finanzas.controller.Taxes
 import java.time.LocalDateTime
 
@@ -47,7 +45,7 @@ class TaxHolder (var view:View,var parentFragmentManager:FragmentManager): IHold
     }
 
     override fun cleanField() {
-        (creditCard.selectedView.findViewById(R.id.tvValueSp) as TextView).text = creditCard.getItemAtPosition(0).toString()
+        (creditCard.selectedView.findViewById(R.id.tvValueBigSp) as TextView).text = creditCard.getItemAtPosition(0).toString()
     }
 
     override fun validate(): Boolean {

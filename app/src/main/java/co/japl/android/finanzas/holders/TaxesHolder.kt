@@ -1,21 +1,14 @@
 package co.japl.android.finanzas.holders
 
-import android.graphics.drawable.Drawable
 import android.os.Build
-import android.service.autofill.OnClickAction
 import android.view.View
 import android.widget.*
 import androidx.annotation.RequiresApi
 import co.japl.android.finanzas.R
-import co.japl.android.finanzas.bussiness.DTO.CreditCardDTO
 import co.japl.android.finanzas.bussiness.DTO.TaxDTO
 import co.japl.android.finanzas.bussiness.interfaces.IHolder
 import co.japl.android.finanzas.bussiness.interfaces.ISpinnerHolder
-import com.google.android.material.chip.Chip
-import org.w3c.dom.Text
-import java.math.BigDecimal
 import java.time.LocalDateTime
-import java.time.Month
 import java.util.*
 
 class TaxesHolder(var view:View) : IHolder<TaxDTO>,AdapterView.OnItemSelectedListener,ISpinnerHolder<TaxesHolder> {
@@ -67,7 +60,7 @@ class TaxesHolder(var view:View) : IHolder<TaxDTO>,AdapterView.OnItemSelectedLis
         monthCode = Optional.empty()
         monthStr = ""
         (month.selectedView as TextView).text = month.getItemAtPosition(0).toString()
-        (creditCard.selectedView.findViewById(R.id.tvValueSp) as TextView).text = creditCard.getItemAtPosition(0).toString()
+        (creditCard.selectedView.findViewById(R.id.tvValueBigSp) as TextView).text = creditCard.getItemAtPosition(0).toString()
     }
 
     @RequiresApi(Build.VERSION_CODES.N)
@@ -86,7 +79,7 @@ class TaxesHolder(var view:View) : IHolder<TaxDTO>,AdapterView.OnItemSelectedLis
             valid = valid && false
         }
         if(creditCardCode == null || !creditCardCode.isPresent || creditCardCode.get() < 1 ){
-            (creditCard.selectedView.findViewById(R.id.tvValueSp) as TextView).error = "Invalid value"
+            (creditCard.selectedView.findViewById(R.id.tvValueBigSp) as TextView).error = "Invalid value"
             valid = valid && false
         }
         return valid

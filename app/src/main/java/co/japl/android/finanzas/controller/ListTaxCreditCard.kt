@@ -9,7 +9,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
-import android.widget.LinearLayout
 import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -22,7 +21,6 @@ import co.japl.android.finanzas.bussiness.impl.CreditCardImpl
 import co.japl.android.finanzas.bussiness.impl.TaxImpl
 import co.japl.android.finanzas.bussiness.interfaces.SaveSvc
 import co.japl.android.finanzas.holders.TaxHolder
-import kotlinx.coroutines.selects.select
 import java.util.stream.Collectors
 
 class ListTaxCreditCard : Fragment() , AdapterView.OnItemSelectedListener{
@@ -61,7 +59,7 @@ class ListTaxCreditCard : Fragment() , AdapterView.OnItemSelectedListener{
             val list = listCC.toMutableList().stream().map { it.name }.collect(Collectors.toList())
             list.add(0,"-- Seleccionar --")
             holder.lists{
-                it.creditCard.adapter = ArrayAdapter(view.context,R.layout.spinner_simple,R.id.tvValueSp,list.toTypedArray())
+                it.creditCard.adapter = ArrayAdapter(view.context,R.layout.spinner_simple,R.id.tvValueBigSp,list.toTypedArray())
                 it.creditCard.onItemSelectedListener = this
                 loadRecycleView(it.recyclerView)
             }

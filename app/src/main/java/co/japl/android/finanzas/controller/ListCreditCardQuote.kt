@@ -7,27 +7,19 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.annotation.RequiresApi
-import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentTransaction
 import co.japl.android.finanzas.R
 import co.japl.android.finanzas.bussiness.DB.connections.ConnectDB
-import co.japl.android.finanzas.bussiness.DB.connections.CreditCardBoughtConnectDB
 import co.japl.android.finanzas.bussiness.DTO.CreditCardBoughtDTO
 import co.japl.android.finanzas.bussiness.DTO.CreditCardDTO
-import co.japl.android.finanzas.bussiness.DTO.TaxDTO
 import co.japl.android.finanzas.bussiness.impl.*
 import co.japl.android.finanzas.bussiness.interfaces.*
 import co.japl.android.finanzas.holders.QuoteCCHolder
 import co.japl.android.finanzas.pojo.CreditCard
-import co.japl.android.finanzas.utils.NumbersUtil
 import java.math.BigDecimal
 import java.time.LocalDateTime
-import java.time.Period
-import java.time.format.DateTimeFormatter
 import java.util.*
 import java.util.stream.Collectors
-import kotlin.properties.Delegates
 import android.content.Context as Context
 
 class ListCreditCardQuote : Fragment(), AdapterView.OnItemSelectedListener{
@@ -101,7 +93,7 @@ class ListCreditCardQuote : Fragment(), AdapterView.OnItemSelectedListener{
         list.add(0,"-- Seleccionar --")
         holder.setFields(null)
         (holder as ISpinnerHolder<QuoteCCHolder>).lists{
-            it.spCreditCard.adapter = ArrayAdapter(it.view.context,R.layout.spinner_simple,R.id.tvValueSp,list)
+            it.spCreditCard.adapter = ArrayAdapter(it.view.context,R.layout.spinner_bigger,R.id.tvValueBigSp,list)
             it.spCreditCard.onItemSelectedListener = this
         }
     }
