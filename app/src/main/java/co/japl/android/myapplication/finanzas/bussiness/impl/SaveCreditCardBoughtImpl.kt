@@ -156,7 +156,7 @@ class SaveCreditCardBoughtImpl(override var dbConnect: SQLiteOpenHelper) : SaveS
             val list = getToDate(key, cutOff)
             val listRecurrent = getRecurrentBuys(key,cutOff)
             val capitalRecurrent = listRecurrent.filter{ it.month == 1}.map { it.valueItem }.reduceOrNull{ val1,val2 -> val1.add(val2)}?:BigDecimal.ZERO
-            val capitalRecurrentQuotes = listRecurrent.filter{it.month > 1}.map{ it.valueItem.divide(it.month.toBigDecimal())}.reduceOrNull { val1, val2 -> val1.add(val2)}?:BigDecimal.ZERO
+            val capitalRecurrentQuotes = listRecurrent.filter{it.month > 1}.map{ it.valueItem.divide(it.month.toBigDecimal(),8,RoundingMode.CEILING)}.reduceOrNull { val1, val2 -> val1.add(val2)}?:BigDecimal.ZERO
             val capital = list.filter{it.month == 1}.map{it.valueItem}.reduceOrNull{val1,val2->val1.plus(val2)}?:BigDecimal.ZERO
             val capitalQuotes = list.filter{it.month > 1}.map{it.valueItem.divide(it.month.toBigDecimal(),8,RoundingMode.CEILING)}.reduceOrNull{ val1, val2->val1.plus(val2)}?:BigDecimal.ZERO
             return Optional.ofNullable(capital.add(capitalQuotes).add(capitalRecurrent).add(capitalRecurrentQuotes)).also { Log.v(this.javaClass.name,"$it") }
@@ -387,6 +387,7 @@ class SaveCreditCardBoughtImpl(override var dbConnect: SQLiteOpenHelper) : SaveS
                     Log.d(this.javaClass.name," ${record.boughtDate} < $cutOffLastMonth")
                     if(record.boughtDate.isBefore(cutOffLastMonth)) {
                         Log.d(this.javaClass.name,"Added")
+                        record.boughtDate = LocalDateTime.of(cutOff.year,cutOff.month,record.boughtDate.dayOfMonth,record.boughtDate.hour,record.boughtDate.minute)
                         items.add(record)
                     }
                 }
