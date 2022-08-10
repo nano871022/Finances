@@ -7,7 +7,7 @@
     android:layout_marginLeft="5dp"
     android:layout_marginTop="5dp"
     android:layout_marginRight="5dp"
-    android:background="#03A9F4"
+    android:background="#447046"
     android:orientation="vertical"
     android:paddingLeft="5dp"
     android:paddingTop="5dp"
@@ -32,8 +32,9 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:layout_weight="1"
-                android:textSize="14sp"
                 android:text="@string/product_name"
+                android:textColor="@android:color/primary_text_dark"
+                android:textSize="14sp"
                 android:textStyle="bold" />
 
             <TextView
@@ -44,6 +45,7 @@
                 android:layout_weight="1"
                 android:text="@string/year"
                 android:textAlignment="textEnd"
+                android:textColor="@android:color/primary_text_dark"
                 android:textSize="14sp" />
 
             <TextView
@@ -54,6 +56,7 @@
                 android:layout_weight="1"
                 android:text="@string/tax_percent"
                 android:textAlignment="textEnd"
+                android:textColor="@android:color/primary_text_dark"
                 android:textSize="14sp" />
 
             <ImageButton
@@ -64,7 +67,6 @@
                 app:srcCompat="@drawable/ic_baseline_delete_24" />
 
         </LinearLayout>
-
 
 
     </LinearLayout>

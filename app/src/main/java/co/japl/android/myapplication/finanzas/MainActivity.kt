@@ -11,6 +11,7 @@ import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.FragmentTransaction
 import co.japl.android.myapplication.controller.*
 import co.japl.android.myapplication.controller.ListSave
+import co.japl.android.myapplication.finanzas.controller.AboutIt
 import com.google.android.material.navigation.NavigationView
 
 class MainActivity : AppCompatActivity(),NavigationView.OnNavigationItemSelectedListener {
@@ -66,6 +67,10 @@ class MainActivity : AppCompatActivity(),NavigationView.OnNavigationItemSelected
             }
             R.id.item_menu_setting_taxes-> {
                 supportFragmentManager.beginTransaction().replace(R.id.fragment_initial,ListTaxCreditCard()).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE).addToBackStack(null).commit()
+                true
+            }
+            R.id.item_menu_setting_about_it->{
+                supportFragmentManager.beginTransaction().replace(R.id.fragment_initial,AboutIt()).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE).addToBackStack(null).commit()
                 true
             }
             else -> {

@@ -1,5 +1,6 @@
 package co.japl.android.myapplication.holders
 
+import android.opengl.Visibility
 import android.os.Build
 import android.view.View
 import android.widget.*
@@ -71,6 +72,7 @@ class QuoteCCHolder(var view:View,var parentFragmentManager:FragmentManager): IH
 
         btnAddBuy.let {
             it.setOnClickListener(this)
+            it.visibility = View.INVISIBLE
         }
 
         btnAddBuyWallet.let {
@@ -86,6 +88,7 @@ class QuoteCCHolder(var view:View,var parentFragmentManager:FragmentManager): IH
 
         btnBoughtHistory.let{
             it.setOnClickListener(this)
+            it.visibility = View.INVISIBLE
         }
 
         btnCutOffHistory.let{
@@ -153,6 +156,8 @@ class QuoteCCHolder(var view:View,var parentFragmentManager:FragmentManager): IH
             }else{
                 llLastMonth.visibility = View.INVISIBLE
             }
+            btnAddBuy.visibility = View.VISIBLE
+            btnBoughtHistory.visibility = View.VISIBLE
         }
     }
 

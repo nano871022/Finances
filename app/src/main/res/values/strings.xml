@@ -1,5 +1,9 @@
 <resources>
     <string name="app_name">Finanzas</string>
+    <string name="about_it">Acerca de</string>
+    <string name="version">Versión</string>
+    <string name="contact_at">jalejandroparral@hotmail.com</string>
+    <string name="copyright">CopyRight © 2022–2022 Alejandro Parra </string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="navigation_drawer_open">1</string>
@@ -94,6 +98,7 @@
     <string name="add_credit_card">Agregar Tarjeta Credito</string>
     <string name="add_tax">Agregar Tasa</string>
     <string name="taxs_credit_card">Tasas de Tarjeta de Credito</string>
+    <string name="recurrent">Recurrente</string>
     <string-array name="Months">
         <item>--- Seleccionar --- </item>
         <item>Enero</item>

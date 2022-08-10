@@ -73,24 +73,28 @@ class ListBought : Fragment() {
         adapter = ListBoughtAdapter(list,cutOff)
         recyclerView.adapter = adapter
     }
-    @RequiresApi(Build.VERSION_CODES.N)
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun connectDB(){
         context.let {
             dbConnect = ConnectDB(it!!)
         }
         saveSvc = SaveCreditCardBoughtImpl(dbConnect)
         val list = saveSvc.getToDate(codeCreditCard.get(),cutOff)
+        val listRecurrent = saveSvc.getRecurrentBuys(codeCreditCard.get(),cutOff.minusMonths(1))
         val pending = saveSvc.getPendingQuotes(codeCreditCard.get(),cutOff)
         val joinList = ArrayList<CreditCardBoughtDTO>()
         joinList.addAll(list)
         joinList.addAll(pending)
+        joinList.addAll(listRecurrent)
         val capital = saveSvc.getCapital(codeCreditCard.get(),cutOff)
+        val capitalRecurrent = listRecurrent.filter { it.month == 1 }.map { it.valueItem }.reduceOrNull{ val1,val2->val1.add(val2)}?:BigDecimal.ZERO
+        val capitalQuoteRecurrent = listRecurrent.filter { it.month > 1 }.map { it.valueItem.divide(it.month.toBigDecimal()) }.reduceOrNull{val1,val2->val1.add(val2)}?:BigDecimal.ZERO
         val capitalQuotes = saveSvc.getCapitalPendingQuotes(codeCreditCard.get(),cutOff)
         val interest = saveSvc.getInterest(codeCreditCard.get(),cutOff)
         val interestQuotes = saveSvc.getInterestPendingQuotes(codeCreditCard.get(),cutOff)
         val pendingToPay = saveSvc.getPendingToPay(codeCreditCard.get(),cutOff)
         val pendingToPayQuotes = saveSvc.getPendingToPayQuotes(codeCreditCard.get(),cutOff)
-        this.capital = capital.orElse(BigDecimal(0)).plus(capitalQuotes.orElse(BigDecimal(0)))
+        this.capital = capital.orElse(BigDecimal(0)).plus(capitalQuotes.orElse(BigDecimal(0))).plus(capitalRecurrent).plus(capitalQuoteRecurrent)
         this.interest = interest.orElse(BigDecimal(0)).plus(interestQuotes.orElse(BigDecimal(0)))
         this.pendingToPay = pendingToPay.orElse(BigDecimal(0)).plus(pendingToPayQuotes.orElse(BigDecimal(0)))
         this.totalQuote = this.capital.plus(this.interest)

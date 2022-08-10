@@ -19,5 +19,6 @@ interface SearchSvc<T>  {
     fun getBoughtPendingQuotes(key:Int,cutOff:LocalDateTime):Optional<Long>
     fun getPendingToPay(key:Int,cutOff:LocalDateTime):Optional<BigDecimal>
     fun getPendingToPayQuotes(key:Int,cutOff:LocalDateTime):Optional<BigDecimal>
+    fun getRecurrentBuys(key:Int, cutOff:LocalDateTime):List<T>
 
 }

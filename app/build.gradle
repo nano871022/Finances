@@ -10,8 +10,8 @@ android {
         applicationId "co.japl.android.myapplication"
         minSdk 21
         targetSdk 31
-        versionCode 4
-        versionName "Added bought with credit card"
+        versionCode 5
+        versionName "Added Recurrent payment"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
