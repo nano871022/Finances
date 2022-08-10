@@ -28,4 +28,12 @@
         android:title="@string/list_save"
 
         android:visible="true" />
+
+    <item
+        android:id="@+id/item_menu_side_boughtmade"
+        android:enabled="true"
+        android:icon="@drawable/ic_sum"
+        android:title="@string/bought_made"
+
+        android:visible="true" />
 </menu>

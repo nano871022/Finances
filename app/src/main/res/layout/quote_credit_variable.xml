@@ -33,7 +33,7 @@
         tools:layout_editor_absoluteX="0dp">
 
         <TextView
-            android:id="@+id/textView4"
+            android:id="@+id/lNameItem"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:paddingLeft="10dp"
@@ -42,7 +42,7 @@
             android:text="@string/credit_value" />
 
         <EditText
-            android:id="@+id/etValueCredit"
+            android:id="@+id/etNameItem"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:ems="10"
