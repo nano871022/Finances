@@ -7,7 +7,7 @@
     android:layout_marginLeft="5dp"
     android:layout_marginTop="5dp"
     android:layout_marginRight="5dp"
-    android:background="@color/green_background"
+    android:background="?attr/colorPrimary"
     android:orientation="vertical"
     android:paddingLeft="5dp"
     android:paddingTop="5dp"
@@ -28,10 +28,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:textColor="@android:color/primary_text_dark"
             android:layout_weight="1"
             android:text="@string/date_hint"
             android:textAlignment="viewStart"
+            android:textColor="@android:color/primary_text_dark"
             android:textSize="18sp"
             android:textStyle="bold" />
 
@@ -41,8 +41,8 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:layout_weight="1"
-            android:textColor="@android:color/primary_text_dark"
             android:text="@string/product_name"
+            android:textColor="@android:color/primary_text_dark"
             android:textSize="18sp"
             android:textStyle="bold" />
 
@@ -77,8 +77,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:textColor="@android:color/primary_text_dark"
             android:text="@string/product_value"
+            android:textColor="@android:color/primary_text_dark"
             android:textStyle="bold" />
 
         <TextView
@@ -86,9 +86,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:textColor="@android:color/primary_text_dark"
             android:text="@string/money_hint"
             android:textAlignment="textEnd"
+            android:textColor="@android:color/primary_text_dark"
             android:textStyle="italic" />
     </LinearLayout>
 
@@ -105,8 +105,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:textColor="@android:color/primary_text_dark"
             android:text="@string/quote_bought"
+            android:textColor="@android:color/primary_text_dark"
             android:textStyle="bold" />
 
         <TextView
@@ -115,9 +115,9 @@
             android:layout_height="wrap_content"
             android:layout_marginRight="10dp"
             android:layout_weight="1"
-            android:textColor="@android:color/primary_text_dark"
             android:text="@string/months_number_hint"
             android:textAlignment="textEnd"
+            android:textColor="@android:color/primary_text_dark"
             android:textStyle="italic" />
 
         <TextView
@@ -125,8 +125,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:textColor="@android:color/primary_text_dark"
             android:text="@string/months"
+            android:textColor="@android:color/primary_text_dark"
             android:textStyle="bold" />
 
         <TextView
@@ -134,9 +134,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:textColor="@android:color/primary_text_dark"
             android:text="@string/months_number_hint"
             android:textAlignment="textEnd"
+            android:textColor="@android:color/primary_text_dark"
             android:textStyle="italic" />
     </LinearLayout>
 
@@ -153,8 +153,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:textColor="@android:color/primary_text_dark"
             android:text="@string/pending_to_pay"
+            android:textColor="@android:color/primary_text_dark"
             android:textStyle="bold" />
 
         <TextView
@@ -162,9 +162,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:textColor="@android:color/primary_text_dark"
             android:text="@string/money_hint"
-            android:textAlignment="textEnd" />
+            android:textAlignment="textEnd"
+            android:textColor="@android:color/primary_text_dark" />
     </LinearLayout>
 
     <LinearLayout
@@ -181,8 +181,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:textColor="@android:color/primary_text_dark"
             android:text="@string/tax"
+            android:textColor="@android:color/primary_text_dark"
             android:textStyle="bold" />
 
         <TextView
@@ -190,9 +190,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:textColor="@android:color/primary_text_dark"
             android:text="@string/interest_value_hint"
-            android:textAlignment="textEnd" />
+            android:textAlignment="textEnd"
+            android:textColor="@android:color/primary_text_dark" />
     </LinearLayout>
 
     <LinearLayout
@@ -208,8 +208,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:textColor="@android:color/primary_text_dark"
             android:text="@string/capital_value"
+            android:textColor="@android:color/primary_text_dark"
             android:textStyle="bold" />
 
         <TextView
@@ -217,9 +217,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:textColor="@android:color/primary_text_dark"
             android:text="@string/money_hint"
-            android:textAlignment="textEnd" />
+            android:textAlignment="textEnd"
+            android:textColor="@android:color/primary_text_dark" />
     </LinearLayout>
 
     <LinearLayout
@@ -235,8 +235,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:textColor="@android:color/primary_text_dark"
             android:text="@string/interest_value"
+            android:textColor="@android:color/primary_text_dark"
             android:textStyle="bold" />
 
         <TextView
@@ -244,9 +244,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:textColor="@android:color/primary_text_dark"
             android:text="@string/money_hint"
-            android:textAlignment="textEnd" />
+            android:textAlignment="textEnd"
+            android:textColor="@android:color/primary_text_dark" />
     </LinearLayout>
 
     <LinearLayout
@@ -262,8 +262,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:textColor="@android:color/primary_text_dark"
             android:text="@string/quote_credit"
+            android:textColor="@android:color/primary_text_dark"
             android:textStyle="bold" />
 
         <TextView
@@ -271,9 +271,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:textColor="@android:color/primary_text_dark"
             android:text="@string/quote_credit_hint"
             android:textAlignment="textEnd"
+            android:textColor="@android:color/primary_text_dark"
             android:textStyle="italic" />
     </LinearLayout>
 

@@ -7,7 +7,7 @@
     android:layout_marginLeft="5dp"
     android:layout_marginTop="5dp"
     android:layout_marginRight="5dp"
-    android:background="#447046"
+    android:background="?attr/colorPrimary"
     android:orientation="vertical"
     android:paddingLeft="5dp"
     android:paddingTop="5dp"
