@@ -5,12 +5,17 @@ import android.database.sqlite.SQLiteOpenHelper
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
+import androidx.activity.addCallback
 import androidx.annotation.RequiresApi
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
 import co.japl.android.myapplication.R
 import co.japl.android.myapplication.bussiness.DB.connections.ConnectDB
@@ -26,7 +31,7 @@ import java.text.DecimalFormat
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
-class QuoteBought : Fragment(), View.OnClickListener {
+class QuoteBought : Fragment(), View.OnClickListener{
 
 
     private var config:ConfigSvc = Config()
@@ -63,17 +68,25 @@ class QuoteBought : Fragment(), View.OnClickListener {
             val creditCardCode = split[1].toString().toInt()
             val now = LocalDateTime.now()
             val creditCard = creditCardSvc.get(creditCardCode)
-            val tax = taxSvc.get(now.month.value,now.year)
-            if(tax.isPresent){
+            val tax = taxSvc.get(now.month.value, now.year)
+            if (tax.isPresent) {
                 val cutOffDate = config.nextCutOff(creditCard.get().cutOffDay.toInt())
-                val dto = CreditCardBoughtDTO(creditCardCode,creditCard.get().name, "",BigDecimal.ZERO,tax.get()
-                    .value,0,LocalDateTime.now(),cutOffDate,LocalDateTime.now(),0,0,0)
+                val dto = CreditCardBoughtDTO(
+                    creditCardCode, creditCard.get().name, "", BigDecimal.ZERO, tax.get()
+                        .value, 0, LocalDateTime.now(), cutOffDate, LocalDateTime.now(), 0, 0, 0
+                )
                 holder.loadFields(dto)
-            }else{
-                Toast.makeText(context,"Invalid Tax, Create One to ${now.month} ${now.year}",Toast.LENGTH_LONG ).show()
+            } else {
+                Toast.makeText(
+                    context,
+                    "Invalid Tax, Create One to ${now.month} ${now.year}",
+                    Toast.LENGTH_LONG
+                ).show()
                 toBack()
             }
         }
+
+
         }
 
         @RequiresApi(Build.VERSION_CODES.O)
@@ -104,4 +117,7 @@ class QuoteBought : Fragment(), View.OnClickListener {
         parentFragmentManager.beginTransaction() .replace(R.id.fragment_initial,ListCreditCardQuote()).setTransition(
             FragmentTransaction.TRANSIT_FRAGMENT_FADE).addToBackStack(null).commit()
     }
-    }
+
+
+
+}

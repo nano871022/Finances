@@ -34,6 +34,6 @@
         android:enabled="true"
         android:icon="@drawable/ic_sum"
         android:title="@string/bought_made"
-
+        app:showAsAction="ifRoom"
         android:visible="true" />
 </menu>

@@ -3,26 +3,47 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/FirstFragment">
+    app:startDestination="@id/quote_credit_save">
 
     <fragment
-        android:id="@+id/FirstFragment"
-        android:name="co.japl.android.myapplication.FirstFragment"
-        android:label="@string/first_fragment_label"
-        tools:layout="@layout/fragment_first">
+        android:id="@+id/list_cc_quote"
+        android:name="co.japl.android.myapplication.controller.ListCreditCardQuote"
+        android:label="@string/quote_credit"
+        tools:layout="@layout/list_credit_card_quote">
 
         <action
-            android:id="@+id/action_FirstFragment_to_Second2Fragment"
-            app:destination="@id/Second2Fragment" />
+            android:id="@+id/action_list_cc_quote_to_item_menu_side_boughtmade"
+            app:destination="@id/item_menu_side_boughtmade" />
     </fragment>
     <fragment
-        android:id="@+id/Second2Fragment"
-        android:name="co.japl.android.myapplication.Second2Fragment"
-        android:label="@string/second_fragment_label"
-        tools:layout="@layout/fragment_second2">
+        android:id="@+id/quote_credit_save"
+        android:name="co.japl.android.myapplication.controller.QuoteCredit"
+        android:label="@string/quote_credit_save"
+        tools:layout="@layout/quote_credit_save">
 
-        <action
-            android:id="@+id/action_Second2Fragment_to_FirstFragment"
-            app:destination="@id/FirstFragment" />
     </fragment>
+
+    <fragment
+        android:id="@+id/quote_credit_variable"
+        android:name="co.japl.android.myapplication.controller.QuoteCreditVariable"
+        android:label="@string/quote_credit_variable"
+        tools:layout="@layout/quote_credit_variable">
+
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/item_menu_side_boughtmade"
+        android:name="co.japl.android.myapplication.controller.ListSave"
+        android:label="@string/list_save"
+        tools:layout="@layout/fragment_list_save">
+    </fragment>
+
+    <fragment
+        android:id="@+id/list_bought"
+        android:name="co.japl.android.myapplication.controller.ListBought"
+        android:label="@string/bought_history"
+        tools:layout="@layout/fragment_list_bought">
+    </fragment>
+
 </navigation>

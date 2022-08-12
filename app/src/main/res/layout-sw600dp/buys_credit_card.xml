@@ -13,7 +13,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
-        android:text="@string/quote_credit"
+        android:text="@string/bought_made"
         android:textAlignment="center"
         android:textSize="24sp"
         android:textStyle="bold|italic"
@@ -23,7 +23,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <LinearLayout
-        android:id="@+id/linearLayout3"
+        android:id="@+id/llCreditCardAssign"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="30dp"
@@ -32,27 +32,92 @@
         tools:layout_editor_absoluteX="0dp">
 
         <TextView
-            android:id="@+id/lNameItem"
+            android:id="@+id/lDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:text="@string/bought_date_time" />
+
+        <EditText
+            android:id="@+id/dtBought"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="@string/format_date"
+            android:inputType="date"
+            android:textAlignment="textEnd" />
+
+        <TextView
+            android:id="@+id/lCreditCardAssign"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:paddingLeft="10dp"
             android:paddingTop="13dp"
             android:paddingRight="10dp"
-            android:text="@string/credit_value" />
+            android:text="@string/assing_credit_Card" />
+
+        <TextView
+            android:id="@+id/etCreditCardAssign"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="10dp"
+            android:layout_weight="1"
+            android:hint="@string/assing_credit_Card"
+            android:textAlignment="center" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/linearLayout3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="1dp"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toBottomOf="@+id/llCreditCardAssign"
+        tools:layout_editor_absoluteX="0dp">
+
+        <TextView
+            android:id="@+id/lNameItem"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:paddingLeft="10dp"
+            android:paddingTop="13dp"
+            android:paddingRight="10dp"
+            android:text="@string/product_name" />
 
         <EditText
             android:id="@+id/etNameItem"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:hint="@string/product_name" />
+
+        <TextView
+            android:id="@+id/lProductValue"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:paddingLeft="10dp"
+            android:paddingTop="13dp"
+            android:paddingRight="10dp"
+            android:text="@string/product_value" />
+
+        <EditText
+            android:id="@+id/etProductValue"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:ems="10"
-            android:hint="@string/credit_value"
-            android:inputType="numberSigned" />
+            android:hint="@string/product_value"
+            android:inputType="numberSigned"
+            android:textAlignment="textEnd" />
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/linearLayout2"
+        android:id="@+id/linearLayoutTax"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="40dp"
         android:layout_marginTop="1dp"
         android:orientation="horizontal"
         app:layout_constraintTop_toBottomOf="@+id/linearLayout3"
@@ -63,21 +128,20 @@
             android:layout_width="138dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:autoText="false"
             android:paddingLeft="10dp"
             android:paddingTop="15dp"
             android:paddingRight="10dp"
             android:text="@string/tax"
             android:textAlignment="viewStart" />
 
-        <EditText
-            android:id="@+id/etTax"
+        <TextView
+            android:id="@+id/etTaxBought"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:ems="10"
             android:hint="0.0"
-            android:inputType="numberDecimal"
+            android:inputType="numberSigned"
             android:textAlignment="textEnd" />
 
         <TextView
@@ -89,16 +153,6 @@
             android:paddingTop="13dp"
             android:paddingRight="10dp"
             android:text="@string/percent_symbol" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/linearLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="1dp"
-        android:orientation="horizontal"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout2"
-        tools:layout_editor_absoluteX="1dp">
 
         <TextView
             android:id="@+id/textView7"
@@ -117,74 +171,66 @@
             android:layout_weight="1"
             android:ems="10"
             android:hint="@string/months_number"
-            android:inputType="number|textPersonName" />
+            android:inputType="number|textPersonName"
+            android:textAlignment="textEnd" />
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/linearLayout4"
+        android:id="@+id/linearLayoutQuoteValue"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="40dp"
         android:layout_marginTop="1dp"
         android:orientation="horizontal"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout"
-        tools:layout_editor_absoluteX="1dp">
-
-        <Button
-            android:id="@+id/btnCalc"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/calc" />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/lyInterestValue"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:orientation="horizontal"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout4"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayoutTax"
         tools:layout_editor_absoluteX="1dp">
 
         <TextView
-            android:id="@+id/textView8"
-            android:layout_width="76dp"
+            android:id="@+id/lbRecurrentQuoteValue"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="2"
+            android:layout_weight="1"
             android:paddingLeft="10dp"
-            android:text="@string/quote_value"
-            android:textSize="18sp" />
+            android:text="@string/recurrent" />
+
+        <CheckBox
+            android:id="@+id/cbRecurrent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
 
         <TextView
-            android:id="@+id/textView10"
+            android:id="@+id/lQuoteValue"
+            android:layout_width="81dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:paddingLeft="10dp"
+            android:paddingTop="13dp"
+            android:paddingRight="10dp"
+            android:text="@string/quotes_value" />
+
+        <TextView
+            android:id="@+id/etQuoteValue"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="$"
-            android:textAlignment="textEnd"
-            android:textSize="18sp" />
-
-        <TextView
-            android:id="@+id/tvQuoteValue"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="3"
-            android:text="@string/quote_credit_hint"
-            android:textSize="18sp"
-            android:textStyle="bold" />
+            android:ems="10"
+            android:hint="@string/quotes_value"
+            android:inputType="number|textPersonName"
+            android:textAlignment="textEnd" />
 
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="60dp"
+
         android:orientation="horizontal"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayoutQuoteValue"
         tools:layout_editor_absoluteX="1dp">
 
         <Button
-            android:id="@+id/btnSave"
+            android:id="@+id/btnSaveBought"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginRight="5dp"
@@ -192,7 +238,7 @@
             android:text="@string/save" />
 
         <Button
-            android:id="@+id/btnClear"
+            android:id="@+id/btnClearBought"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"

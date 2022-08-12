@@ -22,6 +22,7 @@
     <item
     android:id="@+id/item_menu_setting_about_it"
     android:enabled="true"
+        app:showAsAction="withText"
     android:icon="@drawable/ic_credit_card_foreground"
     android:title="@string/about_it"
     android:visible="true" />

@@ -99,21 +99,27 @@ class QuoteCreditVariable : Fragment(), View.OnClickListener,AdapterView.OnItemS
             response.let {
 
                 tvCapitalValue.text = format.format(it.setScale(2, RoundingMode.HALF_EVEN))
-                lyCapitalCredit.visibility = View.VISIBLE
-                lyMontlyPay.visibility = View.VISIBLE
+                try {
+                    lyCapitalCredit.visibility = View.VISIBLE
+                    lyMontlyPay.visibility = View.VISIBLE
+                }catch(e:Exception){}
                 totalValue = totalValue.add(it)
             }
             val responseInt = calcInt.calc(value, period, tax)
             responseInt.let {
 
                 tvInterestValue.text = format.format(it.setScale(2, RoundingMode.HALF_EVEN))
-                lyInterestCredit.visibility = View.VISIBLE
-                lyMontlyPay.visibility = View.VISIBLE
+                try {
+                    lyInterestCredit.visibility = View.VISIBLE
+                    lyMontlyPay.visibility = View.VISIBLE
+                }catch(e:Exception){}
                 totalValue = totalValue.add(it)
             }
             if(totalValue.compareTo(BigDecimal(0))>0){
-                lyTotalValue.visibility = View.VISIBLE
-                lyMontlyPay.visibility = View.VISIBLE
+                try {
+                    lyTotalValue.visibility = View.VISIBLE
+                    lyMontlyPay.visibility = View.VISIBLE
+                }catch(e:Exception){}
                 tvTotalValue.text = format.format(totalValue.setScale(2, RoundingMode.HALF_EVEN))
             }
         }
@@ -141,14 +147,16 @@ class QuoteCreditVariable : Fragment(), View.OnClickListener,AdapterView.OnItemS
         etTax.editableText.clear()
         etMonths.editableText.clear()
         //tvQuoteValue.editableText.clear()
-        lyCapitalCredit.visibility = View.INVISIBLE
-        lyInterestCredit.visibility = View.INVISIBLE
-        lyTotalValue.visibility = View.INVISIBLE
-        lyMontlyPay.visibility = View.INVISIBLE
         etValueCredit.setBackgroundColor(Color.WHITE)
         etTax.setBackgroundColor(Color.WHITE)
         etMonths.setBackgroundColor(Color.WHITE)
         btnSave.visibility = View.INVISIBLE
+        try{
+            lyCapitalCredit.visibility = View.INVISIBLE
+            lyInterestCredit.visibility = View.INVISIBLE
+            lyTotalValue.visibility = View.INVISIBLE
+            lyMontlyPay.visibility = View.INVISIBLE
+        }catch (e:Exception){}
     }
 
     private fun loadFields( container: View){
@@ -159,11 +167,8 @@ class QuoteCreditVariable : Fragment(), View.OnClickListener,AdapterView.OnItemS
                 tvCapitalValue = container.findViewById(R.id.tvCapitalValue)!!
                 lyCapitalCredit = container.findViewById(R.id.lyCapitalValue)!!
                 tvInterestValue = container.findViewById(R.id.tvInterestValueList)!!
-                lyInterestCredit = container.findViewById(R.id.lyInterestValue)!!
                 tvTotalValue = container.findViewById(R.id.tvTotalValue)!!
-                lyTotalValue = container.findViewById(R.id.lyTotalValue)!!
                 spMonth = container.findViewById(R.id.months)
-                lyMontlyPay = container.findViewById(R.id.lyMonthPay)
                 val btnClear:Button = container.findViewById(R.id.btnClear)
                 btnClear.setOnClickListener(this)
                 val btnCalc:Button = container.findViewById(R.id.btnCalc)
@@ -172,6 +177,14 @@ class QuoteCreditVariable : Fragment(), View.OnClickListener,AdapterView.OnItemS
                 btnSave.setOnClickListener(this)
                 btnSave.visibility = View.INVISIBLE
                 spMonth.onItemSelectedListener = this
+                try{
+                    lyInterestCredit = container.findViewById(R.id.lyInterestValue)!!
+                    lyTotalValue = container.findViewById(R.id.lyTotalValue)!!
+                    lyMontlyPay = container.findViewById(R.id.lyMonthPay)
+
+                }catch(e:Exception){
+
+                }
             }
 
     }
@@ -190,20 +203,26 @@ class QuoteCreditVariable : Fragment(), View.OnClickListener,AdapterView.OnItemS
         response.let {
 
             tvCapitalValue.text = format.format(it.setScale(2, RoundingMode.HALF_EVEN))
-            lyCapitalCredit.visibility = View.VISIBLE
-            lyMontlyPay.visibility = View.VISIBLE
+            try {
+                lyCapitalCredit.visibility = View.VISIBLE
+                lyMontlyPay.visibility = View.VISIBLE
+            }catch(e:Exception){}
             totalValue = totalValue.add(it)
         }
         interest.let {
 
             tvInterestValue.text = format.format(it.setScale(2, RoundingMode.HALF_EVEN))
-            lyInterestCredit.visibility = View.VISIBLE
-            lyMontlyPay.visibility = View.VISIBLE
+            try {
+                lyInterestCredit.visibility = View.VISIBLE
+                lyMontlyPay.visibility = View.VISIBLE
+            }catch(e:Exception){}
             totalValue = totalValue.add(it)
         }
         if(totalValue.compareTo(BigDecimal(0))>0){
-            lyTotalValue.visibility = View.VISIBLE
-            lyMontlyPay.visibility = View.VISIBLE
+            try {
+                lyTotalValue.visibility = View.VISIBLE
+                lyMontlyPay.visibility = View.VISIBLE
+            }catch(e:Exception){}
             tvTotalValue.text = format.format(totalValue.setScale(2, RoundingMode.HALF_EVEN))
         }
 
