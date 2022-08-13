@@ -20,13 +20,6 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".controller.QuoteCreditSave"
-            android:parentActivityName=".MainActivity">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".MainActivity" />
-        </activity>
-        <activity
             android:name=".controller.QuoteCreditSaveVariable"
             android:parentActivityName=".MainActivity">
             <meta-data

@@ -12,15 +12,18 @@
         tools:layout="@layout/list_credit_card_quote">
 
         <action
-            android:id="@+id/action_list_cc_quote_to_item_menu_side_boughtmade"
-            app:destination="@id/item_menu_side_boughtmade" />
+            android:id="@+id/action_list_cc_quote_to_list_bought"
+            app:destination="@id/list_bought"
+            app:popUpToInclusive="false" />
     </fragment>
     <fragment
         android:id="@+id/quote_credit_save"
         android:name="co.japl.android.myapplication.controller.QuoteCredit"
         android:label="@string/quote_credit_save"
         tools:layout="@layout/quote_credit_save">
-
+        <action
+            android:id="@+id/action_save_credit_card"
+            app:destination="@id/quoteCreditSave" />
     </fragment>
 
     <fragment
@@ -33,17 +36,21 @@
     </fragment>
 
     <fragment
-        android:id="@+id/item_menu_side_boughtmade"
-        android:name="co.japl.android.myapplication.controller.ListSave"
-        android:label="@string/list_save"
-        tools:layout="@layout/fragment_list_save">
-    </fragment>
-
-    <fragment
         android:id="@+id/list_bought"
         android:name="co.japl.android.myapplication.controller.ListBought"
         android:label="@string/bought_history"
         tools:layout="@layout/fragment_list_bought">
+    </fragment>
+    <fragment
+        android:id="@+id/quoteCreditSave"
+        android:name="co.japl.android.myapplication.controller.QuoteCreditSave"
+        android:label="QuoteCreditSave" >
+        <argument
+            android:name="creditValue"
+            app:argType="java.math.BigDecimal" />
+        <action
+            android:id="@+id/action_quote_credit"
+            app:destination="@id/quote_credit_save" />
     </fragment>
 
 </navigation>

@@ -32,9 +32,9 @@ class MainActivity : AppCompatActivity(),NavigationView.OnNavigationItemSelected
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         bundle = savedInstanceState
-        setUpToolbar()
-        setUpMenuOption()
-        supportFragmentManager.addOnBackStackChangedListener ( this )
+        //setUpToolbar()
+        //setUpMenuOption()
+        //supportFragmentManager.addOnBackStackChangedListener ( this )
     }
 
     private fun setUpMenuOption(){
