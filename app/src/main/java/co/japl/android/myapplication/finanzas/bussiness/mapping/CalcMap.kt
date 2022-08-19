@@ -55,10 +55,10 @@ class CalcMap {
             ,quoteCreditCard.tax.get()
             ,quoteCreditCard.period.get()
             ,quoteCreditCard.response.get()
-            , CalcEnum.FIX.toString()
+            , quoteCreditCard.type.toString()
             ,0
-            , BigDecimal(0)
-            , BigDecimal(0)
+            , quoteCreditCard.interestValue.orElse(BigDecimal.ZERO)
+            , quoteCreditCard.capitalValue.orElse(BigDecimal.ZERO)
         )
     }
 }

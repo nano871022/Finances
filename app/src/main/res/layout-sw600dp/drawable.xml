@@ -18,52 +18,43 @@
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/tool_bar"
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"/>
+            android:background="?attr/colorPrimary"
+            android:layout_height="?attr/actionBarSize"
+            />
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <com.google.android.material.navigation.NavigationView
+                android:id="@+id/navigation_view"
+                android:layout_width="280dp"
+                android:layout_height="match_parent"
+                android:layout_gravity="start"
+                android:fitsSystemWindows="false"
 
 
+                app:headerLayout="@layout/header_side"
+                app:layout_constraintStart_toStartOf="parent"
+                app:menu="@menu/first_menu">
 
-            <LinearLayout
+            </com.google.android.material.navigation.NavigationView>
+
+            <androidx.fragment.app.FragmentContainerView
+                android:id="@+id/nav_host_fragment"
+                android:name="androidx.navigation.fragment.NavHostFragment"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:orientation="horizontal">
+                android:layout_weight="4"
+                app:defaultNavHost="true"
+                app:navGraph="@navigation/nav_graph" />
 
-
-
-                <FrameLayout
-                    android:id="@+id/fragment_initial"
-
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1" />
-
-                <androidx.fragment.app.FragmentContainerView
-                    android:id="@+id/nav_host_fragment"
-                    android:name="androidx.navigation.fragment.NavHostFragment"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    app:defaultNavHost="true"
-                    app:navGraph="@navigation/nav_graph"/>
-
-            </LinearLayout>
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
+        </LinearLayout>
 
 
     </LinearLayout>
 
-<com.google.android.material.navigation.NavigationView
-android:id="@+id/navigation_view"
-android:layout_width="match_parent"
-android:layout_height="match_parent"
-android:layout_gravity="start"
-android:fitsSystemWindows="false"
-android:layout_weight="4"
-app:headerLayout="@layout/header_side"
-app:menu="@menu/first_menu"/>
 
 
 

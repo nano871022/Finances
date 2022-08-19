@@ -1,6 +1,5 @@
 package co.japl.android.myapplication.holders
 
-import android.opengl.Visibility
 import android.os.Build
 import android.view.View
 import android.widget.*
@@ -8,11 +7,12 @@ import androidx.annotation.RequiresApi
 import androidx.core.os.bundleOf
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
+import androidx.navigation.NavController
 import co.japl.android.myapplication.R
 import co.japl.android.myapplication.bussiness.interfaces.IHolder
 import co.japl.android.myapplication.bussiness.interfaces.ISpinnerHolder
-import co.japl.android.myapplication.controller.ListBought
 import co.japl.android.myapplication.controller.QuoteBought
+import co.japl.android.myapplication.finanzas.putParams.CreditCardQuotesParams
 import co.japl.android.myapplication.pojo.CreditCard
 import co.japl.android.myapplication.utils.DateUtils
 import co.japl.android.myapplication.utils.NumbersUtil
@@ -21,7 +21,7 @@ import java.time.LocalDateTime
 import java.time.Period
 import java.util.*
 
-class QuoteCCHolder(var view:View,var parentFragmentManager:FragmentManager): IHolder<CreditCard>, ISpinnerHolder<QuoteCCHolder>, View.OnClickListener{
+class QuoteCCHolder(var view:View,var parentFragmentManager:FragmentManager,var navController: NavController): IHolder<CreditCard>, ISpinnerHolder<QuoteCCHolder>, View.OnClickListener{
     lateinit var spCreditCard:Spinner
     lateinit var tvRemainderCutOffDate: TextView
     lateinit var tvCutOffDateQuote: TextView
@@ -193,34 +193,16 @@ class QuoteCCHolder(var view:View,var parentFragmentManager:FragmentManager): IH
     @RequiresApi(Build.VERSION_CODES.O)
     private fun boughtHistory(){
         if(this::codeCreaditCard.isInitialized && this::cutOff.isInitialized && codeCreaditCard.isPresent && cutOff.isPresent) {
-            parentFragmentManager.beginTransaction().replace(R.id.fragment_initial, ListBought())
-                .setTransition(
-                    FragmentTransaction.TRANSIT_FRAGMENT_FADE
-                ).addToBackStack(null).commit()
-            parentFragmentManager.setFragmentResult(
-                "CreditCard",
-                bundleOf(
-                    "CreditCard" to "${codeCreaditCard.get()}|${
-                        DateUtils.localDateTimeToString(cutOff.get())
-                    }"
-                )
-            )
+            CreditCardQuotesParams.Companion.Historical.newInstance(codeCreaditCard.get(),cutOff.get(), navController)
         }else{
             Toast.makeText(view.context,"There is not selected any credit card",Toast.LENGTH_LONG).show()
         }
     }
 
-    @RequiresApi(Build.VERSION_CODES.N)
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun addBuy(){
         if(this::codeCreaditCard.isInitialized && this::cutOff.isInitialized && codeCreaditCard.isPresent && cutOff.isPresent) {
-            parentFragmentManager.beginTransaction().replace(R.id.fragment_initial, QuoteBought())
-                .setTransition(
-                    FragmentTransaction.TRANSIT_FRAGMENT_FADE
-                ).addToBackStack(null).commit()
-            parentFragmentManager.setFragmentResult(
-                "CreditCard",
-                bundleOf("CreditCardName" to "${nameCreaditCard.get()}|${codeCreaditCard.get()}")
-            )
+            CreditCardQuotesParams.Companion.CreateQuote.newInstance(codeCreaditCard.get(),nameCreaditCard.get(),navController)
         }else{
             Toast.makeText(view.context,"There is not selected any credit card",Toast.LENGTH_LONG).show()
         }

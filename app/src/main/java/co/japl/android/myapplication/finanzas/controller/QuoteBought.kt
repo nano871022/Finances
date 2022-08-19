@@ -1,35 +1,26 @@
 package co.japl.android.myapplication.controller
 
-import android.content.Context
 import android.database.sqlite.SQLiteOpenHelper
-import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
-import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
-import androidx.activity.addCallback
 import androidx.annotation.RequiresApi
-import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
+import androidx.navigation.fragment.findNavController
 import co.japl.android.myapplication.R
 import co.japl.android.myapplication.bussiness.DB.connections.ConnectDB
 import co.japl.android.myapplication.bussiness.DTO.CreditCardBoughtDTO
 import co.japl.android.myapplication.bussiness.DTO.CreditCardDTO
 import co.japl.android.myapplication.bussiness.impl.*
-import co.japl.android.myapplication.bussiness.impl.QuoteCreditVariable
 import co.japl.android.myapplication.bussiness.interfaces.*
 import co.japl.android.myapplication.finanzas.holders.QuoteBoughtHolder
+import co.japl.android.myapplication.finanzas.putParams.CreditCardQuotesParams
 import java.math.BigDecimal
-import java.math.RoundingMode
-import java.text.DecimalFormat
 import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
 
 class QuoteBought : Fragment(), View.OnClickListener{
 
@@ -53,19 +44,18 @@ class QuoteBought : Fragment(), View.OnClickListener{
         saveSvc = SaveCreditCardBoughtImpl(connect)
         holder = QuoteBoughtHolder(rootView)
         holder.setFields(this)
+        loadArguments()
         holder.cleanField()
         return rootView
 
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
 
-        parentFragmentManager.setFragmentResultListener("CreditCard", this) { _, bundle ->
-            val split =
-                bundle.getString("CreditCardName").toString().split("|")
-            val creditCardCode = split[1].toString().toInt()
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun loadArguments() {
+        arguments?.let {
+            val params = CreditCardQuotesParams.Companion.CreateQuote.download(it)
+            val creditCardCode = params.first
             val now = LocalDateTime.now()
             val creditCard = creditCardSvc.get(creditCardCode)
             val tax = taxSvc.get(now.month.value, now.year)
@@ -81,8 +71,9 @@ class QuoteBought : Fragment(), View.OnClickListener{
                     context,
                     "Invalid Tax, Create One to ${now.month} ${now.year}",
                     Toast.LENGTH_LONG
-                ).show()
-                toBack()
+                ).show().also {
+                    CreditCardQuotesParams.Companion.CreateQuote.toBack(findNavController())
+                }
             }
         }
 
@@ -103,7 +94,7 @@ class QuoteBought : Fragment(), View.OnClickListener{
                 val dto = holder.downLoadFields()
                 if(saveSvc.save(dto)) {
                     Toast.makeText(this.context, "Registro Guardado", Toast.LENGTH_LONG).show().also {
-                        toBack()
+                        CreditCardQuotesParams.Companion.CreateQuote.toBack(findNavController())
                     }
                 }else{
                     Toast.makeText(this.context,"Registro no Guardado",Toast.LENGTH_LONG).show()
@@ -112,12 +103,6 @@ class QuoteBought : Fragment(), View.OnClickListener{
                 Toast.makeText(this.context,"Hay campos que no estan llenos correctamente",Toast.LENGTH_SHORT).show()
             }
         }
-
-    private fun toBack(){
-        parentFragmentManager.beginTransaction() .replace(R.id.fragment_initial,ListCreditCardQuote()).setTransition(
-            FragmentTransaction.TRANSIT_FRAGMENT_FADE).addToBackStack(null).commit()
-    }
-
 
 
 }

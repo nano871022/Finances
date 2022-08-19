@@ -10,6 +10,7 @@ import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
+import androidx.navigation.fragment.findNavController
 import co.japl.android.myapplication.R
 import co.japl.android.myapplication.bussiness.DB.connections.ConnectDB
 import co.japl.android.myapplication.bussiness.DTO.CreditCardDTO
@@ -17,6 +18,7 @@ import co.japl.android.myapplication.bussiness.impl.CreditCardImpl
 import co.japl.android.myapplication.bussiness.interfaces.IHolder
 import co.japl.android.myapplication.bussiness.interfaces.SaveSvc
 import co.japl.android.myapplication.holders.CreditCardHolder
+import co.japl.android.myapplication.putParams.CreditCardParams
 import co.japl.android.myapplication.putParams.CreditCardParams.Params.ARG_PARAM_CODE
 
 
@@ -27,18 +29,6 @@ class CreateCreditCard : Fragment(),View.OnClickListener {
     private var found = false
 
     @RequiresApi(Build.VERSION_CODES.N)
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        parentFragmentManager.setFragmentResultListener(ARG_PARAM_CODE, this) { _, bundle ->
-            param1 =
-                bundle.getString(ARG_PARAM_CODE).toString()
-            Log.d(this.javaClass.name,"$ARG_PARAM_CODE = $param1")
-            search()
-        }
-
-    }
-
-    @RequiresApi(Build.VERSION_CODES.N)
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -47,6 +37,10 @@ class CreateCreditCard : Fragment(),View.OnClickListener {
         service = CreditCardImpl(ConnectDB(view.context))
         holder = CreditCardHolder(view)
         holder.setFields(this)
+        arguments?.let {
+            param1 = CreditCardParams.download(it).orElse("0")
+            search()
+        }
 
         return view
     }
@@ -69,10 +63,7 @@ class CreateCreditCard : Fragment(),View.OnClickListener {
             val dto = holder.downLoadFields()
                 if (service.save(dto)) {
                     Toast.makeText(this.context, "Record saved", Toast.LENGTH_LONG).show().also {
-                        parentFragmentManager.beginTransaction().replace(R.id.fragment_initial,
-                            ListCreditCard()
-                        ).setTransition(
-                            FragmentTransaction.TRANSIT_FRAGMENT_FADE).addToBackStack(null).commit()
+                        CreditCardParams.toBack(findNavController())
                     }
                 } else {
                     Toast.makeText(this.context, "Record did not save", Toast.LENGTH_LONG).show()

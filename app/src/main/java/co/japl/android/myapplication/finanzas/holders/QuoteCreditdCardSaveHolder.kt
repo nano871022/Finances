@@ -8,10 +8,7 @@ import android.widget.TextView
 import androidx.annotation.RequiresApi
 import co.japl.android.myapplication.R
 import co.japl.android.myapplication.bussiness.interfaces.IHolder
-import co.japl.android.myapplication.controller.QuoteCredit
-import co.japl.android.myapplication.controller.QuoteCreditSave
 import co.japl.android.myapplication.finanzas.pojo.QuoteCreditCard
-import co.japl.android.myapplication.utils.Constants
 import java.math.BigDecimal
 import java.text.DecimalFormat
 import java.util.*

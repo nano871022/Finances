@@ -10,6 +10,7 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import co.japl.android.myapplication.R
@@ -53,7 +54,7 @@ class ListTaxCreditCard : Fragment() , AdapterView.OnItemSelectedListener{
     @RequiresApi(Build.VERSION_CODES.N)
     fun setField(view:View){
         view.let{
-            holder = TaxHolder(it,parentFragmentManager)
+            holder = TaxHolder(it,parentFragmentManager,findNavController())
             holder.setFields(null)
             listCC = searchCCSvc.getAll()
             val list = listCC.toMutableList().stream().map { it.name }.collect(Collectors.toList())

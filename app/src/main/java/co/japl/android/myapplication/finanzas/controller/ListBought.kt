@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -17,6 +18,7 @@ import co.japl.android.myapplication.bussiness.DB.connections.ConnectDB
 import co.japl.android.myapplication.bussiness.DTO.CreditCardBoughtDTO
 import co.japl.android.myapplication.bussiness.impl.SaveCreditCardBoughtImpl
 import co.japl.android.myapplication.bussiness.interfaces.SearchSvc
+import co.japl.android.myapplication.finanzas.putParams.CreditCardQuotesParams
 import co.japl.android.myapplication.holders.view.BoughtViewHolder
 import co.japl.android.myapplication.utils.DateUtils
 import co.japl.android.myapplication.utils.NumbersUtil
@@ -44,7 +46,7 @@ class ListBought : Fragment() {
     private lateinit var totalQuote:BigDecimal
 
 
-    @RequiresApi(Build.VERSION_CODES.N)
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -52,21 +54,15 @@ class ListBought : Fragment() {
         val rootView = inflater.inflate(R.layout.fragment_list_bought, container, false)
         contexts = rootView.context
         loadField(rootView)
-        return rootView
-    }
-    @RequiresApi(Build.VERSION_CODES.O)
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        parentFragmentManager.setFragmentResultListener("CreditCard", this) { _, bundle ->
-            val split =
-                bundle.getString("CreditCard").toString().split("|")
-            codeCreditCard = Optional.ofNullable(split[0].toString().toInt())
-            cutOff = DateUtils.toLocalDateTime(split[1])
-            connectDB()
-            loadRecyclerView()
-            loadDataInFields()
+        arguments?.let {
+            val params = CreditCardQuotesParams.Companion.Historical.download(it)
+            codeCreditCard = Optional.ofNullable(params.first)
+            cutOff = params.second
         }
+        connectDB()
+        loadRecyclerView()
+        loadDataInFields()
+        return rootView
     }
 
     private fun loadRecyclerView(){

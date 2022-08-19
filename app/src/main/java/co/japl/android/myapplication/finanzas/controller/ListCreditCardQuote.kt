@@ -10,6 +10,7 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import co.japl.android.myapplication.R
 import co.japl.android.myapplication.bussiness.DB.connections.ConnectDB
 import co.japl.android.myapplication.bussiness.DTO.CreditCardBoughtDTO
@@ -42,7 +43,7 @@ class ListCreditCardQuote : Fragment(), AdapterView.OnItemSelectedListener{
     ): View? {
         val rootView = inflater.inflate(R.layout.list_credit_card_quote, container, false)
         contexto = rootView.context
-        holder = QuoteCCHolder(rootView,parentFragmentManager)
+        holder = QuoteCCHolder(rootView,parentFragmentManager,findNavController())
         loadFields(rootView)
          rootView?.context?.let { ConnectDB(it) }?.let {
             taxSvc = TaxImpl(it)

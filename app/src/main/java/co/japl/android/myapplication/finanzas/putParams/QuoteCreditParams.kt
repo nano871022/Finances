@@ -8,6 +8,7 @@ import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import co.japl.android.myapplication.R
 import co.japl.android.myapplication.finanzas.pojo.QuoteCreditCard
+import co.japl.android.myapplication.utils.CalcEnum
 import java.math.BigDecimal
 import java.util.*
 
@@ -37,6 +38,9 @@ class QuoteCreditParams {
                 quote.tax = Optional.ofNullable(it.get("interest").toString().toDouble())
                 quote.period = Optional.ofNullable(it.get("period").toString().toLong())
                 quote.response = Optional.ofNullable( it.get("quoteValue").toString().toBigDecimal())
+                quote.type = CalcEnum.FIX
+                quote.interestValue = Optional.empty()
+                quote.capitalValue = Optional.empty()
                 return Optional.ofNullable(quote)
             }
             return Optional.empty()

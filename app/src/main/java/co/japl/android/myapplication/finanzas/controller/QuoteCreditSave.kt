@@ -19,11 +19,13 @@ import co.japl.android.myapplication.finanzas.holders.QuoteCreditdCardSaveHolder
 import co.japl.android.myapplication.finanzas.pojo.QuoteCreditCard
 import co.japl.android.myapplication.finanzas.putParams.QuoteCreditParams
 import com.google.android.material.snackbar.Snackbar
+import java.util.*
 
 class QuoteCreditSave :  Fragment(), View.OnClickListener{
     private lateinit var saveSvc: SaveSvc<CalcDTO>
     private lateinit var holder:IHolder<QuoteCreditCard>
     private val mapping = CalcMap()
+    private lateinit var quote:Optional<QuoteCreditCard>
 
     @RequiresApi(Build.VERSION_CODES.N)
     override fun onCreateView(
@@ -42,7 +44,7 @@ class QuoteCreditSave :  Fragment(), View.OnClickListener{
     @RequiresApi(Build.VERSION_CODES.N)
     private fun loadValues(){
         arguments?.let {
-            val quote = QuoteCreditParams.download(it)
+            quote = QuoteCreditParams.download(it)
             holder.loadFields(quote.get())
         }
     }
@@ -51,7 +53,8 @@ class QuoteCreditSave :  Fragment(), View.OnClickListener{
     @RequiresApi(Build.VERSION_CODES.N)
     private fun save(view:View){
         if(holder.validate()  ) {
-            if (saveSvc.save(mapping.mapping(holder.downLoadFields()))) {
+            quote.get().name = holder.downLoadFields().name
+            if (saveSvc.save(mapping.mapping(quote.get()))) {
                 Snackbar.make(view, R.string.success_save_quote_credit, Snackbar.LENGTH_LONG)
                     .setAction(R.string.close, View.OnClickListener {
                     }).show()

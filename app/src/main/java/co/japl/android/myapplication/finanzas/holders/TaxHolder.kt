@@ -8,15 +8,17 @@ import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
+import androidx.navigation.NavController
 import androidx.recyclerview.widget.RecyclerView
 import co.japl.android.myapplication.R
 import co.japl.android.myapplication.bussiness.DTO.TaxDTO
 import co.japl.android.myapplication.bussiness.interfaces.IHolder
 import co.japl.android.myapplication.bussiness.interfaces.ISpinnerHolder
 import co.japl.android.myapplication.controller.Taxes
+import co.japl.android.myapplication.putParams.TaxesParams
 import java.time.LocalDateTime
 
-class TaxHolder (var view:View,var parentFragmentManager:FragmentManager): IHolder<TaxDTO>,ISpinnerHolder<TaxHolder>, View.OnClickListener {
+class TaxHolder (var view:View,var parentFragmentManager:FragmentManager,var navController: NavController): IHolder<TaxDTO>,ISpinnerHolder<TaxHolder>, View.OnClickListener {
     lateinit var creditCard:Spinner
     lateinit var recyclerView: RecyclerView
     lateinit var add:Button
@@ -57,7 +59,6 @@ class TaxHolder (var view:View,var parentFragmentManager:FragmentManager): IHold
     }
 
     override fun onClick(v: View?) {
-        parentFragmentManager.beginTransaction().replace(R.id.fragment_initial, Taxes()).setTransition(
-            FragmentTransaction.TRANSIT_FRAGMENT_FADE).addToBackStack(null).commit()
+        TaxesParams.newInstance(navController)
     }
 }

@@ -6,5 +6,6 @@
     <dimen name="header_height">192dp</dimen>
     <dimen name="perfil_image_size">64dp</dimen>
     <dimen name="margin_border_layout">10dp</dimen>
+    <dimen name="open_menu">0dp</dimen>
 
 </resources>
