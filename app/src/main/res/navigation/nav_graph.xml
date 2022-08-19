@@ -8,7 +8,7 @@
     <fragment
         android:id="@+id/item_menu_side_boughtmade"
         android:name="co.japl.android.myapplication.controller.ListCreditCardQuote"
-        android:label="@string/quote_credit"
+        android:label="@string/bought_made"
         tools:layout="@layout/list_credit_card_quote">
 
         <action
@@ -26,7 +26,7 @@
     <fragment
         android:id="@+id/item_menu_side_quoteCredit"
         android:name="co.japl.android.myapplication.controller.QuoteCredit"
-        android:label="@string/quote_credit_save"
+        android:label="@string/quote_credit"
         tools:layout="@layout/quote_credit_save">
         <action
             android:id="@+id/action_save_credit_card"
@@ -52,7 +52,7 @@
     <fragment
         android:id="@+id/list_bought"
         android:name="co.japl.android.myapplication.controller.ListBought"
-        android:label="@string/bought_history"
+        android:label="@string/list_save"
         tools:layout="@layout/fragment_list_bought">
         <action
             android:id="@+id/action_list_bought_to_list_cc_quote"
@@ -63,7 +63,7 @@
     <fragment
         android:id="@+id/quoteCreditSave"
         android:name="co.japl.android.myapplication.controller.QuoteCreditSave"
-        android:label="QuoteCreditSave"
+        android:label="@string/quote_credit_save"
         tools:layout="@layout/quote_credit_save">
         <argument
             android:name="creditValue"
@@ -77,7 +77,7 @@
     <fragment
         android:id="@+id/quoteCreditSaveVariable"
         android:name="co.japl.android.myapplication.controller.QuoteCreditSaveVariable"
-        android:label="QuoteCreditSaveVariable"
+        android:label="@string/quote_credit_save_variable"
         tools:layout="@layout/quote_credit_save_variable">
         <action
             android:id="@+id/action_quote_credt_variable"
@@ -89,7 +89,7 @@
     <fragment
         android:id="@+id/item_menu_side_listsave"
         android:name="co.japl.android.myapplication.controller.ListSave"
-        android:label="fragment_list_save"
+        android:label="@string/list_save"
         tools:layout="@layout/fragment_list_save" />
 
     <fragment
@@ -106,12 +106,12 @@
     <fragment
         android:id="@+id/item_menu_setting_about_it"
         android:name="co.japl.android.myapplication.finanzas.controller.AboutIt"
-        android:label="fragment_about_it"
+        android:label="@string/about_it"
         tools:layout="@layout/fragment_about_it" />
     <fragment
         android:id="@+id/item_menu_setting_credit_card"
         android:name="co.japl.android.myapplication.controller.ListCreditCard"
-        android:label="fragment_list_credit_card"
+        android:label="@string/credit_cards"
         tools:layout="@layout/fragment_list_credit_card" >
         <action
             android:id="@+id/action_listCreditCard_to_createCreditCard"
@@ -122,7 +122,7 @@
     <fragment
         android:id="@+id/createCreditCard"
         android:name="co.japl.android.myapplication.controller.CreateCreditCard"
-        android:label="fragment_create_credit_card"
+        android:label="@string/create_credit_card"
         tools:layout="@layout/fragment_create_credit_card" >
         <action
             android:id="@+id/action_createCreditCard_to_listCreditCard"
@@ -134,7 +134,7 @@
     <fragment
         android:id="@+id/item_menu_setting_taxes"
         android:name="co.japl.android.myapplication.controller.ListTaxCreditCard"
-        android:label="fragment_list_tax_credit_card"
+        android:label="@string/taxs_credit_card"
         tools:layout="@layout/fragment_list_tax_credit_card" >
         <action
             android:id="@+id/action_item_menu_setting_taxes_to_taxes"
@@ -145,7 +145,7 @@
     <fragment
         android:id="@+id/taxes"
         android:name="co.japl.android.myapplication.controller.Taxes"
-        android:label="fragment_taxes"
+        android:label="@string/tax"
         tools:layout="@layout/fragment_taxes" >
         <action
             android:id="@+id/action_taxes_to_item_menu_setting_taxes"

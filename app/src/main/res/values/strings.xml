@@ -99,6 +99,7 @@
     <string name="add_tax">Agregar Tasa</string>
     <string name="taxs_credit_card">Tasas de Tarjeta de Credito</string>
     <string name="recurrent">Recurrente</string>
+
     <string-array name="Months">
         <item>--- Seleccionar --- </item>
         <item>Enero</item>

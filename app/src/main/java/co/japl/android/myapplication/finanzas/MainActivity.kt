@@ -41,7 +41,7 @@ class MainActivity : AppCompatActivity(){
         setContentView(R.layout.activity_main)
         bundle = savedInstanceState
         val drawLayout =  findViewById<DrawerLayout>(R.id.draw_layout)
-        var navHost = supportFragmentManager.findFragmentById(R.id.nav_host_fragment)
+        val navHost = supportFragmentManager.findFragmentById(R.id.nav_host_fragment)
         val navHostFragment = navHost as NavHostFragment
         navController = navHostFragment.navController
         appBarConfiguration = AppBarConfiguration(navController.graph,drawLayout)
