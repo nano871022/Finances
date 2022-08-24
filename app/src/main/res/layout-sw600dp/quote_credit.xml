@@ -124,7 +124,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="@string/calc" />
+            android:text="@string/calc"
+            app:icon="@android:drawable/ic_menu_search" />
 
     </LinearLayout>
 
@@ -179,14 +180,16 @@
             android:layout_height="wrap_content"
             android:layout_marginRight="5dp"
             android:layout_weight="1"
-            android:text="@string/save" />
+            android:text="@string/add"
+            app:icon="@android:drawable/ic_input_add" />
 
         <Button
             android:id="@+id/btnClear"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="@string/clear" />
+            android:text="@string/clear"
+            app:icon="@drawable/ic_baseline_cleaning_services_24" />
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

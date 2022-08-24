@@ -29,6 +29,7 @@
     <string name="interest_value">Valor a intereses</string>
     <string name="total_value">Valor total</string>
     <string name="save">Guardar</string>
+    <string name="add">Agregar</string>
     <string name="quote_credit_save">Guardar - Cuota Credito Fija</string>
     <string name="quote_credit_save_variable">Guardar - Cuota Credito Variable</string>
     <string name="name">Nombre</string>

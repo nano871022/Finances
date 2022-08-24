@@ -36,6 +36,7 @@
             android:layout_weight="1"
             android:text="type"
             android:textAlignment="viewStart"
+            android:textColor="@android:color/primary_text_dark"
             android:textSize="18sp"
             android:textStyle="bold" />
 
@@ -47,6 +48,7 @@
             android:layout_weight="1"
             android:text="-"
             android:textAlignment="center"
+            android:textColor="@android:color/primary_text_dark"
             android:textSize="18sp"
             android:textStyle="bold" />
 
@@ -57,6 +59,7 @@
             android:layout_gravity="center_vertical"
             android:layout_weight="1"
             android:text="name"
+            android:textColor="@android:color/primary_text_dark"
             android:textSize="18sp"
             android:textStyle="bold" />
 
@@ -92,6 +95,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="@string/credit_value"
+            android:textColor="@android:color/primary_text_dark"
             android:textStyle="bold" />
 
         <TextView
@@ -100,6 +104,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="@string/quote_credit_hint"
+            android:textColor="@android:color/primary_text_dark"
             android:textStyle="italic" />
 
         <TextView
@@ -108,6 +113,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="@string/interest_value"
+            android:textColor="@android:color/primary_text_dark"
             android:textStyle="bold" />
 
         <TextView
@@ -116,6 +122,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="@string/interest_value_hint"
+            android:textColor="@android:color/primary_text_dark"
             android:textStyle="italic" />
 
         <TextView
@@ -124,6 +131,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="@string/months"
+            android:textColor="@android:color/primary_text_dark"
             android:textStyle="bold" />
 
         <TextView
@@ -132,6 +140,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="@string/months_number_hint"
+            android:textColor="@android:color/primary_text_dark"
             android:textStyle="italic" />
     </LinearLayout>
 
@@ -166,6 +175,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="@string/capital_value"
+                android:textColor="@android:color/primary_text_dark"
                 android:textStyle="bold" />
 
             <TextView
@@ -173,7 +183,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="@string/interest_value_hint" />
+                android:text="@string/interest_value_hint"
+                android:textColor="@android:color/primary_text_dark" />
         </LinearLayout>
 
         <LinearLayout
@@ -189,6 +200,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="@string/interest_value"
+                android:textColor="@android:color/primary_text_dark"
                 android:textStyle="bold" />
 
             <TextView
@@ -196,7 +208,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="@string/interest_value_hint" />
+                android:text="@string/interest_value_hint"
+                android:textColor="@android:color/primary_text_dark" />
         </LinearLayout>
 
         <TextView
@@ -205,6 +218,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="@string/quote_credit"
+            android:textColor="@android:color/primary_text_dark"
             android:textStyle="bold" />
 
         <TextView
@@ -213,6 +227,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="@string/quote_credit_hint"
+            android:textColor="@android:color/primary_text_dark"
             android:textStyle="italic" />
     </LinearLayout>
 

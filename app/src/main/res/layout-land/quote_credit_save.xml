@@ -4,31 +4,29 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingLeft="10dp"
-    android:paddingTop="10dp"
-    android:paddingRight="10dp">
+    android:layout_margin="@dimen/margin_border_layout">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <LinearLayout
-            android:id="@+id/header"
+    <LinearLayout
+        android:id="@+id/header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        tools:ignore="MissingConstraints">
+
+        <TextView
+            android:id="@+id/textView15"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            tools:ignore="MissingConstraints">
-
-            <TextView
-                android:id="@+id/textView15"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/quote_credit_save_variable"
-                android:textAlignment="center"
-                android:textSize="24sp"
-                android:textStyle="bold" />
-        </LinearLayout>
+            android:text="@string/quote_credit_save"
+            android:textAlignment="center"
+            android:textSize="24sp"
+            android:textStyle="bold" />
+    </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -37,14 +35,15 @@
 
             <TextView
                 android:id="@+id/textView25"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="@string/name" />
+                android:text="@string/name"
+                android:textStyle="bold" />
 
             <EditText
                 android:id="@+id/etName"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:autofillHints=""
@@ -64,7 +63,8 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:orientation="horizontal"
-                android:text="@string/credit_value" />
+                android:text="@string/credit_value"
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/tvValueCreditSave"
@@ -73,19 +73,15 @@
                 android:layout_weight="1"
                 android:text="@string/quote_credit_hint"
                 android:textAlignment="textEnd" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
 
             <TextView
                 android:id="@+id/textView18"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
                 android:layout_weight="1"
-                android:text="@string/tax" />
+                android:text="@string/tax"
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/tvInterestSave"
@@ -94,19 +90,15 @@
                 android:layout_weight="1"
                 android:text="@string/interest_value_hint"
                 android:textAlignment="textEnd" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
 
             <TextView
                 android:id="@+id/textView20"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
                 android:layout_weight="1"
-                android:text="@string/months" />
+                android:text="@string/months"
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/tvMonthsSave"
@@ -122,20 +114,6 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
-            <TextView
-                android:id="@+id/textView21"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/capital_value" />
-
-            <TextView
-                android:id="@+id/tvCapitalValueSave"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/quote_credit_hint"
-                android:textAlignment="textEnd" />
         </LinearLayout>
 
         <LinearLayout
@@ -143,20 +121,6 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
-            <TextView
-                android:id="@+id/textView17"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/interest_value" />
-
-            <TextView
-                android:id="@+id/tvInterestValueSaveVariable"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/interest_value_hint"
-                android:textAlignment="textEnd" />
         </LinearLayout>
 
         <LinearLayout
@@ -169,7 +133,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="@string/quote_credit" />
+                android:text="@string/quote_credit"
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/tvQuoteValueSave"
@@ -188,20 +153,23 @@
         android:orientation="horizontal"
         app:layout_constraintTop_toBottomOf="@+id/tableLayout">
 
-        <Button
-            android:id="@+id/btnSave"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="10dp"
-            android:layout_weight="1"
-            android:text="@string/save" />
+            <Button
+                android:id="@+id/btnSave"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="10dp"
+                android:layout_weight="1"
+                android:text="@string/save"
+                app:icon="@android:drawable/ic_menu_save" />
 
-        <Button
-            android:id="@+id/btnCancel"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/cancel" />
+            <Button
+                android:id="@+id/btnCancel"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/cancel"
+                app:icon="@android:drawable/ic_menu_close_clear_cancel" />
     </LinearLayout>
     </LinearLayout>
+
 </androidx.constraintlayout.widget.ConstraintLayout>
