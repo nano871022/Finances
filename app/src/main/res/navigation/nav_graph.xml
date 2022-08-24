@@ -83,7 +83,10 @@
             android:id="@+id/action_quote_credt_variable"
             app:enterAnim="@android:anim/fade_in"
             app:exitAnim="@android:anim/fade_out" />
-            app:destination="@+id/item_menu_side_quoteCreditVariable" />
+        <action
+            android:id="@+id/action_quoteCreditSaveVariable_to_item_menu_side_quoteCreditVariable"
+            app:destination="@id/item_menu_side_quoteCreditVariable" />
+        app:destination="@+id/item_menu_side_quoteCreditVariable" />
     </fragment>
 
     <fragment

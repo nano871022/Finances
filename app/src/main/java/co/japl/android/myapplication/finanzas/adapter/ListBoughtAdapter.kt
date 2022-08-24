@@ -67,7 +67,7 @@ class ListBoughtAdapter(private val data:List<CreditCardBoughtDTO>,private val c
             val quote = dto.valueItem.divide(dto.month.toBigDecimal(),8,RoundingMode.CEILING)
             val capitalBought = quote.multiply(months.toBigDecimal())
             val pendingCapital = dto.valueItem.minus(capitalBought)
-            var interestTax = if (dto.kind == "0".toShort()) tax.get() else dto.interest
+            val interestTax = if (dto.kind == "0".toShort()) tax.get() else dto.interest
             val interest = interestTax.toBigDecimal().divide(BigDecimal(100),8,RoundingMode.CEILING)
             Log.d(this.javaClass.name,"Value ${dto.valueItem} - Bought $capitalBought X $months =  Pending $pendingCapital interest $interest")
             if(pendingCapital > BigDecimal(0)){
