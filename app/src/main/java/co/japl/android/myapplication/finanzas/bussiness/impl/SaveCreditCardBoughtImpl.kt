@@ -154,13 +154,12 @@ class SaveCreditCardBoughtImpl(override var dbConnect: SQLiteOpenHelper) : SaveS
         Log.v(this.javaClass.name,"<<<=== getCapital - Start")
         try {
             val list = getToDate(key, cutOff)
-            val value = list.stream().map {
-                Log.println(Log.DEBUG,this.javaClass.name,"${it.month} ${it.valueItem}")
-                if (it.month <= 1) it.valueItem else it.valueItem.divide(it.month.toBigDecimal(),8,RoundingMode.CEILING)
-            }.peek{
-                Log.println(Log.DEBUG,this.javaClass.name,"$it")
-            }.reduce { val1, val2 -> val1 + val2 }
-            return value.also { Log.v(this.javaClass.name,"$it") }
+            val listRecurrent = getRecurrentBuys(key,cutOff)
+            val capitalRecurrent = listRecurrent.filter{ it.month == 1}.map { it.valueItem }.reduceOrNull{ val1,val2 -> val1.add(val2)}?:BigDecimal.ZERO
+            val capitalRecurrentQuotes = listRecurrent.filter{it.month > 1}.map{ it.valueItem.divide(it.month.toBigDecimal(),8,RoundingMode.CEILING)}.reduceOrNull { val1, val2 -> val1.add(val2)}?:BigDecimal.ZERO
+            val capital = list.filter{it.month == 1}.map{it.valueItem}.reduceOrNull{val1,val2->val1.plus(val2)}?:BigDecimal.ZERO
+            val capitalQuotes = list.filter{it.month > 1}.map{it.valueItem.divide(it.month.toBigDecimal(),8,RoundingMode.CEILING)}.reduceOrNull{ val1, val2->val1.plus(val2)}?:BigDecimal.ZERO
+            return Optional.ofNullable(capital.add(capitalQuotes).add(capitalRecurrent).add(capitalRecurrentQuotes)).also { Log.v(this.javaClass.name,"$it") }
         }finally{
             Log.v(this.javaClass.name,"<<<=== getCapital - End")
         }
@@ -266,8 +265,10 @@ class SaveCreditCardBoughtImpl(override var dbConnect: SQLiteOpenHelper) : SaveS
         Log.v(this.javaClass.name,"<<<=== getBought - Start")
         try {
             val list = getToDate(key, cutOff)
-            val value = list.stream().filter { it.month <= 1 }.count()
-            return Optional.ofNullable(value).also { Log.v(this.javaClass.name,"$it") }
+            val listRecurrent = getRecurrentBuys(key,cutOff)
+            val countRecurrent = listRecurrent.count { it.month == 1}
+            val value = list.count { it.month <= 1 }
+            return Optional.ofNullable((value + countRecurrent).toLong()).also { Log.v(this.javaClass.name,"$it") }
         }finally{
             Log.v(this.javaClass.name,"<<<=== getBought - End")
         }
@@ -292,9 +293,11 @@ class SaveCreditCardBoughtImpl(override var dbConnect: SQLiteOpenHelper) : SaveS
     override fun getBoughtQuotes(key: Int, cutOff: LocalDateTime): Optional<Long> {
         Log.v(this.javaClass.name,"<<<=== getBoughtQuotes - Start")
         try{
-        val list = getToDate(key,cutOff)
-        val value =  list.stream().filter{ it.month > 1 }.count()
-       return Optional.ofNullable(value).also { Log.v(this.javaClass.name,"$it") }
+            val list = getToDate(key,cutOff)
+            val listRecurrent = getRecurrentBuys(key,cutOff)
+            val countRecurrent = listRecurrent.count{ it.month > 1}
+            val value =  list.count{ it.month > 1 }
+            return Optional.ofNullable((value+countRecurrent).toLong()).also { Log.v(this.javaClass.name,"$it") }
         }finally{
             Log.v(this.javaClass.name,"<<<=== getBoughtQuotes - End")
         }
@@ -368,4 +371,32 @@ class SaveCreditCardBoughtImpl(override var dbConnect: SQLiteOpenHelper) : SaveS
         }
         return Optional.empty()
     }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    override fun getRecurrentBuys(key: Int, cutOff: LocalDateTime): List<CreditCardBoughtDTO> {
+        Log.d(this.javaClass.name,"<<<=== getRecurrentBuys - Start")
+        try{
+            val db = dbConnect.readableDatabase
+            val cutOffLastMonth = cutOff.minusMonths(1)
+            val cursor = db.query(CreditCardBoughtDB.CreditCardBoughtEntry.TABLE_NAME,COLUMNS_CALC," ${CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_RECURRENT} = ? and ${CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_CODE_CREDIT_CARD} = ? ",
+                arrayOf(1.toString(),key.toString()),null,null,null)
+            val items = mutableListOf<CreditCardBoughtDTO>()
+            with(cursor){
+                while(moveToNext()){
+                    val record = CreditCardBoughtMap().mapping(this)
+                    Log.d(this.javaClass.name," ${record.boughtDate} < $cutOffLastMonth")
+                    if(record.boughtDate.isBefore(cutOffLastMonth)) {
+                        Log.d(this.javaClass.name,"Added")
+                        record.boughtDate = LocalDateTime.of(cutOff.year,cutOff.month,record.boughtDate.dayOfMonth,record.boughtDate.hour,record.boughtDate.minute)
+                        items.add(record)
+                    }
+                }
+            }
+            return items.also { Log.v(this.javaClass.name,"${it.size}") }
+        }finally{
+            Log.d(this.javaClass.name,"<<<=== getRecurrentBuys - End")
+        }
+    }
+
+
 }

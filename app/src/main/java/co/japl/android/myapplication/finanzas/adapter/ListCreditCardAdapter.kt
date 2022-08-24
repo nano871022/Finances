@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import androidx.core.os.bundleOf
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
+import androidx.navigation.NavController
 import androidx.recyclerview.widget.RecyclerView
 import co.japl.android.myapplication.R
 import co.japl.android.myapplication.bussiness.DB.connections.ConnectDB
@@ -18,7 +19,7 @@ import co.japl.android.myapplication.putParams.CreditCardParams
 import co.japl.android.myapplication.utils.NumbersUtil
 import com.google.android.material.snackbar.Snackbar
 
-class ListCreditCardAdapter(var data:MutableList<CreditCardDTO>,var parentFragmentManager:FragmentManager) : RecyclerView.Adapter<ListCreditCardItemHolder>() {
+class ListCreditCardAdapter(var data:MutableList<CreditCardDTO>,var parentFragmentManager:FragmentManager,var navController: NavController) : RecyclerView.Adapter<ListCreditCardItemHolder>() {
     private lateinit var saveSvc: SaveSvc<CreditCardDTO>
     private lateinit var view:View
 
@@ -56,15 +57,7 @@ class ListCreditCardAdapter(var data:MutableList<CreditCardDTO>,var parentFragme
             }
         }
         holder.edit.setOnClickListener{
-            parentFragmentManager.beginTransaction().replace(R.id.fragment_initial,
-                CreateCreditCard()
-            ).setTransition(
-                FragmentTransaction.TRANSIT_FRAGMENT_FADE).addToBackStack(null).commit()
-            CreditCardParams.newInstance(data[position].id.toString())
-            parentFragmentManager.setFragmentResult(
-                CreditCardParams.Params.ARG_PARAM_CODE, bundleOf(
-                    CreditCardParams.Params.ARG_PARAM_CODE to data[position].id.toString())
-            )
+            CreditCardParams.newInstance(data[position].id.toString(), navController)
         }
     }
 }

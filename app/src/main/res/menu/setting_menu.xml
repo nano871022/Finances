@@ -3,6 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".MainActivity"
     >
     <item
         android:id="@+id/item_menu_setting_credit_card"
@@ -18,6 +19,14 @@
         android:icon="@drawable/ic_credit_card_foreground"
         android:title="@string/taxes_credit_card"
         android:visible="true" />
+
+    <item
+    android:id="@+id/item_menu_setting_about_it"
+    android:enabled="true"
+        app:showAsAction="withText"
+    android:icon="@drawable/ic_credit_card_foreground"
+    android:title="@string/about_it"
+    android:visible="true" />
 
 
 </menu>

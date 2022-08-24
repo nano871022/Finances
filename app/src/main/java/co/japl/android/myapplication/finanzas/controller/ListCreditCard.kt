@@ -11,12 +11,14 @@ import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import co.japl.android.myapplication.R
 import co.japl.android.myapplication.adapter.ListCreditCardAdapter
 import co.japl.android.myapplication.bussiness.DB.connections.ConnectDB
 import co.japl.android.myapplication.bussiness.impl.CreditCardImpl
+import co.japl.android.myapplication.putParams.CreditCardParams
 
 class ListCreditCard : Fragment() , View.OnClickListener{
     private lateinit var recycle:RecyclerView
@@ -49,15 +51,14 @@ class ListCreditCard : Fragment() , View.OnClickListener{
                 val connect = ConnectDB(view.context)
                 val saveSvc = CreditCardImpl(connect)
                 val data = saveSvc.getAll()
-                recycler.adapter = ListCreditCardAdapter(data.toMutableList(),parentFragmentManager)
+                recycler.adapter = ListCreditCardAdapter(data.toMutableList(),parentFragmentManager,findNavController())
             }
         }
     }
 
     private fun add(){
         Log.d(this.javaClass.name,"add - start")
-        parentFragmentManager.beginTransaction().replace(R.id.fragment_initial,CreateCreditCard()).setTransition(
-            FragmentTransaction.TRANSIT_FRAGMENT_FADE).addToBackStack(null).commit()
+        CreditCardParams.newInstance(findNavController())
     }
 
     private fun setField(view:View){

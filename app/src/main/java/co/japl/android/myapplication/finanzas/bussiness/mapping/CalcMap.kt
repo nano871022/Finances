@@ -2,8 +2,13 @@ package co.japl.android.myapplication.bussiness.mapping
 
 import android.content.ContentValues
 import android.database.Cursor
+import android.os.Build
+import androidx.annotation.RequiresApi
 import co.japl.android.myapplication.bussiness.DTO.CalcDB
 import co.japl.android.myapplication.bussiness.DTO.CalcDTO
+import co.japl.android.myapplication.finanzas.pojo.QuoteCreditCard
+import co.japl.android.myapplication.utils.CalcEnum
+import java.math.BigDecimal
 
 class CalcMap {
     fun mapping(dto:CalcDTO ):ContentValues{
@@ -41,5 +46,19 @@ class CalcMap {
             ,id
             ,interestValue
             ,capitalValue )
+    }
+
+    @RequiresApi(Build.VERSION_CODES.N)
+    fun mapping(quoteCreditCard: QuoteCreditCard):CalcDTO{
+        return CalcDTO(quoteCreditCard.name.get()
+            ,quoteCreditCard.value.get()
+            ,quoteCreditCard.tax.get()
+            ,quoteCreditCard.period.get()
+            ,quoteCreditCard.response.get()
+            , quoteCreditCard.type.toString()
+            ,0
+            , quoteCreditCard.interestValue.orElse(BigDecimal.ZERO)
+            , quoteCreditCard.capitalValue.orElse(BigDecimal.ZERO)
+        )
     }
 }

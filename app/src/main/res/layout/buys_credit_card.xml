@@ -5,10 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_gravity="center_vertical"
-    android:layout_marginLeft="10dp"
-    android:layout_marginTop="10dp"
-    android:layout_marginRight="10dp"
-    android:layout_marginBottom="10dp"
+    android:layout_margin="@dimen/margin_border_layout"
     android:orientation="vertical">
 
     <TextView
@@ -104,11 +101,10 @@
         android:id="@+id/linerLayoutValues"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
         android:layout_marginTop="1dp"
-        tools:layout_editor_absoluteX="1dp"
+        android:orientation="horizontal"
         app:layout_constraintTop_toBottomOf="@+id/linearLayout3"
-        >
+        tools:layout_editor_absoluteX="1dp">
 
         <TextView
             android:id="@+id/lProductValue"
@@ -230,6 +226,28 @@
             android:hint="@string/quotes_value"
             android:inputType="number|textPersonName"
             android:textAlignment="textEnd" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/llRecurrentQuoteValue"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayoutQuoteValue">
+
+        <TextView
+            android:id="@+id/lbRecurrentQuoteValue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:paddingLeft="10dp"
+            android:text="@string/recurrent" />
+
+        <CheckBox
+            android:id="@+id/cbRecurrent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
     </LinearLayout>
 
     <LinearLayout

@@ -1,7 +1,7 @@
 
 -- alternative file but it will be load in another app
 clave Nano871022.
-alias Finanzas
+alias finanzas 2.0
 
 
 -- current file 

@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -17,10 +18,12 @@ import co.japl.android.myapplication.bussiness.DB.connections.ConnectDB
 import co.japl.android.myapplication.bussiness.DTO.CreditCardBoughtDTO
 import co.japl.android.myapplication.bussiness.impl.SaveCreditCardBoughtImpl
 import co.japl.android.myapplication.bussiness.interfaces.SearchSvc
+import co.japl.android.myapplication.finanzas.putParams.CreditCardQuotesParams
 import co.japl.android.myapplication.holders.view.BoughtViewHolder
 import co.japl.android.myapplication.utils.DateUtils
 import co.japl.android.myapplication.utils.NumbersUtil
 import java.math.BigDecimal
+import java.math.RoundingMode
 import java.time.LocalDateTime
 import java.util.*
 
@@ -43,7 +46,7 @@ class ListBought : Fragment() {
     private lateinit var totalQuote:BigDecimal
 
 
-    @RequiresApi(Build.VERSION_CODES.N)
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -51,21 +54,15 @@ class ListBought : Fragment() {
         val rootView = inflater.inflate(R.layout.fragment_list_bought, container, false)
         contexts = rootView.context
         loadField(rootView)
-        return rootView
-    }
-    @RequiresApi(Build.VERSION_CODES.O)
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        parentFragmentManager.setFragmentResultListener("CreditCard", this) { _, bundle ->
-            val split =
-                bundle.getString("CreditCard").toString().split("|")
-            codeCreditCard = Optional.ofNullable(split[0].toString().toInt())
-            cutOff = DateUtils.toLocalDateTime(split[1])
-            connectDB()
-            loadRecyclerView()
-            loadDataInFields()
+        arguments?.let {
+            val params = CreditCardQuotesParams.Companion.Historical.download(it)
+            codeCreditCard = Optional.ofNullable(params.first)
+            cutOff = params.second
         }
+        connectDB()
+        loadRecyclerView()
+        loadDataInFields()
+        return rootView
     }
 
     private fun loadRecyclerView(){
@@ -73,24 +70,28 @@ class ListBought : Fragment() {
         adapter = ListBoughtAdapter(list,cutOff)
         recyclerView.adapter = adapter
     }
-    @RequiresApi(Build.VERSION_CODES.N)
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun connectDB(){
         context.let {
             dbConnect = ConnectDB(it!!)
         }
         saveSvc = SaveCreditCardBoughtImpl(dbConnect)
         val list = saveSvc.getToDate(codeCreditCard.get(),cutOff)
+        val listRecurrent = saveSvc.getRecurrentBuys(codeCreditCard.get(),cutOff)
         val pending = saveSvc.getPendingQuotes(codeCreditCard.get(),cutOff)
         val joinList = ArrayList<CreditCardBoughtDTO>()
         joinList.addAll(list)
         joinList.addAll(pending)
+        joinList.addAll(listRecurrent)
         val capital = saveSvc.getCapital(codeCreditCard.get(),cutOff)
+        val capitalRecurrent = listRecurrent.filter { it.month == 1 }.map { it.valueItem }.reduceOrNull{ val1,val2->val1.add(val2)}?:BigDecimal.ZERO
+        val capitalQuoteRecurrent = listRecurrent.filter { it.month > 1 }.map { it.valueItem.divide(it.month.toBigDecimal(),8,RoundingMode.CEILING) }.reduceOrNull{ val1, val2->val1.add(val2)}?:BigDecimal.ZERO
         val capitalQuotes = saveSvc.getCapitalPendingQuotes(codeCreditCard.get(),cutOff)
         val interest = saveSvc.getInterest(codeCreditCard.get(),cutOff)
         val interestQuotes = saveSvc.getInterestPendingQuotes(codeCreditCard.get(),cutOff)
         val pendingToPay = saveSvc.getPendingToPay(codeCreditCard.get(),cutOff)
         val pendingToPayQuotes = saveSvc.getPendingToPayQuotes(codeCreditCard.get(),cutOff)
-        this.capital = capital.orElse(BigDecimal(0)).plus(capitalQuotes.orElse(BigDecimal(0)))
+        this.capital = capital.orElse(BigDecimal(0)).plus(capitalQuotes.orElse(BigDecimal(0))).plus(capitalRecurrent).plus(capitalQuoteRecurrent)
         this.interest = interest.orElse(BigDecimal(0)).plus(interestQuotes.orElse(BigDecimal(0)))
         this.pendingToPay = pendingToPay.orElse(BigDecimal(0)).plus(pendingToPayQuotes.orElse(BigDecimal(0)))
         this.totalQuote = this.capital.plus(this.interest)

@@ -5,7 +5,7 @@
 
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_margin="10dp"
+    android:layout_margin="@dimen/margin_border_layout"
     tools:context=".controller.CreateCreditCard">
 
     <!-- TODO: Update blank fragment layout -->
@@ -105,8 +105,8 @@
                 android:layout_marginRight="1dp"
                 android:layout_weight="1"
                 android:ems="10"
-                android:inputType="number"
                 android:hint="@string/months_number_hint"
+                android:inputType="number"
                 android:textAlignment="textEnd" />
 
         </LinearLayout>
@@ -131,8 +131,8 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:ems="10"
-                android:inputType="number|numberDecimal"
                 android:hint="@string/money_hint"
+                android:inputType="number|numberDecimal"
                 android:textAlignment="textEnd" />
         </LinearLayout>
 

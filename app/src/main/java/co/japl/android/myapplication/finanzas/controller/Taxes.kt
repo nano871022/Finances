@@ -10,6 +10,7 @@ import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
+import androidx.navigation.fragment.findNavController
 import co.japl.android.myapplication.R
 import co.japl.android.myapplication.bussiness.DB.connections.ConnectDB
 import co.japl.android.myapplication.bussiness.DTO.CreditCardDTO
@@ -20,6 +21,7 @@ import co.japl.android.myapplication.bussiness.interfaces.IHolder
 import co.japl.android.myapplication.bussiness.interfaces.ISpinnerHolder
 import co.japl.android.myapplication.bussiness.interfaces.SaveSvc
 import co.japl.android.myapplication.holders.TaxesHolder
+import co.japl.android.myapplication.putParams.TaxesParams
 import co.japl.android.myapplication.putParams.TaxesParams.Params.ARG_PARAM1
 import co.japl.android.myapplication.putParams.TaxesParams.Params.ARG_PARAM2
 import java.time.LocalDate
@@ -34,14 +36,6 @@ class Taxes : Fragment() , View.OnClickListener{
     private lateinit var creditCardSvc:SaveSvc<CreditCardDTO>
     private lateinit var listCreditCard:List<CreditCardDTO>
     private lateinit var listCreditCardNames:MutableList<String>
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
-    }
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreateView(
@@ -67,6 +61,10 @@ class Taxes : Fragment() , View.OnClickListener{
                     it.month.adapter = adapter
                 }
         }
+        arguments?.let { val params = TaxesParams.download(it)
+        param1 =params.first
+            param2 = params.second
+        }
         return view
     }
 
@@ -78,8 +76,7 @@ class Taxes : Fragment() , View.OnClickListener{
             dto.codCreditCard = creditCard.get().id
             if(service.save(dto)){
                 Toast.makeText(this.context,"Record Saved",Toast.LENGTH_LONG).show()
-                parentFragmentManager.beginTransaction().replace(R.id.fragment_initial, ListTaxCreditCard()).setTransition(
-                    FragmentTransaction.TRANSIT_FRAGMENT_FADE).addToBackStack(null).commit()
+                TaxesParams.toBack(findNavController())
             }else{
                 Toast.makeText(this.context,"Record did not Save",Toast.LENGTH_LONG).show()
             }
