@@ -22,6 +22,9 @@
             app:enterAnim="@android:anim/fade_in"
             app:exitAnim="@android:anim/fade_out"
             app:destination="@id/buy_credit_card" />
+        <action
+            android:id="@+id/action_item_menu_side_boughtmade_to_cash_advance_fragment"
+            app:destination="@id/cash_advance_fragment" />
     </fragment>
     <fragment
         android:id="@+id/item_menu_side_quoteCredit"
@@ -156,5 +159,13 @@
             app:exitAnim="@android:anim/fade_out"
             app:destination="@id/item_menu_setting_taxes" />
     </fragment>
-
+    <fragment
+        android:id="@+id/cash_advance_fragment"
+        android:name="co.japl.android.myapplication.finanzas.controller.CashAdvanceSave"
+        android:label="@string/cash_advance"
+        tools:layout="@layout/cash_advance_credit_card" >
+        <action
+            android:id="@+id/action_cash_advance_fragment_to_item_menu_side_boughtmade"
+            app:destination="@id/item_menu_side_boughtmade" />
+    </fragment>
 </navigation>

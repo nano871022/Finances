@@ -65,9 +65,31 @@
             <Spinner
                 android:id="@+id/spCreditCardTaxes"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_weight="1" />
 
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/llKindTaxes"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/lbKindofTaxes"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/kind_of_tax"
+                android:textStyle="bold" />
+
+            <Spinner
+                android:id="@+id/spKindTaxes"
+                android:layout_width="62dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1" />
         </LinearLayout>
 
         <LinearLayout
@@ -87,7 +109,7 @@
             <Spinner
                 android:id="@+id/spMonthTaxes"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:spinnerMode="dropdown" />
 
@@ -139,6 +161,32 @@
                 android:hint="@string/tax_percent"
                 android:inputType="numberDecimal"
                 android:textAlignment="textEnd" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/llPeriodTaxes"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/lbPeriodsTaxes"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/periods"
+                android:textStyle="bold" />
+
+            <EditText
+                android:id="@+id/etPeriodsTaxes"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:ems="3"
+                android:hint="@string/months_number_hint"
+                android:inputType="numberSigned"
+                android:textAlignment="textEnd" />
+
         </LinearLayout>
 
     </LinearLayout>

@@ -68,6 +68,45 @@
 
         </LinearLayout>
 
+        <LinearLayout
+            android:id="@+id/lykindTCC"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/textView30"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/kind_of_tax"
+                android:textColor="#FFFFFF" />
+
+            <TextView
+                android:id="@+id/tvKindTCC"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/kind_of_tax"
+                android:textColor="#FFFFFF" />
+
+            <TextView
+                android:id="@+id/textView27"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/periods"
+                android:textColor="#FFFFFF" />
+
+            <TextView
+                android:id="@+id/tvPeriodTCC"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/months_number_hint"
+                android:textColor="#FFFFFF" />
+        </LinearLayout>
+
 
     </LinearLayout>
 

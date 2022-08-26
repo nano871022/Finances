@@ -4,6 +4,7 @@ import android.database.sqlite.SQLiteDatabase
 import android.util.Log
 import co.japl.android.myapplication.bussiness.interfaces.IConnectDB
 import co.japl.android.myapplication.bussiness.queries.CalculationQuery
+import co.japl.android.myapplication.utils.DatabaseConstants
 
 class CalculationConnectDB : IConnectDB{
 
@@ -15,8 +16,10 @@ class CalculationConnectDB : IConnectDB{
 
     override fun onUpgrade(db: SQLiteDatabase?, oldVersion: Int, newVersion: Int) {
         Log.i(this.javaClass.name,"<<<=== OnUpgrade - Start")
-         db?.execSQL(CalculationQuery.SQL_DELETE_ENTRIES)
-        onCreate(db)
+        if(oldVersion <  DatabaseConstants.DATA_BASE_VERSION_MINUS) {
+            db?.execSQL(CalculationQuery.SQL_DELETE_ENTRIES)
+            onCreate(db)
+        }
         Log.i(this.javaClass.name,"<<<=== OnUpgrade - End")
     }
     override fun onDowngrade(db: SQLiteDatabase?, oldVersion: Int, newVersion: Int) {

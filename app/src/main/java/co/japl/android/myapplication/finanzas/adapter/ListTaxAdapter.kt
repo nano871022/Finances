@@ -10,6 +10,7 @@ import co.japl.android.myapplication.bussiness.DB.connections.ConnectDB
 import co.japl.android.myapplication.bussiness.DTO.TaxDTO
 import co.japl.android.myapplication.bussiness.impl.TaxImpl
 import co.japl.android.myapplication.bussiness.interfaces.SaveSvc
+import co.japl.android.myapplication.finanzas.utils.TaxEnum
 import co.japl.android.myapplication.holders.view.TaxItemHolder
 import com.google.android.material.snackbar.Snackbar
 
@@ -36,11 +37,7 @@ class ListTaxAdapter(var data:MutableList<TaxDTO>) : RecyclerView.Adapter<TaxIte
 
     override fun onBindViewHolder(holder: TaxItemHolder, position: Int) {
         Log.d(this.javaClass.name,"on binging view holder $position")
-        val months = view.resources.getStringArray(R.array.Months)
-        holder.month.text = months[data[position].month.toInt()]
-        holder.year.text = data[position].year.toString()
-        holder.tax.text = "${data[position].value.toString()} %"
-        holder.delete.setOnClickListener {
+       holder.setFields(data[position]) {
             if (saveSvc.delete(data[position].id)) {
                 Snackbar.make(view, R.string.delete_successfull, Snackbar.LENGTH_LONG)
                     .setAction(R.string.close) {

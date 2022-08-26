@@ -14,6 +14,7 @@ import co.japl.android.myapplication.bussiness.impl.TaxImpl
 import co.japl.android.myapplication.bussiness.interfaces.ITaxSvc
 import co.japl.android.myapplication.bussiness.interfaces.SaveSvc
 import co.japl.android.myapplication.bussiness.interfaces.SearchSvc
+import co.japl.android.myapplication.finanzas.utils.TaxEnum
 import co.japl.android.myapplication.holders.view.BoughtViewHolder
 import co.japl.android.myapplication.utils.DateUtils
 import co.japl.android.myapplication.utils.NumbersUtil
@@ -53,13 +54,14 @@ class ListBoughtAdapter(private val data:List<CreditCardBoughtDTO>,private val c
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    private fun getTax():Optional<Double>{
-        val tax = taxSvc.get(cutOff.month.value,cutOff.year)
+    private fun getTax(kind:TaxEnum):Optional<Double>{
+        val tax = taxSvc.get(cutOff.month.value,cutOff.year,kind)
         if(tax.isPresent){
             return Optional.ofNullable(tax.get().value)
         }
         return Optional.empty()
     }
+
     @RequiresApi(Build.VERSION_CODES.O)
     private fun getInterest(dto:CreditCardBoughtDTO,tax:Optional<Double>):BigDecimal{
         if(dto.month > 1){
@@ -67,7 +69,10 @@ class ListBoughtAdapter(private val data:List<CreditCardBoughtDTO>,private val c
             val quote = dto.valueItem.divide(dto.month.toBigDecimal(),8,RoundingMode.CEILING)
             val capitalBought = quote.multiply(months.toBigDecimal())
             val pendingCapital = dto.valueItem.minus(capitalBought)
-            val interestTax = if (dto.kind == "0".toShort()) tax.get() else dto.interest
+            val interestTax = if(tax.isPresent) when(dto.kind){
+                TaxEnum.CASH_ADVANCE.ordinal.toShort(),TaxEnum.CREDIT_CARD.ordinal.toShort()  -> tax.get()
+                else -> dto.interest
+            }else dto.interest
             val interest = interestTax.toBigDecimal().divide(BigDecimal(100),8,RoundingMode.CEILING)
             Log.d(this.javaClass.name,"Value ${dto.valueItem} - Bought $capitalBought X $months =  Pending $pendingCapital interest $interest")
             if(pendingCapital > BigDecimal(0)){
@@ -103,24 +108,14 @@ class ListBoughtAdapter(private val data:List<CreditCardBoughtDTO>,private val c
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onBindViewHolder(holder: BoughtViewHolder, position: Int) {
-        val tax = getTax()
+        val taxValue = TaxEnum.values()[data[position].kind.toInt()]
+        val tax = getTax(taxValue)
         val capital = getCapital(data[position])
         val interest = getInterest(data[position],tax)
         val quotesBought = getQuotesBought(data[position])
         val pendintToPay = getPendingToPay(data[position])
 
-        holder.tvBoughtName.text = data[position].nameItem
-        holder.tvCapitalBought.text = NumbersUtil.COPtoString(capital)
-        holder.tvMonthBought.text = data[position].month.toString()
-        holder.tvQuotesBought.text = quotesBought.toString()
-        holder.tvCreditValueBought.text = NumbersUtil.COPtoString(data[position].valueItem)
-        holder.tvTotalQuoteBought.text = NumbersUtil.COPtoString(capital.plus(interest))
-        holder.tvBoughtDate.text = DateUtils.localDateTimeToString(data[position].boughtDate)
-        holder.tvInterestBought.text = NumbersUtil.COPtoString(interest)
-        holder.tvPendingToPay.text = NumbersUtil.COPtoString(pendintToPay)
-        holder.tvTaxBoughtICC.text = tax.orElse(data[position].interest).toString()
-
-        holder.btnBoughtDelete.setOnClickListener {
+      holder.setFields(data[position],capital,interest,quotesBought,pendintToPay,tax){
                 if (saveSvc.delete(data[position].id)) {
                     Snackbar.make(holder.itemView, R.string.delete_successfull, Snackbar.LENGTH_LONG)
                         .setAction(R.string.close) {

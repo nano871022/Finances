@@ -12,6 +12,7 @@ import co.japl.android.myapplication.bussiness.impl.QuoteCreditVariableInterest
 import co.japl.android.myapplication.bussiness.interfaces.Calc
 import co.japl.android.myapplication.bussiness.interfaces.IHolder
 import co.japl.android.myapplication.finanzas.utils.KindBoughtEnum
+import co.japl.android.myapplication.utils.DateUtils
 import java.math.RoundingMode
 import java.text.DecimalFormat
 import java.time.LocalDateTime
@@ -179,7 +180,7 @@ class QuoteBoughtHolder(var root:View) : IHolder<CreditCardBoughtDTO>{
             etProductValue.text.toString().toBigDecimal(),
             etTax.text.toString().toDouble(),
             etMonths.text.toString().toInt(),
-            getLocalDateTimeByString(),
+            DateUtils.getLocalDateTimeByString(dtBought),
             cutOffDate,
             LocalDateTime.now(),
             0,
@@ -187,11 +188,5 @@ class QuoteBoughtHolder(var root:View) : IHolder<CreditCardBoughtDTO>{
             KindBoughtEnum.BOUGHT.kind)
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
-    private fun getLocalDateTimeByString():LocalDateTime{
-        val bought = dtBought.text.toString()
-        val date = bought.split("/")
 
-        return LocalDateTime.of(date[2].toInt(),date[1].toInt(),date[0].toInt(),0,0,0)
-    }
 }

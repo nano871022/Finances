@@ -4,20 +4,23 @@ import android.database.sqlite.SQLiteDatabase
 import android.util.Log
 import co.japl.android.myapplication.bussiness.interfaces.IConnectDB
 import co.japl.android.myapplication.bussiness.queries.CreditCardQuery
+import co.japl.android.myapplication.utils.DatabaseConstants
 
 class CreditCardConnectDB: IConnectDB {
 
-    override fun onCreate(p0: SQLiteDatabase?) {
+    override fun onCreate(db: SQLiteDatabase?) {
         Log.i(this.javaClass.name,"<<<=== onCreate - Start")
         val query = CreditCardQuery.SQL_CREATE_ENTRIES
-        p0?.execSQL(query)
+        db?.execSQL(query)
         Log.i(this.javaClass.name,"<<<=== onCreate - End")
     }
 
-    override fun onUpgrade(p0: SQLiteDatabase?, p1: Int, p2: Int) {
+    override fun onUpgrade(db: SQLiteDatabase?, oldVersion: Int, newVersion: Int) {
         Log.i(this.javaClass.name,"<<<=== onUpgrade - Start")
-         p0?.execSQL(CreditCardQuery.SQL_DELETE_ENTRIES)
-        onCreate(p0)
+        if(oldVersion <  DatabaseConstants.DATA_BASE_VERSION_MINUS) {
+            db?.execSQL(CreditCardQuery.SQL_DELETE_ENTRIES)
+            onCreate(db)
+        }
         Log.i(this.javaClass.name,"<<<=== onUpgrade - End")
     }
 

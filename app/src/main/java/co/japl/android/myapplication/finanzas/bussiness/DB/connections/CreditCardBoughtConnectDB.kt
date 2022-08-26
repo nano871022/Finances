@@ -4,6 +4,7 @@ import android.database.sqlite.SQLiteDatabase
 import android.util.Log
 import co.japl.android.myapplication.bussiness.interfaces.IConnectDB
 import co.japl.android.myapplication.bussiness.queries.CreditCardBoughtQuery
+import co.japl.android.myapplication.utils.DatabaseConstants
 
 class CreditCardBoughtConnectDB:IConnectDB {
 
@@ -15,8 +16,10 @@ class CreditCardBoughtConnectDB:IConnectDB {
 
     override fun onUpgrade(db: SQLiteDatabase?, oldVersion: Int, newVersion: Int) {
         Log.i(this.javaClass.name,"<<<=== onUpgrade - Start")
-         db?.execSQL(CreditCardBoughtQuery.SQL_CREDIT_CARD_DELETE_ENTRIES)
-        onCreate(db)
+        if(oldVersion <  DatabaseConstants.DATA_BASE_VERSION_MINUS) {
+            db?.execSQL(CreditCardBoughtQuery.SQL_CREDIT_CARD_DELETE_ENTRIES)
+            onCreate(db)
+        }
         Log.i(this.javaClass.name,"<<<=== onUpgrade - End")
     }
 

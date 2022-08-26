@@ -12,6 +12,7 @@ import co.japl.android.myapplication.R
 import co.japl.android.myapplication.bussiness.interfaces.IHolder
 import co.japl.android.myapplication.bussiness.interfaces.ISpinnerHolder
 import co.japl.android.myapplication.controller.QuoteBought
+import co.japl.android.myapplication.finanzas.putParams.CashAdvanceParams
 import co.japl.android.myapplication.finanzas.putParams.CreditCardQuotesParams
 import co.japl.android.myapplication.pojo.CreditCard
 import co.japl.android.myapplication.utils.DateUtils
@@ -80,6 +81,7 @@ class QuoteCCHolder(var view:View,var parentFragmentManager:FragmentManager,var 
         }
 
         btnAddCashAdvance.let {
+            it.setOnClickListener(this)
             it.visibility = View.INVISIBLE
         }
         btnAddBought.let {
@@ -158,6 +160,7 @@ class QuoteCCHolder(var view:View,var parentFragmentManager:FragmentManager,var 
             }
             btnAddBuy.visibility = View.VISIBLE
             btnBoughtHistory.visibility = View.VISIBLE
+            btnAddCashAdvance.visibility = View.VISIBLE
         }
     }
 
@@ -183,6 +186,14 @@ class QuoteCCHolder(var view:View,var parentFragmentManager:FragmentManager,var 
             R.id.btnAddItem->addBuy()
             R.id.btnBoughtHistory-> boughtHistory()
             R.id.btnCutOffHistory -> cutOffHistory()
+            R.id.btnAddCashAdvance -> cashAdvance()
+        }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun cashAdvance(){
+        if(validRedirect()){
+            CashAdvanceParams.newInstance(codeCreaditCard.get(),navController)
         }
     }
 
@@ -192,16 +203,21 @@ class QuoteCCHolder(var view:View,var parentFragmentManager:FragmentManager,var 
 
     @RequiresApi(Build.VERSION_CODES.O)
     private fun boughtHistory(){
-        if(this::codeCreaditCard.isInitialized && this::cutOff.isInitialized && codeCreaditCard.isPresent && cutOff.isPresent) {
+        if(validRedirect()) {
             CreditCardQuotesParams.Companion.Historical.newInstance(codeCreaditCard.get(),cutOff.get(), navController)
         }else{
             Toast.makeText(view.context,"There is not selected any credit card",Toast.LENGTH_LONG).show()
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.N)
+    fun validRedirect():Boolean{
+        return this::codeCreaditCard.isInitialized && this::cutOff.isInitialized && codeCreaditCard.isPresent && cutOff.isPresent
+    }
+
     @RequiresApi(Build.VERSION_CODES.O)
     private fun addBuy(){
-        if(this::codeCreaditCard.isInitialized && this::cutOff.isInitialized && codeCreaditCard.isPresent && cutOff.isPresent) {
+        if(validRedirect()) {
             CreditCardQuotesParams.Companion.CreateQuote.newInstance(codeCreaditCard.get(),nameCreaditCard.get(),navController)
         }else{
             Toast.makeText(view.context,"There is not selected any credit card",Toast.LENGTH_LONG).show()

@@ -13,7 +13,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
-        android:text="@string/bought_made"
+        android:text="@string/cash_advance"
         android:textAlignment="center"
         android:textSize="24sp"
         android:textStyle="bold|italic"
@@ -23,7 +23,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <LinearLayout
-        android:id="@+id/llCreditCardAssign"
+        android:id="@+id/llCreditCardAssignCACC"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="30dp"
@@ -32,99 +32,118 @@
         tools:layout_editor_absoluteX="0dp">
 
         <TextView
-            android:id="@+id/lDate"
+            android:id="@+id/lCreditCardAssignCACC"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:paddingLeft="10dp"
+            android:paddingTop="13dp"
+            android:paddingRight="10dp"
+            android:text="@string/assing_credit_Card"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/etCreditCardAssignCACC"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:hint="@string/assing_credit_Card" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/llDateCACC"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toBottomOf="@+id/llCreditCardAssignCACC">
+
+        <TextView
+            android:id="@+id/lDateCACC"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:text="@string/bought_date_time" />
+            android:layout_weight="1"
+            android:text="@string/bought_date_time"
+            android:textStyle="bold" />
 
         <EditText
-            android:id="@+id/dtBought"
+            android:id="@+id/dtBoughtCACC"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:ems="10"
             android:hint="@string/format_date"
             android:inputType="date"
             android:textAlignment="textEnd" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/linearLayout3CACC"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="1dp"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toBottomOf="@+id/llDateCACC"
+        tools:layout_editor_absoluteX="0dp">
 
         <TextView
-            android:id="@+id/lCreditCardAssign"
+            android:id="@+id/lNameItemCACC"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:paddingLeft="10dp"
             android:paddingTop="13dp"
             android:paddingRight="10dp"
-            android:text="@string/assing_credit_Card" />
+            android:text="@string/product_name"
+            android:textStyle="bold" />
 
-        <TextView
-            android:id="@+id/etCreditCardAssign"
+        <EditText
+            android:id="@+id/etNameItemCACC"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginTop="10dp"
-            android:layout_weight="1"
-            android:hint="@string/assing_credit_Card"
-            android:textAlignment="center" />
-
+            android:hint="@string/product_name" />
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/linearLayout3"
+        android:id="@+id/linerLayoutValuesCACC"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="1dp"
         android:orientation="horizontal"
-        app:layout_constraintTop_toBottomOf="@+id/llCreditCardAssign"
-        tools:layout_editor_absoluteX="0dp">
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout3CACC"
+        tools:layout_editor_absoluteX="1dp">
 
         <TextView
-            android:id="@+id/lNameItem"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:id="@+id/lProductValueCACC"
+            android:layout_width="261dp"
+            android:layout_height="match_parent"
             android:layout_weight="1"
             android:paddingLeft="10dp"
             android:paddingTop="13dp"
             android:paddingRight="10dp"
-            android:text="@string/product_name" />
+            android:text="@string/product_value"
+            android:textStyle="bold" />
 
         <EditText
-            android:id="@+id/etNameItem"
+            android:id="@+id/etProductValueCACC"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:hint="@string/product_name" />
-
-        <TextView
-            android:id="@+id/lProductValue"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:paddingLeft="10dp"
-            android:paddingTop="13dp"
-            android:paddingRight="10dp"
-            android:text="@string/product_value" />
-
-        <EditText
-            android:id="@+id/etProductValue"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_weight="1"
             android:ems="10"
-            android:hint="@string/product_value"
-            android:inputType="numberSigned"
+            android:hint="@string/money_hint"
+            android:inputType="numberSigned|numberDecimal"
+            android:numeric="decimal"
+            android:singleLine="false"
             android:textAlignment="textEnd" />
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/linearLayoutTax"
+        android:id="@+id/linearLayoutTaxCACC"
         android:layout_width="match_parent"
         android:layout_height="40dp"
         android:layout_marginTop="1dp"
         android:orientation="horizontal"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout3"
+        app:layout_constraintTop_toBottomOf="@+id/linerLayoutValuesCACC"
         tools:layout_editor_absoluteX="1dp">
 
         <TextView
-            android:id="@+id/textView5"
+            android:id="@+id/textView5CACC"
             android:layout_width="138dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
@@ -132,10 +151,11 @@
             android:paddingTop="15dp"
             android:paddingRight="10dp"
             android:text="@string/tax"
-            android:textAlignment="viewStart" />
+            android:textAlignment="viewStart"
+            android:textStyle="bold" />
 
         <TextView
-            android:id="@+id/etTaxBought"
+            android:id="@+id/etTaxBoughtCACC"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -145,7 +165,7 @@
             android:textAlignment="textEnd" />
 
         <TextView
-            android:id="@+id/textView6"
+            android:id="@+id/textView6CACC"
             android:layout_width="100dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
@@ -153,84 +173,77 @@
             android:paddingTop="13dp"
             android:paddingRight="10dp"
             android:text="@string/percent_symbol" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/linearLayoutCACC"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="1dp"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayoutTaxCACC"
+        tools:layout_editor_absoluteX="1dp">
 
         <TextView
-            android:id="@+id/textView7"
-            android:layout_width="52dp"
-            android:layout_height="match_parent"
+            android:id="@+id/textView7CACC"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:layout_weight="1"
             android:paddingLeft="10dp"
             android:paddingTop="13dp"
             android:paddingRight="10dp"
-            android:text="@string/months" />
+            android:text="@string/months"
+            android:textStyle="bold" />
 
-        <EditText
-            android:id="@+id/etMonths"
-            android:layout_width="wrap_content"
+        <TextView
+            android:id="@+id/tvMontCACC"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:ems="10"
-            android:hint="@string/months_number"
-            android:inputType="number|textPersonName"
-            android:textAlignment="textEnd" />
+            android:text="@string/months_number_hint" />
+
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/linearLayoutQuoteValue"
+        android:id="@+id/linearLayoutQuoteValueCACC"
         android:layout_width="match_parent"
         android:layout_height="40dp"
         android:layout_marginTop="1dp"
         android:orientation="horizontal"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayoutTax"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayoutCACC"
         tools:layout_editor_absoluteX="1dp">
 
         <TextView
-            android:id="@+id/lbRecurrentQuoteValue"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:paddingLeft="10dp"
-            android:text="@string/recurrent" />
-
-        <CheckBox
-            android:id="@+id/cbRecurrent"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1" />
-
-        <TextView
-            android:id="@+id/lQuoteValue"
+            android:id="@+id/lQuoteValueCACC"
             android:layout_width="81dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:paddingLeft="10dp"
             android:paddingTop="13dp"
             android:paddingRight="10dp"
-            android:text="@string/quotes_value" />
+            android:text="@string/quotes_value"
+            android:textStyle="bold" />
 
         <TextView
-            android:id="@+id/etQuoteValue"
+            android:id="@+id/etQuoteValueCACC"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:ems="10"
-            android:hint="@string/quotes_value"
+            android:hint="@string/money_hint"
             android:inputType="number|textPersonName"
             android:textAlignment="textEnd" />
-
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="60dp"
-
         android:orientation="horizontal"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayoutQuoteValue"
+        app:layout_constraintBottom_toBottomOf="parent"
         tools:layout_editor_absoluteX="1dp">
 
         <Button
-            android:id="@+id/btnSaveBought"
+            android:id="@+id/btnSaveBoughtCACC"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginRight="5dp"
@@ -239,7 +252,7 @@
             app:icon="@android:drawable/ic_menu_save" />
 
         <Button
-            android:id="@+id/btnClearBought"
+            android:id="@+id/btnClearBoughtCACC"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"

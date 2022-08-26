@@ -1,7 +1,9 @@
 package co.japl.android.myapplication.utils
 
 import android.os.Build
+import android.widget.EditText
 import androidx.annotation.RequiresApi
+import java.lang.Exception
 import java.time.LocalDateTime
 import java.time.Period
 import java.time.format.DateTimeFormatter
@@ -39,6 +41,20 @@ class DateUtils {
             }
             return value.toLong()
         }
+        @RequiresApi(Build.VERSION_CODES.O)
+        fun getLocalDateTimeByString(date:EditText):LocalDateTime{
+            try {
+                val bought = date.text.toString()
+                val date = bought.split("/")
+
+                return LocalDateTime.of(date[2].toInt(), date[1].toInt(), date[0].toInt(), 0, 0, 0)
+            }catch(e:Exception){
+                date.error = "Invalid value"
+            }
+            return LocalDateTime.now()
+        }
+
     }
+
 }
 
