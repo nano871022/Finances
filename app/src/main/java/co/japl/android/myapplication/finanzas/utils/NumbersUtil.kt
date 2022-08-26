@@ -16,5 +16,9 @@ class NumbersUtil {
         fun toString(value: Long): String {
             return DecimalFormat(formatDecimal).format(value)
         }
+
+        fun stringCOPToBigDecimal(value:String):BigDecimal{
+            return value.replace("$","").replace(",","").trim().toBigDecimal()
+        }
     }
 }

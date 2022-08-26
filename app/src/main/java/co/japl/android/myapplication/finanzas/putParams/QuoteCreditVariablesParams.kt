@@ -53,7 +53,7 @@ class QuoteCreditVariablesParams {
             return Optional.empty()
         }
         fun toBack(navController:NavController){
-            navController.navigate(R.id.action_quote_credt_variable)
+            navController.navigate(R.id.action_quoteCreditSaveVariable_to_item_menu_side_quoteCreditVariable)
         }
     }
 }

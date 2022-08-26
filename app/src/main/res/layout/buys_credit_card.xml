@@ -38,7 +38,8 @@
             android:paddingLeft="10dp"
             android:paddingTop="13dp"
             android:paddingRight="10dp"
-            android:text="@string/assing_credit_Card" />
+            android:text="@string/assing_credit_Card"
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/etCreditCardAssign"
@@ -59,7 +60,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="@string/bought_date_time" />
+            android:text="@string/bought_date_time"
+            android:textStyle="bold" />
 
         <EditText
             android:id="@+id/dtBought"
@@ -88,7 +90,8 @@
             android:paddingLeft="10dp"
             android:paddingTop="13dp"
             android:paddingRight="10dp"
-            android:text="@string/product_name" />
+            android:text="@string/product_name"
+            android:textStyle="bold" />
 
         <EditText
             android:id="@+id/etNameItem"
@@ -114,7 +117,8 @@
             android:paddingLeft="10dp"
             android:paddingTop="13dp"
             android:paddingRight="10dp"
-            android:text="@string/product_value" />
+            android:text="@string/product_value"
+            android:textStyle="bold" />
 
         <EditText
             android:id="@+id/etProductValue"
@@ -145,7 +149,8 @@
             android:paddingTop="15dp"
             android:paddingRight="10dp"
             android:text="@string/tax"
-            android:textAlignment="viewStart" />
+            android:textAlignment="viewStart"
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/etTaxBought"
@@ -185,7 +190,8 @@
             android:paddingLeft="10dp"
             android:paddingTop="13dp"
             android:paddingRight="10dp"
-            android:text="@string/months" />
+            android:text="@string/months"
+            android:textStyle="bold" />
 
         <EditText
             android:id="@+id/etMonths"
@@ -215,7 +221,8 @@
             android:paddingLeft="10dp"
             android:paddingTop="13dp"
             android:paddingRight="10dp"
-            android:text="@string/quotes_value" />
+            android:text="@string/quotes_value"
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/etQuoteValue"
@@ -241,7 +248,8 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:paddingLeft="10dp"
-            android:text="@string/recurrent" />
+            android:text="@string/recurrent"
+            android:textStyle="bold" />
 
         <CheckBox
             android:id="@+id/cbRecurrent"
@@ -263,14 +271,16 @@
             android:layout_height="wrap_content"
             android:layout_marginRight="5dp"
             android:layout_weight="1"
-            android:text="@string/save" />
+            android:text="@string/save"
+            app:icon="@android:drawable/ic_menu_save" />
 
         <Button
             android:id="@+id/btnClearBought"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="@string/clear" />
+            android:text="@string/clear"
+            app:icon="@drawable/ic_baseline_cleaning_services_24" />
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

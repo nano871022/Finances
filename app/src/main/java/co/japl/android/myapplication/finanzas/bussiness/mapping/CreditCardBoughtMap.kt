@@ -4,11 +4,32 @@ import android.content.ContentValues
 import android.database.Cursor
 import android.os.Build
 import androidx.annotation.RequiresApi
+import co.japl.android.myapplication.bussiness.DTO.CreditCardBought
 import co.japl.android.myapplication.bussiness.DTO.CreditCardBoughtDB
 import co.japl.android.myapplication.bussiness.DTO.CreditCardBoughtDTO
+import co.japl.android.myapplication.finanzas.pojo.QuoteCreditCard
 import co.japl.android.myapplication.utils.DateUtils
+import java.time.LocalDateTime
 
 class CreditCardBoughtMap {
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun mapping(quote:CreditCardBought):CreditCardBoughtDTO{
+        return  CreditCardBoughtDTO(
+            quote.codeCreditCard!!,
+            "",
+            quote.nameItem!!,
+            quote.valueItem!!,
+            quote.interest!!,
+            quote.month!!,
+            quote.boughtDate!!,
+            quote.cutOutDate!!,
+            LocalDateTime.now(),
+            0,
+            0,
+            quote.kind!!)
+    }
+
     @RequiresApi(Build.VERSION_CODES.O)
     fun mapping(dto:CreditCardBoughtDTO ):ContentValues{
         return ContentValues().apply {

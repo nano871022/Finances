@@ -15,6 +15,7 @@ import co.japl.android.myapplication.bussiness.DTO.TaxDTO
 import co.japl.android.myapplication.bussiness.interfaces.IHolder
 import co.japl.android.myapplication.bussiness.interfaces.ISpinnerHolder
 import co.japl.android.myapplication.controller.Taxes
+import co.japl.android.myapplication.finanzas.utils.TaxEnum
 import co.japl.android.myapplication.putParams.TaxesParams
 import java.time.LocalDateTime
 
@@ -43,7 +44,9 @@ class TaxHolder (var view:View,var parentFragmentManager:FragmentManager,var nav
         val codeCreditCard = creditCard.selectedItem.toString().toInt()
         val create = LocalDateTime.now()
         val value = 0.0
-        return TaxDTO(id,month,year,status,codeCreditCard,create,value)
+        val kind:Short = TaxEnum.CREDIT_CARD.ordinal.toShort()
+        val period:Short = 0
+        return TaxDTO(id,month,year,status,codeCreditCard,create,value,kind,period)
     }
 
     override fun cleanField() {

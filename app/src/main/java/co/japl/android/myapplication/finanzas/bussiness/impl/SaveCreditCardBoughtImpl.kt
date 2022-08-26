@@ -10,6 +10,7 @@ import co.japl.android.myapplication.bussiness.DTO.CreditCardBoughtDTO
 import co.japl.android.myapplication.bussiness.interfaces.SaveSvc
 import co.japl.android.myapplication.bussiness.interfaces.SearchSvc
 import co.japl.android.myapplication.bussiness.mapping.CreditCardBoughtMap
+import co.japl.android.myapplication.finanzas.utils.TaxEnum
 import co.japl.android.myapplication.utils.DatabaseConstants
 import co.japl.android.myapplication.utils.DateUtils
 import java.math.BigDecimal
@@ -166,11 +167,11 @@ class SaveCreditCardBoughtImpl(override var dbConnect: SQLiteOpenHelper) : SaveS
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    private fun getTax(cutOff:LocalDateTime):Optional<Double>{
+    private fun getTax(cutOff:LocalDateTime, kind:TaxEnum):Optional<Double>{
         Log.d(this.javaClass.name,"<<<=== getTax - Start ${cutOff.month} ${cutOff.month.value} ${cutOff.year}")
         try {
             val taxSvc = TaxImpl(dbConnect)
-            val tax = taxSvc.get(cutOff.month.value, cutOff.year)
+            val tax = taxSvc.get(cutOff.month.value, cutOff.year,kind)
             if (tax.isPresent) {
                 return Optional.ofNullable(tax.get().value).also { Log.d(this.javaClass.name,"${it.get()}") }
             }
@@ -184,13 +185,19 @@ class SaveCreditCardBoughtImpl(override var dbConnect: SQLiteOpenHelper) : SaveS
     override fun getInterest(key: Int, cutOff: LocalDateTime): Optional<BigDecimal> {
         Log.v(this.javaClass.name,"<<<=== getInterest - Start")
         try{
-        val tax = getTax(cutOff)
+        val tax = getTax(cutOff,TaxEnum.CREDIT_CARD)
+        val taxCashAdv = getTax(cutOff,TaxEnum.CASH_ADVANCE)
         val list = getToDate(key,cutOff)
             val value = list.stream().filter{ it.month > 1}
                                  .map{
                                      var interest = it.interest
-                                     if(it.kind ==  "0".toShort() && tax.isPresent){
-                                         interest = tax.get()
+                                     when(it.kind){
+                                         TaxEnum.CREDIT_CARD.ordinal.toShort() ->{
+                                             interest = tax.get()
+                                         }
+                                         TaxEnum.CASH_ADVANCE.ordinal.toShort()->{
+                                             interest = taxCashAdv.get()
+                                         }
                                      }
                                      Log.d(this.javaClass.name,"${it.valueItem} X ${interest}%")
                                      it.valueItem.multiply(interest.toBigDecimal().divide(BigDecimal(100),8,RoundingMode.CEILING))
@@ -234,17 +241,28 @@ class SaveCreditCardBoughtImpl(override var dbConnect: SQLiteOpenHelper) : SaveS
     override fun getInterestPendingQuotes(key: Int, cutOff: LocalDateTime): Optional<BigDecimal> {
         Log.v(this.javaClass.name,"<<<=== getInterestPendingQuotes - Start")
         try{
-            val tax = getTax(cutOff)
+            val tax = getTax(cutOff,TaxEnum.CREDIT_CARD)
+            val taxCashAdv = getTax(cutOff,TaxEnum.CASH_ADVANCE)
         val list = getPendingQuotes(key,cutOff)
         val value = list.stream().map {
             val months = DateUtils.getMonths(it.boughtDate,cutOff)
             val quote = it.valueItem.divide(it.month.toBigDecimal(),8,RoundingMode.CEILING)
             val bought = quote.multiply(months.toBigDecimal())
             val capital = it.valueItem.minus(bought)
+            Log.d(this.javaClass.name,"Month $months; Quote $quote; Bought $bought; Capital $capital; Value ${it.valueItem}; Date ${it.boughtDate}")
             if(capital > BigDecimal(0)){
                 var interest = it.interest
-                if(it.kind == "0".toShort() && tax.isPresent){
-                    interest = tax.get()
+                when(it.kind){
+                    TaxEnum.CREDIT_CARD.ordinal.toShort()->{
+                        if(tax.isPresent) {
+                            interest = tax.get()
+                        }
+                    }
+                    TaxEnum.CASH_ADVANCE.ordinal.toShort()->{
+                        if(taxCashAdv.isPresent) {
+                            interest = taxCashAdv.get()
+                        }
+                    }
                 }
                 Log.println(Log.DEBUG,this.javaClass.name,"$capital X ${interest}%")
                 capital.multiply(interest.div(100).toBigDecimal())

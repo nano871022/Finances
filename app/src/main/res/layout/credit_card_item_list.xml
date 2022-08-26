@@ -33,6 +33,7 @@
                 android:layout_gravity="center_vertical"
                 android:layout_weight="1"
                 android:text="@string/product_name"
+                android:textColor="@android:color/primary_text_dark"
                 android:textSize="18sp"
                 android:textStyle="bold" />
 
@@ -71,6 +72,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="@string/cut_off_day"
+                android:textColor="@android:color/primary_text_dark"
                 android:textStyle="bold" />
 
             <TextView
@@ -81,6 +83,7 @@
                 android:layout_weight="1"
                 android:text="@string/months_number_hint"
                 android:textAlignment="textEnd"
+                android:textColor="@android:color/primary_text_dark"
                 android:textStyle="italic" />
 
             <TextView
@@ -89,6 +92,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="@string/status"
+                android:textColor="@android:color/primary_text_dark"
                 android:textStyle="bold" />
 
             <TextView
@@ -98,6 +102,7 @@
                 android:layout_weight="1"
                 android:text="@string/months_number_hint"
                 android:textAlignment="textEnd"
+                android:textColor="@android:color/primary_text_dark"
                 android:textStyle="italic" />
 
         </LinearLayout>
@@ -114,6 +119,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="@string/warning_quote_value"
+                android:textColor="@android:color/primary_text_dark"
                 android:textStyle="bold" />
 
             <TextView
@@ -122,7 +128,8 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="@string/money_hint"
-                android:textAlignment="textEnd" />
+                android:textAlignment="textEnd"
+                android:textColor="@android:color/primary_text_dark" />
         </LinearLayout>
 
     </LinearLayout>

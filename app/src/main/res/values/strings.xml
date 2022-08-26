@@ -14,7 +14,9 @@
     <string name="quote_credit_variable">Cuota del Crédito Variable</string>
     <string name="list_save">Lista calculos almacenados</string>
     <string name="tax">Tasa</string>
+    <string name="kind_of_tax">Tipo de Tasa</string>
     <string name="months">Meses</string>
+    <string name="periods">Periodos</string>
     <string name="months_number_hint">000</string>
     <string name="credit_value">Valor del Credito</string>
     <string name="months_number">Número de Meses</string>
@@ -29,6 +31,7 @@
     <string name="interest_value">Valor a intereses</string>
     <string name="total_value">Valor total</string>
     <string name="save">Guardar</string>
+    <string name="add">Agregar</string>
     <string name="quote_credit_save">Guardar - Cuota Credito Fija</string>
     <string name="quote_credit_save_variable">Guardar - Cuota Credito Variable</string>
     <string name="name">Nombre</string>
@@ -99,6 +102,8 @@
     <string name="add_tax">Agregar Tasa</string>
     <string name="taxs_credit_card">Tasas de Tarjeta de Credito</string>
     <string name="recurrent">Recurrente</string>
+    <string name="cash_advance">Avance de Dinero</string>
+    <string name="sucursal_advance">Avance sucursal bancaria</string>
 
     <string-array name="Months">
         <item>--- Seleccionar --- </item>

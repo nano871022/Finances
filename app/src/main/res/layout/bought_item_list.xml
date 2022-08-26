@@ -14,7 +14,11 @@
     android:paddingRight="5dp"
     android:paddingBottom="5dp"
     app:layout_dodgeInsetEdges="all">
-
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        tools:ignore="MissingConstraints">
     <LinearLayout
         android:id="@+id/llTitleBought"
         android:layout_width="match_parent"
@@ -30,7 +34,6 @@
             android:layout_gravity="center_vertical"
             android:layout_weight="1"
             android:text="@string/date_hint"
-            android:textAlignment="viewStart"
             android:textColor="@android:color/primary_text_dark"
             android:textSize="18sp"
             android:textStyle="bold" />
@@ -50,7 +53,6 @@
             android:id="@+id/btnDeleteItemTCC"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="0"
             app:srcCompat="@drawable/ic_baseline_delete_24" />
 
     </LinearLayout>
@@ -284,11 +286,6 @@
         android:orientation="vertical"
         app:layout_constraintGuide_begin="20dp" />
 
-    <androidx.constraintlayout.helper.widget.Layer
-        android:id="@+id/layer"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
-
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline3"
         android:layout_width="wrap_content"
@@ -302,5 +299,5 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         app:layout_constraintGuide_begin="20dp" />
-
+    </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

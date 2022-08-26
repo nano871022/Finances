@@ -20,19 +20,23 @@ class TaxMap : IMapper<TaxDTO>{
             put(TaxDB.TaxEntry.COLUMN_COD_CREDIT_CARD,dto.codCreditCard.toString())
             put(TaxDB.TaxEntry.COLUMN_status,dto.status)
             put(TaxDB.TaxEntry.COLUMN_CREATE_DATE,DateUtils.localDateTimeToString(dto.create))
+            put(TaxDB.TaxEntry.COLUMN_KIND,dto.kind)
+            put(TaxDB.TaxEntry.COLUMN_PERIOD,dto.period)
 
         }
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun mapping(cursor:Cursor):TaxDTO{
-        Log.d(this.javaClass.name,"${cursor.getString(6)}")
+        Log.d(this.javaClass.name,"${cursor.columnCount} ${cursor.columnNames} ")
         val tax = cursor.getDouble(1)
         val month = cursor.getShort(2)
         val year = cursor.getInt(3)
         val status = cursor.getShort(4)
-        val createDate = DateUtils.toLocalDateTime(cursor.getString(6))
         val codCreditCard = cursor.getInt(5)
+        val createDate = DateUtils.toLocalDateTime(cursor.getString(6))
+        val kind = cursor.getShort(7)
+        val period = cursor.getShort(8)
         val id = cursor.getString(0).toInt()
         return  TaxDTO(
             id,
@@ -41,7 +45,9 @@ class TaxMap : IMapper<TaxDTO>{
             status,
             codCreditCard,
             createDate,
-            tax
+            tax,
+            kind,
+            period
         )
     }
 

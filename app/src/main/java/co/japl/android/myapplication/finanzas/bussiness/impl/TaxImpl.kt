@@ -12,6 +12,7 @@ import co.japl.android.myapplication.bussiness.interfaces.IMapper
 import co.japl.android.myapplication.bussiness.interfaces.ITaxSvc
 import co.japl.android.myapplication.bussiness.interfaces.SaveSvc
 import co.japl.android.myapplication.bussiness.mapping.TaxMap
+import co.japl.android.myapplication.finanzas.utils.TaxEnum
 import co.japl.android.myapplication.utils.DatabaseConstants
 import java.util.*
 
@@ -22,7 +23,9 @@ class TaxImpl(override var dbConnect: SQLiteOpenHelper) :  SaveSvc<TaxDTO>,ITaxS
                                   TaxDB.TaxEntry.COLUMN_YEAR,
                                   TaxDB.TaxEntry.COLUMN_status,
                                   TaxDB.TaxEntry.COLUMN_COD_CREDIT_CARD,
-                                  TaxDB.TaxEntry.COLUMN_CREATE_DATE)
+                                  TaxDB.TaxEntry.COLUMN_CREATE_DATE,
+                                  TaxDB.TaxEntry.COLUMN_KIND,
+                                  TaxDB.TaxEntry.COLUMN_PERIOD)
     private val mapper:IMapper<TaxDTO> = TaxMap()
     @RequiresApi(Build.VERSION_CODES.O)
     override fun save(dto: TaxDTO): Boolean {
@@ -97,15 +100,15 @@ class TaxImpl(override var dbConnect: SQLiteOpenHelper) :  SaveSvc<TaxDTO>,ITaxS
     }
 
     @RequiresApi(Build.VERSION_CODES.N)
-    override fun get(month:Int, year:Int):Optional<TaxDTO>{
+    override fun get(month:Int, year:Int,kind:TaxEnum):Optional<TaxDTO>{
         Log.d(this.javaClass.name,"<<<=== Start get - $month , $year")
         try {
             val db = dbConnect.writableDatabase
             val cursor = db.query(
                 TaxDB.TaxEntry.TABLE_NAME,
                 COLUMNS,
-                " ${TaxDB.TaxEntry.COLUMN_MONTH} = ? and ${TaxDB.TaxEntry.COLUMN_YEAR} = ?",
-                arrayOf(month.toString(), year.toString()),
+                " ${TaxDB.TaxEntry.COLUMN_MONTH} = ? and ${TaxDB.TaxEntry.COLUMN_YEAR} = ? and ${TaxDB.TaxEntry.COLUMN_KIND} = ?",
+                arrayOf(month.toString(), year.toString(), kind.ordinal.toString()),
                 null,
                 null,
                 null

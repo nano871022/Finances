@@ -1,6 +1,7 @@
 package co.japl.android.myapplication.bussiness.interfaces
 
 import android.database.sqlite.SQLiteOpenHelper
+import co.japl.android.myapplication.finanzas.utils.TaxEnum
 import java.math.BigDecimal
 import java.time.LocalDateTime
 import java.util.*

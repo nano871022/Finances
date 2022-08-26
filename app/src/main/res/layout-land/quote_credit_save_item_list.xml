@@ -4,7 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="10dp"
+    android:layout_marginLeft="5dp"
+    android:layout_marginTop="5dp"
+    android:layout_marginRight="5dp"
     android:background="?attr/colorPrimary"
     android:orientation="vertical"
     android:paddingLeft="5dp"
@@ -12,6 +14,11 @@
     android:paddingRight="5dp"
     android:paddingBottom="5dp"
     app:layout_dodgeInsetEdges="all">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
     <LinearLayout
         android:id="@+id/llTitleBought"
@@ -22,59 +29,42 @@
         tools:layout_editor_absoluteY="1dp">
 
         <TextView
-            android:id="@+id/tvBoughtDate"
+            android:id="@+id/tvTypeListSaveItem"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:layout_weight="1"
-            android:text="@string/date_hint"
-
+            android:text="type"
+            android:textAlignment="viewStart"
             android:textColor="@android:color/primary_text_dark"
             android:textSize="18sp"
             android:textStyle="bold" />
 
         <TextView
-            android:id="@+id/tvMonthItemTCC"
+            android:id="@+id/textView19"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:layout_weight="1"
-            android:text="@string/product_name"
+            android:text="-"
+            android:textAlignment="center"
             android:textColor="@android:color/primary_text_dark"
             android:textSize="18sp"
             android:textStyle="bold" />
 
         <TextView
-            android:id="@+id/tvCutOffDayICC"
+            android:id="@+id/tvNameListSaveItem"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginRight="10dp"
-            android:layout_weight="0"
-            android:text="@string/months_number_hint"
-            android:textAlignment="textEnd"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="1"
+            android:text="name"
             android:textColor="@android:color/primary_text_dark"
-            android:textStyle="italic" />
-
-        <TextView
-            android:id="@+id/textView4"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="5dp"
-            android:layout_weight="0"
-            android:text="/" />
-
-        <TextView
-            android:id="@+id/tvStatusICC"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="0"
-            android:text="@string/months_number_hint"
-            android:textAlignment="textEnd"
-            android:textColor="@android:color/primary_text_dark"
-            android:textStyle="italic" />
+            android:textSize="18sp"
+            android:textStyle="bold" />
 
         <ImageButton
-            android:id="@+id/btnDeleteItemTCC"
+            android:id="@+id/btnDelete"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="0"
@@ -83,7 +73,7 @@
     </LinearLayout>
 
     <View
-        android:id="@+id/bought_divider"
+        android:id="@+id/divider"
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_weight="1"
@@ -100,43 +90,58 @@
         tools:layout_editor_absoluteX="1dp">
 
         <TextView
-            android:id="@+id/lbCutOffDayICC"
+            android:id="@+id/textView23"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="@string/product_value"
+            android:text="@string/credit_value"
             android:textColor="@android:color/primary_text_dark"
             android:textStyle="bold" />
 
         <TextView
-            android:id="@+id/tvCreditValueBought"
+            android:id="@+id/tvCreditValueListSaveItem"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="@string/money_hint"
-            android:textAlignment="textEnd"
+            android:text="@string/quote_credit_hint"
             android:textColor="@android:color/primary_text_dark"
             android:textStyle="italic" />
 
         <TextView
-            android:id="@+id/lbTaxBoughtICC"
+            android:id="@+id/textView26"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="5dp"
             android:layout_weight="1"
-            android:text="@string/tax"
+            android:text="@string/interest_value"
             android:textColor="@android:color/primary_text_dark"
             android:textStyle="bold" />
 
         <TextView
-            android:id="@+id/tvTaxBoughtICC"
+            android:id="@+id/tvInterestListSaveItem"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="@string/interest_value_hint"
-            android:textAlignment="textEnd"
-            android:textColor="@android:color/primary_text_dark" />
+            android:textColor="@android:color/primary_text_dark"
+            android:textStyle="italic" />
 
+        <TextView
+            android:id="@+id/lbStatusICC"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/months"
+            android:textColor="@android:color/primary_text_dark"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tvPeriodListSaveItem"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/months_number_hint"
+            android:textColor="@android:color/primary_text_dark"
+            android:textStyle="italic" />
     </LinearLayout>
 
     <LinearLayout
@@ -145,82 +150,7 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         app:layout_constraintTop_toBottomOf="@+id/llProductValueBought"
-        tools:layout_editor_absoluteX="1dp"/>
-
-    <LinearLayout
-        android:id="@+id/llPendingToPay"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintTop_toBottomOf="@+id/llQuotesBought"
-        tools:layout_editor_absoluteX="5dp">
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/llTaxBoughtICC"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintTop_toBottomOf="@+id/llPendingToPay"
-        tools:layout_editor_absoluteX="5dp"
-        tools:layout_editor_absoluteY="5dp">
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/llCapitalBought"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintTop_toBottomOf="@+id/llTaxBoughtICC"
-        tools:layout_editor_absoluteX="5dp">
-
-        <TextView
-            android:id="@+id/lbWarningICC"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/capital_value"
-            android:textColor="@android:color/primary_text_dark"
-            android:textStyle="bold" />
-
-        <TextView
-            android:id="@+id/tvWarningICC"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/money_hint"
-            android:textAlignment="textEnd"
-            android:textColor="@android:color/primary_text_dark" />
-
-        <TextView
-            android:id="@+id/lbInterestBought"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="5dp"
-            android:layout_weight="1"
-            android:text="@string/interest_value"
-            android:textColor="@android:color/primary_text_dark"
-            android:textStyle="bold" />
-
-        <TextView
-            android:id="@+id/tvInterestBought"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/money_hint"
-            android:textAlignment="textEnd"
-            android:textColor="@android:color/primary_text_dark" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/llInterestBought"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintTop_toBottomOf="@+id/llCapitalBought"
-        tools:layout_editor_absoluteX="5dp">
+        tools:layout_editor_absoluteX="1dp">
 
     </LinearLayout>
 
@@ -229,44 +159,74 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintTop_toBottomOf="@+id/llInterestBought"
+
         tools:layout_editor_absoluteX="1dp">
 
-        <TextView
-            android:id="@+id/lbPendingToPay"
+        <LinearLayout
+            android:id="@+id/llCapitalBought"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/pending_to_pay"
-            android:textColor="@android:color/primary_text_dark"
-            android:textStyle="bold" />
+            android:layout_weight="2"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/textView25"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/capital_value"
+                android:textColor="@android:color/primary_text_dark"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tvCapitalValueList"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/interest_value_hint"
+                android:textColor="@android:color/primary_text_dark" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/llInterestBought"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/textView24"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/interest_value"
+                android:textColor="@android:color/primary_text_dark"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tvInterestValueList"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/interest_value_hint"
+                android:textColor="@android:color/primary_text_dark" />
+        </LinearLayout>
 
         <TextView
-            android:id="@+id/tvPendingToPay"
+            android:id="@+id/textView31"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/money_hint"
-            android:textAlignment="textEnd"
-            android:textColor="@android:color/primary_text_dark" />
-
-        <TextView
-            android:id="@+id/lbTotalQuoteBought"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="5dp"
             android:layout_weight="1"
             android:text="@string/quote_credit"
             android:textColor="@android:color/primary_text_dark"
             android:textStyle="bold" />
 
         <TextView
-            android:id="@+id/tvTotalQuoteBought"
+            android:id="@+id/tvQuoteCreditListSaveItem"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="@string/quote_credit_hint"
-            android:textAlignment="textEnd"
             android:textColor="@android:color/primary_text_dark"
             android:textStyle="italic" />
     </LinearLayout>
@@ -277,20 +237,5 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         app:layout_constraintGuide_begin="20dp" />
-
-
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintGuide_begin="20dp" />
-
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline4"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_begin="68dp" />
-
+    </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

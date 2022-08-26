@@ -9,9 +9,9 @@ data class TaxDTO (
     var status:Short,
     var codCreditCard:Int,
     var create: LocalDateTime,
-    var value: Double
-
-
+    var value: Double,
+    var kind: Short,
+    var period: Short
     )
 
 object TaxDB{
@@ -23,5 +23,7 @@ object TaxDB{
         const val COLUMN_COD_CREDIT_CARD = "cod_credit_card"
         const val COLUMN_CREATE_DATE = "dt_create"
         const val COLUMN_TAX = "num_tax"
+        const val COLUMN_KIND = "num_kind"
+        const val COLUMN_PERIOD = "num_period"
     }
 }

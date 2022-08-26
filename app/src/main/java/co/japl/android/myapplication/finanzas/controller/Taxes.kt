@@ -20,6 +20,7 @@ import co.japl.android.myapplication.bussiness.impl.TaxImpl
 import co.japl.android.myapplication.bussiness.interfaces.IHolder
 import co.japl.android.myapplication.bussiness.interfaces.ISpinnerHolder
 import co.japl.android.myapplication.bussiness.interfaces.SaveSvc
+import co.japl.android.myapplication.finanzas.utils.TaxEnum
 import co.japl.android.myapplication.holders.TaxesHolder
 import co.japl.android.myapplication.putParams.TaxesParams
 import co.japl.android.myapplication.putParams.TaxesParams.Params.ARG_PARAM1
@@ -51,7 +52,7 @@ class Taxes : Fragment() , View.OnClickListener{
         listCreditCardNames = listCreditCard.stream().map { it.name }.collect(Collectors.toList())
         listCreditCardNames.add(0,"--- Seleccionar ---")
         val today = LocalDate.now()
-        holder.loadFields(TaxDTO(0,today.month.value.toShort(),today.year,0,0, LocalDateTime.now(),2.0))
+        holder.loadFields(TaxDTO(0,today.month.value.toShort(),today.year,0,0, LocalDateTime.now(),2.0,TaxEnum.CREDIT_CARD.ordinal.toShort(),0))
 
         (holder as ISpinnerHolder<TaxesHolder>).lists{
                 it.creditCard.adapter = ArrayAdapter(this.requireContext(),R.layout.spinner_simple,R.id.tvValueBigSp,
@@ -60,6 +61,9 @@ class Taxes : Fragment() , View.OnClickListener{
                     adapter.setDropDownViewResource(R.layout.spinner1)
                     it.month.adapter = adapter
                 }
+            ArrayAdapter(this.requireContext(),R.layout.spinner_simple,R.id.tvValueBigSp,TaxEnum.values()).also { arr->
+                it.kind.adapter = arr
+            }
         }
         arguments?.let { val params = TaxesParams.download(it)
         param1 =params.first
