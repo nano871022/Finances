@@ -27,6 +27,7 @@ import co.japl.android.myapplication.putParams.TaxesParams.Params.ARG_PARAM1
 import co.japl.android.myapplication.putParams.TaxesParams.Params.ARG_PARAM2
 import java.time.LocalDate
 import java.time.LocalDateTime
+import java.time.YearMonth
 import java.util.stream.Collectors
 
 class Taxes : Fragment() , View.OnClickListener{
@@ -64,6 +65,10 @@ class Taxes : Fragment() , View.OnClickListener{
             ArrayAdapter(this.requireContext(),R.layout.spinner_simple,R.id.tvValueBigSp,TaxEnum.values()).also { arr->
                 it.kind.adapter = arr
             }
+            if(listCreditCardNames.isNotEmpty() && listCreditCardNames.size == 2){
+                it.creditCard.setSelection(1)
+            }
+            it.month.setSelection(YearMonth.now().monthValue)
         }
         arguments?.let { val params = TaxesParams.download(it)
         param1 =params.first

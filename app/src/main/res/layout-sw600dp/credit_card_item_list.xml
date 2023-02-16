@@ -37,7 +37,7 @@
                 android:textStyle="bold" />
 
             <TextView
-                android:id="@+id/tvCutOffDayICC"
+                android:id="@+id/tvListPeriodInterest"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
@@ -49,7 +49,7 @@
                 android:textStyle="italic" />
 
             <TextView
-                android:id="@+id/tvMonthItemTCC"
+                android:id="@+id/tvListPeriodItem"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
@@ -70,7 +70,7 @@
                 android:textStyle="bold" />
 
             <TextView
-                android:id="@+id/tvStatusICC"
+                android:id="@+id/tvListPeriodCapital"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
@@ -92,7 +92,7 @@
                 android:textStyle="bold" />
 
             <TextView
-                android:id="@+id/tvWarningICC"
+                android:id="@+id/tvListPeriodTotalQuote"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"

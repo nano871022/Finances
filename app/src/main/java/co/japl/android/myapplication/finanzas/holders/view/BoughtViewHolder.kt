@@ -7,9 +7,7 @@ import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.RecyclerView
 import co.japl.android.myapplication.R
-import co.japl.android.myapplication.bussiness.DTO.CreditCardBought
 import co.japl.android.myapplication.bussiness.DTO.CreditCardBoughtDTO
-import co.japl.android.myapplication.bussiness.DTO.TaxDTO
 import co.japl.android.myapplication.utils.DateUtils
 import co.japl.android.myapplication.utils.NumbersUtil
 import java.math.BigDecimal
@@ -29,11 +27,11 @@ class BoughtViewHolder(itemView:View) : RecyclerView.ViewHolder(itemView) {
     lateinit var tvTaxBoughtICC:TextView
 
     fun loadFields(view:View){
-        tvBoughtName = view.findViewById(R.id.tvMonthItemTCC)
+        tvBoughtName = view.findViewById(R.id.tvListPeriodItem)
         tvCreditValueBought = view.findViewById(R.id.tvCreditValueBought)
-        tvQuotesBought = view.findViewById(R.id.tvCutOffDayICC)
-        tvMonthBought = view.findViewById(R.id.tvStatusICC)
-        tvCapitalBought = view.findViewById(R.id.tvWarningICC)
+        tvQuotesBought = view.findViewById(R.id.tvListPeriodInterest)
+        tvMonthBought = view.findViewById(R.id.tvListPeriodCapital)
+        tvCapitalBought = view.findViewById(R.id.tvListPeriodTotalQuote)
         tvInterestBought = view.findViewById(R.id.tvInterestBought)
         btnBoughtDelete = view.findViewById(R.id.btnDeleteItemTCC)
         tvTotalQuoteBought = view.findViewById(R.id.tvTotalQuoteBought)

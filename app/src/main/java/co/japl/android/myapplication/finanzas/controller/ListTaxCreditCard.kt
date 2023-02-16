@@ -21,6 +21,7 @@ import co.japl.android.myapplication.bussiness.DTO.TaxDTO
 import co.japl.android.myapplication.bussiness.impl.CreditCardImpl
 import co.japl.android.myapplication.bussiness.impl.TaxImpl
 import co.japl.android.myapplication.bussiness.interfaces.SaveSvc
+import co.japl.android.myapplication.finanzas.bussiness.impl.ScriptService
 import co.japl.android.myapplication.holders.TaxHolder
 import java.util.stream.Collectors
 
@@ -48,6 +49,11 @@ class ListTaxCreditCard : Fragment() , AdapterView.OnItemSelectedListener{
         searchCCSvc = CreditCardImpl(connect)
         searchTaxSvc = TaxImpl(connect)
         setField(view)
+
+        val svcTest = ScriptService()
+        svcTest.init()
+        svcTest.load()
+        println(svcTest.execute2())
         return view
     }
 
@@ -63,6 +69,9 @@ class ListTaxCreditCard : Fragment() , AdapterView.OnItemSelectedListener{
                 it.creditCard.adapter = ArrayAdapter(view.context,R.layout.spinner_simple,R.id.tvValueBigSp,list.toTypedArray())
                 it.creditCard.onItemSelectedListener = this
                 loadRecycleView(it.recyclerView)
+                if(list.isNotEmpty() && list.size == 2){
+                    it.creditCard.setSelection(1)
+                }
             }
         }
     }

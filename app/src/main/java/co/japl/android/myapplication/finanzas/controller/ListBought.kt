@@ -87,9 +87,8 @@ class ListBought : Fragment() {
         joinList.addAll(pending)
         joinList.addAll(listRecurrent)
         val capital = saveSvc.getCapital(creditCard.codeCreditCard.get(),creditCard.cutOff.get())
-        val capitalRecurrent = listRecurrent.filter { it.month == 1 }.map { it.valueItem }.reduceOrNull{ val1,val2->val1.add(val2)}?:BigDecimal.ZERO
-        val capitalQuoteRecurrent = listRecurrent.filter { it.month > 1 }.map { it.valueItem.divide(it.month.toBigDecimal(),8,RoundingMode.CEILING) }.reduceOrNull{ val1, val2->val1.add(val2)}?:BigDecimal.ZERO
         val capitalQuotes = saveSvc.getCapitalPendingQuotes(creditCard.codeCreditCard.get(),creditCard.cutOff.get())
+        println("Capital: $capital capital Quotes: $capitalQuotes")
         val interest = saveSvc.getInterest(creditCard.codeCreditCard.get(),creditCard.cutOff.get())
         val interestQuotes = saveSvc.getInterestPendingQuotes(creditCard.codeCreditCard.get(),creditCard.cutOff.get())
         val pendingToPay = saveSvc.getPendingToPay(creditCard.codeCreditCard.get(),creditCard.cutOff.get())
@@ -97,13 +96,17 @@ class ListBought : Fragment() {
         if(!this::boughtRecap.isInitialized){
             boughtRecap = BoughtRecap()
         }
-        boughtRecap.capitalValue = Optional.ofNullable(capital.orElse(BigDecimal(0)).plus(capitalQuotes.orElse(BigDecimal(0))).plus(capitalRecurrent).plus(capitalQuoteRecurrent))
+        boughtRecap.capitalValue = Optional.ofNullable(capital.orElse(BigDecimal(0)).plus(capitalQuotes.orElse(BigDecimal(0))))
         boughtRecap.interestValue = Optional.ofNullable(interest.orElse(BigDecimal(0)).plus(interestQuotes.orElse(BigDecimal(0))))
         boughtRecap.pendingToPay = Optional.ofNullable(pendingToPay.orElse(BigDecimal(0)).plus(pendingToPayQuotes.orElse(BigDecimal(0))))
         boughtRecap.totalValue = Optional.ofNullable(boughtRecap.capitalValue.orElse(BigDecimal.ZERO).plus(boughtRecap.interestValue.orElse(BigDecimal.ZERO)))
+        boughtRecap.currentValueCapital = capital
+        boughtRecap.quotesValueCapital = capitalQuotes
+        boughtRecap.currentValueInterest = interest
+        boughtRecap.quotesValueInterest = interestQuotes
         this.list = joinList.sortedByDescending { it.boughtDate }
         if( !this::list.isInitialized || this.list.isEmpty()){
-            Toast.makeText(view.context,"No hay regisros para mostrar", Toast.LENGTH_LONG).show()
+            Toast.makeText(view.context,"No hay registros para mostrar", Toast.LENGTH_LONG).show()
             CreditCardQuotesParams.Companion.Historical.toBack(findNavController())
         }
     }

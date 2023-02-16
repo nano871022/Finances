@@ -17,6 +17,82 @@
             android:orientation="vertical">
 
             <LinearLayout
+                android:id="@+id/llSplitDownCurrent"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/lbCurrentCapitalList"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/current_capital_value_short" />
+
+                <TextView
+                    android:id="@+id/tvCurrentCapitalList"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="10dp"
+                    android:layout_weight="1"
+                    android:text="@string/money_hint"
+                    android:textAlignment="textEnd" />
+
+                <TextView
+                    android:id="@+id/lbQuoteCapitalList"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/quote_capital_value_short" />
+
+                <TextView
+                    android:id="@+id/tvQuoteCapitalList"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/money_hint"
+                    android:textAlignment="textEnd" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/llSplitDownCurrentInterest"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/lbCurrentInterestList"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/current_interest_value_short" />
+
+                <TextView
+                    android:id="@+id/tvCurrentInterestList"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="10dp"
+                    android:layout_weight="1"
+                    android:text="@string/money_hint"
+                    android:textAlignment="textEnd" />
+
+                <TextView
+                    android:id="@+id/lbQuoteInterestList"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/quote_interest_value_short" />
+
+                <TextView
+                    android:id="@+id/tvQuoteInterestList"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/money_hint"
+                    android:textAlignment="textEnd" />
+            </LinearLayout>
+
+            <LinearLayout
                 android:id="@+id/llSplitDown"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

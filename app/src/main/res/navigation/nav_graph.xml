@@ -25,6 +25,9 @@
         <action
             android:id="@+id/action_item_menu_side_boughtmade_to_cash_advance_fragment"
             app:destination="@id/cash_advance_fragment" />
+        <action
+            android:id="@+id/action_item_menu_side_boughtmade_to_list_periods"
+            app:destination="@id/list_periods" />
     </fragment>
     <fragment
         android:id="@+id/item_menu_side_quoteCredit"
@@ -62,7 +65,26 @@
             app:enterAnim="@android:anim/fade_in"
             app:exitAnim="@android:anim/fade_out"
             app:destination="@+id/item_menu_side_boughtmade" />
+        <action
+            android:id="@+id/action_list_bought_to_list_periods"
+            app:destination="@id/list_periods" />
     </fragment>
+
+    <fragment
+        android:id="@+id/list_periods"
+        android:name="co.japl.android.myapplication.controller.ListQuotesPaid"
+        android:label="@string/list_periods"
+        tools:layout="@layout/fragment_list_periods">
+        <action
+            android:id="@+id/action_list_periods_to_list_cc_quote"
+            app:enterAnim="@android:anim/fade_in"
+            app:exitAnim="@android:anim/fade_out"
+            app:destination="@+id/item_menu_side_boughtmade" />
+        <action
+            android:id="@+id/action_list_periods_to_list_bought"
+            app:destination="@id/list_bought" />
+    </fragment>
+
     <fragment
         android:id="@+id/quoteCreditSave"
         android:name="co.japl.android.myapplication.controller.QuoteCreditSave"
@@ -89,7 +111,7 @@
         <action
             android:id="@+id/action_quoteCreditSaveVariable_to_item_menu_side_quoteCreditVariable"
             app:destination="@id/item_menu_side_quoteCreditVariable" />
-        app:destination="@+id/item_menu_side_quoteCreditVariable" />
+
     </fragment>
 
     <fragment
@@ -168,4 +190,11 @@
             android:id="@+id/action_cash_advance_fragment_to_item_menu_side_boughtmade"
             app:destination="@id/item_menu_side_boughtmade" />
     </fragment>
+
+    <fragment
+        android:id="@+id/item_menu_setting_google_login"
+        android:name="co.japl.android.myapplication.finanzas.controller.GDriveConnectFragment"
+        android:label="Login on Google"
+        tools:layout="@layout/fragment_g_drive_connect" />
+
 </navigation>

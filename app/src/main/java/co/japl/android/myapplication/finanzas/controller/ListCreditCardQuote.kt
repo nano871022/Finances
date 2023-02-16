@@ -40,7 +40,7 @@ class ListCreditCardQuote : Fragment(), AdapterView.OnItemSelectedListener{
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         val rootView = inflater.inflate(R.layout.list_credit_card_quote, container, false)
         contexto = rootView.context
         holder = QuoteCCHolder(rootView,parentFragmentManager,findNavController())
@@ -100,30 +100,36 @@ class ListCreditCardQuote : Fragment(), AdapterView.OnItemSelectedListener{
         (holder as ISpinnerHolder<QuoteCCHolder>).lists{
             it.spCreditCard.adapter = ArrayAdapter(it.view.context,R.layout.spinner_bigger,R.id.tvValueBigSp,list)
             it.spCreditCard.onItemSelectedListener = this
+
+            if(list.isNotEmpty() && list.size == 2) {
+                it.spCreditCard.setSelection(1)
+            }
         }
+
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-        if(position > 0 )
-        this.context?.let {
-            val now = LocalDateTime.now()
-            val item = parent?.getItemAtPosition(position )
-            val creditCard = listCreditCard.firstOrNull { cc -> cc.name == item }
-            var pojo = CreditCard()
-            creditCard.let {
-                pojo.codeCreditCard = Optional.ofNullable(creditCard?.id)
-                pojo.nameCreditCard = Optional.ofNullable(creditCard?.name)
-                pojo.cutOff =
-                Optional.ofNullable(creditCard?.cutOffDay?.toInt()
-                    ?.let { it1 -> configSvc.nextCutOff( it1) })
-            }
+        if(position > 0 ) {
+            this.context?.let {
+                val now = LocalDateTime.now()
+                val item = parent?.getItemAtPosition(position )
+                val creditCard = listCreditCard.firstOrNull { cc -> cc.name == item }
+                var pojo = CreditCard()
+                creditCard.let {
+                    pojo.codeCreditCard = Optional.ofNullable(creditCard?.id)
+                    pojo.nameCreditCard = Optional.ofNullable(creditCard?.name)
+                    pojo.cutOff =
+                        Optional.ofNullable(creditCard?.cutOffDay?.toInt()
+                            ?.let { it1 -> configSvc.nextCutOff( it1) })
+                }
                 taxSvc.get(now.monthValue,now.year).ifPresent{
-                pojo.lastTax = Optional.ofNullable(it.value)
+                    pojo.lastTax = Optional.ofNullable(it.value)
+                }
+                pojo = loadData(pojo)
+                pojo = loadDataLastMonth(pojo)
+                holder.loadFields(pojo)
             }
-            pojo = loadData(pojo)
-            pojo = loadDataLastMonth(pojo)
-            holder.loadFields(pojo)
         }
     }
 

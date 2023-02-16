@@ -15,7 +15,13 @@ class Config : ConfigSvc {
     @RequiresApi(Build.VERSION_CODES.O)
     override fun nextCutOff(cutOffDay:Int): LocalDateTime {
         val now = LocalDateTime.now()
-        val cutOff =  LocalDateTime.of(now.year, now.month, cutOffDay, 23, 59, 59)
+        var cutOff =  LocalDateTime.now()
+        var lastDayOfMonth = LocalDateTime.of(now.year, now.month,1,0,0,0).plusMonths(1).minusDays(1).dayOfMonth
+        cutOff = if(lastDayOfMonth < cutOffDay){
+            LocalDateTime.of(now.year, now.month, lastDayOfMonth, 23, 59, 59)
+        }else {
+            LocalDateTime.of(now.year, now.month, cutOffDay, 23, 59, 59)
+        }
         if(now.isBefore(cutOff) || now == cutOff){
             return cutOff
         }

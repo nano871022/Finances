@@ -13,6 +13,7 @@
     <string name="quote_credit_hint">0.00</string>
     <string name="quote_credit_variable">Cuota del Crédito Variable</string>
     <string name="list_save">Lista calculos almacenados</string>
+    <string name="list_periods">Lista de Periodos</string>
     <string name="tax">Tasa</string>
     <string name="kind_of_tax">Tipo de Tasa</string>
     <string name="months">Meses</string>
@@ -83,6 +84,10 @@
     <string name="pending_to_pay">Pendiente por Pagar</string>
 
     <string name="capital_value_short">Capital</string>
+    <string name="current_capital_value_short">Capital Actual</string>
+    <string name="quote_capital_value_short">Capital a Quotas</string>
+    <string name="current_interest_value_short">Interes Actual</string>
+    <string name="quote_interest_value_short">Interes de Quotas</string>
     <string name="interest_value_short">Interes</string>
     <string name="pending_to_pay_short">Pendiente</string>
     <string name="total_quote_value_short">Cuota</string>
