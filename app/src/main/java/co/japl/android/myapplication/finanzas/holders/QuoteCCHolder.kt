@@ -14,6 +14,7 @@ import co.japl.android.myapplication.bussiness.interfaces.ISpinnerHolder
 import co.japl.android.myapplication.controller.QuoteBought
 import co.japl.android.myapplication.finanzas.putParams.CashAdvanceParams
 import co.japl.android.myapplication.finanzas.putParams.CreditCardQuotesParams
+import co.japl.android.myapplication.finanzas.putParams.PeriodsParams
 import co.japl.android.myapplication.pojo.CreditCard
 import co.japl.android.myapplication.utils.DateUtils
 import co.japl.android.myapplication.utils.NumbersUtil
@@ -95,7 +96,7 @@ class QuoteCCHolder(var view:View,var parentFragmentManager:FragmentManager,var 
 
         btnCutOffHistory.let{
             it.setOnClickListener(this)
-            it.visibility = View.INVISIBLE
+            it.visibility = View.VISIBLE
         }
     }
 
@@ -197,8 +198,13 @@ class QuoteCCHolder(var view:View,var parentFragmentManager:FragmentManager,var 
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun cutOffHistory(){
-
+        if(validRedirect()) {
+        PeriodsParams.Companion.Historical.newInstance(codeCreaditCard.get(),navController)
+        }else{
+            Toast.makeText(view.context,"There is not selected any credit card",Toast.LENGTH_LONG).show()
+        }
     }
 
     @RequiresApi(Build.VERSION_CODES.O)

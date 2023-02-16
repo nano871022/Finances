@@ -5,12 +5,14 @@ import android.util.Log
 import android.view.View
 import android.widget.*
 import androidx.annotation.RequiresApi
+import androidx.core.view.size
 import co.japl.android.myapplication.R
 import co.japl.android.myapplication.bussiness.DTO.TaxDTO
 import co.japl.android.myapplication.bussiness.interfaces.IHolder
 import co.japl.android.myapplication.bussiness.interfaces.ISpinnerHolder
 import co.japl.android.myapplication.finanzas.utils.TaxEnum
 import java.time.LocalDateTime
+import java.time.YearMonth
 import java.util.*
 
 class TaxesHolder(var view:View) : IHolder<TaxDTO>,AdapterView.OnItemSelectedListener,ISpinnerHolder<TaxesHolder> {
@@ -27,6 +29,7 @@ class TaxesHolder(var view:View) : IHolder<TaxDTO>,AdapterView.OnItemSelectedLis
     lateinit var creditCardCode:Optional<Int>
     lateinit var monthCode:Optional<Int>
     lateinit var layutPeriod:LinearLayout
+
 
     override fun setFields(action: View.OnClickListener?) {
         creditCard = view.findViewById(R.id.spCreditCardTaxes)
@@ -45,11 +48,14 @@ class TaxesHolder(var view:View) : IHolder<TaxDTO>,AdapterView.OnItemSelectedLis
         kind.onItemSelectedListener = this
 
         layutPeriod.visibility = View.INVISIBLE
-    }
 
+
+    }
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun loadFields(values: TaxDTO) {
         tax.setText(values.value.toString())
         year.setText(values.year.toString())
+
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -67,7 +73,7 @@ class TaxesHolder(var view:View) : IHolder<TaxDTO>,AdapterView.OnItemSelectedLis
         return dto
     }
 
-    @RequiresApi(Build.VERSION_CODES.N)
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun cleanField() {
         tax.editableText.clear()
         year.editableText.clear()
@@ -79,6 +85,10 @@ class TaxesHolder(var view:View) : IHolder<TaxDTO>,AdapterView.OnItemSelectedLis
         (month.selectedView as TextView).text = month.getItemAtPosition(0).toString()
         (creditCard.selectedView.findViewById(R.id.tvValueBigSp) as TextView).text = creditCard.getItemAtPosition(0).toString()
         (kind.selectedView.findViewById(R.id.tvValueBigSp) as TextView).text = TaxEnum.CREDIT_CARD.name
+        month.setSelection(YearMonth.now().monthValue)
+        if(creditCard.size == 2){
+            creditCard.setSelection(1)
+        }
     }
 
     @RequiresApi(Build.VERSION_CODES.N)

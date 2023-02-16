@@ -1,8 +1,10 @@
 package co.japl.android.myapplication
 
+import android.content.Intent
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
+import android.os.StrictMode
 import android.util.Log
 import android.view.Gravity
 import android.view.Menu
@@ -25,8 +27,20 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.*
 import co.japl.android.myapplication.controller.*
 import co.japl.android.myapplication.controller.ListSave
+import co.japl.android.myapplication.finanzas.bussiness.config.GoogleDriveConfig
+import co.japl.android.myapplication.finanzas.bussiness.impl.GoogleDriveService
+
+import co.japl.android.myapplication.finanzas.bussiness.interfaces.ServiceListener
 import co.japl.android.myapplication.finanzas.controller.AboutIt
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount
+import com.google.android.gms.auth.api.signin.GoogleSignInClient
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.android.gms.common.SignInButton
+import com.google.android.gms.common.api.Scope
+import com.google.android.gms.drive.*
 import com.google.android.material.navigation.NavigationView
+import java.io.File
 
 class MainActivity : AppCompatActivity(){
     var drawLayout:DrawerLayout? = null
@@ -37,6 +51,8 @@ class MainActivity : AppCompatActivity(){
     @RequiresApi(Build.VERSION_CODES.R)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val policy = StrictMode.ThreadPolicy.Builder().permitAll().build()
+        StrictMode.setThreadPolicy(policy)
         val screen = installSplashScreen()
         setContentView(R.layout.activity_main)
         bundle = savedInstanceState
@@ -52,6 +68,8 @@ class MainActivity : AppCompatActivity(){
         if(isTablet()) {
             drawLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_OPEN)
         }
+
+
 
     }
 
@@ -92,5 +110,18 @@ class MainActivity : AppCompatActivity(){
         return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
 
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 }

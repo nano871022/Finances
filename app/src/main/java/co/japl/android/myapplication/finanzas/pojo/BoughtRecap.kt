@@ -8,4 +8,9 @@ class BoughtRecap {
     lateinit var interestValue:Optional<BigDecimal>
     lateinit var totalValue:Optional<BigDecimal>
     lateinit var pendingToPay:Optional<BigDecimal>
+    lateinit var currentValueCapital: Optional<BigDecimal>
+    lateinit var quotesValueCapital: Optional<BigDecimal>
+    lateinit var currentValueInterest: Optional<BigDecimal>
+    lateinit var quotesValueInterest: Optional<BigDecimal>
+
 }

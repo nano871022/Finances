@@ -10,8 +10,8 @@ android {
         applicationId "co.japl.android.myapplication"
         minSdk 21
         targetSdk 32
-        versionCode 8
-        versionName "Ajuste errores en visualizacion de pagos y agregar pagos compra cartera y avance de dinero"
+        versionCode 11
+        versionName ""
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -32,6 +32,12 @@ android {
     buildFeatures {
         viewBinding true
     }
+    packagingOptions {
+        resources {
+            excludes += ['META-INF/DEPENDENCIES']
+        }
+    }
+    namespace 'co.japl.android.myapplication'
 }
 
 dependencies {
@@ -46,6 +52,11 @@ dependencies {
     implementation 'androidx.navigation:navigation-fragment-ktx:2.5.1'
     implementation 'androidx.navigation:navigation-ui-ktx:2.5.1'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+    implementation 'com.google.android.gms:play-services-auth:20.3.0'
+    implementation 'com.google.android.gms:play-services-drive:17.0.0'
+    implementation 'com.squareup.okio:okio:1.14.0'
+    implementation 'com.google.apis:google-api-services-script:v1-rev20220323-2.0.0'
+    implementation 'com.google.http-client:google-http-client-gson:1.42.3'
 
     //noinspection GradleCompatible
     testImplementation 'junit:junit:4.13.2'

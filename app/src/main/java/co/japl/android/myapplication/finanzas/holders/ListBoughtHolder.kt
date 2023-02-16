@@ -15,16 +15,24 @@ import co.japl.android.myapplication.utils.NumbersUtil
 import java.math.BigDecimal
 
 class ListBoughtHolder(var view:View):IHolder<BoughtRecap> , ISpinnerHolder<ListBoughtHolder>{
-    lateinit var tvCapital: TextView
-    lateinit var tvInterest: TextView
-    lateinit var tvPendingToPay: TextView
-    lateinit var tvTotalQuote: TextView
+    private lateinit var tvCapital: TextView
+    private lateinit var tvCurrentCapital: TextView
+    private lateinit var tvQuoteCapital: TextView
+    private lateinit var tvCurrentInterest: TextView
+    private lateinit var tvQuoteInterest: TextView
+    private lateinit var tvInterest: TextView
+    private lateinit var tvPendingToPay: TextView
+    private lateinit var tvTotalQuote: TextView
     lateinit var recyclerView: RecyclerView
 
 
 
     override fun setFields(actions: View.OnClickListener?) {
         tvCapital = view.findViewById(R.id.tvCapitalList)
+        tvCurrentCapital = view.findViewById(R.id.tvCurrentCapitalList)
+        tvQuoteCapital = view.findViewById(R.id.tvQuoteCapitalList)
+        tvCurrentInterest = view.findViewById(R.id.tvCurrentInterestList)
+        tvQuoteInterest = view.findViewById(R.id.tvQuoteInterestList)
         tvInterest = view.findViewById(R.id.tvInterestList)
         tvPendingToPay = view.findViewById(R.id.tvPendingToPayList)
         tvTotalQuote = view.findViewById(R.id.tvTotalQuoteList)
@@ -34,14 +42,17 @@ class ListBoughtHolder(var view:View):IHolder<BoughtRecap> , ISpinnerHolder<List
     @RequiresApi(Build.VERSION_CODES.N)
     override fun loadFields(values: BoughtRecap) {
         tvCapital.text = NumbersUtil.COPtoString(values.capitalValue.orElse(BigDecimal.ZERO))
+        tvCurrentCapital.text = NumbersUtil.COPtoString(values.currentValueCapital.orElse(BigDecimal.ZERO))
+        tvQuoteCapital.text = NumbersUtil.COPtoString(values.quotesValueCapital.orElse(BigDecimal.ZERO))
+        tvCurrentInterest.text = NumbersUtil.COPtoString(values.currentValueInterest.orElse(BigDecimal.ZERO))
+        tvQuoteInterest.text = NumbersUtil.COPtoString(values.quotesValueInterest.orElse(BigDecimal.ZERO))
         tvInterest.text = NumbersUtil.COPtoString(values.interestValue.orElse(BigDecimal.ZERO))
         tvPendingToPay.text = NumbersUtil.COPtoString(values.pendingToPay.orElse(BigDecimal.ZERO))
         tvTotalQuote.text = NumbersUtil.COPtoString(values.totalValue.orElse(BigDecimal.ZERO))
     }
 
     override fun downLoadFields(): BoughtRecap {
-        val recap = BoughtRecap()
-        return recap
+        return BoughtRecap()
     }
 
     override fun cleanField() {

@@ -28,5 +28,13 @@
     android:title="@string/about_it"
     android:visible="true" />
 
+    <item
+        android:id="@+id/item_menu_setting_google_login"
+        android:enabled="true"
+        app:showAsAction="withText"
+        android:icon="@drawable/ic_credit_card_foreground"
+        android:title="LogIn on Google"
+        android:visible="true" />
+
 
 </menu>

@@ -10,6 +10,9 @@ import co.japl.android.myapplication.bussiness.DTO.CreditCardBoughtDTO
 import co.japl.android.myapplication.bussiness.interfaces.SaveSvc
 import co.japl.android.myapplication.bussiness.interfaces.SearchSvc
 import co.japl.android.myapplication.bussiness.mapping.CreditCardBoughtMap
+import co.japl.android.myapplication.finanzas.bussiness.DTO.PeriodDTO
+import co.japl.android.myapplication.finanzas.bussiness.interfaces.IGetPeriodsServices
+import co.japl.android.myapplication.finanzas.bussiness.mapping.PeriodsMap
 import co.japl.android.myapplication.finanzas.utils.TaxEnum
 import co.japl.android.myapplication.utils.DatabaseConstants
 import co.japl.android.myapplication.utils.DateUtils
@@ -19,7 +22,7 @@ import java.time.LocalDateTime
 import java.util.*
 
 class SaveCreditCardBoughtImpl(override var dbConnect: SQLiteOpenHelper) : SaveSvc<CreditCardBoughtDTO>,
-    SearchSvc<CreditCardBoughtDTO> {
+    SearchSvc<CreditCardBoughtDTO>, IGetPeriodsServices {
     private val COLUMNS_CALC = arrayOf(BaseColumns._ID
         ,CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_CODE_CREDIT_CARD
         ,CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_NAME_ITEM
@@ -32,6 +35,16 @@ class SaveCreditCardBoughtImpl(override var dbConnect: SQLiteOpenHelper) : SaveS
         ,CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_RECURRENT
         ,CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_KIND)
 
+    private val COLUMNS_PERIOD = arrayOf(BaseColumns._ID,
+        CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_VALUE_ITEM
+        ,CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_INTEREST
+        ,CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_CUT_OUT_DATE
+        ,CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_BOUGHT_DATE
+        ,CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_CODE_CREDIT_CARD
+        ,CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_VALUE_ITEM
+        ,CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_MONTH
+    )
+
     @RequiresApi(Build.VERSION_CODES.O)
     override fun save(dto: CreditCardBoughtDTO): Boolean {
         Log.v(this.javaClass.name,"<<<=== save - Start")
@@ -42,6 +55,23 @@ class SaveCreditCardBoughtImpl(override var dbConnect: SQLiteOpenHelper) : SaveS
         }finally{
             Log.v(this.javaClass.name,"<<<=== save - End")
         }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    override fun getPeriods(creditCardId:Int):List<PeriodDTO>{
+        val db = dbConnect.readableDatabase
+        val cursor = db.query(CreditCardBoughtDB.CreditCardBoughtEntry.TABLE_NAME,COLUMNS_PERIOD,"str_code_credit_card = ?",
+            arrayOf(creditCardId.toString()),null,null,null)
+        val items = mutableListOf<PeriodDTO>()
+        with(cursor){
+            while(moveToNext()){
+                items.add(PeriodsMap().maping(this))
+            }
+        }
+        println("Count ${items.size}")
+        return items.groupBy { it.periodStart }.map { (startPeriod,items) -> PeriodDTO(creditCardId,startPeriod,
+            items[0].periodEnd,items.sumOf{it.interest},items.sumOf{it.capital},items.sumOf{it.total})}
+                    .sortedByDescending { it.periodStart }
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -193,7 +223,7 @@ class SaveCreditCardBoughtImpl(override var dbConnect: SQLiteOpenHelper) : SaveS
                                      var interest = it.interest
                                      when(it.kind){
                                          TaxEnum.CREDIT_CARD.ordinal.toShort() ->{
-                                             interest = tax.get()
+                                             interest = tax.orElse(0.0)
                                          }
                                          TaxEnum.CASH_ADVANCE.ordinal.toShort()->{
                                              interest = taxCashAdv.get()
