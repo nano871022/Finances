@@ -32,7 +32,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:layout_weight="1"
-                android:text="@string/product_name"
+                android:text="@string/name"
                 android:textColor="@android:color/primary_text_dark"
                 android:textSize="18sp"
                 android:textStyle="bold" />
@@ -61,7 +61,6 @@
             android:background="?android:attr/listDivider" />
 
         <LinearLayout
-            android:id="@+id/llQuotesBought"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
@@ -71,7 +70,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="@string/cut_off_day"
+                android:text="@string/value"
                 android:textColor="@android:color/primary_text_dark"
                 android:textStyle="bold" />
 
@@ -81,8 +80,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginRight="10dp"
                 android:layout_weight="1"
-                android:text="@string/months_number_hint"
-                android:textAlignment="textEnd"
+                android:textAlignment="viewStart"
                 android:textColor="@android:color/primary_text_dark"
                 android:textStyle="italic" />
 
@@ -100,25 +98,24 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="@string/months_number_hint"
-                android:textAlignment="textEnd"
+                android:textAlignment="viewStart"
                 android:textColor="@android:color/primary_text_dark"
                 android:textStyle="italic" />
 
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/llCapitalBought"
+
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
             <TextView
-                android:id="@+id/lbCreditCardLCCS"
+
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="@string/warning_quote_value"
+                android:text="@string/credit_card"
                 android:textColor="@android:color/primary_text_dark"
                 android:textStyle="bold" />
 
@@ -127,8 +124,35 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="@string/money_hint"
-                android:textAlignment="textEnd"
+                android:text="@string/credit_card"
+                android:textAlignment="viewStart"
+                android:textColor="@android:color/primary_text_dark" />
+
+        </LinearLayout>
+
+        <LinearLayout
+
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="horizontal">
+
+            <TextView
+
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/credit_card_setting_type"
+                android:textColor="@android:color/primary_text_dark"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tvTypeLCCS"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/credit_card_setting_type"
+                android:textAlignment="textStart"
                 android:textColor="@android:color/primary_text_dark" />
         </LinearLayout>
 

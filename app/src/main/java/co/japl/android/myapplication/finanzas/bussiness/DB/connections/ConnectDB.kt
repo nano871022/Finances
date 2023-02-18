@@ -15,6 +15,8 @@ class ConnectDB(context: Context):SQLiteOpenHelper(context,
         CreditCardConnectDB().onCreate(p0)
         CreditCardBoughtConnectDB().onCreate(p0)
         TaxConnectDB().onCreate(p0)
+        CreditCardSettingConnectDB().onCreate(p0);
+        BuyCreditCardSettingConnectDB().onCreate(p0);
         Log.i(this.javaClass.name,"<<<=== onCreate - End")
     }
 
@@ -24,6 +26,8 @@ class ConnectDB(context: Context):SQLiteOpenHelper(context,
         CreditCardConnectDB().onUpgrade(p0,p1,p2)
         CreditCardBoughtConnectDB().onUpgrade(p0,p1,p2)
         TaxConnectDB().onUpgrade(p0,p1,p2)
+        CreditCardSettingConnectDB().onUpgrade(p0,p1,p2)
+        BuyCreditCardSettingConnectDB().onUpgrade(p0,p1,p2)
         Log.i(this.javaClass.name,"<<<=== onUpgrade - End")
     }
 
@@ -33,6 +37,8 @@ class ConnectDB(context: Context):SQLiteOpenHelper(context,
         CreditCardConnectDB().onDowngrade(db,oldVersion,newVersion)
         CreditCardBoughtConnectDB().onDowngrade(db,oldVersion,newVersion)
         TaxConnectDB().onDowngrade(db,oldVersion,newVersion)
+        CreditCardSettingConnectDB().onDowngrade(db,oldVersion,newVersion)
+        BuyCreditCardSettingConnectDB().onDowngrade(db,oldVersion,newVersion)
         Log.i(this.javaClass.name,"<<<=== onDowngrade - End")
     }
 

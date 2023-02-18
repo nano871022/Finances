@@ -39,7 +39,7 @@
             android:textStyle="bold" />
 
         <TextView
-            android:id="@+id/tvListPeriodItem"
+            android:id="@+id/tvNameLCCS"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
@@ -50,7 +50,7 @@
             android:textStyle="bold" />
 
         <ImageButton
-            android:id="@+id/btnDeleteItemTCC"
+            android:id="@+id/btnDeleteItemLCCS"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:srcCompat="@drawable/ic_baseline_delete_24" />
@@ -103,7 +103,7 @@
         tools:layout_editor_absoluteX="1dp">
 
         <TextView
-            android:id="@+id/lbCutOffDayItemCC"
+            android:id="@+id/lbValueLCCS"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -112,7 +112,7 @@
             android:textStyle="bold" />
 
         <TextView
-            android:id="@+id/tvListPeriodInterest"
+            android:id="@+id/tvValueLCCS"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginRight="10dp"
@@ -132,7 +132,7 @@
             android:textStyle="bold" />
 
         <TextView
-            android:id="@+id/tvListPeriodCapital"
+            android:id="@+id/tvStatusLCCS"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -206,7 +206,7 @@
         tools:layout_editor_absoluteX="5dp">
 
         <TextView
-            android:id="@+id/lbWarningICC"
+            android:id="@+id/lbCreditCardLCCS"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -215,7 +215,7 @@
             android:textStyle="bold" />
 
         <TextView
-            android:id="@+id/tvListPeriodTotalQuote"
+            android:id="@+id/tvCreditCardLCCS"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"

@@ -27,13 +27,13 @@ class BoughtViewHolder(itemView:View) : RecyclerView.ViewHolder(itemView) {
     lateinit var tvTaxBoughtICC:TextView
 
     fun loadFields(view:View){
-        tvBoughtName = view.findViewById(R.id.tvListPeriodItem)
+        tvBoughtName = view.findViewById(R.id.tvNameLCCS)
         tvCreditValueBought = view.findViewById(R.id.tvCreditValueBought)
-        tvQuotesBought = view.findViewById(R.id.tvListPeriodInterest)
-        tvMonthBought = view.findViewById(R.id.tvListPeriodCapital)
-        tvCapitalBought = view.findViewById(R.id.tvListPeriodTotalQuote)
+        tvQuotesBought = view.findViewById(R.id.tvValueLCCS)
+        tvMonthBought = view.findViewById(R.id.tvStatusLCCS)
+        tvCapitalBought = view.findViewById(R.id.tvCreditCardLCCS)
         tvInterestBought = view.findViewById(R.id.tvInterestBought)
-        btnBoughtDelete = view.findViewById(R.id.btnDeleteItemTCC)
+        btnBoughtDelete = view.findViewById(R.id.btnDeleteItemLCCS)
         tvTotalQuoteBought = view.findViewById(R.id.tvTotalQuoteBought)
         tvBoughtDate = view.findViewById(R.id.tvBoughtDate)
         tvPendingToPay = view.findViewById(R.id.tvPendingToPay)

@@ -1,4 +1,4 @@
-package co.japl.android.myapplication.bussiness.impl
+package co.japl.android.myapplication.finanzas.bussiness.impl
 
 import android.database.sqlite.SQLiteException
 import android.database.sqlite.SQLiteOpenHelper
@@ -6,39 +6,41 @@ import android.os.Build
 import android.provider.BaseColumns
 import android.util.Log
 import androidx.annotation.RequiresApi
-import co.japl.android.myapplication.bussiness.DTO.CreditCardDB
-import co.japl.android.myapplication.bussiness.DTO.CreditCardDTO
+import co.japl.android.myapplication.bussiness.DTO.BuyCreditCardSettingDTO
+import co.japl.android.myapplication.bussiness.DTO.BuyCreditCardSettingDB
 import co.japl.android.myapplication.bussiness.interfaces.SaveSvc
-import co.japl.android.myapplication.bussiness.mapping.CreditCardMap
+import co.japl.android.myapplication.bussiness.mapping.BuyCreditCardSettingMap
+import co.japl.android.myapplication.bussiness.queries.BuyCreditCardSettingQuery
 import co.japl.android.myapplication.utils.DatabaseConstants
 import java.util.*
 
-class CreditCardImpl(override var dbConnect: SQLiteOpenHelper) :  SaveSvc<CreditCardDTO>{
-    private val COLUMNS = arrayOf(BaseColumns._ID,
-                                  CreditCardDB.CreditCardEntry.COLUMN_NAME,
-                                  CreditCardDB.CreditCardEntry.COLUMN_CUT_OFF_DAY,
-                                  CreditCardDB.CreditCardEntry.COLUMN_WARNING_VALUE,
-                                  CreditCardDB.CreditCardEntry.COLUMN_STATUS,
-                                  CreditCardDB.CreditCardEntry.COLUMN_CREATE_DATE)
-    private val mapper = CreditCardMap()
+class BuyCreditCardSettingImpl(override var dbConnect: SQLiteOpenHelper) : SaveSvc<BuyCreditCardSettingDTO> {
+    private val COLUMNS = arrayOf(
+        BaseColumns._ID,
+        BuyCreditCardSettingDB.Entry.COLUMN_COD_BUY_CREDIT_CARD,
+        BuyCreditCardSettingDB.Entry.COLUMN_COD_CREDIT_CARD_SETTING,
+        BuyCreditCardSettingDB.Entry.COLUMN_ACTIVE,
+        BuyCreditCardSettingDB.Entry.COLUMN_CREATE_DATE)
+    private val mapper = BuyCreditCardSettingMap()
+
     @RequiresApi(Build.VERSION_CODES.O)
-    override fun save(dto: CreditCardDTO): Long {
+    override fun save(dto: BuyCreditCardSettingDTO): Long {
         val db = dbConnect.writableDatabase
         val columns = mapper.mapping(dto)
         if(dto.id <= 0){
-            return db.insert(CreditCardDB.CreditCardEntry.TABLE_NAME,null,columns)
+            return db.insert(BuyCreditCardSettingDB.Entry.TABLE_NAME,null,columns)
         }
-        return  db.update(CreditCardDB.CreditCardEntry.TABLE_NAME ,mapper.mapping(dto),"_id = ?", arrayOf(dto.id.toString())  ).toLong()
+        return  db.update(BuyCreditCardSettingDB.Entry.TABLE_NAME ,mapper.mapping(dto),"_id = ?", arrayOf(dto.id.toString())  ).toLong()
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    override fun getAll(): List<CreditCardDTO> {
+    override fun getAll(): List<BuyCreditCardSettingDTO> {
         Log.i(this.javaClass.name,"<<<=== getAll - Start")
-        val list = mutableListOf<CreditCardDTO>()
+        val list = mutableListOf<BuyCreditCardSettingDTO>()
         try {
             val db = dbConnect.writableDatabase
             val cursor = db.query(
-                CreditCardDB.CreditCardEntry.TABLE_NAME,
+                BuyCreditCardSettingDB.Entry.TABLE_NAME,
                 COLUMNS,
                 null,
                 null,
@@ -52,7 +54,7 @@ class CreditCardImpl(override var dbConnect: SQLiteOpenHelper) :  SaveSvc<Credit
                 }
             }
             return list
-        }catch(e:SQLiteException){
+        }catch(e: SQLiteException){
             Log.e(this.javaClass.name,e.message,e)
             return list
         }finally {
@@ -62,17 +64,17 @@ class CreditCardImpl(override var dbConnect: SQLiteOpenHelper) :  SaveSvc<Credit
 
     override fun delete(id: Int): Boolean {
         val db = dbConnect.writableDatabase
-        return db.delete(CreditCardDB.CreditCardEntry.TABLE_NAME, DatabaseConstants.SQL_DELETE_CALC_ID,
+        return db.delete(BuyCreditCardSettingDB.Entry.TABLE_NAME, DatabaseConstants.SQL_DELETE_CALC_ID,
             arrayOf(id.toString())) > 0
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    override fun get(id: Int): Optional<CreditCardDTO> {
+    override fun get(id: Int): Optional<BuyCreditCardSettingDTO> {
         val db = dbConnect.writableDatabase
         val cursor = db.query(
-            CreditCardDB.CreditCardEntry.TABLE_NAME,
+            BuyCreditCardSettingDB.Entry.TABLE_NAME,
             COLUMNS,
-            " _id = ?",
+            " ${BuyCreditCardSettingDB.Entry.COLUMN_COD_BUY_CREDIT_CARD} = ?",
             arrayOf(id.toString()),
             null,
             null,
@@ -85,5 +87,4 @@ class CreditCardImpl(override var dbConnect: SQLiteOpenHelper) :  SaveSvc<Credit
         }
         return Optional.empty()
     }
-
 }

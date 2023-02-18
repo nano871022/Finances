@@ -34,7 +34,7 @@
             android:textStyle="bold" />
 
         <TextView
-            android:id="@+id/tvListPeriodItem"
+            android:id="@+id/tvNameLCCS"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
@@ -45,7 +45,7 @@
             android:textStyle="bold" />
 
         <TextView
-            android:id="@+id/tvListPeriodInterest"
+            android:id="@+id/tvValueLCCS"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginRight="10dp"
@@ -64,7 +64,7 @@
             android:text="/" />
 
         <TextView
-            android:id="@+id/tvListPeriodCapital"
+            android:id="@+id/tvStatusLCCS"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="0"
@@ -74,7 +74,7 @@
             android:textStyle="italic" />
 
         <ImageButton
-            android:id="@+id/btnDeleteItemTCC"
+            android:id="@+id/btnDeleteItemLCCS"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="0"
@@ -177,7 +177,7 @@
         tools:layout_editor_absoluteX="5dp">
 
         <TextView
-            android:id="@+id/lbWarningICC"
+            android:id="@+id/lbCreditCardLCCS"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -186,7 +186,7 @@
             android:textStyle="bold" />
 
         <TextView
-            android:id="@+id/tvListPeriodTotalQuote"
+            android:id="@+id/tvCreditCardLCCS"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"

@@ -28,12 +28,12 @@ class TaxImpl(override var dbConnect: SQLiteOpenHelper) :  SaveSvc<TaxDTO>,ITaxS
                                   TaxDB.TaxEntry.COLUMN_PERIOD)
     private val mapper:IMapper<TaxDTO> = TaxMap()
     @RequiresApi(Build.VERSION_CODES.O)
-    override fun save(dto: TaxDTO): Boolean {
+    override fun save(dto: TaxDTO): Long {
         Log.i(this.javaClass.name,"<<<== save - Start")
         try{
         val db = dbConnect.writableDatabase
         val columns = mapper.mapping(dto)
-        return db.insert(TaxDB.TaxEntry.TABLE_NAME,null,columns) > 0
+        return db.insert(TaxDB.TaxEntry.TABLE_NAME,null,columns)
         }finally{
             Log.i(this.javaClass.name,"<<<=== save - End ")
         }

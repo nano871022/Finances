@@ -8,6 +8,7 @@ import androidx.annotation.RequiresApi
 import androidx.fragment.app.FragmentManager
 import androidx.navigation.NavController
 import co.japl.android.myapplication.R
+import co.japl.android.myapplication.bussiness.DTO.CreditCardSettingDTO
 import co.japl.android.myapplication.bussiness.interfaces.IHolder
 import co.japl.android.myapplication.bussiness.interfaces.ISpinnerHolder
 import co.japl.android.myapplication.finanzas.bussiness.DTO.PeriodDTO
@@ -27,10 +28,10 @@ class PeriodsHolder (var view:View, var parentFragmentManager:FragmentManager, v
 
 
     override fun setFields(actions: View.OnClickListener?) {
-        period = view.findViewById(R.id.tvListPeriodItem)
-        interest = view.findViewById(R.id.tvListPeriodInterest)
-        capital = view.findViewById(R.id.tvListPeriodCapital)
-        total = view.findViewById(R.id.tvListPeriodTotalQuote)
+        period = view.findViewById(R.id.tvNameLCCS)
+        interest = view.findViewById(R.id.tvValueLCCS)
+        capital = view.findViewById(R.id.tvStatusLCCS)
+        total = view.findViewById(R.id.tvCreditCardLCCS)
         paid = view.findViewById(R.id.btnShowPaid)
     }
 

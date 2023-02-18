@@ -9,7 +9,6 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentTransaction
 import androidx.navigation.fragment.findNavController
 import co.japl.android.myapplication.R
 import co.japl.android.myapplication.bussiness.DB.connections.ConnectDB
@@ -19,7 +18,7 @@ import co.japl.android.myapplication.bussiness.interfaces.IHolder
 import co.japl.android.myapplication.bussiness.interfaces.SaveSvc
 import co.japl.android.myapplication.holders.CreditCardHolder
 import co.japl.android.myapplication.putParams.CreditCardParams
-import co.japl.android.myapplication.putParams.CreditCardParams.Params.ARG_PARAM_CODE
+import co.japl.android.myapplication.putParams.ListCreditCardSettingParams
 
 
 class CreateCreditCard : Fragment(),View.OnClickListener {
@@ -61,7 +60,7 @@ class CreateCreditCard : Fragment(),View.OnClickListener {
     fun save(){
         if(holder.validate()){
             val dto = holder.downLoadFields()
-                if (service.save(dto)) {
+                if (service.save(dto)>0) {
                     Toast.makeText(this.context, "Record saved", Toast.LENGTH_LONG).show().also {
                         CreditCardParams.toBack(findNavController())
                     }
@@ -74,6 +73,10 @@ class CreateCreditCard : Fragment(),View.OnClickListener {
     override fun onClick(v: View?) {
         when(v?.id){
             R.id.btnCleanCCC->{holder.cleanField()}
+            R.id.btnSettingsCCC->{
+                val dto = holder.downLoadFields()
+                ListCreditCardSettingParams.newInstance(dto.id,findNavController())
+            }
             R.id.btnSaveCCC->{save()}
             else->{
                 Toast.makeText(this.context,"Invalid Option",Toast.LENGTH_LONG).show()}
