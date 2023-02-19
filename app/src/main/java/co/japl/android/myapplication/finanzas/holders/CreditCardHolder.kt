@@ -9,6 +9,7 @@ import co.japl.android.myapplication.R
 import co.japl.android.myapplication.bussiness.DTO.CreditCardDTO
 import co.japl.android.myapplication.bussiness.interfaces.IHolder
 import java.math.BigDecimal
+import java.text.DecimalFormat
 import java.time.LocalDateTime
 import java.util.*
 
@@ -19,6 +20,7 @@ class CreditCardHolder(var view:View) : IHolder<CreditCardDTO> {
     lateinit var save:Button
     lateinit var clear:Button
     private lateinit var id:Optional<Int>
+    private val format = DecimalFormat("###,###.##")
 
     @RequiresApi(Build.VERSION_CODES.N)
     override fun setFields(action: View.OnClickListener?) {
@@ -34,9 +36,10 @@ class CreditCardHolder(var view:View) : IHolder<CreditCardDTO> {
 
     @RequiresApi(Build.VERSION_CODES.N)
     override fun loadFields(values: CreditCardDTO) {
+
         name.setText(values.name)
         cutOffDay.setText(values.cutOffDay.toString())
-        warningQuote.setText(values.warningValue.toString())
+        warningQuote.setText(format.format(values.warningValue))
         id = Optional.ofNullable(values.id)
     }
 
@@ -44,7 +47,8 @@ class CreditCardHolder(var view:View) : IHolder<CreditCardDTO> {
     override fun downLoadFields(): CreditCardDTO {
         val name:String = name.text.toString()
         val cutOffDay:Short = cutOffDay.text.toString().toShort()
-        val warningQuote:BigDecimal = warningQuote.text.toString().toBigDecimal()
+
+        val warningQuote:BigDecimal = (format.parse(warningQuote.text.toString()) as Long).toBigDecimal()
         val create:LocalDateTime = LocalDateTime.now()
         val status:Short = 1
         val dto = CreditCardDTO(id.orElse(0),name,cutOffDay,warningQuote,create,status)
@@ -67,7 +71,7 @@ class CreditCardHolder(var view:View) : IHolder<CreditCardDTO> {
             cutOffDay.error = "Invalid value permit values 1-31"
             valid = valid && false
         }
-        if(warningQuote.text.toString().isNotBlank() && warningQuote.text.toString().toBigDecimal() < BigDecimal(1)){
+        if(warningQuote.text.toString().isNotBlank() && (format.parse(warningQuote.text.toString()) as Long).toBigDecimal() < BigDecimal(1)){
             warningQuote.error = "Invalid value, it should be higher of 0 (Zero)"
             valid = valid && false
         }

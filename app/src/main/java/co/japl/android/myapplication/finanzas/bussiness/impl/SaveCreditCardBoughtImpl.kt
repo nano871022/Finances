@@ -7,6 +7,7 @@ import android.util.Log
 import androidx.annotation.RequiresApi
 import co.japl.android.myapplication.bussiness.DTO.CreditCardBoughtDB
 import co.japl.android.myapplication.bussiness.DTO.CreditCardBoughtDTO
+import co.japl.android.myapplication.bussiness.DTO.CreditCardDTO
 import co.japl.android.myapplication.bussiness.interfaces.SaveSvc
 import co.japl.android.myapplication.bussiness.interfaces.SearchSvc
 import co.japl.android.myapplication.bussiness.mapping.CreditCardBoughtMap
@@ -16,9 +17,17 @@ import co.japl.android.myapplication.finanzas.bussiness.mapping.PeriodsMap
 import co.japl.android.myapplication.finanzas.utils.TaxEnum
 import co.japl.android.myapplication.utils.DatabaseConstants
 import co.japl.android.myapplication.utils.DateUtils
+import com.google.gson.Gson
 import java.math.BigDecimal
 import java.math.RoundingMode
+import java.nio.charset.Charset
+import java.nio.file.Files
+import java.nio.file.Paths
+import java.time.Duration
+import java.time.LocalDate
 import java.time.LocalDateTime
+import java.time.Month
+import java.time.Period
 import java.util.*
 
 class SaveCreditCardBoughtImpl(override var dbConnect: SQLiteOpenHelper) : SaveSvc<CreditCardBoughtDTO>,
@@ -59,19 +68,54 @@ class SaveCreditCardBoughtImpl(override var dbConnect: SQLiteOpenHelper) : SaveS
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun getPeriods(creditCardId:Int):List<PeriodDTO>{
+        Log.i(this.javaClass.name,"<<<=== START Get Periods")
         val db = dbConnect.readableDatabase
         val cursor = db.query(CreditCardBoughtDB.CreditCardBoughtEntry.TABLE_NAME,COLUMNS_PERIOD,"str_code_credit_card = ?",
             arrayOf(creditCardId.toString()),null,null,null)
         val items = mutableListOf<PeriodDTO>()
         with(cursor){
-            while(moveToNext()){
-                items.add(PeriodsMap().maping(this))
+            while(moveToNext()) {
+                val map = PeriodsMap().maping(this)
+                Log.d(
+                    this.javaClass.name,
+                    "ID $creditCardId Capital: ${map.capital} Interest: ${map.interest} Total: ${map.total} CutOff: ${map.periodEnd}"
+                )
+                items.add(map)
+            }}
+            val responseList = items.groupBy { it.periodStart }.map { (startPeriod,items) -> PeriodDTO(creditCardId,startPeriod,
+                items[0].periodEnd,items.sumOf{it.interest},items.sumOf{it.capital},items.sumOf{it.total})}
+                .sortedByDescending { it.periodStart }
+
+
+            responseList.forEach { map ->
+                    val list = getRecurrentBuys(creditCardId, map.periodEnd)
+                    val capitalRecurrent = list.stream().map { it.valueItem.divide(it.month.toBigDecimal(),RoundingMode.CEILING) }
+                        .reduce { accumulator, bought -> accumulator.add(bought) }
+                    val interestRecurrent = list.stream().filter{it.month > 1}.map {
+                        it.valueItem.multiply(it.interest.toBigDecimal().divide(BigDecimal(100)))
+                    }
+                        .reduce{ accumulator , bought -> accumulator.add(bought)}
+                    map.capital = map.capital.add(capitalRecurrent.orElse(BigDecimal.ZERO))
+                    map.interest = map.interest.add(interestRecurrent.orElse(BigDecimal.ZERO))
+                    map.total = map.capital.add(map.interest)
+                    Log.d(
+                        this.javaClass.name,
+                        "Recurrent: Capital: $capitalRecurrent Interes: $interestRecurrent Capital ${map.capital} Interest: ${map.interest} Total: ${map.total}"
+                    )
+                    val capitalPending =
+                        getCapitalPendingQuotes(creditCardId, map.periodStart, map.periodEnd)
+                    val interestPending =
+                        getInterestPendingQuotes(creditCardId, map.periodStart, map.periodEnd)
+                    map.capital = map.capital.add(capitalPending.orElse(BigDecimal.ZERO))
+                    map.interest = map.interest.add(interestPending.orElse(BigDecimal.ZERO))
+                    map.total = map.capital.add(map.interest)
+                    Log.d(
+                        this.javaClass.name,
+                        "Pending Capital: $capitalPending Interest: $interestPending ${map.creditCardId} ${map.capital} ${map.interest} ${map.total}"
+                    )
             }
-        }
-        println("Count ${items.size}")
-        return items.groupBy { it.periodStart }.map { (startPeriod,items) -> PeriodDTO(creditCardId,startPeriod,
-            items[0].periodEnd,items.sumOf{it.interest},items.sumOf{it.capital},items.sumOf{it.total})}
-                    .sortedByDescending { it.periodStart }
+        Log.i(this.javaClass.name,"<<<=== FINISH Get Periods Count ${items.size}")
+        return responseList
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -114,12 +158,10 @@ class SaveCreditCardBoughtImpl(override var dbConnect: SQLiteOpenHelper) : SaveS
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    override fun getToDate(key:Int,cutOffDate: LocalDateTime): List<CreditCardBoughtDTO> {
+    override fun getToDate(key:Int,startDate:LocalDateTime,cutOffDate: LocalDateTime): List<CreditCardBoughtDTO> {
         Log.v(this.javaClass.name,"<<<=== getToDate - Start")
         try {
             val db = dbConnect.readableDatabase
-
-            val startDate = cutOffDate.minusMonths(1).plusDays(1)
             val startDateStr = DateUtils.localDateTimeToString(startDate)
             val endDateStr = DateUtils.localDateTimeToString(cutOffDate)
             val selectionArgs = arrayOf(startDateStr, endDateStr)
@@ -152,11 +194,10 @@ class SaveCreditCardBoughtImpl(override var dbConnect: SQLiteOpenHelper) : SaveS
         }
     }
     @RequiresApi(Build.VERSION_CODES.O)
-    override fun getPendingQuotes(key:Int,cutoffCurrent: LocalDateTime): List<CreditCardBoughtDTO> {
+    override fun getPendingQuotes(key:Int,startDate: LocalDateTime,cutoffCurrent: LocalDateTime): List<CreditCardBoughtDTO> {
         Log.v(this.javaClass.name,"<<<=== getPendingQuotes - Start")
         try{
         val db = dbConnect.readableDatabase
-        val pendingQuotes = cutoffCurrent.minusMonths(1)
         val cursor = db.query(CreditCardBoughtDB.CreditCardBoughtEntry.TABLE_NAME,COLUMNS_CALC," ${CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_MONTH} > ? and ${CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_CODE_CREDIT_CARD} = ? ",
             arrayOf(1.toString(),key.toString()),null,null,null)
         val items = mutableListOf<CreditCardBoughtDTO>()
@@ -164,8 +205,8 @@ class SaveCreditCardBoughtImpl(override var dbConnect: SQLiteOpenHelper) : SaveS
             while(moveToNext()){
                 val record = CreditCardBoughtMap().mapping(this)
                 val difference = DateUtils.getMonths(record.boughtDate,cutoffCurrent)
-                Log.d(this.javaClass.name," ${record.boughtDate} < $pendingQuotes -  $difference < ${record.month}")
-                if(record.boughtDate.isBefore(pendingQuotes) &&
+                Log.d(this.javaClass.name," ${record.boughtDate} < $startDate -  $difference < ${record.month}")
+                if(record.boughtDate.isBefore(startDate) &&
                     difference < record.month ) {
                     Log.d(this.javaClass.name,"Added")
                     items.add(record)
@@ -181,10 +222,10 @@ class SaveCreditCardBoughtImpl(override var dbConnect: SQLiteOpenHelper) : SaveS
 
 
     @RequiresApi(Build.VERSION_CODES.O)
-    override fun getCapital(key: Int, cutOff: LocalDateTime): Optional<BigDecimal> {
+    override fun getCapital(key: Int, startDate:LocalDateTime,cutOff: LocalDateTime): Optional<BigDecimal> {
         Log.v(this.javaClass.name,"<<<=== getCapital - Start")
         try {
-            val list = getToDate(key, cutOff)
+            val list = getToDate(key,startDate, cutOff)
             val listRecurrent = getRecurrentBuys(key,cutOff)
             val capitalRecurrent = listRecurrent.filter{ it.month == 1}.map { it.valueItem }.reduceOrNull{ val1,val2 -> val1.add(val2)}?:BigDecimal.ZERO
             val capitalRecurrentQuotes = listRecurrent.filter{it.month > 1}.map{ it.valueItem.divide(it.month.toBigDecimal(),8,RoundingMode.CEILING)}.reduceOrNull { val1, val2 -> val1.add(val2)}?:BigDecimal.ZERO
@@ -212,13 +253,22 @@ class SaveCreditCardBoughtImpl(override var dbConnect: SQLiteOpenHelper) : SaveS
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    override fun getInterest(key: Int, cutOff: LocalDateTime): Optional<BigDecimal> {
+    override fun getInterest(key: Int, startDate:LocalDateTime,cutOff: LocalDateTime): Optional<BigDecimal> {
         Log.v(this.javaClass.name,"<<<=== getInterest - Start")
-        try{
-        val tax = getTax(cutOff,TaxEnum.CREDIT_CARD)
-        val taxCashAdv = getTax(cutOff,TaxEnum.CASH_ADVANCE)
-        val list = getToDate(key,cutOff)
-            val value = list.stream().filter{ it.month > 1}
+            val listRecurrent = getRecurrentBuys(key,cutOff)
+        Log.d(this.javaClass.name,"List Recurrent: $listRecurrent")
+            val interestRecurrent = listRecurrent.stream().filter{ it.month > 1}.map {
+                val interest = it.interest / 100
+                Log.d(this.javaClass.name," InterestRec:: ${it.valueItem} X ${interest}  = ${it.valueItem.multiply(interest.toBigDecimal())}")
+                it.valueItem.multiply(interest.toBigDecimal())
+            }
+                .peek{Log.d(this.javaClass.name," InterestRec:: $it")}
+                .reduce{ accumulator, interest -> accumulator.add(interest)}
+        Log.d(this.javaClass.name,"InterestRecurrent:: $interestRecurrent")
+            val tax = getTax(cutOff,TaxEnum.CREDIT_CARD)
+            val taxCashAdv = getTax(cutOff,TaxEnum.CASH_ADVANCE)
+            val list = getToDate(key,startDate,cutOff)
+            var value = list.stream().filter{ it.month > 1}
                                  .map{
                                      var interest = it.interest
                                      when(it.kind){
@@ -232,21 +282,18 @@ class SaveCreditCardBoughtImpl(override var dbConnect: SQLiteOpenHelper) : SaveS
                                      Log.d(this.javaClass.name,"${it.valueItem} X ${interest}%")
                                      it.valueItem.multiply(interest.toBigDecimal().divide(BigDecimal(100),8,RoundingMode.CEILING))
                                  }
-            .peek{
-                Log.d(this.javaClass.name,"$it")
-            }
-                                 .reduce{ val1,val2 -> val1+val2}
-        return value.also { Log.v(this.javaClass.name,"$it") }
-        }finally{
-            Log.v(this.javaClass.name,"<<<=== getInterest - End")
-        }
+                                 .reduce{ accumulator  ,interest -> accumulator.add(interest)}
+        Log.d(this.javaClass.name," Interest Calc:: Interest: $value Recurrent: $interestRecurrent")
+            value = Optional.ofNullable(value.orElse(BigDecimal(0)).add(interestRecurrent.orElse(BigDecimal.ZERO)))
+            Log.v(this.javaClass.name,"<<<=== FINISH getInterest $value ")
+        return value
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    override fun getCapitalPendingQuotes(key: Int, cutOff: LocalDateTime): Optional<BigDecimal> {
+    override fun getCapitalPendingQuotes(key: Int,startDate: LocalDateTime, cutOff: LocalDateTime): Optional<BigDecimal> {
         Log.v(this.javaClass.name,"<<<=== getCapitalPendingQuotes - Start")
         try{
-        val list = getPendingQuotes(key,cutOff)
+        val list = getPendingQuotes(key,startDate,cutOff)
         val value = list.stream().map {
             val months = DateUtils.getMonths(it.boughtDate,cutOff)
             val quote = it.valueItem.divide(it.month.toBigDecimal(),8,RoundingMode.CEILING)
@@ -268,12 +315,12 @@ class SaveCreditCardBoughtImpl(override var dbConnect: SQLiteOpenHelper) : SaveS
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    override fun getInterestPendingQuotes(key: Int, cutOff: LocalDateTime): Optional<BigDecimal> {
+    override fun getInterestPendingQuotes(key: Int,startDate: LocalDateTime, cutOff: LocalDateTime): Optional<BigDecimal> {
         Log.v(this.javaClass.name,"<<<=== getInterestPendingQuotes - Start")
         try{
             val tax = getTax(cutOff,TaxEnum.CREDIT_CARD)
             val taxCashAdv = getTax(cutOff,TaxEnum.CASH_ADVANCE)
-        val list = getPendingQuotes(key,cutOff)
+        val list = getPendingQuotes(key,startDate,cutOff)
         val value = list.stream().map {
             val months = DateUtils.getMonths(it.boughtDate,cutOff)
             val quote = it.valueItem.divide(it.month.toBigDecimal(),8,RoundingMode.CEILING)
@@ -309,10 +356,10 @@ class SaveCreditCardBoughtImpl(override var dbConnect: SQLiteOpenHelper) : SaveS
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    override fun getBought(key: Int, cutOff: LocalDateTime): Optional<Long> {
+    override fun getBought(key: Int, startDate:LocalDateTime,cutOff: LocalDateTime): Optional<Long> {
         Log.v(this.javaClass.name,"<<<=== getBought - Start")
         try {
-            val list = getToDate(key, cutOff)
+            val list = getToDate(key, startDate,cutOff)
             val listRecurrent = getRecurrentBuys(key,cutOff)
             val countRecurrent = listRecurrent.count { it.month == 1}
             val value = list.count { it.month <= 1 }
@@ -323,10 +370,10 @@ class SaveCreditCardBoughtImpl(override var dbConnect: SQLiteOpenHelper) : SaveS
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    override fun getBoughtPendingQuotes(key: Int, cutOff: LocalDateTime): Optional<Long> {
+    override fun getBoughtPendingQuotes(key: Int, startDate: LocalDateTime,cutOff: LocalDateTime): Optional<Long> {
         Log.v(this.javaClass.name,"<<<=== getBoughtPendingQuotes - Start")
         try {
-            val list = getPendingQuotes(key, cutOff)
+            val list = getPendingQuotes(key, startDate,cutOff)
             val value = list.stream().filter {
                 val months = DateUtils.getMonths(it.boughtDate,cutOff)
                 months <= it.month
@@ -338,10 +385,10 @@ class SaveCreditCardBoughtImpl(override var dbConnect: SQLiteOpenHelper) : SaveS
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    override fun getBoughtQuotes(key: Int, cutOff: LocalDateTime): Optional<Long> {
+    override fun getBoughtQuotes(key: Int, startDate:LocalDateTime,cutOff: LocalDateTime): Optional<Long> {
         Log.v(this.javaClass.name,"<<<=== getBoughtQuotes - Start")
         try{
-            val list = getToDate(key,cutOff)
+            val list = getToDate(key,startDate,cutOff)
             val listRecurrent = getRecurrentBuys(key,cutOff)
             val countRecurrent = listRecurrent.count{ it.month > 1}
             val value =  list.count{ it.month > 1 }
@@ -352,10 +399,10 @@ class SaveCreditCardBoughtImpl(override var dbConnect: SQLiteOpenHelper) : SaveS
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    override fun getPendingToPay(key: Int, cutOff: LocalDateTime): Optional<BigDecimal> {
+    override fun getPendingToPay(key: Int, startDate:LocalDateTime,cutOff: LocalDateTime): Optional<BigDecimal> {
         Log.v(this.javaClass.name,"<<<=== getPendingToPay - Start")
         try{
-            val list = getToDate(key,cutOff)
+            val list = getToDate(key,startDate,cutOff)
             val value = list.stream().map {
                 val months = DateUtils.getMonths(it.boughtDate,cutOff)
                 val quote = it.valueItem.divide(it.month.toBigDecimal(),8,RoundingMode.CEILING)
@@ -376,10 +423,10 @@ class SaveCreditCardBoughtImpl(override var dbConnect: SQLiteOpenHelper) : SaveS
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    override fun getPendingToPayQuotes(key: Int, cutOff: LocalDateTime): Optional<BigDecimal> {
+    override fun getPendingToPayQuotes(key: Int,startDate: LocalDateTime, cutOff: LocalDateTime): Optional<BigDecimal> {
         Log.v(this.javaClass.name,"<<<=== getPendingToPayQuotes - Start")
         try{
-            val list = getPendingQuotes(key,cutOff)
+            val list = getPendingQuotes(key,startDate,cutOff)
             val value = list.stream().map {
                 val months = DateUtils.getMonths(it.boughtDate,cutOff)
                 val quote = it.valueItem.divide(it.month.toBigDecimal(),8,RoundingMode.CEILING)
@@ -445,6 +492,18 @@ class SaveCreditCardBoughtImpl(override var dbConnect: SQLiteOpenHelper) : SaveS
             Log.d(this.javaClass.name,"<<<=== getRecurrentBuys - End")
         }
     }
+    @RequiresApi(Build.VERSION_CODES.O)
+    override fun backup(pathFile: String) {
+        val values = getAll()
+        val path = Paths.get(pathFile)
+        Files.newBufferedWriter(path, Charset.defaultCharset()).use { it.write(Gson().toJson(values)) }
+    }
 
+    @RequiresApi(Build.VERSION_CODES.O)
+    override fun restoreBackup(pathFile: String) {
+        val path = Paths.get(pathFile)
+        val list = Files.newBufferedReader(path, Charset.defaultCharset()).use { Gson().fromJson(it,List::class.java) } as List<CreditCardBoughtDTO>
+        list.forEach(this::save)
+    }
 
 }

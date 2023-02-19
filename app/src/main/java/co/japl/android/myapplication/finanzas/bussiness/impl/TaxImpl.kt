@@ -6,6 +6,7 @@ import android.os.Build
 import android.provider.BaseColumns
 import android.util.Log
 import androidx.annotation.RequiresApi
+import co.japl.android.myapplication.bussiness.DTO.CreditCardDTO
 import co.japl.android.myapplication.bussiness.DTO.TaxDB
 import co.japl.android.myapplication.bussiness.DTO.TaxDTO
 import co.japl.android.myapplication.bussiness.interfaces.IMapper
@@ -14,6 +15,10 @@ import co.japl.android.myapplication.bussiness.interfaces.SaveSvc
 import co.japl.android.myapplication.bussiness.mapping.TaxMap
 import co.japl.android.myapplication.finanzas.utils.TaxEnum
 import co.japl.android.myapplication.utils.DatabaseConstants
+import com.google.gson.Gson
+import java.nio.charset.Charset
+import java.nio.file.Files
+import java.nio.file.Paths
 import java.util.*
 
 class TaxImpl(override var dbConnect: SQLiteOpenHelper) :  SaveSvc<TaxDTO>,ITaxSvc{
@@ -125,5 +130,17 @@ class TaxImpl(override var dbConnect: SQLiteOpenHelper) :  SaveSvc<TaxDTO>,ITaxS
             Log.d(this.javaClass.name,"<<<=== End - get $month , $year")
         }
     }
+    @RequiresApi(Build.VERSION_CODES.O)
+    override fun backup(pathFile: String) {
+        val values = getAll()
+        val path = Paths.get(pathFile)
+        Files.newBufferedWriter(path, Charset.defaultCharset()).use { it.write(Gson().toJson(values)) }
+    }
 
+    @RequiresApi(Build.VERSION_CODES.O)
+    override fun restoreBackup(pathFile: String) {
+        val path = Paths.get(pathFile)
+        val list = Files.newBufferedReader(path, Charset.defaultCharset()).use { Gson().fromJson(it,List::class.java) } as List<TaxDTO>
+        list.forEach(this::save)
+    }
 }

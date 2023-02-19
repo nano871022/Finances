@@ -28,6 +28,9 @@
         <action
             android:id="@+id/action_item_menu_side_boughtmade_to_list_periods"
             app:destination="@id/list_periods" />
+        <action
+            android:id="@+id/action_item_menu_side_boughtmade_to_boughWalletController"
+            app:destination="@id/boughWalletController" />
     </fragment>
     <fragment
         android:id="@+id/item_menu_side_quoteCredit"
@@ -196,5 +199,13 @@
         android:name="co.japl.android.myapplication.finanzas.controller.GDriveConnectFragment"
         android:label="Login on Google"
         tools:layout="@layout/fragment_g_drive_connect" />
+    <fragment
+        android:id="@+id/boughWalletController"
+        android:name="co.japl.android.myapplication.finanzas.controller.BoughWalletController"
+        android:label="BoughWalletController" >
+        <action
+            android:id="@+id/action_boughWalletController_to_item_menu_side_boughtmade"
+            app:destination="@id/item_menu_side_boughtmade" />
+    </fragment>
 
 </navigation>

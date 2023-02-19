@@ -1,5 +1,7 @@
 package co.japl.android.myapplication.controller
 
+import android.Manifest
+import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -9,6 +11,8 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.Toast
 import androidx.annotation.RequiresApi
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import androidx.navigation.fragment.findNavController
@@ -19,6 +23,7 @@ import co.japl.android.myapplication.adapter.ListCreditCardAdapter
 import co.japl.android.myapplication.bussiness.DB.connections.ConnectDB
 import co.japl.android.myapplication.bussiness.impl.CreditCardImpl
 import co.japl.android.myapplication.putParams.CreditCardParams
+import java.util.Arrays
 
 class ListCreditCard : Fragment() , View.OnClickListener{
     private lateinit var recycle:RecyclerView
@@ -51,6 +56,11 @@ class ListCreditCard : Fragment() , View.OnClickListener{
                 val connect = ConnectDB(view.context)
                 val saveSvc = CreditCardImpl(connect)
                 val data = saveSvc.getAll()
+
+                    saveSvc.backup("CreditCard.dat")
+                    saveSvc.restoreBackup("CreditCard.dat")
+
+
                 recycler.adapter = ListCreditCardAdapter(data.toMutableList(),parentFragmentManager,findNavController())
             }
         }

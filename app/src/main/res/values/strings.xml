@@ -108,7 +108,9 @@
     <string name="taxs_credit_card">Tasas de Tarjeta de Credito</string>
     <string name="recurrent">Recurrente</string>
     <string name="cash_advance">Avance de Dinero</string>
+    <string name="bough_wallet">Compra de cartera</string>
     <string name="sucursal_advance">Avance sucursal bancaria</string>
+    <string name="bough_wallet_generic">Compra de cartera</string>
 
     <string-array name="Months">
         <item>--- Seleccionar --- </item>

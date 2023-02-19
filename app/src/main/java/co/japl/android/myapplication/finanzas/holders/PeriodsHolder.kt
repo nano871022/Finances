@@ -13,6 +13,7 @@ import co.japl.android.myapplication.bussiness.interfaces.ISpinnerHolder
 import co.japl.android.myapplication.finanzas.bussiness.DTO.PeriodDTO
 import co.japl.android.myapplication.putParams.TaxesParams
 import java.math.BigDecimal
+import java.text.DecimalFormat
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
@@ -24,7 +25,8 @@ class PeriodsHolder (var view:View, var parentFragmentManager:FragmentManager, v
     lateinit var total: TextView
     lateinit var paid: Button
     lateinit var periodDTO: PeriodDTO
-
+    private val format = DecimalFormat("###,###.##")
+    private val currency = DecimalFormat("$ ###,###.##")
 
     override fun setFields(actions: View.OnClickListener?) {
         period = view.findViewById(R.id.tvListPeriodItem)
@@ -37,9 +39,9 @@ class PeriodsHolder (var view:View, var parentFragmentManager:FragmentManager, v
     @RequiresApi(Build.VERSION_CODES.O)
     override fun loadFields(values: PeriodDTO) {
         period.text = values.periodStart.format(DateTimeFormatter.ofPattern("yyyy/MM/dd")).plus(" - ").plus(values.periodEnd.format(DateTimeFormatter.ofPattern("yyyy/MM/dd")))
-        interest.text = values.interest.toString()
-        capital.text = values.capital.toString()
-        total.text = values.total.toString()
+        interest.text = currency.format(values.interest)
+        capital.text = currency.format(values.capital)
+        total.text = currency.format(values.total)
         periodDTO = values
     }
 
@@ -48,9 +50,9 @@ class PeriodsHolder (var view:View, var parentFragmentManager:FragmentManager, v
         val period:List<String> = this.period.text.split(" - ")
         val startPeriod: LocalDateTime = LocalDateTime.parse(period.get(0),DateTimeFormatter.ofPattern("yyyy/MM/dd"))
         val endPeriod: LocalDateTime = LocalDateTime.parse(period.get(1),DateTimeFormatter.ofPattern("yyyy/MM/dd"))
-        val interest: BigDecimal = this.interest.text.toString().toBigDecimal()
-        val capital: BigDecimal = this.capital.text.toString().toBigDecimal()
-        val total: BigDecimal = this.total.text.toString().toBigDecimal()
+        val interest: BigDecimal = currency.parse(this.interest.text.toString())?.toLong()?.toBigDecimal()!!
+        val capital: BigDecimal = currency.parse(this.capital.text.toString())?.toLong()?.toBigDecimal()!!
+        val total: BigDecimal = currency.parse(this.total.text.toString())?.toLong()?.toBigDecimal()!!
         return PeriodDTO(periodDTO.creditCardId,startPeriod,endPeriod,interest,capital,total)
     }
 

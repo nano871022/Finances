@@ -1,9 +1,11 @@
 package co.japl.android.myapplication
 
+import android.Manifest
 import android.content.Intent
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
+import android.os.Environment
 import android.os.StrictMode
 import android.util.Log
 import android.view.Gravity
@@ -15,6 +17,7 @@ import androidx.annotation.RequiresApi
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.core.app.ActivityCompat
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.GravityCompat
 import androidx.core.view.get
@@ -68,8 +71,13 @@ class MainActivity : AppCompatActivity(){
         if(isTablet()) {
             drawLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_OPEN)
         }
-
-
+        println("request permissos ${Environment.isExternalStorageManager()}")
+        ActivityCompat.requestPermissions(this,
+            listOf(Manifest.permission.WRITE_EXTERNAL_STORAGE).toTypedArray()
+            ,225)
+        ActivityCompat.requestPermissions(this,
+            arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+            ,225)
 
     }
 

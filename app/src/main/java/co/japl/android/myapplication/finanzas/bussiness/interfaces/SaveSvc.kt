@@ -4,6 +4,7 @@ import android.database.sqlite.SQLiteOpenHelper
 import java.util.*
 
 interface SaveSvc<T>  {
+
     var dbConnect: SQLiteOpenHelper
 
     fun save(dto:T):Boolean
@@ -13,4 +14,8 @@ interface SaveSvc<T>  {
     fun delete(id:Int):Boolean
 
     fun get(id:Int):Optional<T>
+
+    fun backup(path:String)
+
+    fun restoreBackup(path:String)
 }

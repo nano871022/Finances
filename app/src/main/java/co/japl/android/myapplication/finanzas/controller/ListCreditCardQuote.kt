@@ -22,6 +22,7 @@ import co.japl.android.myapplication.bussiness.impl.TaxImpl
 import co.japl.android.myapplication.bussiness.interfaces.*
 import co.japl.android.myapplication.holders.QuoteCCHolder
 import co.japl.android.myapplication.pojo.CreditCard
+import co.japl.android.myapplication.utils.DateUtils
 import java.math.BigDecimal
 import java.time.LocalDateTime
 import java.util.*
@@ -43,13 +44,13 @@ class ListCreditCardQuote : Fragment(), AdapterView.OnItemSelectedListener{
     ): View {
         val rootView = inflater.inflate(R.layout.list_credit_card_quote, container, false)
         contexto = rootView.context
-        holder = QuoteCCHolder(rootView,parentFragmentManager,findNavController())
-        loadFields(rootView)
-         rootView?.context?.let { ConnectDB(it) }?.let {
+        rootView?.context?.let { ConnectDB(it) }?.let {
             taxSvc = TaxImpl(it)
             saveSvc = SaveCreditCardBoughtImpl(it)
             searchSvc = saveSvc as SearchSvc<CreditCardBoughtDTO>
         }!!
+        holder = QuoteCCHolder(rootView,parentFragmentManager,findNavController(),taxSvc)
+        loadFields(rootView)
         return rootView
 
     }
@@ -57,13 +58,15 @@ class ListCreditCardQuote : Fragment(), AdapterView.OnItemSelectedListener{
     @RequiresApi(Build.VERSION_CODES.O)
     private fun loadData(pojo:CreditCard):CreditCard{
          this.context?.let {
-             val capital = searchSvc.getCapital(pojo.codeCreditCard.get(), pojo.cutOff.get())
-             val capitalQuotes = searchSvc.getCapitalPendingQuotes(pojo.codeCreditCard.get(), pojo.cutOff.get())
-             val interest  = searchSvc.getInterest(pojo.codeCreditCard.get(), pojo.cutOff.get())
-             val interestQuote = searchSvc.getInterestPendingQuotes(pojo.codeCreditCard.get(), pojo.cutOff.get())
-             val quotes  = searchSvc.getBoughtQuotes(pojo.codeCreditCard.get(), pojo.cutOff.get())
-             val quotesPending = searchSvc.getBoughtPendingQuotes(pojo.codeCreditCard.get(), pojo.cutOff.get())
-             val oneQuote  = searchSvc.getBought(pojo.codeCreditCard.get(), pojo.cutOff.get())
+             val endDate = pojo.cutOff.get()
+             val startDate = DateUtils.startDateFromCutoff(pojo.cutoffDay.get(),endDate)
+             val capital = searchSvc.getCapital(pojo.codeCreditCard.get(), startDate,endDate)
+             val capitalQuotes = searchSvc.getCapitalPendingQuotes(pojo.codeCreditCard.get(), startDate,endDate)
+             val interest  = searchSvc.getInterest(pojo.codeCreditCard.get(), startDate,endDate)
+             val interestQuote = searchSvc.getInterestPendingQuotes(pojo.codeCreditCard.get(), startDate,endDate)
+             val quotes  = searchSvc.getBoughtQuotes(pojo.codeCreditCard.get(), startDate,endDate)
+             val quotesPending = searchSvc.getBoughtPendingQuotes(pojo.codeCreditCard.get(), startDate,endDate)
+             val oneQuote  = searchSvc.getBought(pojo.codeCreditCard.get(), startDate,endDate)
              pojo.capital = Optional.ofNullable(
                 capital.orElse(BigDecimal(0)).plus(capitalQuotes.orElse(BigDecimal(0))))
             pojo.interest = Optional.ofNullable(
@@ -77,13 +80,16 @@ class ListCreditCardQuote : Fragment(), AdapterView.OnItemSelectedListener{
 
     @RequiresApi(Build.VERSION_CODES.O)
     private fun loadDataLastMonth(pojo:CreditCard):CreditCard{
-        pojo.capitalQuote = searchSvc.getCapital(pojo.codeCreditCard.get(), pojo.cutOff.get().minusMonths(1))
-        pojo.capitalQuotes =
-                searchSvc.getCapitalPendingQuotes(pojo.codeCreditCard.get(), pojo.cutOff.get().minusMonths(1))
+        val endDate = pojo.cutOff.get().minusMonths(1)
+        val startDate = DateUtils.startDateFromCutoff(pojo.cutoffDay.get(),endDate)
 
-        val interest = searchSvc.getInterest(pojo.codeCreditCard.get(), pojo.cutOff.get().minusMonths(1))
+        pojo.capitalQuote = searchSvc.getCapital(pojo.codeCreditCard.get(),startDate, endDate)
+        pojo.capitalQuotes =
+                searchSvc.getCapitalPendingQuotes(pojo.codeCreditCard.get(), startDate,endDate)
+
+        val interest = searchSvc.getInterest(pojo.codeCreditCard.get(), startDate ,endDate)
             val interestQuote =
-                searchSvc.getInterestPendingQuotes(pojo.codeCreditCard.get(), pojo.cutOff.get().minusMonths(1))
+                searchSvc.getInterestPendingQuotes(pojo.codeCreditCard.get(), startDate,endDate)
             pojo.interestQuotes = Optional.ofNullable(
                 interest.orElse(BigDecimal(0)).plus(interestQuote.orElse(BigDecimal(0)))
             )
@@ -119,6 +125,8 @@ class ListCreditCardQuote : Fragment(), AdapterView.OnItemSelectedListener{
                 creditCard.let {
                     pojo.codeCreditCard = Optional.ofNullable(creditCard?.id)
                     pojo.nameCreditCard = Optional.ofNullable(creditCard?.name)
+                    println("CutOffDay: ${creditCard?.cutOffDay}")
+                    pojo.cutoffDay = Optional.ofNullable(creditCard?.cutOffDay)
                     pojo.cutOff =
                         Optional.ofNullable(creditCard?.cutOffDay?.toInt()
                             ?.let { it1 -> configSvc.nextCutOff( it1) })
