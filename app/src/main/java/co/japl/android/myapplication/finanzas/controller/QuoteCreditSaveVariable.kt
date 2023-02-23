@@ -54,7 +54,7 @@ class QuoteCreditSaveVariable :  Fragment(), View.OnClickListener{
         when(view?.id){
             R.id.btnSave->{
                 val values = holder.downLoadFields()
-                if(holder.validate() && saveSvc.save(mapping.mapping(values))){
+                if(holder.validate() && saveSvc.save(mapping.mapping(values))>0){
                     Snackbar.make(view,R.string.success_save_quote_credit,Snackbar.LENGTH_LONG).setAction(R.string.close,this).show()
                     QuoteCreditVariablesParams.toBack(findNavController())
                 }else{

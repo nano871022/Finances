@@ -7,6 +7,7 @@ import android.view.View
 import android.widget.*
 import androidx.annotation.RequiresApi
 import co.japl.android.myapplication.R
+import co.japl.android.myapplication.bussiness.DTO.CreditCardSettingDTO
 import co.japl.android.myapplication.bussiness.impl.QuoteCreditVariable
 import co.japl.android.myapplication.bussiness.impl.QuoteCreditVariableInterestQuote
 import co.japl.android.myapplication.bussiness.interfaces.Calc

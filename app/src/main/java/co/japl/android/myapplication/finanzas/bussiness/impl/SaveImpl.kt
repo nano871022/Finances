@@ -29,10 +29,10 @@ class SaveImpl(override var dbConnect: SQLiteOpenHelper) : SaveSvc<CalcDTO> {
         ,CalcDB.CalcEntry.COLUMN_INTEREST_VALUE
         ,CalcDB.CalcEntry.COLUMN_CAPITAL_VALUE)
 
-    override fun save(calc: CalcDTO): Boolean {
+    override fun save(calc: CalcDTO): Long {
         val db = dbConnect.writableDatabase
         val dto = CalcMap().mapping(calc)
-        return db?.insert(CalcDB.CalcEntry.TABLE_NAME,null,dto)!! > 0
+        return db?.insert(CalcDB.CalcEntry.TABLE_NAME,null,dto)!!
     }
 
     override  fun getAll():List<CalcDTO>{

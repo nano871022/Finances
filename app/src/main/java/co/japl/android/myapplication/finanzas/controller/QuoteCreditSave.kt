@@ -54,7 +54,7 @@ class QuoteCreditSave :  Fragment(), View.OnClickListener{
     private fun save(view:View){
         if(holder.validate()  ) {
             quote.get().name = holder.downLoadFields().name
-            if (saveSvc.save(mapping.mapping(quote.get()))) {
+            if ( saveSvc.save(mapping.mapping(quote.get()))>0) {
                 Snackbar.make(view, R.string.success_save_quote_credit, Snackbar.LENGTH_LONG)
                     .setAction(R.string.close, View.OnClickListener {
                     }).show()

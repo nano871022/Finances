@@ -160,6 +160,9 @@
             app:enterAnim="@android:anim/fade_in"
             app:exitAnim="@android:anim/fade_out"
             app:destination="@+id/item_menu_setting_credit_card" />
+        <action
+            android:id="@+id/action_createCreditCard_to_listCreditCardSetting"
+            app:destination="@id/listCreditCardSetting" />
     </fragment>
 
     <fragment
@@ -199,6 +202,27 @@
         android:name="co.japl.android.myapplication.finanzas.controller.GDriveConnectFragment"
         android:label="Login on Google"
         tools:layout="@layout/fragment_g_drive_connect" />
+    <fragment
+        android:id="@+id/creditCardSettingFragment"
+        android:name="co.japl.android.myapplication.finanzas.controller.CreditCardSettingFragment"
+        android:label="fragment_credit_card_setting"
+        tools:layout="@layout/fragment_credit_card_setting" >
+        <action
+            android:id="@+id/action_creditCardSettingFragment_to_listCreditCardSetting"
+            app:destination="@id/listCreditCardSetting" />
+    </fragment>
+    <fragment
+        android:id="@+id/listCreditCardSetting"
+        android:name="co.japl.android.myapplication.controller.ListCreditCardSetting"
+        android:label="fragment_list_credit_card_setting"
+        tools:layout="@layout/fragment_list_credit_card_setting" >
+        <action
+            android:id="@+id/action_listCreditCardSetting_to_createCreditCard"
+            app:destination="@id/createCreditCard" />
+        <action
+            android:id="@+id/action_listCreditCardSetting_to_creditCardSettingFragment"
+            app:destination="@id/creditCardSettingFragment" />
+    </fragment>
     <fragment
         android:id="@+id/boughWalletController"
         android:name="co.japl.android.myapplication.finanzas.controller.BoughWalletController"

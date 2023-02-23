@@ -55,12 +55,12 @@ class SaveCreditCardBoughtImpl(override var dbConnect: SQLiteOpenHelper) : SaveS
     )
 
     @RequiresApi(Build.VERSION_CODES.O)
-    override fun save(dto: CreditCardBoughtDTO): Boolean {
+    override fun save(dto: CreditCardBoughtDTO): Long {
         Log.v(this.javaClass.name,"<<<=== save - Start")
         try{
         val db = dbConnect.writableDatabase
         val dto = CreditCardBoughtMap().mapping(dto)
-        return (db?.insert(CreditCardBoughtDB.CreditCardBoughtEntry.TABLE_NAME,null,dto)!! > 0).also { Log.v(this.javaClass.name,"$it") }
+        return (db?.insert(CreditCardBoughtDB.CreditCardBoughtEntry.TABLE_NAME,null,dto)!! ).also { Log.v(this.javaClass.name,"$it") }
         }finally{
             Log.v(this.javaClass.name,"<<<=== save - End")
         }

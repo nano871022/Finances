@@ -32,13 +32,13 @@ class CreditCardImpl(override var dbConnect: SQLiteOpenHelper) :  SaveSvc<Credit
                                   CreditCardDB.CreditCardEntry.COLUMN_CREATE_DATE)
     private val mapper = CreditCardMap()
     @RequiresApi(Build.VERSION_CODES.O)
-    override fun save(dto: CreditCardDTO): Boolean {
+    override fun save(dto: CreditCardDTO): Long {
         val db = dbConnect.writableDatabase
         val columns = mapper.mapping(dto)
         if(dto.id <= 0){
-            return db.insert(CreditCardDB.CreditCardEntry.TABLE_NAME,null,columns) > 0
+            return db.insert(CreditCardDB.CreditCardEntry.TABLE_NAME,null,columns)
         }
-        return  db.update(CreditCardDB.CreditCardEntry.TABLE_NAME ,mapper.mapping(dto),"_id = ?", arrayOf(dto.id.toString())  ) > 0
+        return  db.update(CreditCardDB.CreditCardEntry.TABLE_NAME ,mapper.mapping(dto),"_id = ?", arrayOf(dto.id.toString())  ).toLong()
     }
 
     @RequiresApi(Build.VERSION_CODES.O)

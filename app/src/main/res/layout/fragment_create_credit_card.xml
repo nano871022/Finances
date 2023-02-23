@@ -12,6 +12,20 @@
 
 
     <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toTopOf="@+id/llButtonCCC">
+
+        <Button
+            android:id="@+id/btnSettingsCCC"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/setting_redirect" />
+    </LinearLayout>
+
+    <LinearLayout
         android:id="@+id/llButtonCCC"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -23,15 +37,16 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginRight="10dp"
-            android:layout_weight="1"
+            android:layout_weight="2"
             android:text="@string/save" />
 
         <Button
             android:id="@+id/btnCleanCCC"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:layout_weight="2"
             android:text="@string/clear" />
+
     </LinearLayout>
 
     <LinearLayout

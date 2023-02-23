@@ -7,7 +7,7 @@ interface SaveSvc<T>  {
 
     var dbConnect: SQLiteOpenHelper
 
-    fun save(dto:T):Boolean
+    fun save(dto:T):Long
 
     fun getAll():List<T>
 
