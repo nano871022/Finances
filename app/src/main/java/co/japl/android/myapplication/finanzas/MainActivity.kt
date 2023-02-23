@@ -71,14 +71,6 @@ class MainActivity : AppCompatActivity(){
         if(isTablet()) {
             drawLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_OPEN)
         }
-        println("request permissos ${Environment.isExternalStorageManager()}")
-        ActivityCompat.requestPermissions(this,
-            listOf(Manifest.permission.WRITE_EXTERNAL_STORAGE).toTypedArray()
-            ,225)
-        ActivityCompat.requestPermissions(this,
-            arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE)
-            ,225)
-
     }
 
     private fun onNavigationItemSelected(item: MenuItem): Boolean {
