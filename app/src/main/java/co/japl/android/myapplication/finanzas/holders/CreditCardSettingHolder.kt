@@ -58,7 +58,7 @@ class CreditCardSettingHolder (var view:View, var parentFragmentManager:Fragment
     @RequiresApi(Build.VERSION_CODES.O)
     override fun downLoadFields(): CreditCardSettingDTO {
         val id = if (setting.id > 0) setting.id else 0
-        val codeCreditCard = creditCard.selectedItem.toString().toInt()
+        val codeCreditCard = creditCard.selectedItemId.toString().toInt()
         val create = LocalDateTime.now()
         val type = this.type.selectedItem.toString()
         val name = this.name.text.toString()
@@ -108,7 +108,7 @@ class CreditCardSettingHolder (var view:View, var parentFragmentManager:Fragment
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onClick(v: View?) {
-        when(view.id){
+        when(v?.id){
             R.id.btnAddCCS-> {
                 val dto = downLoadFields()
                 if(validate() && creditCardSvc.save(dto)>0){

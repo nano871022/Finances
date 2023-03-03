@@ -98,7 +98,7 @@ class QuoteBought : Fragment(), View.OnClickListener{
                 val id = saveSvc.save(dto)
                 if( id > 0) {
                     val buyCCS = (holder as QuoteBoughtHolder).downLoadBuyCreditCardSetting()
-                    buyCCS.codeCreditCardSetting.let {
+                    if(buyCCS.codeCreditCardSetting > 0) {
                         buyCCS.codeBuyCreditCard = id.toInt()
                         buyCCSSvc.save(buyCCS)
                     }

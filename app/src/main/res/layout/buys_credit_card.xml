@@ -32,16 +32,6 @@
         tools:layout_editor_absoluteX="0dp">
 
         <TextView
-            android:id="@+id/lCreditCardAssign"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:paddingLeft="10dp"
-            android:paddingTop="13dp"
-            android:paddingRight="10dp"
-            android:text="@string/assing_credit_Card"
-            android:textStyle="bold" />
-
-        <TextView
             android:id="@+id/etCreditCardAssign"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -259,6 +249,52 @@
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/llSetingTypeBCC"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toBottomOf="@+id/llRecurrentQuoteValue"
+        tools:layout_editor_absoluteX="1dp">
+
+        <TextView
+            android:id="@+id/textView29"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/credit_card_setting_type_setting"
+            android:textStyle="bold" />
+
+        <Spinner
+            android:id="@+id/spTypeSettingBCC"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/llSettingNameBCC"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toBottomOf="@+id/llSetingTypeBCC"
+        tools:layout_editor_absoluteX="1dp">
+
+        <TextView
+            android:id="@+id/textView38"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/credit_card_setting_name_setting"
+            android:textStyle="bold" />
+
+        <Spinner
+            android:id="@+id/spNameSettingBCC"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+    </LinearLayout>
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
@@ -281,50 +317,6 @@
             android:layout_weight="1"
             android:text="@string/clear"
             app:icon="@drawable/ic_baseline_cleaning_services_24" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/llSetingTypeBCC"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        tools:layout_editor_absoluteX="1dp"
-        tools:layout_editor_absoluteY="437dp">
-
-        <TextView
-            android:id="@+id/textView29"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/credit_card_setting_type_setting" />
-
-        <Spinner
-            android:id="@+id/spTypeSettingBCC"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/llSettingNameBCC"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        tools:layout_editor_absoluteX="1dp"
-        tools:layout_editor_absoluteY="462dp">
-
-        <TextView
-            android:id="@+id/textView38"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/credit_card_setting_name_setting" />
-
-        <Spinner
-            android:id="@+id/spNameSettingBCC"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1" />
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -8,7 +8,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import androidx.annotation.RequiresApi
+import androidx.navigation.Navigation
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import co.japl.android.myapplication.R
 import co.japl.android.myapplication.bussiness.DB.connections.ConnectDB
 import co.japl.android.myapplication.bussiness.DTO.CreditCardDTO
@@ -38,28 +40,47 @@ class CreditCardSettingFragment : Fragment() {
     ): View? {
         val root = inflater.inflate(R.layout.fragment_credit_card_setting, container, false)
         loadCreditCard(root)
+        loadHolder(root)
+        return root
+    }
 
-        holder = CreditCardSettingHolder(root,parentFragmentManager, root.findNavController())
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun loadHolder(root: View){
+        holder = CreditCardSettingHolder(root, parentFragmentManager, findNavController())
         holder.setFields(null)
         val map = CreditCardSettingParams.download(arguments)
-        val id: Int = map[CreditCardSettingParams.Params.ARG_ID]?.or(0)!!
-        val codeCreditCard = map[CreditCardSettingParams.Params.ARG_CODE_CREDIT_CARD]!!
-        val dto = CreditCardSettingDTO(id, codeCreditCard,"","","",LocalDateTime.now(),1)
+        var id: Int =Int.MIN_VALUE
+        if(map.containsKey(CreditCardSettingParams.Params.ARG_ID)){
+            id= map[CreditCardSettingParams.Params.ARG_ID]?.or(0)!!
+        }
+        var codeCreditCard : Int = Int.MIN_VALUE
+        if(map.containsKey(CreditCardSettingParams.Params.ARG_CODE_CREDIT_CARD)){
+            codeCreditCard = map[CreditCardSettingParams.Params.ARG_CODE_CREDIT_CARD]!!
+        }
+        val dto = CreditCardSettingDTO(id, codeCreditCard, "", "", "", LocalDateTime.now(), 1)
         holder.loadFields(dto)
 
-        (holder as ISpinnerHolder<CreditCardSettingHolder>).lists{
-            it.creditCard.adapter = ArrayAdapter(this.requireContext(),R.layout.spinner_simple,R.id.tvValueBigSp, listCreditCardNames.toTypedArray())
-            ArrayAdapter.createFromResource(this.requireContext(),R.array.CreditCardSettingType,R.layout.spinner1).also{ adapter->
+        (holder as ISpinnerHolder<CreditCardSettingHolder>).lists {
+            it.creditCard.adapter = ArrayAdapter(
+                this.requireContext(),
+                R.layout.spinner_simple,
+                R.id.tvValueBigSp,
+                listCreditCardNames.toTypedArray()
+            )
+            ArrayAdapter.createFromResource(
+                this.requireContext(),
+                R.array.CreditCardSettingType,
+                R.layout.spinner1
+            ).also { adapter ->
                 adapter.setDropDownViewResource(R.layout.spinner1)
                 it.type.adapter = adapter
             }
-            if(listCreditCardNames.isNotEmpty() && listCreditCardNames.size == 2){
+            if (listCreditCardNames.isNotEmpty() && listCreditCardNames.size == 2) {
                 it.creditCard.setSelection(1)
             }
         }
-
-        return root
     }
+
 
     @RequiresApi(Build.VERSION_CODES.N)
     private fun loadCreditCard(root:View){

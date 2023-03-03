@@ -23,6 +23,7 @@ import co.japl.android.myapplication.finanzas.pojo.BoughtRecap
 import co.japl.android.myapplication.finanzas.putParams.CreditCardQuotesParams
 import co.japl.android.myapplication.holders.view.BoughtViewHolder
 import co.japl.android.myapplication.pojo.CreditCard
+import co.japl.android.myapplication.utils.DateUtils
 import java.math.BigDecimal
 import java.util.*
 

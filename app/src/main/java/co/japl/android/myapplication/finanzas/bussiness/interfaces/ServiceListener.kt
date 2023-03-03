@@ -6,6 +6,6 @@ import java.lang.Exception
 interface ServiceListener {
     fun loggedIn()
     fun fileDownloaded(file:File)
-    fun cancelled()
+    fun cancelled(info:String)
     fun handleError(exception: Exception)
 }

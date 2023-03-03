@@ -82,7 +82,7 @@ class BoughWalletController: Fragment() , View.OnClickListener{
             quote.cutOutDate = config.nextCutOff(creditCard.get().cutOffDay.toInt())
             quote.month = tax.period.toInt()
             val dto = CreditCardBoughtMap().mapping(quote)
-            if(saveSvc.save(dto)){
+            if(saveSvc.save(dto)>0){
                 Toast.makeText(context,"Se ha agregado el avance de dinero correctamente",Toast.LENGTH_LONG).show().also {
                     BoughWalletParams.toBack(navController)
                 }

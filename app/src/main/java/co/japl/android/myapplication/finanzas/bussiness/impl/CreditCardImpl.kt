@@ -43,7 +43,7 @@ class CreditCardImpl(override var dbConnect: SQLiteOpenHelper) :  SaveSvc<Credit
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun getAll(): List<CreditCardDTO> {
-        Log.i(this.javaClass.name,"<<<=== getAll - Start")
+        Log.d(this.javaClass.name,"<<<=== getAll - Start")
         val list = mutableListOf<CreditCardDTO>()
         try {
             val db = dbConnect.writableDatabase
@@ -66,7 +66,7 @@ class CreditCardImpl(override var dbConnect: SQLiteOpenHelper) :  SaveSvc<Credit
             Log.e(this.javaClass.name,e.message,e)
             return list
         }finally {
-            Log.i(this.javaClass.name, "<<<=== getAll - End")
+            Log.d(this.javaClass.name, "<<<=== getAll - End")
         }
     }
 
@@ -100,7 +100,7 @@ class CreditCardImpl(override var dbConnect: SQLiteOpenHelper) :  SaveSvc<Credit
     override fun backup(pathFile: String) {
         val values = getAll()
         val path = Paths.get(pathFile)
-        println("Path: $path Writable: ${path.isWritable()}")
+        Log.v(this.javaClass.name,"Path: $path Writable: ${path.isWritable()}")
         if(path.isWritable()) {
             Files.newBufferedWriter(path, Charset.defaultCharset())
                 .use { it.write(Gson().toJson(values)) }
@@ -110,7 +110,7 @@ class CreditCardImpl(override var dbConnect: SQLiteOpenHelper) :  SaveSvc<Credit
     @RequiresApi(Build.VERSION_CODES.O)
     override fun restoreBackup(pathFile: String) {
         val path = Paths.get(pathFile)
-        println("Path: $path Readable: ${path.isReadable()}")
+        Log.v(this.javaClass.name,"Path: $path Readable: ${path.isReadable()}")
         if(path.isReadable()) {
             val list = Files.newBufferedReader(path, Charset.defaultCharset())
                 .use { Gson().fromJson(it, List::class.java) } as List<CreditCardDTO>

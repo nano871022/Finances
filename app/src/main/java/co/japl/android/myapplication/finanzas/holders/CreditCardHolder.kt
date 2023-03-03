@@ -49,8 +49,14 @@ class CreditCardHolder(var view:View) : IHolder<CreditCardDTO> {
     @RequiresApi(Build.VERSION_CODES.O)
     override fun downLoadFields(): CreditCardDTO {
         val name:String = name.text.toString()
-        val cutOffDay:Short = cutOffDay.text.toString().toShort()
-        val warningQuote:BigDecimal = BigDecimal(format.parse(warningQuote.text.toString()) as Long)
+        var cutOffDay: Short = Short.MIN_VALUE
+        if(this.cutOffDay.text.isNotBlank()) {
+            cutOffDay = this.cutOffDay.text.toString().toShort()
+        }
+        var warningQuote:BigDecimal = BigDecimal.ZERO
+        if(this.warningQuote.text.isNotBlank()) {
+            warningQuote = BigDecimal(format.parse(this.warningQuote.text.toString()) as Long)
+        }
         val create:LocalDateTime = LocalDateTime.now()
         val status:Short = 1
         val dto = CreditCardDTO(id.orElse(0),name,cutOffDay,warningQuote,create,status)
@@ -73,7 +79,7 @@ class CreditCardHolder(var view:View) : IHolder<CreditCardDTO> {
             cutOffDay.error = "Invalid value permit values 1-31"
             valid = valid and false
         }
-        if(warningQuote.text.toString().isNotBlank() && warningQuote.text.toString().toBigDecimal() < BigDecimal(1)){
+        if(warningQuote?.text.toString().isNotBlank() && warningQuote?.text.toString().toBigDecimal() < BigDecimal(1)){
             warningQuote.error = "Invalid value, it should be higher of 0 (Zero)"
             valid = valid and false
         }

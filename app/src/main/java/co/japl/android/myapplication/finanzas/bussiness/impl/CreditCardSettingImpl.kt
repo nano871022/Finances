@@ -20,7 +20,6 @@ import java.util.*
 class CreditCardSettingImpl(override var dbConnect: SQLiteOpenHelper) : SaveSvc<CreditCardSettingDTO> ,ICreditCardSettingSvc{
     private val COLUMNS = arrayOf(
         BaseColumns._ID,
-        CreditCardSettingDB.CreditCardEntry.COLUMN_NAME,
         CreditCardSettingDB.CreditCardEntry.COLUMN_COD_CREDIT_CARD,
         CreditCardSettingDB.CreditCardEntry.COLUMN_NAME,
         CreditCardSettingDB.CreditCardEntry.COLUMN_VALUE,
@@ -41,7 +40,7 @@ class CreditCardSettingImpl(override var dbConnect: SQLiteOpenHelper) : SaveSvc<
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun getAll(): List<CreditCardSettingDTO> {
-        Log.i(this.javaClass.name,"<<<=== getAll - Start")
+        Log.d(this.javaClass.name,"<<<=== getAll - Start")
         val list = mutableListOf<CreditCardSettingDTO>()
         try {
             val db = dbConnect.writableDatabase
@@ -56,7 +55,7 @@ class CreditCardSettingImpl(override var dbConnect: SQLiteOpenHelper) : SaveSvc<
             )
             with(cursor) {
                 while (moveToNext()) {
-                    list.add(mapper.mapping(this))
+                    mapper.mapping(this).ifPresent(list::add)
                 }
             }
             return list
@@ -64,13 +63,13 @@ class CreditCardSettingImpl(override var dbConnect: SQLiteOpenHelper) : SaveSvc<
             Log.e(this.javaClass.name,e.message,e)
             return list
         }finally {
-            Log.i(this.javaClass.name, "<<<=== getAll - End")
+            Log.d(this.javaClass.name, "<<<=== getAll - End")
         }
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun getAll(codeCC:Int): List<CreditCardSettingDTO> {
-        Log.i(this.javaClass.name,"<<<=== getAll - Start")
+        Log.d(this.javaClass.name,"<<<=== getAll - Start")
         val list = mutableListOf<CreditCardSettingDTO>()
         try {
             val db = dbConnect.writableDatabase
@@ -85,7 +84,7 @@ class CreditCardSettingImpl(override var dbConnect: SQLiteOpenHelper) : SaveSvc<
             )
             with(cursor) {
                 while (moveToNext()) {
-                    list.add(mapper.mapping(this))
+                    mapper.mapping(this).ifPresent(list::add)
                 }
             }
             return list
@@ -93,7 +92,7 @@ class CreditCardSettingImpl(override var dbConnect: SQLiteOpenHelper) : SaveSvc<
             Log.e(this.javaClass.name,e.message,e)
             return list
         }finally {
-            Log.i(this.javaClass.name, "<<<=== getAll - End")
+            Log.d(this.javaClass.name, "<<<=== getAll - End")
         }
     }
 
@@ -117,9 +116,17 @@ class CreditCardSettingImpl(override var dbConnect: SQLiteOpenHelper) : SaveSvc<
         )
         with(cursor) {
             while (moveToNext()) {
-                return Optional.ofNullable(mapper.mapping(this))
+                return mapper.mapping(this)
             }
         }
         return Optional.empty()
+    }
+
+    override fun backup(path: String) {
+        TODO("Not yet implemented")
+    }
+
+    override fun restoreBackup(path: String) {
+        TODO("Not yet implemented")
     }
 }

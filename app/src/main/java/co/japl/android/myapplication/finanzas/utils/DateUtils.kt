@@ -1,9 +1,9 @@
 package co.japl.android.myapplication.utils
 
 import android.os.Build
+import android.util.Log
 import android.widget.EditText
 import androidx.annotation.RequiresApi
-import java.lang.Exception
 import java.time.LocalDateTime
 import java.time.Month
 import java.time.Period

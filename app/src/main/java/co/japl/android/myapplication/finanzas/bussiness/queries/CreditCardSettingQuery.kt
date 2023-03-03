@@ -12,7 +12,7 @@ object CreditCardSettingQuery {
         ${CreditCardSettingDB.CreditCardEntry.COLUMN_CREATE_DATE} DATETIME DEFAULT current_timestamp,
         ${CreditCardSettingDB.CreditCardEntry.COLUMN_NAME} TEXT,
         ${CreditCardSettingDB.CreditCardEntry.COLUMN_VALUE} TEXT,
-        ${CreditCardSettingDB.CreditCardEntry.COLUMN_TYPE} TEXT,
+        ${CreditCardSettingDB.CreditCardEntry.COLUMN_TYPE} TEXT
         )"""
     const val SQL_DELETE_ENTRIES = "DROP TABLE IF EXISTS ${CreditCardSettingDB.CreditCardEntry.TABLE_NAME}"
 }

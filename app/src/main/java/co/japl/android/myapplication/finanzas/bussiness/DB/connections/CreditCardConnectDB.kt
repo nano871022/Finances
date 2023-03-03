@@ -9,26 +9,26 @@ import co.japl.android.myapplication.utils.DatabaseConstants
 class CreditCardConnectDB: IConnectDB {
 
     override fun onCreate(db: SQLiteDatabase?) {
-        Log.i(this.javaClass.name,"<<<=== onCreate - Start")
+        Log.i(this.javaClass.name,"<<<=== CreditCardConnectDB#onCreate - Start")
         val query = CreditCardQuery.SQL_CREATE_ENTRIES
         db?.execSQL(query)
-        Log.i(this.javaClass.name,"<<<=== onCreate - End")
+        Log.i(this.javaClass.name,"<<<=== CreditCardConnectDB#onCreate - End")
     }
 
     override fun onUpgrade(db: SQLiteDatabase?, oldVersion: Int, newVersion: Int) {
-        Log.i(this.javaClass.name,"<<<=== onUpgrade - Start")
+        Log.i(this.javaClass.name,"<<<=== CreditCardConnectDB#onUpgrade - Start")
         if(oldVersion <  DatabaseConstants.DATA_BASE_VERSION_MINUS) {
             db?.execSQL(CreditCardQuery.SQL_DELETE_ENTRIES)
             onCreate(db)
         }
-        Log.i(this.javaClass.name,"<<<=== onUpgrade - End")
+        Log.i(this.javaClass.name,"<<<=== CreditCardConnectDB#onUpgrade - End")
     }
 
     override fun onDowngrade(db: SQLiteDatabase?, oldVersion: Int, newVersion: Int) {
-        Log.i(this.javaClass.name,"<<<=== onDowngrade - Start $oldVersion - $newVersion")
+        Log.i(this.javaClass.name,"<<<=== CreditCardConnectDB#onDowngrade - Start $oldVersion - $newVersion")
         db?.execSQL(CreditCardQuery.SQL_DELETE_ENTRIES)
         onCreate(db)
-        Log.i(this.javaClass.name,"<<<=== onDowngrade - End")
+        Log.i(this.javaClass.name,"<<<=== CreditCardConnectDB#onDowngrade - End")
     }
 
 

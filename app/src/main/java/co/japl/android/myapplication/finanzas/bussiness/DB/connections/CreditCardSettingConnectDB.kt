@@ -11,39 +11,25 @@ import java.lang.Exception
 class CreditCardSettingConnectDB:IConnectDB{
 
     override fun onCreate(db: SQLiteDatabase?) {
-        Log.i(this.javaClass.name,"<<<=== onCreate - Start")
+        Log.i(this.javaClass.name,"<<<=== CreditCardSetting#onCreate - Start")
         db?.execSQL(CreditCardSettingQuery.SQL_CREATE_ENTRIES)
-        Log.i(this.javaClass.name,"<<<=== onCreate - End")
+        Log.i(this.javaClass.name,"<<<=== CreditCardSetting#onCreate - End")
     }
 
     override fun onUpgrade(db: SQLiteDatabase?, oldVersion: Int, newVersion: Int) {
-        Log.i(this.javaClass.name,"<<<=== onUpgrade - Start $oldVersion - $newVersion")
-        if(oldVersion < DatabaseConstants.DATA_BASE_VERSION_MINUS) {
+        Log.i(this.javaClass.name,"<<<=== CreditCardSetting#onUpgrade - Start $oldVersion - $newVersion")
+        if(oldVersion < DatabaseConstants.DATA_BASE_VERSION_MINUS_SETTING) {
             db?.execSQL(CreditCardSettingQuery.SQL_DELETE_ENTRIES)
             onCreate(db)
-        }/*else{
-            var findVersion = oldVersion+1
-            while(findVersion <= newVersion) {
-                try {
-                    val value = findVersion.toString()
-                    val query = CreditCardSettingQuery.SQL_ALTER[value]
-                    Log.d(this.javaClass.name, "Version $value query $query")
-                    db?.execSQL(query)
-                }catch (e:Exception){
-                    Log.e(this.javaClass.name,"Exception $e continue $findVersion")
-                }finally {
-                    findVersion++
-                }
-
-        }*/
-        Log.i(this.javaClass.name,"<<<=== onUpgrade - End")
+        }
+        Log.i(this.javaClass.name,"<<<=== CreditCardSetting#onUpgrade - End")
     }
 
     override fun onDowngrade(db: SQLiteDatabase?, oldVersion: Int, newVersion: Int) {
-        Log.i(this.javaClass.name,"<<<=== onDowngrade - Start $oldVersion - $newVersion")
+        Log.i(this.javaClass.name,"<<<=== CreditCardSetting#onDowngrade - Start $oldVersion - $newVersion")
         db?.execSQL(CreditCardSettingQuery.SQL_DELETE_ENTRIES)
         onCreate(db)
-        Log.i(this.javaClass.name,"<<<=== onDowngrade - End")
+        Log.i(this.javaClass.name,"<<<=== CreditCardSetting#onDowngrade - End")
     }
 
 }

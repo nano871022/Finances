@@ -25,17 +25,23 @@ class BuyCreditCardSettingImpl(override var dbConnect: SQLiteOpenHelper) : SaveS
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun save(dto: BuyCreditCardSettingDTO): Long {
-        val db = dbConnect.writableDatabase
-        val columns = mapper.mapping(dto)
-        if(dto.id <= 0){
-            return db.insert(BuyCreditCardSettingDB.Entry.TABLE_NAME,null,columns)
+            val db = dbConnect.writableDatabase
+            val columns = mapper.mapping(dto)
+            if (dto.id <= 0) {
+                return db.insert(BuyCreditCardSettingDB.Entry.TABLE_NAME, null, columns)
+            }
+            return db.update(
+                BuyCreditCardSettingDB.Entry.TABLE_NAME,
+                mapper.mapping(dto),
+                "_id = ?",
+                arrayOf(dto.id.toString())
+            ).toLong().also { Log.v(this.javaClass.name,"Buy Credicard Setting save records $dto")
         }
-        return  db.update(BuyCreditCardSettingDB.Entry.TABLE_NAME ,mapper.mapping(dto),"_id = ?", arrayOf(dto.id.toString())  ).toLong()
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun getAll(): List<BuyCreditCardSettingDTO> {
-        Log.i(this.javaClass.name,"<<<=== getAll - Start")
+        Log.d(this.javaClass.name,"<<<=== getAll - Start")
         val list = mutableListOf<BuyCreditCardSettingDTO>()
         try {
             val db = dbConnect.writableDatabase
@@ -58,7 +64,7 @@ class BuyCreditCardSettingImpl(override var dbConnect: SQLiteOpenHelper) : SaveS
             Log.e(this.javaClass.name,e.message,e)
             return list
         }finally {
-            Log.i(this.javaClass.name, "<<<=== getAll - End")
+            Log.d(this.javaClass.name, "<<<=== getAll - End")
         }
     }
 
@@ -86,5 +92,13 @@ class BuyCreditCardSettingImpl(override var dbConnect: SQLiteOpenHelper) : SaveS
             }
         }
         return Optional.empty()
+    }
+
+    override fun backup(path: String) {
+        TODO("Not yet implemented")
+    }
+
+    override fun restoreBackup(path: String) {
+        TODO("Not yet implemented")
     }
 }

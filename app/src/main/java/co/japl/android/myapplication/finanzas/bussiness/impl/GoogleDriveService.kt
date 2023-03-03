@@ -44,7 +44,7 @@ class GoogleDriveService(private val activity:Activity,private val config:Google
         if(account != null && containsScope == true){
             initializeDriveClient(account)
         }else{
-            serviceListener?.cancelled()
+            serviceListener?.cancelled("Account: $account Scope: $containsScope")
         }
     }
 
@@ -93,7 +93,7 @@ class GoogleDriveService(private val activity:Activity,private val config:Google
                 if(data != null){
                     handleSignIn(data)
                 }else{
-                    serviceListener?.cancelled()
+                    serviceListener?.cancelled("Data: $data Code: $resultCode Request: $requestCode")
                 }
             }
             GoogleDriveService.REQUEST_CODE_OPEN_ITEM->{
@@ -101,7 +101,7 @@ class GoogleDriveService(private val activity:Activity,private val config:Google
                 if(data != null){
                     openItem(data)
                 }else{
-                    serviceListener?.cancelled()
+                    serviceListener?.cancelled("Data: $data Code: $resultCode Request: $requestCode")
                 }
             }
             else -> {

@@ -11,6 +11,8 @@ import co.japl.android.myapplication.R
 import co.japl.android.myapplication.bussiness.DTO.CreditCardSettingDTO
 import co.japl.android.myapplication.bussiness.interfaces.IHolder
 import co.japl.android.myapplication.bussiness.interfaces.ISpinnerHolder
+import co.japl.android.myapplication.bussiness.interfaces.ITaxSvc
+import co.japl.android.myapplication.finanzas.putParams.BoughWalletParams
 import co.japl.android.myapplication.finanzas.putParams.CashAdvanceParams
 import co.japl.android.myapplication.finanzas.putParams.CreditCardQuotesParams
 import co.japl.android.myapplication.finanzas.putParams.PeriodsParams
@@ -47,6 +49,7 @@ class QuoteCCHolder(var view:View,var parentFragmentManager:FragmentManager,var 
     lateinit var nameCreaditCard: Optional<String>
     lateinit var codeCreaditCard:Optional<Int>
     lateinit var cutOff:Optional<LocalDateTime>
+    private lateinit var cutOffDay:Optional<Short>
 
     override fun setFields(actions: View.OnClickListener?) {
         view.let{

@@ -11,7 +11,7 @@ object BuyCreditCardSettingQuery {
         ${BuyCreditCardSettingDB.Entry.COLUMN_COD_CREDIT_CARD_SETTING} NUMBER,
         ${BuyCreditCardSettingDB.Entry.COLUMN_COD_BUY_CREDIT_CARD} NUMBER,
         ${BuyCreditCardSettingDB.Entry.COLUMN_ACTIVE} SHORT DEFAULT 1,
-        ${BuyCreditCardSettingDB.Entry.COLUMN_CREATE_DATE} DATETIME DEFAULT current_timestamp,
+        ${BuyCreditCardSettingDB.Entry.COLUMN_CREATE_DATE} DATETIME DEFAULT current_timestamp
         )"""
     const val SQL_DELETE_ENTRIES = "DROP TABLE IF EXISTS ${BuyCreditCardSettingDB.Entry.TABLE_NAME}"
 }

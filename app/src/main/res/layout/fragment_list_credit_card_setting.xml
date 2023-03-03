@@ -18,7 +18,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="20dp"
-            android:text="@string/credit_cards"
+            android:text="@string/title_toolbar_fragment_list_credit_card_setting"
             android:textAlignment="center"
             android:textSize="20sp"
             android:textStyle="bold" />
