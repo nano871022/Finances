@@ -26,7 +26,8 @@ import kotlin.properties.Delegates
 
 class ListCreditCardSetting : Fragment() , View.OnClickListener{
     private lateinit var recycle:RecyclerView
-    private lateinit var button:Button
+    private lateinit var btnAdd:Button
+    private lateinit var btnCancel:Button
     private var codeCreditCard : Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -41,7 +42,8 @@ class ListCreditCardSetting : Fragment() , View.OnClickListener{
     ): View? {
         val view =  inflater.inflate(R.layout.fragment_list_credit_card_setting, container, false)
         val map = ListCreditCardSettingParams.download(arguments)
-        if(map[ListCreditCardSettingParams.Params.ARG_CODE_CREDIT_CARD] != null) {
+        Log.v(this.javaClass.name,"CreateView  $map")
+        if(map.containsKey(ListCreditCardSettingParams.Params.ARG_CODE_CREDIT_CARD)) {
             codeCreditCard = map[ListCreditCardSettingParams.Params.ARG_CODE_CREDIT_CARD]!!
         }
         setField(view)
@@ -59,7 +61,7 @@ class ListCreditCardSetting : Fragment() , View.OnClickListener{
                 )
                 val connect = ConnectDB(view.context)
                 val saveSvc = CreditCardSettingImpl(connect)
-                val data = saveSvc.getAll()
+                val data = saveSvc.getAll(codeCreditCard)
                 recycler.adapter = ListCreditCardSettingAdapter(data.toMutableList(),parentFragmentManager,findNavController())
             }
         }
@@ -73,16 +75,18 @@ class ListCreditCardSetting : Fragment() , View.OnClickListener{
     private fun setField(view:View){
         view?.let {
             recycle = it.findViewById (R.id.rvCreditCardSettingCCS)
-            button = it.findViewById(R.id.btnAddNewCCS)
-            button.setOnClickListener(this)
+            btnAdd = it.findViewById(R.id.btnAddNewCCS)
+            btnAdd.setOnClickListener(this)
+            btnCancel = it.findViewById(R.id.btnCancelLCCS)
+            btnCancel.setOnClickListener(this)
         }
     }
 
     override fun onClick(v: View?) {
         when(v?.id){
             R.id.btnAddNewCCS ->{add()}
-            R.id.btnCancel -> {
-                ListCreditCardSettingParams.toBack(findNavController())
+            R.id.btnCancelLCCS -> {
+                ListCreditCardSettingParams.toBack(codeCreditCard.toString(),findNavController())
             }
             else->{
                 view.let{

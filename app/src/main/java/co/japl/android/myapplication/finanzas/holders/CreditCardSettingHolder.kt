@@ -2,6 +2,7 @@ package co.japl.android.myapplication.holders
 
 import android.graphics.Color
 import android.os.Build
+import android.util.Log
 import android.view.View
 import android.widget.*
 import androidx.annotation.RequiresApi
@@ -46,12 +47,15 @@ class CreditCardSettingHolder (var view:View, var parentFragmentManager:Fragment
     }
 
     override fun loadFields(values: CreditCardSettingDTO) {
-        if (values != null) {
+        Log.v(this.javaClass.name,"LoadFields $values")
             setting = values
-        }
         if(setting.id > 0){
             name.setText(setting.name)
             value.setText(setting.value)
+            val list = view.resources.getStringArray(R.array.CreditCardSettingType)
+            val option = list.indexOf(setting.type)
+            type.setSelection(option)
+            Log.v(this.javaClass.name,"LoadFields List: $list Option: $option ")
         }
     }
 
@@ -111,8 +115,10 @@ class CreditCardSettingHolder (var view:View, var parentFragmentManager:Fragment
         when(v?.id){
             R.id.btnAddCCS-> {
                 val dto = downLoadFields()
-                if(validate() && creditCardSvc.save(dto)>0){
-                    if(dto.id > 0) {
+                if(validate()){
+                    val response = creditCardSvc.save(dto)
+                    if(dto.id <= 0) {
+                        dto.id = response.toInt()
                         Toast.makeText(
                             view.context,
                             view.resources.getString(R.string.toast_successful_insert),
@@ -125,12 +131,10 @@ class CreditCardSettingHolder (var view:View, var parentFragmentManager:Fragment
                             Toast.LENGTH_LONG
                         ).show()
                     }
-                    CreditCardSettingParams.toBack(navController)
-                }else{
-                    Toast.makeText(view.context,view.resources.getString(R.string.toast_successful_insert),Toast.LENGTH_LONG).show()
+                    CreditCardSettingParams.toBack(setting.codeCreditCard,navController)
                 }
         }
-            R.id.btnCancelCCS -> CreditCardSettingParams.toBack(navController)
+            R.id.btnCancelCCS -> CreditCardSettingParams.toBack(setting.codeCreditCard,navController)
         }
     }
 

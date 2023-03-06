@@ -46,7 +46,7 @@ class CreateCreditCard : Fragment(),View.OnClickListener {
 
     @RequiresApi(Build.VERSION_CODES.N)
     private fun search(){
-        Log.d(this.javaClass.name," $param1")
+        Log.d(this.javaClass.name,"Search code credit card: $param1")
         if(param1?.isNotBlank() == true){
             param1?.toInt()?.let {
                 service.get(it).ifPresent{ cc->

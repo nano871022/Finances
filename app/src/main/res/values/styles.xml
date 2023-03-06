@@ -6,6 +6,7 @@
         <item name="windowSplashScreenAnimatedIcon">@drawable/finanza_logo</item>
         <item name="windowSplashScreenIconBackgroundColor">@color/green_background_dark
         </item>
+        <item name="android:layout_margin">2dp</item>
     </style>
     <style name="Theme.App.Starting" parent="Theme.SplashScreen">
         <item name="windowSplashScreenBackground">@color/green_background</item>
@@ -14,7 +15,5 @@
         </item>
         <!-- requero para aplicar el spash y aplicar el estilo de la aplicacino si no lo tiene falla-->
         <item name="postSplashScreenTheme">@style/Theme.myapplication</item>
-
-
     </style>
 </resources>

@@ -65,38 +65,32 @@
         android:orientation="horizontal"
         app:layout_constraintTop_toBottomOf="@+id/llCreditCardAssign">
 
-        <TextView
-            android:id="@+id/lDate"
+        <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/bought_date_time"
-            android:textStyle="bold" />
+            android:layout_weight="1">
 
-        <EditText
+        <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/dtBought"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:hint="@string/format_date"
+            android:hint="@string/bought_date_time"
             android:inputType="date"
             android:textAlignment="textEnd" />
+        </com.google.android.material.textfield.TextInputLayout>
 
-        <TextView
-            android:id="@+id/lNameItem"
+        <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:paddingLeft="5dp"
-            android:text="@string/product_name"
-            android:textStyle="bold" />
+            android:layout_weight="1">
 
-        <EditText
+        <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/etNameItem"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="1"
             android:hint="@string/name" />
+        </com.google.android.material.textfield.TextInputLayout>
     </LinearLayout>
 
     <LinearLayout
@@ -119,59 +113,49 @@
         app:layout_constraintTop_toBottomOf="@+id/linearLayout3"
         tools:layout_editor_absoluteX="1dp">
 
-        <TextView
-            android:id="@+id/lProductValue"
+        <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/product_value"
-            android:textStyle="bold" />
+            android:layout_weight="1">
 
-        <EditText
+        <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/etProductValue"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:hint="@string/money_hint"
+            android:hint="@string/credit_value"
             android:inputType="numberSigned"
             android:textAlignment="textEnd" />
-
+        </com.google.android.material.textfield.TextInputLayout>
         <TextView
-            android:id="@+id/textView5"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:paddingLeft="5dp"
+            android:layout_height="match_parent"
             android:text="@string/tax"
-            android:textAlignment="viewStart"
-            android:textStyle="bold" />
+            android:layout_weight="1"/>
 
         <TextView
             android:id="@+id/etTaxBought"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_weight="1"
             android:hint="@string/interest_value_hint"
             android:inputType="numberSigned"
             android:textAlignment="textEnd" />
 
-        <TextView
-            android:id="@+id/textView7"
+        <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:paddingLeft="5dp"
-            android:text="@string/months"
-            android:textStyle="bold" />
+            android:layout_weight="1">
 
-        <EditText
+        <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/etMonths"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:hint="@string/months_number_hint"
+            android:hint="@string/months"
             android:inputType="number|textPersonName"
             android:textAlignment="textEnd" />
+        </com.google.android.material.textfield.TextInputLayout>
     </LinearLayout>
 
             <LinearLayout
@@ -237,6 +221,52 @@
             android:layout_height="wrap_content"
             android:layout_weight="1" />
     </LinearLayout>
+            <LinearLayout
+                android:id="@+id/llSetingTypeBCC"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layout_constraintTop_toBottomOf="@+id/linearLayoutQuoteValue"
+                tools:layout_editor_absoluteX="1dp">
+
+                <TextView
+                    android:id="@+id/textView29"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/credit_card_setting_type_setting"
+                    android:textStyle="bold" />
+
+                <Spinner
+                    android:id="@+id/spTypeSettingBCC"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/llSettingNameBCC"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layout_constraintTop_toBottomOf="@+id/llSetingTypeBCC"
+                tools:layout_editor_absoluteX="1dp">
+
+                <TextView
+                    android:id="@+id/textView38"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/credit_card_setting_name_setting"
+                    android:textStyle="bold" />
+
+                <Spinner
+                    android:id="@+id/spNameSettingBCC"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1" />
+            </LinearLayout>
+
 
     <LinearLayout
         android:id="@+id/llRecurrentQuoteValue"

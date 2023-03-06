@@ -17,6 +17,7 @@ import co.japl.android.myapplication.bussiness.interfaces.ISpinnerHolder
 import co.japl.android.myapplication.finanzas.pojo.QuoteCreditCard
 import co.japl.android.myapplication.utils.CalcEnum
 import co.japl.android.myapplication.utils.NumbersUtil
+import com.google.android.material.textfield.TextInputEditText
 import java.math.BigDecimal
 import java.math.RoundingMode
 import java.text.DecimalFormat
@@ -27,9 +28,9 @@ class QuoteCreditVariableHolder(var container: View):IHolder<QuoteCreditCard>,Ad
     private val calcQuoteInt: CalcInterest = QuoteCreditVariableInterestQuote()
     lateinit var listMonths:MutableList<String>
 
-    private lateinit var etValueCredit: EditText
-    private lateinit var etTax: EditText
-    private lateinit var etMonths: EditText
+    private lateinit var etValueCredit: TextInputEditText
+    private lateinit var etTax: TextInputEditText
+    private lateinit var etMonths: TextInputEditText
     private lateinit var tvCapitalValue: TextView
     private lateinit var tvInterestValue: TextView
     private lateinit var tvTotalValue: TextView
@@ -138,15 +139,15 @@ class QuoteCreditVariableHolder(var container: View):IHolder<QuoteCreditCard>,Ad
 
     override fun validate(): Boolean {
         var valid:Boolean = true
-        if(etValueCredit.text.isBlank()){
+        if(etValueCredit.text?.isBlank() == true){
             etValueCredit.error = "Fill out this field"
             valid = valid && false
         }
-        if(etTax.text.isBlank()){
+        if(etTax.text?.isBlank() == true){
             etTax.error = "Fill out this filed"
             valid = valid && false
         }
-        if(etMonths.text.isBlank()){
+        if(etMonths.text?.isBlank() == true){
             etTax.error = "Fill out this filed"
             valid = valid && false
         }

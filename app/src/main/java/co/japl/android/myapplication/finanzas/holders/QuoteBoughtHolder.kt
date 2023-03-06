@@ -23,6 +23,8 @@ import co.japl.android.myapplication.finanzas.bussiness.impl.CreditCardSettingIm
 import co.japl.android.myapplication.finanzas.bussiness.interfaces.ICreditCardSettingSvc
 import co.japl.android.myapplication.finanzas.utils.KindBoughtEnum
 import co.japl.android.myapplication.utils.DateUtils
+import com.google.android.material.textfield.TextInputEditText
+import java.math.BigDecimal
 import java.math.RoundingMode
 import java.text.DecimalFormat
 import java.time.LocalDateTime
@@ -30,13 +32,13 @@ import java.time.format.DateTimeFormatter
 import java.util.*
 
 class QuoteBoughtHolder(var root:View) : IHolder<CreditCardBoughtDTO>, AdapterView.OnItemSelectedListener {
-    lateinit var etProductName: EditText
-    lateinit var etProductValue: EditText
+    lateinit var etProductName: TextInputEditText
+    lateinit var etProductValue: TextInputEditText
     lateinit var etTax: TextView
-    lateinit var etMonths: EditText
+    lateinit var etMonths: TextInputEditText
     lateinit var etQuotesValue: TextView
     lateinit var tvCardAssing: TextView
-    lateinit var dtBought: EditText
+    lateinit var dtBought: TextInputEditText
     lateinit var llTax : LinearLayout
     private lateinit var btnSave: Button
     lateinit var chRecurrent: CheckBox
@@ -133,17 +135,12 @@ class QuoteBoughtHolder(var root:View) : IHolder<CreditCardBoughtDTO>, AdapterVi
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun cleanField() {
-        etQuotesValue.editableText.clear();
+        etQuotesValue.text= "0.0"
         etProductName.editableText.clear();
         etProductValue.editableText.clear();
         etMonths.editableText.clear()
-        etTax.setBackgroundColor(Color.WHITE)
-        etMonths.setBackgroundColor(Color.WHITE)
         btnSave.visibility = View.INVISIBLE
-        etQuotesValue.setBackgroundColor(Color.WHITE)
-        etProductName.setBackgroundColor(Color.WHITE)
         dtBought.setText(LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")))
-        dtBought.setBackgroundColor(Color.WHITE)
         etTax.text = taxMonthly.toString()
         llTypeSetting.visibility = View.INVISIBLE
         if(cCSettingList.isNotEmpty()){
@@ -158,11 +155,11 @@ class QuoteBoughtHolder(var root:View) : IHolder<CreditCardBoughtDTO>, AdapterVi
     @RequiresApi(Build.VERSION_CODES.O)
     override fun validate(): Boolean {
         var valid: Boolean = true
-        if (etProductName.text.isBlank()) {
+        if (etProductName.text?.isBlank() == true) {
             valid = false
             etProductName.error = ("El nombre del producto o tienda esta vacia")
         }
-        if (etProductValue.text.isBlank()) {
+        if (etProductValue.text?.isBlank() == true) {
             valid = false
             etProductValue.error = ("El  valor esta vacia")
         }
@@ -170,16 +167,16 @@ class QuoteBoughtHolder(var root:View) : IHolder<CreditCardBoughtDTO>, AdapterVi
             valid = false
             etTax.error = ("El tasa es vacia")
         }
-        if (etMonths.text.isBlank()) {
+        if (etMonths.text?.isBlank() == true) {
             valid = false
             etMonths.error = "El mes es vacio"
         }
 
-        if (etMonths.text.isNotBlank() && (etMonths.text.toString().toLong() <= 0L || etMonths.text.toString().toLong() > 72L)) {
+        if (etMonths.text?.isNotBlank() == true && (etMonths.text.toString().toLong() <= 0L || etMonths.text.toString().toLong() > 72L)) {
             valid = false
             etMonths.error = ("La cantidad de meses es invalido, debe ser entre 1 y 72")
         }
-        if(dtBought.text.isBlank()){
+        if(dtBought.text?.isBlank() == true){
             valid = false
             dtBought.error = ("La fecha se encuentra vacia")
         }
@@ -211,8 +208,17 @@ class QuoteBoughtHolder(var root:View) : IHolder<CreditCardBoughtDTO>, AdapterVi
         val defaultItemSelected = root.resources.getString(R.string.item_select)
         val optionSpecialTax = root.resources.getStringArray(R.array.CreditCardSettingType)[2]
 
-        val value = etProductValue.text.toString().toBigDecimal()
-        val period = etMonths.text.toString().toLong()
+        val value = if(etProductValue.text?.isNotBlank() == true){
+            etProductValue.text.toString().toBigDecimal()
+        }else{
+            BigDecimal.ZERO
+        }
+
+        val period = if(etMonths.text?.isNotBlank() == true) {
+            etMonths.text.toString().toLong()
+        }else{
+            0
+        }
         Log.d(this.javaClass.name,"Calc $optionSpecialTax ${spTypeSetting.selectedItem} ${spNameSetting.isSelected} ${spNameSetting.selectedItem != defaultItemSelected} ${spTypeSetting.selectedItem == optionSpecialTax}")
         val tax:Double = if(spNameSetting.selectedItem != defaultItemSelected
                 && spTypeSetting.selectedItem == optionSpecialTax){
@@ -286,7 +292,7 @@ class QuoteBoughtHolder(var root:View) : IHolder<CreditCardBoughtDTO>, AdapterVi
                             R.id.tvValueBigSp,
                             list.toTypedArray()
                         )
-                    }else{
+                    }else if(view?.context != null && view?.resources != null && view?.resources?.getString(R.string.type_setting_does_not_record) != null){
                         Toast.makeText(view?.context,view?.resources?.getString(R.string.type_setting_does_not_record),Toast.LENGTH_LONG).show()
                     }
                 }else{
