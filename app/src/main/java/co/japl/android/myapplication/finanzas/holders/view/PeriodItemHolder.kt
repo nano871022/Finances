@@ -2,16 +2,12 @@ package co.japl.android.myapplication.holders.view
 
 import android.os.Build
 import android.view.View
-import android.widget.Button
 import android.widget.ImageButton
-import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.RecyclerView
 import co.japl.android.myapplication.R
-import co.japl.android.myapplication.bussiness.DTO.TaxDTO
 import co.japl.android.myapplication.finanzas.bussiness.DTO.PeriodDTO
-import co.japl.android.myapplication.finanzas.utils.TaxEnum
 import java.text.DecimalFormat
 import java.time.format.DateTimeFormatter
 
@@ -24,10 +20,10 @@ class PeriodItemHolder(var view:View) : RecyclerView.ViewHolder(view) {
     lateinit var periodDTO: PeriodDTO
 
     fun loadFields(){
-        period = view.findViewById(R.id.tvListPeriodItem)
-        interest = view.findViewById(R.id.tvListPeriodInterest)
-        capital = view.findViewById(R.id.tvListPeriodCapital)
-        total = view.findViewById(R.id.tvListPeriodTotalQuote)
+        period = view.findViewById(R.id.tvNameLCCS)
+        interest = view.findViewById(R.id.tvValueLCCS)
+        capital = view.findViewById(R.id.tvStatusLCCS)
+        total = view.findViewById(R.id.tvCreditCardLCCS)
         paid = view.findViewById(R.id.btnShowPaid)
     }
 

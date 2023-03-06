@@ -7,10 +7,10 @@ import android.widget.EditText
 import android.widget.TextView
 import androidx.annotation.RequiresApi
 import co.japl.android.myapplication.R
+import co.japl.android.myapplication.bussiness.DTO.CreditCardSettingDTO
 import co.japl.android.myapplication.bussiness.interfaces.IHolder
 import co.japl.android.myapplication.finanzas.pojo.QuoteCreditCard
 import co.japl.android.myapplication.utils.CalcEnum
-import co.japl.android.myapplication.utils.Constants
 import co.japl.android.myapplication.utils.NumbersUtil
 import java.math.BigDecimal
 import java.util.*

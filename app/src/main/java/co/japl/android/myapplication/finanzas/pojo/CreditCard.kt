@@ -18,4 +18,5 @@ class CreditCard {
     lateinit var oneQuote:Optional<Long>
     lateinit var quotesPending:Optional<Long>
     lateinit var lastTax:Optional<Double>
+    lateinit var cutoffDay:Optional<Short>
 }

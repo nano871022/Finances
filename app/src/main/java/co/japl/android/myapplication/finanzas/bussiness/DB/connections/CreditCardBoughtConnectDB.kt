@@ -9,25 +9,25 @@ import co.japl.android.myapplication.utils.DatabaseConstants
 class CreditCardBoughtConnectDB:IConnectDB {
 
     override fun onCreate(db: SQLiteDatabase?) {
-        Log.i(this.javaClass.name,"<<<=== onCreate - Start")
+        Log.i(this.javaClass.name,"<<<=== CreditCardBoughtConnectDB#onCreate - Start")
         db?.execSQL(CreditCardBoughtQuery.SQL_CREDIT_CARD_CREATE_ENTRIES)
-        Log.i(this.javaClass.name,"<<<=== onCreate - End")
+        Log.i(this.javaClass.name,"<<<=== CreditCardBoughtConnectDB#onCreate - End")
     }
 
     override fun onUpgrade(db: SQLiteDatabase?, oldVersion: Int, newVersion: Int) {
-        Log.i(this.javaClass.name,"<<<=== onUpgrade - Start")
+        Log.i(this.javaClass.name,"<<<=== CreditCardBoughtConnectDB#onUpgrade - Start")
         if(oldVersion <  DatabaseConstants.DATA_BASE_VERSION_MINUS) {
             db?.execSQL(CreditCardBoughtQuery.SQL_CREDIT_CARD_DELETE_ENTRIES)
             onCreate(db)
         }
-        Log.i(this.javaClass.name,"<<<=== onUpgrade - End")
+        Log.i(this.javaClass.name,"<<<=== CreditCardBoughtConnectDB#onUpgrade - End")
     }
 
     override fun onDowngrade(db: SQLiteDatabase?, oldVersion: Int, newVersion: Int) {
-        Log.i(this.javaClass.name,"<<<=== onDowngrade - Start $oldVersion - $newVersion")
+        Log.i(this.javaClass.name,"<<<=== CreditCardBoughtConnectDB#onDowngrade - Start $oldVersion - $newVersion")
         db?.execSQL(CreditCardBoughtQuery.SQL_CREDIT_CARD_DELETE_ENTRIES)
         onCreate(db)
-        Log.i(this.javaClass.name,"<<<=== onDowngrade - End")
+        Log.i(this.javaClass.name,"<<<=== CreditCardBoughtConnectDB#onDowngrade - End")
     }
 
 

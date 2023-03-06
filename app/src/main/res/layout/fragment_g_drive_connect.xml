@@ -13,9 +13,10 @@
         android:orientation="vertical">
 
         <TextView
+            android:id="@+id/tvResultGLogIn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/hello_blank_fragment" />
+            android:text="Connectando con Login de Google" />
 
         <Button
             android:id="@+id/login"

@@ -1,20 +1,22 @@
 package co.japl.android.myapplication.holders
 
 import android.os.Build
+import android.util.Log
 import android.view.View
 import android.widget.*
 import androidx.annotation.RequiresApi
-import androidx.core.os.bundleOf
 import androidx.fragment.app.FragmentManager
-import androidx.fragment.app.FragmentTransaction
 import androidx.navigation.NavController
 import co.japl.android.myapplication.R
+import co.japl.android.myapplication.bussiness.DTO.CreditCardSettingDTO
 import co.japl.android.myapplication.bussiness.interfaces.IHolder
 import co.japl.android.myapplication.bussiness.interfaces.ISpinnerHolder
-import co.japl.android.myapplication.controller.QuoteBought
+import co.japl.android.myapplication.bussiness.interfaces.ITaxSvc
+import co.japl.android.myapplication.finanzas.putParams.BoughWalletParams
 import co.japl.android.myapplication.finanzas.putParams.CashAdvanceParams
 import co.japl.android.myapplication.finanzas.putParams.CreditCardQuotesParams
 import co.japl.android.myapplication.finanzas.putParams.PeriodsParams
+import co.japl.android.myapplication.finanzas.utils.TaxEnum
 import co.japl.android.myapplication.pojo.CreditCard
 import co.japl.android.myapplication.utils.DateUtils
 import co.japl.android.myapplication.utils.NumbersUtil
@@ -23,7 +25,7 @@ import java.time.LocalDateTime
 import java.time.Period
 import java.util.*
 
-class QuoteCCHolder(var view:View,var parentFragmentManager:FragmentManager,var navController: NavController): IHolder<CreditCard>, ISpinnerHolder<QuoteCCHolder>, View.OnClickListener{
+class QuoteCCHolder(var view:View,var parentFragmentManager:FragmentManager,var navController: NavController,var taxSvc: ITaxSvc): IHolder<CreditCard>, ISpinnerHolder<QuoteCCHolder>, View.OnClickListener{
     lateinit var spCreditCard:Spinner
     lateinit var tvRemainderCutOffDate: TextView
     lateinit var tvCutOffDateQuote: TextView
@@ -47,6 +49,7 @@ class QuoteCCHolder(var view:View,var parentFragmentManager:FragmentManager,var 
     lateinit var nameCreaditCard: Optional<String>
     lateinit var codeCreaditCard:Optional<Int>
     lateinit var cutOff:Optional<LocalDateTime>
+    private lateinit var cutOffDay:Optional<Short>
 
     override fun setFields(actions: View.OnClickListener?) {
         view.let{
@@ -60,7 +63,7 @@ class QuoteCCHolder(var view:View,var parentFragmentManager:FragmentManager,var 
             tvRemainderCutOffDate = it.findViewById(R.id.tvRemainderCutOffDate)
             btnAddBuy = it.findViewById(R.id.btnAddItem)
             btnAddBought = it.findViewById(R.id.btnBought)
-            btnAddBuyWallet = it.findViewById(R.id.btnAddBuyWallet)
+            btnAddBuyWallet = it.findViewById(R.id.btnAddBuyWalletLCCQ)
             btnAddCashAdvance = it.findViewById(R.id.btnAddCashAdvance)
             tvCapitalQuotesLastMonth = it.findViewById(R.id.tvCapitalQuotes)
             tvCapitalQuoteLastMonth = it.findViewById(R.id.tvCapitalQuote)
@@ -78,6 +81,7 @@ class QuoteCCHolder(var view:View,var parentFragmentManager:FragmentManager,var 
         }
 
         btnAddBuyWallet.let {
+            it.setOnClickListener (this)
             it.visibility = View.INVISIBLE
         }
 
@@ -103,9 +107,13 @@ class QuoteCCHolder(var view:View,var parentFragmentManager:FragmentManager,var 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun loadFields(values: CreditCard) {
         view.let {
+            val taxAdvance = taxSvc.get(values.cutOff.get().monthValue,values.cutOff.get().year,TaxEnum.CASH_ADVANCE)
+            val taxCreditCard = taxSvc.get(values.cutOff.get().monthValue,values.cutOff.get().year,TaxEnum.CREDIT_CARD)
+            val taxWallet = taxSvc.get(values.cutOff.get().monthValue,values.cutOff.get().year,TaxEnum.WALLET_BUY)
             codeCreaditCard = values.codeCreditCard
             nameCreaditCard = values.nameCreditCard
             cutOff = values.cutOff
+            cutOffDay = values.cutoffDay
             tvCutOffDateQuote.text =  DateUtils.localDateTimeToString(values.cutOff.get())
             if (values.capital.isPresent and values.interest.isPresent) {
                 tvTotalValueQuote.text = NumbersUtil.COPtoString(values.capital.get().plus(values.interest.get()))
@@ -159,9 +167,16 @@ class QuoteCCHolder(var view:View,var parentFragmentManager:FragmentManager,var 
             }else{
                 llLastMonth.visibility = View.INVISIBLE
             }
-            btnAddBuy.visibility = View.VISIBLE
+            if(taxCreditCard.isPresent) {
+                btnAddBuy.visibility = View.VISIBLE
+            }
+            if(taxAdvance.isPresent) {
+                btnAddCashAdvance.visibility = View.VISIBLE
+            }
+            if(taxWallet.isPresent) {
+                btnAddBuyWallet.visibility = View.VISIBLE
+            }
             btnBoughtHistory.visibility = View.VISIBLE
-            btnAddCashAdvance.visibility = View.VISIBLE
         }
     }
 
@@ -183,7 +198,9 @@ class QuoteCCHolder(var view:View,var parentFragmentManager:FragmentManager,var 
     }
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onClick(view: View){
+        Log.d(this.javaClass.name,"btn clicked ${view.id}")
         when(view.id){
+            R.id.btnAddBuyWalletLCCQ -> boughWallet()
             R.id.btnAddItem->addBuy()
             R.id.btnBoughtHistory-> boughtHistory()
             R.id.btnCutOffHistory -> cutOffHistory()
@@ -199,6 +216,15 @@ class QuoteCCHolder(var view:View,var parentFragmentManager:FragmentManager,var 
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
+    private fun boughWallet(){
+        Log.d(this.javaClass.name,"before calld to bough Wallet")
+        if(validRedirect()){
+            Log.d(this.javaClass.name,"redirect to boughWallet")
+            BoughWalletParams.newInstance(codeCreaditCard.get(),navController)
+        }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun cutOffHistory(){
         if(validRedirect()) {
         PeriodsParams.Companion.Historical.newInstance(codeCreaditCard.get(),navController)
@@ -210,7 +236,7 @@ class QuoteCCHolder(var view:View,var parentFragmentManager:FragmentManager,var 
     @RequiresApi(Build.VERSION_CODES.O)
     private fun boughtHistory(){
         if(validRedirect()) {
-            CreditCardQuotesParams.Companion.Historical.newInstance(codeCreaditCard.get(),cutOff.get(), navController)
+            CreditCardQuotesParams.Companion.Historical.newInstance(codeCreaditCard.get(), cutOffDay.get(),cutOff.get(), navController)
         }else{
             Toast.makeText(view.context,"There is not selected any credit card",Toast.LENGTH_LONG).show()
         }

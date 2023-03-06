@@ -6,6 +6,12 @@
     <string name="copyright">CopyRight © 2022–2022 Alejandro Parra </string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="credit_card_setting_title">Configuración Tarjeta Credito</string>
+    <string name="credit_card_setting_type">Tipo</string>
+    <string name="credit_card_setting_type_setting">Tipo Configuración</string>
+    <string name="credit_card_setting_name_setting">Nombre Configuración</string>
+    <string name="value">Valor</string>
+    <string name="Active">Estado</string>
     <string name="navigation_drawer_open">1</string>
     <string name="navigation_drawer_close">0</string>
     <string name="build_by">Alejandro Parra - JAPL.co</string>
@@ -33,6 +39,7 @@
     <string name="total_value">Valor total</string>
     <string name="save">Guardar</string>
     <string name="add">Agregar</string>
+    <string name="setting_redirect">Ir a Configuraciones</string>
     <string name="quote_credit_save">Guardar - Cuota Credito Fija</string>
     <string name="quote_credit_save_variable">Guardar - Cuota Credito Variable</string>
     <string name="name">Nombre</string>
@@ -108,7 +115,9 @@
     <string name="taxs_credit_card">Tasas de Tarjeta de Credito</string>
     <string name="recurrent">Recurrente</string>
     <string name="cash_advance">Avance de Dinero</string>
+    <string name="bough_wallet">Compra de cartera</string>
     <string name="sucursal_advance">Avance sucursal bancaria</string>
+    <string name="bough_wallet_generic">Compra de cartera</string>
 
     <string-array name="Months">
         <item>--- Seleccionar --- </item>
@@ -125,5 +134,30 @@
         <item>Noviembre</item>
         <item>Diciembre</item>
     </string-array>
+
+    <string name="item_select">--- Seleccionar --- </string>
+    <string name="type_setting_does_not_record">No encontró registros con esta opción</string>
+    <string-array name="CreditCardSettingType">
+        <item>--- Seleccionar --- </item>
+        <item>1. Rediferir</item>
+        <item>2. Tasas Especiales</item>
+    </string-array>
+
+    <string name="_true">Si</string>
+    <string name="_false">No</string>
+
+    <string name="validation_name_empty">Ingrese un nombre</string>
+    <string name="validation_value_empty">Ingrese un valor</string>
+    <string name="validation_type_not_selected">Seleccione un tipo</string>
+    <string name="validation_credit_card_not_selected">Seleccione una Tarjeta de Credito</string>
+
+    <string name="toast_successful_insert">El registro se agrego exitosamente</string>
+    <string name="toast_successful_update">El actualizo se agrego exitosamente</string>
+    <string name="toast_invalid_option">Opción Invalida</string>
+
+    <string name="title_toolbar_fragment_list_credit_card_setting">Configuraciones</string>
+    <string name="title_toolbar_fragment_credit_card_setting">Configuración</string>
+
+
 
 </resources>

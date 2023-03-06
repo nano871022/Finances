@@ -9,14 +9,15 @@ import android.view.ViewGroup
 import android.widget.*
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentTransaction
 import androidx.navigation.fragment.findNavController
 import co.japl.android.myapplication.R
 import co.japl.android.myapplication.bussiness.DB.connections.ConnectDB
+import co.japl.android.myapplication.bussiness.DTO.BuyCreditCardSettingDTO
 import co.japl.android.myapplication.bussiness.DTO.CreditCardBoughtDTO
 import co.japl.android.myapplication.bussiness.DTO.CreditCardDTO
 import co.japl.android.myapplication.bussiness.impl.*
 import co.japl.android.myapplication.bussiness.interfaces.*
+import co.japl.android.myapplication.finanzas.bussiness.impl.BuyCreditCardSettingImpl
 import co.japl.android.myapplication.finanzas.holders.QuoteBoughtHolder
 import co.japl.android.myapplication.finanzas.putParams.CreditCardQuotesParams
 import java.math.BigDecimal
@@ -30,6 +31,7 @@ class QuoteBought : Fragment(), View.OnClickListener{
     private lateinit var taxSvc: ITaxSvc
     private lateinit var creditCardSvc:SaveSvc<CreditCardDTO>
     private lateinit var saveSvc: SaveSvc<CreditCardBoughtDTO>
+    private lateinit var buyCCSSvc: SaveSvc<BuyCreditCardSettingDTO>
     private lateinit var holder:IHolder<CreditCardBoughtDTO>
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -40,6 +42,7 @@ class QuoteBought : Fragment(), View.OnClickListener{
         val rootView = inflater.inflate(R.layout.buys_credit_card, container, false)
         val connect: SQLiteOpenHelper = ConnectDB(rootView.context)
         creditCardSvc = CreditCardImpl(connect)
+        buyCCSSvc = BuyCreditCardSettingImpl(connect)
         taxSvc = TaxImpl(connect)
         saveSvc = SaveCreditCardBoughtImpl(connect)
         holder = QuoteBoughtHolder(rootView)
@@ -92,7 +95,13 @@ class QuoteBought : Fragment(), View.OnClickListener{
         private fun save() {
             if(holder.validate()){
                 val dto = holder.downLoadFields()
-                if(saveSvc.save(dto)) {
+                val id = saveSvc.save(dto)
+                if( id > 0) {
+                    val buyCCS = (holder as QuoteBoughtHolder).downLoadBuyCreditCardSetting()
+                    if(buyCCS.codeCreditCardSetting > 0) {
+                        buyCCS.codeBuyCreditCard = id.toInt()
+                        buyCCSSvc.save(buyCCS)
+                    }
                     Toast.makeText(this.context, "Registro Guardado", Toast.LENGTH_LONG).show().also {
                         CreditCardQuotesParams.Companion.CreateQuote.toBack(findNavController())
                     }

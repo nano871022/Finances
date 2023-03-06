@@ -323,7 +323,7 @@
             android:text="@string/add_cash_advance" />
 
         <Button
-            android:id="@+id/btnAddBuyWallet"
+            android:id="@+id/btnAddBuyWalletLCCQ"
             android:layout_width="220dp"
             android:layout_height="match_parent"
             android:layout_margin="5dp"

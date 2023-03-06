@@ -47,7 +47,7 @@ class ListPeriodAdapter(var data:MutableList<PeriodDTO>,var navController: NavCo
     override fun onBindViewHolder(holder: PeriodItemHolder, position: Int) {
         Log.d(this.javaClass.name,"on binging view holder $position")
        holder.setFields(data[position]) {
-            PeriodsQuotesParams.Companion.Historical.newInstance(data[position].creditCardId,data[position].periodEnd, navController)
+            PeriodsQuotesParams.Companion.Historical.newInstance(data[position].creditCardId,data[position].periodStart.dayOfMonth.toShort(),data[position].periodEnd, navController)
         }
     }
 }

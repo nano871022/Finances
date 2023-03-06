@@ -1,0 +1,263 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_gravity="center_vertical"
+    android:layout_margin="@dimen/margin_border_layout"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:text="@string/bough_wallet"
+        android:textAlignment="center"
+        android:textSize="24sp"
+        android:textStyle="bold|italic"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <LinearLayout
+        android:id="@+id/llCreditCardAssignCACC"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toBottomOf="@+id/textView3"
+        tools:layout_editor_absoluteX="0dp">
+
+        <TextView
+            android:id="@+id/lCreditCardAssignCACC"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:paddingLeft="10dp"
+            android:paddingTop="13dp"
+            android:paddingRight="10dp"
+            android:text="@string/assing_credit_Card"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/etCreditCardAssignBWCC"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:hint="@string/assing_credit_Card" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/llDateCACC"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toBottomOf="@+id/llCreditCardAssignCACC">
+
+        <TextView
+            android:id="@+id/lDateCACC"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/bought_date_time"
+            android:textStyle="bold" />
+
+        <EditText
+            android:id="@+id/dtBoughtBWCC"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:ems="10"
+            android:hint="@string/format_date"
+            android:inputType="date"
+            android:textAlignment="textEnd" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/linearLayout3CACC"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="1dp"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toBottomOf="@+id/llDateCACC"
+        tools:layout_editor_absoluteX="0dp">
+
+        <TextView
+            android:id="@+id/lNameItemCACC"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:paddingLeft="10dp"
+            android:paddingTop="13dp"
+            android:paddingRight="10dp"
+            android:text="@string/product_name"
+            android:textStyle="bold" />
+
+        <EditText
+            android:id="@+id/etNameItemBWCC"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:hint="@string/product_name" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/linerLayoutValuesCACC"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="1dp"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout3CACC"
+        tools:layout_editor_absoluteX="1dp">
+
+        <TextView
+            android:id="@+id/lProductValueCACC"
+            android:layout_width="261dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:paddingLeft="10dp"
+            android:paddingTop="13dp"
+            android:paddingRight="10dp"
+            android:text="@string/product_value"
+            android:textStyle="bold" />
+
+        <EditText
+            android:id="@+id/etProductValueBWCC"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:ems="10"
+            android:hint="@string/money_hint"
+            android:inputType="numberSigned|numberDecimal"
+            android:numeric="decimal"
+            android:singleLine="false"
+            android:textAlignment="textEnd" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/linearLayoutTaxCACC"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_marginTop="1dp"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toBottomOf="@+id/linerLayoutValuesCACC"
+        tools:layout_editor_absoluteX="1dp">
+
+        <TextView
+            android:id="@+id/textView5CACC"
+            android:layout_width="138dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:paddingLeft="10dp"
+            android:paddingTop="15dp"
+            android:paddingRight="10dp"
+            android:text="@string/tax"
+            android:textAlignment="viewStart"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/etTaxBoughtBWCC"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:ems="10"
+            android:hint="0.0"
+            android:inputType="numberSigned"
+            android:textAlignment="textEnd" />
+
+        <TextView
+            android:id="@+id/textView6CACC"
+            android:layout_width="100dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:paddingLeft="5dp"
+            android:paddingTop="13dp"
+            android:paddingRight="10dp"
+            android:text="@string/percent_symbol" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/linearLayoutCACC"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="1dp"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayoutTaxCACC"
+        tools:layout_editor_absoluteX="1dp">
+
+        <TextView
+            android:id="@+id/textView7CACC"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:paddingLeft="10dp"
+            android:paddingTop="13dp"
+            android:paddingRight="10dp"
+            android:text="@string/months"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tvMontBWCC"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/months_number_hint" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/linearLayoutQuoteValueCACC"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_marginTop="1dp"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayoutCACC"
+        tools:layout_editor_absoluteX="1dp">
+
+        <TextView
+            android:id="@+id/lQuoteValueCACC"
+            android:layout_width="81dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:paddingLeft="10dp"
+            android:paddingTop="13dp"
+            android:paddingRight="10dp"
+            android:text="@string/quotes_value"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/etQuoteValueBWCC"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:ems="10"
+            android:hint="@string/money_hint"
+            android:inputType="number|textPersonName"
+            android:textAlignment="textEnd" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        tools:layout_editor_absoluteX="1dp">
+
+        <Button
+            android:id="@+id/btnSaveBoughtBWCC"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="5dp"
+            android:layout_weight="1"
+            android:text="@string/save"
+            app:icon="@android:drawable/ic_menu_save" />
+
+        <Button
+            android:id="@+id/btnClearBoughtBWCC"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/clear"
+            app:icon="@drawable/ic_baseline_cleaning_services_24" />
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

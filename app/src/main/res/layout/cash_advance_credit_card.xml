@@ -128,8 +128,8 @@
             android:ems="10"
             android:hint="@string/money_hint"
             android:inputType="numberSigned|numberDecimal"
-            android:numeric="decimal"
-            android:singleLine="false"
+            android:numeric="signed|decimal"
+            android:singleLine="true"
             android:textAlignment="textEnd" />
     </LinearLayout>
 

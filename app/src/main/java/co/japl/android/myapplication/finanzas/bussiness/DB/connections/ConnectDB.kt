@@ -7,14 +7,16 @@ import android.util.Log
 import co.japl.android.myapplication.utils.DatabaseConstants
 
 class ConnectDB(context: Context):SQLiteOpenHelper(context,
-    DatabaseConstants.DATA_BASE_NAME,null, DatabaseConstants.DATA_BASE_VERSION) {
+    DatabaseConstants.DATA_BASE_NAME,null, 25) {
 
     override fun onCreate(p0: SQLiteDatabase?) {
-        Log.i(this.javaClass.name,"<<<=== onCreate - Start")
+        Log.i(this.javaClass.name,"<<<=== onCreate - Start $p0")
         CalculationConnectDB().onCreate(p0)
         CreditCardConnectDB().onCreate(p0)
         CreditCardBoughtConnectDB().onCreate(p0)
         TaxConnectDB().onCreate(p0)
+        CreditCardSettingConnectDB().onCreate(p0);
+        BuyCreditCardSettingConnectDB().onCreate(p0);
         Log.i(this.javaClass.name,"<<<=== onCreate - End")
     }
 
@@ -24,6 +26,8 @@ class ConnectDB(context: Context):SQLiteOpenHelper(context,
         CreditCardConnectDB().onUpgrade(p0,p1,p2)
         CreditCardBoughtConnectDB().onUpgrade(p0,p1,p2)
         TaxConnectDB().onUpgrade(p0,p1,p2)
+        CreditCardSettingConnectDB().onUpgrade(p0,p1,p2)
+        BuyCreditCardSettingConnectDB().onUpgrade(p0,p1,p2)
         Log.i(this.javaClass.name,"<<<=== onUpgrade - End")
     }
 
@@ -33,6 +37,8 @@ class ConnectDB(context: Context):SQLiteOpenHelper(context,
         CreditCardConnectDB().onDowngrade(db,oldVersion,newVersion)
         CreditCardBoughtConnectDB().onDowngrade(db,oldVersion,newVersion)
         TaxConnectDB().onDowngrade(db,oldVersion,newVersion)
+        CreditCardSettingConnectDB().onDowngrade(db,oldVersion,newVersion)
+        BuyCreditCardSettingConnectDB().onDowngrade(db,oldVersion,newVersion)
         Log.i(this.javaClass.name,"<<<=== onDowngrade - End")
     }
 

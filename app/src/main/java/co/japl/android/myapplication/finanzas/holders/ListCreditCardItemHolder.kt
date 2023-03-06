@@ -16,12 +16,12 @@ class ListCreditCardItemHolder(var itemView:View) : RecyclerView.ViewHolder(item
 
     fun loadFields(){
         itemView.let {
-            name = it.findViewById(R.id.tvListPeriodItem)
-            cutOffDay = it.findViewById(R.id.tvListPeriodInterest)
-            warningQuote = it.findViewById(R.id.tvListPeriodTotalQuote)
-            status = it.findViewById(R.id.tvListPeriodCapital)
-            edit =  it.findViewById(R.id.btnEditICC)
-            delete = it.findViewById(R.id.btnDeleteItemTCC)
+            name = it.findViewById(R.id.tvNameLCCS)
+            cutOffDay = it.findViewById(R.id.tvValueLCCS)
+            warningQuote = it.findViewById(R.id.tvCreditCardLCCS)
+            status = it.findViewById(R.id.tvStatusLCCS)
+            edit =  it.findViewById(R.id.btnEditLCCS)
+            delete = it.findViewById(R.id.btnDeleteItemLCCS)
         }
     }
 

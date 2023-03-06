@@ -9,7 +9,6 @@ import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentTransaction
 import androidx.navigation.fragment.findNavController
 import co.japl.android.myapplication.R
 import co.japl.android.myapplication.bussiness.DB.connections.ConnectDB
@@ -23,8 +22,6 @@ import co.japl.android.myapplication.bussiness.interfaces.SaveSvc
 import co.japl.android.myapplication.finanzas.utils.TaxEnum
 import co.japl.android.myapplication.holders.TaxesHolder
 import co.japl.android.myapplication.putParams.TaxesParams
-import co.japl.android.myapplication.putParams.TaxesParams.Params.ARG_PARAM1
-import co.japl.android.myapplication.putParams.TaxesParams.Params.ARG_PARAM2
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.YearMonth
@@ -83,7 +80,7 @@ class Taxes : Fragment() , View.OnClickListener{
             val dto = holder.downLoadFields()
             val creditCard = listCreditCard.stream().filter{ it.name == listCreditCardNames[dto.codCreditCard] }.findAny()
             dto.codCreditCard = creditCard.get().id
-            if(service.save(dto)){
+            if(service.save(dto)>0){
                 Toast.makeText(this.context,"Record Saved",Toast.LENGTH_LONG).show()
                 TaxesParams.toBack(findNavController())
             }else{

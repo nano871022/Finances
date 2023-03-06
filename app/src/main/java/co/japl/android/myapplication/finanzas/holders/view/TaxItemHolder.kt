@@ -19,10 +19,10 @@ class TaxItemHolder(var view:View) : RecyclerView.ViewHolder(view) {
     lateinit var delete:ImageButton
 
     fun loadFields(){
-        month = view.findViewById(R.id.tvListPeriodItem)
+        month = view.findViewById(R.id.tvNameLCCS)
         year = view.findViewById(R.id.tvYearItemTCC)
         tax = view.findViewById(R.id.tvValueItemTCC)
-        delete = view.findViewById(R.id.btnDeleteItemTCC)
+        delete = view.findViewById(R.id.btnDeleteItemLCCS)
         kind  = view.findViewById(R.id.tvKindTCC)
         period = view.findViewById(R.id.tvPeriodTCC)
         layoutKind = view.findViewById(R.id.lykindTCC)

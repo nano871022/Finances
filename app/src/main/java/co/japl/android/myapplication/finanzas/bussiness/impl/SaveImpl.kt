@@ -6,11 +6,16 @@ import android.provider.BaseColumns
 import androidx.annotation.RequiresApi
 import co.japl.android.myapplication.bussiness.DTO.CalcDB
 import co.japl.android.myapplication.bussiness.DTO.CalcDTO
+import co.japl.android.myapplication.bussiness.DTO.CreditCardDTO
 import co.japl.android.myapplication.bussiness.interfaces.Calc
 import co.japl.android.myapplication.bussiness.interfaces.SaveSvc
 import co.japl.android.myapplication.bussiness.mapping.CalcMap
 import co.japl.android.myapplication.finanzas.bussiness.DTO.PeriodDTO
 import co.japl.android.myapplication.utils.DatabaseConstants
+import com.google.gson.Gson
+import java.nio.charset.Charset
+import java.nio.file.Files
+import java.nio.file.Paths
 import java.util.*
 
 class SaveImpl(override var dbConnect: SQLiteOpenHelper) : SaveSvc<CalcDTO> {
@@ -24,10 +29,10 @@ class SaveImpl(override var dbConnect: SQLiteOpenHelper) : SaveSvc<CalcDTO> {
         ,CalcDB.CalcEntry.COLUMN_INTEREST_VALUE
         ,CalcDB.CalcEntry.COLUMN_CAPITAL_VALUE)
 
-    override fun save(calc: CalcDTO): Boolean {
+    override fun save(calc: CalcDTO): Long {
         val db = dbConnect.writableDatabase
         val dto = CalcMap().mapping(calc)
-        return db?.insert(CalcDB.CalcEntry.TABLE_NAME,null,dto)!! > 0
+        return db?.insert(CalcDB.CalcEntry.TABLE_NAME,null,dto)!!
     }
 
     override  fun getAll():List<CalcDTO>{
@@ -66,5 +71,19 @@ class SaveImpl(override var dbConnect: SQLiteOpenHelper) : SaveSvc<CalcDTO> {
             }
         }
         return Optional.empty()
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    override fun backup(pathFile: String) {
+        val values = getAll()
+        val path = Paths.get(pathFile)
+        Files.newBufferedWriter(path, Charset.defaultCharset()).use { it.write(Gson().toJson(values)) }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    override fun restoreBackup(pathFile: String) {
+        val path = Paths.get(pathFile)
+        val list = Files.newBufferedReader(path, Charset.defaultCharset()).use { Gson().fromJson(it,List::class.java) } as List<CalcDTO>
+        list.forEach(this::save)
     }
 }

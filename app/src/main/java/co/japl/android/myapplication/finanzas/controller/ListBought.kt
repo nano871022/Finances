@@ -1,14 +1,12 @@
 package co.japl.android.myapplication.controller
 
-import android.content.Context
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import android.widget.Toast
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
@@ -26,10 +24,7 @@ import co.japl.android.myapplication.finanzas.putParams.CreditCardQuotesParams
 import co.japl.android.myapplication.holders.view.BoughtViewHolder
 import co.japl.android.myapplication.pojo.CreditCard
 import co.japl.android.myapplication.utils.DateUtils
-import co.japl.android.myapplication.utils.NumbersUtil
 import java.math.BigDecimal
-import java.math.RoundingMode
-import java.time.LocalDateTime
 import java.util.*
 
 class ListBought : Fragment() {
@@ -53,6 +48,7 @@ class ListBought : Fragment() {
             creditCard = CreditCard()
             creditCard.codeCreditCard = Optional.ofNullable(params.first)
             creditCard.cutOff = Optional.ofNullable(params.second)
+            creditCard.cutoffDay = Optional.ofNullable(params.third)
         }
         connectDB(rootView)
         holder = ListBoughtHolder(rootView)
@@ -79,20 +75,21 @@ class ListBought : Fragment() {
             dbConnect = ConnectDB(it!!)
         }
         saveSvc = SaveCreditCardBoughtImpl(dbConnect)
-        val list = saveSvc.getToDate(creditCard.codeCreditCard.get(),creditCard.cutOff.get())
+        val startDate = DateUtils.startDateFromCutoff(creditCard.cutoffDay.get(),creditCard.cutOff.get())
+        val list = saveSvc.getToDate(creditCard.codeCreditCard.get(),startDate,creditCard.cutOff.get())
         val listRecurrent = saveSvc.getRecurrentBuys(creditCard.codeCreditCard.get(),creditCard.cutOff.get())
-        val pending = saveSvc.getPendingQuotes(creditCard.codeCreditCard.get(),creditCard.cutOff.get())
+        val pending = saveSvc.getPendingQuotes(creditCard.codeCreditCard.get(),startDate,creditCard.cutOff.get())
         val joinList = ArrayList<CreditCardBoughtDTO>()
         joinList.addAll(list)
         joinList.addAll(pending)
         joinList.addAll(listRecurrent)
-        val capital = saveSvc.getCapital(creditCard.codeCreditCard.get(),creditCard.cutOff.get())
-        val capitalQuotes = saveSvc.getCapitalPendingQuotes(creditCard.codeCreditCard.get(),creditCard.cutOff.get())
-        println("Capital: $capital capital Quotes: $capitalQuotes")
-        val interest = saveSvc.getInterest(creditCard.codeCreditCard.get(),creditCard.cutOff.get())
-        val interestQuotes = saveSvc.getInterestPendingQuotes(creditCard.codeCreditCard.get(),creditCard.cutOff.get())
-        val pendingToPay = saveSvc.getPendingToPay(creditCard.codeCreditCard.get(),creditCard.cutOff.get())
-        val pendingToPayQuotes = saveSvc.getPendingToPayQuotes(creditCard.codeCreditCard.get(),creditCard.cutOff.get())
+        val capital = saveSvc.getCapital(creditCard.codeCreditCard.get(),startDate,creditCard.cutOff.get())
+        val capitalQuotes = saveSvc.getCapitalPendingQuotes(creditCard.codeCreditCard.get(),startDate,creditCard.cutOff.get())
+        Log.d(this.javaClass.name,"Capital: $capital capital Quotes: $capitalQuotes")
+        val interest = saveSvc.getInterest(creditCard.codeCreditCard.get(),startDate,creditCard.cutOff.get())
+        val interestQuotes = saveSvc.getInterestPendingQuotes(creditCard.codeCreditCard.get(),startDate,creditCard.cutOff.get())
+        val pendingToPay = saveSvc.getPendingToPay(creditCard.codeCreditCard.get(),startDate,creditCard.cutOff.get())
+        val pendingToPayQuotes = saveSvc.getPendingToPayQuotes(creditCard.codeCreditCard.get(),startDate,creditCard.cutOff.get())
         if(!this::boughtRecap.isInitialized){
             boughtRecap = BoughtRecap()
         }

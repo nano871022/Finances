@@ -8,12 +8,17 @@ import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.RecyclerView
 import co.japl.android.myapplication.R
 import co.japl.android.myapplication.bussiness.DB.connections.ConnectDB
+import co.japl.android.myapplication.bussiness.DTO.BuyCreditCardSettingDTO
 import co.japl.android.myapplication.bussiness.DTO.CreditCardBoughtDTO
+import co.japl.android.myapplication.bussiness.DTO.CreditCardSettingDTO
+import co.japl.android.myapplication.bussiness.DTO.TaxDTO
 import co.japl.android.myapplication.bussiness.impl.SaveCreditCardBoughtImpl
 import co.japl.android.myapplication.bussiness.impl.TaxImpl
 import co.japl.android.myapplication.bussiness.interfaces.ITaxSvc
 import co.japl.android.myapplication.bussiness.interfaces.SaveSvc
 import co.japl.android.myapplication.bussiness.interfaces.SearchSvc
+import co.japl.android.myapplication.finanzas.bussiness.impl.BuyCreditCardSettingImpl
+import co.japl.android.myapplication.finanzas.bussiness.impl.CreditCardSettingImpl
 import co.japl.android.myapplication.finanzas.utils.TaxEnum
 import co.japl.android.myapplication.holders.view.BoughtViewHolder
 import co.japl.android.myapplication.utils.DateUtils
@@ -29,12 +34,16 @@ class ListBoughtAdapter(private val data:List<CreditCardBoughtDTO>,private val c
     lateinit var saveSvc: SaveSvc<CreditCardBoughtDTO>
     lateinit var searchSvc: SearchSvc<CreditCardBoughtDTO>
     lateinit var taxSvc:ITaxSvc
+    lateinit var buyCreditCardSettingSvc: SaveSvc<BuyCreditCardSettingDTO>
+    lateinit var creditCardSettingSvc: SaveSvc<CreditCardSettingDTO>
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BoughtViewHolder {
         dbConnect = ConnectDB(parent.context)
         saveSvc = SaveCreditCardBoughtImpl(dbConnect)
         searchSvc = saveSvc as SearchSvc<CreditCardBoughtDTO>
         taxSvc = TaxImpl(dbConnect)
+        creditCardSettingSvc = CreditCardSettingImpl(dbConnect)
+        buyCreditCardSettingSvc = BuyCreditCardSettingImpl(dbConnect)
         val view =
             LayoutInflater.from(parent.context).inflate(R.layout.bought_item_list, parent, false)
         val viewHolder =  BoughtViewHolder(view)
@@ -63,18 +72,41 @@ class ListBoughtAdapter(private val data:List<CreditCardBoughtDTO>,private val c
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    private fun getInterest(dto:CreditCardBoughtDTO,tax:Optional<Double>):BigDecimal{
+    private fun getSettings(codBought:Int):Optional<Double>{
+        val buyCCSettingDto = buyCreditCardSettingSvc.get(codBought).also { Log.v(this.javaClass.name," response buy setting $it") }
+        if(buyCCSettingDto.isPresent){
+            val creditCardSettingDto = creditCardSettingSvc.get(buyCCSettingDto.get().codeCreditCardSetting).also { Log.v(this.javaClass.name," response setting $it") }
+            if(creditCardSettingDto.isPresent){
+                return Optional.of(creditCardSettingDto.get().value.toDouble()).also { Log.v(this.javaClass.name,"getSettings: $it") }
+            }
+        }
+        return Optional.empty()
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun getInterestValue(creditCardBoughtDTO: CreditCardBoughtDTO,taxCCValue: Optional<Double>,taxADVValue: Optional<Double>):BigDecimal{
+        val setting = getSettings(creditCardBoughtDTO.id)
+        val interestTax = if(setting.isPresent){
+            setting.get()
+        }else {
+            when (creditCardBoughtDTO.kind) {
+                TaxEnum.CASH_ADVANCE.ordinal.toShort() -> taxADVValue.get()
+                TaxEnum.CREDIT_CARD.ordinal.toShort() -> taxCCValue.get()
+                else -> creditCardBoughtDTO.interest
+            }
+        }
+        return interestTax.toBigDecimal().divide(BigDecimal(100),8,RoundingMode.CEILING)
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun getInterest(dto:CreditCardBoughtDTO,taxCCValue:Optional<Double>,taxAdvValue:Optional<Double>):BigDecimal{
         if(dto.month > 1){
             val months = DateUtils.getMonths(dto.boughtDate,cutOff)
             val quote = dto.valueItem.divide(dto.month.toBigDecimal(),8,RoundingMode.CEILING)
             val capitalBought = quote.multiply(months.toBigDecimal())
             val pendingCapital = dto.valueItem.minus(capitalBought)
-            val interestTax = if(tax.isPresent) when(dto.kind){
-                TaxEnum.CASH_ADVANCE.ordinal.toShort(),TaxEnum.CREDIT_CARD.ordinal.toShort()  -> tax.get()
-                else -> dto.interest
-            }else dto.interest
-            val interest = interestTax.toBigDecimal().divide(BigDecimal(100),8,RoundingMode.CEILING)
-            Log.d(this.javaClass.name,"Value ${dto.valueItem} - Bought $capitalBought X $months =  Pending $pendingCapital interest $interest")
+            val interest = getInterestValue(dto,taxCCValue,taxAdvValue)
+            Log.v(this.javaClass.name,"Value ${dto.valueItem} - Bought $capitalBought X $months =  Pending $pendingCapital interest $interest")
             if(pendingCapital > BigDecimal(0)){
                 return pendingCapital.multiply(interest)
             }
@@ -108,10 +140,11 @@ class ListBoughtAdapter(private val data:List<CreditCardBoughtDTO>,private val c
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onBindViewHolder(holder: BoughtViewHolder, position: Int) {
-        val taxValue = TaxEnum.values()[data[position].kind.toInt()]
-        val tax = getTax(taxValue)
+        val taxAdv = getTax(TaxEnum.CASH_ADVANCE)
+        val taxCC = getTax(TaxEnum.CREDIT_CARD)
         val capital = getCapital(data[position])
-        val interest = getInterest(data[position],tax)
+        val tax = Optional.ofNullable(getInterestValue(data[position],taxCC,taxAdv).multiply(BigDecimal(100)).toDouble())
+        val interest = getInterest(data[position],taxCC,taxAdv)
         val quotesBought = getQuotesBought(data[position])
         val pendintToPay = getPendingToPay(data[position])
 

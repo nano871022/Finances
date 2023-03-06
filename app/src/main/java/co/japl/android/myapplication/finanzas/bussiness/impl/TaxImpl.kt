@@ -6,6 +6,7 @@ import android.os.Build
 import android.provider.BaseColumns
 import android.util.Log
 import androidx.annotation.RequiresApi
+import co.japl.android.myapplication.bussiness.DTO.CreditCardDTO
 import co.japl.android.myapplication.bussiness.DTO.TaxDB
 import co.japl.android.myapplication.bussiness.DTO.TaxDTO
 import co.japl.android.myapplication.bussiness.interfaces.IMapper
@@ -14,6 +15,10 @@ import co.japl.android.myapplication.bussiness.interfaces.SaveSvc
 import co.japl.android.myapplication.bussiness.mapping.TaxMap
 import co.japl.android.myapplication.finanzas.utils.TaxEnum
 import co.japl.android.myapplication.utils.DatabaseConstants
+import com.google.gson.Gson
+import java.nio.charset.Charset
+import java.nio.file.Files
+import java.nio.file.Paths
 import java.util.*
 
 class TaxImpl(override var dbConnect: SQLiteOpenHelper) :  SaveSvc<TaxDTO>,ITaxSvc{
@@ -28,15 +33,11 @@ class TaxImpl(override var dbConnect: SQLiteOpenHelper) :  SaveSvc<TaxDTO>,ITaxS
                                   TaxDB.TaxEntry.COLUMN_PERIOD)
     private val mapper:IMapper<TaxDTO> = TaxMap()
     @RequiresApi(Build.VERSION_CODES.O)
-    override fun save(dto: TaxDTO): Boolean {
-        Log.i(this.javaClass.name,"<<<== save - Start")
-        try{
+    override fun save(dto: TaxDTO): Long {
+        Log.d(this.javaClass.name,"<<<== save - Start")
         val db = dbConnect.writableDatabase
         val columns = mapper.mapping(dto)
-        return db.insert(TaxDB.TaxEntry.TABLE_NAME,null,columns) > 0
-        }finally{
-            Log.i(this.javaClass.name,"<<<=== save - End ")
-        }
+        return db.insert(TaxDB.TaxEntry.TABLE_NAME,null,columns).also { Log.d(this.javaClass.name,"<<<=== save - End ") }
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -69,14 +70,10 @@ class TaxImpl(override var dbConnect: SQLiteOpenHelper) :  SaveSvc<TaxDTO>,ITaxS
     }
 
     override fun delete(id: Int): Boolean {
-        Log.i(this.javaClass.name,"<<<=== delete - Start - $id")
-        try{
+        Log.d(this.javaClass.name,"<<<=== delete - Start - $id")
         val db = dbConnect.writableDatabase
-        return db.delete(TaxDB.TaxEntry.TABLE_NAME, DatabaseConstants.SQL_DELETE_CALC_ID,
-            arrayOf(id.toString())) > 0
-        }finally {
-            Log.i(this.javaClass.name, "<<<=== delete - End - $id")
-        }
+        return (db.delete(TaxDB.TaxEntry.TABLE_NAME, DatabaseConstants.SQL_DELETE_CALC_ID,
+            arrayOf(id.toString())) > 0).also { Log.d(this.javaClass.name, "<<<=== delete - End - $id")}
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -125,5 +122,17 @@ class TaxImpl(override var dbConnect: SQLiteOpenHelper) :  SaveSvc<TaxDTO>,ITaxS
             Log.d(this.javaClass.name,"<<<=== End - get $month , $year")
         }
     }
+    @RequiresApi(Build.VERSION_CODES.O)
+    override fun backup(pathFile: String) {
+        val values = getAll()
+        val path = Paths.get(pathFile)
+        Files.newBufferedWriter(path, Charset.defaultCharset()).use { it.write(Gson().toJson(values)) }
+    }
 
+    @RequiresApi(Build.VERSION_CODES.O)
+    override fun restoreBackup(pathFile: String) {
+        val path = Paths.get(pathFile)
+        val list = Files.newBufferedReader(path, Charset.defaultCharset()).use { Gson().fromJson(it,List::class.java) } as List<TaxDTO>
+        list.forEach(this::save)
+    }
 }
