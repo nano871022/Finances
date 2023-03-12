@@ -50,7 +50,7 @@ class CreditCardSettingFragment : Fragment() {
 
     @RequiresApi(Build.VERSION_CODES.O)
     private fun loadHolder(root: View){
-        holder = CreditCardSettingHolder(root, parentFragmentManager, findNavController())
+        holder = CreditCardSettingHolder(root,listCreditCard, parentFragmentManager, findNavController())
         holder.setFields(null)
         val map = CreditCardSettingParams.download(arguments)
 
@@ -75,22 +75,30 @@ class CreditCardSettingFragment : Fragment() {
 
 
         (holder as ISpinnerHolder<CreditCardSettingHolder>).lists {
-            it.creditCard.adapter = ArrayAdapter(
+            ArrayAdapter(
                 this.requireContext(),
                 R.layout.spinner_simple,
                 R.id.tvValueBigSp,
                 listCreditCardNames.toTypedArray()
-            )
+            ).let{ adapter->
+                it.creditCard.setAdapter(adapter)
+            }
             ArrayAdapter.createFromResource(
                 this.requireContext(),
                 R.array.CreditCardSettingType,
                 R.layout.spinner1
-            ).also { adapter ->
+            ).let { adapter ->
                 adapter.setDropDownViewResource(R.layout.spinner1)
-                it.type.adapter = adapter
+                it.type.setAdapter(adapter)
             }
             if (listCreditCardNames.isNotEmpty() && listCreditCardNames.size == 2) {
-                it.creditCard.setSelection(1)
+                it.creditCard.setText(listCreditCardNames[1])
+            }
+            if(it.creditCard.text.isBlank()){
+                val args = CreditCardSettingParams.download(arguments)
+                val codeCreditCard = args.get(CreditCardSettingParams.Params.ARG_CODE_CREDIT_CARD)
+                val nameCreditCard = listCreditCard.firstOrNull { it.id == codeCreditCard }?.name ?: ""
+                it.creditCard.setText(nameCreditCard)
             }
         }
 

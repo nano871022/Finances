@@ -12,17 +12,19 @@ import co.japl.android.myapplication.bussiness.interfaces.IHolder
 import co.japl.android.myapplication.finanzas.pojo.QuoteCreditCard
 import co.japl.android.myapplication.utils.CalcEnum
 import co.japl.android.myapplication.utils.NumbersUtil
+import com.google.android.material.textfield.TextInputEditText
+import com.google.android.material.textview.MaterialTextView
 import java.math.BigDecimal
 import java.util.*
 
 class QuoteCreditSaveVariableHolder(var view:View):IHolder<QuoteCreditCard> {
-     lateinit var etName: EditText
-     lateinit var tvValueCredit: TextView
-     lateinit var tvInterest: TextView
-     lateinit var tvMonths: TextView
-     lateinit var tvQuoteCredit: TextView
-     lateinit var tvInterestValue: TextView
-     lateinit var tvCapitalValue: TextView
+     lateinit var etName: TextInputEditText
+     lateinit var tvValueCredit: MaterialTextView
+     lateinit var tvInterest: MaterialTextView
+     lateinit var tvMonths: MaterialTextView
+     lateinit var tvQuoteCredit: MaterialTextView
+     lateinit var tvInterestValue: MaterialTextView
+     lateinit var tvCapitalValue: MaterialTextView
 
     override fun setFields(actions: View.OnClickListener?) {
         etName = view.findViewById(R.id.etName)
@@ -41,7 +43,7 @@ class QuoteCreditSaveVariableHolder(var view:View):IHolder<QuoteCreditCard> {
     @RequiresApi(Build.VERSION_CODES.N)
     override fun loadFields(values: QuoteCreditCard) {
         tvQuoteCredit.text = NumbersUtil.COPtoString(values.response.orElse(BigDecimal.ZERO))
-        tvInterest.text = values.tax.orElse(0.0).toString()
+        tvInterest.text = "${values.tax.orElse(0.0).toString()} %"
         tvMonths.text = values.period.orElse(0).toString()
         tvValueCredit.text = NumbersUtil.COPtoString(values.value.orElse(BigDecimal.ZERO))
         tvInterestValue.text = NumbersUtil.COPtoString(values.interestValue.orElse(BigDecimal.ZERO))
@@ -52,23 +54,23 @@ class QuoteCreditSaveVariableHolder(var view:View):IHolder<QuoteCreditCard> {
     override fun downLoadFields(): QuoteCreditCard {
         val quote = QuoteCreditCard()
         quote.name = Optional.ofNullable(etName.text.toString())
-        quote.value = Optional.ofNullable(tvValueCredit.text.toString().replace("$","").replace(",","").trim().toBigDecimal())
-        quote.tax = Optional.ofNullable(tvInterest.text.toString().replace(",","").trim().toDouble())
+        quote.value = Optional.ofNullable(NumbersUtil.toBigDecimal(tvValueCredit))
+        quote.tax = Optional.ofNullable(NumbersUtil.toDouble(tvInterest))
         quote.period = Optional.ofNullable(tvMonths.text.toString().toLong())
-        quote.response = Optional.ofNullable(tvQuoteCredit.text.toString().replace("$","").replace(",","").trim().toBigDecimal())
+        quote.response = Optional.ofNullable(NumbersUtil.toBigDecimal(tvQuoteCredit))
         quote.type = CalcEnum.VARIABLE
-        quote.interestValue = Optional.ofNullable(tvInterestValue.text.toString().replace("$","").replace(",","").trim().toBigDecimal())
-        quote.capitalValue = Optional.ofNullable(tvCapitalValue.text.toString().replace("$","").replace(",","").trim().toBigDecimal())
+        quote.interestValue = Optional.ofNullable(NumbersUtil.toBigDecimal(tvInterestValue))
+        quote.capitalValue = Optional.ofNullable(NumbersUtil.toBigDecimal(tvCapitalValue))
         return quote
     }
 
     override fun cleanField() {
-        etName.text.clear()
+        etName.text?.clear()
     }
 
     override fun validate(): Boolean {
         var valid = true
-        if(etName.text.isBlank()){
+        if(etName.text?.isBlank() == true){
             etName.error = "Fill out the field"
             valid = false
         }

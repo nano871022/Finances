@@ -10,12 +10,13 @@ import co.japl.android.myapplication.R
 import co.japl.android.myapplication.bussiness.DTO.CreditCardSettingDTO
 import co.japl.android.myapplication.bussiness.interfaces.IHolder
 import co.japl.android.myapplication.finanzas.pojo.QuoteCreditCard
+import com.google.android.material.textfield.TextInputEditText
 import java.math.BigDecimal
 import java.text.DecimalFormat
 import java.util.*
 
 class QuoteCreditdCardSaveHolder(var view:View):IHolder<QuoteCreditCard> {
-    lateinit var etName: EditText
+    lateinit var etName: TextInputEditText
     lateinit var tvValueCredit: TextView
     lateinit var tvInterest: TextView
     lateinit var tvMonths: TextView
@@ -41,7 +42,7 @@ class QuoteCreditdCardSaveHolder(var view:View):IHolder<QuoteCreditCard> {
         val quoteCredit: BigDecimal = values.value.orElse(BigDecimal.ZERO)
         tvQuoteCredit.text = format.format(quoteCredit)
         val interest:Double =values.tax.orElse(0.0)
-        tvInterest.text = interest.toString()
+        tvInterest.text = " ${interest.toString()} %"
         val period:Long = values.period.orElse(0)
         tvMonths.text = period.toString()
         val valueCredit: BigDecimal = values.response.orElse(BigDecimal.ZERO)
@@ -60,7 +61,7 @@ class QuoteCreditdCardSaveHolder(var view:View):IHolder<QuoteCreditCard> {
     }
 
     override fun validate(): Boolean {
-        if(etName.text.isBlank()){
+        if(etName.text?.isBlank() == true){
             etName.error = "Debe contener un nombre para ser guardado."
             return false
         }

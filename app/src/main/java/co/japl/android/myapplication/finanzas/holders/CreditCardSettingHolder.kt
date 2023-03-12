@@ -10,27 +10,31 @@ import androidx.fragment.app.FragmentManager
 import androidx.navigation.NavController
 import co.japl.android.myapplication.R
 import co.japl.android.myapplication.bussiness.DB.connections.ConnectDB
+import co.japl.android.myapplication.bussiness.DTO.CreditCardDTO
 import co.japl.android.myapplication.bussiness.DTO.CreditCardSettingDTO
 import co.japl.android.myapplication.bussiness.interfaces.IHolder
 import co.japl.android.myapplication.bussiness.interfaces.ISpinnerHolder
 import co.japl.android.myapplication.bussiness.interfaces.SaveSvc
 import co.japl.android.myapplication.finanzas.bussiness.impl.CreditCardSettingImpl
 import co.japl.android.myapplication.putParams.CreditCardSettingParams
+import com.google.android.material.checkbox.MaterialCheckBox
+import com.google.android.material.textfield.MaterialAutoCompleteTextView
+import com.google.android.material.textfield.TextInputEditText
 import java.time.LocalDateTime
 
-class CreditCardSettingHolder (var view:View, var parentFragmentManager:FragmentManager, var navController: NavController): IHolder<CreditCardSettingDTO>,ISpinnerHolder<CreditCardSettingHolder>, View.OnClickListener,AdapterView.OnItemSelectedListener {
-    lateinit var creditCard:Spinner
-    lateinit var type:Spinner
-    lateinit var name:EditText
-    lateinit var value:EditText
+class CreditCardSettingHolder (var view:View,val creditCardList:List<CreditCardDTO>, var parentFragmentManager:FragmentManager, var navController: NavController): IHolder<CreditCardSettingDTO>,ISpinnerHolder<CreditCardSettingHolder>, View.OnClickListener{
+    lateinit var creditCard:MaterialAutoCompleteTextView
+    lateinit var type:MaterialAutoCompleteTextView
+    lateinit var name:TextInputEditText
+    lateinit var value:TextInputEditText
     lateinit var add:Button
     lateinit var cancel:Button
-    lateinit var active:CheckBox
+    lateinit var active:MaterialCheckBox
     lateinit var setting:CreditCardSettingDTO
     private val creditCardSvc:SaveSvc<CreditCardSettingDTO> = CreditCardSettingImpl(ConnectDB(view.context))
     private var codeCreditCard: Int = 0
     private var nameCreditCard: String = ""
-    private var codeType: Int = 0
+    private var codeType: Int = -1
     private var valueType: String = ""
 
 
@@ -53,8 +57,12 @@ class CreditCardSettingHolder (var view:View, var parentFragmentManager:Fragment
             name.setText(setting.name)
             value.setText(setting.value)
             val list = view.resources.getStringArray(R.array.CreditCardSettingType)
-            val option = list.indexOf(setting.type)
-            type.setSelection(option)
+            val option = list.first{it == setting.type}
+            type.setText(option)
+            val creditCardName = creditCardList.firstOrNull{
+                it.id == values.codeCreditCard
+            }?.name ?: ""
+            creditCard.setText(creditCardName)
             Log.v(this.javaClass.name,"LoadFields List: $list Option: $option ")
         }
     }
@@ -62,9 +70,9 @@ class CreditCardSettingHolder (var view:View, var parentFragmentManager:Fragment
     @RequiresApi(Build.VERSION_CODES.O)
     override fun downLoadFields(): CreditCardSettingDTO {
         val id = if (setting.id > 0) setting.id else 0
-        val codeCreditCard = creditCard.selectedItemId.toString().toInt()
+        val codeCreditCard = if(this.codeCreditCard > 0) this.codeCreditCard else creditCardList.first{ it.name == creditCard.text.toString() }.id
         val create = LocalDateTime.now()
-        val type = this.type.selectedItem.toString()
+        val type = if( valueType?.isNotBlank() == true)  valueType else  this.type.text.toString()
         val name = this.name.text.toString()
         val value = this.value.text.toString()
         val active:Short = if(this.active.isSelected) 1 else 0
@@ -73,8 +81,8 @@ class CreditCardSettingHolder (var view:View, var parentFragmentManager:Fragment
 
     override fun cleanField() {
         type.setSelection(0)
-        name.text.clear()
-        value.text.clear()
+        name.text?.clear()
+        value.text?.clear()
     }
 
     override fun validate(): Boolean {
@@ -108,6 +116,8 @@ class CreditCardSettingHolder (var view:View, var parentFragmentManager:Fragment
 
     override fun lists(fn: ((CreditCardSettingHolder) -> Unit)?) {
         fn?.invoke(this)
+        onClick()
+        onItemSelected()
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -138,21 +148,23 @@ class CreditCardSettingHolder (var view:View, var parentFragmentManager:Fragment
         }
     }
 
-    override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-        val selected = parent?.getItemAtPosition(position)
-        when(view?.id){
-            R.id.spCreditCardCCSF ->{
-                nameCreditCard = selected.toString()
-                codeCreditCard = position
+    private fun onClick(){
+        creditCard.setOnClickListener { creditCard.showDropDown() }
+        type.setOnClickListener { type.showDropDown() }
+    }
+
+    private fun onItemSelected() {
+                creditCard.setOnItemClickListener { adapter, _, position, _ ->
+                    val selected = adapter?.getItemAtPosition(position)
+                    codeCreditCard = creditCardList.first {
+                        it.name == selected.toString()
+                    }.id
+                    nameCreditCard = selected.toString()
             }
-            R.id.spTypeCCS -> {
+            type.setOnItemClickListener { adapter, _, position, _ ->
+                val selected = adapter?.getItemAtPosition(position)
                 codeType = position
                 valueType = selected.toString()
             }
-        }
-    }
-
-    override fun onNothingSelected(parent: AdapterView<*>?) {
-        TODO("Not yet implemented")
     }
 }

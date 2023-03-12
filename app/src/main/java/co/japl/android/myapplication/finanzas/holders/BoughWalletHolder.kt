@@ -9,6 +9,7 @@ import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.arch.core.util.Function
 import androidx.core.util.Predicate
+import androidx.fragment.app.FragmentManager
 import co.japl.android.myapplication.R
 import co.japl.android.myapplication.bussiness.DTO.CreditCardBought
 import co.japl.android.myapplication.bussiness.DTO.CreditCardBoughtDTO
@@ -18,14 +19,20 @@ import co.japl.android.myapplication.finanzas.pojo.QuoteCreditCard
 import co.japl.android.myapplication.utils.CalcEnum
 import co.japl.android.myapplication.utils.DateUtils
 import co.japl.android.myapplication.utils.NumbersUtil
+import com.google.android.material.datepicker.MaterialDatePicker
+import com.google.android.material.textfield.TextInputEditText
 import java.math.BigDecimal
+import java.time.Instant
+import java.time.LocalDate
 import java.time.LocalDateTime
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
 
-class BoughWalletHolder(var view:View, var caller: (value: BigDecimal, date:LocalDateTime) -> CreditCardBought) : IHolder<CreditCardBought>, View.OnClickListener, View.OnFocusChangeListener{
+class BoughWalletHolder(var view:View,val manager:FragmentManager, var caller: (value: BigDecimal, date:LocalDateTime) -> CreditCardBought) : IHolder<CreditCardBought>, View.OnClickListener, View.OnFocusChangeListener{
     lateinit var creditCardName:TextView
-    lateinit var date:EditText
-    lateinit var productName: EditText
-    lateinit var productValue: EditText
+    lateinit var date:TextInputEditText
+    lateinit var productName: TextInputEditText
+    lateinit var productValue: TextInputEditText
     lateinit var tax:TextView
     lateinit var month:TextView
     lateinit var quoteValue: TextView
@@ -45,8 +52,18 @@ class BoughWalletHolder(var view:View, var caller: (value: BigDecimal, date:Loca
         clean = view.findViewById(R.id.btnClearBoughtBWCC)
         save.setOnClickListener(actions)
         clean.setOnClickListener(this)
-
+        val datePicker = MaterialDatePicker.Builder.datePicker().setInputMode(MaterialDatePicker.INPUT_MODE_CALENDAR).setTitleText(view.resources.getString(R.string.bought_date_time)).build()
         date.setText(DateUtils.localDateTimeToString(LocalDateTime.now()))
+        date.isFocusable = false
+        date.isClickable = true
+        date.setOnClickListener {
+            datePicker.show(manager,"Bought_date")
+        }
+
+        datePicker.addOnPositiveButtonClickListener {
+            val dateSelected = LocalDateTime.ofInstant(Instant.ofEpochMilli(it),ZoneId.systemDefault()).plusDays(1)
+            date.setText(dateSelected.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")))
+        }
 
         productName.onFocusChangeListener = this
         productValue.onFocusChangeListener = this
@@ -68,7 +85,7 @@ class BoughWalletHolder(var view:View, var caller: (value: BigDecimal, date:Loca
         val quote = CreditCardBought()
         quote.nameCreditCard = creditCardName.text.toString()
         quote.nameItem= productName.text.toString()
-        quote.valueItem=productValue.text.toString().toBigDecimal()
+        quote.valueItem= NumbersUtil.toBigDecimal(productValue)
         tax.text.toString().takeIf { it.isNotEmpty() }.apply { quote.interest = this?.toDouble() }
         quoteValue.text.toString().takeIf {
             it.isNotEmpty() && NumbersUtil.stringCOPToBigDecimal(it) > BigDecimal.ZERO
@@ -112,7 +129,13 @@ class BoughWalletHolder(var view:View, var caller: (value: BigDecimal, date:Loca
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    override fun onFocusChange(p0: View?, p1: Boolean) {
+    override fun onFocusChange(view: View?, focus: Boolean) {
+        if(!focus) {
+            when (view?.id) {
+                R.id.etProductValueBWCC -> productValue.setText(NumbersUtil.toString(productValue))
+            }
+        }
+
         if(validate()){
             caller.let{
                 val values = downLoadFields()

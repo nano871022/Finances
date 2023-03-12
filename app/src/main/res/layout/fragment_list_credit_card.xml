@@ -41,6 +41,7 @@
             android:id="@+id/btnAddNewCCS"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            app:icon="@android:drawable/ic_menu_add"
             android:text="@string/add_credit_card" />
     </LinearLayout>
 

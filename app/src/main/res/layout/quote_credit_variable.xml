@@ -5,8 +5,19 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_gravity="center_vertical"
-    android:layout_margin="@dimen/margin_border_layout"
+    android:padding="@dimen/padding_page"
     android:orientation="vertical">
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:cardCornerRadius="@dimen/radius_corner"
+        app:strokeWidth="@dimen/stroke_with"
+        app:cardElevation="@dimen/card_elevator">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="@dimen/padding_page"
+            android:orientation="vertical">
 
     <TextView
         android:id="@+id/textView3"
@@ -22,262 +33,179 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <LinearLayout
-        android:id="@+id/linearLayout3"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:orientation="horizontal"
-        app:layout_constraintTop_toBottomOf="@+id/textView3"
-        tools:layout_editor_absoluteX="0dp">
-
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/space_min"
+            android:hint="@string/credit_value"
+            app:prefixText="$"
+            app:endIconMode="clear_text">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/etNameItem"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:ems="10"
-            android:hint="@string/credit_value"
-            android:inputType="numberSigned" />
-        </com.google.android.material.textfield.TextInputLayout>
-    </LinearLayout>
+            android:layout_height="wrap_content"
 
-    <LinearLayout
-        android:id="@+id/linearLayout2"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="1dp"
-        android:orientation="horizontal"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout3"
-        tools:layout_editor_absoluteX="1dp">
+            android:ems="10"
+
+            android:inputType="numberSigned" />
+
+        </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:text="@string/tax" android:layout_weight="1">
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/space_min"
+            android:hint="@string/tax"
+            app:suffixText="%"
+            app:endIconMode="clear_text">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/etTax"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
             android:ems="10"
-            android:hint="@string/tax"
+
             android:inputType="numberDecimal"
             android:textAlignment="textEnd" />
 
         </com.google.android.material.textfield.TextInputLayout>
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/linearLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="1dp"
-        android:orientation="horizontal"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout2"
-        tools:layout_editor_absoluteX="1dp">
 
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:text="@string/months" >
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/space_min"
+            android:hint="@string/months"
+            app:endIconMode="clear_text">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/etMonths"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
             android:ems="10"
-            android:hint="@string/months"
             android:inputType="number|textPersonName" />
         </com.google.android.material.textfield.TextInputLayout>>
-    </LinearLayout>
 
-    <LinearLayout
-        android:id="@+id/linearLayout4"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="1dp"
-        android:orientation="horizontal"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout"
-        tools:layout_editor_absoluteX="1dp">
-
-        <Button
-            android:id="@+id/btnCalc"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginRight="5dp"
-            android:layout_weight="1"
-            android:text="@string/calc" />
+            android:orientation="horizontal">
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnClear"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:layout_margin="@dimen/space_min"
+                app:icon="@drawable/ic_baseline_cleaning_services_24"
+                android:text="@string/clear" />
 
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/lyMonthPay"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
-        android:orientation="horizontal"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout4"
-        tools:layout_editor_absoluteX="1dp">
-
-        <TextView
-            android:id="@+id/textView14"
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnCalc"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:paddingLeft="10dp"
-            android:text="@string/months"
-            android:textSize="16sp" />
+            app:icon="?android:attr/actionModeWebSearchDrawable"
+            android:text="@string/calc" />
+        </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:id="@+id/llCalculationQCCV">
 
-        <Spinner
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:endIconMode="clear_text"
+            android:hint="@string/months">
+
+        <com.google.android.material.textfield.MaterialAutoCompleteTextView
             android:id="@+id/months"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1" />
+            android:paddingLeft="@dimen/autocomplete_padding_left"/>
 
 
-    </LinearLayout>
+        </com.google.android.material.textfield.TextInputLayout>
 
 
-    <LinearLayout
-        android:id="@+id/lyCapitalValue"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="1dp"
-        android:orientation="horizontal"
-        app:layout_constraintTop_toBottomOf="@+id/lyMonthPay"
-        tools:layout_editor_absoluteX="1dp">
 
-        <TextView
-            android:id="@+id/textView8"
+        <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:paddingLeft="10dp"
-            android:text="@string/capital_value"
-            android:textSize="16sp" />
+            android:padding="@dimen/space_min"
+            android:layout_margin="@dimen/space_min"
+            android:background="@color/green_light_trans"
+            app:prefixText="@string/capital_value" >
 
-        <TextView
-            android:id="@+id/textView10"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="$"
-            android:textAlignment="textEnd" />
-
-        <TextView
+        <com.google.android.material.textview.MaterialTextView
             android:id="@+id/tvCapitalValue"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="@string/capital_value"
-            android:textSize="16sp" />
+            android:text="@string/money_hint"
+            android:textAlignment="center"/>
+        </com.google.android.material.textfield.TextInputLayout>
 
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/lyInterestValue"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="1dp"
-        android:layout_weight="1"
-        android:orientation="horizontal"
-        app:layout_constraintTop_toBottomOf="@+id/lyCapitalValue"
-        tools:layout_editor_absoluteX="1dp">
-
-        <TextView
+        <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/textView9"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:paddingLeft="10dp"
-            android:text="@string/interest_value"
-            android:textSize="16sp" />
+            android:padding="@dimen/space_min"
+            android:layout_margin="@dimen/space_min"
+            android:background="@color/green_light_trans"
+            app:prefixText="@string/interest_value">
 
-        <TextView
-            android:id="@+id/textView11"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="$"
-            android:textAlignment="textEnd" />
-
-        <TextView
+        <com.google.android.material.textview.MaterialTextView
             android:id="@+id/tvInterestValueList"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/interest_value"
-            android:textSize="16sp" />
+            android:text="@string/money_hint"
+            android:textAlignment="center"/>
 
-    </LinearLayout>
+        </com.google.android.material.textfield.TextInputLayout>>
 
-    <LinearLayout
-        android:id="@+id/lyTotalValue"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="1dp"
-        android:layout_weight="1"
-        android:orientation="horizontal"
-        app:layout_constraintTop_toBottomOf="@+id/lyInterestValue"
-        tools:layout_editor_absoluteX="1dp">
-
-        <TextView
+        <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/textView12"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:paddingLeft="10dp"
-            android:text="@string/total_value"
-            android:textSize="16sp" />
+            android:padding="@dimen/space_min"
+            android:layout_margin="@dimen/space_min"
+            android:background="@color/green_light_trans"
+            app:prefixText="@string/total_value">
 
-        <TextView
-            android:id="@+id/textView13"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="$"
-            android:textAlignment="textEnd" />
-
-        <TextView
+        <com.google.android.material.textview.MaterialTextView
             android:id="@+id/tvTotalValue"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="@string/total_value"
-            android:textSize="16sp" />
+            android:text="@string/money_hint"
+            android:textAlignment="center" />
 
-    </LinearLayout>
+        </com.google.android.material.textfield.TextInputLayout>
+            </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="0dp"
-        android:layout_weight="1"
         android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
         tools:layout_editor_absoluteX="294dp">
 
-        <Button
+
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/btnSaveVariable"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginRight="10dp"
+            android:layout_margin="@dimen/space_min"
             android:layout_weight="1"
+            app:icon="@android:drawable/ic_menu_save"
             android:text="@string/save" />
 
-        <Button
-            android:id="@+id/btnClear"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/clear" />
+
     </LinearLayout>
+        </LinearLayout>
+    </com.google.android.material.card.MaterialCardView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

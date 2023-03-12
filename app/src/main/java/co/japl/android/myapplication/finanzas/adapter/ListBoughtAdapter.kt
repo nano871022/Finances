@@ -90,8 +90,8 @@ class ListBoughtAdapter(private val data:List<CreditCardBoughtDTO>,private val c
             setting.get()
         }else {
             when (creditCardBoughtDTO.kind) {
-                TaxEnum.CASH_ADVANCE.ordinal.toShort() -> taxADVValue.get()
-                TaxEnum.CREDIT_CARD.ordinal.toShort() -> taxCCValue.get()
+                TaxEnum.CASH_ADVANCE.ordinal.toShort() -> taxADVValue.orElse(0.0)
+                TaxEnum.CREDIT_CARD.ordinal.toShort() -> taxCCValue.orElse(0.0)
                 else -> creditCardBoughtDTO.interest
             }
         }

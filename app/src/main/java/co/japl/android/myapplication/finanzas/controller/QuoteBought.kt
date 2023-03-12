@@ -3,6 +3,7 @@ package co.japl.android.myapplication.controller
 import android.database.sqlite.SQLiteOpenHelper
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -20,8 +21,11 @@ import co.japl.android.myapplication.bussiness.interfaces.*
 import co.japl.android.myapplication.finanzas.bussiness.impl.BuyCreditCardSettingImpl
 import co.japl.android.myapplication.finanzas.holders.QuoteBoughtHolder
 import co.japl.android.myapplication.finanzas.putParams.CreditCardQuotesParams
+import com.google.android.material.datepicker.MaterialDatePicker
 import java.math.BigDecimal
+import java.text.SimpleDateFormat
 import java.time.LocalDateTime
+import java.util.*
 
 class QuoteBought : Fragment(), View.OnClickListener{
 
@@ -45,7 +49,7 @@ class QuoteBought : Fragment(), View.OnClickListener{
         buyCCSSvc = BuyCreditCardSettingImpl(connect)
         taxSvc = TaxImpl(connect)
         saveSvc = SaveCreditCardBoughtImpl(connect)
-        holder = QuoteBoughtHolder(rootView)
+        holder = activity?.supportFragmentManager?.let { QuoteBoughtHolder(rootView, it) }!!
         holder.setFields(this)
         loadArguments()
         holder.cleanField()

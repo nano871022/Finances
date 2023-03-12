@@ -20,8 +20,12 @@ class CreditCardSettingParams() {
         @JvmStatic
         fun newInstance(codeCreditCard: Int, navController:NavController) {
             Log.v(this.javaClass.name,"New Instance code credit card: $codeCreditCard")
-        val parameters = bundleOf(ARG_CODE_CREDIT_CARD to codeCreditCard)
-            navController.navigate(R.id.action_listCreditCardSetting_to_creditCardSettingFragment,parameters)
+        bundleOf(ARG_CODE_CREDIT_CARD to codeCreditCard).let {
+            navController.navigate(
+                R.id.action_listCreditCardSetting_to_creditCardSettingFragment,
+                it
+            )
+        }
         }
 
         fun newInstance(codeCreditCard: Int, id:Int , navController:NavController) {

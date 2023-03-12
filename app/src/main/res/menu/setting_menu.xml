@@ -7,34 +7,24 @@
     >
     <item
         android:id="@+id/item_menu_setting_credit_card"
-        android:enabled="true"
         android:icon="@drawable/ic_credit_card_foreground"
         android:title="@string/credit_cards"
-        android:visible="true"
         app:showAsAction="withText" />
 
     <item
         android:id="@+id/item_menu_setting_taxes"
-        android:enabled="true"
         android:icon="@drawable/ic_credit_card_foreground"
-        android:title="@string/taxes_credit_card"
-        android:visible="true" />
+        android:title="@string/taxes_credit_card" />
 
     <item
     android:id="@+id/item_menu_setting_about_it"
-    android:enabled="true"
-        app:showAsAction="withText"
     android:icon="@drawable/ic_credit_card_foreground"
-    android:title="@string/about_it"
-    android:visible="true" />
+    android:title="@string/about_it"/>
 
     <item
         android:id="@+id/item_menu_setting_google_login"
-        android:enabled="true"
-        app:showAsAction="withText"
         android:icon="@drawable/ic_credit_card_foreground"
-        android:title="LogIn on Google"
-        android:visible="true" />
+        android:title="LogIn on Google" />
 
 
 </menu>

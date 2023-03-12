@@ -10,8 +10,8 @@ android {
         applicationId "co.japl.android.myapplication"
         minSdk 21
         targetSdk 33
-        versionCode 15
-        versionName "Se realiza ajuste de error encontrado en modo tablet ademas de ajuste en pantallas para cambio de tipo de campos"
+        versionCode 16
+        versionName "Actualizada la interfaz grafica a un nuvo diseño"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }

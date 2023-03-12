@@ -1,5 +1,7 @@
 package co.japl.android.myapplication.utils
 
+import android.widget.EditText
+import android.widget.TextView
 import java.math.BigDecimal
 import java.text.DecimalFormat
 
@@ -17,8 +19,44 @@ class NumbersUtil {
             return DecimalFormat(formatDecimal).format(value)
         }
 
+        fun toString(value: BigDecimal): String {
+            return DecimalFormat(formatDecimal).format(value)
+        }
+
+        fun toString(field:EditText): String{
+            return if(field.text?.isNotBlank() == true) {
+                 toString(field.text.toString().replace(",", "").toBigDecimal())
+            }else{
+                ""
+            }
+        }
+
         fun stringCOPToBigDecimal(value:String):BigDecimal{
             return value.replace("$","").replace(",","").trim().toBigDecimal()
+        }
+
+        fun toBigDecimal(field:EditText):BigDecimal{
+            return if(field.text?.isNotBlank() == true) {
+                field.text.toString().replace("$", "").replace(",", "").trim().toBigDecimal()
+            }else{
+                BigDecimal.ZERO
+            }
+        }
+        fun toBigDecimal(field:TextView):BigDecimal{
+            return if(field.text?.isNotBlank() == true) {
+                field.text.toString().replace("$", "").replace(",", "").trim().toBigDecimal()
+            }else{
+                BigDecimal.ZERO
+            }
+        }
+
+        fun toDouble(field:TextView):Double{
+            return if(field.text?.isNotBlank() == true){
+                field.text.toString().replace(",","").replace("%","").trim().toDouble()
+            }else{
+                0.0
+            }
+
         }
     }
 }

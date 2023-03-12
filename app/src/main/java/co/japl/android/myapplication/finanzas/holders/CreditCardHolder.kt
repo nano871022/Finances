@@ -9,20 +9,21 @@ import co.japl.android.myapplication.R
 import co.japl.android.myapplication.bussiness.DTO.CreditCardDTO
 import co.japl.android.myapplication.bussiness.DTO.CreditCardSettingDTO
 import co.japl.android.myapplication.bussiness.interfaces.IHolder
+import co.japl.android.myapplication.utils.NumbersUtil
+import com.google.android.material.textfield.TextInputEditText
 import java.math.BigDecimal
 import java.text.DecimalFormat
 import java.time.LocalDateTime
 import java.util.*
 
 class CreditCardHolder(var view:View) : IHolder<CreditCardDTO> {
-    lateinit var name:EditText
-    lateinit var cutOffDay:EditText
-    lateinit var warningQuote:EditText
+    lateinit var name:TextInputEditText
+    lateinit var cutOffDay:TextInputEditText
+    lateinit var warningQuote:TextInputEditText
     lateinit var save:Button
     lateinit var clear:Button
     lateinit var setting:Button
     private lateinit var id:Optional<Int>
-    private val format = DecimalFormat("###,###.##")
 
     @RequiresApi(Build.VERSION_CODES.N)
     override fun setFields(action: View.OnClickListener?) {
@@ -36,27 +37,33 @@ class CreditCardHolder(var view:View) : IHolder<CreditCardDTO> {
         clear.setOnClickListener(action)
         setting.setOnClickListener(action)
         id = Optional.empty()
+        setting.visibility = View.INVISIBLE
+        warningQuote.setOnFocusChangeListener{_,focus->
+            if(!focus && warningQuote.text?.isNotBlank() == true){
+                warningQuote.setText(NumbersUtil.toString(warningQuote))
+            }
+        }
     }
 
     @RequiresApi(Build.VERSION_CODES.N)
     override fun loadFields(values: CreditCardDTO) {
         name.setText(values.name)
         cutOffDay.setText(values.cutOffDay.toString())
-        warningQuote.setText(format.format(values.warningValue))
+        warningQuote.setText(NumbersUtil.toString(values.warningValue))
         id = Optional.ofNullable(values.id)
+        if(values.id > 0){
+            setting.visibility = View.VISIBLE
+        }
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun downLoadFields(): CreditCardDTO {
         val name:String = name.text.toString()
         var cutOffDay: Short = Short.MIN_VALUE
-        if(this.cutOffDay.text.isNotBlank()) {
+        if(this.cutOffDay.text?.isNotBlank() == true) {
             cutOffDay = this.cutOffDay.text.toString().toShort()
         }
-        var warningQuote:BigDecimal = BigDecimal.ZERO
-        if(this.warningQuote.text.isNotBlank()) {
-            warningQuote = BigDecimal(format.parse(this.warningQuote.text.toString()) as Long)
-        }
+        var warningQuote = NumbersUtil.toBigDecimal(this.warningQuote)
         val create:LocalDateTime = LocalDateTime.now()
         val status:Short = 1
         val dto = CreditCardDTO(id.orElse(0),name,cutOffDay,warningQuote,create,status)
@@ -79,7 +86,8 @@ class CreditCardHolder(var view:View) : IHolder<CreditCardDTO> {
             cutOffDay.error = "Invalid value permit values 1-31"
             valid = valid and false
         }
-        if(warningQuote?.text.toString().isNotBlank() && warningQuote?.text.toString().toBigDecimal() < BigDecimal(1)){
+
+        if(warningQuote?.text.toString().isNotBlank() && warningQuote?.text.toString().replace(",","").toBigDecimal() < BigDecimal(1)){
             warningQuote.error = "Invalid value, it should be higher of 0 (Zero)"
             valid = valid and false
         }

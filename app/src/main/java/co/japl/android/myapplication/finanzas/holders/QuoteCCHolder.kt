@@ -20,13 +20,14 @@ import co.japl.android.myapplication.finanzas.utils.TaxEnum
 import co.japl.android.myapplication.pojo.CreditCard
 import co.japl.android.myapplication.utils.DateUtils
 import co.japl.android.myapplication.utils.NumbersUtil
+import com.google.android.material.textfield.MaterialAutoCompleteTextView
 import java.math.BigDecimal
 import java.time.LocalDateTime
 import java.time.Period
 import java.util.*
 
 class QuoteCCHolder(var view:View,var parentFragmentManager:FragmentManager,var navController: NavController,var taxSvc: ITaxSvc): IHolder<CreditCard>, ISpinnerHolder<QuoteCCHolder>, View.OnClickListener{
-    lateinit var spCreditCard:Spinner
+    lateinit var spCreditCard:MaterialAutoCompleteTextView
     lateinit var tvRemainderCutOffDate: TextView
     lateinit var tvCutOffDateQuote: TextView
     lateinit var tvTotalValueQuote: TextView
@@ -97,10 +98,9 @@ class QuoteCCHolder(var view:View,var parentFragmentManager:FragmentManager,var 
             it.setOnClickListener(this)
             it.visibility = View.INVISIBLE
         }
-
+        btnCutOffHistory.visibility = View.INVISIBLE
         btnCutOffHistory.let{
             it.setOnClickListener(this)
-            it.visibility = View.VISIBLE
         }
     }
 
@@ -169,6 +169,7 @@ class QuoteCCHolder(var view:View,var parentFragmentManager:FragmentManager,var 
             }
             if(taxCreditCard.isPresent) {
                 btnAddBuy.visibility = View.VISIBLE
+                btnCutOffHistory.visibility = View.VISIBLE
             }
             if(taxAdvance.isPresent) {
                 btnAddCashAdvance.visibility = View.VISIBLE

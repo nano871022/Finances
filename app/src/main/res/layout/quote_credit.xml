@@ -6,8 +6,19 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_gravity="center_vertical"
-    android:layout_margin="@dimen/margin_border_layout"
+    android:padding="@dimen/padding_page"
     android:orientation="vertical">
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:cardCornerRadius="@dimen/radius_corner"
+        app:strokeWidth="@dimen/stroke_with"
+        app:cardElevation="@dimen/card_elevator">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="@dimen/space_min"
+            android:orientation="vertical">
 
     <TextView
         android:id="@+id/textView3"
@@ -34,7 +45,11 @@
 
 
 <com.google.android.material.textfield.TextInputLayout
-     android:layout_height="match_parent" android:layout_width="match_parent">
+     android:layout_height="match_parent"
+    android:layout_width="match_parent"
+    android:layout_margin="@dimen/space_min"
+    app:prefixText="$"
+    app:endIconMode="clear_text">
 
     <com.google.android.material.textfield.TextInputEditText
         android:id="@+id/etNameItem"
@@ -42,9 +57,8 @@
         android:layout_height="match_parent"
         android:ems="10"
         android:hint="@string/credit_value"
-        android:inputType="numberSigned"
-        android:numeric="decimal"
-        android:textAlignment="textEnd" />
+        android:inputType="numberDecimal"
+        />
 </com.google.android.material.textfield.TextInputLayout>
     </LinearLayout>
 
@@ -58,16 +72,20 @@
         tools:layout_editor_absoluteX="1dp">
 
         <com.google.android.material.textfield.TextInputLayout
-            android:layout_height="wrap_content" android:layout_width="match_parent">
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_margin="@dimen/space_min"
+            app:suffixText="%"
+            app:endIconMode="clear_text">
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/etTax"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
             android:ems="10"
             android:hint="@string/tax"
             android:inputType="numberDecimal"
-            android:textAlignment="textEnd" />
+            android:textAlignment="textEnd"
+            />
         </com.google.android.material.textfield.TextInputLayout>
     </LinearLayout>
 
@@ -81,13 +99,15 @@
         tools:layout_editor_absoluteX="1dp">
 
         <com.google.android.material.textfield.TextInputLayout
-            android:layout_height="wrap_content" android:layout_width="match_parent">
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            app:endIconMode="clear_text">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etMonths"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
+                android:layout_margin="@dimen/space_min"
                 android:ems="10"
                 android:hint="@string/months"
                 android:inputType="number|textPersonName"
@@ -96,19 +116,26 @@
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/linearLayout4"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="1dp"
-        android:orientation="horizontal"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout"
-        tools:layout_editor_absoluteX="1dp">
+        android:orientation="horizontal">
 
-        <Button
-            android:id="@+id/btnCalc"
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnClear"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:layout_margin="@dimen/space_min"
+            android:text="@string/clear"
+            app:icon="@drawable/ic_baseline_cleaning_services_24" />
+
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnCalc"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/space_min"
+            android:layout_weight="6"
             android:text="@string/calc"
             app:icon="@android:drawable/ic_menu_search" />
 
@@ -118,37 +145,27 @@
         android:id="@+id/lyInterestValue"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="@dimen/space_top"
         android:orientation="horizontal"
         app:layout_constraintTop_toBottomOf="@+id/linearLayout4"
         tools:layout_editor_absoluteX="1dp">
 
-        <TextView
+        <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/textView8"
-            android:layout_width="76dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="2"
-            android:paddingLeft="10dp"
-            android:text="@string/quote_value"
-            android:textSize="18sp" />
+            android:paddingLeft="@dimen/margin_start_input_layout"
+            android:layout_margin="@dimen/space_min"
+            android:background="@color/green_light_trans"
+            app:prefixText="@string/quote_value">
 
-        <TextView
-            android:id="@+id/textView10"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="$"
-            android:textAlignment="textEnd"
-            android:textSize="18sp" />
-
-        <TextView
+        <com.google.android.material.textview.MaterialTextView
             android:id="@+id/tvQuoteValue"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="3"
-            android:text="@string/quote_credit_hint"
-            android:textSize="18sp"
-            android:textStyle="bold" />
+            android:textAlignment="center"
+            android:hint="@string/quote_credit_hint"/>
+        </com.google.android.material.textfield.TextInputLayout>
 
     </LinearLayout>
 
@@ -159,22 +176,19 @@
         app:layout_constraintBottom_toBottomOf="parent"
         tools:layout_editor_absoluteX="1dp">
 
-        <Button
+
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/btnSave"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginRight="5dp"
+            android:layout_margin="@dimen/space_min"
             android:layout_weight="1"
             android:text="@string/save"
-            app:icon="@android:drawable/ic_input_add" />
+            app:icon="@android:drawable/ic_menu_save" />
 
-        <Button
-            android:id="@+id/btnClear"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/clear"
-            app:icon="@drawable/ic_baseline_cleaning_services_24" />
+
     </LinearLayout>
+        </LinearLayout>
+    </com.google.android.material.card.MaterialCardView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

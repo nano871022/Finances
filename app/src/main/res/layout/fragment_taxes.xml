@@ -5,190 +5,157 @@
     android:id="@+id/frameLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_margin="@dimen/margin_border_layout"
-    android:layout_marginRight="10dp"
+    android:padding="@dimen/padding_page"
     tools:context=".controller.Taxes">
-
-    <!-- TODO: Update blank fragment layout -->
-    <LinearLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintBottom_toBottomOf="parent">
-
-        <Button
-            android:id="@+id/btnSaveTaxes"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="10dp"
-            android:layout_weight="1"
-            android:text="@string/save" />
-
-        <Button
-            android:id="@+id/btnClearTaxes"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/clear" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/llMainTaxes"
+        android:layout_height="match_parent">
+    <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
-
-        <TextView
-            android:id="@+id/lbTitleTaxes"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/taxes_credit_card"
-            android:textAlignment="center"
-            android:textSize="20sp"
-            android:textStyle="bold" />
-
-        <LinearLayout
-            android:id="@+id/llCreditCardTaxes"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginTop="20dp"
-            android:orientation="horizontal">
-
-            <TextView
-                android:id="@+id/lbCreditCardTaxes"
-                android:layout_width="300dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:text="@string/credit_card"
-                android:textStyle="bold" />
-
-            <Spinner
-                android:id="@+id/spCreditCardTaxes"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="1" />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/llKindTaxes"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:orientation="horizontal">
-
-            <TextView
-                android:id="@+id/lbKindofTaxes"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/kind_of_tax"
-                android:textStyle="bold" />
-
-            <Spinner
-                android:id="@+id/spKindTaxes"
-                android:layout_width="62dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:orientation="horizontal">
-
-            <TextView
-                android:id="@+id/lbMonthTaxes"
-                android:layout_width="300dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/month"
-                android:textStyle="bold" />
-
-            <Spinner
-                android:id="@+id/spMonthTaxes"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:spinnerMode="dropdown" />
-
-        </LinearLayout>
-
+        android:layout_height="match_parent"
+        app:cardCornerRadius="@dimen/radius_corner"
+        app:strokeWidth="@dimen/stroke_with"
+        app:cardElevation="@dimen/card_elevator">
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="horizontal">
+            android:padding="@dimen/space_min"
+            android:orientation="vertical">
+                <TextView
+                    android:id="@+id/lbTitleTaxes"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/taxes_credit_card"
+                    android:textAlignment="center"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
 
-            <TextView
-                android:id="@+id/lbYearTaxes"
-                android:layout_width="100dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/year"
-                android:textStyle="bold" />
 
-            <EditText
-                android:id="@+id/edYearTaxes"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:ems="10"
-                android:hint="@string/year_hint"
-                android:inputType="numberSigned"
-                android:textAlignment="textEnd" />
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:endIconMode="clear_text"
+                        android:layout_margin="@dimen/space_min"
+                        android:hint="@string/credit_card">
+
+                    <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                        android:id="@+id/spCreditCardTaxes"
+                        android:layout_width="match_parent"
+                        android:paddingStart="20dp"
+                        android:layout_height="wrap_content"
+                        />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="@dimen/space_min"
+                        app:endIconMode="clear_text"
+                        android:hint="@string/kind_of_tax">
+
+                    <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                        android:id="@+id/spKindTaxes"
+                        android:paddingStart="20dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"/>
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="@dimen/space_min"
+                        app:endIconMode="clear_text"
+                        android:hint="@string/month">
+
+                    <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                        android:id="@+id/spMonthTaxes"
+                        android:paddingStart="20dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+
+                    </com.google.android.material.textfield.TextInputLayout>
+
+
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="@dimen/space_min"
+                        app:endIconMode="clear_text"
+                        android:hint="@string/year">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/edYearTaxes"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="numberSigned"
+                        android:hint="@string/year_hint"
+                        android:textAlignment="textEnd" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="@dimen/space_min"
+                        app:endIconMode="clear_text"
+                        app:suffixText="%"
+                        android:hint="@string/tax">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/edTaxesTaxes"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="numberDecimal"
+                        android:hint="@string/integer_hint"
+                        android:textAlignment="textEnd" />
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/llPeriodsTaxes"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="@dimen/space_min"
+                        app:endIconMode="clear_text"
+                        android:hint="@string/periods">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etPeriodsTaxes"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:ems="3"
+                        android:hint="@string/months_number_hint"
+                        android:inputType="numberSigned"
+                        android:textAlignment="textEnd" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    app:layout_constraintBottom_toBottomOf="parent">
+
+                    <Button
+                        android:id="@+id/btnClearTaxes"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="@dimen/space_min"
+                        app:icon="@drawable/ic_baseline_cleaning_services_24"
+                        android:layout_weight="1"
+                        android:text="@string/clear" />
+
+                    <Button
+                        android:id="@+id/btnSaveTaxes"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="@dimen/space_min"
+                        app:icon="@android:drawable/ic_menu_save"
+                        android:layout_weight="1"
+                        android:text="@string/save" />
+
+
+                </LinearLayout>
         </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="horizontal">
-
-            <TextView
-                android:id="@+id/lbTaxesTaxes"
-                android:layout_width="100dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/tax"
-                android:textStyle="bold" />
-
-            <EditText
-                android:id="@+id/edTaxesTaxes"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:ems="10"
-                android:hint="@string/tax_percent"
-                android:inputType="numberDecimal"
-                android:textAlignment="textEnd" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/llPeriodTaxes"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="horizontal">
-
-            <TextView
-                android:id="@+id/lbPeriodsTaxes"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/periods"
-                android:textStyle="bold" />
-
-            <EditText
-                android:id="@+id/etPeriodsTaxes"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:ems="3"
-                android:hint="@string/months_number_hint"
-                android:inputType="numberSigned"
-                android:textAlignment="textEnd" />
-
-        </LinearLayout>
-
-    </LinearLayout>
+    </com.google.android.material.card.MaterialCardView>
+    </ScrollView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

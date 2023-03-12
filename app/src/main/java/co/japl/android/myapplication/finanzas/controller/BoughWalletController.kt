@@ -63,7 +63,14 @@ class BoughWalletController: Fragment() , View.OnClickListener{
         creditCardSvc = CreditCardImpl(connect)
         taxSvc = TaxImpl(connect)
         creditCard = creditCardSvc.get(codeCreditCard.get())
-        holder = BoughWalletHolder(view) { bought,date -> calc(bought,date)}
+        activity?.supportFragmentManager.let {
+            holder = BoughWalletHolder(view, it!!) { bought, date ->
+                calc(
+                    bought,
+                    date
+                )
+            }
+        }
         holder.setFields(this)
         val quote = CreditCardBought()
         quote.nameCreditCard = creditCard.get().name
