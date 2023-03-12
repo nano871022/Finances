@@ -1,34 +1,42 @@
 package co.japl.android.myapplication.holders
 
 import android.os.Build
+import android.util.Log
 import android.view.View
 import android.widget.*
 import androidx.annotation.RequiresApi
 import androidx.core.view.size
 import co.japl.android.myapplication.R
+import co.japl.android.myapplication.bussiness.DTO.CreditCardDTO
 import co.japl.android.myapplication.bussiness.DTO.CreditCardSettingDTO
 import co.japl.android.myapplication.bussiness.DTO.TaxDTO
 import co.japl.android.myapplication.bussiness.interfaces.IHolder
 import co.japl.android.myapplication.bussiness.interfaces.ISpinnerHolder
 import co.japl.android.myapplication.finanzas.utils.TaxEnum
+import com.google.android.material.textfield.MaterialAutoCompleteTextView
+import com.google.android.material.textfield.TextInputEditText
+import com.google.android.material.textfield.TextInputLayout
+import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.YearMonth
 import java.util.*
 
-class TaxesHolder(var view:View) : IHolder<TaxDTO>,AdapterView.OnItemSelectedListener,ISpinnerHolder<TaxesHolder> {
-    lateinit var creditCard:Spinner
-    lateinit var month:Spinner
-    lateinit var tax:EditText
-    lateinit var period:EditText
-    lateinit var kind:Spinner
-    lateinit var year:EditText
+class TaxesHolder(var view:View,val creditCardList:List<CreditCardDTO>) : IHolder<TaxDTO>,ISpinnerHolder<TaxesHolder> {
+    lateinit var creditCard:MaterialAutoCompleteTextView
+    lateinit var month:MaterialAutoCompleteTextView
+    lateinit var tax:TextInputEditText
+    lateinit var period:TextInputEditText
+    lateinit var kind:MaterialAutoCompleteTextView
+    lateinit var year:TextInputEditText
     lateinit var save:Button
     lateinit var clear:Button
-    lateinit var creditCardStr:String
-    lateinit var monthStr:String
-    lateinit var creditCardCode:Optional<Int>
-    lateinit var monthCode:Optional<Int>
-    lateinit var layutPeriod:LinearLayout
+    var creditCardStr:String = ""
+    var monthStr:String = ""
+    @RequiresApi(Build.VERSION_CODES.N)
+    var creditCardCode:Optional<Int> = Optional.empty()
+    @RequiresApi(Build.VERSION_CODES.N)
+    var monthCode:Optional<Int> = Optional.empty()
+    lateinit var llPeriodsTaxes: TextInputLayout
 
 
     override fun setFields(action: View.OnClickListener?) {
@@ -40,16 +48,10 @@ class TaxesHolder(var view:View) : IHolder<TaxDTO>,AdapterView.OnItemSelectedLis
         period = view.findViewById(R.id.etPeriodsTaxes)
         save = view.findViewById(R.id.btnSaveTaxes)
         clear = view.findViewById(R.id.btnClearTaxes)
-        layutPeriod = view.findViewById(R.id.llPeriodTaxes)
+        llPeriodsTaxes = view.findViewById(R.id.llPeriodsTaxes)
         save.setOnClickListener(action)
         clear.setOnClickListener(action)
-        month.onItemSelectedListener = this
-        creditCard.onItemSelectedListener = this
-        kind.onItemSelectedListener = this
-
-        layutPeriod.visibility = View.INVISIBLE
-
-
+        llPeriodsTaxes.visibility = View.INVISIBLE
     }
     @RequiresApi(Build.VERSION_CODES.O)
     override fun loadFields(values: TaxDTO) {
@@ -64,12 +66,33 @@ class TaxesHolder(var view:View) : IHolder<TaxDTO>,AdapterView.OnItemSelectedLis
         val taxs:Double = tax.text.toString().toDouble()
         val create:LocalDateTime = LocalDateTime.now()
         val status:Short = 1
-        val kind = TaxEnum.valueOf(kind.selectedItem.toString()).ordinal.toShort()
+        val kind = TaxEnum.valueOf(kind.text.toString()).ordinal.toShort()
 
         val period:Short = (this.period.takeIf { it.editableText.isNotEmpty()}?.let {
             it.text.toString().toShort()
         }?: run{ "0".toShort() }) as Short
-        val dto = TaxDTO(0,monthCode.get().toShort(),years,status,creditCardCode.get(),create,taxs,kind,period)
+
+
+        val creditCard =  creditCardCode.orElseGet { ->
+            if(creditCard.text.isNotBlank()){
+                creditCardList.first {
+                    it.name == creditCard.text.toString()
+                }.id ?: 0
+            }else{
+                throw Exception("Is not possible get credit card")
+            }
+        }
+        val month = monthCode.orElseGet{
+            if(month.text.isNotBlank()){
+                view.resources.getStringArray(R.array.Months).indexOfFirst {
+                    it == month.text.toString()
+                }
+            }else{
+                throw Exception("Is not possible get month")
+            }
+        }
+
+        val dto = TaxDTO(0,month.toShort(),years,status,creditCard,create,taxs,kind,period).also { Log.d(this.javaClass.name,"Download $it") }
         return dto
     }
 
@@ -82,13 +105,8 @@ class TaxesHolder(var view:View) : IHolder<TaxDTO>,AdapterView.OnItemSelectedLis
         period.editableText.clear()
         monthCode = Optional.empty()
         monthStr = ""
-        (month.selectedView as TextView).text = month.getItemAtPosition(0).toString()
-        (creditCard.selectedView.findViewById(R.id.tvValueBigSp) as TextView).text = creditCard.getItemAtPosition(0).toString()
-        (kind.selectedView.findViewById(R.id.tvValueBigSp) as TextView).text = TaxEnum.CREDIT_CARD.name
-        month.setSelection(YearMonth.now().monthValue)
-        if(creditCard.size == 2){
-            creditCard.setSelection(1)
-        }
+        month.setText(view.resources.getStringArray(R.array.Months)[LocalDate.now().monthValue])
+        kind.setText(TaxEnum.CREDIT_CARD.name)
     }
 
     @RequiresApi(Build.VERSION_CODES.N)
@@ -96,21 +114,28 @@ class TaxesHolder(var view:View) : IHolder<TaxDTO>,AdapterView.OnItemSelectedLis
         var valid = true
         if(year.text.toString().isBlank() || !(year.text.toString().toInt() in 2015..2023)){
             year.error = "Invalid value permit values 2015-2023"
-            valid = valid && false
+            valid = false
         }
         if(tax.text.toString().isBlank() || !(tax.text.toString().toDouble() in 0.0..100.0)){
             tax.error = "Invalid value permit values 0.0 - 100.0 "
-            valid = valid && false
+            valid = false
         }
-        if(monthCode == null || !monthCode.isPresent || !(monthCode.get() in 1..12)){
-            (month.selectedView as TextView).error = "Invalid value"
-            valid = valid && false
+
+        if((!monthCode.isPresent || !(monthCode.get() in 1..12)) && month.text.isBlank()){
+            month.error = "Invalid value"
+            valid = false
         }
-        if(creditCardCode == null || !creditCardCode.isPresent || creditCardCode.get() < 1 ){
-            (creditCard.selectedView.findViewById(R.id.tvValueBigSp) as TextView).error = "Invalid value"
-            valid = valid && false
+        if( (!creditCardCode.isPresent || creditCardCode.get() < 1 ) && creditCard.text.isBlank()){
+            creditCard.error = "Invalid value"
+            valid = false
         }
-        if(kind.selectedItem.toString() != TaxEnum.CREDIT_CARD.name && period.editableText.isEmpty()){
+
+        if(kind.text.toString().isBlank()){
+            kind.error = "Invalid value"
+            valid = false
+        }
+
+        if(kind.text.toString() != TaxEnum.CREDIT_CARD.name && period.editableText.isEmpty()){
             period.error = "Debe ingresar la cantidad de periodos"
             valid = false
         }
@@ -118,35 +143,47 @@ class TaxesHolder(var view:View) : IHolder<TaxDTO>,AdapterView.OnItemSelectedLis
     }
 
     @RequiresApi(Build.VERSION_CODES.N)
-    override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-        val selected = parent?.getItemAtPosition(position)
-        if(selected != null){
-            when(parent.id){
-                R.id.spMonthTaxes->{
-                    monthStr = selected.toString()
-                    monthCode = Optional.ofNullable(position)
-                }
-                R.id.spCreditCardTaxes->{
-                    creditCardStr = selected.toString()
-                    creditCardCode = Optional.ofNullable(position)
-                }
-                R.id.spKindTaxes->{
-                    if(TaxEnum.CREDIT_CARD.name  != selected.toString()){
-                        layutPeriod.visibility = View.VISIBLE
-                    }else {
-                        layutPeriod.visibility = View.INVISIBLE
-                    }
-                }
-            }
-        }
-    }
-
-    override fun onNothingSelected(parent: AdapterView<*>?) {
-        Toast.makeText(this.view.context,"Invalid Option",Toast.LENGTH_LONG).show()
-    }
-
     override fun lists(fn: ((TaxesHolder) -> Unit)?) {
         fn?.invoke(this)
+        month.setOnClickListener{
+            month.showDropDown()
+        }
+        creditCard.setOnClickListener{
+            creditCard.showDropDown()
+        }
+        kind.setOnClickListener{
+            kind.showDropDown()
+        }
+        if(creditCardList.size == 1){
+            creditCard.adapter.getItem(1)
+        }
+        onItemClick()
+    }
+
+    @RequiresApi(Build.VERSION_CODES.N)
+    fun onItemClick() {
+        creditCard.setOnItemClickListener{ adapter,_,position,_ ->
+            val selected = adapter?.getItemAtPosition(position)
+            Log.d(this.javaClass.name,"CreditCard:: Select Option $adapter $position $selected ")
+            creditCardStr = selected.toString()
+            creditCardCode = Optional.ofNullable(position)
+        }
+
+        month.setOnItemClickListener { adapter , _, position, _ ->
+            val selected = adapter?.getItemAtPosition(position)
+            Log.d(this.javaClass.name,"Month:: Select Option $adapter $position $selected ")
+            monthStr = selected.toString()
+            monthCode = Optional.ofNullable(position)
+        }
+        kind.setOnItemClickListener { adapter, _, position, _ ->
+            val selected = adapter?.getItemAtPosition(position)
+            Log.d(this.javaClass.name,"Kind:: Select Option $adapter $position $selected ${selected.toString() == TaxEnum.CASH_ADVANCE.name}")
+            if(selected.toString() == TaxEnum.CASH_ADVANCE.name){
+                llPeriodsTaxes.visibility = View.VISIBLE
+            }else{
+                llPeriodsTaxes.visibility = View.INVISIBLE
+            }
+        }
     }
 
 

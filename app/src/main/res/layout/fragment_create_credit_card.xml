@@ -1,64 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_margin="@dimen/margin_border_layout"
+    android:padding="@dimen/padding_page"
     tools:context=".controller.CreateCreditCard">
-
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:cardCornerRadius="@dimen/radius_corner"
+        app:strokeWidth="@dimen/stroke_with"
+        app:cardElevation="@dimen/card_elevator">
     <!-- TODO: Update blank fragment layout -->
-
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintBottom_toTopOf="@+id/llButtonCCC">
-
-        <Button
-            android:id="@+id/btnSettingsCCC"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/setting_redirect" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/llButtonCCC"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintBottom_toBottomOf="parent">
-
-        <Button
-            android:id="@+id/btnSaveCCC"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="10dp"
-            android:layout_weight="2"
-            android:text="@string/save" />
-
-        <Button
-            android:id="@+id/btnCleanCCC"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="2"
-            android:text="@string/clear" />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
-
-        <LinearLayout
-            android:id="@+id/llTitleCCC"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="@dimen/space_min"
+    android:orientation="vertical">
 
             <TextView
                 android:id="@+id/lbTitleCreateCC"
@@ -68,90 +31,92 @@
                 android:textAlignment="center"
                 android:textSize="20sp"
                 android:textStyle="bold" />
-        </LinearLayout>
 
-        <LinearLayout
-            android:id="@+id/llNameCCC"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:orientation="horizontal">
-
-            <TextView
-                android:id="@+id/lbCreditCardNameCCC"
+            <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
                 android:inputType="textPersonName"
-                android:text="@string/name"
-                android:textStyle="bold" />
+                app:endIconMode="clear_text"
+                android:layout_margin="@dimen/space_min"
+                android:hint="@string/name">
 
-            <EditText
+            <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etNameCCC"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:ems="10"
-                android:hint="@string/name"
                 android:inputType="textPersonName" />
-        </LinearLayout>
+            </com.google.android.material.textfield.TextInputLayout>
 
-        <LinearLayout
-            android:id="@+id/llCutOffDay"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="horizontal">
-
-            <TextView
-                android:id="@+id/lbCutOffCCC"
+            <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/cut_off_day"
-                android:textStyle="bold" />
+                app:endIconMode="clear_text"
+                android:layout_margin="@dimen/space_min"
+                android:hint="@string/cut_off_day">
 
-            <EditText
+            <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/edCutOffDayCCC"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="13dp"
-                android:layout_marginLeft="13dp"
-                android:layout_marginEnd="1dp"
-                android:layout_marginRight="1dp"
-                android:layout_weight="1"
-                android:ems="10"
-                android:hint="@string/months_number_hint"
                 android:inputType="number"
                 android:textAlignment="textEnd" />
+            </com.google.android.material.textfield.TextInputLayout>
 
-        </LinearLayout>
 
-        <LinearLayout
-            android:id="@+id/llWarningQuoteCCC"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="horizontal">
-
-            <TextView
-                android:id="@+id/lbWarningQuoteCCC"
-                android:layout_width="wrap_content"
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/warning_quote_value"
-                android:textStyle="bold" />
+                app:endIconMode="clear_text"
+                android:layout_margin="@dimen/space_min"
+                app:prefixText="$"
+                android:hint="@string/warning_quote_value">
 
-            <EditText
+            <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/edWarningQuoteCCC"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:ems="10"
-                android:hint="@string/money_hint"
                 android:inputType="number|numberDecimal"
-                android:textAlignment="textEnd" />
-        </LinearLayout>
+                android:textAlignment="textStart" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+
+
+        <Button
+            android:id="@+id/btnSettingsCCC"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:icon="@android:drawable/ic_menu_preferences"
+            android:text="@string/setting_redirect" />
+
+    <LinearLayout
+        android:id="@+id/llButtonCCC"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+
+        <Button
+            android:id="@+id/btnCleanCCC"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/space_min"
+            android:layout_weight="1"
+            app:icon="@drawable/ic_baseline_cleaning_services_24"
+            android:text="@string/clear" />
+
+        <Button
+            android:id="@+id/btnSaveCCC"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/space_min"
+            app:icon="@android:drawable/ic_menu_save"
+            android:layout_weight="1"
+            android:text="@string/save" />
+
 
     </LinearLayout>
-
-
+</LinearLayout>
+    </com.google.android.material.card.MaterialCardView>
+    </ScrollView>1
 </androidx.constraintlayout.widget.ConstraintLayout>

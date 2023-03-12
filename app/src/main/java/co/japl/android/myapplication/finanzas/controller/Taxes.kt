@@ -42,46 +42,68 @@ class Taxes : Fragment() , View.OnClickListener{
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_taxes, container, false)
-        holder = TaxesHolder(view)
+        getData(view)
+        holder = TaxesHolder(view,listCreditCard)
         holder.setFields(this)
+        holderSetUp()
+        getParameters()
+        return view
+    }
+
+    private fun getParameters(){
+        arguments?.let {
+            val params = TaxesParams.download(it)
+            param1 =params.first
+            param2 = params.second
+        }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.N)
+    private fun getData(view:View){
         service = TaxImpl(ConnectDB(view.context))
         creditCardSvc = CreditCardImpl( ConnectDB(view.context))
         listCreditCard  = creditCardSvc.getAll()
         listCreditCardNames = listCreditCard.stream().map { it.name }.collect(Collectors.toList())
         listCreditCardNames.add(0,"--- Seleccionar ---")
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun holderSetUp(){
         val today = LocalDate.now()
         holder.loadFields(TaxDTO(0,today.month.value.toShort(),today.year,0,0, LocalDateTime.now(),2.0,TaxEnum.CREDIT_CARD.ordinal.toShort(),0))
 
         (holder as ISpinnerHolder<TaxesHolder>).lists{
-                it.creditCard.adapter = ArrayAdapter(this.requireContext(),R.layout.spinner_simple,R.id.tvValueBigSp,
-                    listCreditCardNames.toTypedArray())
-                ArrayAdapter.createFromResource(this.requireContext(),R.array.Months,R.layout.spinner1).also { adapter ->
-                    adapter.setDropDownViewResource(R.layout.spinner1)
-                    it.month.adapter = adapter
-                }
-            ArrayAdapter(this.requireContext(),R.layout.spinner_simple,R.id.tvValueBigSp,TaxEnum.values()).also { arr->
-                it.kind.adapter = arr
+            ArrayAdapter(this.requireContext(),R.layout.spinner_simple,R.id.tvValueBigSp,
+                listCreditCardNames.toTypedArray()).let{ adapter ->
+                it.creditCard.setAdapter(adapter)
             }
             if(listCreditCardNames.isNotEmpty() && listCreditCardNames.size == 2){
-                it.creditCard.setSelection(1)
+                it.creditCard.setText(listCreditCardNames[1])
             }
-            it.month.setSelection(YearMonth.now().monthValue)
+            ArrayAdapter.createFromResource(this.requireContext(),R.array.Months,R.layout.spinner1).also { adapter ->
+                adapter.setDropDownViewResource(R.layout.spinner1)
+                it.month.setAdapter(adapter)
+            }
+            it.month.setText(resources.getStringArray(R.array.Months)[LocalDate.now().monthValue])
+            ArrayAdapter(this.requireContext(),R.layout.spinner_simple,R.id.tvValueBigSp,TaxEnum.values()).also { adapter ->
+                it.kind.setAdapter(adapter)
+            }
+            it.kind.setText(TaxEnum.CREDIT_CARD.name)
+
         }
-        arguments?.let { val params = TaxesParams.download(it)
-        param1 =params.first
-            param2 = params.second
-        }
-        return view
     }
 
     @RequiresApi(Build.VERSION_CODES.N)
     private fun save(){
         if(holder.validate()){
             val dto = holder.downLoadFields()
-            val creditCard = listCreditCard.stream().filter{ it.name == listCreditCardNames[dto.codCreditCard] }.findAny()
-            dto.codCreditCard = creditCard.get().id
-            if(service.save(dto)>0){
+            val response = service.save(dto)
+            if(response > 0 && response.toInt() != dto.id){
+                dto.id = response.toInt()
                 Toast.makeText(this.context,"Record Saved",Toast.LENGTH_LONG).show()
+                TaxesParams.toBack(findNavController())
+            }else if(response.toInt() == dto.id){
+                Toast.makeText(this.context,"Record Updated",Toast.LENGTH_LONG).show()
                 TaxesParams.toBack(findNavController())
             }else{
                 Toast.makeText(this.context,"Record did not Save",Toast.LENGTH_LONG).show()

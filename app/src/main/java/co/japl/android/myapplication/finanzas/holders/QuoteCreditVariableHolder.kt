@@ -17,27 +17,27 @@ import co.japl.android.myapplication.bussiness.interfaces.ISpinnerHolder
 import co.japl.android.myapplication.finanzas.pojo.QuoteCreditCard
 import co.japl.android.myapplication.utils.CalcEnum
 import co.japl.android.myapplication.utils.NumbersUtil
+import com.google.android.material.textfield.MaterialAutoCompleteTextView
+import com.google.android.material.textfield.TextInputEditText
+import com.google.android.material.textview.MaterialTextView
 import java.math.BigDecimal
 import java.math.RoundingMode
 import java.text.DecimalFormat
 import java.util.*
 
-class QuoteCreditVariableHolder(var container: View):IHolder<QuoteCreditCard>,AdapterView.OnItemSelectedListener, ISpinnerHolder<QuoteCreditVariableHolder> {
+class QuoteCreditVariableHolder(var container: View):IHolder<QuoteCreditCard>, ISpinnerHolder<QuoteCreditVariableHolder> {
     private val calc: Calc = QuoteCreditVariable()
     private val calcQuoteInt: CalcInterest = QuoteCreditVariableInterestQuote()
     lateinit var listMonths:MutableList<String>
 
-    private lateinit var etValueCredit: EditText
-    private lateinit var etTax: EditText
-    private lateinit var etMonths: EditText
-    private lateinit var tvCapitalValue: TextView
-    private lateinit var tvInterestValue: TextView
-    private lateinit var tvTotalValue: TextView
-    private lateinit var lyCapitalCredit: LinearLayout
-    private lateinit var lyInterestCredit: LinearLayout
-    private lateinit var lyMontlyPay: LinearLayout
-    private lateinit var lyTotalValue: LinearLayout
-     lateinit var spMonth: Spinner
+    private lateinit var etValueCredit: TextInputEditText
+    private lateinit var etTax: TextInputEditText
+    private lateinit var etMonths: TextInputEditText
+    private lateinit var tvCapitalValue: MaterialTextView
+    private lateinit var tvInterestValue: MaterialTextView
+    private lateinit var tvTotalValue: MaterialTextView
+    private lateinit var llCalculation: LinearLayout
+     lateinit var spMonth: MaterialAutoCompleteTextView
     private lateinit var btnSave: Button
 
     private lateinit var quote:QuoteCreditCard
@@ -47,8 +47,8 @@ class QuoteCreditVariableHolder(var container: View):IHolder<QuoteCreditCard>,Ad
         etTax = container.findViewById(R.id.etTax)!!
         etMonths = container.findViewById(R.id.etMonths)!!
         tvCapitalValue = container.findViewById(R.id.tvCapitalValue)!!
-        lyCapitalCredit = container.findViewById(R.id.lyCapitalValue)!!
         tvInterestValue = container.findViewById(R.id.tvInterestValueList)!!
+        llCalculation = container.findViewById(R.id.llCalculationQCCV)
         tvTotalValue = container.findViewById(R.id.tvTotalValue)!!
         spMonth = container.findViewById(R.id.months)
         val btnClear:Button = container.findViewById(R.id.btnClear)
@@ -58,51 +58,39 @@ class QuoteCreditVariableHolder(var container: View):IHolder<QuoteCreditCard>,Ad
         btnSave = container.findViewById(R.id.btnSaveVariable)
         btnSave.setOnClickListener(actions)
         btnSave.visibility = View.INVISIBLE
-        spMonth.onItemSelectedListener = this
-        try{
-            lyInterestCredit = container.findViewById(R.id.lyInterestValue)!!
-            lyTotalValue = container.findViewById(R.id.lyTotalValue)!!
-            lyMontlyPay = container.findViewById(R.id.lyMonthPay)
-
-        }catch(e:Exception){
-
-        }
+        spMonth.setOnClickListener { spMonth.showDropDown() }
+        spMonth.isFocusable = false
         quote = QuoteCreditCard()
+        llCalculation.visibility=View.INVISIBLE
+        etValueCredit.setOnFocusChangeListener{ _,focus->
+            if(!focus && etValueCredit.text?.isNotBlank() == true){
+                etValueCredit.setText(NumbersUtil.toString(etValueCredit))
+            }
+        }
     }
 
     @RequiresApi(Build.VERSION_CODES.N)
     override fun loadFields(values: QuoteCreditCard) {
         values.capitalValue.ifPresent {
             tvCapitalValue.text = NumbersUtil.COPtoString(it)
-            try {
-                lyCapitalCredit.visibility = View.VISIBLE
-                lyMontlyPay.visibility = View.VISIBLE
-            }catch(e:Exception){}
         }
         values.interestValue.ifPresent{
-            tvInterestValue.text = NumbersUtil.COPtoString(it)
-            try {
-                lyInterestCredit.visibility = View.VISIBLE
-                lyMontlyPay.visibility = View.VISIBLE
-            }catch(e:Exception){}
+            tvInterestValue.text = NumbersUtil.toString(it)
         }
         values.value.ifPresent{
-            try {
-                lyTotalValue.visibility = View.VISIBLE
-                lyMontlyPay.visibility = View.VISIBLE
-            }catch(e:Exception){}
             tvTotalValue.text = NumbersUtil.COPtoString(it)
         }
         btnSave.visibility = View.VISIBLE
         quote = values
         Log.d(this.javaClass.name,"Assign to quote ${quote.response} ${quote.capitalValue} ${quote.interestValue}")
+        llCalculation.visibility = View.VISIBLE
     }
 
     @RequiresApi(Build.VERSION_CODES.N)
     override fun downLoadFields(): QuoteCreditCard {
         val quote = QuoteCreditCard()
         quote.tax = Optional.ofNullable(etTax.text.toString().toDouble())
-        quote.value= Optional.ofNullable(etValueCredit.text.toString().toBigDecimal())
+        quote.value= Optional.ofNullable(NumbersUtil.toBigDecimal(etValueCredit     ))
         quote.period= Optional.ofNullable(etMonths.text.toString().toLong())
         quote.type = CalcEnum.VARIABLE
 
@@ -124,78 +112,55 @@ class QuoteCreditVariableHolder(var container: View):IHolder<QuoteCreditCard>,Ad
         etTax.editableText.clear()
         etMonths.editableText.clear()
         //tvQuoteValue.editableText.clear()
-        etValueCredit.setBackgroundColor(Color.WHITE)
-        etTax.setBackgroundColor(Color.WHITE)
-        etMonths.setBackgroundColor(Color.WHITE)
         btnSave.visibility = View.INVISIBLE
-        try{
-            lyCapitalCredit.visibility = View.INVISIBLE
-            lyInterestCredit.visibility = View.INVISIBLE
-            lyTotalValue.visibility = View.INVISIBLE
-            lyMontlyPay.visibility = View.INVISIBLE
-        }catch (e:Exception){}
+        llCalculation.visibility = View.INVISIBLE
     }
 
     override fun validate(): Boolean {
         var valid:Boolean = true
-        if(etValueCredit.text.isBlank()){
+        if(etValueCredit.text?.isBlank() == true){
             etValueCredit.error = "Fill out this field"
-            valid = valid && false
+            valid = false
         }
-        if(etTax.text.isBlank()){
+        if(etTax.text?.isBlank() == true){
             etTax.error = "Fill out this filed"
-            valid = valid && false
+            valid = false
         }
-        if(etMonths.text.isBlank()){
+        if(etMonths.text?.isBlank() == true){
             etTax.error = "Fill out this filed"
-            valid = valid && false
+            valid = false
         }
         return valid
     }
 
-    override fun onItemSelected(parent: AdapterView<*>?, view: View?, pos: Int, id: Long) {
-        print("In item selected")
-        val format = DecimalFormat("#,###.00")
-        val value = etValueCredit.text.toString().toBigDecimal()
-        val period = etMonths.text.toString().toLong()
-        val tax = etTax.text.toString().toDouble()
-        val response = calc.calc(value, period, tax)
-        var totalValue = BigDecimal(0)
+     private fun onItemSelected() {
+        spMonth.setOnItemClickListener{adapter,_,pos,_ ->
+            val month = adapter.getItemAtPosition(pos)
+            val value = NumbersUtil.toBigDecimal(etValueCredit      )
+            val period = etMonths.text.toString().toLong()
+            val tax = etTax.text.toString().toDouble()
+            val response = calc.calc(value, period, tax)
+            var totalValue = BigDecimal(0)
 
-        val option = listMonths.get(pos)
-        val interest = calcQuoteInt.calc(value,period,tax,option.toLong())
-        response.let {
+            val interest = calcQuoteInt.calc(value,period,tax,month.toString().toLong())
+            response.let {
 
-            tvCapitalValue.text = format.format(it.setScale(2, RoundingMode.HALF_EVEN))
-            try {
-                lyCapitalCredit.visibility = View.VISIBLE
-                lyMontlyPay.visibility = View.VISIBLE
-            }catch(e:Exception){}
-            totalValue = totalValue.add(it)
+                tvCapitalValue.text = NumbersUtil.COPtoString(it.setScale(2, RoundingMode.HALF_EVEN))
+                totalValue = totalValue.add(it)
+            }
+            interest.let {
+
+                tvInterestValue.text = NumbersUtil.COPtoString(it.setScale(2, RoundingMode.HALF_EVEN))
+                totalValue = totalValue.add(it)
+            }
+            if(totalValue> BigDecimal(0)){
+                tvTotalValue.text = NumbersUtil.COPtoString(totalValue.setScale(2, RoundingMode.HALF_EVEN))
+            }
         }
-        interest.let {
-
-            tvInterestValue.text = format.format(it.setScale(2, RoundingMode.HALF_EVEN))
-            try {
-                lyInterestCredit.visibility = View.VISIBLE
-                lyMontlyPay.visibility = View.VISIBLE
-            }catch(e:Exception){}
-            totalValue = totalValue.add(it)
-        }
-        if(totalValue.compareTo(BigDecimal(0))>0){
-            try {
-                lyTotalValue.visibility = View.VISIBLE
-                lyMontlyPay.visibility = View.VISIBLE
-            }catch(e:Exception){}
-            tvTotalValue.text = format.format(totalValue.setScale(2, RoundingMode.HALF_EVEN))
-        }
-    }
-
-    override fun onNothingSelected(p0: AdapterView<*>?) {
-        TODO("Not yet implemented")
     }
 
     override fun lists(fn: ((QuoteCreditVariableHolder) -> Unit)?) {
         fn?.invoke(this)
+        onItemSelected()
     }
 }

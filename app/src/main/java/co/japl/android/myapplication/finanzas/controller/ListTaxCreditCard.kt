@@ -8,7 +8,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import android.widget.LinearLayout
+import android.widget.ProgressBar
 import androidx.annotation.RequiresApi
+import androidx.core.view.get
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -23,9 +27,10 @@ import co.japl.android.myapplication.bussiness.impl.TaxImpl
 import co.japl.android.myapplication.bussiness.interfaces.SaveSvc
 import co.japl.android.myapplication.finanzas.bussiness.impl.ScriptService
 import co.japl.android.myapplication.holders.TaxHolder
+import com.google.android.material.progressindicator.CircularProgressIndicator
 import java.util.stream.Collectors
 
-class ListTaxCreditCard : Fragment() , AdapterView.OnItemSelectedListener{
+class ListTaxCreditCard : Fragment() {
 
 
     private lateinit var list:MutableList<TaxDTO>
@@ -44,6 +49,10 @@ class ListTaxCreditCard : Fragment() , AdapterView.OnItemSelectedListener{
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_list_tax_credit_card, container, false)
+        val progressBar = view.findViewById(R.id.pbTaxTCC) as CircularProgressIndicator
+        progressBar.isEnabled = true
+        progressBar.isVisible = true
+        view.findViewById<LinearLayout>(R.id.llMainTTCC).isVisible = false
         val connect = ConnectDB(view.context)
         list = ArrayList<TaxDTO>()
         searchCCSvc = CreditCardImpl(connect)
@@ -54,23 +63,43 @@ class ListTaxCreditCard : Fragment() , AdapterView.OnItemSelectedListener{
         svcTest.init()
         svcTest.load()
         println(svcTest.execute2())
+        //progressBar.isVisible = false
+
+        view.findViewById<LinearLayout>(R.id.llMainTTCC).isVisible = true
         return view
     }
 
     @RequiresApi(Build.VERSION_CODES.N)
     fun setField(view:View){
         view.let{
-            holder = TaxHolder(it,parentFragmentManager,findNavController())
-            holder.setFields(null)
             listCC = searchCCSvc.getAll()
+            holder = TaxHolder(it,parentFragmentManager,findNavController(),listCC)
+            holder.setFields(null)
             val list = listCC.toMutableList().stream().map { it.name }.collect(Collectors.toList())
             list.add(0,"-- Seleccionar --")
             holder.lists{
-                it.creditCard.adapter = ArrayAdapter(view.context,R.layout.spinner_simple,R.id.tvValueBigSp,list.toTypedArray())
-                it.creditCard.onItemSelectedListener = this
+                val adapter = ArrayAdapter(view.context,R.layout.spinner_simple,R.id.tvValueBigSp,list.toTypedArray())
+                it.creditCard.setAdapter(adapter)
+                it.creditCard.setOnItemClickListener { parent, _,position, _ ->
+                    run {
+                            parent.let {
+                                val selected = it?.getItemAtPosition(position)
+                                listCC.firstOrNull {
+                                    it.name == selected.toString()
+                                }?.let {
+                                    search(it)
+                                } ?: clearList()
+                            }
+                        }
+                }
+                it.lbNameTCC.setEndIconOnClickListener { _->
+                    it.creditCard.setText("")
+                    clearList()
+                }
                 loadRecycleView(it.recyclerView)
                 if(list.isNotEmpty() && list.size == 2){
-                    it.creditCard.setSelection(1)
+                    it.creditCard.setText(list[1])
+                    search(listCC[0])
                 }
             }
         }
@@ -79,7 +108,6 @@ class ListTaxCreditCard : Fragment() , AdapterView.OnItemSelectedListener{
     fun loadRecycleView(recyclerView:RecyclerView){
         view.let {
             recyclerView.let { rv ->
-                Log.d(this.javaClass.name,"Create RecyclerVire with $list")
                 rv.layoutManager = LinearLayoutManager(it?.context,LinearLayoutManager.VERTICAL,false)
                 rv.adapter = ListTaxAdapter(list)
 
@@ -87,26 +115,16 @@ class ListTaxCreditCard : Fragment() , AdapterView.OnItemSelectedListener{
         }
     }
 
-    @RequiresApi(Build.VERSION_CODES.N)
-    override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-        Log.d(this.javaClass.name,"Selected item $position")
-        if(position != 0)
-        parent.let {
-            val selected = it?.getItemAtPosition(position)
-            val found = listCC.stream().filter{
-                it.name == selected.toString()
-            }.findAny()
-            if(found.isPresent) {
-                list = searchTaxSvc.getAll().stream().filter {
-                    it.codCreditCard == found.get().id
-                }.collect(Collectors.toList())
-                //loadRecycleView(holder.recyclerView)
-                holder.recyclerView.adapter = ListTaxAdapter(list)
-            }
-        }
+    private fun search(creditCard:CreditCardDTO){
+        this.list = searchTaxSvc.getAll().filter {
+            it.codCreditCard == creditCard.id
+        }.sortedByDescending{ String.format("%04d%02d",it.year,it.month).toInt() }
+            .toMutableList()
+        holder.recyclerView.adapter = ListTaxAdapter(this.list)
     }
 
-    override fun onNothingSelected(parent: AdapterView<*>?) {
-        TODO("Not yet implemented")
+    private fun clearList(){
+        this.list.clear()
+        holder.recyclerView.adapter?.notifyDataSetChanged()
     }
 }

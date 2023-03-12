@@ -37,7 +37,9 @@ class TaxImpl(override var dbConnect: SQLiteOpenHelper) :  SaveSvc<TaxDTO>,ITaxS
         Log.d(this.javaClass.name,"<<<== save - Start")
         val db = dbConnect.writableDatabase
         val columns = mapper.mapping(dto)
-        return db.insert(TaxDB.TaxEntry.TABLE_NAME,null,columns).also { Log.d(this.javaClass.name,"<<<=== save - End ") }
+        return db.insert(TaxDB.TaxEntry.TABLE_NAME,null,columns).also {
+            Log.d(this.javaClass.name,"<<<=== save - resposnse $it $columns End ")
+        }
     }
 
     @RequiresApi(Build.VERSION_CODES.O)

@@ -7,13 +7,29 @@
     android:layout_height="match_parent"
     android:layout_margin="@dimen/margin_border_layout"
     tools:context=".ListTaxCreditCard">
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
 
     <!-- TODO: Update blank fragment layout -->
+    <com.google.android.material.progressindicator.CircularProgressIndicator
+        android:id="@+id/pbTaxTCC"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        />
+
     <LinearLayout
-        android:id="@+id/linearLayout6"
+        android:id="@+id/llMainTTCC"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
+
+
 
         <TextView
             android:id="@+id/lbTitleTCC"
@@ -30,24 +46,26 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
-            <TextView
+            <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/lbNameTCC"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/credit_card" />
+                app:endIconMode="clear_text"
+                android:hint="@string/credit_card">
 
-            <Spinner
+            <com.google.android.material.textfield.MaterialAutoCompleteTextView
                 android:id="@+id/spNameCCTCC"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1" />
+                android:completionThreshold="1"
+                android:clickable="true"
+                />
+
+            </com.google.android.material.textfield.TextInputLayout>
 
         </LinearLayout>
 
-        <ScrollView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
+
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -59,7 +77,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent" />
             </LinearLayout>
-        </ScrollView>
+
     </LinearLayout>
 
     <LinearLayout
@@ -70,12 +88,13 @@
 
         <Button
             android:id="@+id/btnAddTCC"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginRight="10dp"
-            android:layout_weight="1"
+            android:layout_margin="@dimen/space_min"
+            app:icon="@android:drawable/ic_menu_add"
             android:text="@string/add_tax" />
 
     </LinearLayout>
-
+</LinearLayout>
+    </ScrollView>
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -60,7 +60,7 @@ class CashAdvanceSave: Fragment() , View.OnClickListener{
         creditCardSvc = CreditCardImpl(connect)
         taxSvc = TaxImpl(connect)
         creditCard = creditCardSvc.get(codeCreditCard.get())
-        holder = CashAdvanceHolder(view) { bought,date -> calc(bought,date)}
+        holder = CashAdvanceHolder(view,activity?.supportFragmentManager!!) { bought,date -> calc(bought,date)}
         holder.setFields(this)
         val quote = CreditCardBought()
         quote.nameCreditCard = creditCard.get().name

@@ -4,17 +4,22 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_gravity="center_vertical"
-    android:layout_margin="@dimen/margin_border_layout"
+    android:padding="@dimen/padding_page"
     android:orientation="vertical">
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-
+<com.google.android.material.card.MaterialCardView
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:cardCornerRadius="@dimen/radius_corner"
+    app:strokeWidth="@dimen/stroke_with"
+    app:cardElevation="@dimen/card_elevator">
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
+            android:padding="@dimen/space_min"
             android:orientation="vertical" >
 
 
@@ -32,31 +37,22 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <LinearLayout
-        android:id="@+id/llCreditCardAssign"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
-        android:orientation="horizontal"
-        app:layout_constraintTop_toBottomOf="@+id/textView3"
-        tools:layout_editor_absoluteX="0dp">
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/space_min"
+            android:padding="@dimen/space_min"
+            android:background="@color/green_light_trans"
+            app:prefixText="@string/assing_credit_Card"
+            android:textStyle="bold" >
 
-        <TextView
-            android:id="@+id/lCreditCardAssign"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:paddingLeft="10dp"
-            android:paddingTop="13dp"
-            android:paddingRight="10dp"
-            android:text="@string/assing_credit_Card"
-            android:textStyle="bold" />
-
-        <TextView
+        <com.google.android.material.textview.MaterialTextView
             android:id="@+id/etCreditCardAssign"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:paddingLeft="@dimen/margin_start_input_layout"
             android:hint="@string/assing_credit_Card" />
-    </LinearLayout>
+        </com.google.android.material.textfield.TextInputLayout>
 
     <LinearLayout
         android:id="@+id/llDate"
@@ -65,38 +61,36 @@
         android:orientation="horizontal"
         app:layout_constraintTop_toBottomOf="@+id/llCreditCardAssign">
 
-        <TextView
-            android:id="@+id/lDate"
+        <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/bought_date_time"
-            android:textStyle="bold" />
+            app:endIconMode="clear_text"
+            android:layout_margin="@dimen/space_min"
+            android:layout_weight="1">
 
-        <EditText
+        <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/dtBought"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:hint="@string/format_date"
+            android:hint="@string/bought_date_time"
             android:inputType="date"
             android:textAlignment="textEnd" />
+        </com.google.android.material.textfield.TextInputLayout>
 
-        <TextView
-            android:id="@+id/lNameItem"
+        <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:paddingLeft="5dp"
-            android:text="@string/product_name"
-            android:textStyle="bold" />
+            app:endIconMode="clear_text"
+            android:layout_margin="@dimen/space_min"
+            android:layout_weight="1">
 
-        <EditText
+        <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/etNameItem"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="1"
             android:hint="@string/name" />
+        </com.google.android.material.textfield.TextInputLayout>
     </LinearLayout>
 
     <LinearLayout
@@ -111,7 +105,6 @@
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/linerLayoutValues"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="1dp"
@@ -119,124 +112,132 @@
         app:layout_constraintTop_toBottomOf="@+id/linearLayout3"
         tools:layout_editor_absoluteX="1dp">
 
-        <TextView
-            android:id="@+id/lProductValue"
+        <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/product_value"
-            android:textStyle="bold" />
+            app:endIconMode="clear_text"
+            android:layout_margin="@dimen/space_min"
+            app:prefixText="$"
+            android:layout_weight="1">
 
-        <EditText
+        <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/etProductValue"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:hint="@string/money_hint"
-            android:inputType="numberSigned"
-            android:textAlignment="textEnd" />
+            android:hint="@string/credit_value"
+            android:inputType="numberSigned" />
+        </com.google.android.material.textfield.TextInputLayout>
 
-        <TextView
-            android:id="@+id/textView5"
+        <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:paddingLeft="5dp"
-            android:text="@string/tax"
-            android:textAlignment="viewStart"
-            android:textStyle="bold" />
+            android:layout_height="match_parent"
+            android:layout_margin="@dimen/space_min"
+            android:paddingLeft="@dimen/space_min"
+            android:id="@+id/linearLayoutTax"
+            android:background="@color/green_light_trans"
+            app:prefixText="@string/tax"
+            android:layout_weight="1">
 
-        <TextView
+        <com.google.android.material.textview.MaterialTextView
             android:id="@+id/etTaxBought"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_weight="1"
             android:hint="@string/interest_value_hint"
             android:inputType="numberSigned"
             android:textAlignment="textEnd" />
+        </com.google.android.material.textfield.TextInputLayout>
 
-        <TextView
-            android:id="@+id/textView7"
+        <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:paddingLeft="5dp"
-            android:text="@string/months"
-            android:textStyle="bold" />
+            app:endIconMode="clear_text"
+            android:layout_margin="@dimen/space_min"
+            android:layout_weight="1">
 
-        <EditText
+        <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/etMonths"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:hint="@string/months_number_hint"
-            android:inputType="number|textPersonName"
+            android:hint="@string/months"
+            android:inputType="numberSigned"
             android:textAlignment="textEnd" />
-    </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/linearLayoutTax"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="1dp"
-                android:orientation="horizontal"
-                app:layout_constraintTop_toBottomOf="@+id/linerLayoutValues"
-                tools:layout_editor_absoluteX="1dp">
-
-            </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/linearLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="1dp"
-        android:orientation="horizontal"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayoutTax"
-        tools:layout_editor_absoluteX="1dp">
-
+        </com.google.android.material.textfield.TextInputLayout>
     </LinearLayout>
 
     <LinearLayout
         android:id="@+id/linearLayoutQuoteValue"
         android:layout_width="match_parent"
-        android:layout_height="40dp"
+        android:layout_height="wrap_content"
         android:layout_marginTop="1dp"
         android:orientation="horizontal"
         app:layout_constraintTop_toBottomOf="@+id/linearLayout"
         tools:layout_editor_absoluteX="1dp">
 
-        <TextView
-            android:id="@+id/lQuoteValue"
+        <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_weight="1"
-            android:text="@string/quotes_value"
-            android:textStyle="bold" />
+            android:layout_margin="@dimen/space_min"
+            android:padding="@dimen/space_min"
+            android:background="@color/green_light_trans"
+            app:prefixText="@string/quotes_value">
 
-        <TextView
+        <com.google.android.material.textview.MaterialTextView
             android:id="@+id/etQuoteValue"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:hint="@string/quotes_value"
-            android:inputType="number|textPersonName"
+            android:hint="@string/money_hint"
             android:textAlignment="textEnd" />
 
-        <TextView
-            android:id="@+id/lbRecurrentQuoteValue"
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:paddingLeft="5dp"
-            android:text="@string/recurrent"
-            android:textStyle="bold" />
+            android:padding="@dimen/space_min"
+            android:layout_margin="@dimen/space_min"
+            android:background="@color/green_light_trans"
+            app:prefixText="@string/recurrent">
 
         <CheckBox
             android:id="@+id/cbRecurrent"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1" />
+        </com.google.android.material.textfield.TextInputLayout>
     </LinearLayout>
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/space_min"
+                    app:endIconMode="clear_text"
+                    android:id="@+id/llSetingTypeBCC"
+                    android:hint="@string/credit_card_setting_type_setting">
+
+                <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                    android:id="@+id/spTypeSettingBCC"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/llSettingNameBCC"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:endIconMode="clear_text"
+                    android:layout_margin="@dimen/space_min"
+                    android:hint="@string/credit_card_setting_name_setting">
+
+                <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                    android:id="@+id/spNameSettingBCC"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1" />
+                </com.google.android.material.textfield.TextInputLayout>
 
     <LinearLayout
         android:id="@+id/llRecurrentQuoteValue"
@@ -252,25 +253,30 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
+        android:padding="@dimen/space_min"
         tools:layout_editor_absoluteX="1dp">
 
-        <Button
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnClearBought"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/space_min"
+            android:layout_weight="1"
+            android:text="@string/clear"
+            app:icon="@drawable/ic_baseline_cleaning_services_24" />
+
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/btnSaveBought"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginRight="5dp"
+            android:layout_margin="@dimen/space_min"
             android:layout_weight="1"
             android:text="@string/save"
             app:icon="@android:drawable/ic_menu_save" />
 
-        <Button
-            android:id="@+id/btnClearBought"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/clear"
-            app:icon="@drawable/ic_baseline_cleaning_services_24" />
     </LinearLayout>
         </LinearLayout>
+</com.google.android.material.card.MaterialCardView>
     </ScrollView>
 </androidx.constraintlayout.widget.ConstraintLayout>

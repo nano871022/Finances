@@ -5,9 +5,19 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_gravity="center_vertical"
-    android:layout_margin="@dimen/margin_border_layout"
+    android:padding="@dimen/padding_page"
     android:orientation="vertical">
-
+<com.google.android.material.card.MaterialCardView
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:cardCornerRadius="@dimen/radius_corner"
+    app:strokeWidth="@dimen/stroke_with"
+    app:cardElevation="@dimen/card_elevator">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="@dimen/space_min"
+        android:orientation="vertical">
     <TextView
         android:id="@+id/textView3"
         android:layout_width="match_parent"
@@ -31,22 +41,21 @@
         app:layout_constraintTop_toBottomOf="@+id/textView3"
         tools:layout_editor_absoluteX="0dp">
 
-        <TextView
-            android:id="@+id/lNameItem"
-            android:layout_width="wrap_content"
+        <com.google.android.material.textfield.TextInputLayout
             android:layout_height="match_parent"
-            android:paddingLeft="10dp"
-            android:paddingTop="13dp"
-            android:paddingRight="10dp"
-            android:text="@string/credit_value" />
+            android:layout_width="match_parent"
+            android:layout_margin="@dimen/space_min"
+            app:prefixText="$"
+            app:endIconMode="clear_text">
 
-        <EditText
+        <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/etNameItem"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:ems="10"
             android:hint="@string/credit_value"
             android:inputType="numberSigned" />
+        </com.google.android.material.textfield.TextInputLayout>
     </LinearLayout>
 
     <LinearLayout
@@ -58,71 +67,62 @@
         app:layout_constraintTop_toBottomOf="@+id/linearLayout3"
         tools:layout_editor_absoluteX="1dp">
 
-        <TextView
-            android:id="@+id/textView5"
-            android:layout_width="138dp"
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_height="match_parent"
+            android:layout_width="match_parent"
+            app:endIconMode="clear_text"
+            android:layout_margin="@dimen/space_min"
+            app:suffixText="%"
+            android:layout_weight="1">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/etTax"
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:autoText="false"
-            android:paddingLeft="10dp"
-            android:paddingTop="15dp"
-            android:paddingRight="10dp"
-            android:text="@string/tax"
-            android:textAlignment="viewStart" />
-
-        <EditText
-            android:id="@+id/etTax"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
             android:ems="10"
-            android:hint="0.0"
+            android:hint="@string/tax"
             android:inputType="numberDecimal"
             android:textAlignment="textEnd" />
 
-        <TextView
-            android:id="@+id/textView6"
-            android:layout_width="100dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:paddingLeft="5dp"
-            android:paddingTop="13dp"
-            android:paddingRight="10dp"
-            android:text="@string/percent_symbol" />
+        </com.google.android.material.textfield.TextInputLayout>
 
-        <TextView
-            android:id="@+id/textView7"
-            android:layout_width="52dp"
+        <com.google.android.material.textfield.TextInputLayout
             android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:paddingLeft="10dp"
-            android:paddingTop="13dp"
-            android:paddingRight="10dp"
-            android:text="@string/months" />
+            android:layout_width="match_parent"
+            app:endIconMode="clear_text"
+            android:layout_margin="@dimen/space_min"
+            android:layout_weight="1">
 
-        <EditText
+        <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/etMonths"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:layout_weight="1"
             android:ems="10"
-            android:hint="@string/months_number"
+            android:hint="@string/months"
             android:inputType="number|textPersonName" />
+        </com.google.android.material.textfield.TextInputLayout>
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/linearLayout4"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="1dp"
-        android:orientation="horizontal"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout2"
-        tools:layout_editor_absoluteX="1dp">
+        android:orientation="horizontal">
 
-        <Button
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnClear"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="@dimen/space_min"
+            android:layout_weight="3"
+            android:text="@string/clear"
+            app:icon="@drawable/ic_baseline_cleaning_services_24" />
+
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/btnCalc"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:layout_weight="1"
             android:text="@string/calc"
             app:icon="@android:drawable/ic_menu_search" />
@@ -133,37 +133,25 @@
         android:id="@+id/lyInterestValue"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="@dimen/space_top"
         android:orientation="horizontal"
         app:layout_constraintTop_toBottomOf="@+id/linearLayout4"
         tools:layout_editor_absoluteX="1dp">
 
-        <TextView
+        <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/textView8"
-            android:layout_width="76dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="2"
-            android:paddingLeft="10dp"
-            android:text="@string/quote_value"
-            android:textSize="18sp" />
-
-        <TextView
-            android:id="@+id/textView10"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="$"
-            android:textAlignment="textEnd"
-            android:textSize="18sp" />
-
-        <TextView
+            android:paddingLeft="@dimen/margin_start_input_layout"
+            app:prefixText="@string/quote_value">
+        <com.google.android.material.textview.MaterialTextView
             android:id="@+id/tvQuoteValue"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="3"
             android:text="@string/quote_credit_hint"
-            android:textSize="18sp"
+            android:textAlignment="center"
             android:textStyle="bold" />
+        </com.google.android.material.textfield.TextInputLayout>
 
     </LinearLayout>
 
@@ -174,22 +162,18 @@
         app:layout_constraintTop_toBottomOf="@+id/lyInterestValue"
         tools:layout_editor_absoluteX="1dp">
 
-        <Button
+
+
+
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/btnSave"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginRight="5dp"
+            android:layout_margin="@dimen/space_min"
             android:layout_weight="1"
             android:text="@string/add"
             app:icon="@android:drawable/ic_input_add" />
-
-        <Button
-            android:id="@+id/btnClear"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/clear"
-            app:icon="@drawable/ic_baseline_cleaning_services_24" />
     </LinearLayout>
-
+    </LinearLayout>
+</com.google.android.material.card.MaterialCardView>
 </androidx.constraintlayout.widget.ConstraintLayout>

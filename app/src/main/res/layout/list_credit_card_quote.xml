@@ -4,71 +4,71 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_margin="10dp">
-
-    <LinearLayout
-        android:id="@+id/llTitleListCCQuote"
+    android:padding="@dimen/padding_page">
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:layout_height="wrap_content">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-        <Spinner
+
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="@dimen/padding_page"
+            android:hint="@string/credit_card">
+        <com.google.android.material.textfield.MaterialAutoCompleteTextView
             android:id="@+id/spCreditCardQCC"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="20dp"
-            android:layout_weight="1" />
+            android:textAlignment="textEnd"/>
+        </com.google.android.material.textfield.TextInputLayout>
 
-    </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/llCutOffDateQuote"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
-        android:layout_weight="1"
         android:orientation="horizontal"
         app:layout_constraintTop_toBottomOf="@+id/llTitleListCCQuote">
 
-        <TextView
+        <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/lCutOffDate"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/cut_off_date" />
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="@dimen/space_min"
+            android:layout_margin="@dimen/space_min"
+            android:background="@color/green_light_trans"
+            android:layout_weight="2"
+            app:prefixText="@string/cut_off_date" >
 
-        <TextView
+        <com.google.android.material.textview.MaterialTextView
             android:id="@+id/tvCutOffDate"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:hint="@string/date_hint"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:layout_weight="1"
-            android:text="@string/date_hint"
-            android:textStyle="bold" />
+            android:padding="@dimen/space_min"
+            android:layout_margin="@dimen/space_min"
+            android:background="@color/green_light_trans"
+            app:prefixText="@string/remainderCutOffDate" >
 
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/llRemainderCutOffDate"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintTop_toBottomOf="@+id/llCutOffDateQuote">
-
-        <TextView
-            android:id="@+id/lRemainderCutOffDate"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/remainderCutOffDate" />
-
-        <TextView
+        <com.google.android.material.textview.MaterialTextView
             android:id="@+id/tvRemainderCutOffDate"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/integer_hint"
-            android:textAlignment="textEnd"
-            android:textStyle="bold" />
+            android:hint="@string/integer_hint"
+            android:textAlignment="textEnd"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
+
     </LinearLayout>
 
     <LinearLayout
@@ -79,16 +79,24 @@
         android:orientation="horizontal"
         app:layout_constraintTop_toBottomOf="@+id/llRemainderCutOffDate"
         tools:layout_editor_absoluteX="1dp">
-
-        <TextView
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="@dimen/space_min"
+        android:layout_margin="@dimen/space_min"
+        android:background="@color/green_light_trans"
+        app:prefixText="@string/quote_value">
+        <com.google.android.material.textview.MaterialTextView
             android:id="@+id/tvTotalValueQuote"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="@string/money_hint"
+            android:hint="@string/money_hint"
             android:textAlignment="center"
             android:textSize="24sp"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            />
+    </com.google.android.material.textfield.TextInputLayout>
     </LinearLayout>
 
     <LinearLayout
@@ -99,81 +107,81 @@
         android:orientation="horizontal"
         app:layout_constraintTop_toBottomOf="@+id/llTotalValueQuote">
 
-        <TextView
+        <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/lEquityValueQuote"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="@dimen/space_min"
+            android:layout_margin="@dimen/space_min"
+            android:background="@color/green_light_trans"
             android:layout_weight="1"
-            android:text="@string/capital_value" />
+            app:prefixText="@string/capital_value" >
 
-        <TextView
+        <com.google.android.material.textview.MaterialTextView
             android:id="@+id/tvEquityValueQuote"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/quote_credit_hint"
-            android:textAlignment="textEnd"
-            android:textStyle="bold" />
+            android:hint="@string/money_hint"
+            android:textAlignment="textEnd"/>
+        </com.google.android.material.textfield.TextInputLayout>
 
-        <TextView
-            android:id="@+id/lInterestValueQuote"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:layout_weight="1"
-            android:paddingLeft="5dp"
-            android:text="@string/interest_value" />
+            android:padding="@dimen/space_min"
+            android:layout_margin="@dimen/space_min"
+            android:background="@color/green_light_trans"
+            app:prefixText="@string/interest_value" >
 
-        <TextView
+        <com.google.android.material.textview.MaterialTextView
             android:id="@+id/tvInterestValueQuote"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="@string/interest_value_hint"
-            android:textAlignment="textEnd"
-            android:textStyle="bold" />
+            android:hint="@string/money_hint"
+            android:textAlignment="textEnd"/>
+        </com.google.android.material.textfield.TextInputLayout>
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/llItemQuotes"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
-        android:orientation="horizontal"
-        app:layout_constraintTop_toBottomOf="@+id/llDetailQuote">
+        android:orientation="horizontal">
 
-        <TextView
-            android:id="@+id/lCountItemsQuotes"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:layout_weight="1"
-            android:text="@string/count_items_quotes" />
+            android:padding="@dimen/space_min"
+            android:layout_margin="@dimen/space_min"
+            android:background="@color/green_light_trans"
+            app:prefixText="@string/count_items_quotes" >
 
-        <TextView
+        <com.google.android.material.textview.MaterialTextView
             android:id="@+id/tvNumQuotes"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginRight="10dp"
-            android:layout_weight="1"
             android:text="@string/integer_hint"
-            android:textAlignment="textEnd"
-            android:textStyle="bold" />
+            android:textAlignment="textEnd"/>
+        </com.google.android.material.textfield.TextInputLayout>
 
-        <TextView
-            android:id="@+id/lItem1Quote"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:layout_weight="1"
-            android:paddingLeft="5dp"
-            android:text="@string/count_items_1_quote" />
+            android:padding="@dimen/space_min"
+            android:layout_margin="@dimen/space_min"
+            android:background="@color/green_light_trans"
+            app:prefixText="@string/count_items_1_quote" >
 
-        <TextView
+        <com.google.android.material.textview.MaterialTextView
             android:id="@+id/tvNumOneQuote"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/integer_hint"
-            android:textAlignment="textEnd"
-            android:textStyle="bold" />
+            android:hint="@string/integer_hint"
+            android:textAlignment="textEnd"/>
+        </com.google.android.material.textfield.TextInputLayout>
     </LinearLayout>
 
     <LinearLayout
@@ -186,27 +194,21 @@
         app:layout_constraintTop_toBottomOf="@+id/llItemQuotes"
         tools:layout_editor_absoluteX="64dp">
 
-        <LinearLayout
-            android:id="@+id/llBoughtDate"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="horizontal">
-
-            <TextView
-                android:id="@+id/lbLastMonthBought"
-                android:layout_width="wrap_content"
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/last_month_bought" />
+                android:padding="@dimen/space_min"
+                android:layout_margin="@dimen/space_min"
+                android:background="@color/green_light_trans"
+                app:prefixText="@string/last_month_bought" >
 
-            <TextView
+            <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/tvLastMonthBought"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/date_hint"
-                android:textStyle="bold" />
-        </LinearLayout>
+                android:hint="@string/date_hint"
+                android:textAlignment="textEnd" />
+            </com.google.android.material.textfield.TextInputLayout>
 
         <LinearLayout
             android:id="@+id/llCapital"
@@ -214,39 +216,41 @@
             android:layout_height="match_parent"
             android:orientation="horizontal">
 
-            <TextView
-                android:id="@+id/lbCapitalQuote"
-                android:layout_width="wrap_content"
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:padding="@dimen/space_min"
+                android:layout_margin="@dimen/space_min"
+                android:background="@color/green_light_trans"
                 android:layout_weight="1"
-                android:text="@string/capital_quote" />
+                app:prefixText="@string/capital_quote" >
 
-            <TextView
+            <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/tvCapitalQuote"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginRight="10dp"
-                android:layout_weight="1"
-                android:text="@string/money_hint"
-                android:textAlignment="textEnd"
-                android:textStyle="bold" />
+                android:hint="@string/money_hint"
+                android:textAlignment="textEnd"/>
+            </com.google.android.material.textfield.TextInputLayout>
 
-            <TextView
-                android:id="@+id/lbCapitalQuotes"
-                android:layout_width="wrap_content"
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="@string/capital_quotes" />
+                android:padding="@dimen/space_min"
+                android:layout_margin="@dimen/space_min"
+                android:background="@color/green_light_trans"
+                app:prefixText="@string/capital_quotes" >
 
-            <TextView
+            <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/tvCapitalQuotes"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/money_hint"
-                android:textAlignment="textEnd"
-                android:textStyle="bold" />
+                android:hint="@string/money_hint"
+                android:textAlignment="textEnd" />
+            </com.google.android.material.textfield.TextInputLayout>
         </LinearLayout>
+
 
         <LinearLayout
             android:id="@+id/llInterest"
@@ -297,77 +301,77 @@
         </LinearLayout>
 
     </LinearLayout>
+       <LinearLayout
+            android:id="@+id/llBtnQuotes"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintBottom_toTopOf="@+id/llHistory"
+            tools:layout_editor_absoluteX="1dp">
 
-    <LinearLayout
-        android:id="@+id/llButonsQuotes"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintBottom_toBottomOf="parent"
-        tools:layout_editor_absoluteX="1dp">
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnBought"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/bought" />
+        </LinearLayout>
 
-        <Button
+        <LinearLayout
+            android:id="@+id/llHistory"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toTopOf="@+id/llButonsQuotes"
+            android:orientation="horizontal">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnBoughtHistory"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="10dp"
+                app:icon="@android:drawable/ic_menu_view"
+                android:layout_weight="1"
+                android:text="@string/bought_history" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnCutOffHistory"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:icon="@android:drawable/ic_menu_agenda"
+                android:layout_weight="1"
+                android:text="@string/cut_off_history" />
+        </LinearLayout>
+
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/btnAddItem"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_margin="5dp"
             android:layout_weight="1"
+            app:icon="@android:drawable/ic_menu_add"
             android:text="@string/add_buy" />
 
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/btnAddCashAdvance"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="5dp"
             android:layout_weight="1"
+            app:icon="@android:drawable/ic_menu_add"
             android:text="@string/add_cash_advance" />
 
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/btnAddBuyWalletLCCQ"
-            android:layout_width="220dp"
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_margin="5dp"
             android:layout_weight="1"
+            app:icon="@android:drawable/ic_menu_add"
             android:text="@string/add_buy_wallet" />
 
+
+
+
     </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/llHistory"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintBottom_toTopOf="@+id/llButonsQuotes"
-        android:orientation="horizontal">
-
-        <Button
-            android:id="@+id/btnBoughtHistory"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="10dp"
-            android:layout_weight="1"
-            android:text="@string/bought_history" />
-
-        <Button
-            android:id="@+id/btnCutOffHistory"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/cut_off_history" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/llBtnQuotes"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintBottom_toTopOf="@+id/llHistory"
-        tools:layout_editor_absoluteX="1dp">
-
-        <Button
-            android:id="@+id/btnBought"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/bought" />
-    </LinearLayout>
+    </ScrollView>
 </androidx.constraintlayout.widget.ConstraintLayout>

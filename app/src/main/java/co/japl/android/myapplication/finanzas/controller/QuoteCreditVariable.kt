@@ -75,9 +75,9 @@ class QuoteCreditVariable : Fragment(), View.OnClickListener{
                 for (i in 1..quote.period.get()) {
                     it.listMonths.add(i.toString())
                 }
-                val arrayAdapter: ArrayAdapter<String> =
-                    ArrayAdapter<String>(requireContext(), R.layout.spinner1, it.listMonths)
-                it.spMonth.adapter = arrayAdapter
+                ArrayAdapter(requireContext(), R.layout.spinner1, it.listMonths).let { adapter->
+                    it.spMonth.setAdapter(adapter)
+                }
             }
 
             quote.capitalValue = Optional.ofNullable(response)

@@ -3,18 +3,29 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="?attr/colorPrimary">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <TextView
+
+        <com.google.android.material.textview.MaterialTextView
             android:id="@+id/tvValueBigSp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="TextView" />
+            android:drawableStart="@drawable/ic_baseline_arrow_forward_ios_24"
+            android:padding="15dp"
+            android:text="Input your text here"
+            app:drawableTint="?android:attr/textColorPrimary" />
+
+        <View
+            android:id="@+id/divider2"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="?android:attr/listDivider" />
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

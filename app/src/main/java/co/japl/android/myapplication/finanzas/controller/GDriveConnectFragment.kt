@@ -87,7 +87,7 @@ class GDriveConnectFragment : Fragment() , ServiceListener , OnClickListener{
 
         Log.d(this.javaClass.name,"Cancelled - $info")
         logoutBtn.visibility = View.INVISIBLE
-        loginBtn.visibility = View.INVISIBLE
+        loginBtn.visibility = View.VISIBLE
     }
 
     override fun handleError(exception: java.lang.Exception) {

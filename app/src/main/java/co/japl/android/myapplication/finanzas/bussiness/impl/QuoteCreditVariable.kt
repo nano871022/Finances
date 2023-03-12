@@ -9,7 +9,7 @@ class QuoteCreditVariable : Calc {
 
     override fun calc(value: BigDecimal, period: Long, tax: Double): BigDecimal {
         Log.d(this.javaClass.name,"<<<=== START:: Calc: Credit Value $value")
-        val response = value.divide(BigDecimal(period),2,RoundingMode.HALF_EVEN)
+        val response = if(period > 0){ value.divide(BigDecimal(period),2,RoundingMode.HALF_EVEN)}else{BigDecimal.ZERO}
         return response.also { Log.v(this.javaClass.name,"<<<=== FINISH:: Calc: $value / $period = $response") }
     }
 

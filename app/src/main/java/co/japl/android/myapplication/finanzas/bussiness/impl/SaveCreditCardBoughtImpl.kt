@@ -254,7 +254,7 @@ class SaveCreditCardBoughtImpl(override var dbConnect: SQLiteOpenHelper) : SaveS
                 interest = taxDTO.orElse(0.0)
             }
             TaxEnum.CASH_ADVANCE.ordinal.toShort()->{
-                interest = taxCashAdv.get()
+                interest = taxCashAdv.orElse(0.0)
             }
         }
         return interest

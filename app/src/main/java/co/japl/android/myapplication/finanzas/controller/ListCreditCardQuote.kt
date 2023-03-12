@@ -28,7 +28,7 @@ import java.time.LocalDateTime
 import java.util.*
 import java.util.stream.Collectors
 
-class ListCreditCardQuote : Fragment(), AdapterView.OnItemSelectedListener{
+class ListCreditCardQuote : Fragment(){
     private lateinit var saveSvc: SaveSvc<CreditCardBoughtDTO>
     private lateinit var searchSvc: SearchSvc<CreditCardBoughtDTO>
     private lateinit var taxSvc: ITaxSvc
@@ -104,23 +104,30 @@ class ListCreditCardQuote : Fragment(), AdapterView.OnItemSelectedListener{
         list.add(0,"-- Seleccionar --")
         holder.setFields(null)
         (holder as ISpinnerHolder<QuoteCCHolder>).lists{
-            it.spCreditCard.adapter = ArrayAdapter(it.view.context,R.layout.spinner_bigger,R.id.tvValueBigSp,list)
-            it.spCreditCard.onItemSelectedListener = this
-
+            ArrayAdapter(it.view.context,R.layout.spinner_bigger,R.id.tvValueBigSp,list).let { adapter->
+                it.spCreditCard.setAdapter(adapter)
+            }
+            onItemSelected(it)
+            it.spCreditCard.isFocusable = false
+            it.spCreditCard.setOnClickListener { view->
+                it.spCreditCard.showDropDown()
+            }
             if(list.isNotEmpty() && list.size == 2) {
-                it.spCreditCard.setSelection(1)
+                val creditCardSel = it.spCreditCard.adapter.getItem(2) as String
+                it.spCreditCard.setText(creditCardSel)
             }
         }
 
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+    private fun onItemSelected(holder:QuoteCCHolder) {
+        holder.spCreditCard.setOnItemClickListener{ adapter,_,position,_ ->
+            val value = adapter.getItemAtPosition(position)
         if(position > 0 ) {
             this.context?.let {
                 val now = LocalDateTime.now()
-                val item = parent?.getItemAtPosition(position )
-                val creditCard = listCreditCard.firstOrNull { cc -> cc.name == item }
+                val creditCard = listCreditCard.firstOrNull { cc -> cc.name == value }
                 var pojo = CreditCard()
                 creditCard.let {
                     pojo.codeCreditCard = Optional.ofNullable(creditCard?.id)
@@ -139,10 +146,7 @@ class ListCreditCardQuote : Fragment(), AdapterView.OnItemSelectedListener{
                 holder.loadFields(pojo)
             }
         }
-    }
-
-    override fun onNothingSelected(parent: AdapterView<*>?) {
-        TODO("Not yet implemented")
+        }
     }
 
 

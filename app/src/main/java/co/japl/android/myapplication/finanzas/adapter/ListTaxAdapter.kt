@@ -44,8 +44,9 @@ class ListTaxAdapter(var data:MutableList<TaxDTO>) : RecyclerView.Adapter<TaxIte
 
                     }
                     .show().also { data.removeAt(position)
+                        this.notifyItemRemoved(position)
                         this.notifyDataSetChanged()
-                        this.notifyItemRemoved(position) }
+                    }
             } else {
                 Snackbar.make(view, R.string.dont_deleted, Snackbar.LENGTH_LONG)
                     .setAction(R.string.close,null).show()
