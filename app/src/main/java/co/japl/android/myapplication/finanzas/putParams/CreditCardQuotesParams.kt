@@ -42,7 +42,7 @@ class CreditCardQuotesParams {
             }
 
             fun toBack(navController: NavController) {
-                navController.navigate(R.id.action_list_bought_to_list_cc_quote)
+                navController.popBackStack()
             }
         }
         object CreateQuote {
@@ -65,7 +65,7 @@ class CreditCardQuotesParams {
             }
 
             fun toBack(navController: NavController) {
-                navController.navigate(R.id.action_buy_credit_card_to_item_menu_side_boughtmade)
+                navController.popBackStack()
             }
         }
     }

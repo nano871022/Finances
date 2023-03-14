@@ -50,7 +50,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingLeft="@dimen/margin_start_input_layout"
-            android:hint="@string/assing_credit_Card" />
+            android:hint="@string/assing_credit_Card"
+            android:textAlignment="center"/>
     </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
@@ -190,7 +191,8 @@
             android:id="@+id/spTypeSettingBCC"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1" />
+            android:layout_weight="1"
+            android:textAlignment="center"/>
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
@@ -207,7 +209,8 @@
             android:id="@+id/spNameSettingBCC"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1" />
+            android:layout_weight="1"
+            android:textAlignment="center"/>
         </com.google.android.material.textfield.TextInputLayout>
 
     <LinearLayout

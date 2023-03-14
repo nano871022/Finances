@@ -41,6 +41,7 @@ class ListTaxCreditCard : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
     }
 
     @RequiresApi(Build.VERSION_CODES.N)
@@ -49,7 +50,7 @@ class ListTaxCreditCard : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_list_tax_credit_card, container, false)
-        val progressBar = view.findViewById(R.id.pbTaxTCC) as CircularProgressIndicator
+        val progressBar = view?.findViewById(R.id.pbTaxTCC) as CircularProgressIndicator
         progressBar.isEnabled = true
         progressBar.isVisible = true
         view.findViewById<LinearLayout>(R.id.llMainTTCC).isVisible = false
@@ -57,23 +58,24 @@ class ListTaxCreditCard : Fragment() {
         list = ArrayList<TaxDTO>()
         searchCCSvc = CreditCardImpl(connect)
         searchTaxSvc = TaxImpl(connect)
-        setField(view)
 
-        val svcTest = ScriptService()
-        svcTest.init()
-        svcTest.load()
-        println(svcTest.execute2())
-        //progressBar.isVisible = false
-
-        view.findViewById<LinearLayout>(R.id.llMainTTCC).isVisible = true
         return view
     }
+
+    @RequiresApi(Build.VERSION_CODES.N)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        setField(view)
+        (view?.findViewById(R.id.pbTaxTCC) as CircularProgressIndicator).isVisible = false
+        view.findViewById<LinearLayout>(R.id.llMainTTCC).isVisible = true
+    }
+
 
     @RequiresApi(Build.VERSION_CODES.N)
     fun setField(view:View){
         view.let{
             listCC = searchCCSvc.getAll()
-            holder = TaxHolder(it,parentFragmentManager,findNavController(),listCC)
+            holder = TaxHolder(view,parentFragmentManager,findNavController(),listCC)
             holder.setFields(null)
             val list = listCC.toMutableList().stream().map { it.name }.collect(Collectors.toList())
             list.add(0,"-- Seleccionar --")

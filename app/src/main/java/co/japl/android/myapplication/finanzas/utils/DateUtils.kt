@@ -70,7 +70,7 @@ class DateUtils {
                 day = 28
             }
             println("$month $cutOffDay $day")
-            return LocalDateTime.of(cutOff.minusMonths(1).year,cutOff.minusMonths(1).monthValue,day,0,0,0,0).plusDays(dayIncrease)
+            return LocalDateTime.of(cutOff.minusMonths(1).year,cutOff.minusMonths(1).monthValue,1,0,0,0,0).plusDays(day.toLong()).plusDays(dayIncrease)
         }
 
     }

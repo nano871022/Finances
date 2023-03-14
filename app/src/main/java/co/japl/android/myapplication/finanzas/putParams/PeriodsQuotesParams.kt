@@ -41,7 +41,7 @@ class PeriodsQuotesParams {
             }
 
             fun toBack(navController: NavController) {
-                navController.navigate(R.id.action_list_bought_to_list_periods)
+                navController.popBackStack()
             }
         }
 

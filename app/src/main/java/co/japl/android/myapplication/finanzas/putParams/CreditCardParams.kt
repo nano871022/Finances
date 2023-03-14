@@ -37,7 +37,7 @@ class CreditCardParams(var parentFragmentManagers: FragmentManager) {
         }
 
         fun toBack(navController: NavController){
-            navController.navigate(R.id.action_createCreditCard_to_listCreditCard)
+            navController.popBackStack()
         }
     }
 }

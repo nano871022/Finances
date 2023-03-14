@@ -5,6 +5,8 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:fitsSystemWindows="true"
+    tools:openDrawer="end"
     android:id="@+id/draw_layout">
 
     <LinearLayout
@@ -16,7 +18,9 @@
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/tool_bar"
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"/>
+            android:background="?attr/colorPrimary"
+            android:layout_height="?attr/actionBarSize"
+            />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -25,28 +29,33 @@
 
             <com.google.android.material.navigation.NavigationView
                 android:id="@+id/navigation_view"
-                android:layout_width="64dp"
+                android:layout_width="280dp"
                 android:layout_height="match_parent"
                 android:layout_gravity="start"
+                android:fitsSystemWindows="false"
 
-                android:focusableInTouchMode="true"
-                android:keepScreenOn="true"
-                app:itemIconTint="@color/green_background"
-                app:itemTextColor="@color/green_background_dark"
-                app:menu="@menu/first_menu" />
+
+                app:headerLayout="@layout/header_side"
+                app:layout_constraintStart_toStartOf="parent"
+                app:menu="@menu/first_menu">
+
+            </com.google.android.material.navigation.NavigationView>
 
             <androidx.fragment.app.FragmentContainerView
                 android:id="@+id/nav_host_fragment"
                 android:name="androidx.navigation.fragment.NavHostFragment"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_weight="3"
+                android:layout_weight="4"
                 app:defaultNavHost="true"
                 app:navGraph="@navigation/nav_graph" />
+
         </LinearLayout>
 
 
     </LinearLayout>
+
+
 
 
 </androidx.drawerlayout.widget.DrawerLayout>

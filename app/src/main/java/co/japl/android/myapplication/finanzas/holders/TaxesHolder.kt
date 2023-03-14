@@ -116,29 +116,32 @@ class TaxesHolder(var view:View,val creditCardList:List<CreditCardDTO>) : IHolde
             year.error = "Invalid value permit values 2015-2023"
             valid = false
         }
+        Log.d(this.javaClass.name,"Year validation $valid")
         if(tax.text.toString().isBlank() || !(tax.text.toString().toDouble() in 0.0..100.0)){
             tax.error = "Invalid value permit values 0.0 - 100.0 "
             valid = false
         }
-
+        Log.d(this.javaClass.name,"Tax validation $valid")
         if((!monthCode.isPresent || !(monthCode.get() in 1..12)) && month.text.isBlank()){
             month.error = "Invalid value"
             valid = false
         }
+        Log.d(this.javaClass.name,"Month validation $valid")
         if( (!creditCardCode.isPresent || creditCardCode.get() < 1 ) && creditCard.text.isBlank()){
             creditCard.error = "Invalid value"
             valid = false
         }
-
+        Log.d(this.javaClass.name,"CreditCard validation $valid")
         if(kind.text.toString().isBlank()){
             kind.error = "Invalid value"
             valid = false
         }
-
-        if(kind.text.toString() != TaxEnum.CREDIT_CARD.name && period.editableText.isEmpty()){
+        Log.d(this.javaClass.name,"Kind validation $valid")
+        if(kind.text.toString() != TaxEnum.CREDIT_CARD.name && period.text?.isBlank()==true){
             period.error = "Debe ingresar la cantidad de periodos"
             valid = false
         }
+        Log.d(this.javaClass.name,"Period validation $valid")
         return valid
     }
 
@@ -178,7 +181,7 @@ class TaxesHolder(var view:View,val creditCardList:List<CreditCardDTO>) : IHolde
         kind.setOnItemClickListener { adapter, _, position, _ ->
             val selected = adapter?.getItemAtPosition(position)
             Log.d(this.javaClass.name,"Kind:: Select Option $adapter $position $selected ${selected.toString() == TaxEnum.CASH_ADVANCE.name}")
-            if(selected.toString() == TaxEnum.CASH_ADVANCE.name){
+            if(selected.toString() != TaxEnum.CREDIT_CARD.name){
                 llPeriodsTaxes.visibility = View.VISIBLE
             }else{
                 llPeriodsTaxes.visibility = View.INVISIBLE

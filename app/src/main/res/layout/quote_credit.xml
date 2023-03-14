@@ -122,7 +122,7 @@
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnClear"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:layout_margin="@dimen/space_min"
@@ -132,10 +132,10 @@
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnCalc"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/space_min"
-            android:layout_weight="6"
+            android:layout_weight="1"
             android:text="@string/calc"
             app:icon="@android:drawable/ic_menu_search" />
 
