@@ -24,7 +24,7 @@ class BoughWalletParams {
             }
         }
         fun toBack(navController: NavController){
-            navController.navigate(R.id.action_boughWalletController_to_item_menu_side_boughtmade)
+            navController.popBackStack()
         }
     }
 }

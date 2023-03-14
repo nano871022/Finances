@@ -24,7 +24,7 @@ class CashAdvanceParams {
             }
         }
         fun toBack(navController: NavController){
-            navController.navigate(R.id.action_cash_advance_fragment_to_item_menu_side_boughtmade)
+            navController.popBackStack()
         }
     }
 }

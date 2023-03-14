@@ -119,7 +119,11 @@ class BoughWalletController: Fragment() , View.OnClickListener{
         bought.interest = tax.value
         bought.month = tax.period.toInt()
         val month = bought.month?.toBigDecimal()
-        val capital = bought.valueItem!!.divide(month,2,RoundingMode.CEILING)
+        val capital = if((month ?: BigDecimal.ZERO) > BigDecimal.ZERO) {
+            bought.valueItem!!.divide(month, 2, RoundingMode.CEILING)
+        }else{
+            BigDecimal.ZERO
+        }
         Log.d(this.javaClass.name,"$capital = ${bought.valueItem} / $month")
         val percent = bought.interest!!.toBigDecimal().divide(BigDecimal(100))
         val interest = bought.valueItem!!.multiply(percent)

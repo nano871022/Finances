@@ -108,6 +108,8 @@ class Taxes : Fragment() , View.OnClickListener{
             }else{
                 Toast.makeText(this.context,"Record did not Save",Toast.LENGTH_LONG).show()
             }
+        }else{
+            Toast.makeText(context,"Campos Invalidos",Toast.LENGTH_LONG).show()
         }
     }
 

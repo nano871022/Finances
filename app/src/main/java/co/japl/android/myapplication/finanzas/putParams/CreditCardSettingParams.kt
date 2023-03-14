@@ -53,8 +53,7 @@ class CreditCardSettingParams() {
         }
 
         fun toBack(codeCreditCard:Int,navController: NavController){
-            var parameters = bundleOf(ListCreditCardSettingParams.Params.ARG_CODE_CREDIT_CARD to codeCreditCard)
-            navController.navigate(R.id.action_creditCardSettingFragment_to_listCreditCardSetting,parameters)
+            navController.popBackStack()
         }
     }
 }

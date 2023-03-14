@@ -162,11 +162,13 @@ class QuoteCCHolder(var view:View,var parentFragmentManager:FragmentManager,var 
             tvTotalQuoteLastMonth.text = NumbersUtil.COPtoString(values.capitalQuote.orElse(BigDecimal(0)).plus(values.capitalQuotes.orElse(
                 BigDecimal(0)
             )).plus(values.interestQuotes.orElse(BigDecimal(0))))
+
             if( values.capitalQuote.isPresent || values.capitalQuotes.isPresent || values.interestQuotes.isPresent ){
                 llLastMonth.visibility = View.VISIBLE
             }else{
                 llLastMonth.visibility = View.INVISIBLE
             }
+            Log.d(this.javaClass.name,"TCC:. $taxCreditCard")
             if(taxCreditCard.isPresent) {
                 btnAddBuy.visibility = View.VISIBLE
                 btnCutOffHistory.visibility = View.VISIBLE
@@ -196,6 +198,8 @@ class QuoteCCHolder(var view:View,var parentFragmentManager:FragmentManager,var 
 
     override fun lists(fn: ((QuoteCCHolder) -> Unit)?) {
         fn?.invoke(this)
+        spCreditCard.isFocusable = false
+        spCreditCard.setOnClickListener { spCreditCard.showDropDown() }
     }
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onClick(view: View){

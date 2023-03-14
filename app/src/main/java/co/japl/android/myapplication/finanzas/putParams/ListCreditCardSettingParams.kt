@@ -35,11 +35,7 @@ class ListCreditCardSettingParams() {
         }
 
         fun toBack(codeCreditCard:String,navController: NavController){
-            Log.v(this.javaClass.name,"to back Credit Card code: $codeCreditCard")
-            val parameter = bundleOf(
-                CreditCardParams.Params.ARG_PARAM_CODE to codeCreditCard
-            )
-            navController.navigate(R.id.action_listCreditCardSetting_to_createCreditCard,parameter)
+            navController.popBackStack()
         }
     }
 }

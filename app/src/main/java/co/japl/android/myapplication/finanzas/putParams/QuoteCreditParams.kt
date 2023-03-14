@@ -46,7 +46,7 @@ class QuoteCreditParams {
             return Optional.empty()
         }
         fun toBack(navController:NavController){
-            navController.navigate(R.id.action_quote_credit)
+            navController.popBackStack()
         }
     }
 }

@@ -17,7 +17,7 @@ import co.japl.android.myapplication.finanzas.bussiness.impl.GoogleDriveService
 import co.japl.android.myapplication.finanzas.bussiness.interfaces.ServiceListener
 import java.io.File
 
-class GDriveConnectFragment : Fragment() , ServiceListener , OnClickListener{
+class GDriveConnectFragment : Fragment() , ServiceListener {
 
     private lateinit var googleDriveService:GoogleDriveService
     private lateinit var loginBtn:Button
@@ -95,12 +95,5 @@ class GDriveConnectFragment : Fragment() , ServiceListener , OnClickListener{
         tvLogInfo.text = "Error ${exception.message}"
         logoutBtn.visibility = View.INVISIBLE
         loginBtn.visibility = View.VISIBLE
-    }
-
-    override fun onClick(v: View?) {
-        when(v?.id){
-            R.id.login-> googleLogin()
-            R.id.logout-> Log.d(this.javaClass.name,"Click on logout functionality does not implemented")
-        }
     }
 }

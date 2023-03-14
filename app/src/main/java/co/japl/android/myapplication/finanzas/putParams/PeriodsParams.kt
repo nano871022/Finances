@@ -31,7 +31,7 @@ class PeriodsParams {
             }
 
             fun toBack(navController: NavController) {
-                navController.navigate(R.id.action_list_periods_to_list_cc_quote)
+                navController.popBackStack()
             }
         }
         object CreatePeriods {
@@ -51,7 +51,7 @@ class PeriodsParams {
             }
 
             fun toBack(navController: NavController) {
-                navController.navigate(R.id.action_list_periods_to_list_cc_quote)
+                navController.popBackStack()
             }
         }
     }

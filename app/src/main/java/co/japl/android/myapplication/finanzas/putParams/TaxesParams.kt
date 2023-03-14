@@ -32,7 +32,7 @@ class TaxesParams() {
             }
         }
         fun toBack(navController: NavController){
-            navController.navigate(R.id.action_taxes_to_item_menu_setting_taxes)
+            navController.popBackStack()
         }
     }
 }

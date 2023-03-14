@@ -3,6 +3,7 @@ package co.japl.android.myapplication.controller
 import android.content.Context
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -25,6 +26,7 @@ import co.japl.android.myapplication.pojo.CreditCard
 import co.japl.android.myapplication.utils.DateUtils
 import java.math.BigDecimal
 import java.time.LocalDateTime
+import java.time.ZoneId
 import java.util.*
 import java.util.stream.Collectors
 
@@ -53,6 +55,20 @@ class ListCreditCardQuote : Fragment(){
         loadFields(rootView)
         return rootView
 
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    override fun onResume() {
+        super.onResume()
+        Log.d(this.javaClass.name,">>> En resume")
+        if((holder as QuoteCCHolder).spCreditCard.text.isNotBlank()){
+            val value = (holder as QuoteCCHolder).spCreditCard.text.toString()
+            val creditCard = listCreditCard.firstOrNull { cc -> cc.name == value }
+            val pojo  = creditCard?.let {
+                mapper(it)
+            }?: CreditCard()
+            loadDataInfo(pojo)
+        }
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -108,13 +124,15 @@ class ListCreditCardQuote : Fragment(){
                 it.spCreditCard.setAdapter(adapter)
             }
             onItemSelected(it)
-            it.spCreditCard.isFocusable = false
-            it.spCreditCard.setOnClickListener { view->
-                it.spCreditCard.showDropDown()
-            }
+
             if(list.isNotEmpty() && list.size == 2) {
-                val creditCardSel = it.spCreditCard.adapter.getItem(2) as String
-                it.spCreditCard.setText(creditCardSel)
+                val creditCardSel = it.spCreditCard.adapter.getItem(1) as String
+                listCreditCard.firstOrNull { it.name == creditCardSel }?.let { value->
+                    it.spCreditCard.setText(creditCardSel)
+                    loadDataInfo(mapper(value))
+                }
+            }else{
+                it.spCreditCard.text.clear()
             }
         }
 
@@ -126,28 +144,40 @@ class ListCreditCardQuote : Fragment(){
             val value = adapter.getItemAtPosition(position)
         if(position > 0 ) {
             this.context?.let {
-                val now = LocalDateTime.now()
+                val now = LocalDateTime.now(ZoneId.systemDefault())
+                Log.d(this.javaClass.name,"Now:. $now")
                 val creditCard = listCreditCard.firstOrNull { cc -> cc.name == value }
-                var pojo = CreditCard()
-                creditCard.let {
-                    pojo.codeCreditCard = Optional.ofNullable(creditCard?.id)
-                    pojo.nameCreditCard = Optional.ofNullable(creditCard?.name)
-                    println("CutOffDay: ${creditCard?.cutOffDay}")
-                    pojo.cutoffDay = Optional.ofNullable(creditCard?.cutOffDay)
-                    pojo.cutOff =
-                        Optional.ofNullable(creditCard?.cutOffDay?.toInt()
-                            ?.let { it1 -> configSvc.nextCutOff( it1) })
-                }
+                val pojo  = creditCard?.let {
+                   mapper(it)
+                }?: CreditCard()
                 taxSvc.get(now.monthValue,now.year).ifPresent{
                     pojo.lastTax = Optional.ofNullable(it.value)
                 }
-                pojo = loadData(pojo)
-                pojo = loadDataLastMonth(pojo)
-                holder.loadFields(pojo)
+                loadDataInfo(pojo)
             }
         }
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.N)
+    private fun mapper(creditCard:CreditCardDTO):CreditCard{
+        val pojo = CreditCard()
+        pojo.codeCreditCard = Optional.ofNullable(creditCard?.id)
+        pojo.nameCreditCard = Optional.ofNullable(creditCard?.name)
+        Log.d(this.javaClass.name,"CutOffDay: ${creditCard?.cutOffDay}")
+        pojo.cutoffDay = Optional.ofNullable(creditCard?.cutOffDay)
+        pojo.cutOff =
+            Optional.ofNullable(creditCard?.cutOffDay?.toInt()
+                ?.let { it1 -> configSvc.nextCutOff( it1) })
+        return pojo
+    }
+
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun loadDataInfo(value:CreditCard){
+        var pojo = loadData(value)
+        pojo = loadDataLastMonth(pojo)
+        holder.loadFields(pojo)
+    }
 
 }
