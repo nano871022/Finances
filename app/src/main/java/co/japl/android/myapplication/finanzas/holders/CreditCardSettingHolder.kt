@@ -1,5 +1,6 @@
 package co.japl.android.myapplication.holders
 
+import android.app.AlertDialog
 import android.graphics.Color
 import android.os.Build
 import android.util.Log
@@ -48,6 +49,8 @@ class CreditCardSettingHolder (var view:View,val creditCardList:List<CreditCardD
         active = view.findViewById(R.id.cbActiveCCS)
         add.setOnClickListener(this)
         cancel.setOnClickListener(this)
+        creditCard.isFocusable = false
+        type.isFocusable = false
     }
 
     override fun loadFields(values: CreditCardSettingDTO) {
@@ -117,7 +120,6 @@ class CreditCardSettingHolder (var view:View,val creditCardList:List<CreditCardD
     override fun lists(fn: ((CreditCardSettingHolder) -> Unit)?) {
         fn?.invoke(this)
         onClick()
-        onItemSelected()
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -149,22 +151,31 @@ class CreditCardSettingHolder (var view:View,val creditCardList:List<CreditCardD
     }
 
     private fun onClick(){
-        creditCard.setOnClickListener { creditCard.showDropDown() }
-        type.setOnClickListener { type.showDropDown() }
-    }
-
-    private fun onItemSelected() {
-                creditCard.setOnItemClickListener { adapter, _, position, _ ->
-                    val selected = adapter?.getItemAtPosition(position)
-                    codeCreditCard = creditCardList.first {
-                        it.name == selected.toString()
-                    }.id
-                    nameCreditCard = selected.toString()
+        creditCard.setOnClickListener {
+            val build = AlertDialog.Builder(view.context)
+            with(build){
+                setItems(creditCardList.map { "${it.id}. ${it.name}" }.toTypedArray()){ view,position->
+                    val creditCardFound = creditCardList[position]
+                    creditCard.setText(creditCardFound.name)
+                    nameCreditCard = creditCardFound.name
+                    codeCreditCard = creditCardFound.id
+                }
             }
-            type.setOnItemClickListener { adapter, _, position, _ ->
-                val selected = adapter?.getItemAtPosition(position)
-                codeType = position
-                valueType = selected.toString()
+            val dialog = build.create()
+            dialog.show()
+        }
+        type.setOnClickListener {
+            val build = AlertDialog.Builder(view.context)
+            with(build){
+                setItems(view.resources.getStringArray(R.array.CreditCardSettingType).map { "${it.indices}. ${it}" }.toTypedArray()){ _,position->
+                    val kind = view.resources.getStringArray(R.array.CreditCardSettingType)[position]
+                    codeType = position
+                    valueType = kind.toString()
+                    type.setText(kind)
+                }
             }
+            val dialog = build.create()
+            dialog.show()
+        }
     }
 }

@@ -3,10 +3,14 @@ package co.japl.android.myapplication.bussiness.mapping
 import android.content.ContentValues
 import android.database.Cursor
 import android.os.Build
+import android.util.Log
 import androidx.annotation.RequiresApi
 import co.japl.android.myapplication.bussiness.DTO.CreditCardDB
 import co.japl.android.myapplication.bussiness.DTO.CreditCardDTO
+import co.japl.android.myapplication.bussiness.impl.Config
+import co.japl.android.myapplication.pojo.CreditCard
 import co.japl.android.myapplication.utils.DateUtils
+import java.util.*
 
 class CreditCardMap {
     @RequiresApi(Build.VERSION_CODES.O)
@@ -37,6 +41,19 @@ class CreditCardMap {
             createDate,
             status
         )
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun mapper(creditCard:CreditCardDTO): CreditCard {
+        val pojo = CreditCard()
+        pojo.codeCreditCard = Optional.ofNullable(creditCard.id)
+        pojo.nameCreditCard = Optional.ofNullable(creditCard.name)
+        Log.d(this.javaClass.name,"CutOffDay: ${creditCard.cutOffDay}")
+        pojo.cutoffDay = Optional.ofNullable(creditCard.cutOffDay)
+        pojo.cutOff =
+            Optional.ofNullable(creditCard.cutOffDay.toInt()
+                ?.let { it1 -> Config().nextCutOff( it1) })
+        return pojo
     }
 
 }

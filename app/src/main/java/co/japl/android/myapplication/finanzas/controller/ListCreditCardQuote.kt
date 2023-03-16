@@ -1,5 +1,6 @@
 package co.japl.android.myapplication.controller
 
+import android.app.AlertDialog
 import android.content.Context
 import android.os.Build
 import android.os.Bundle
@@ -21,6 +22,7 @@ import co.japl.android.myapplication.bussiness.impl.CreditCardImpl
 import co.japl.android.myapplication.bussiness.impl.SaveCreditCardBoughtImpl
 import co.japl.android.myapplication.bussiness.impl.TaxImpl
 import co.japl.android.myapplication.bussiness.interfaces.*
+import co.japl.android.myapplication.bussiness.mapping.CreditCardMap
 import co.japl.android.myapplication.holders.QuoteCCHolder
 import co.japl.android.myapplication.pojo.CreditCard
 import co.japl.android.myapplication.utils.DateUtils
@@ -65,7 +67,7 @@ class ListCreditCardQuote : Fragment(){
             val value = (holder as QuoteCCHolder).spCreditCard.text.toString()
             val creditCard = listCreditCard.firstOrNull { cc -> cc.name == value }
             val pojo  = creditCard?.let {
-                mapper(it)
+                CreditCardMap().mapper(it)
             }?: CreditCard()
             loadDataInfo(pojo)
         }
@@ -116,21 +118,13 @@ class ListCreditCardQuote : Fragment(){
     private fun loadFields(container: View){
         val svc = CreditCardImpl(ConnectDB(container.context))
         listCreditCard = svc.getAll()
-        val list = listCreditCard.stream().map { it.name }.collect(Collectors.toList())
-        list.add(0,"-- Seleccionar --")
         holder.setFields(null)
         (holder as ISpinnerHolder<QuoteCCHolder>).lists{
-            ArrayAdapter(it.view.context,R.layout.spinner_bigger,R.id.tvValueBigSp,list).let { adapter->
-                it.spCreditCard.setAdapter(adapter)
-            }
             onItemSelected(it)
-
-            if(list.isNotEmpty() && list.size == 2) {
-                val creditCardSel = it.spCreditCard.adapter.getItem(1) as String
-                listCreditCard.firstOrNull { it.name == creditCardSel }?.let { value->
-                    it.spCreditCard.setText(creditCardSel)
-                    loadDataInfo(mapper(value))
-                }
+            if(listCreditCard.isNotEmpty() && listCreditCard.size == 1) {
+                val creditCardSel = listCreditCard.first()
+                it.spCreditCard.setText(creditCardSel.name)
+                loadDataInfo(CreditCardMap().mapper(creditCardSel))
             }else{
                 it.spCreditCard.text.clear()
             }
@@ -140,37 +134,29 @@ class ListCreditCardQuote : Fragment(){
 
     @RequiresApi(Build.VERSION_CODES.O)
     private fun onItemSelected(holder:QuoteCCHolder) {
-        holder.spCreditCard.setOnItemClickListener{ adapter,_,position,_ ->
-            val value = adapter.getItemAtPosition(position)
-        if(position > 0 ) {
-            this.context?.let {
-                val now = LocalDateTime.now(ZoneId.systemDefault())
-                Log.d(this.javaClass.name,"Now:. $now")
-                val creditCard = listCreditCard.firstOrNull { cc -> cc.name == value }
-                val pojo  = creditCard?.let {
-                   mapper(it)
-                }?: CreditCard()
-                taxSvc.get(now.monthValue,now.year).ifPresent{
-                    pojo.lastTax = Optional.ofNullable(it.value)
-                }
+        holder.spCreditCard.setOnClickListener{
+            val builder = AlertDialog.Builder(it.context)
+            with(builder){
+                setItems(listCreditCard.map { "${it.id}. ${it.name}" }.toTypedArray()){ _,position ->
+                    val creditCard = listCreditCard[position]
+                    this.context?.let {
+                        val now = LocalDateTime.now(ZoneId.systemDefault())
+                        Log.d(this.javaClass.name,"Now:. $now")
+                        val pojo  = creditCard?.let {
+                            CreditCardMap().mapper(it)
+                        }?: CreditCard()
+                        taxSvc.get(now.monthValue,now.year).ifPresent{
+                        pojo.lastTax = Optional.ofNullable(it.value)
+                        }
                 loadDataInfo(pojo)
             }
         }
+            }
+            builder.create().show()
         }
     }
 
-    @RequiresApi(Build.VERSION_CODES.N)
-    private fun mapper(creditCard:CreditCardDTO):CreditCard{
-        val pojo = CreditCard()
-        pojo.codeCreditCard = Optional.ofNullable(creditCard?.id)
-        pojo.nameCreditCard = Optional.ofNullable(creditCard?.name)
-        Log.d(this.javaClass.name,"CutOffDay: ${creditCard?.cutOffDay}")
-        pojo.cutoffDay = Optional.ofNullable(creditCard?.cutOffDay)
-        pojo.cutOff =
-            Optional.ofNullable(creditCard?.cutOffDay?.toInt()
-                ?.let { it1 -> configSvc.nextCutOff( it1) })
-        return pojo
-    }
+
 
 
     @RequiresApi(Build.VERSION_CODES.O)

@@ -1,8 +1,11 @@
 package co.japl.android.myapplication.adapter
 
+import android.app.AlertDialog
+import android.app.Dialog
 import android.os.Build
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.RequiresApi
 import androidx.navigation.findNavController
@@ -32,13 +35,14 @@ import java.math.RoundingMode
 import java.time.LocalDateTime
 import java.util.*
 
-class ListBoughtAdapter(private val data:List<CreditCardBoughtDTO>,private val cutOff:LocalDateTime) : RecyclerView.Adapter<BoughtViewHolder>() {
+class ListBoughtAdapter(private val data:MutableList<CreditCardBoughtDTO>,private val cutOff:LocalDateTime) : RecyclerView.Adapter<BoughtViewHolder>() {
     lateinit var dbConnect: ConnectDB
     lateinit var saveSvc: SaveSvc<CreditCardBoughtDTO>
     lateinit var searchSvc: SearchSvc<CreditCardBoughtDTO>
     lateinit var taxSvc:ITaxSvc
     lateinit var buyCreditCardSettingSvc: SaveSvc<BuyCreditCardSettingDTO>
     lateinit var creditCardSettingSvc: SaveSvc<CreditCardSettingDTO>
+    lateinit var view:View
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BoughtViewHolder {
         dbConnect = ConnectDB(parent.context)
@@ -47,6 +51,7 @@ class ListBoughtAdapter(private val data:List<CreditCardBoughtDTO>,private val c
         taxSvc = TaxImpl(dbConnect)
         creditCardSettingSvc = CreditCardSettingImpl(dbConnect)
         buyCreditCardSettingSvc = BuyCreditCardSettingImpl(dbConnect)
+        view = parent
         val view =
             LayoutInflater.from(parent.context).inflate(R.layout.bought_item_list, parent, false)
         val viewHolder =  BoughtViewHolder(view)
@@ -153,20 +158,47 @@ class ListBoughtAdapter(private val data:List<CreditCardBoughtDTO>,private val c
 
       holder.setFields(data[position],capital,interest,quotesBought,pendintToPay,tax) {
           when (it.id) {
-              R.id.btnDeleteItemLCCS ->
-              if (saveSvc.delete(data[position].id)) {
-                  Snackbar.make(holder.itemView, R.string.delete_successfull, Snackbar.LENGTH_LONG)
-                      .setAction(R.string.close) {
-                          this.notifyItemRemoved(position)
-                          this.notifyDataSetChanged()
+              R.id.btnDeleteItemLCCS -> {
+                  val dialog = AlertDialog.Builder(view.context)
+                      .setTitle(R.string.do_you_want_to_delete_this_record)
+                      .setPositiveButton(R.string.delete, null)
+                      .setNegativeButton(R.string.cancel, null)
+                      .create()
+                  dialog.show()
+                  dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
+                      if (saveSvc.delete(data[position].id)) {
+                          dialog.dismiss()
+                          Snackbar.make(
+                              holder.itemView,
+                              R.string.delete_successfull,
+                              Snackbar.LENGTH_LONG
+                          )
+                              .setAction(R.string.close) {}
+                              .show().also{
+                                  data.removeAt(position)
+                                  this.notifyDataSetChanged()
+                                  this.notifyItemRemoved(position)
+                              }
+                      } else {
+                          dialog.dismiss()
+                          Snackbar.make(
+                              holder.itemView,
+                              R.string.dont_deleted,
+                              Snackbar.LENGTH_LONG
+                          )
+                              .setAction(R.string.close, null).show()
                       }
-                      .show()
-              } else {
-                  Snackbar.make(holder.itemView, R.string.dont_deleted, Snackbar.LENGTH_LONG)
-                      .setAction(R.string.close, null).show()
+                  }
               }
-              R.id.btnAmortizationItemLCCS ->
-                  AmortizationTableParams.newInstanceQuotes(CalcMap().mapping(data[position],interest + capital,interest,capital ),quotesBought,it.findNavController())
+                  R.id.btnAmortizationItemLCCS ->
+                  AmortizationTableParams.newInstanceQuotes(
+                      CalcMap().mapping(
+                          data[position],
+                          interest + capital,
+                          interest,
+                          capital
+                      ), quotesBought, it.findNavController()
+                  )
           }
       }
     }

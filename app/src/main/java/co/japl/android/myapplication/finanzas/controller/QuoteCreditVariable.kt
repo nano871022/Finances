@@ -80,16 +80,6 @@ class QuoteCreditVariable : Fragment(), View.OnClickListener{
             val quote = holder.downLoadFields()
             val response = calc.calc(quote.value.get(), quote.period.get(), quote.tax.get())
 
-            (holder as ISpinnerHolder<QuoteCreditVariableHolder>).lists {
-                it.listMonths = mutableListOf()
-                for (i in 1..quote.period.get()) {
-                    it.listMonths.add(i.toString())
-                }
-                ArrayAdapter(requireContext(), R.layout.spinner1, it.listMonths).let { adapter->
-                    it.spMonth.setAdapter(adapter)
-                }
-            }
-
             quote.capitalValue = Optional.ofNullable(response)
             val responseInt = calcInt.calc(quote.value.get(), quote.period.get(), quote.tax.get())
             quote.interestValue = Optional.ofNullable(responseInt)

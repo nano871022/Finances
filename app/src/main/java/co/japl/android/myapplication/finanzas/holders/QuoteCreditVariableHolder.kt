@@ -1,5 +1,6 @@
 package co.japl.android.myapplication.finanzas.holders
 
+import android.app.AlertDialog
 import android.graphics.Color
 import android.os.Build
 import android.util.Log
@@ -24,8 +25,10 @@ import java.math.BigDecimal
 import java.math.RoundingMode
 import java.text.DecimalFormat
 import java.util.*
+import java.util.stream.IntStream
+import kotlin.streams.toList
 
-class QuoteCreditVariableHolder(var container: View):IHolder<QuoteCreditCard>, ISpinnerHolder<QuoteCreditVariableHolder> {
+class QuoteCreditVariableHolder(var container: View):IHolder<QuoteCreditCard>{
     private val calc: Calc = QuoteCreditVariable()
     private val calcQuoteInt: CalcInterest = QuoteCreditVariableInterestQuote()
     lateinit var listMonths:MutableList<String>
@@ -42,6 +45,7 @@ class QuoteCreditVariableHolder(var container: View):IHolder<QuoteCreditCard>, I
     private lateinit var btnAmortization: Button
 
     private lateinit var quote:QuoteCreditCard
+    private var months:Array<Int> = arrayOf(1)
 
     override fun setFields(actions: View.OnClickListener?) {
         etValueCredit = container.findViewById(R.id.etNameItem)
@@ -70,7 +74,8 @@ class QuoteCreditVariableHolder(var container: View):IHolder<QuoteCreditCard>, I
             }
         }
         btnAmortization.setOnClickListener(actions)
-
+        spMonth.isFocusable = false
+        onClick()
     }
 
     @RequiresApi(Build.VERSION_CODES.N)
@@ -110,6 +115,7 @@ class QuoteCreditVariableHolder(var container: View):IHolder<QuoteCreditCard>, I
         quote.capitalValue = Optional.ofNullable(capital)
         quote.interestValue = Optional.ofNullable(interest)
         quote.response = Optional.ofNullable(total)
+        months = IntStream.range(1,quote.period.orElse(0).toInt() + 1).toList().toTypedArray()
         return quote
     }
 
@@ -140,9 +146,13 @@ class QuoteCreditVariableHolder(var container: View):IHolder<QuoteCreditCard>, I
         return valid
     }
 
-     private fun onItemSelected() {
-        spMonth.setOnItemClickListener{adapter,_,pos,_ ->
-            val month = adapter.getItemAtPosition(pos)
+     private fun onClick() {
+        spMonth.setOnClickListener{
+            val builder = AlertDialog.Builder(it.context)
+            with(builder){
+                setItems(months.map{"$it"}.toTypedArray()){ _,position->
+            val month = months[position].toInt()
+                    spMonth.setText(month.toString())
             val value = NumbersUtil.toBigDecimal(etValueCredit      )
             val period = etMonths.text.toString().toLong()
             val tax = etTax.text.toString().toDouble()
@@ -163,11 +173,10 @@ class QuoteCreditVariableHolder(var container: View):IHolder<QuoteCreditCard>, I
             if(totalValue> BigDecimal(0)){
                 tvTotalValue.text = NumbersUtil.COPtoString(totalValue.setScale(2, RoundingMode.HALF_EVEN))
             }
+                }
+        }
+            builder.create().show()
         }
     }
 
-    override fun lists(fn: ((QuoteCreditVariableHolder) -> Unit)?) {
-        fn?.invoke(this)
-        onItemSelected()
-    }
 }

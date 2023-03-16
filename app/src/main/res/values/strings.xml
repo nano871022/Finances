@@ -47,6 +47,7 @@
     <string name="quote_credit_save_variable">Guardar - Cuota Credito Variable</string>
     <string name="name">Nombre</string>
     <string name="cancel">Cancelar</string>
+    <string name="delete">Eliminar</string>
     <string name="dont_able_to_save">No se logro guardar</string>
     <string name="success_save_quote_credit">Se almaceno correctamente</string>
     <string name="close">Cerrar</string>
@@ -56,6 +57,8 @@
     <string name="second_fragment_label">Second Fragment</string>
     <string name="next">Next</string>
     <string name="previous">Previous</string>
+
+    <string name="do_you_want_to_delete_this_record">¿Desea eliminar el registro?</string>
 
     <string name="hello_first_fragment">Hello first fragment</string>
     <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>

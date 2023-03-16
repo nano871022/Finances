@@ -76,6 +76,8 @@ class QuoteCCHolder(var view:View,var parentFragmentManager:FragmentManager,var 
             btnCutOffHistory = it.findViewById(R.id.btnCutOffHistory)
         }
 
+        spCreditCard.isFocusable = false
+
         btnAddBuy.let {
             it.setOnClickListener(this)
             it.visibility = View.INVISIBLE
@@ -198,8 +200,6 @@ class QuoteCCHolder(var view:View,var parentFragmentManager:FragmentManager,var 
 
     override fun lists(fn: ((QuoteCCHolder) -> Unit)?) {
         fn?.invoke(this)
-        spCreditCard.isFocusable = false
-        spCreditCard.setOnClickListener { spCreditCard.showDropDown() }
     }
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onClick(view: View){

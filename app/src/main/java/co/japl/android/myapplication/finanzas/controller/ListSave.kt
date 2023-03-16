@@ -38,7 +38,7 @@ class ListSave : Fragment() {
 
     private fun loadRecyclerView(view:View){
         recyclerView.layoutManager = LinearLayoutManager(contexts,LinearLayoutManager.VERTICAL,false)
-        adapter = ListSaveAdapter(list,view)
+        adapter = ListSaveAdapter(list.toMutableList(),view)
         recyclerView.adapter = adapter
     }
     private fun connectDB(){

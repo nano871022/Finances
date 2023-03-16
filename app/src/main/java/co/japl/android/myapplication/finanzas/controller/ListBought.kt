@@ -64,7 +64,7 @@ class ListBought : Fragment() {
             holder.lists {
                 it.recyclerView.layoutManager =
                     LinearLayoutManager(view.context, LinearLayoutManager.VERTICAL, false)
-                adapter = ListBoughtAdapter(list, creditCard.cutOff.get())
+                adapter = ListBoughtAdapter(list.toMutableList(), creditCard.cutOff.get())
                 it.recyclerView.adapter = adapter
             }
         }

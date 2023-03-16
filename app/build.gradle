@@ -10,8 +10,8 @@ android {
         applicationId "co.japl.android.myapplication"
         minSdk 21
         targetSdk 33
-        versionCode 17
-        versionName "se realiza ajuste de errores graficos encontrados y errores que hacian cerrar la aplicacion ademas de ajustar el regresar ya que se estaban presentando errores ene este"
+        versionCode 18
+        versionName "Se agrega tabla de amortizacion y se cambia lista seleccionables por mensajes emergentes, se adiciona mensaje para validar si desea elimiar los registros "
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }

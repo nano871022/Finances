@@ -1,5 +1,6 @@
 package co.japl.android.myapplication.adapter
 
+import android.app.AlertDialog
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,7 +17,7 @@ import co.japl.android.myapplication.utils.CalcEnum
 import com.google.android.material.snackbar.Snackbar
 import java.text.DecimalFormat
 
-class ListSaveAdapter(private val data:List<CalcDTO>,val view:View) : RecyclerView.Adapter<ViewHolder>() {
+class ListSaveAdapter(private val data:MutableList<CalcDTO>,val view:View) : RecyclerView.Adapter<ViewHolder>() {
     lateinit var dbConnect: ConnectDB
     lateinit var saveSvc: SaveSvc<CalcDTO>
 
@@ -49,18 +50,33 @@ class ListSaveAdapter(private val data:List<CalcDTO>,val view:View) : RecyclerVi
             holder.llInterestValue.visibility = View.VISIBLE
         }
         holder.btnDelete.setOnClickListener {
+            val dialog = AlertDialog.Builder(view.context)
+                .setTitle(R.string.do_you_want_to_delete_this_record)
+                .setNegativeButton(R.string.cancel, null).setPositiveButton(R.string.delete, null)
+                .create()
+            dialog.show()
+            dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
+                dialog.dismiss()
                 if (saveSvc.delete(data[position].id)) {
-                    Snackbar.make(holder.itemView, R.string.delete_successfull, Snackbar.LENGTH_LONG)
+                    Snackbar.make(
+                        holder.itemView,
+                        R.string.delete_successfull,
+                        Snackbar.LENGTH_LONG
+                    )
                         .setAction(R.string.close) {
+
+                        }
+                        .show().also {
+                            data.removeAt(position)
                             this.notifyItemRemoved(position)
                             this.notifyDataSetChanged()
                         }
-                        .show()
                 } else {
                     Snackbar.make(holder.itemView, R.string.dont_deleted, Snackbar.LENGTH_LONG)
-                        .setAction(R.string.close,null).show()
+                        .setAction(R.string.close, null).show()
                 }
             }
+        }
         holder.btnAmortization.setOnClickListener{
             AmortizationTableParams.newInstance(data[position],view.findNavController())
         }
