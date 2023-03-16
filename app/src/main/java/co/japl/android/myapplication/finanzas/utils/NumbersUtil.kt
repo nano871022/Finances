@@ -8,8 +8,8 @@ import java.text.DecimalFormat
 class NumbersUtil {
 
     companion object  {
-        private  val formatDecimalMoneyCO = "$ #,###.##"
-        private val formatDecimal = "#,###.##"
+        private  val formatDecimalMoneyCO = "$ #,###.00"
+        private val formatDecimal = "#,###.00"
 
         fun COPtoString(value: BigDecimal): String {
             return DecimalFormat(formatDecimalMoneyCO).format(value)

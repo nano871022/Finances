@@ -5,6 +5,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.annotation.RequiresApi
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import co.japl.android.myapplication.R
 import co.japl.android.myapplication.bussiness.DB.connections.ConnectDB
@@ -17,8 +18,10 @@ import co.japl.android.myapplication.bussiness.impl.TaxImpl
 import co.japl.android.myapplication.bussiness.interfaces.ITaxSvc
 import co.japl.android.myapplication.bussiness.interfaces.SaveSvc
 import co.japl.android.myapplication.bussiness.interfaces.SearchSvc
+import co.japl.android.myapplication.bussiness.mapping.CalcMap
 import co.japl.android.myapplication.finanzas.bussiness.impl.BuyCreditCardSettingImpl
 import co.japl.android.myapplication.finanzas.bussiness.impl.CreditCardSettingImpl
+import co.japl.android.myapplication.finanzas.putParams.AmortizationTableParams
 import co.japl.android.myapplication.finanzas.utils.TaxEnum
 import co.japl.android.myapplication.holders.view.BoughtViewHolder
 import co.japl.android.myapplication.utils.DateUtils
@@ -148,18 +151,23 @@ class ListBoughtAdapter(private val data:List<CreditCardBoughtDTO>,private val c
         val quotesBought = getQuotesBought(data[position])
         val pendintToPay = getPendingToPay(data[position])
 
-      holder.setFields(data[position],capital,interest,quotesBought,pendintToPay,tax){
-                if (saveSvc.delete(data[position].id)) {
-                    Snackbar.make(holder.itemView, R.string.delete_successfull, Snackbar.LENGTH_LONG)
-                        .setAction(R.string.close) {
-                            this.notifyItemRemoved(position)
-                            this.notifyDataSetChanged()
-                        }
-                        .show()
-                } else {
-                    Snackbar.make(holder.itemView, R.string.dont_deleted, Snackbar.LENGTH_LONG)
-                        .setAction(R.string.close,null).show()
-                }
-            }
+      holder.setFields(data[position],capital,interest,quotesBought,pendintToPay,tax) {
+          when (it.id) {
+              R.id.btnDeleteItemLCCS ->
+              if (saveSvc.delete(data[position].id)) {
+                  Snackbar.make(holder.itemView, R.string.delete_successfull, Snackbar.LENGTH_LONG)
+                      .setAction(R.string.close) {
+                          this.notifyItemRemoved(position)
+                          this.notifyDataSetChanged()
+                      }
+                      .show()
+              } else {
+                  Snackbar.make(holder.itemView, R.string.dont_deleted, Snackbar.LENGTH_LONG)
+                      .setAction(R.string.close, null).show()
+              }
+              R.id.btnAmortizationItemLCCS ->
+                  AmortizationTableParams.newInstanceQuotes(CalcMap().mapping(data[position],interest + capital,interest,capital ),quotesBought,it.findNavController())
+          }
+      }
     }
 }

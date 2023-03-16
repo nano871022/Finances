@@ -41,14 +41,15 @@
         android:id="@+id/item_menu_side_quoteCredit"
         android:name="co.japl.android.myapplication.controller.QuoteCredit"
         android:label="@string/quote_credit"
-        tools:layout="@layout/quote_credit_save">
+        tools:layout="@layout/quote_credit">
         <action
             android:id="@+id/action_save_credit_card"
-            app:destination="@id/quoteCreditSave"
-            app:enterAnim="@android:anim/fade_in"
-            app:exitAnim="@android:anim/fade_out"
-            app:popUpToInclusive="true"/>
+            app:destination="@id/quoteCreditSave" />
+        <action
+            android:id="@+id/action_item_menu_side_quoteCredit_to_amortizationTableFragment"
+            app:destination="@id/amortizationTableFragment" />
     </fragment>
+
 
     <fragment
         android:id="@+id/item_menu_side_quoteCreditVariable"
@@ -63,6 +64,9 @@
             app:exitAnim="@android:anim/fade_out"
             app:destination="@id/quoteCreditSaveVariable"
             app:popUpToInclusive="true"/>
+        <action
+            android:id="@+id/action_item_menu_side_quoteCreditVariable_to_amortizationTableFragment"
+            app:destination="@id/amortizationTableFragment" />
     </fragment>
 
     <fragment
@@ -71,15 +75,8 @@
         android:label="@string/list_save"
         tools:layout="@layout/fragment_list_bought">
         <action
-            android:id="@+id/action_list_bought_to_list_cc_quote"
-            app:enterAnim="@android:anim/fade_in"
-            app:exitAnim="@android:anim/fade_out"
-            app:destination="@+id/item_menu_side_boughtmade"
-            app:popUpToInclusive="true"/>
-        <action
-            android:id="@+id/action_list_bought_to_list_periods"
-            app:destination="@id/list_periods"
-            app:popUpToInclusive="true"/>
+            android:id="@+id/action_list_bought_to_amortizationTableFragment"
+            app:destination="@id/amortizationTableFragment" />
     </fragment>
 
     <fragment
@@ -87,12 +84,7 @@
         android:name="co.japl.android.myapplication.controller.ListQuotesPaid"
         android:label="@string/list_periods"
         tools:layout="@layout/fragment_list_periods">
-        <action
-            android:id="@+id/action_list_periods_to_list_cc_quote"
-            app:enterAnim="@android:anim/fade_in"
-            app:exitAnim="@android:anim/fade_out"
-            app:destination="@+id/item_menu_side_boughtmade"
-            app:popUpToInclusive="true"/>
+
         <action
             android:id="@+id/action_list_periods_to_list_bought"
             app:destination="@id/list_bought"
@@ -103,52 +95,31 @@
         android:id="@+id/quoteCreditSave"
         android:name="co.japl.android.myapplication.controller.QuoteCreditSave"
         android:label="@string/quote_credit_save"
-        tools:layout="@layout/quote_credit_save">
-        <argument
-            android:name="creditValue"
-            app:argType="java.math.BigDecimal" />
-        <action
-            android:id="@+id/action_quote_credit"
-            app:enterAnim="@android:anim/fade_in"
-            app:exitAnim="@android:anim/fade_out"
-            app:destination="@+id/item_menu_side_quoteCredit"
-            app:popUpToInclusive="true"/>
-    </fragment>
+        tools:layout="@layout/quote_credit_save"/>
+
     <fragment
         android:id="@+id/quoteCreditSaveVariable"
         android:name="co.japl.android.myapplication.controller.QuoteCreditSaveVariable"
         android:label="@string/quote_credit_save_variable"
-        tools:layout="@layout/quote_credit_save_variable">
-        <action
-            android:id="@+id/action_quote_credt_variable"
-            app:enterAnim="@android:anim/fade_in"
-            app:exitAnim="@android:anim/fade_out"
-            app:popUpToInclusive="true"/>
-        <action
-            android:id="@+id/action_quoteCreditSaveVariable_to_item_menu_side_quoteCreditVariable"
-            app:destination="@id/item_menu_side_quoteCreditVariable"
-            app:popUpToInclusive="true"/>
+        tools:layout="@layout/quote_credit_save_variable"/>
 
-    </fragment>
 
     <fragment
         android:id="@+id/item_menu_side_listsave"
         android:name="co.japl.android.myapplication.controller.ListSave"
         android:label="@string/list_save"
-        tools:layout="@layout/fragment_list_save" />
+        tools:layout="@layout/fragment_list_save" >
+        <action
+            android:id="@+id/action_item_menu_side_listsave_to_amortizationTableFragment"
+            app:destination="@id/amortizationTableFragment" />
+    </fragment>
 
     <fragment
         android:id="@+id/buy_credit_card"
         android:name="co.japl.android.myapplication.controller.QuoteBought"
         android:label="@string/add_buy"
-        tools:layout="@layout/buys_credit_card" >
-        <action
-            android:id="@+id/action_buy_credit_card_to_item_menu_side_boughtmade"
-            app:enterAnim="@android:anim/fade_in"
-            app:exitAnim="@android:anim/fade_out"
-            app:destination="@id/item_menu_side_boughtmade"
-            app:popUpToInclusive="true"/>
-    </fragment>
+        tools:layout="@layout/buys_credit_card" />
+
     <fragment
         android:id="@+id/item_menu_setting_about_it"
         android:name="co.japl.android.myapplication.finanzas.controller.AboutIt"
@@ -172,16 +143,10 @@
         android:label="@string/create_credit_card"
         tools:layout="@layout/fragment_create_credit_card" >
         <action
-            android:id="@+id/action_createCreditCard_to_listCreditCard"
-            app:enterAnim="@android:anim/fade_in"
-            app:exitAnim="@android:anim/fade_out"
-            app:destination="@+id/item_menu_setting_credit_card"
-            app:popUpToInclusive="true"/>
-        <action
             android:id="@+id/action_createCreditCard_to_listCreditCardSetting"
-            app:destination="@id/listCreditCardSetting"
-            app:popUpToInclusive="true"/>
+            app:destination="@id/listCreditCardSetting" />
     </fragment>
+
 
     <fragment
         android:id="@+id/item_menu_setting_taxes"
@@ -199,24 +164,13 @@
         android:id="@+id/taxes"
         android:name="co.japl.android.myapplication.controller.Taxes"
         android:label="@string/tax"
-        tools:layout="@layout/fragment_taxes" >
-        <action
-            android:id="@+id/action_taxes_to_item_menu_setting_taxes"
-            app:enterAnim="@android:anim/fade_in"
-            app:exitAnim="@android:anim/fade_out"
-            app:destination="@id/item_menu_setting_taxes"
-            app:popUpToInclusive="true"/>
-    </fragment>
+        tools:layout="@layout/fragment_taxes" />
     <fragment
         android:id="@+id/cash_advance_fragment"
         android:name="co.japl.android.myapplication.finanzas.controller.CashAdvanceSave"
         android:label="@string/cash_advance"
-        tools:layout="@layout/cash_advance_credit_card" >
-        <action
-            android:id="@+id/action_cash_advance_fragment_to_item_menu_side_boughtmade"
-            app:destination="@id/item_menu_side_boughtmade"
-            app:popUpToInclusive="true"/>
-    </fragment>
+        tools:layout="@layout/cash_advance_credit_card" />
+
 
     <fragment
         android:id="@+id/item_menu_setting_google_login"
@@ -227,22 +181,13 @@
         android:id="@+id/creditCardSettingFragment"
         android:name="co.japl.android.myapplication.finanzas.controller.CreditCardSettingFragment"
         android:label="@string/title_toolbar_fragment_credit_card_setting"
-        tools:layout="@layout/fragment_credit_card_setting" >
-        <action
-            android:id="@+id/action_creditCardSettingFragment_to_listCreditCardSetting"
-            app:destination="@id/listCreditCardSetting"
-            app:popUpTo="@id/listCreditCardSetting"
-            app:popUpToInclusive="true"/>
-    </fragment>
+        tools:layout="@layout/fragment_credit_card_setting" />
+
     <fragment
         android:id="@+id/listCreditCardSetting"
         android:name="co.japl.android.myapplication.controller.ListCreditCardSetting"
         android:label="@string/title_toolbar_fragment_list_credit_card_setting"
         tools:layout="@layout/fragment_list_credit_card_setting" >
-        <action
-            android:id="@+id/action_listCreditCardSetting_to_createCreditCard"
-            app:destination="@id/createCreditCard"
-            app:popUpToInclusive="true"/>
         <action
             android:id="@+id/action_listCreditCardSetting_to_creditCardSettingFragment"
             app:destination="@id/creditCardSettingFragment"
@@ -251,11 +196,11 @@
     <fragment
         android:id="@+id/boughWalletController"
         android:name="co.japl.android.myapplication.finanzas.controller.BoughWalletController"
-        android:label="BoughWalletController" >
-        <action
-            android:id="@+id/action_boughWalletController_to_item_menu_side_boughtmade"
-            app:destination="@id/item_menu_side_boughtmade"
-            app:popUpToInclusive="true"/>
-    </fragment>
+        android:label="BoughWalletController" />
+    <fragment
+        android:id="@+id/amortizationTableFragment"
+        android:name="co.japl.android.myapplication.finanzas.controller.AmortizationTableFragment"
+        android:label="@string/amortization_table"
+        tools:layout="@layout/fragment_amortization_table" />
 
 </navigation>

@@ -120,9 +120,9 @@
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnClear"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:layout_weight="2"
             android:layout_margin="@dimen/space_min"
             android:text="@string/clear"
             app:icon="@drawable/ic_baseline_cleaning_services_24" />
@@ -130,9 +130,9 @@
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnCalc"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="12"
+            android:layout_weight="1"
             android:layout_margin="@dimen/space_min"
             android:text="@string/calc"
             app:icon="@android:drawable/ic_menu_search" />
@@ -153,7 +153,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:prefixText="@string/quote_value"
-            android:paddingLeft="@dimen/margin_start_input_layout"
+            android:paddingEnd="@dimen/margin_start_input_layout"
             android:textStyle="bold" >
 
         <com.google.android.material.textview.MaterialTextView
@@ -173,10 +173,18 @@
         app:layout_constraintBottom_toBottomOf="parent"
         tools:layout_editor_absoluteX="1dp">
 
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnAmortizationQCF"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="2"
+            android:layout_margin="@dimen/space_min"
+            app:icon="?android:attr/actionModeWebSearchDrawable"
+            android:text="@string/amortization"/>
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnSave"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/space_min"
             android:layout_weight="1"

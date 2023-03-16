@@ -3,18 +3,20 @@ package co.japl.android.myapplication.adapter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import co.japl.android.myapplication.R
 import co.japl.android.myapplication.bussiness.DB.connections.ConnectDB
 import co.japl.android.myapplication.bussiness.DTO.CalcDTO
 import co.japl.android.myapplication.bussiness.impl.SaveImpl
 import co.japl.android.myapplication.bussiness.interfaces.SaveSvc
+import co.japl.android.myapplication.finanzas.putParams.AmortizationTableParams
 import co.japl.android.myapplication.holders.view.ViewHolder
 import co.japl.android.myapplication.utils.CalcEnum
 import com.google.android.material.snackbar.Snackbar
 import java.text.DecimalFormat
 
-class ListSaveAdapter(private val data:List<CalcDTO>) : RecyclerView.Adapter<ViewHolder>() {
+class ListSaveAdapter(private val data:List<CalcDTO>,val view:View) : RecyclerView.Adapter<ViewHolder>() {
     lateinit var dbConnect: ConnectDB
     lateinit var saveSvc: SaveSvc<CalcDTO>
 
@@ -59,5 +61,8 @@ class ListSaveAdapter(private val data:List<CalcDTO>) : RecyclerView.Adapter<Vie
                         .setAction(R.string.close,null).show()
                 }
             }
+        holder.btnAmortization.setOnClickListener{
+            AmortizationTableParams.newInstance(data[position],view.findNavController())
+        }
     }
 }

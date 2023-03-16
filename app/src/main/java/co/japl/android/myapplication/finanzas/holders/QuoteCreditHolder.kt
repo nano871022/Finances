@@ -15,6 +15,7 @@ import co.japl.android.myapplication.R
 import co.japl.android.myapplication.bussiness.DTO.CreditCardSettingDTO
 import co.japl.android.myapplication.bussiness.interfaces.IHolder
 import co.japl.android.myapplication.finanzas.pojo.QuoteCreditCard
+import co.japl.android.myapplication.utils.CalcEnum
 import co.japl.android.myapplication.utils.NumbersUtil
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textview.MaterialTextView
@@ -31,6 +32,7 @@ class QuoteCreditHolder(var container:View): IHolder<QuoteCreditCard> {
     lateinit var tvQuoteValue: MaterialTextView
     lateinit var lyQuoteCredit: LinearLayout
     lateinit var btnSave: Button
+    lateinit var btnAmortization: Button
     lateinit var response:Optional<BigDecimal>
 
     override fun setFields(actions: View.OnClickListener?) {
@@ -39,6 +41,7 @@ class QuoteCreditHolder(var container:View): IHolder<QuoteCreditCard> {
         etMonths = container.findViewById(R.id.etMonths)!!
         tvQuoteValue = container.findViewById(R.id.tvQuoteValue)!!
         lyQuoteCredit = container.findViewById(R.id.lyInterestValue)!!
+        btnAmortization = container.findViewById(R.id.btnAmortizationQCF)
         btnSave  = container.findViewById(R.id.btnSave)
         etValueCredit.setOnFocusChangeListener{ _,focus->
             if(!focus && etValueCredit.text?.isNotBlank() == true){
@@ -53,6 +56,7 @@ class QuoteCreditHolder(var container:View): IHolder<QuoteCreditCard> {
         val btnCalc:Button = container.findViewById(R.id.btnCalc)
         btnCalc.setOnClickListener(actions)
         btnSave.setOnClickListener(actions)
+        btnAmortization.setOnClickListener(actions)
     }
 
     @RequiresApi(Build.VERSION_CODES.N)
@@ -60,18 +64,24 @@ class QuoteCreditHolder(var container:View): IHolder<QuoteCreditCard> {
         tvQuoteValue.text = NumbersUtil.COPtoString(values.response.orElse(BigDecimal.ZERO).setScale(2, RoundingMode.HALF_EVEN))
         lyQuoteCredit.visibility = View.VISIBLE
         btnSave.visibility = View.VISIBLE
+        btnAmortization.visibility = View.VISIBLE
         response = values.response
     }
 
     @RequiresApi(Build.VERSION_CODES.N)
     override fun downLoadFields(): QuoteCreditCard {
         val pojo = QuoteCreditCard()
+        pojo.name = Optional.of("unknown")
         pojo.value = Optional.ofNullable(NumbersUtil.toBigDecimal(etValueCredit))
         pojo.period = Optional.ofNullable(etMonths.text.toString().toLong())
         pojo.tax = Optional.ofNullable(etTax.text.toString().toDouble())
+        pojo.type = CalcEnum.FIX
         if(this::response.isInitialized){
             pojo.response = response
+            pojo.interestValue = Optional.ofNullable(pojo.value.orElse(BigDecimal.ZERO) * (pojo.tax.orElse(0.0) / 100).toBigDecimal())
+            pojo.capitalValue = Optional.of(pojo.response.orElse(BigDecimal.ZERO) - pojo.interestValue.orElse(BigDecimal.ZERO))
         }
+2000
         return pojo
     }
 
@@ -82,6 +92,7 @@ class QuoteCreditHolder(var container:View): IHolder<QuoteCreditCard> {
         //tvQuoteValue.editableText.clear()
         lyQuoteCredit.visibility = View.INVISIBLE
         btnSave.visibility = View.INVISIBLE
+        btnAmortization.visibility = View.INVISIBLE
     }
 
     override fun validate(): Boolean {

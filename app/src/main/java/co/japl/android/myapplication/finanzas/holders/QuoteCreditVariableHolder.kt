@@ -39,6 +39,7 @@ class QuoteCreditVariableHolder(var container: View):IHolder<QuoteCreditCard>, I
     private lateinit var llCalculation: LinearLayout
      lateinit var spMonth: MaterialAutoCompleteTextView
     private lateinit var btnSave: Button
+    private lateinit var btnAmortization: Button
 
     private lateinit var quote:QuoteCreditCard
 
@@ -51,6 +52,7 @@ class QuoteCreditVariableHolder(var container: View):IHolder<QuoteCreditCard>, I
         llCalculation = container.findViewById(R.id.llCalculationQCCV)
         tvTotalValue = container.findViewById(R.id.tvTotalValue)!!
         spMonth = container.findViewById(R.id.months)
+        btnAmortization = container.findViewById(R.id.btnAmortizationQCV)
         val btnClear:Button = container.findViewById(R.id.btnClear)
         btnClear.setOnClickListener(actions)
         val btnCalc:Button = container.findViewById(R.id.btnCalc)
@@ -67,6 +69,8 @@ class QuoteCreditVariableHolder(var container: View):IHolder<QuoteCreditCard>, I
                 etValueCredit.setText(NumbersUtil.toString(etValueCredit))
             }
         }
+        btnAmortization.setOnClickListener(actions)
+
     }
 
     @RequiresApi(Build.VERSION_CODES.N)
@@ -81,6 +85,7 @@ class QuoteCreditVariableHolder(var container: View):IHolder<QuoteCreditCard>, I
             tvTotalValue.text = NumbersUtil.COPtoString(it)
         }
         btnSave.visibility = View.VISIBLE
+        btnAmortization.visibility = View.VISIBLE
         quote = values
         Log.d(this.javaClass.name,"Assign to quote ${quote.response} ${quote.capitalValue} ${quote.interestValue}")
         llCalculation.visibility = View.VISIBLE
@@ -89,6 +94,7 @@ class QuoteCreditVariableHolder(var container: View):IHolder<QuoteCreditCard>, I
     @RequiresApi(Build.VERSION_CODES.N)
     override fun downLoadFields(): QuoteCreditCard {
         val quote = QuoteCreditCard()
+        quote.name = Optional.of("unknown")
         quote.tax = Optional.ofNullable(etTax.text.toString().toDouble())
         quote.value= Optional.ofNullable(NumbersUtil.toBigDecimal(etValueCredit     ))
         quote.period= Optional.ofNullable(etMonths.text.toString().toLong())
@@ -114,6 +120,7 @@ class QuoteCreditVariableHolder(var container: View):IHolder<QuoteCreditCard>, I
         //tvQuoteValue.editableText.clear()
         btnSave.visibility = View.INVISIBLE
         llCalculation.visibility = View.INVISIBLE
+        btnAmortization.visibility = View.INVISIBLE
     }
 
     override fun validate(): Boolean {

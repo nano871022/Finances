@@ -36,6 +36,9 @@
     <string name="error_calc">Se presento un error en el calculo </string>
     <string name="capital_value">Valor a capital</string>
     <string name="interest_value">Valor a intereses</string>
+    <string name="interest_to_pay_value">Intereses a pagar</string>
+    <string name="amortization_table">Tabla de Amortización</string>
+    <string name="amortization">Amortización</string>
     <string name="total_value">Valor total</string>
     <string name="save">Guardar</string>
     <string name="add">Agregar</string>
@@ -157,7 +160,6 @@
 
     <string name="title_toolbar_fragment_list_credit_card_setting">Configuraciones</string>
     <string name="title_toolbar_fragment_credit_card_setting">Configuración</string>
-
 
 
 </resources>

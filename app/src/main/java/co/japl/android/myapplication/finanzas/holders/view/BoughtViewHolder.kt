@@ -21,6 +21,7 @@ class BoughtViewHolder(itemView:View) : RecyclerView.ViewHolder(itemView) {
     lateinit var tvCapitalBought:TextView
     lateinit var tvInterestBought:TextView
     lateinit var btnBoughtDelete:ImageButton
+    lateinit var btnAmortization:ImageButton
     lateinit var tvTotalQuoteBought:TextView
     lateinit var tvBoughtDate:TextView
     lateinit var tvPendingToPay:TextView
@@ -38,6 +39,8 @@ class BoughtViewHolder(itemView:View) : RecyclerView.ViewHolder(itemView) {
         tvBoughtDate = view.findViewById(R.id.tvBoughtDate)
         tvPendingToPay = view.findViewById(R.id.tvPendingToPay)
         tvTaxBoughtICC = view.findViewById(R.id.tvTaxBoughtICC)
+        btnAmortization = view.findViewById(R.id.btnAmortizationItemLCCS)
+        btnAmortization.visibility = View.INVISIBLE
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -53,5 +56,9 @@ class BoughtViewHolder(itemView:View) : RecyclerView.ViewHolder(itemView) {
         tvPendingToPay.text = NumbersUtil.COPtoString(pendintToPay)
         tvTaxBoughtICC.text = tax.orElse(values.interest).toString()
         btnBoughtDelete.setOnClickListener(action)
+        btnAmortization.setOnClickListener(action)
+        if(values.month > 1){
+            btnAmortization.visibility = View.VISIBLE
+        }
     }
 }
