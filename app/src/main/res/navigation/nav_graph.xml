@@ -196,7 +196,8 @@
     <fragment
         android:id="@+id/boughWalletController"
         android:name="co.japl.android.myapplication.finanzas.controller.BoughWalletController"
-        android:label="BoughWalletController" />
+        android:label="@string/bough_wallet"
+        tools:layout="@layout/buy_wallet_credit_card"/>
     <fragment
         android:id="@+id/amortizationTableFragment"
         android:name="co.japl.android.myapplication.finanzas.controller.AmortizationTableFragment"
