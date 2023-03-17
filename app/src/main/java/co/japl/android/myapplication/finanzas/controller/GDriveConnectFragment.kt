@@ -3,6 +3,7 @@ package co.japl.android.myapplication.finanzas.controller
 import android.content.Intent
 import android.opengl.Visibility
 import android.os.Bundle
+import android.preference.PreferenceManager.OnActivityResultListener
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -11,21 +12,33 @@ import android.view.View.OnClickListener
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
+import android.widget.Toast
 import co.japl.android.myapplication.R
 import co.japl.android.myapplication.finanzas.bussiness.config.GoogleDriveConfig
 import co.japl.android.myapplication.finanzas.bussiness.impl.GoogleDriveService
+import co.japl.android.myapplication.finanzas.bussiness.impl.GoogleLoginOldService
+import co.japl.android.myapplication.finanzas.bussiness.impl.GoogleLoginService
+import co.japl.android.myapplication.finanzas.bussiness.interfaces.IGoogleLoginService
 import co.japl.android.myapplication.finanzas.bussiness.interfaces.ServiceListener
+import com.google.android.gms.auth.api.Auth
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.android.gms.auth.api.signin.GoogleSignInResult
+import com.google.android.gms.common.ConnectionResult
+import com.google.android.gms.common.SignInButton
+import com.google.android.gms.common.api.GoogleApiClient
 import java.io.File
 
-class GDriveConnectFragment : Fragment() , ServiceListener {
+class GDriveConnectFragment : Fragment() {
 
-    private lateinit var googleDriveService:GoogleDriveService
     private lateinit var loginBtn:Button
     private lateinit var logoutBtn:Button
     private lateinit var tvLogInfo:TextView
+    private lateinit var signButton: SignInButton
+    private lateinit var service :IGoogleLoginService
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
     }
 
     override fun onCreateView(
@@ -34,66 +47,45 @@ class GDriveConnectFragment : Fragment() , ServiceListener {
     ): View? {
         // Inflate the layout for this fragment
         val root = inflater.inflate(R.layout.fragment_g_drive_connect, container, false)
+        service = GoogleLoginOldService(requireActivity(),9007)
+        signButton = root.findViewById(R.id.signLogin)
         loginBtn = root.findViewById(R.id.login)
         logoutBtn = root.findViewById(R.id.logout)
         tvLogInfo = root.findViewById(R.id.tvResultGLogIn)
-        loginBtn.visibility = View.VISIBLE
-        logoutBtn.visibility = View.INVISIBLE
-        googleLogin()
+        loginBtn.visibility = View.GONE
+        logoutBtn.visibility = View.GONE
+        signButton.visibility = View.GONE
+        signButton.setOnClickListener{
+            //service.login()
+            startActivityForResult(service.getIntent(),service.RC_SIGN_IN)
+        }
+        logoutBtn.setOnClickListener{
+            service.logout()
+            signButton.visibility = View.VISIBLE
+            logoutBtn.visibility = View.GONE
+            tvLogInfo.text = ""
+        }
+        validLogin()
         return root
     }
 
-    private fun googleLogin(){
-        Log.d(this.javaClass.name,"<<<=== googleLogin start")
+    private fun validLogin(){
+        if(service.check()){
+            logoutBtn.visibility = View.VISIBLE
+            signButton.visibility = View.GONE
 
-        this.activity?.let {
-            Log.d(this.javaClass.name,"<<<=== googleLogin in parent")
-            val config = GoogleDriveConfig("", GoogleDriveService.documentMimeTypes)
-            Log.d(this.javaClass.name,"<<<=== googleLogin config")
-            googleDriveService = GoogleDriveService(it,config)
-            Log.d(this.javaClass.name,"<<<=== googleLogin GoogleDriveService instance")
-            googleDriveService.serviceListener = this
-            Log.d(this.javaClass.name,"<<<=== googleLogin add listener")
-            googleDriveService.checkLoginStatus()
-            Log.d(this.javaClass.name,"<<<=== googleLogin checkStatus")
-             loginBtn.setOnClickListener{googleDriveService.auth()}
-            //start.setOnClickListener{googleDriveService.pickFiles(null)}
-            logoutBtn.setOnClickListener{googleDriveService.logout()}
+            tvLogInfo.text = "${resources.getString(R.string.email_address)}: ${service.getAccount().email}"
+        }else{
+            signButton.visibility = View.VISIBLE
         }
-        Log.d(this.javaClass.name,"<<<=== googleLogin finish")
     }
-
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        Log.d(this.javaClass.name, "onActivityResult $requestCode $resultCode $data")
-        //super.onActivityResult(requestCode, resultCode, data)
-        googleDriveService.onActivityResults(requestCode,resultCode,data)
         super.onActivityResult(requestCode, resultCode, data)
-    }
-
-    override fun loggedIn() {
-        tvLogInfo.text = "Logged"
-        Log.d(this.javaClass.name,"Login")
-        logoutBtn.visibility = View.VISIBLE
-        loginBtn.visibility = View.INVISIBLE
-    }
-
-    override fun fileDownloaded(file: File) {
-        Log.d(this.javaClass.name,"fileDownLoaded")
-    }
-
-    override fun cancelled(info:String) {
-        tvLogInfo.text = "Cancelled - $info"
-
-        Log.d(this.javaClass.name,"Cancelled - $info")
-        logoutBtn.visibility = View.INVISIBLE
-        loginBtn.visibility = View.VISIBLE
-    }
-
-    override fun handleError(exception: java.lang.Exception) {
-        Log.e(this.javaClass.name,"handeError ${exception.message}")
-        tvLogInfo.text = "Error ${exception.message}"
-        logoutBtn.visibility = View.INVISIBLE
-        loginBtn.visibility = View.VISIBLE
+        Log.d(tag,"Activity $data $requestCode")
+        data?.let {
+            service.response(requestCode,it)
+            validLogin()
+        }
     }
 }
