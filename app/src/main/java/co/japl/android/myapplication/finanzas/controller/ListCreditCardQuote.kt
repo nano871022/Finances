@@ -126,6 +126,7 @@ class ListCreditCardQuote : Fragment(){
                 it.spCreditCard.setText(creditCardSel.name)
                 loadDataInfo(CreditCardMap().mapper(creditCardSel))
             }else{
+                holder.cleanField()
                 it.spCreditCard.text.clear()
             }
         }
@@ -139,13 +140,14 @@ class ListCreditCardQuote : Fragment(){
             with(builder){
                 setItems(listCreditCard.map { "${it.id}. ${it.name}" }.toTypedArray()){ _,position ->
                     val creditCard = listCreditCard[position]
+                    holder.cleanField()
                     this.context?.let {
                         val now = LocalDateTime.now(ZoneId.systemDefault())
                         Log.d(this.javaClass.name,"Now:. $now")
                         val pojo  = creditCard?.let {
                             CreditCardMap().mapper(it)
                         }?: CreditCard()
-                        taxSvc.get(now.monthValue,now.year).ifPresent{
+                        taxSvc.get(creditCard.id.toLong(),now.monthValue,now.year).ifPresent{
                         pojo.lastTax = Optional.ofNullable(it.value)
                         }
                 loadDataInfo(pojo)

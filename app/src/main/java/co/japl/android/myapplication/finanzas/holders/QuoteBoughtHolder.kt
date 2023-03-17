@@ -172,6 +172,7 @@ class QuoteBoughtHolder(var root:View,val supportManager:FragmentManager) : IHol
                             }
                         }else{
                             llNameSetting.visibility = View.INVISIBLE
+                            etTax.text = "$taxMonthly %"
                         }
                     }
                 }
@@ -289,7 +290,7 @@ class QuoteBoughtHolder(var root:View,val supportManager:FragmentManager) : IHol
             etTax.text = "${taxValue.toString()} %"
             taxValue
         }else {
-            etTax.text.toString().toDouble()
+            etTax.text.toString().replace("%","").trim().toDouble()
         }
         if(period == 1L){
             llTax.visibility = View.INVISIBLE

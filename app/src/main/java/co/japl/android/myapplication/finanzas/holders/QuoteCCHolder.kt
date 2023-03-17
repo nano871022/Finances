@@ -80,27 +80,27 @@ class QuoteCCHolder(var view:View,var parentFragmentManager:FragmentManager,var 
 
         btnAddBuy.let {
             it.setOnClickListener(this)
-            it.visibility = View.INVISIBLE
+            it.visibility = View.GONE
         }
 
         btnAddBuyWallet.let {
             it.setOnClickListener (this)
-            it.visibility = View.INVISIBLE
+            it.visibility = View.GONE
         }
 
         btnAddCashAdvance.let {
             it.setOnClickListener(this)
-            it.visibility = View.INVISIBLE
+            it.visibility = View.GONE
         }
         btnAddBought.let {
-            it.visibility = View.INVISIBLE
+            it.visibility = View.GONE
         }
 
         btnBoughtHistory.let{
             it.setOnClickListener(this)
-            it.visibility = View.INVISIBLE
+            it.visibility = View.GONE
         }
-        btnCutOffHistory.visibility = View.INVISIBLE
+        btnCutOffHistory.visibility = View.GONE
         btnCutOffHistory.let{
             it.setOnClickListener(this)
         }
@@ -109,9 +109,9 @@ class QuoteCCHolder(var view:View,var parentFragmentManager:FragmentManager,var 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun loadFields(values: CreditCard) {
         view.let {
-            val taxAdvance = taxSvc.get(values.cutOff.get().monthValue,values.cutOff.get().year,TaxEnum.CASH_ADVANCE)
-            val taxCreditCard = taxSvc.get(values.cutOff.get().monthValue,values.cutOff.get().year,TaxEnum.CREDIT_CARD)
-            val taxWallet = taxSvc.get(values.cutOff.get().monthValue,values.cutOff.get().year,TaxEnum.WALLET_BUY)
+            val taxAdvance = taxSvc.get(values.codeCreditCard.get().toLong(),values.cutOff.get().monthValue,values.cutOff.get().year,TaxEnum.CASH_ADVANCE)
+            val taxCreditCard = taxSvc.get(values.codeCreditCard.get().toLong(),values.cutOff.get().monthValue,values.cutOff.get().year,TaxEnum.CREDIT_CARD)
+            val taxWallet = taxSvc.get(values.codeCreditCard.get().toLong(),values.cutOff.get().monthValue,values.cutOff.get().year,TaxEnum.WALLET_BUY)
             codeCreaditCard = values.codeCreditCard
             nameCreaditCard = values.nameCreditCard
             cutOff = values.cutOff
@@ -168,7 +168,7 @@ class QuoteCCHolder(var view:View,var parentFragmentManager:FragmentManager,var 
             if( values.capitalQuote.isPresent || values.capitalQuotes.isPresent || values.interestQuotes.isPresent ){
                 llLastMonth.visibility = View.VISIBLE
             }else{
-                llLastMonth.visibility = View.INVISIBLE
+                llLastMonth.visibility = View.GONE
             }
             Log.d(this.javaClass.name,"TCC:. $taxCreditCard")
             if(taxCreditCard.isPresent) {
@@ -191,7 +191,12 @@ class QuoteCCHolder(var view:View,var parentFragmentManager:FragmentManager,var 
     }
 
     override fun cleanField() {
-
+        btnCutOffHistory.visibility = View.GONE
+        btnAddBuyWallet.visibility = View.GONE
+        btnAddBuy.visibility = View.GONE
+        btnAddBought.visibility = View.GONE
+        btnAddCashAdvance.visibility = View.GONE
+        btnBoughtHistory.visibility = View.GONE
     }
 
     override fun validate(): Boolean {

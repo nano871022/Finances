@@ -65,7 +65,7 @@ class QuoteBought : Fragment(), View.OnClickListener{
             val creditCardCode = params.first
             val now = LocalDateTime.now()
             val creditCard = creditCardSvc.get(creditCardCode)
-            val tax = taxSvc.get(now.month.value, now.year)
+            val tax = taxSvc.get(creditCardCode.toLong(),now.month.value, now.year)
             if (tax.isPresent) {
                 val cutOffDate = config.nextCutOff(creditCard.get().cutOffDay.toInt())
                 val dto = CreditCardBoughtDTO(

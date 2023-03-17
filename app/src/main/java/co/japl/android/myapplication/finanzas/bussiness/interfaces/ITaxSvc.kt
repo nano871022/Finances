@@ -5,5 +5,5 @@ import co.japl.android.myapplication.finanzas.utils.TaxEnum
 import java.util.*
 
 interface ITaxSvc {
-    fun get(month:Int, year:Int, kind:TaxEnum = TaxEnum.CREDIT_CARD): Optional<TaxDTO>
+    fun get(codCreditCard:Long,month:Int, year:Int, kind:TaxEnum = TaxEnum.CREDIT_CARD): Optional<TaxDTO>
 }

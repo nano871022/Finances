@@ -71,8 +71,8 @@ class ListBoughtAdapter(private val data:MutableList<CreditCardBoughtDTO>,privat
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    private fun getTax(kind:TaxEnum):Optional<Double>{
-        val tax = taxSvc.get(cutOff.month.value,cutOff.year,kind)
+    private fun getTax(codCreditCard:Long,kind:TaxEnum):Optional<Double>{
+        val tax = taxSvc.get(codCreditCard,cutOff.month.value,cutOff.year,kind)
         if(tax.isPresent){
             return Optional.ofNullable(tax.get().value)
         }
@@ -148,8 +148,8 @@ class ListBoughtAdapter(private val data:MutableList<CreditCardBoughtDTO>,privat
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onBindViewHolder(holder: BoughtViewHolder, position: Int) {
-        val taxAdv = getTax(TaxEnum.CASH_ADVANCE)
-        val taxCC = getTax(TaxEnum.CREDIT_CARD)
+        val taxAdv = getTax(data[position].codeCreditCard.toLong(),TaxEnum.CASH_ADVANCE)
+        val taxCC = getTax(data[position].codeCreditCard.toLong(),TaxEnum.CREDIT_CARD)
         val capital = getCapital(data[position])
         val tax = Optional.ofNullable(getInterestValue(data[position],taxCC,taxAdv).multiply(BigDecimal(100)).toDouble())
         val interest = getInterest(data[position],taxCC,taxAdv)

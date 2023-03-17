@@ -65,7 +65,7 @@ class BoughWalletController: Fragment() , View.OnClickListener{
         creditCard = creditCardSvc.get(codeCreditCard.get())
         activity?.supportFragmentManager.let {
             holder = BoughWalletHolder(view, it!!) { bought, date ->
-                calc(
+                calc(creditCard.get().id.toLong(),
                     bought,
                     date
                 )
@@ -104,8 +104,8 @@ class BoughWalletController: Fragment() , View.OnClickListener{
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    fun calc(value:BigDecimal, date:LocalDateTime):CreditCardBought{
-        val lTax = taxSvc.get(date.monthValue,date.year,TaxEnum.WALLET_BUY)
+    fun calc(codCreditCard:Long,value:BigDecimal, date:LocalDateTime):CreditCardBought{
+        val lTax = taxSvc.get(codCreditCard,date.monthValue,date.year,TaxEnum.WALLET_BUY)
         if(lTax.isPresent){
             this.tax = lTax.get()
         }

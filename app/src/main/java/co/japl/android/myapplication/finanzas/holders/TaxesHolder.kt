@@ -38,6 +38,7 @@ class TaxesHolder(var view:View,val creditCardList:List<CreditCardDTO>) : IHolde
     @RequiresApi(Build.VERSION_CODES.N)
     var monthCode:Optional<Int> = Optional.empty()
     lateinit var llPeriodsTaxes: TextInputLayout
+    var taxInitial: TaxDTO? = null
 
 
     override fun setFields(action: View.OnClickListener?) {
@@ -59,6 +60,7 @@ class TaxesHolder(var view:View,val creditCardList:List<CreditCardDTO>) : IHolde
     }
     @RequiresApi(Build.VERSION_CODES.O)
     override fun loadFields(values: TaxDTO) {
+        taxInitial = values
         tax.setText(values.value.toString())
         year.setText(values.year.toString())
         onItemClick()
@@ -113,6 +115,10 @@ class TaxesHolder(var view:View,val creditCardList:List<CreditCardDTO>) : IHolde
         kind.setText(TaxEnum.CREDIT_CARD.name)
         if(creditCardList.size == 1){
             creditCard.setText(creditCardList.first().name)
+        }
+        taxInitial?.let{
+            year.setText(it.year.toString())
+            tax.setText(it.value.toString())
         }
     }
 
