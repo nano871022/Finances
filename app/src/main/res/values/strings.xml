@@ -36,6 +36,9 @@
     <string name="error_calc">Se presento un error en el calculo </string>
     <string name="capital_value">Valor a capital</string>
     <string name="interest_value">Valor a intereses</string>
+    <string name="interest_to_pay_value">Intereses a pagar</string>
+    <string name="amortization_table">Tabla de Amortización</string>
+    <string name="amortization">Amortización</string>
     <string name="total_value">Valor total</string>
     <string name="save">Guardar</string>
     <string name="add">Agregar</string>
@@ -44,6 +47,7 @@
     <string name="quote_credit_save_variable">Guardar - Cuota Credito Variable</string>
     <string name="name">Nombre</string>
     <string name="cancel">Cancelar</string>
+    <string name="delete">Eliminar</string>
     <string name="dont_able_to_save">No se logro guardar</string>
     <string name="success_save_quote_credit">Se almaceno correctamente</string>
     <string name="close">Cerrar</string>
@@ -53,6 +57,11 @@
     <string name="second_fragment_label">Second Fragment</string>
     <string name="next">Next</string>
     <string name="previous">Previous</string>
+
+    <string name="do_you_want_to_delete_this_record">¿Desea eliminar el registro?</string>
+    <string name="it_is_not_possible_log_in">No se logro realizar el inicio de session</string>
+    <string name="email_address">Correo Electrónico</string>
+    <string name="there_are_not_data">No hay datos</string>
 
     <string name="hello_first_fragment">Hello first fragment</string>
     <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
@@ -157,7 +166,6 @@
 
     <string name="title_toolbar_fragment_list_credit_card_setting">Configuraciones</string>
     <string name="title_toolbar_fragment_credit_card_setting">Configuración</string>
-
 
 
 </resources>

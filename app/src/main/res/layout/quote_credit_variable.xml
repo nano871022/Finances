@@ -19,21 +19,7 @@
             android:padding="@dimen/padding_page"
             android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/textView3"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:text="@string/quote_credit_variable"
-        android:textAlignment="center"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-        <com.google.android.material.textfield.TextInputLayout
+            <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/space_min"
@@ -95,7 +81,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:layout_margin="@dimen/space_min"
+                android:padding="@dimen/space_min"
+                android:layout_marginEnd="@dimen/space_min"
                 app:icon="@drawable/ic_baseline_cleaning_services_24"
                 android:text="@string/clear" />
 
@@ -144,7 +131,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="@string/money_hint"
+            android:hint="@string/money_hint"
             android:textAlignment="center"/>
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -161,7 +148,7 @@
             android:id="@+id/tvInterestValueList"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/money_hint"
+            android:hint="@string/money_hint"
             android:textAlignment="center"/>
 
         </com.google.android.material.textfield.TextInputLayout>>
@@ -180,7 +167,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="@string/money_hint"
+            android:hint="@string/money_hint"
             android:textAlignment="center" />
 
         </com.google.android.material.textfield.TextInputLayout>
@@ -194,12 +181,19 @@
         app:layout_constraintBottom_toBottomOf="parent"
         tools:layout_editor_absoluteX="294dp">
 
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnAmortizationQCV"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:layout_marginEnd="@dimen/space_min"
+            app:icon="?android:attr/actionModeWebSearchDrawable"
+            android:text="@string/amortization"/>
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnSaveVariable"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/space_min"
             android:layout_weight="1"
             app:icon="@android:drawable/ic_menu_save"
             android:text="@string/save" />

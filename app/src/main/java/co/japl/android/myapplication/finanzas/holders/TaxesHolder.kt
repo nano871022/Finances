@@ -1,5 +1,6 @@
 package co.japl.android.myapplication.holders
 
+import android.app.AlertDialog
 import android.os.Build
 import android.util.Log
 import android.view.View
@@ -21,7 +22,7 @@ import java.time.LocalDateTime
 import java.time.YearMonth
 import java.util.*
 
-class TaxesHolder(var view:View,val creditCardList:List<CreditCardDTO>) : IHolder<TaxDTO>,ISpinnerHolder<TaxesHolder> {
+class TaxesHolder(var view:View,val creditCardList:List<CreditCardDTO>) : IHolder<TaxDTO>{
     lateinit var creditCard:MaterialAutoCompleteTextView
     lateinit var month:MaterialAutoCompleteTextView
     lateinit var tax:TextInputEditText
@@ -37,6 +38,7 @@ class TaxesHolder(var view:View,val creditCardList:List<CreditCardDTO>) : IHolde
     @RequiresApi(Build.VERSION_CODES.N)
     var monthCode:Optional<Int> = Optional.empty()
     lateinit var llPeriodsTaxes: TextInputLayout
+    var taxInitial: TaxDTO? = null
 
 
     override fun setFields(action: View.OnClickListener?) {
@@ -52,12 +54,16 @@ class TaxesHolder(var view:View,val creditCardList:List<CreditCardDTO>) : IHolde
         save.setOnClickListener(action)
         clear.setOnClickListener(action)
         llPeriodsTaxes.visibility = View.INVISIBLE
+        creditCard.isFocusable = false
+        kind.isFocusable = false
+        month.isFocusable = false
     }
     @RequiresApi(Build.VERSION_CODES.O)
     override fun loadFields(values: TaxDTO) {
+        taxInitial = values
         tax.setText(values.value.toString())
         year.setText(values.year.toString())
-
+        onItemClick()
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -107,6 +113,13 @@ class TaxesHolder(var view:View,val creditCardList:List<CreditCardDTO>) : IHolde
         monthStr = ""
         month.setText(view.resources.getStringArray(R.array.Months)[LocalDate.now().monthValue])
         kind.setText(TaxEnum.CREDIT_CARD.name)
+        if(creditCardList.size == 1){
+            creditCard.setText(creditCardList.first().name)
+        }
+        taxInitial?.let{
+            year.setText(it.year.toString())
+            tax.setText(it.value.toString())
+        }
     }
 
     @RequiresApi(Build.VERSION_CODES.N)
@@ -146,45 +159,49 @@ class TaxesHolder(var view:View,val creditCardList:List<CreditCardDTO>) : IHolde
     }
 
     @RequiresApi(Build.VERSION_CODES.N)
-    override fun lists(fn: ((TaxesHolder) -> Unit)?) {
-        fn?.invoke(this)
-        month.setOnClickListener{
-            month.showDropDown()
-        }
-        creditCard.setOnClickListener{
-            creditCard.showDropDown()
-        }
-        kind.setOnClickListener{
-            kind.showDropDown()
-        }
-        if(creditCardList.size == 1){
-            creditCard.adapter.getItem(1)
-        }
-        onItemClick()
-    }
-
-    @RequiresApi(Build.VERSION_CODES.N)
     fun onItemClick() {
-        creditCard.setOnItemClickListener{ adapter,_,position,_ ->
-            val selected = adapter?.getItemAtPosition(position)
-            Log.d(this.javaClass.name,"CreditCard:: Select Option $adapter $position $selected ")
-            creditCardStr = selected.toString()
-            creditCardCode = Optional.ofNullable(position)
+        creditCard.setOnClickListener {
+            val builder = AlertDialog.Builder(view.context)
+            with(builder) {
+                setItems(creditCardList.map { "${it.id}. ${it.name}" }
+                    .toTypedArray()) { _, position ->
+                    val creditCardFound = creditCardList[position]
+                    creditCardStr = creditCardFound.name
+                    creditCardCode = Optional.ofNullable(creditCardFound.id)
+                    creditCard.setText(creditCardStr)
+                }
+            }
+            val dialog = builder.create()
+            dialog.show()
         }
 
-        month.setOnItemClickListener { adapter , _, position, _ ->
-            val selected = adapter?.getItemAtPosition(position)
-            Log.d(this.javaClass.name,"Month:: Select Option $adapter $position $selected ")
-            monthStr = selected.toString()
-            monthCode = Optional.ofNullable(position)
+        month.setOnClickListener {
+            val builder = AlertDialog.Builder(view.context)
+            with(builder) {
+                val items = view.resources.getStringArray(R.array.Months)
+                builder.setItems(items) { _, position ->
+                    val selected = items[position]
+                    monthStr = selected.toString()
+                    monthCode = Optional.ofNullable(position)
+                    month.setText(monthStr)
+                }
+            }
+            builder.create().show()
         }
-        kind.setOnItemClickListener { adapter, _, position, _ ->
-            val selected = adapter?.getItemAtPosition(position)
-            Log.d(this.javaClass.name,"Kind:: Select Option $adapter $position $selected ${selected.toString() == TaxEnum.CASH_ADVANCE.name}")
-            if(selected.toString() != TaxEnum.CREDIT_CARD.name){
-                llPeriodsTaxes.visibility = View.VISIBLE
-            }else{
-                llPeriodsTaxes.visibility = View.INVISIBLE
+        kind.setOnClickListener {
+            val builder = AlertDialog.Builder(view.context)
+            with(builder) {
+                val items = TaxEnum.values().map { it.toString() }.toTypedArray()
+                setItems(items) { _, position ->
+                    val selected = items[position]
+                    kind.setText(selected)
+                    if (selected != TaxEnum.CREDIT_CARD.name) {
+                        llPeriodsTaxes.visibility = View.VISIBLE
+                    } else {
+                        llPeriodsTaxes.visibility = View.INVISIBLE
+                    }
+                }
+                builder.create().show()
             }
         }
     }

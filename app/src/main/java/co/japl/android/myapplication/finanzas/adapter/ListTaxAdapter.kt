@@ -1,5 +1,6 @@
 package co.japl.android.myapplication.adapter
 
+import android.app.AlertDialog
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -38,19 +39,25 @@ class ListTaxAdapter(var data:MutableList<TaxDTO>) : RecyclerView.Adapter<TaxIte
     override fun onBindViewHolder(holder: TaxItemHolder, position: Int) {
         Log.d(this.javaClass.name,"on binging view holder $position")
        holder.setFields(data[position]) {
-            if (saveSvc.delete(data[position].id)) {
-                Snackbar.make(view, R.string.delete_successfull, Snackbar.LENGTH_LONG)
-                    .setAction(R.string.close) {
+           val dialog = AlertDialog.Builder(view.context).setTitle(R.string.do_you_want_to_delete_this_record).setNegativeButton(R.string.cancel,null).setPositiveButton(R.string.delete,null).create()
+           dialog.show()
+           dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
+               if (saveSvc.delete(data[position].id)) {
+                   dialog.dismiss()
+                   Snackbar.make(view, R.string.delete_successfull, Snackbar.LENGTH_LONG)
+                       .setAction(R.string.close) {
 
-                    }
-                    .show().also { data.removeAt(position)
-                        this.notifyItemRemoved(position)
-                        this.notifyDataSetChanged()
-                    }
-            } else {
-                Snackbar.make(view, R.string.dont_deleted, Snackbar.LENGTH_LONG)
-                    .setAction(R.string.close,null).show()
-            }
+                       }
+                       .show().also {
+                           data.removeAt(position)
+                           this.notifyItemRemoved(position)
+                           this.notifyDataSetChanged()
+                       }
+               } else {
+                   Snackbar.make(view, R.string.dont_deleted, Snackbar.LENGTH_LONG)
+                       .setAction(R.string.close, null).show()
+               }
+           }
         }
     }
 }

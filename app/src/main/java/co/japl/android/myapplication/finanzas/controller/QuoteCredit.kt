@@ -9,13 +9,19 @@ import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
+import androidx.navigation.fragment.findNavController
 import co.japl.android.myapplication.R
+import co.japl.android.myapplication.bussiness.DTO.CalcDTO
 import co.japl.android.myapplication.bussiness.impl.QuoteCredit
 import co.japl.android.myapplication.bussiness.interfaces.Calc
 import co.japl.android.myapplication.bussiness.interfaces.IHolder
+import co.japl.android.myapplication.bussiness.mapping.CalcMap
 import co.japl.android.myapplication.finanzas.holders.QuoteCreditHolder
 import co.japl.android.myapplication.finanzas.pojo.QuoteCreditCard
+import co.japl.android.myapplication.finanzas.putParams.AmortizationTableParams
 import co.japl.android.myapplication.finanzas.putParams.QuoteCreditParams
+import co.japl.android.myapplication.finanzas.utils.TaxEnum
+import co.japl.android.myapplication.utils.CalcEnum
 import java.math.BigDecimal
 import java.util.*
 
@@ -46,7 +52,13 @@ class QuoteCredit : Fragment(), View.OnClickListener{
          R.id.btnCalc->calc()
          R.id.btnClear->holder.cleanField()
          R.id.btnSave-> save()
+         R.id.btnAmortizationQCF->openAmortization()
      }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.N)
+    private fun openAmortization(){
+        AmortizationTableParams.newInstanceFix(CalcMap().mapping(holder.downLoadFields()),findNavController())
     }
 
     @RequiresApi(Build.VERSION_CODES.N)

@@ -21,14 +21,6 @@
             android:padding="@dimen/space_min"
             android:orientation="vertical">
     <!-- TODO: Update blank fragment layout -->
-    <TextView
-        android:id="@+id/textView32"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/credit_card_setting_title"
-        android:textAlignment="center"
-        android:textSize="20sp"
-        android:textStyle="bold" />
 
 
             <com.google.android.material.textfield.TextInputLayout

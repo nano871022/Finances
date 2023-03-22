@@ -11,14 +11,18 @@ import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import co.japl.android.myapplication.R
+import co.japl.android.myapplication.bussiness.DTO.CalcDTO
 import co.japl.android.myapplication.bussiness.impl.QuoteCreditVariable
 import co.japl.android.myapplication.bussiness.impl.QuoteCreditVariableInterest
 import co.japl.android.myapplication.bussiness.interfaces.Calc
 import co.japl.android.myapplication.bussiness.interfaces.IHolder
 import co.japl.android.myapplication.bussiness.interfaces.ISpinnerHolder
+import co.japl.android.myapplication.bussiness.mapping.CalcMap
 import co.japl.android.myapplication.finanzas.holders.QuoteCreditVariableHolder
 import co.japl.android.myapplication.finanzas.pojo.QuoteCreditCard
+import co.japl.android.myapplication.finanzas.putParams.AmortizationTableParams
 import co.japl.android.myapplication.finanzas.putParams.QuoteCreditVariablesParams
+import co.japl.android.myapplication.utils.CalcEnum
 import java.math.BigDecimal
 import java.util.*
 
@@ -47,7 +51,13 @@ class QuoteCreditVariable : Fragment(), View.OnClickListener{
          R.id.btnCalc->calc()
          R.id.btnClear->holder.cleanField()
          R.id.btnSaveVariable->save()
+         R.id.btnAmortizationQCV->openAmortization()
      }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.N)
+    private fun openAmortization(){
+        AmortizationTableParams.newInstanceVariable(CalcMap().mapping(holder.downLoadFields()),findNavController())
     }
 
     @RequiresApi(Build.VERSION_CODES.N)
@@ -69,16 +79,6 @@ class QuoteCreditVariable : Fragment(), View.OnClickListener{
 
             val quote = holder.downLoadFields()
             val response = calc.calc(quote.value.get(), quote.period.get(), quote.tax.get())
-
-            (holder as ISpinnerHolder<QuoteCreditVariableHolder>).lists {
-                it.listMonths = mutableListOf()
-                for (i in 1..quote.period.get()) {
-                    it.listMonths.add(i.toString())
-                }
-                ArrayAdapter(requireContext(), R.layout.spinner1, it.listMonths).let { adapter->
-                    it.spMonth.setAdapter(adapter)
-                }
-            }
 
             quote.capitalValue = Optional.ofNullable(response)
             val responseInt = calcInt.calc(quote.value.get(), quote.period.get(), quote.tax.get())

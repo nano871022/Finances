@@ -21,17 +21,9 @@
             android:layout_height="match_parent"
             android:padding="@dimen/space_min"
             android:orientation="vertical">
-                <TextView
-                    android:id="@+id/lbTitleTaxes"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/taxes_credit_card"
-                    android:textAlignment="center"
-                    android:textSize="20sp"
-                    android:textStyle="bold" />
 
 
-                    <com.google.android.material.textfield.TextInputLayout
+            <com.google.android.material.textfield.TextInputLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         app:endIconMode="clear_text"

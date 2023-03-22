@@ -14,15 +14,6 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="20dp"
-            android:text="@string/title_toolbar_fragment_list_credit_card_setting"
-            android:textAlignment="center"
-            android:textSize="20sp"
-            android:textStyle="bold" />
-
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rvCreditCardSettingCCS"
             android:layout_width="match_parent"

@@ -34,7 +34,6 @@ class Taxes : Fragment() , View.OnClickListener{
     private lateinit var service:SaveSvc<TaxDTO>
     private lateinit var creditCardSvc:SaveSvc<CreditCardDTO>
     private lateinit var listCreditCard:List<CreditCardDTO>
-    private lateinit var listCreditCardNames:MutableList<String>
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreateView(
@@ -63,34 +62,14 @@ class Taxes : Fragment() , View.OnClickListener{
         service = TaxImpl(ConnectDB(view.context))
         creditCardSvc = CreditCardImpl( ConnectDB(view.context))
         listCreditCard  = creditCardSvc.getAll()
-        listCreditCardNames = listCreditCard.stream().map { it.name }.collect(Collectors.toList())
-        listCreditCardNames.add(0,"--- Seleccionar ---")
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
     private fun holderSetUp(){
         val today = LocalDate.now()
         holder.loadFields(TaxDTO(0,today.month.value.toShort(),today.year,0,0, LocalDateTime.now(),2.0,TaxEnum.CREDIT_CARD.ordinal.toShort(),0))
+        holder.cleanField()
 
-        (holder as ISpinnerHolder<TaxesHolder>).lists{
-            ArrayAdapter(this.requireContext(),R.layout.spinner_simple,R.id.tvValueBigSp,
-                listCreditCardNames.toTypedArray()).let{ adapter ->
-                it.creditCard.setAdapter(adapter)
-            }
-            if(listCreditCardNames.isNotEmpty() && listCreditCardNames.size == 2){
-                it.creditCard.setText(listCreditCardNames[1])
-            }
-            ArrayAdapter.createFromResource(this.requireContext(),R.array.Months,R.layout.spinner1).also { adapter ->
-                adapter.setDropDownViewResource(R.layout.spinner1)
-                it.month.setAdapter(adapter)
-            }
-            it.month.setText(resources.getStringArray(R.array.Months)[LocalDate.now().monthValue])
-            ArrayAdapter(this.requireContext(),R.layout.spinner_simple,R.id.tvValueBigSp,TaxEnum.values()).also { adapter ->
-                it.kind.setAdapter(adapter)
-            }
-            it.kind.setText(TaxEnum.CREDIT_CARD.name)
-
-        }
     }
 
     @RequiresApi(Build.VERSION_CODES.N)

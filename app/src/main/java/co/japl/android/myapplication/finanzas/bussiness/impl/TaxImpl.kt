@@ -99,15 +99,15 @@ class TaxImpl(override var dbConnect: SQLiteOpenHelper) :  SaveSvc<TaxDTO>,ITaxS
     }
 
     @RequiresApi(Build.VERSION_CODES.N)
-    override fun get(month:Int, year:Int,kind:TaxEnum):Optional<TaxDTO>{
+    override fun get(codCreditCard:Long,month:Int, year:Int,kind:TaxEnum):Optional<TaxDTO>{
         Log.d(this.javaClass.name,"<<<=== Start get - $month , $year")
         try {
             val db = dbConnect.writableDatabase
             val cursor = db.query(
                 TaxDB.TaxEntry.TABLE_NAME,
                 COLUMNS,
-                " ${TaxDB.TaxEntry.COLUMN_MONTH} = ? and ${TaxDB.TaxEntry.COLUMN_YEAR} = ? and ${TaxDB.TaxEntry.COLUMN_KIND} = ?",
-                arrayOf(month.toString(), year.toString(), kind.ordinal.toString()),
+                " ${TaxDB.TaxEntry.COLUMN_MONTH} = ? and ${TaxDB.TaxEntry.COLUMN_YEAR} = ? and ${TaxDB.TaxEntry.COLUMN_KIND} = ? and ${TaxDB.TaxEntry.COLUMN_COD_CREDIT_CARD} = ?",
+                arrayOf(month.toString(), year.toString(), kind.ordinal.toString(),codCreditCard.toString()),
                 null,
                 null,
                 null

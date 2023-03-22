@@ -15,6 +15,7 @@ class ViewHolder(itemView:View) : RecyclerView.ViewHolder(itemView) {
     lateinit var tvNameListSaveItem:TextView
     lateinit var tvTypeListSaveItem:TextView
     lateinit var btnDelete:ImageButton
+    lateinit var btnAmortization:ImageButton
     lateinit var tvCapitalValue:TextView
     lateinit var tvInterestValue:TextView
     lateinit var llCapitalValue:LinearLayout
@@ -32,6 +33,7 @@ class ViewHolder(itemView:View) : RecyclerView.ViewHolder(itemView) {
         tvInterestValue = view.findViewById(R.id.tvInterestValueList)
         llCapitalValue = view.findViewById(R.id.llCapitalBought)
         llInterestValue = view.findViewById(R.id.llInterestBought)
+        btnAmortization = view.findViewById(R.id.btnAmortization)
         llCapitalValue.visibility = View.INVISIBLE
         llInterestValue.visibility = View.INVISIBLE
     }

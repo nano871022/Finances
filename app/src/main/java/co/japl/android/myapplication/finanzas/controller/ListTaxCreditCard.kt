@@ -1,5 +1,6 @@
 package co.japl.android.myapplication.controller
 
+import android.app.AlertDialog
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -76,32 +77,27 @@ class ListTaxCreditCard : Fragment() {
         view.let{
             listCC = searchCCSvc.getAll()
             holder = TaxHolder(view,parentFragmentManager,findNavController(),listCC)
-            holder.setFields(null)
-            val list = listCC.toMutableList().stream().map { it.name }.collect(Collectors.toList())
-            list.add(0,"-- Seleccionar --")
-            holder.lists{
-                val adapter = ArrayAdapter(view.context,R.layout.spinner_simple,R.id.tvValueBigSp,list.toTypedArray())
-                it.creditCard.setAdapter(adapter)
-                it.creditCard.setOnItemClickListener { parent, _,position, _ ->
-                    run {
-                            parent.let {
-                                val selected = it?.getItemAtPosition(position)
-                                listCC.firstOrNull {
-                                    it.name == selected.toString()
-                                }?.let {
-                                    search(it)
-                                } ?: clearList()
-                            }
-                        }
+            holder.setFields(){
+                val builder = AlertDialog.Builder(view.context)
+                with(builder) {
+                    setItems(holder.list.map { "${it.id}. ${it.name}" }
+                        .toTypedArray()) { _, position ->
+                        holder.creditCard.setText(holder.list [position].name )
+                        search(holder.list[position])
+                    }
                 }
+                val dialog = builder.create()
+                dialog.show()
+            }
+            holder.lists{
                 it.lbNameTCC.setEndIconOnClickListener { _->
                     it.creditCard.setText("")
                     clearList()
                 }
                 loadRecycleView(it.recyclerView)
-                if(list.isNotEmpty() && list.size == 2){
-                    it.creditCard.setText(list[1])
-                    search(listCC[0])
+                if(listCC.isNotEmpty() && listCC.size == 1){
+                    it.creditCard.setText(listCC.first().name)
+                    search(listCC.first())
                 }
             }
         }

@@ -1,5 +1,6 @@
 package co.japl.android.myapplication.adapter
 
+import android.app.AlertDialog
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -47,17 +48,25 @@ class ListCreditCardSettingAdapter(var data:MutableList<CreditCardSettingDTO>, v
         holder.type.text = data[position].type
         holder.status.text = if(data[position].active == 1.toShort()) "Si" else "No"
         holder.delete.setOnClickListener {
-            if (saveSvc.delete(data[position].id)) {
-                Snackbar.make(view, R.string.delete_successfull, Snackbar.LENGTH_LONG)
-                    .setAction(R.string.close) {
-
-                    }
-                    .show().also { data.removeAt(position)
-                        this.notifyDataSetChanged()
-                        this.notifyItemRemoved(position) }
-            } else {
-                Snackbar.make(view, R.string.dont_deleted, Snackbar.LENGTH_LONG)
-                    .setAction(R.string.close,null).show()
+            var dialog = AlertDialog.Builder(view.context)
+                .setTitle(R.string.do_you_want_to_delete_this_record)
+                .setNegativeButton(R.string.cancel, null).setPositiveButton(R.string.delete, null)
+                .create()
+            dialog.show()
+            dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
+                if (saveSvc.delete(data[position].id)) {
+                    dialog.dismiss()
+                    Snackbar.make(view, R.string.delete_successfull, Snackbar.LENGTH_LONG)
+                        .setAction(R.string.close) {}
+                        .show().also {
+                            data.removeAt(position)
+                            this.notifyDataSetChanged()
+                            this.notifyItemRemoved(position)
+                        }
+                } else {
+                    Snackbar.make(view, R.string.dont_deleted, Snackbar.LENGTH_LONG)
+                        .setAction(R.string.close, null).show()
+                }
             }
         }
         holder.edit.setOnClickListener{

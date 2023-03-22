@@ -1,5 +1,6 @@
 package co.japl.android.myapplication.finanzas.holders
 
+import android.app.AlertDialog
 import android.graphics.Color
 import android.opengl.Visibility
 import android.os.Build
@@ -73,6 +74,7 @@ class QuoteBoughtHolder(var root:View,val supportManager:FragmentManager) : IHol
     private val cCSettingsvc:ICreditCardSettingSvc = CreditCardSettingImpl(ConnectDB(root.context))
     private lateinit var buyCCSDTO:Optional<BuyCreditCardSettingDTO>
     private lateinit var cCSettingList:List<CreditCardSettingDTO>
+    private val itemDefaultSelected = root.resources?.getString(R.string.item_select)
 
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -139,15 +141,44 @@ class QuoteBoughtHolder(var root:View,val supportManager:FragmentManager) : IHol
 
         if(cCSettingList.isNotEmpty()){
                 llTypeSetting.visibility = View.VISIBLE
-            ArrayAdapter(
-                root.context,
-                R.layout.spinner_simple,
-                R.id.tvValueBigSp,
-                root.resources.getStringArray(R.array.CreditCardSettingType)
-            ).let {
-                spTypeSetting.setAdapter(it)
+            spTypeSetting.setOnClickListener {
+                val builder = AlertDialog.Builder(it.context)
+                with(builder){
+                    val items = it.resources.getStringArray(R.array.CreditCardSettingType)
+                    setItems(items){ _,position ->
+                        val value = items[position]
+                        spTypeSetting.setText(value)
+                        if(value != itemDefaultSelected) {
+                            val list = cCSettingList.filter { it.type == spTypeSetting.text.toString() }
+                                .map { "${it.id}. ${it.name}" }.toMutableList()
+                            if(list.size > 0) {
+                                llNameSetting.visibility = View.VISIBLE
+                                spNameSetting.setOnClickListener {
+                                    val builder = AlertDialog.Builder(it.context)
+                                    with(builder){
+                                        setItems(list.toTypedArray()){ _,position->
+                                            val value = list[position]
+                                            if(value != itemDefaultSelected) {
+                                                spNameSetting.setText(value)
+                                                calc()
+                                            }
+                                        }
+                                    }
+                                    builder.create().show()
+                                }
+
+                            }else if(root.context != null && root.resources != null && root.resources?.getString(R.string.type_setting_does_not_record) != null){
+                                Toast.makeText(root.context,root.resources?.getString(R.string.type_setting_does_not_record),Toast.LENGTH_LONG).show()
+                            }
+                        }else{
+                            llNameSetting.visibility = View.INVISIBLE
+                            etTax.text = "$taxMonthly %"
+                        }
+                    }
+                }
+                builder.create().show()
+
             }
-            onItemSelected()
         }
     }
 
@@ -259,7 +290,7 @@ class QuoteBoughtHolder(var root:View,val supportManager:FragmentManager) : IHol
             etTax.text = "${taxValue.toString()} %"
             taxValue
         }else {
-            etTax.text.toString().toDouble()
+            etTax.text.toString().replace("%","").trim().toDouble()
         }
         if(period == 1L){
             llTax.visibility = View.INVISIBLE
@@ -300,39 +331,6 @@ class QuoteBoughtHolder(var root:View,val supportManager:FragmentManager) : IHol
             0,
             if (chRecurrent.isChecked) 1 else 0,
             KindBoughtEnum.BOUGHT.kind)
-    }
-
-    fun onItemSelected() {
-        val itemDefaultSelected = root.resources?.getString(R.string.item_select)
-        spNameSetting.setOnItemClickListener{ adapter,_,position,_->
-            val value = adapter.getItemAtPosition(position)
-                if(value != itemDefaultSelected) {
-                    calc()
-                }
-            }
-        spTypeSetting.setOnItemClickListener{ adapter,_,position,_->
-            val value = adapter.getItemAtPosition(position)
-                if(value != itemDefaultSelected) {
-                    val list = cCSettingList.filter { it.type == spTypeSetting.text.toString() }
-                        .map { "${it.id}. ${it.name}" }.toMutableList()
-                    if(list.size > 0) {
-                        list.add(0, root.resources?.getString(R.string.item_select)!!)
-                        llNameSetting.visibility = View.VISIBLE
-                        ArrayAdapter(
-                            root.context,
-                            R.layout.spinner_simple,
-                            R.id.tvValueBigSp,
-                            list.toTypedArray()
-                        ).let {
-                            spNameSetting.setAdapter(it)
-                        }
-                    }else if(root.context != null && root.resources != null && root.resources?.getString(R.string.type_setting_does_not_record) != null){
-                        Toast.makeText(root.context,root.resources?.getString(R.string.type_setting_does_not_record),Toast.LENGTH_LONG).show()
-                    }
-                }else{
-                    llNameSetting.visibility = View.INVISIBLE
-                }
-            }
     }
 
     override fun lists(fn: ((QuoteBoughtHolder) -> Unit)?) {

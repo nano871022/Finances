@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
@@ -24,6 +25,7 @@ import co.japl.android.myapplication.finanzas.bussiness.interfaces.IGetPeriodsSe
 import co.japl.android.myapplication.finanzas.putParams.PeriodsParams
 import co.japl.android.myapplication.holders.view.PeriodItemHolder
 import co.japl.android.myapplication.holders.view.ViewHolder
+import java.util.Collections
 import kotlin.properties.Delegates
 
 class ListQuotesPaid : Fragment() {
@@ -53,9 +55,26 @@ class ListQuotesPaid : Fragment() {
     }
 
     private fun loadRecyclerView(){
-        recyclerView.layoutManager = LinearLayoutManager(contexts,LinearLayoutManager.VERTICAL,false)
-        adapter = ListPeriodAdapter(list as MutableList<PeriodDTO>, findNavController())
-        recyclerView.adapter = adapter
+        try {
+            if (list.isEmpty()) {
+                PeriodsParams.Companion.Historical.toBack(findNavController())
+                Toast.makeText(
+                    context,
+                    resources.getString(R.string.there_are_not_data),
+                    Toast.LENGTH_LONG
+                ).show()
+            }
+            recyclerView.layoutManager =
+                LinearLayoutManager(contexts, LinearLayoutManager.VERTICAL, false)
+            adapter = ListPeriodAdapter(list as MutableList<PeriodDTO>, findNavController())
+            recyclerView.adapter = adapter
+        }catch(e:java.lang.ClassCastException){
+            Toast.makeText(
+                context,
+                resources.getString(R.string.there_are_not_data),
+                Toast.LENGTH_LONG
+            ).show()
+        }
     }
     private fun connectDB(){
         dbConnect = ConnectDB(contexts)

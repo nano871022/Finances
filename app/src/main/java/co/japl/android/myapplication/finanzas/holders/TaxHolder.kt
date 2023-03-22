@@ -1,5 +1,6 @@
 package co.japl.android.myapplication.holders
 
+import android.app.AlertDialog
 import android.os.Build
 import android.util.Log
 import android.view.View
@@ -30,7 +31,6 @@ class TaxHolder (var view:View,var parentFragmentManager:FragmentManager,var nav
     lateinit var creditCard:MaterialAutoCompleteTextView
     lateinit var recyclerView: RecyclerView
     lateinit var add:Button
-    private var positionCreditCard:Int = 0
     lateinit var lbNameTCC: TextInputLayout
 
     override fun setFields(actions: View.OnClickListener?) {
@@ -38,8 +38,9 @@ class TaxHolder (var view:View,var parentFragmentManager:FragmentManager,var nav
         recyclerView = view.findViewById(R.id.rvTaxCC)
         add = view.findViewById(R.id.btnAddTCC)
         add.setOnClickListener(this)
-        creditCard.setOnClickListener(this)
+        creditCard.setOnClickListener(actions)
         lbNameTCC = view.findViewById(R.id.lbNameTCC)
+        creditCard.isFocusable = false
     }
 
     override fun loadFields(values: TaxDTO) {
@@ -60,8 +61,6 @@ class TaxHolder (var view:View,var parentFragmentManager:FragmentManager,var nav
     }
 
     override fun cleanField() {
-        //(creditCard.selectedView.findViewById(R.id.tvValueBigSp) as TextView).text = creditCard.getItemAtPosition(0).toString()
-        creditCard.setSelection(1)
     }
 
     override fun validate(): Boolean {
@@ -75,7 +74,6 @@ class TaxHolder (var view:View,var parentFragmentManager:FragmentManager,var nav
     override fun onClick(v: View?) {
         when(v?.id) {
           R.id.btnAddTCC ->  TaxesParams.newInstance(navController)
-            R.id.spNameCCTCC -> creditCard.showDropDown()
             R.id.lbNameTCC -> Log.d(this.javaClass.name,"Lb Nmave tcc")
         }
     }

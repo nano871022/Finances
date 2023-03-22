@@ -87,30 +87,38 @@ class PeriodsMap (private val taxSvc:ITaxSvc, private val buyCCSettingSvc:BuyCre
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    fun maping(cursor:Cursor,cutoffDate:Int):PeriodDTO{
+    fun maping(cursor:Cursor,cutoffDate:Int):Optional<PeriodDTO>{
         val id = cursor.getInt(0)
         val creditCardSettingDto = getSettings(id)
+        if(creditCardSettingDto.isPresent) {
+            Log.d(javaClass.name, "Mapping $creditCardSettingDto $id")
+            val endDate = getEndDate(cursor, cutoffDate)
 
-        val endDate = getEndDate(cursor,cutoffDate)
+            val tax = taxSvc.get(
+                creditCardSettingDto.get().codeCreditCard.toLong(),
+                endDate.year,
+                endDate.monthValue,
+                TaxEnum.CREDIT_CARD
+            )
 
-        val tax = taxSvc.get(endDate.year,endDate.monthValue,TaxEnum.CREDIT_CARD)
+            val startDate = getStartDate(endDate, cutoffDate)
+            val interestPercent = getTax(cursor, tax, creditCardSettingDto)
 
-        val startDate = getStartDate(endDate,cutoffDate)
-        val interestPercent = getTax(cursor,tax,creditCardSettingDto)
+            val valueBought = cursor.getDouble(6).toBigDecimal()
+            val month = cursor.getInt(7).toBigDecimal()
+            val interest = getInterestValue(month, valueBought, interestPercent)
 
-        val valueBought = cursor.getDouble(6).toBigDecimal()
-        val month = cursor.getInt(7).toBigDecimal()
-        val interest = getInterestValue(month,valueBought,interestPercent)
+            val capital = getCapitalValue(month, valueBought)
 
-        val capital = getCapitalValue(month,valueBought)
-
-        return PeriodDTO(
-            cursor.getInt(5),
-            startDate,
-            endDate,
-            interest,
-            capital,
-            capital.plus(interest)
-        )
+            return Optional.of(PeriodDTO(
+                cursor.getInt(5),
+                startDate,
+                endDate,
+                interest,
+                capital,
+                capital.plus(interest)
+            ))
+        }
+        return Optional.empty()
     }
 }
