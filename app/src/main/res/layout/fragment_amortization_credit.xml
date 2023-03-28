@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:padding="@dimen/padding_page"
+    tools:context=".finanzas.controller.AmortizationCreditFragment">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            app:strokeWidth="@dimen/stroke_with"
+            app:cardCornerRadius="@dimen/radius_corner"
+            app:cardElevation="@dimen/card_elevator"
+            android:layout_height="wrap_content">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/space_min"
+                android:orientation="vertical">
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:background="@color/green_light_trans"
+                    android:layout_weight="1"
+                    android:padding="@dimen/space_min"
+                    android:layout_margin="@dimen/space_min"
+                    app:prefixText="@string/date_credit"
+                    android:layout_height="wrap_content">
+                    <com.google.android.material.textview.MaterialTextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/date_acf"
+                        android:hint="@string/date_hint"
+                        android:textAlignment="center"/>
+                </com.google.android.material.textfield.TextInputLayout>
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:layout_width="match_parent"
+                        android:background="@color/green_light_trans"
+                        android:layout_weight="1"
+                        android:padding="@dimen/space_min"
+                        android:layout_margin="@dimen/space_min"
+                        app:prefixText="@string/periods"
+                        android:layout_height="wrap_content">
+                        <com.google.android.material.textview.MaterialTextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/period_acf"
+                            android:hint="@string/months_number_hint"
+                            android:textAlignment="center"/>
+                    </com.google.android.material.textfield.TextInputLayout>
+
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:background="@color/green_light_trans"
+                    android:layout_weight="1"
+                    android:padding="@dimen/space_min"
+                    android:layout_margin="@dimen/space_min"
+                    app:prefixText="@string/interest_to_pay_value"
+                    android:layout_height="wrap_content">
+                    <com.google.android.material.textview.MaterialTextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/interest_acf"
+                        android:hint="@string/money_hint"
+                        android:textAlignment="center"/>
+                </com.google.android.material.textfield.TextInputLayout>
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:layout_width="match_parent"
+                        android:background="@color/green_light_trans"
+                        android:padding="@dimen/space_min"
+                        android:layout_weight="1"
+                        android:layout_margin="@dimen/space_min"
+                        app:prefixText="@string/additional_monthly"
+                        android:layout_height="wrap_content">
+                        <com.google.android.material.textview.MaterialTextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/additional_monthly__acf"
+                            android:hint="@string/money_hint"
+                            android:textAlignment="center"/>
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:background="@color/green_light_trans"
+                    android:padding="@dimen/space_min"
+                    android:layout_weight="1"
+                    android:layout_margin="@dimen/space_min"
+                    app:prefixText="@string/additional_to_pay"
+                    android:layout_height="wrap_content">
+                    <com.google.android.material.textview.MaterialTextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/additional_acf"
+                        android:hint="@string/money_hint"
+                        android:textAlignment="center"/>
+                </com.google.android.material.textfield.TextInputLayout>
+                </LinearLayout>
+
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:background="@color/green_light_trans"
+                    android:padding="@dimen/space_min"
+                    android:layout_weight="1"
+                    android:layout_margin="@dimen/space_min"
+                    app:prefixText="@string/quote_value"
+                    android:layout_height="wrap_content">
+                    <com.google.android.material.textview.MaterialTextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/quote_acf"
+                        android:hint="@string/money_hint"
+                        android:textAlignment="center"/>
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <TableLayout
+                    android:layout_width="match_parent"
+                    android:layout_margin="@dimen/space_min"
+                    android:padding="@dimen/space_min"
+                    android:id="@+id/amortization_acf"
+                    android:layout_height="wrap_content">
+
+                    <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@color/green_background"    >
+                        <com.google.android.material.textview.MaterialTextView
+                            android:layout_width="match_parent"
+                            android:layout_weight="1"
+                            android:textAlignment="center"
+                            android:layout_height="wrap_content"
+                            android:padding="@dimen/space_min"
+                            android:textColor="@color/white"
+                            android:text="#"/>
+
+                        <com.google.android.material.textview.MaterialTextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textAlignment="center"
+                            android:layout_weight="1"
+                            android:padding="@dimen/space_min"
+                            android:textColor="@color/white"
+                            android:text="@string/value"/>
+
+                        <com.google.android.material.textview.MaterialTextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textAlignment="center"
+                            android:layout_weight="1"
+                            android:padding="@dimen/space_min"
+                            android:textColor="@color/white"
+                            android:text="@string/capital_value"/>
+
+                        <com.google.android.material.textview.MaterialTextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textAlignment="center"
+                            android:layout_weight="1"
+                            android:padding="@dimen/space_min"
+                            android:textColor="@color/white"
+                            android:text="@string/interest_value"/>
+                    </TableRow>
+
+
+                </TableLayout>
+
+            </LinearLayout>
+
+        </com.google.android.material.card.MaterialCardView>
+
+    </ScrollView>
+
+
+
+
+</LinearLayout>

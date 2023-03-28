@@ -16,6 +16,7 @@ import co.japl.android.myapplication.bussiness.interfaces.CalcInterest
 import co.japl.android.myapplication.bussiness.interfaces.IHolder
 import co.japl.android.myapplication.bussiness.interfaces.ISpinnerHolder
 import co.japl.android.myapplication.finanzas.pojo.QuoteCreditCard
+import co.japl.android.myapplication.finanzas.utils.KindOfTaxEnum
 import co.japl.android.myapplication.utils.CalcEnum
 import co.japl.android.myapplication.utils.NumbersUtil
 import com.google.android.material.textfield.MaterialAutoCompleteTextView
@@ -109,12 +110,10 @@ class QuoteCreditVariableHolder(var container: View):IHolder<QuoteCreditCard>{
         val capital = this.quote.getCapitalValue().orElse(BigDecimal.ZERO)
         val interest = this.quote.getInterestValue().orElse(BigDecimal.ZERO)
         val total = this.quote.getResponse().orElse(BigDecimal.ZERO)
-        Log.d(this.javaClass.name,"Capital $capital")
-        Log.d(this.javaClass.name,"Interest $interest")
-        Log.d(this.javaClass.name,"Total $total")
         quote.capitalValue = Optional.ofNullable(capital)
         quote.interestValue = Optional.ofNullable(interest)
         quote.response = Optional.ofNullable(total)
+        quote.kindOfTax = Optional.of(KindOfTaxEnum.EM.name)
         months = IntStream.range(1,quote.period.orElse(0).toInt() + 1).toList().toTypedArray()
         return quote
     }
@@ -156,7 +155,7 @@ class QuoteCreditVariableHolder(var container: View):IHolder<QuoteCreditCard>{
             val value = NumbersUtil.toBigDecimal(etValueCredit      )
             val period = etMonths.text.toString().toLong()
             val tax = etTax.text.toString().toDouble()
-            val response = calc.calc(value, period, tax)
+            val response = calc.calc(value, period, tax,KindOfTaxEnum.EM)
             var totalValue = BigDecimal(0)
 
             val interest = calcQuoteInt.calc(value,period,tax,month.toString().toLong())

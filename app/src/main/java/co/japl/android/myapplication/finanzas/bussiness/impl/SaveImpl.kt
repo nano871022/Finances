@@ -27,7 +27,8 @@ class SaveImpl(override var dbConnect: SQLiteOpenHelper) : SaveSvc<CalcDTO> {
         ,CalcDB.CalcEntry.COLUMN_QUOTE_CREDIT
         ,CalcDB.CalcEntry.COLUMN_VALUE_CREDIT
         ,CalcDB.CalcEntry.COLUMN_INTEREST_VALUE
-        ,CalcDB.CalcEntry.COLUMN_CAPITAL_VALUE)
+        ,CalcDB.CalcEntry.COLUMN_CAPITAL_VALUE
+        ,CalcDB.CalcEntry.COLUMN_KIND_OF_TAX)
 
     override fun save(calc: CalcDTO): Long {
         val db = dbConnect.writableDatabase

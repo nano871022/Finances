@@ -21,6 +21,7 @@ import co.japl.android.myapplication.bussiness.interfaces.*
 import co.japl.android.myapplication.finanzas.bussiness.impl.BuyCreditCardSettingImpl
 import co.japl.android.myapplication.finanzas.holders.QuoteBoughtHolder
 import co.japl.android.myapplication.finanzas.putParams.CreditCardQuotesParams
+import co.japl.android.myapplication.finanzas.utils.KindOfTaxEnum
 import com.google.android.material.datepicker.MaterialDatePicker
 import java.math.BigDecimal
 import java.text.SimpleDateFormat
@@ -71,7 +72,7 @@ class QuoteBought : Fragment(), View.OnClickListener{
                 val dto = CreditCardBoughtDTO(
                     creditCardCode, creditCard.get().name, "", BigDecimal.ZERO, tax.get()
                         .value, 0, LocalDateTime.now(), cutOffDate, LocalDateTime.now(), 0, 0, 0
-                )
+                ,KindOfTaxEnum.EM.name )
                 holder.loadFields(dto)
             } else {
                 Toast.makeText(

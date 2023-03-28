@@ -4,6 +4,7 @@ import android.os.Build
 import android.util.Log
 import android.widget.EditText
 import androidx.annotation.RequiresApi
+import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.Month
 import java.time.Period
@@ -18,8 +19,19 @@ class DateUtils {
         }
 
         @RequiresApi(Build.VERSION_CODES.O)
+        fun toLocalDate(value: String): LocalDate {
+            val date = value.split("/")
+            return LocalDate.of(date[2].toInt(), date[1].toInt(), date[0].toInt())
+        }
+
+        @RequiresApi(Build.VERSION_CODES.O)
         fun localDateTimeToString(value: LocalDateTime): String {
             return DateTimeFormatter.ofPattern("dd/MM/yyyy").format(value)
+        }
+
+        @RequiresApi(Build.VERSION_CODES.O)
+        fun localDateToString(value: LocalDate): String {
+            return DateTimeFormatter.ofPattern("dd/MM/yyyy").format(value).replace("+","").substring(0,10)
         }
 
         @RequiresApi(Build.VERSION_CODES.O)

@@ -15,6 +15,7 @@ class QuoteCreditCard {
     lateinit var type:CalcEnum
     lateinit var interestValue:Optional<BigDecimal>
     lateinit var capitalValue:Optional<BigDecimal>
+    lateinit var kindOfTax:Optional<String>
 
     @RequiresApi(Build.VERSION_CODES.N)
     @JvmName("getInterestValue1")

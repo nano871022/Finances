@@ -2,13 +2,18 @@ package co.japl.android.myapplication.bussiness.impl
 
 import android.util.Log
 import co.japl.android.myapplication.bussiness.interfaces.Calc
+import co.japl.android.myapplication.finanzas.bussiness.impl.KindOfTaxImpl
+import co.japl.android.myapplication.finanzas.bussiness.interfaces.IKindOfTaxSvc
+import co.japl.android.myapplication.finanzas.utils.KindOfTaxEnum
 import java.math.BigDecimal
 
 class QuoteCreditVariableInterest : Calc {
+    private val kindOfTaxSvc:IKindOfTaxSvc = KindOfTaxImpl()
 
-    override fun calc(value: BigDecimal, period: Long, tax: Double): BigDecimal {
+    override fun calc(value: BigDecimal, period: Long, tax: Double,kindOf: KindOfTaxEnum): BigDecimal {
         Log.d(this.javaClass.name,"<<<=== START:: Calc: Credit Value $value")
-        val taxDouble = getTax(tax)
+        val taxValue = kindOfTaxSvc.getNM(tax,kindOf)
+        val taxDouble = getTax(taxValue)
         return value.multiply(taxDouble.toBigDecimal())
     }
 

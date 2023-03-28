@@ -19,6 +19,21 @@ class CalculationConnectDB : IConnectDB{
         if(oldVersion <  DatabaseConstants.DATA_BASE_VERSION_MINUS) {
             db?.execSQL(CalculationQuery.SQL_DELETE_ENTRIES)
             onCreate(db)
+        }else{
+            var findVersion = oldVersion + 1
+            while (findVersion <= newVersion){
+                try {
+                    val value = findVersion.toString()
+                    if (CalculationQuery.SQL_ALTER.containsKey(value)) {
+                        val query = CalculationQuery.SQL_ALTER[value]
+                        db?.execSQL(query)
+                    }
+                }catch(e:Exception){
+                    Log.e(javaClass.name,"Exception $e continue $findVersion")
+                }finally{
+                    findVersion++
+                }
+            }
         }
         Log.i(this.javaClass.name,"<<<=== CalculationConnectDB#OnUpgrade - End")
     }

@@ -8,8 +8,13 @@ import android.widget.TextView
 import androidx.core.view.setPadding
 import co.japl.android.myapplication.R
 import co.japl.android.myapplication.bussiness.DTO.CalcDTO
+import co.japl.android.myapplication.bussiness.impl.TaxImpl
+import co.japl.android.myapplication.bussiness.interfaces.ITaxSvc
 import co.japl.android.myapplication.finanzas.bussiness.DTO.Amortization
+import co.japl.android.myapplication.finanzas.bussiness.impl.KindOfTaxImpl
+import co.japl.android.myapplication.finanzas.bussiness.interfaces.IKindOfTaxSvc
 import co.japl.android.myapplication.finanzas.bussiness.interfaces.ITableHolder
+import co.japl.android.myapplication.finanzas.utils.KindOfTaxEnum
 import co.japl.android.myapplication.utils.CalcEnum
 import co.japl.android.myapplication.utils.NumbersUtil
 import com.google.android.material.textfield.TextInputLayout
@@ -17,6 +22,7 @@ import com.google.android.material.textview.MaterialTextView
 import java.math.BigDecimal
 
 class AmortizationTableHolder(val view:View):ITableHolder<CalcDTO> {
+    private val kindOfTaxSvc:IKindOfTaxSvc = KindOfTaxImpl()
     private lateinit var table: TableLayout
     private lateinit var creditData: CalcDTO
     private lateinit var amortizationList: ArrayList<Amortization>
@@ -105,12 +111,14 @@ class AmortizationTableHolder(val view:View):ITableHolder<CalcDTO> {
     private fun quoteVariableCalc(){
         var currentCreditValue = creditData.valueCredit
         for ( period in 1 .. creditData.period){
-            val interest = currentCreditValue * (creditData.interest / 100).toBigDecimal()
-            currentCreditValue -=  creditData.capitalValue
+            val tax = kindOfTaxSvc.getNM(creditData.interest,KindOfTaxEnum.valueOf(creditData.kindOfTax)) / 100
+            val interest = currentCreditValue * tax.toBigDecimal()
+            val capital = creditData.quoteCredit - interest
+            currentCreditValue -=  capital
             amortizationList.add(Amortization(period.toInt(),
                 currentCreditValue + creditData.capitalValue,
-                interest,creditData.capitalValue,
-                creditData.capitalValue + interest,
+                interest,capital,
+                capital + interest,
                 currentCreditValue))
             interesToPay += interest
         }

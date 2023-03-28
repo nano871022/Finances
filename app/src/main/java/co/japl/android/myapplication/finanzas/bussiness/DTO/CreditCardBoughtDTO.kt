@@ -16,7 +16,8 @@ data class CreditCardBoughtDTO (
     var createDate: LocalDateTime,
     var id:Int,
     var recurrent:Short,
-    var kind:Short
+    var kind:Short,
+    var kindOfTax:String
 )
 
 object CreditCardBoughtDB{
@@ -32,5 +33,6 @@ object CreditCardBoughtDB{
         const val COLUMN_CREATE_DATE = "dt_create"
         const val COLUMN_RECURRENT = "num_recurrent"
         const val COLUMN_KIND = "num_kind"
+        const val COLUMN_KIND_OF_TAX = "str_kind_of_tax"
     }
 }

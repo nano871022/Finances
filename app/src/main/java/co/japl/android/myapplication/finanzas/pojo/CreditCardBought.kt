@@ -19,6 +19,7 @@ class CreditCardBought {
     var recurrent :Short? = null
     var kind :Short? = null
     var quoteValue :BigDecimal? = null
+    var kindOfTax: String? = null
 
 
 }

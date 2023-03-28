@@ -12,8 +12,8 @@ android {
         applicationId "co.japl.android.myapplication"
         minSdk 21
         targetSdk 33
-        versionCode 19
-        versionName "Ajuste errores encontrados despues del despliegue anterior"
+        versionCode 20
+        versionName "Informacion de creditos tomados con cada una de las fechas a pagar por cada credito el valor total mensual a pagar, ademas los creditos pueden tener valores adicionales como seguros que se le adjuntan a los creditos"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }

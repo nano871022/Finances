@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:cardCornerRadius="@dimen/radius_corner"
+    app:strokeWidth="@dimen/stroke_with"
+    android:layout_margin="@dimen/space_min"
+    android:padding="@dimen/space_min"
+    app:cardElevation="@dimen/card_elevator">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:background="@color/green_light_trans"
+            android:layout_margin="@dimen/space_min"
+            android:padding="@dimen/space_min"
+            android:layout_weight="1"
+            app:prefixText="@string/date_bill"
+            android:layout_height="match_parent">
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/month_year_pcil"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/date_hint"
+                android:textAlignment="center" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:background="@color/green_light_trans"
+            android:layout_margin="@dimen/space_min"
+            android:padding="@dimen/space_min"
+            android:layout_weight="1"
+            app:prefixText="@string/num_credits"
+            android:layout_height="match_parent">
+            <com.google.android.material.textview.MaterialTextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/num_credits_pcil"
+                android:textAlignment="textEnd"
+                android:hint="@string/num_credits_hint"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:background="@color/green_light_trans"
+            android:layout_margin="@dimen/space_min"
+            android:layout_weight="1"
+            android:padding="@dimen/space_min"
+            app:prefixText="@string/value"
+            android:layout_height="match_parent">
+            <com.google.android.material.textview.MaterialTextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAlignment="textEnd"
+                android:id="@+id/value_pcil"
+                android:hint="@string/money_hint"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
+
+        <ImageView
+            android:id="@+id/btn_credits_pcil"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="0"
+            app:srcCompat="@android:drawable/ic_menu_search" />
+    </LinearLayout>
+
+</com.google.android.material.card.MaterialCardView>

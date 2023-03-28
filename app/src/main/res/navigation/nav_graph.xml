@@ -203,5 +203,69 @@
         android:name="co.japl.android.myapplication.finanzas.controller.AmortizationTableFragment"
         android:label="@string/amortization_table"
         tools:layout="@layout/fragment_amortization_table" />
+    <fragment
+        android:id="@+id/additionalCreditFragment"
+        android:name="co.japl.android.myapplication.finanzas.controller.AdditionalCreditFragment"
+        android:label="@string/aditional"
+        tools:layout="@layout/fragment_additional_credit" />
+    <fragment
+        android:id="@+id/additionalListFragment"
+        android:name="co.japl.android.myapplication.finanzas.controller.AdditionalListFragment"
+        android:label="@string/additional_list"
+        tools:layout="@layout/fragment_additional_list" >
+        <action
+            android:id="@+id/action_additionalListFragment_to_additionalCreditFragment"
+            app:destination="@id/additionalCreditFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/creditFixFragment"
+        android:name="co.japl.android.myapplication.finanzas.controller.CreditFixFragment"
+        android:label="@string/credit_fix"
+        tools:layout="@layout/fragment_credit_fix" >
+        <action
+            android:id="@+id/action_creditFixFragment_to_additionalListFragment"
+            app:destination="@id/additionalListFragment" />
+        <action
+            android:id="@+id/action_creditFixFragment_to_amortizationCreditFragment"
+            app:destination="@id/amortizationCreditFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/amortizationCreditFragment"
+        android:name="co.japl.android.myapplication.finanzas.controller.AmortizationCreditFragment"
+        android:label="@string/amortization_table"
+        tools:layout="@layout/fragment_amortization_credit" />
+    <fragment
+        android:id="@+id/creditListFragment"
+        android:name="co.japl.android.myapplication.finanzas.controller.CreditListFragment"
+        android:label="@string/credit_list"
+        tools:layout="@layout/fragment_credit_list" >
+        <action
+            android:id="@+id/action_creditListFragment_to_creditFixFragment"
+            app:destination="@id/creditFixFragment" />
+        <action
+            android:id="@+id/action_creditListFragment_to_monthlyCreditListFragment"
+            app:destination="@id/monthlyCreditListFragment" />
+        <action
+            android:id="@+id/action_creditListFragment_to_periodCreditListFragment"
+            app:destination="@id/periodCreditListFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/monthlyCreditListFragment"
+        android:name="co.japl.android.myapplication.finanzas.controller.MonthlyCreditListFragment"
+        android:label="@string/credit_list"
+        tools:layout="@layout/fragment_monthly_credit_list" >
+        <action
+            android:id="@+id/action_monthlyCreditListFragment_to_amortizationCreditFragment"
+            app:destination="@id/amortizationCreditFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/periodCreditListFragment"
+        android:name="co.japl.android.myapplication.finanzas.controller.PeriodCreditListFragment"
+        android:label="@string/list_periods"
+        tools:layout="@layout/fragment_period_credit_list" >
+        <action
+            android:id="@+id/action_periodCreditListFragment_to_monthlyCreditListFragment"
+            app:destination="@id/monthlyCreditListFragment" />
+    </fragment>
 
 </navigation>

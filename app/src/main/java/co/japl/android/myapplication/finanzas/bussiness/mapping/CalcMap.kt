@@ -8,6 +8,7 @@ import co.japl.android.myapplication.bussiness.DTO.CalcDB
 import co.japl.android.myapplication.bussiness.DTO.CalcDTO
 import co.japl.android.myapplication.bussiness.DTO.CreditCardBoughtDTO
 import co.japl.android.myapplication.finanzas.pojo.QuoteCreditCard
+import co.japl.android.myapplication.finanzas.utils.KindOfTaxEnum
 import co.japl.android.myapplication.utils.CalcEnum
 import java.math.BigDecimal
 
@@ -22,6 +23,7 @@ class CalcMap {
             put(CalcDB.CalcEntry.COLUMN_TYPE,dto.type)
             put(CalcDB.CalcEntry.COLUMN_INTEREST_VALUE,dto.interestValue.toDouble())
             put(CalcDB.CalcEntry.COLUMN_CAPITAL_VALUE,dto.capitalValue.toDouble())
+            put(CalcDB.CalcEntry.COLUMN_KIND_OF_TAX,dto.kindOfTax)
         }
     }
 
@@ -34,6 +36,7 @@ class CalcMap {
         var type = cursor.getString(2)
         var interestValue = cursor.getString(7).toBigDecimal()
         var capitalValue = cursor.getString(8).toBigDecimal()
+        val kindOfTax = cursor.getString(9)
         if(type == null || type.isBlank()){
             type = "fix"
         }
@@ -46,7 +49,8 @@ class CalcMap {
             ,type
             ,id
             ,interestValue
-            ,capitalValue )
+            ,capitalValue
+            ,kindOfTax)
     }
 
     @RequiresApi(Build.VERSION_CODES.N)
@@ -60,10 +64,11 @@ class CalcMap {
             ,0
             , quoteCreditCard.interestValue.orElse(BigDecimal.ZERO)
             , quoteCreditCard.capitalValue.orElse(BigDecimal.ZERO)
+            , quoteCreditCard.kindOfTax.orElse(KindOfTaxEnum.EM.name)
         )
     }
 
-    fun mapping(creditCardBought:CreditCardBoughtDTO,quoteValue:BigDecimal,interestValue:BigDecimal,capitalValue:BigDecimal):CalcDTO{
+    fun mapping(creditCardBought:CreditCardBoughtDTO,quoteValue:BigDecimal,interestValue:BigDecimal,capitalValue:BigDecimal,kindOfTax:KindOfTaxEnum):CalcDTO{
         return CalcDTO(creditCardBought.nameItem,
         creditCardBought.valueItem,
         creditCardBought.interest,
@@ -72,7 +77,8 @@ class CalcMap {
         CalcEnum.VARIABLE.toString(),
         0,
         interestValue,
-        capitalValue)
+        capitalValue,
+        kindOfTax.name)
 
     }
 }

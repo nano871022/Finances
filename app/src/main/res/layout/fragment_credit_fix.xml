@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:padding="@dimen/padding_page"
+    tools:context=".finanzas.controller.CreditFixFragment">
+
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+<com.google.android.material.card.MaterialCardView
+    android:layout_width="match_parent"
+    app:cardCornerRadius="@dimen/radius_corner"
+    app:strokeWidth="@dimen/stroke_with"
+    app:cardElevation="@dimen/card_elevator"
+    android:layout_height="wrap_content">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/space_min"
+            android:orientation="vertical" >
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/space_min"
+                android:hint="@string/kind_of_pay">
+                <com.google.android.material.textfield.TextInputEditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:focusable="false"
+                    android:textAlignment="center"
+                    android:text="@string/default_kind_of_pay"
+                    android:id="@+id/kindOfCFF"
+                    />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/space_min"
+                app:endIconMode="clear_text"
+                android:hint="@string/date_credit">
+                <com.google.android.material.textfield.TextInputEditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textAlignment="center"
+                    android:id="@+id/dateCFF"
+                    android:focusable="false"
+                    />
+            </com.google.android.material.textfield.TextInputLayout>
+
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/space_min"
+                app:endIconMode="clear_text"
+                android:hint="@string/name">
+                <com.google.android.material.textfield.TextInputEditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textAlignment="center"
+                    android:id="@+id/NameCFF"
+                    />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/space_min"
+                app:endIconMode="clear_text"
+                android:hint="@string/value"
+                app:prefixText="$">
+                <com.google.android.material.textfield.TextInputEditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textAlignment="center"
+                    android:inputType="numberDecimal"
+                    android:id="@+id/valueCFF"
+                    />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/space_min"
+                android:layout_weight="1"
+                app:endIconMode="clear_text"
+                app:suffixText="@string/percent_symbol"
+                android:hint="@string/tax">
+                <com.google.android.material.textfield.TextInputEditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textAlignment="center"
+                    android:inputType="numberDecimal"
+                    android:id="@+id/taxCFF"
+                    />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/space_min"
+                android:layout_weight="2"
+                app:endIconMode="clear_text"
+                android:hint="@string/kind_of_tax">
+                <com.google.android.material.textfield.TextInputEditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textAlignment="center"
+                    android:focusable="false"
+                    android:text="EM"
+                    android:id="@+id/kind_of_tax_CFF"
+                    />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            </LinearLayout>
+            <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+                android:layout_margin="@dimen/space_min"
+            app:endIconMode="clear_text"
+            android:hint="@string/periods">
+            <com.google.android.material.textfield.TextInputEditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/periodsCFF"
+                android:textAlignment="center"
+                android:inputType="number"
+                />
+        </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/space_min"
+                android:background="@color/green_light_trans"
+                app:prefixText="@string/quote_value">
+                <com.google.android.material.textview.MaterialTextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/quoteValueCFF"
+                    android:textAlignment="center"
+                    />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnAdditionalCFF"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/space_min"
+                android:text="@string/aditional" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnAmortizationCFF"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/space_min"
+                app:icon="@android:drawable/ic_menu_search"
+                android:text="@string/amortization"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <com.google.android.material.button.MaterialButton
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/space_min"
+                    android:id="@+id/btnCancelCFF"
+                    android:layout_weight="1"
+                    app:icon="@android:drawable/ic_delete"
+                    android:text="@string/cancel"/>
+                <com.google.android.material.button.MaterialButton
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/space_min"
+                    app:icon="@android:drawable/ic_menu_save"
+                    android:id="@+id/btn_save_cff"
+                    android:layout_weight="1"
+                    android:text="@string/save"/>
+
+            </LinearLayout>
+
+
+</LinearLayout>
+</com.google.android.material.card.MaterialCardView>
+    </ScrollView>
+
+</LinearLayout>

@@ -27,6 +27,7 @@ import co.japl.android.myapplication.finanzas.bussiness.impl.BuyCreditCardSettin
 import co.japl.android.myapplication.finanzas.bussiness.impl.CreditCardSettingImpl
 import co.japl.android.myapplication.finanzas.bussiness.interfaces.ICreditCardSettingSvc
 import co.japl.android.myapplication.finanzas.utils.KindBoughtEnum
+import co.japl.android.myapplication.finanzas.utils.KindOfTaxEnum
 import co.japl.android.myapplication.utils.DateUtils
 import co.japl.android.myapplication.utils.NumbersUtil
 import com.google.android.material.button.MaterialButton
@@ -298,8 +299,8 @@ class QuoteBoughtHolder(var root:View,val supportManager:FragmentManager) : IHol
             llTax.visibility = View.VISIBLE
         }
 
-        val responseQuote = calc.calc(value, period, tax)
-        val responseiNteres = calcTax.calc(value, period, tax)
+        val responseQuote = calc.calc(value, period, tax,KindOfTaxEnum.EM)
+        val responseiNteres = calcTax.calc(value, period, tax,KindOfTaxEnum.EM)
 
         responseQuote.let { quote ->
             responseiNteres.let { interes ->
@@ -330,7 +331,8 @@ class QuoteBoughtHolder(var root:View,val supportManager:FragmentManager) : IHol
             LocalDateTime.now(),
             0,
             if (chRecurrent.isChecked) 1 else 0,
-            KindBoughtEnum.BOUGHT.kind)
+            KindBoughtEnum.BOUGHT.kind,
+            KindOfTaxEnum.EM.name)
     }
 
     override fun lists(fn: ((QuoteBoughtHolder) -> Unit)?) {
