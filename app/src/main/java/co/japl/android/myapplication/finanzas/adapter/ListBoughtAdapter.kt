@@ -25,6 +25,7 @@ import co.japl.android.myapplication.bussiness.mapping.CalcMap
 import co.japl.android.myapplication.finanzas.bussiness.impl.BuyCreditCardSettingImpl
 import co.japl.android.myapplication.finanzas.bussiness.impl.CreditCardSettingImpl
 import co.japl.android.myapplication.finanzas.putParams.AmortizationTableParams
+import co.japl.android.myapplication.finanzas.utils.KindOfTaxEnum
 import co.japl.android.myapplication.finanzas.utils.TaxEnum
 import co.japl.android.myapplication.holders.view.BoughtViewHolder
 import co.japl.android.myapplication.utils.DateUtils
@@ -196,7 +197,8 @@ class ListBoughtAdapter(private val data:MutableList<CreditCardBoughtDTO>,privat
                           data[position],
                           interest + capital,
                           interest,
-                          capital
+                          capital,
+                          KindOfTaxEnum.EM
                       ), quotesBought, it.findNavController()
                   )
           }

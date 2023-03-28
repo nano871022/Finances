@@ -43,7 +43,8 @@ class SaveCreditCardBoughtImpl(override var dbConnect: SQLiteOpenHelper) : SaveS
         ,CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_CUT_OUT_DATE
         ,CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_CREATE_DATE
         ,CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_RECURRENT
-        ,CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_KIND)
+        ,CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_KIND
+        ,CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_KIND_OF_TAX)
 
     private val COLUMNS_PERIOD = arrayOf(BaseColumns._ID,
         CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_VALUE_ITEM

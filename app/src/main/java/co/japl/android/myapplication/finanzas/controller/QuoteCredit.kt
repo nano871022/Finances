@@ -20,6 +20,7 @@ import co.japl.android.myapplication.finanzas.holders.QuoteCreditHolder
 import co.japl.android.myapplication.finanzas.pojo.QuoteCreditCard
 import co.japl.android.myapplication.finanzas.putParams.AmortizationTableParams
 import co.japl.android.myapplication.finanzas.putParams.QuoteCreditParams
+import co.japl.android.myapplication.finanzas.utils.KindOfTaxEnum
 import co.japl.android.myapplication.finanzas.utils.TaxEnum
 import co.japl.android.myapplication.utils.CalcEnum
 import java.math.BigDecimal
@@ -72,7 +73,7 @@ class QuoteCredit : Fragment(), View.OnClickListener{
     private fun calc() {
         if (holder.validate()) {
             val quote = holder.downLoadFields()
-            val response = calc.calc(quote.value.get(), quote.period.get(), quote.tax.get())
+            val response = calc.calc(quote.value.get(), quote.period.get(), quote.tax.get(),KindOfTaxEnum.EM)
             response.let {
                 quote.response = Optional.ofNullable(response)
                 holder.loadFields(quote)

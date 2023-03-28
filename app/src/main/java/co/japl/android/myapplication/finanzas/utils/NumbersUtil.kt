@@ -1,5 +1,6 @@
 package co.japl.android.myapplication.utils
 
+import android.util.Log
 import android.widget.EditText
 import android.widget.TextView
 import java.math.BigDecimal
@@ -32,7 +33,11 @@ class NumbersUtil {
         }
 
         fun stringCOPToBigDecimal(value:String):BigDecimal{
-            return value.replace("$","").replace(",","").trim().toBigDecimal()
+            return if(value.isEmpty()){
+                BigDecimal.ZERO
+            }else {
+                value.replace("$", "").replace(",", "").trim().toBigDecimal()
+            }
         }
 
         fun toBigDecimal(field:EditText):BigDecimal{

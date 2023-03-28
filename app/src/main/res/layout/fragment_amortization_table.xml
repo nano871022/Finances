@@ -122,8 +122,9 @@
         android:id="@+id/tableAT"
         android:layout_width="match_parent"
         android:layout_margin="@dimen/space_min"
+        android:padding="@dimen/space_min"
         android:stretchColumns="1"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content">
 
         <TableRow
             android:layout_width="match_parent"

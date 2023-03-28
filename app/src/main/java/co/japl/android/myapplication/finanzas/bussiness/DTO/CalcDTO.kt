@@ -13,6 +13,7 @@ data class CalcDTO (
     ,var id:Int
     ,var interestValue:BigDecimal
     ,var capitalValue:BigDecimal
+    ,var kindOfTax:String
 )
 
 object CalcDB{
@@ -26,5 +27,6 @@ object CalcDB{
         const val COLUMN_QUOTE_CREDIT = "num_quote_credit"
         const val COLUMN_TYPE = "str_type"
         const val COLUMN_CAPITAL_VALUE = "num_capital_value"
+        const val COLUMN_KIND_OF_TAX = "str_kind_of_tax"
     }
 }

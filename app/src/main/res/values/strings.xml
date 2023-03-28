@@ -34,6 +34,7 @@
     <string name="quote_value">Valor de la cuota</string>
     <string name="clear">Limpiar</string>
     <string name="error_calc">Se presento un error en el calculo </string>
+    <string name="error_empty">El campo se encuentra vacio</string>
     <string name="capital_value">Valor a capital</string>
     <string name="interest_value">Valor a intereses</string>
     <string name="interest_to_pay_value">Intereses a pagar</string>
@@ -161,11 +162,43 @@
     <string name="validation_credit_card_not_selected">Seleccione una Tarjeta de Credito</string>
 
     <string name="toast_successful_insert">El registro se agrego exitosamente</string>
+    <string name="toast_unsuccessful_insert">El registro no se agrego</string>
     <string name="toast_successful_update">El actualizo se agrego exitosamente</string>
     <string name="toast_invalid_option">Opción Invalida</string>
 
     <string name="title_toolbar_fragment_list_credit_card_setting">Configuraciones</string>
     <string name="title_toolbar_fragment_credit_card_setting">Configuración</string>
+
+    <string name="kind_of_pay">Tipo de pago</string>
+    <string name="default_kind_of_pay">Mensual</string>
+    <string name="aditional">Adicional</string>
+    <string name="credit_fix">Credito</string>
+    <string name="additional_monthly">Adicional Mensual</string>
+    <string name="additional_to_pay">Adicional a Pagar</string>
+    <string name="additional_list">Lista Adicional</string>
+    <string name="start_date">Fecha Inicio</string>
+    <string name="end_date">Fecha Fin</string>
+    <string name="date_bill">Fecha Facturacion</string>
+    <string name="detail">Detalle</string>
+    <string name="date_credit">Fecha del Credito</string>
+    <string name="date_pay_quote">Fecha Pago Cuota</string>
+    <string name="num_credits_hint">00</string>
+    <string name="num_credits">Cantidad de Creditos</string>
+    <string name="credit_to_pay">Creditos a Pagar</string>
+    <string name="credit_list">Creditos</string>
+    <array name="kind_of_tax_list">
+        <item>EA</item>
+        <item>EM</item>
+        <item>NA</item>
+        <item>NM</item>
+    </array>
+    <array name="kind_of_pay_list">
+        <item>Mensual</item>
+        <item>Bi-Mensual</item>
+        <item>Trimestral</item>
+        <item>Cuatrimestral</item>
+        <item>semestral</item>
+    </array>
 
 
 </resources>

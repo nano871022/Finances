@@ -2,6 +2,7 @@ package co.japl.android.myapplication.bussiness.queries
 
 import android.provider.BaseColumns
 import co.japl.android.myapplication.bussiness.DTO.CalcDB
+import co.japl.android.myapplication.bussiness.DTO.TaxDB
 
 object CalculationQuery {
     const val SQL_CREATE_ENTRIES = """CREATE TABLE ${CalcDB.CalcEntry.TABLE_NAME}(
@@ -14,6 +15,9 @@ object CalculationQuery {
         ${CalcDB.CalcEntry.COLUMN_VALUE_CREDIT} NUMBER,
         ${CalcDB.CalcEntry.COLUMN_INTEREST_VALUE} NUMBER,
         ${CalcDB.CalcEntry.COLUMN_CAPITAL_VALUE} NUMBER
+        ${CalcDB.CalcEntry.COLUMN_KIND_OF_TAX} TEXT DEFAULT "EM" NOT NULL
         )"""
     const val SQL_DELETE_ENTRIES = "DROP TABLE IF EXISTS ${CalcDB.CalcEntry.TABLE_NAME}"
+    val SQL_ALTER = mapOf("27" to "ALTER TABLE ${CalcDB.CalcEntry.TABLE_NAME} ADD ${CalcDB.CalcEntry.COLUMN_KIND_OF_TAX} SHORT DEFAULT \"EM\" NOT NULL")
+
 }

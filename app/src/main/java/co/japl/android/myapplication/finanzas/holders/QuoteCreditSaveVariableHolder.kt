@@ -10,6 +10,7 @@ import co.japl.android.myapplication.R
 import co.japl.android.myapplication.bussiness.DTO.CreditCardSettingDTO
 import co.japl.android.myapplication.bussiness.interfaces.IHolder
 import co.japl.android.myapplication.finanzas.pojo.QuoteCreditCard
+import co.japl.android.myapplication.finanzas.utils.KindOfTaxEnum
 import co.japl.android.myapplication.utils.CalcEnum
 import co.japl.android.myapplication.utils.NumbersUtil
 import com.google.android.material.textfield.TextInputEditText
@@ -61,6 +62,7 @@ class QuoteCreditSaveVariableHolder(var view:View):IHolder<QuoteCreditCard> {
         quote.type = CalcEnum.VARIABLE
         quote.interestValue = Optional.ofNullable(NumbersUtil.toBigDecimal(tvInterestValue))
         quote.capitalValue = Optional.ofNullable(NumbersUtil.toBigDecimal(tvCapitalValue))
+        quote.kindOfTax = Optional.of(KindOfTaxEnum.EM.name)
         return quote
     }
 
