@@ -210,10 +210,10 @@ class QuoteBoughtHolder(var root:View,val supportManager:FragmentManager) : IHol
         dtBought.setText(LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")))
         etTax.text = taxMonthly.toString()
         llTypeSetting.visibility = View.INVISIBLE
-        if(cCSettingList.isNotEmpty()){
+            if(::cCSettingList.isInitialized && cCSettingList.isNotEmpty()){
             llTypeSetting.visibility = View.VISIBLE
         }
-        if(buyCCSDTO.isPresent){
+        if(::buyCCSDTO.isInitialized && buyCCSDTO.isPresent){
             llNameSetting.visibility = View.VISIBLE
             spTypeSetting.setSelection(0)
         }

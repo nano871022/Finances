@@ -16,7 +16,7 @@ object CreditCardBoughtQuery {
         ${CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_CUT_OUT_DATE} DATE,
         ${CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_CREATE_DATE} DATE,
         ${CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_RECURRENT} SHORT,
-        ${CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_KIND} SHORT
+        ${CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_KIND} SHORT,
         ${CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_KIND_OF_TAX} TEXT DEFAULT "EM" NOT NULL
         )"""
     const val SQL_CREDIT_CARD_DELETE_ENTRIES = "DROP TABLE IF EXISTS ${CreditCardBoughtDB.CreditCardBoughtEntry.TABLE_NAME}"
