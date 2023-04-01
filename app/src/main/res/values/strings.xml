@@ -199,6 +199,13 @@
         <item>Cuatrimestral</item>
         <item>semestral</item>
     </array>
-
+    <string name="account">Account</string>
+    <string name="date_paid">Fecha de Pago</string>
+    <string name="period">Periodo</string>
+    <string name="paid">Pagado</string>
+    <string name="count">Cantidad</string>
+    <string name="input">Ingreso</string>
+    <string name="input_list">Lista de Ingreso</string>
+    <string name="date_input">Fecha de Ingreso</string>
 
 </resources>
