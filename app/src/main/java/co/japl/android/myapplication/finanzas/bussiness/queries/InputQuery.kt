@@ -10,8 +10,10 @@ object InputQuery {
         CREATE TABLE ${InputDB.Entry.TABLE_NAME}(
             ${BaseColumns._ID} INTEGER PRIMARY KEY,
             ${InputDB.Entry.COLUMN_DATE_INPUT} DATE,
+            ${InputDB.Entry.COLUMN_ACCOUNT_CODE} INTEGER,
+            ${InputDB.Entry.COLUMN_KIND_OF} TEXT,
             ${InputDB.Entry.COLUMN_NAME} TEXT,
-            ${InputDB.Entry.COLUMN_VALUE} NUMBER,
+            ${InputDB.Entry.COLUMN_VALUE} NUMBER
         )
     """
     const val DATA_BASE_VERSION_MINUS = 28

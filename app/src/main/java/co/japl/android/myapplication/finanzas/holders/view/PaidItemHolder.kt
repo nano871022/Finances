@@ -1,11 +1,13 @@
 package co.japl.android.myapplication.holders.view
 
+import android.graphics.Color
 import android.os.Build
 import android.view.View
 import android.widget.ImageButton
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.annotation.RequiresApi
+import androidx.appcompat.widget.AppCompatImageView
 import androidx.recyclerview.widget.RecyclerView
 import co.japl.android.myapplication.R
 import co.japl.android.myapplication.bussiness.DTO.TaxDTO
@@ -20,20 +22,40 @@ class PaidItemHolder(var view:View) : RecyclerView.ViewHolder(view) {
     lateinit var date:TextView
     lateinit var name:TextView
     lateinit var value:TextView
-    lateinit var delete:ImageButton
+    lateinit var delete:AppCompatImageView
 
     fun loadFields(){
-        date = view.findViewById(R.id.date_paid_pil)
-        name = view.findViewById(R.id.name_pil)
-        value = view.findViewById(R.id.value_pil)
-        delete = view.findViewById(R.id.btn_delete_pil)
+
+        view.findViewById<TextView>(R.id.date_paid_pil)?.let{
+            date = it
+        }
+        view.findViewById<TextView>(R.id.name_pil)?.let{
+            name = it
+        }
+        view.findViewById<TextView>(R.id.value_pil)?.let {
+            value = it
+        }
+        view.findViewById<AppCompatImageView>(R.id.btn_delete_pil)?.let {
+            delete = it
+        }
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
     fun setFields(values:PaidDTO, action:View.OnClickListener){
-        date.text = DateUtils.localDateToString( values.date)
-        name.text = values.name
-        value.text = NumbersUtil.COPtoString(values.value)
-        delete.setOnClickListener(action)
+        if(this::date.isInitialized) {
+            date.text = DateUtils.localDateToString(values.date)
+        }
+        if(this::name.isInitialized) {
+            name.text = values.name
+        }
+        if(this::value.isInitialized) {
+            value.text = NumbersUtil.COPtoString(values.value)
+        }
+        if(this::delete.isInitialized) {
+            delete.setOnClickListener(action)
+        }
+        if(values.recurrent == (1).toShort()){
+            delete.setBackgroundColor(Color.RED)
+        }
     }
 }

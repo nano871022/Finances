@@ -64,10 +64,43 @@
                     android:hint="@string/months_number_hint"/>
             </com.google.android.material.textfield.TextInputLayout>
 
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/space_min"
+                android:background="@color/green_light_trans"
+                app:prefixText="@string/input_total"
+                android:layout_margin="@dimen/space_min">
+                <com.google.android.material.textview.MaterialTextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textAlignment="center"
+                    android:id="@+id/tv_input_total_ps"
+                    android:hint="@string/money_hint"/>
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/space_min"
+                android:background="@color/green_light_trans"
+                app:prefixText="@string/input_minus_output"
+                android:layout_margin="@dimen/space_min">
+                <com.google.android.material.textview.MaterialTextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textAlignment="center"
+                    android:id="@+id/tv_input_less_paid_ps"
+                    android:hint="@string/money_hint"/>
+            </com.google.android.material.textfield.TextInputLayout>
+
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
+
                 <com.google.android.material.button.MaterialButton
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -75,15 +108,24 @@
                     android:layout_weight="1"
                     android:id="@+id/btn_detail_ps"
                     android:text="@string/detail"/>
+
                 <com.google.android.material.button.MaterialButton
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="@dimen/space_min"
-                    android:id="@+id/btn_add_ps"
                     android:layout_weight="1"
-                    app:icon="@android:drawable/ic_menu_add"
-                    android:text="@string/add"/>
+                    android:id="@+id/btn_periods_ps"
+                    android:text="@string/periods"/>
+
             </LinearLayout>
+
+            <com.google.android.material.button.MaterialButton
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/space_min"
+                android:id="@+id/btn_add_ps"
+                app:icon="@android:drawable/ic_menu_add"
+                android:text="@string/add"/>
 
 
         </LinearLayout>

@@ -4,6 +4,7 @@ import android.content.ContentValues
 import android.database.sqlite.SQLiteOpenHelper
 import android.os.Build
 import android.provider.BaseColumns
+import android.view.View
 import androidx.annotation.RequiresApi
 import co.japl.android.myapplication.bussiness.interfaces.SaveSvc
 import co.japl.android.myapplication.finanzas.bussiness.DTO.*
@@ -14,10 +15,12 @@ import co.japl.android.myapplication.finanzas.bussiness.mapping.PaidMap
 import co.japl.android.myapplication.utils.DatabaseConstants
 import java.util.*
 
-class InputImpl(override var dbConnect: SQLiteOpenHelper) : SaveSvc<InputDTO>,ISaveSvc<InputDTO> {
+class InputImpl(val view:View,override var dbConnect: SQLiteOpenHelper) : SaveSvc<InputDTO>,ISaveSvc<InputDTO> {
     val COLUMNS = arrayOf(
         BaseColumns._ID,
         InputDB.Entry.COLUMN_DATE_INPUT,
+        InputDB.Entry.COLUMN_ACCOUNT_CODE,
+        InputDB.Entry.COLUMN_KIND_OF,
         InputDB.Entry.COLUMN_NAME,
         InputDB.Entry.COLUMN_VALUE,
     )
@@ -27,7 +30,7 @@ class InputImpl(override var dbConnect: SQLiteOpenHelper) : SaveSvc<InputDTO>,IS
         val db = dbConnect.readableDatabase
         val cursor = db.query(InputDB.Entry.TABLE_NAME,COLUMNS,"",arrayOf(),null,null,null,null)
         val items = mutableListOf<InputDTO>()
-        val mapper = InputMap()
+        val mapper = InputMap(view)
         with(cursor){
             while(moveToNext()){
                 items.add(mapper.mapping(cursor))
@@ -39,7 +42,7 @@ class InputImpl(override var dbConnect: SQLiteOpenHelper) : SaveSvc<InputDTO>,IS
     @RequiresApi(Build.VERSION_CODES.O)
     override fun save(dto: InputDTO): Long {
         val db = dbConnect.writableDatabase
-        val content: ContentValues? = InputMap().mapping(dto)
+        val content: ContentValues? = InputMap(view).mapping(dto)
         return if(dto.id > 0){
             db?.update(InputDB.Entry.TABLE_NAME,content,"id=?", arrayOf(dto.id.toString()))?.toLong() ?: 0
         }else {
@@ -52,7 +55,7 @@ class InputImpl(override var dbConnect: SQLiteOpenHelper) : SaveSvc<InputDTO>,IS
         val db = dbConnect.readableDatabase
         val cursor = db.query(InputDB.Entry.TABLE_NAME,COLUMNS,null,null,null,null,null)
         val items = mutableListOf<InputDTO>()
-        val mapper = InputMap()
+        val mapper = InputMap(view)
         with(cursor){
             while(moveToNext()){
                 items.add(mapper.mapping(cursor))
@@ -75,7 +78,7 @@ class InputImpl(override var dbConnect: SQLiteOpenHelper) : SaveSvc<InputDTO>,IS
         val cursor = db.query(
             InputDB.Entry.TABLE_NAME,COLUMNS,"id = ?",
             arrayOf(id.toString()),null,null,null)
-        val mapper = InputMap()
+        val mapper = InputMap(view)
         with(cursor){
             while(moveToNext()){
                 return Optional.ofNullable(mapper.mapping(cursor))

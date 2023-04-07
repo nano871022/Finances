@@ -18,6 +18,7 @@ fun TextInputEditText.isNotLocalDate() = text()?.let{!Regex("^[0123][0-9]/[01][0
 fun TextInputEditText.toLocalDate( ) = text()?.let{ DateUtils.toLocalDate(it) }
 
 fun TextInputEditText.COPtoBigDecimal() = text()?.let{NumbersUtil.stringCOPToBigDecimal( it ) } ?: BigDecimal.ZERO
+fun TextInputEditText.setCOPtoField() = text()?.let{text( NumbersUtil.COPtoString(COPtoBigDecimal() ) ) }
 
 fun MaterialTextView.text(value: String? = null) = value?.also{ text = it} ?: "$text"
 fun MaterialTextView.COPtoBigDecimal() = text()?.let{NumbersUtil.stringCOPToBigDecimal( it ) } ?: BigDecimal.ZERO

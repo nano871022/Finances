@@ -12,7 +12,7 @@ object AccountQuery {
             ${BaseColumns._ID} INTEGER PRIMARY KEY,
             ${AccountDB.Entry.COLUMN_DATE_CREATE} DATE,
             ${AccountDB.Entry.COLUMN_NAME} TEXT,
-            ${AccountDB.Entry.COLUMN_ACTIVE} NUMBER,
+            ${AccountDB.Entry.COLUMN_ACTIVE} NUMBER
         )
     """
     const val DATA_BASE_VERSION_MINUS = 28

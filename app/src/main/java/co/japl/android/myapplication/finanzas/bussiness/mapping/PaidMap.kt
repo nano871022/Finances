@@ -20,7 +20,7 @@ class PaidMap {
         val name = cursor.getString(3)
         val value = cursor.getString(4).toBigDecimal()
         val recurrent = cursor.getInt(5)
-        return PaidDTO(id,date,account,name,value,recurrent==1)
+        return PaidDTO(id,date,account,name,value,recurrent.toShort())
     }
 
     @RequiresApi(Build.VERSION_CODES.O)

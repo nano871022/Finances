@@ -28,9 +28,23 @@
                 <com.google.android.material.textfield.TextInputEditText
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="@string/date_hint"
+                    android:focusable="false"
                     android:textAlignment="center"
                     android:id="@+id/date_in"/>
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/space_min"
+                android:hint="@string/kind_of_pay">
+                <com.google.android.material.textfield.TextInputEditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:focusable="false"
+                    android:textAlignment="center"
+                    android:id="@+id/kind_of_pay_in"/>
 
             </com.google.android.material.textfield.TextInputLayout>
 

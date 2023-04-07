@@ -12,7 +12,7 @@ object PaidQuery {
             ${PaidDB.Entry.COLUMN_ACCOUNT} TEXT,
             ${PaidDB.Entry.COLUMN_NAME} TEXT,
             ${PaidDB.Entry.COLUMN_VALUE} NUMBER,
-            ${PaidDB.Entry.COLUMN_RECURRENT} NUMBER,
+            ${PaidDB.Entry.COLUMN_RECURRENT} NUMBER
         )
     """
     const val DATA_BASE_VERSION_MINUS = 28

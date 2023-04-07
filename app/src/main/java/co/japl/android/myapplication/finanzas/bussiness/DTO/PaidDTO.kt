@@ -4,12 +4,12 @@ import java.math.BigDecimal
 import java.time.LocalDate
 
 data class PaidDTO(
-    val id:Int,
-    val date:LocalDate,
-    val account:String,
-    val name:String,
-    val value:BigDecimal,
-    val recurrent:Boolean
+    var id:Int,
+    var date:LocalDate,
+    var account:String,
+    var name:String,
+    var value:BigDecimal,
+    var recurrent:Short
 )
 
 object PaidDB{

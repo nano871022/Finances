@@ -9,7 +9,7 @@ import co.japl.android.myapplication.finanzas.bussiness.queries.AddToCapitalQuer
 import co.japl.android.myapplication.utils.DatabaseConstants
 
 class ConnectDB(context: Context):SQLiteOpenHelper(context,
-    DatabaseConstants.DATA_BASE_NAME,null, 27) {
+    DatabaseConstants.DATA_BASE_NAME,null, 28) {
 
     override fun onCreate(p0: SQLiteDatabase?) {
         Log.i(this.javaClass.name,"<<<=== onCreate - Start $p0")

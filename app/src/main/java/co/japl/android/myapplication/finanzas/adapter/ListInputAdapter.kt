@@ -30,10 +30,10 @@ class ListInputAdapter(var data:MutableList<InputDTO>) : RecyclerView.Adapter<In
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): InputItemHolder {
         Log.d(this.javaClass.name,"on create view holder")
-        saveSvc = InputImpl(ConnectDB(parent.context))
         view = parent
         val view =
             LayoutInflater.from(parent.context).inflate(R.layout.fragment_input_item_list, parent, false)
+        saveSvc = InputImpl(view,ConnectDB(parent.context))
         val viewHolder =  InputItemHolder(view)
         viewHolder.loadFields()
         return viewHolder

@@ -8,7 +8,7 @@
     app:strokeWidth="@dimen/stroke_with"
     app:cardCornerRadius="@dimen/radius_corner"
     android:layout_margin="@dimen/space_min"
-    tools:context=".finanzas.controller.InputListFragment">
+    tools:context=".finanzas.controller.AccountListFragment">
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
@@ -22,6 +22,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/rv_account_list"/>
+
+            <com.google.android.material.button.MaterialButton
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/btn_add_al"
+                app:icon="@android:drawable/ic_menu_add"
+                android:layout_margin="@dimen/space_min"
+                android:text="@string/add"/>
         </LinearLayout>
 
     </ScrollView>

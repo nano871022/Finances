@@ -24,6 +24,13 @@
         android:titleCondensed="@string/list_save"/>
 
     <item
+        android:id="@+id/menu_item_paids"
+        android:icon="@drawable/ic_baseline_attach_money_24"
+        android:title="@string/paid"
+        android:titleCondensed="@string/paid"/>
+
+
+    <item
         android:id="@+id/creditListFragment"
         android:icon="@android:drawable/ic_menu_add"
         android:title="@string/credit_to_pay"

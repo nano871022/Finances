@@ -43,12 +43,13 @@ class AccountHolder(val view:View):IHolder<AccountDTO> {
         name.setText(values.name)
         if(values.id > 0){
             list.visibility = View.VISIBLE
+
         }
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun downLoadFields(): AccountDTO {
-        val id = account.id ?: 0
+        val id = if(this::account.isInitialized) account.id ?: 0 else 0
         val date =  LocalDate.now()
         val name = name.text.toString()
         val active = true

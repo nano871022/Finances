@@ -42,7 +42,7 @@ class AccountImpl(override var dbConnect: SQLiteOpenHelper) : SaveSvc<AccountDTO
         val db = dbConnect.writableDatabase
         val content: ContentValues? = AccountMap().mapping(dto)
         return if(dto.id > 0){
-            db?.update(AccountDB.Entry.TABLE_NAME,content,"id=?", arrayOf(dto.id.toString()))?.toLong() ?: 0
+            db?.update(AccountDB.Entry.TABLE_NAME,content,"_id=?", arrayOf(dto.id.toString()))?.toLong() ?: 0
         }else {
             db?.insert(AccountDB.Entry.TABLE_NAME, null, content) ?: 0
         }
@@ -74,7 +74,7 @@ class AccountImpl(override var dbConnect: SQLiteOpenHelper) : SaveSvc<AccountDTO
         val db = dbConnect.readableDatabase
 
         val cursor = db.query(
-            AccountDB.Entry.TABLE_NAME,COLUMNS,"id = ?",
+            AccountDB.Entry.TABLE_NAME,COLUMNS,"_id = ?",
             arrayOf(id.toString()),null,null,null)
         val mapper = AccountMap()
         with(cursor){

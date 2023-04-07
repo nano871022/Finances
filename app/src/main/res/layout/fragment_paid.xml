@@ -107,7 +107,7 @@
                 android:layout_margin="@dimen/space_min"
                 app:icon="@android:drawable/ic_menu_save"
                 android:layout_weight="1"
-                android:id="@+id/bnt_save_p"
+                android:id="@+id/btn_save_p"
                 android:text="@string/save"/>
         </LinearLayout>
     </LinearLayout>

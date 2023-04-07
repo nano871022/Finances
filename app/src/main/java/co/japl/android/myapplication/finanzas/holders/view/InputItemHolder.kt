@@ -6,6 +6,7 @@ import android.widget.ImageButton
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.annotation.RequiresApi
+import androidx.appcompat.widget.AppCompatImageView
 import androidx.recyclerview.widget.RecyclerView
 import co.japl.android.myapplication.R
 import co.japl.android.myapplication.bussiness.DTO.TaxDTO
@@ -19,7 +20,7 @@ class InputItemHolder(var view:View) : RecyclerView.ViewHolder(view) {
     lateinit var date:TextView
     lateinit var name:TextView
     lateinit var value:TextView
-    lateinit var delete:ImageButton
+    lateinit var delete:AppCompatImageView
 
     fun loadFields(){
         date = view.findViewById(R.id.date_input_iil)
