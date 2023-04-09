@@ -19,15 +19,17 @@ class QuoteCreditParams {
         val ARG_INTEREST_VALUE = "interest"
         val ARG_PERIOD_VALUE = "period"
         val ARG_QUOTE_VALUE = "quoteValue"
+        val ARG_KIND_OF_TAX = "kindOfTax"
     }
 
     companion object{
         @JvmStatic
-        fun newInstance(creditValue:BigDecimal,interest:Double,period:Long,quoteValue:BigDecimal,navController:NavController){
+        fun newInstance(creditValue:BigDecimal,interest:Double,period:Long,quoteValue:BigDecimal,kindOfTax:String,navController:NavController){
             val parameters = bundleOf("creditValue" to creditValue.toString()
                 ,"interest" to interest.toString()
                 ,"period" to period.toString()
-                ,"quoteValue" to quoteValue.toString())
+                ,"quoteValue" to quoteValue.toString(),
+            Params.ARG_KIND_OF_TAX to kindOfTax)
             navController.navigate(R.id.action_save_credit_card,parameters)
         }
 
@@ -42,7 +44,7 @@ class QuoteCreditParams {
                 quote.type = CalcEnum.FIX
                 quote.interestValue = Optional.empty()
                 quote.capitalValue = Optional.empty()
-                quote.kindOfTax = Optional.of(KindOfTaxEnum.EM.name)
+                quote.kindOfTax = Optional.of(it.get(Params.ARG_KIND_OF_TAX).toString())
                 return Optional.ofNullable(quote)
             }
             return Optional.empty()

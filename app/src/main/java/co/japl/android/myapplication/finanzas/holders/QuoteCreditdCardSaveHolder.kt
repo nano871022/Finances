@@ -42,7 +42,7 @@ class QuoteCreditdCardSaveHolder(var view:View):IHolder<QuoteCreditCard> {
         val quoteCredit: BigDecimal = values.value.orElse(BigDecimal.ZERO)
         tvQuoteCredit.text = format.format(quoteCredit)
         val interest:Double =values.tax.orElse(0.0)
-        tvInterest.text = " ${interest.toString()} %"
+        tvInterest.text = " ${interest.toString()} % ${values.kindOfTax.get()}"
         val period:Long = values.period.orElse(0)
         tvMonths.text = period.toString()
         val valueCredit: BigDecimal = values.response.orElse(BigDecimal.ZERO)

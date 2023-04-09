@@ -25,9 +25,11 @@ import co.japl.android.myapplication.bussiness.interfaces.IHolder
 import co.japl.android.myapplication.bussiness.interfaces.ITaxSvc
 import co.japl.android.myapplication.bussiness.interfaces.SaveSvc
 import co.japl.android.myapplication.bussiness.mapping.CreditCardBoughtMap
+import co.japl.android.myapplication.finanzas.bussiness.impl.KindOfTaxImpl
 import co.japl.android.myapplication.finanzas.holders.CashAdvanceHolder
 import co.japl.android.myapplication.finanzas.putParams.CashAdvanceParams
 import co.japl.android.myapplication.finanzas.utils.KindBoughtEnum
+import co.japl.android.myapplication.finanzas.utils.KindOfTaxEnum
 import co.japl.android.myapplication.finanzas.utils.TaxEnum
 import java.math.BigDecimal
 import java.math.RoundingMode
@@ -35,7 +37,7 @@ import java.time.LocalDateTime
 import java.util.*
 
 class CashAdvanceSave: Fragment() , View.OnClickListener{
-
+    private val kindOfTaxSvc = KindOfTaxImpl()
     lateinit var holder:IHolder<CreditCardBought>
     lateinit var saveSvc: SaveSvc<CreditCardBoughtDTO>
     lateinit var creditCardSvc: SaveSvc<CreditCardDTO>
@@ -77,6 +79,7 @@ class CashAdvanceSave: Fragment() , View.OnClickListener{
             quote.kind = KindBoughtEnum.CASH_ADVANCE.kind
             quote.cutOutDate = config.nextCutOff(creditCard.get().cutOffDay.toInt())
             quote.month = tax.period.toInt()
+            quote.kindOfTax = tax.kindOfTax
             val dto = CreditCardBoughtMap().mapping(quote)
             if(saveSvc.save(dto)>0){
                 Toast.makeText(context,"Se ha agregado el avance de dinero correctamente",Toast.LENGTH_LONG).show().also {
@@ -105,12 +108,13 @@ class CashAdvanceSave: Fragment() , View.OnClickListener{
         }
         val bought = CreditCardBought()
         bought.valueItem = value
-        bought.interest = tax.value
+        bought.interest =  tax.value
+        bought.kindOfTax = tax.kindOfTax
         bought.month = tax.period.toInt()
         val month = bought.month?.toBigDecimal()
         val capital = bought.valueItem!!.divide(month,2,RoundingMode.CEILING)
         Log.d(this.javaClass.name,"$capital = ${bought.valueItem} / $month")
-        val percent = bought.interest!!.toBigDecimal().divide(BigDecimal(100))
+        val percent = kindOfTaxSvc.getNM(tax.value, KindOfTaxEnum.valueOf(tax.kindOfTax!!)).toBigDecimal().divide(BigDecimal.valueOf(100))
         val interest = bought.valueItem!!.multiply(percent)
         Log.d(this.javaClass.name,"$interest = ${bought.valueItem} * ${percent}")
         val quote = capital.add(interest)

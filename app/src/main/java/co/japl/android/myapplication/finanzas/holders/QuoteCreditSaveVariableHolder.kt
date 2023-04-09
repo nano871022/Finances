@@ -26,6 +26,7 @@ class QuoteCreditSaveVariableHolder(var view:View):IHolder<QuoteCreditCard> {
      lateinit var tvQuoteCredit: MaterialTextView
      lateinit var tvInterestValue: MaterialTextView
      lateinit var tvCapitalValue: MaterialTextView
+     private lateinit var quoteCredit:QuoteCreditCard
 
     override fun setFields(actions: View.OnClickListener?) {
         etName = view.findViewById(R.id.etName)
@@ -43,8 +44,9 @@ class QuoteCreditSaveVariableHolder(var view:View):IHolder<QuoteCreditCard> {
 
     @RequiresApi(Build.VERSION_CODES.N)
     override fun loadFields(values: QuoteCreditCard) {
+        quoteCredit = values
         tvQuoteCredit.text = NumbersUtil.COPtoString(values.response.orElse(BigDecimal.ZERO))
-        tvInterest.text = "${values.tax.orElse(0.0).toString()} %"
+        tvInterest.text = "${values.tax.orElse(0.0).toString()} % ${values.kindOfTax.get()}"
         tvMonths.text = values.period.orElse(0).toString()
         tvValueCredit.text = NumbersUtil.COPtoString(values.value.orElse(BigDecimal.ZERO))
         tvInterestValue.text = NumbersUtil.COPtoString(values.interestValue.orElse(BigDecimal.ZERO))
@@ -53,17 +55,8 @@ class QuoteCreditSaveVariableHolder(var view:View):IHolder<QuoteCreditCard> {
 
     @RequiresApi(Build.VERSION_CODES.N)
     override fun downLoadFields(): QuoteCreditCard {
-        val quote = QuoteCreditCard()
-        quote.name = Optional.ofNullable(etName.text.toString())
-        quote.value = Optional.ofNullable(NumbersUtil.toBigDecimal(tvValueCredit))
-        quote.tax = Optional.ofNullable(NumbersUtil.toDouble(tvInterest))
-        quote.period = Optional.ofNullable(tvMonths.text.toString().toLong())
-        quote.response = Optional.ofNullable(NumbersUtil.toBigDecimal(tvQuoteCredit))
-        quote.type = CalcEnum.VARIABLE
-        quote.interestValue = Optional.ofNullable(NumbersUtil.toBigDecimal(tvInterestValue))
-        quote.capitalValue = Optional.ofNullable(NumbersUtil.toBigDecimal(tvCapitalValue))
-        quote.kindOfTax = Optional.of(KindOfTaxEnum.EM.name)
-        return quote
+        quoteCredit.name = Optional.ofNullable(etName.text.toString())
+        return quoteCredit
     }
 
     override fun cleanField() {

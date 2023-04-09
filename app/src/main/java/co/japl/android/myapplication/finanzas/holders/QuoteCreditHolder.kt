@@ -1,5 +1,6 @@
 package co.japl.android.myapplication.finanzas.holders
 
+import android.app.AlertDialog
 import android.graphics.Color
 import android.os.Build
 import android.text.Editable
@@ -14,6 +15,7 @@ import androidx.core.widget.addTextChangedListener
 import co.japl.android.myapplication.R
 import co.japl.android.myapplication.bussiness.DTO.CreditCardSettingDTO
 import co.japl.android.myapplication.bussiness.interfaces.IHolder
+import co.japl.android.myapplication.finanzas.holders.validations.*
 import co.japl.android.myapplication.finanzas.pojo.QuoteCreditCard
 import co.japl.android.myapplication.utils.CalcEnum
 import co.japl.android.myapplication.utils.NumbersUtil
@@ -31,9 +33,11 @@ class QuoteCreditHolder(var container:View): IHolder<QuoteCreditCard> {
     lateinit var etMonths: TextInputEditText
     lateinit var tvQuoteValue: MaterialTextView
     lateinit var lyQuoteCredit: LinearLayout
+    lateinit var kindOfTax:TextInputEditText
     lateinit var btnSave: Button
     lateinit var btnAmortization: Button
     lateinit var response:Optional<BigDecimal>
+    lateinit var kindOfTaxDialog:AlertDialog
 
     override fun setFields(actions: View.OnClickListener?) {
         etValueCredit = container.findViewById<TextInputEditText>(R.id.etNameItem)
@@ -42,6 +46,7 @@ class QuoteCreditHolder(var container:View): IHolder<QuoteCreditCard> {
         tvQuoteValue = container.findViewById(R.id.tvQuoteValue)!!
         lyQuoteCredit = container.findViewById(R.id.lyInterestValue)!!
         btnAmortization = container.findViewById(R.id.btnAmortizationQCF)
+        kindOfTax = container.findViewById(R.id.etKindOfTax)
         btnSave  = container.findViewById(R.id.btnSave)
         etValueCredit.setOnFocusChangeListener{ _,focus->
             if(!focus && etValueCredit.text?.isNotBlank() == true){
@@ -57,6 +62,20 @@ class QuoteCreditHolder(var container:View): IHolder<QuoteCreditCard> {
         btnCalc.setOnClickListener(actions)
         btnSave.setOnClickListener(actions)
         btnAmortization.setOnClickListener(actions)
+        createDialogTax()
+        kindOfTax.setOnClickListener { kindOfTaxDialog.show() }
+    }
+
+    private fun createDialogTax(){
+        val builderKindOf = AlertDialog.Builder(container.context)
+        with(builderKindOf){
+            val items = container.resources.getStringArray(R.array.kind_of_tax_list)
+            setItems(items){ _,position ->
+                val kindOf = items[position]
+                kindOfTax.setText(kindOf)
+            }
+        }
+        kindOfTaxDialog = builderKindOf.create()
     }
 
     @RequiresApi(Build.VERSION_CODES.N)
@@ -76,12 +95,12 @@ class QuoteCreditHolder(var container:View): IHolder<QuoteCreditCard> {
         pojo.period = Optional.ofNullable(etMonths.text.toString().toLong())
         pojo.tax = Optional.ofNullable(etTax.text.toString().toDouble())
         pojo.type = CalcEnum.FIX
+        pojo.kindOfTax = Optional.of(kindOfTax.text.toString())
         if(this::response.isInitialized){
             pojo.response = response
             pojo.interestValue = Optional.ofNullable(pojo.value.orElse(BigDecimal.ZERO) * (pojo.tax.orElse(0.0) / 100).toBigDecimal())
             pojo.capitalValue = Optional.of(pojo.response.orElse(BigDecimal.ZERO) - pojo.interestValue.orElse(BigDecimal.ZERO))
         }
-2000
         return pojo
     }
 
@@ -89,26 +108,24 @@ class QuoteCreditHolder(var container:View): IHolder<QuoteCreditCard> {
         etValueCredit.editableText.clear();
         etTax.editableText.clear()
         etMonths.editableText.clear()
-        //tvQuoteValue.editableText.clear()
         lyQuoteCredit.visibility = View.INVISIBLE
+        kindOfTax.editableText.clear()
         btnSave.visibility = View.INVISIBLE
         btnAmortization.visibility = View.INVISIBLE
     }
 
+    private val validations  by lazy{
+        arrayOf(
+            etValueCredit set R.string.error_empty `when` { text().isEmpty() },
+            etTax set R.string.error_empty `when` { text().isEmpty() },
+            etMonths set R.string.error_empty `when` { text().isEmpty() },
+            kindOfTax set R.string.error_empty `when` { text().isEmpty() }
+        )
+    }
+
     override fun validate(): Boolean {
-        var valid:Boolean = true
-        if(etValueCredit.text?.isBlank() == true){
-            etValueCredit.error = "Debe contener un valor mayor a 1"
-            valid = false
-        }
-        if(etTax.text?.isBlank() == true){
-            etTax.error = "Debe contener un valo entre 0.001 y 99.9"
-            valid = false
-        }
-        if(etMonths.text?.isBlank() == true){
-            etMonths.error = "Debe contener un valor entre 1 a 200."
-            valid = false
-        }
+        var valid = false
+        validations.firstInvalid{ requestFocus() }.notNull { valid = true }
         return valid
     }
 }

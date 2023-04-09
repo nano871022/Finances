@@ -19,6 +19,7 @@ import co.japl.android.myapplication.bussiness.impl.TaxImpl
 import co.japl.android.myapplication.bussiness.interfaces.IHolder
 import co.japl.android.myapplication.bussiness.interfaces.ISpinnerHolder
 import co.japl.android.myapplication.bussiness.interfaces.SaveSvc
+import co.japl.android.myapplication.finanzas.utils.KindOfTaxEnum
 import co.japl.android.myapplication.finanzas.utils.TaxEnum
 import co.japl.android.myapplication.holders.TaxesHolder
 import co.japl.android.myapplication.putParams.TaxesParams
@@ -66,10 +67,24 @@ class Taxes : Fragment() , View.OnClickListener{
 
     @RequiresApi(Build.VERSION_CODES.O)
     private fun holderSetUp(){
-        val today = LocalDate.now()
-        holder.loadFields(TaxDTO(0,today.month.value.toShort(),today.year,0,0, LocalDateTime.now(),2.0,TaxEnum.CREDIT_CARD.ordinal.toShort(),0))
+        holder.loadFields(getTaxDTO())
         holder.cleanField()
 
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun getTaxDTO():TaxDTO{
+        val today = LocalDate.now()
+        return TaxDTO(0,
+            today.month.value.toShort()
+            ,today.year
+            ,0
+            ,0
+            , LocalDateTime.now()
+            ,2.0
+            ,TaxEnum.CREDIT_CARD.ordinal.toShort()
+            ,0
+            ,KindOfTaxEnum.EM.name)
     }
 
     @RequiresApi(Build.VERSION_CODES.N)

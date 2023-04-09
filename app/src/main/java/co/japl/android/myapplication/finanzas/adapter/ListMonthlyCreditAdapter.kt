@@ -21,6 +21,7 @@ import co.japl.android.myapplication.finanzas.holders.view.AdditionalCreditItemH
 import co.japl.android.myapplication.finanzas.holders.view.MonthlyCreditItemHolder
 import co.japl.android.myapplication.finanzas.putParams.CreditFixParams
 import com.google.android.material.snackbar.Snackbar
+import java.time.LocalDate
 
 class ListMonthlyCreditAdapter(val data:MutableList<CreditDTO>,val view:View): RecyclerView.Adapter<MonthlyCreditItemHolder>() {
     private lateinit var creditFixSvc:SaveSvc<CreditDTO>
@@ -68,7 +69,7 @@ class ListMonthlyCreditAdapter(val data:MutableList<CreditDTO>,val view:View): R
                         }
                 }
                 R.id.btn_edit_mcil ->{
-                     CreditFixParams.newInstanceAmortizationMonthlyList(data[position],view.findNavController())
+                     CreditFixParams.newInstanceAmortizationMonthlyList(data[position],LocalDate.now(),view.findNavController())
                 }
             }
         }

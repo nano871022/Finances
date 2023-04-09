@@ -30,7 +30,8 @@ class TaxImpl(override var dbConnect: SQLiteOpenHelper) :  SaveSvc<TaxDTO>,ITaxS
                                   TaxDB.TaxEntry.COLUMN_COD_CREDIT_CARD,
                                   TaxDB.TaxEntry.COLUMN_CREATE_DATE,
                                   TaxDB.TaxEntry.COLUMN_KIND,
-                                  TaxDB.TaxEntry.COLUMN_PERIOD)
+                                  TaxDB.TaxEntry.COLUMN_PERIOD,
+                                  TaxDB.TaxEntry.COLUMN_KIND_OF_TAX)
     private val mapper:IMapper<TaxDTO> = TaxMap()
     @RequiresApi(Build.VERSION_CODES.O)
     override fun save(dto: TaxDTO): Long {

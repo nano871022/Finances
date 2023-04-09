@@ -76,7 +76,7 @@ class BoughWalletHolder(var view:View,val manager:FragmentManager, var caller: (
         values.nameCreditCard?.let { creditCardName.text = it}
         values.month?.let { month.text = it.toString()}
         values.quoteValue?.let { quoteValue.text = NumbersUtil.COPtoString(it)}
-        values.interest?.let { tax.text = it.toString()}
+        values.interest?.let { tax.text = "$it % ${values.kindOfTax}"}
         values.nameItem?.let { productName.setText(it) }
     }
 
@@ -86,7 +86,7 @@ class BoughWalletHolder(var view:View,val manager:FragmentManager, var caller: (
         quote.nameCreditCard = creditCardName.text.toString()
         quote.nameItem= productName.text.toString()
         quote.valueItem= NumbersUtil.toBigDecimal(productValue)
-        tax.text.toString().takeIf { it.isNotEmpty() }.apply { quote.interest = this?.toDouble() }
+        tax.text.toString().takeIf { it.isNotEmpty() }.apply { quote.interest = getTax() }
         quoteValue.text.toString().takeIf {
             it.isNotEmpty() && NumbersUtil.stringCOPToBigDecimal(it) > BigDecimal.ZERO
         }?.let {
@@ -96,6 +96,14 @@ class BoughWalletHolder(var view:View,val manager:FragmentManager, var caller: (
         month.text.toString().takeIf { it.isNotEmpty() }.apply { quote.month = this?.toInt() }
         quote.boughtDate = DateUtils.getLocalDateTimeByString(date)
         return quote
+    }
+
+    private fun getTax():Double{
+        val value = tax?.text?.toString()?.replace("%","")?.replace(Regex("[^\\d.]"),"")?.trim()
+        if(value?.isNotBlank() == true){
+            return value.toDouble()
+        }
+        return 0.0
     }
 
     override fun cleanField() {

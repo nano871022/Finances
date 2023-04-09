@@ -1,5 +1,6 @@
 package co.japl.android.myapplication.controller
 
+import android.app.AlertDialog
 import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -57,6 +58,7 @@ class QuoteCredit : Fragment(), View.OnClickListener{
      }
     }
 
+
     @RequiresApi(Build.VERSION_CODES.N)
     private fun openAmortization(){
         AmortizationTableParams.newInstanceFix(CalcMap().mapping(holder.downLoadFields()),findNavController())
@@ -66,14 +68,15 @@ class QuoteCredit : Fragment(), View.OnClickListener{
     private fun save(){
         val quote = holder.downLoadFields()
         QuoteCreditParams.newInstance(quote.value.orElse(BigDecimal.ZERO),quote.tax.orElse(0.0),quote.period.orElse(0),quote.response.orElse(
-            BigDecimal.ZERO),navController)
+            BigDecimal.ZERO),quote.kindOfTax.get(),navController)
     }
 
     @RequiresApi(Build.VERSION_CODES.N)
     private fun calc() {
         if (holder.validate()) {
             val quote = holder.downLoadFields()
-            val response = calc.calc(quote.value.get(), quote.period.get(), quote.tax.get(),KindOfTaxEnum.EM)
+            val response = calc.calc(quote.value.get(), quote.period.get(), quote.tax.get(),
+                KindOfTaxEnum.valueOf(quote.kindOfTax.get()))
             response.let {
                 quote.response = Optional.ofNullable(response)
                 holder.loadFields(quote)

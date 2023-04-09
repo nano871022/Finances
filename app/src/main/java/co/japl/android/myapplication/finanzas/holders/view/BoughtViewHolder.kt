@@ -54,7 +54,7 @@ class BoughtViewHolder(itemView:View) : RecyclerView.ViewHolder(itemView) {
         tvBoughtDate.text = DateUtils.localDateTimeToString(values.boughtDate!!)
         tvInterestBought.text = NumbersUtil.COPtoString(interest)
         tvPendingToPay.text = NumbersUtil.COPtoString(pendintToPay)
-        tvTaxBoughtICC.text = tax.orElse(values.interest).toString()
+        tvTaxBoughtICC.text = "${tax.orElse(values.interest)} % ${values.kindOfTax}"
         btnBoughtDelete.setOnClickListener(action)
         btnAmortization.setOnClickListener(action)
         if(values.month > 1){

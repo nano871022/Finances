@@ -10,6 +10,7 @@
     <dimen name="margin_start_input_layout">20dp</dimen>
     <dimen name="space_top">5dp</dimen>
     <dimen name="space_min">5dp</dimen>
+    <dimen name="column_space_min">1dp</dimen>
     <dimen name="radius_corner">12dp</dimen>
     <dimen name="stroke_with">1dp</dimen>
     <dimen name="card_elevator">2dp</dimen>

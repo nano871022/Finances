@@ -68,11 +68,16 @@ class CreditFixFragment : Fragment() , OnClickListener{
     private fun save(){
         if(holder.validate()){
             val dto = holder.downLoadFields()
-            creditCode = creditSvc.save(dto)
-            if( creditCode > 0){
+            if(creditCode>0){
                 dto.id = creditCode.toInt()
+            }
+            creditCode = creditSvc.save(dto)
+            if(dto.id == 0){
                 (holder as CreditFixHolder).additional.visibility = View.VISIBLE
                 Toast.makeText(context,R.string.toast_successful_insert,Toast.LENGTH_LONG).show()
+            }else if( dto.id > 0){
+                (holder as CreditFixHolder).additional.visibility = View.VISIBLE
+                Toast.makeText(context,R.string.toast_successful_update,Toast.LENGTH_LONG).show()
             }else{
                 (holder as CreditFixHolder).additional.visibility = View.GONE
                 Toast.makeText(context,R.string.dont_able_to_save,Toast.LENGTH_LONG).show()
@@ -87,7 +92,7 @@ class CreditFixFragment : Fragment() , OnClickListener{
             R.id.btnAmortizationCFF->{
                 val dto = holder.downLoadFields()
                 dto.id = creditCode.toInt()
-                CreditFixParams.newInstanceAmortizationList(dto,findNavController())
+                CreditFixParams.newInstanceAmortizationList(dto,LocalDate.now(),findNavController())
             }
             R.id.btnCancelCFF->{CreditFixParams.toBack(findNavController())}
             R.id.btn_save_cff->{save()}

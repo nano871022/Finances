@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.RequiresApi
+import androidx.navigation.fragment.findNavController
 import co.japl.android.myapplication.R
 import co.japl.android.myapplication.bussiness.DB.connections.ConnectDB
 import co.japl.android.myapplication.bussiness.DTO.CalcDTO
@@ -47,7 +48,11 @@ class AmortizationCreditFragment : Fragment() {
         credit = CreditFixImpl(ConnectDB(root.context))
         additionalCredit = AdditionalCreditImpl(ConnectDB(root.context))
         holder = AmortizationCreditTableHolder(root)
-        holder.setup(null)
+        holder.setup{
+            when(it?.id){
+                R.id.btn_additional_acf->CreditFixParams.newInstanceAmortizationToAdditionalList(data.id.toLong(),findNavController())
+            }
+        }
         getData()
         val additional = additionalCredit.get(getAdditional()).map { it.value }.reduceOrNull { acc, bigDecimal ->  acc + bigDecimal} ?: BigDecimal.ZERO
         holder.add(AmortizationCreditFixEnum.ADDITIONAL.name,additional)
@@ -61,7 +66,8 @@ class AmortizationCreditFragment : Fragment() {
     @RequiresApi(Build.VERSION_CODES.O)
     private fun getData(){
         arguments?.let {
-            data = CreditFixParams.downloadAmortizationList(it)
+            val values = CreditFixParams.downloadAmortizationList(it)
+            data = values.first
             holder.add(AmortizationCreditFixEnum.DATE_BILL.name,data.date)
         }
     }
@@ -76,7 +82,7 @@ class AmortizationCreditFragment : Fragment() {
         val id = 0
         val interestValue = BigDecimal.ZERO
         val capitalValue = BigDecimal.ZERO
-        val kindOfTax = KindOfTaxEnum.EM.name
+        val kindOfTax = data.kindOfTax
         return CalcDTO(name,valueCredit,interest,period.toLong(),quoteCredit,type,id,interestValue,capitalValue,kindOfTax)
     }
 

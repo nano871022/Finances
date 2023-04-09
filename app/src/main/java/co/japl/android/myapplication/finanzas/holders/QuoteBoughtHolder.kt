@@ -56,13 +56,17 @@ class QuoteBoughtHolder(var root:View,val supportManager:FragmentManager) : IHol
     lateinit var etQuotesValue: TextView
     lateinit var tvCardAssing: TextView
     lateinit var dtBought: TextInputEditText
+    lateinit var btnClear: Button
     lateinit var llTax : LinearLayout
     private lateinit var btnSave: MaterialButton
     lateinit var chRecurrent: CheckBox
+    private lateinit var creditCardBought: CreditCardBoughtDTO
     lateinit var spTypeSetting: MaterialAutoCompleteTextView
     lateinit var spNameSetting: MaterialAutoCompleteTextView
     lateinit var llTypeSetting: TextInputLayout
     lateinit var llNameSetting: TextInputLayout
+    private lateinit var  nameSettingDialog:AlertDialog
+    private lateinit var  typeSettingDialog:AlertDialog
     //services
     private var calcTax: Calc = QuoteCreditVariableInterest()
     private var calc: Calc = QuoteCreditVariable()
@@ -94,93 +98,117 @@ class QuoteBoughtHolder(var root:View,val supportManager:FragmentManager) : IHol
             llTypeSetting = it.findViewById(R.id.llSetingTypeBCC)
             spNameSetting = it.findViewById(R.id.spNameSettingBCC)
             spTypeSetting = it.findViewById(R.id.spTypeSettingBCC)
-            val dataPicker = MaterialDatePicker.Builder.datePicker().setInputMode(MaterialDatePicker.INPUT_MODE_CALENDAR).setTitleText(root.resources.getString(R.string.bought_date_time)).setSelection(MaterialDatePicker.todayInUtcMilliseconds()).build()
-
-            etProductName.setOnFocusChangeListener { _, b -> !b and validate() && calc() }
-            etProductValue.setOnFocusChangeListener { _, b -> !b and validate() && calc() }
-            etMonths.setOnFocusChangeListener { _, b -> !b and validate() && calc() }
-            dtBought.isClickable = true
-            dtBought.isFocusable = false
-            dtBought.setOnClickListener{ clicked->
-                dataPicker.show(supportManager,"DT_BOUGHT")
-                dataPicker.addOnPositiveButtonClickListener {
-                    var date = LocalDateTime.ofInstant(Instant.ofEpochMilli(it), ZoneId.systemDefault())
-                    date = date.plusDays(1)
-                    dtBought.setText(date.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")))
-                }
-            }
-
-            llTypeSetting.visibility = View.INVISIBLE
-            llNameSetting.visibility = View.INVISIBLE
-            spTypeSetting.setOnClickListener { spTypeSetting.showDropDown() }
-            spNameSetting.setOnClickListener { spNameSetting.showDropDown() }
-            spTypeSetting.isFocusable = false
-            spNameSetting.isFocusable = false
-            val btnClear: Button = it.findViewById(R.id.btnClearBought)
-            btnClear.setOnClickListener(actions)
+            btnClear  = it.findViewById(R.id.btnClearBought)
             btnSave = it.findViewById(R.id.btnSaveBought)
-            btnSave.setOnClickListener(actions)
-            etProductValue.setOnFocusChangeListener{_,focus->
-                if(!focus && etProductName.text?.isNotBlank() == true){
-                    etProductValue.setText(NumbersUtil.toString(etProductValue))
-                }
-            }
+            onFocus()
+            onClick(actions)
+            visibility()
         }
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
+    private fun onFocus(){
+        dtBought.isClickable = true
+        dtBought.isFocusable = false
+
+        spTypeSetting.isFocusable = false
+        spNameSetting.isFocusable = false
+
+        etProductName.setOnFocusChangeListener { _, b -> !b and validate() && calc() }
+        etProductValue.setOnFocusChangeListener { _, b -> !b and validate() && calc() }
+        etMonths.setOnFocusChangeListener { _, b -> !b and validate() && calc() }
+        etProductValue.setOnFocusChangeListener{_,focus->
+            if(!focus && etProductName.text?.isNotBlank() == true){
+                etProductValue.setText(NumbersUtil.toString(etProductValue))
+            }
+        }
+
+    }
+
+    private fun onClick(actions: View.OnClickListener?){
+        spTypeSetting.setOnClickListener { spTypeSetting.showDropDown() }
+        spNameSetting.setOnClickListener { spNameSetting.showDropDown() }
+        btnSave.setOnClickListener(actions)
+        btnClear.setOnClickListener(actions)
+
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun visibility(){
+        val dataPicker = MaterialDatePicker.Builder.datePicker().setInputMode(MaterialDatePicker.INPUT_MODE_CALENDAR).setTitleText(root.resources.getString(R.string.bought_date_time)).setSelection(MaterialDatePicker.todayInUtcMilliseconds()).build()
+        llTypeSetting.visibility = View.INVISIBLE
+        llNameSetting.visibility = View.INVISIBLE
+        dtBought.setOnClickListener{ clicked->
+            dataPicker.show(supportManager,"DT_BOUGHT")
+            dataPicker.addOnPositiveButtonClickListener {
+                var date = LocalDateTime.ofInstant(Instant.ofEpochMilli(it), ZoneId.systemDefault())
+                date = date.plusDays(1)
+                dtBought.setText(date.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")))
+            }
+        }
+
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun loadFields(values: CreditCardBoughtDTO) {
+        creditCardBought = values
         taxMonthly = values.interest
         creditCardCode = Optional.ofNullable(values.codeCreditCard)
         creditCardName = values.nameCreditCard
         cutOffDate = values.cutOutDate
         dtBought.setText(LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")))
-        etTax.text = "${taxMonthly.toString()} %"
+        etTax.text = "${taxMonthly.toString()} % ${values.kindOfTax}}"
         tvCardAssing.text = values.nameCreditCard
         buyCCSDTO = buyCCSsvc.get(values.id)
         cCSettingList = cCSettingsvc.getAll(values.codeCreditCard)
 
         if(cCSettingList.isNotEmpty()){
-                llTypeSetting.visibility = View.VISIBLE
-            spTypeSetting.setOnClickListener {
-                val builder = AlertDialog.Builder(it.context)
-                with(builder){
-                    val items = it.resources.getStringArray(R.array.CreditCardSettingType)
-                    setItems(items){ _,position ->
-                        val value = items[position]
-                        spTypeSetting.setText(value)
-                        if(value != itemDefaultSelected) {
-                            val list = cCSettingList.filter { it.type == spTypeSetting.text.toString() }
-                                .map { "${it.id}. ${it.name}" }.toMutableList()
-                            if(list.size > 0) {
-                                llNameSetting.visibility = View.VISIBLE
-                                spNameSetting.setOnClickListener {
-                                    val builder = AlertDialog.Builder(it.context)
-                                    with(builder){
-                                        setItems(list.toTypedArray()){ _,position->
-                                            val value = list[position]
-                                            if(value != itemDefaultSelected) {
-                                                spNameSetting.setText(value)
-                                                calc()
-                                            }
-                                        }
-                                    }
-                                    builder.create().show()
-                                }
+            llTypeSetting.visibility = View.VISIBLE
+            createTypeSettingDialog(values.kindOfTax)
+            spTypeSetting.setOnClickListener { typeSettingDialog.show() }
+        }
+    }
 
-                            }else if(root.context != null && root.resources != null && root.resources?.getString(R.string.type_setting_does_not_record) != null){
-                                Toast.makeText(root.context,root.resources?.getString(R.string.type_setting_does_not_record),Toast.LENGTH_LONG).show()
-                            }
-                        }else{
-                            llNameSetting.visibility = View.INVISIBLE
-                            etTax.text = "$taxMonthly %"
-                        }
+    private fun createTypeSettingDialog(kindOfTax:String){
+        val builder = AlertDialog.Builder(root.context)
+        with(builder){
+            val items = root.resources.getStringArray(R.array.CreditCardSettingType)
+            setItems(items){ _,position ->
+                val value = items[position]
+                spTypeSetting.setText(value)
+                if(value != itemDefaultSelected) {
+                    val list = cCSettingList.filter { it.type == spTypeSetting.text.toString() }
+                        .map { "${it.id}. ${it.name}" }.toMutableList()
+                    if(list.size > 0) {
+                        llNameSetting.visibility = View.VISIBLE
+                        createDialog(list)
+                        spNameSetting.setOnClickListener { nameSettingDialog.show() }
+
+                    }else if(root.context != null && root.resources != null && root.resources?.getString(R.string.type_setting_does_not_record) != null){
+                        Toast.makeText(root.context,root.resources?.getString(R.string.type_setting_does_not_record),Toast.LENGTH_LONG).show()
                     }
+                }else{
+                    llNameSetting.visibility = View.INVISIBLE
+                    etTax.text = "$taxMonthly % $kindOfTax"
                 }
-                builder.create().show()
-
             }
         }
+        typeSettingDialog = builder.create()
+    }
+
+    private fun createDialog(list:MutableList<String>){
+        val builder = AlertDialog.Builder(root.context)
+        with(builder){
+            setItems(list.toTypedArray()){ _,position->
+                val value = list[position]
+                if(value != itemDefaultSelected) {
+                    spNameSetting.setText(value)
+                    calc()
+                }
+            }
+        }
+       nameSettingDialog = builder.create()
+
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -208,9 +236,9 @@ class QuoteBoughtHolder(var root:View,val supportManager:FragmentManager) : IHol
         etMonths.editableText.clear()
         btnSave.visibility = View.INVISIBLE
         dtBought.setText(LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")))
-        etTax.text = taxMonthly.toString()
+        etTax.text = "$taxMonthly % ${creditCardBought.kindOfTax}"
         llTypeSetting.visibility = View.INVISIBLE
-            if(::cCSettingList.isInitialized && cCSettingList.isNotEmpty()){
+        if(::cCSettingList.isInitialized && cCSettingList.isNotEmpty()){
             llTypeSetting.visibility = View.VISIBLE
         }
         if(::buyCCSDTO.isInitialized && buyCCSDTO.isPresent){
@@ -288,10 +316,10 @@ class QuoteBoughtHolder(var root:View,val supportManager:FragmentManager) : IHol
             val settingId = spNameSetting.text.toString().split(".")[0].toInt()
             val taxValue:Double = cCSettingList.first{ it.id == settingId}.value.toDouble()
             Log.d(this.javaClass.name,"Get values $taxValue")
-            etTax.text = "${taxValue.toString()} %"
+            etTax.text = "${taxValue.toString()} % ${creditCardBought.kindOfTax}"
             taxValue
         }else {
-            etTax.text.toString().replace("%","").trim().toDouble()
+           getTax()
         }
         if(period == 1L){
             llTax.visibility = View.INVISIBLE
@@ -299,22 +327,30 @@ class QuoteBoughtHolder(var root:View,val supportManager:FragmentManager) : IHol
             llTax.visibility = View.VISIBLE
         }
 
-        val responseQuote = calc.calc(value, period, tax,KindOfTaxEnum.EM)
-        val responseiNteres = calcTax.calc(value, period, tax,KindOfTaxEnum.EM)
+        val responseQuote = calc.calc(value, period, tax,KindOfTaxEnum.valueOf(creditCardBought.kindOfTax))
+        val responseiNteres = calcTax.calc(value, period, tax,KindOfTaxEnum.valueOf(creditCardBought.kindOfTax))
 
         responseQuote.let { quote ->
             responseiNteres.let { interes ->
-                val format = DecimalFormat("#,###.00")
                 var total = quote.add(interes)
                 if(period == 1L){
                     total = quote;
                 }
-                etQuotesValue.text = format.format(total.setScale(2, RoundingMode.HALF_EVEN))
+                etQuotesValue.text = NumbersUtil.toString(total.setScale(2, RoundingMode.HALF_EVEN))
                 etQuotesValue.visibility = View.VISIBLE
                 btnSave.visibility = View.VISIBLE
             }
         }
         return true
+    }
+
+    private fun getTax():Double{
+        val value = etTax?.text?.toString()?.replace("%","")
+            ?.replace(Regex("[^\\d.]"),"")?.trim()
+        if(value?.isNotBlank() == true){
+            return value?.toDouble()!!
+        }
+            return 0.0
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -324,7 +360,7 @@ class QuoteBoughtHolder(var root:View,val supportManager:FragmentManager) : IHol
             creditCardName,
             etProductName.text.toString(),
             NumbersUtil.toBigDecimal(etProductValue),
-            etTax.text.toString().replace("%","").trim()    .toDouble(),
+            getTax(),
             etMonths.text.toString().toInt(),
             DateUtils.getLocalDateTimeByString(dtBought),
             cutOffDate,
@@ -332,7 +368,7 @@ class QuoteBoughtHolder(var root:View,val supportManager:FragmentManager) : IHol
             0,
             if (chRecurrent.isChecked) 1 else 0,
             KindBoughtEnum.BOUGHT.kind,
-            KindOfTaxEnum.EM.name)
+            creditCardBought.kindOfTax)
     }
 
     override fun lists(fn: ((QuoteBoughtHolder) -> Unit)?) {

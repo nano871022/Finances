@@ -4,6 +4,7 @@ import android.app.AlertDialog
 import android.os.Build
 import android.util.Log
 import android.view.View
+import android.view.View.OnClickListener
 import android.widget.*
 import androidx.annotation.RequiresApi
 import androidx.core.view.size
@@ -13,6 +14,7 @@ import co.japl.android.myapplication.bussiness.DTO.CreditCardSettingDTO
 import co.japl.android.myapplication.bussiness.DTO.TaxDTO
 import co.japl.android.myapplication.bussiness.interfaces.IHolder
 import co.japl.android.myapplication.bussiness.interfaces.ISpinnerHolder
+import co.japl.android.myapplication.finanzas.holders.validations.*
 import co.japl.android.myapplication.finanzas.utils.TaxEnum
 import com.google.android.material.textfield.MaterialAutoCompleteTextView
 import com.google.android.material.textfield.TextInputEditText
@@ -22,15 +24,20 @@ import java.time.LocalDateTime
 import java.time.YearMonth
 import java.util.*
 
-class TaxesHolder(var view:View,val creditCardList:List<CreditCardDTO>) : IHolder<TaxDTO>{
+class TaxesHolder(var view:View,val creditCardList:List<CreditCardDTO>) : IHolder<TaxDTO>, OnClickListener{
     lateinit var creditCard:MaterialAutoCompleteTextView
     lateinit var month:MaterialAutoCompleteTextView
     lateinit var tax:TextInputEditText
+    lateinit var kindOfTax:TextInputEditText
     lateinit var period:TextInputEditText
     lateinit var kind:MaterialAutoCompleteTextView
     lateinit var year:TextInputEditText
     lateinit var save:Button
     lateinit var clear:Button
+    private lateinit var kindOfTaxDialog:AlertDialog
+    private lateinit var kindTaxesDialog:AlertDialog
+    private lateinit var monthDialog:AlertDialog
+    private lateinit var creditCardDialog:AlertDialog
     var creditCardStr:String = ""
     var monthStr:String = ""
     @RequiresApi(Build.VERSION_CODES.N)
@@ -48,6 +55,7 @@ class TaxesHolder(var view:View,val creditCardList:List<CreditCardDTO>) : IHolde
         year = view.findViewById(R.id.edYearTaxes)
         kind = view.findViewById(R.id.spKindTaxes)
         period = view.findViewById(R.id.etPeriodsTaxes)
+        kindOfTax = view.findViewById(R.id.et_kind_of_tax_txs)
         save = view.findViewById(R.id.btnSaveTaxes)
         clear = view.findViewById(R.id.btnClearTaxes)
         llPeriodsTaxes = view.findViewById(R.id.llPeriodsTaxes)
@@ -63,6 +71,7 @@ class TaxesHolder(var view:View,val creditCardList:List<CreditCardDTO>) : IHolde
         taxInitial = values
         tax.setText(values.value.toString())
         year.setText(values.year.toString())
+        kindOfTax.setText(values.kindOfTax)
         onItemClick()
     }
 
@@ -73,6 +82,7 @@ class TaxesHolder(var view:View,val creditCardList:List<CreditCardDTO>) : IHolde
         val create:LocalDateTime = LocalDateTime.now()
         val status:Short = 1
         val kind = TaxEnum.valueOf(kind.text.toString()).ordinal.toShort()
+        val kindOfTax = kindOfTax.text.toString()
 
         val period:Short = (this.period.takeIf { it.editableText.isNotEmpty()}?.let {
             it.text.toString().toShort()
@@ -98,7 +108,7 @@ class TaxesHolder(var view:View,val creditCardList:List<CreditCardDTO>) : IHolde
             }
         }
 
-        val dto = TaxDTO(0,month.toShort(),years,status,creditCard,create,taxs,kind,period).also { Log.d(this.javaClass.name,"Download $it") }
+        val dto = TaxDTO(0,month.toShort(),years,status,creditCard,create,taxs,kind,period,kindOfTax).also { Log.d(this.javaClass.name,"Download $it") }
         return dto
     }
 
@@ -122,87 +132,108 @@ class TaxesHolder(var view:View,val creditCardList:List<CreditCardDTO>) : IHolde
         }
     }
 
+    private val validations  by lazy{
+        arrayOf(
+            year set R.string.error_empty `when` { text().isEmpty() },
+            tax set R.string.error_empty `when` { text().isEmpty() },
+            kindOfTax set R.string.error_empty `when` { text().isEmpty() }
+        )
+    }
+
+    private val validations2  by lazy{
+        arrayOf(
+            month set R.string.error_empty `when` { text().isEmpty() },
+            creditCard set R.string.error_empty `when` { text().isEmpty()} ,
+            kind set R.string.error_empty `when` { text().isEmpty() },
+        )
+    }
+
     @RequiresApi(Build.VERSION_CODES.N)
     override fun validate(): Boolean {
         var valid = true
-        if(year.text.toString().isBlank() || !(year.text.toString().toInt() in 2015..2023)){
-            year.error = "Invalid value permit values 2015-2023"
-            valid = false
+        validations.firstInvalid{ requestFocus() }.notNull {
+            validations2.firstInvalid { requestFocus() }.notNull { valid = true }
         }
-        Log.d(this.javaClass.name,"Year validation $valid")
-        if(tax.text.toString().isBlank() || !(tax.text.toString().toDouble() in 0.0..100.0)){
-            tax.error = "Invalid value permit values 0.0 - 100.0 "
-            valid = false
-        }
-        Log.d(this.javaClass.name,"Tax validation $valid")
-        if((!monthCode.isPresent || !(monthCode.get() in 1..12)) && month.text.isBlank()){
-            month.error = "Invalid value"
-            valid = false
-        }
-        Log.d(this.javaClass.name,"Month validation $valid")
-        if( (!creditCardCode.isPresent || creditCardCode.get() < 1 ) && creditCard.text.isBlank()){
-            creditCard.error = "Invalid value"
-            valid = false
-        }
-        Log.d(this.javaClass.name,"CreditCard validation $valid")
-        if(kind.text.toString().isBlank()){
-            kind.error = "Invalid value"
-            valid = false
-        }
-        Log.d(this.javaClass.name,"Kind validation $valid")
-        if(kind.text.toString() != TaxEnum.CREDIT_CARD.name && period.text?.isBlank()==true){
-            period.error = "Debe ingresar la cantidad de periodos"
-            valid = false
-        }
-        Log.d(this.javaClass.name,"Period validation $valid")
         return valid
     }
 
     @RequiresApi(Build.VERSION_CODES.N)
     fun onItemClick() {
-        creditCard.setOnClickListener {
-            val builder = AlertDialog.Builder(view.context)
-            with(builder) {
-                setItems(creditCardList.map { "${it.id}. ${it.name}" }
-                    .toTypedArray()) { _, position ->
-                    val creditCardFound = creditCardList[position]
-                    creditCardStr = creditCardFound.name
-                    creditCardCode = Optional.ofNullable(creditCardFound.id)
-                    creditCard.setText(creditCardStr)
-                }
-            }
-            val dialog = builder.create()
-            dialog.show()
-        }
+        createDialogCreditCard()
+        createDialogKindTaxes()
+        createDialogMonth()
+        createDialogKindOfTax()
+        creditCard.setOnClickListener (this)
+        month.setOnClickListener (this)
+        kind.setOnClickListener (this)
+        kindOfTax.setOnClickListener(this)
+    }
 
-        month.setOnClickListener {
-            val builder = AlertDialog.Builder(view.context)
-            with(builder) {
-                val items = view.resources.getStringArray(R.array.Months)
-                builder.setItems(items) { _, position ->
-                    val selected = items[position]
-                    monthStr = selected.toString()
-                    monthCode = Optional.ofNullable(position)
-                    month.setText(monthStr)
-                }
+    private fun createDialogKindOfTax(){
+        val builderKindOf = AlertDialog.Builder(view.context)
+        with(builderKindOf){
+            val items = view.resources.getStringArray(R.array.kind_of_tax_list)
+            setItems(items){ _,position ->
+                val kindOf = items[position]
+                kindOfTax.setText(kindOf)
             }
-            builder.create().show()
         }
-        kind.setOnClickListener {
-            val builder = AlertDialog.Builder(view.context)
-            with(builder) {
-                val items = TaxEnum.values().map { it.toString() }.toTypedArray()
-                setItems(items) { _, position ->
-                    val selected = items[position]
-                    kind.setText(selected)
-                    if (selected != TaxEnum.CREDIT_CARD.name) {
-                        llPeriodsTaxes.visibility = View.VISIBLE
-                    } else {
-                        llPeriodsTaxes.visibility = View.INVISIBLE
-                    }
+        kindOfTaxDialog = builderKindOf.create()
+    }
+
+    private fun createDialogKindTaxes() {
+        val builder = AlertDialog.Builder(view.context)
+        with(builder) {
+            val items = TaxEnum.values().map { it.toString() }.toTypedArray()
+            setItems(items) { _, position ->
+                val selected = items[position]
+                kind.setText(selected)
+                if (selected != TaxEnum.CREDIT_CARD.name) {
+                    llPeriodsTaxes.visibility = View.VISIBLE
+                } else {
+                    llPeriodsTaxes.visibility = View.INVISIBLE
                 }
-                builder.create().show()
             }
+            kindTaxesDialog = builder.create()
+        }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.N)
+    private fun createDialogMonth(){
+        val builder = AlertDialog.Builder(view.context)
+        with(builder) {
+            val items = view.resources.getStringArray(R.array.Months)
+            builder.setItems(items) { _, position ->
+                val selected = items[position]
+                monthStr = selected.toString()
+                monthCode = Optional.ofNullable(position)
+                month.setText(monthStr)
+            }
+        }
+        monthDialog = builder.create()
+    }
+
+    @RequiresApi(Build.VERSION_CODES.N)
+    private fun createDialogCreditCard(){
+        val builder = AlertDialog.Builder(view.context)
+        with(builder) {
+            setItems(creditCardList.map { "${it.id}. ${it.name}" }
+                .toTypedArray()) { _, position ->
+                val creditCardFound = creditCardList[position]
+                creditCardStr = creditCardFound.name
+                creditCardCode = Optional.ofNullable(creditCardFound.id)
+                creditCard.setText(creditCardStr)
+            }
+        }
+        creditCardDialog = builder.create()
+    }
+
+    override fun onClick(view: View?) {
+        when(view?.id){
+            R.id.spKindTaxes->kindTaxesDialog.show()
+            R.id.spMonthTaxes->monthDialog.show()
+            R.id.spCreditCardTaxes->creditCardDialog.show()
+            R.id.et_kind_of_tax_txs->kindOfTaxDialog.show()
         }
     }
 

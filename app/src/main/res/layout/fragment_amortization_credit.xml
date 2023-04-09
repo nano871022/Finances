@@ -22,6 +22,12 @@
                 android:layout_margin="@dimen/space_min"
                 android:orientation="vertical">
 
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+
                 <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="match_parent"
                     android:background="@color/green_light_trans"
@@ -38,6 +44,22 @@
                         android:textAlignment="center"/>
                 </com.google.android.material.textfield.TextInputLayout>
 
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:background="@color/green_light_trans"
+                    android:layout_weight="1"
+                    android:padding="@dimen/space_min"
+                    android:layout_margin="@dimen/space_min"
+                    app:prefixText="@string/interest_value_short"
+                    android:layout_height="wrap_content">
+                    <com.google.android.material.textview.MaterialTextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/tv_interest_acf"
+                        android:hint="@string/interest_value_hint"
+                        android:textAlignment="center"/>
+                </com.google.android.material.textfield.TextInputLayout>
+                </LinearLayout>
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -88,12 +110,17 @@
                         android:layout_margin="@dimen/space_min"
                         app:prefixText="@string/additional_monthly"
                         android:layout_height="wrap_content">
+
+
                         <com.google.android.material.textview.MaterialTextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:layout_weight="1"
                             android:id="@+id/additional_monthly__acf"
                             android:hint="@string/money_hint"
                             android:textAlignment="center"/>
+
+
                     </com.google.android.material.textfield.TextInputLayout>
 
                     <com.google.android.material.textfield.TextInputLayout
@@ -130,6 +157,15 @@
                         android:textAlignment="center"/>
                 </com.google.android.material.textfield.TextInputLayout>
 
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_additional_acf"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:text="@string/additional_to_pay"
+                    android:layout_margin="@dimen/space_min"
+                    android:layout_gravity="right"
+                    app:icon="@drawable/search" />
+
                 <TableLayout
                     android:layout_width="match_parent"
                     android:layout_margin="@dimen/space_min"
@@ -140,39 +176,47 @@
                     <TableRow
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:background="@color/green_background"    >
+                        android:layout_gravity="center">
                         <com.google.android.material.textview.MaterialTextView
-                            android:layout_width="match_parent"
-                            android:layout_weight="1"
-                            android:textAlignment="center"
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:padding="@dimen/space_min"
+                            android:background="@color/green_background"
                             android:textColor="@color/white"
+                            android:layout_margin="@dimen/column_space_min"
+                            android:layout_weight="1.3"
+                            android:textAlignment="center"
                             android:text="#"/>
 
                         <com.google.android.material.textview.MaterialTextView
-                            android:layout_width="match_parent"
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:textAlignment="center"
-                            android:layout_weight="1"
+                            android:layout_margin="@dimen/column_space_min"
+                            android:layout_weight="2.3"
+                            android:background="@color/green_background"
                             android:padding="@dimen/space_min"
+                            android:textAlignment="center"
                             android:textColor="@color/white"
                             android:text="@string/value"/>
 
                         <com.google.android.material.textview.MaterialTextView
-                            android:layout_width="match_parent"
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:textAlignment="center"
-                            android:layout_weight="1"
+                            android:layout_margin="@dimen/column_space_min"
+                            android:background="@color/green_background"
+                            android:layout_weight="3"
                             android:padding="@dimen/space_min"
+                            android:textAlignment="center"
                             android:textColor="@color/white"
                             android:text="@string/capital_value"/>
 
                         <com.google.android.material.textview.MaterialTextView
-                            android:layout_width="match_parent"
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:background="@color/green_background"
+                            android:layout_margin="@dimen/column_space_min"
                             android:textAlignment="center"
-                            android:layout_weight="1"
+                            android:layout_weight="3"
                             android:padding="@dimen/space_min"
                             android:textColor="@color/white"
                             android:text="@string/interest_value"/>

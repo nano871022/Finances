@@ -22,6 +22,7 @@ class TaxMap : IMapper<TaxDTO>{
             put(TaxDB.TaxEntry.COLUMN_CREATE_DATE,DateUtils.localDateTimeToString(dto.create))
             put(TaxDB.TaxEntry.COLUMN_KIND,dto.kind)
             put(TaxDB.TaxEntry.COLUMN_PERIOD,dto.period)
+            put(TaxDB.TaxEntry.COLUMN_KIND_OF_TAX,dto.kindOfTax)
 
         }
     }
@@ -37,6 +38,7 @@ class TaxMap : IMapper<TaxDTO>{
         val createDate = DateUtils.toLocalDateTime(cursor.getString(6))
         val kind = cursor.getShort(7)
         val period = cursor.getShort(8)
+        val kindOfTax = cursor.getString(9)
         val id = cursor.getString(0).toInt()
         return  TaxDTO(
             id,
@@ -47,7 +49,8 @@ class TaxMap : IMapper<TaxDTO>{
             createDate,
             tax,
             kind,
-            period
+            period,
+            kindOfTax
         )
     }
 
