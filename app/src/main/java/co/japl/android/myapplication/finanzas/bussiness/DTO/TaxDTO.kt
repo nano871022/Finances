@@ -11,7 +11,8 @@ data class TaxDTO (
     var create: LocalDateTime,
     var value: Double,
     var kind: Short,
-    var period: Short
+    var period: Short,
+    var kindOfTax: String?
     )
 
 object TaxDB{
@@ -25,5 +26,6 @@ object TaxDB{
         const val COLUMN_TAX = "num_tax"
         const val COLUMN_KIND = "num_kind"
         const val COLUMN_PERIOD = "num_period"
+        const val COLUMN_KIND_OF_TAX = "str_kind_of_tax"
     }
 }

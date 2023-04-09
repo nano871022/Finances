@@ -123,19 +123,20 @@
         android:layout_width="match_parent"
         android:layout_margin="@dimen/space_min"
         android:padding="@dimen/space_min"
-        android:stretchColumns="1"
         android:layout_height="wrap_content">
 
         <TableRow
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/green_background"
+
             >
 
             <com.google.android.material.textview.MaterialTextView
                 android:layout_width="wrap_content"
                 android:textColor="@color/white"
+                android:layout_margin="@dimen/column_space_min"
                 android:layout_height="wrap_content"
+                android:background="@color/green_background"
                 android:padding="@dimen/space_min"
                 android:text="#" />
 
@@ -143,9 +144,11 @@
 
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
                 android:padding="@dimen/space_min"
                 android:text="@string/value"
+                android:background="@color/green_background"
+                android:layout_margin="@dimen/column_space_min"
+                android:layout_weight="2.5"
                 android:textAlignment="center"
                 android:textColor="@color/white" />
 
@@ -153,17 +156,21 @@
                 android:id="@+id/capital_column_at"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
                 android:padding="@dimen/space_min"
+                android:layout_margin="@dimen/column_space_min"
+                android:background="@color/green_background"
                 android:textColor="@color/white"
+                android:layout_weight="3"
                 android:textAlignment="center"
                 android:text="@string/capital_value" />
 
             <com.google.android.material.textview.MaterialTextView
                 android:layout_width="match_parent"
+                android:background="@color/green_background"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
                 android:textColor="@color/white"
+                android:layout_margin="@dimen/column_space_min"
+                android:layout_weight="3"
                 android:textAlignment="center"
                 android:padding="@dimen/space_min"
                 android:text="@string/interest_value" />
@@ -172,18 +179,22 @@
                             android:id="@+id/totalColumn"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_weight="1"
+                            android:background="@color/green_background"
+                            android:layout_margin="@dimen/column_space_min"
                             android:textColor="@color/white"
                             android:textAlignment="center"
                             android:padding="@dimen/space_min"
+                            android:layout_weight="2"
                             android:text="total"/>
 
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/NextValueColumn"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
+                android:background="@color/green_background"
+                android:layout_margin="@dimen/column_space_min"
                 android:padding="@dimen/space_min"
+                android:layout_weight="2"
                 android:text="next value"
                 android:textAlignment="center"
                 android:textColor="@color/white"

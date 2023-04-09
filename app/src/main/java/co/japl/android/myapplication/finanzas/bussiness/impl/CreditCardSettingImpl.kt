@@ -87,12 +87,10 @@ class CreditCardSettingImpl(override var dbConnect: SQLiteOpenHelper) : SaveSvc<
                     mapper.mapping(this).ifPresent(list::add)
                 }
             }
-            return list
+            return list.also { Log.d(this.javaClass.name, "<<<=== getAll - End") }
         }catch(e: SQLiteException){
             Log.e(this.javaClass.name,e.message,e)
             return list
-        }finally {
-            Log.d(this.javaClass.name, "<<<=== getAll - End")
         }
     }
 

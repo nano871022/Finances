@@ -233,7 +233,11 @@
         android:id="@+id/amortizationCreditFragment"
         android:name="co.japl.android.myapplication.finanzas.controller.AmortizationCreditFragment"
         android:label="@string/amortization_table"
-        tools:layout="@layout/fragment_amortization_credit" />
+        tools:layout="@layout/BWCC" >
+        <action
+            android:id="@+id/action_amortizationCreditFragment_to_additionalListFragment"
+            app:destination="@id/additionalListFragment" />
+    </fragment>
     <fragment
         android:id="@+id/creditListFragment"
         android:name="co.japl.android.myapplication.finanzas.controller.CreditListFragment"
@@ -266,6 +270,74 @@
         <action
             android:id="@+id/action_periodCreditListFragment_to_monthlyCreditListFragment"
             app:destination="@id/monthlyCreditListFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/item_menu_setting_account"
+        android:name="co.japl.android.myapplication.finanzas.controller.AccountListFragment"
+        android:label="@string/list_account"
+        tools:layout="@layout/fragment_account_list" >
+        <action
+            android:id="@+id/action_accountListFragment_to_accountFragment"
+            app:destination="@id/accountFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/inputListFragment"
+        android:name="co.japl.android.myapplication.finanzas.controller.InputListFragment"
+        android:label="@string/list_inputs"
+        tools:layout="@layout/fragment_account_list" >
+        <action
+            android:id="@+id/action_inputListFragment_to_inputFragment"
+            app:destination="@id/inputFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/accountFragment"
+        android:name="co.japl.android.myapplication.finanzas.controller.AccountFragment"
+        android:label="@string/account"
+        tools:layout="@layout/fragment_account" >
+        <action
+            android:id="@+id/action_accountFragment_to_inputListFragment"
+            app:destination="@id/inputListFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/inputFragment"
+        android:name="co.japl.android.myapplication.finanzas.controller.InputFragment"
+        android:label="@string/input"
+        tools:layout="@layout/fragment_input" />
+    <fragment
+        android:id="@+id/paidFragment"
+        android:name="co.japl.android.myapplication.finanzas.controller.PaidFragment"
+        android:label="@string/paid"
+        tools:layout="@layout/fragment_paid" />
+    <fragment
+        android:id="@+id/menu_item_paids"
+        android:name="co.japl.android.myapplication.finanzas.controller.PaidsFragment"
+        android:label="@string/paids"
+        tools:layout="@layout/fragment_paids" >
+        <action
+            android:id="@+id/action_paidsFragment_to_paidFragment"
+            app:destination="@id/paidFragment" />
+        <action
+            android:id="@+id/action_paidsFragment_to_paidListFragment"
+            app:destination="@id/paidListFragment" />
+        <action
+            android:id="@+id/action_menu_item_paids_to_periodsPaidFragment"
+            app:destination="@id/periodsPaidFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/paidListFragment"
+        android:name="co.japl.android.myapplication.finanzas.controller.PaidListFragment"
+        android:label="@string/list_paid"
+        tools:layout="@layout/fragment_paid_list" />
+    <fragment
+        android:id="@+id/periodsPaidFragment"
+        android:name="co.japl.android.myapplication.finanzas.controller.PeriodsPaidFragment"
+        android:label="@string/periods"
+        tools:layout="@layout/fragment_periods_paid" >
+        <action
+            android:id="@+id/action_periodsPaidFragment_to_paidListFragment"
+            app:destination="@id/paidListFragment" />
     </fragment>
 
 </navigation>

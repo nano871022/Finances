@@ -38,7 +38,7 @@ class ListSaveAdapter(private val data:MutableList<CalcDTO>,val view:View) : Rec
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val format = DecimalFormat("$ #,###.00")
         holder.tvCreditValueListSaveItem.text = format.format(data[position].valueCredit)
-        holder.tvInterestListSaveItem.text = data[position].interest.toString()
+        holder.tvInterestListSaveItem.text = "${data[position].interest.toString()} % ${data[position].kindOfTax}"
         holder.tvNameListSaveItem.text = data[position].name
         holder.tvPeriodListSaveItem.text = data[position].period.toString()
         holder.tvQuoteCreditListSaveItem.text = format.format(data[position].quoteCredit)

@@ -45,6 +45,7 @@ class CreditListFragment : Fragment(), OnClickListener{
     @RequiresApi(Build.VERSION_CODES.O)
     private fun loadData(){
         val svc = creditList as CreditFixImpl
+        CreditFixListParams
         date = LocalDate.now()
         val quote = svc.getQuoteAll()
         val interest = svc.getInterestAll(date)

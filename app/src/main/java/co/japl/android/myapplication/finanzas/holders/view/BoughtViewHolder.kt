@@ -8,6 +8,7 @@ import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.RecyclerView
 import co.japl.android.myapplication.R
 import co.japl.android.myapplication.bussiness.DTO.CreditCardBoughtDTO
+import co.japl.android.myapplication.finanzas.utils.KindOfTaxEnum
 import co.japl.android.myapplication.utils.DateUtils
 import co.japl.android.myapplication.utils.NumbersUtil
 import java.math.BigDecimal
@@ -54,7 +55,7 @@ class BoughtViewHolder(itemView:View) : RecyclerView.ViewHolder(itemView) {
         tvBoughtDate.text = DateUtils.localDateTimeToString(values.boughtDate!!)
         tvInterestBought.text = NumbersUtil.COPtoString(interest)
         tvPendingToPay.text = NumbersUtil.COPtoString(pendintToPay)
-        tvTaxBoughtICC.text = tax.orElse(values.interest).toString()
+        tvTaxBoughtICC.text = "${tax.orElse(values.interest)} % ${KindOfTaxEnum.NM.name}"
         btnBoughtDelete.setOnClickListener(action)
         btnAmortization.setOnClickListener(action)
         if(values.month > 1){

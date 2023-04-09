@@ -14,7 +14,7 @@ object CalculationQuery {
         ${CalcDB.CalcEntry.COLUMN_QUOTE_CREDIT} NUMBER,
         ${CalcDB.CalcEntry.COLUMN_VALUE_CREDIT} NUMBER,
         ${CalcDB.CalcEntry.COLUMN_INTEREST_VALUE} NUMBER,
-        ${CalcDB.CalcEntry.COLUMN_CAPITAL_VALUE} NUMBER
+        ${CalcDB.CalcEntry.COLUMN_CAPITAL_VALUE} NUMBER,
         ${CalcDB.CalcEntry.COLUMN_KIND_OF_TAX} TEXT DEFAULT "EM" NOT NULL
         )"""
     const val SQL_DELETE_ENTRIES = "DROP TABLE IF EXISTS ${CalcDB.CalcEntry.TABLE_NAME}"

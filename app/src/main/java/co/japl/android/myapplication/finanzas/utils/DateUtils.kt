@@ -44,6 +44,11 @@ class DateUtils {
         }
 
         @RequiresApi(Build.VERSION_CODES.O)
+        fun localDateTimeToStringDate(value: LocalDate): String {
+            return DateTimeFormatter.ofPattern("yyyy-MM-dd").format(value)
+        }
+
+        @RequiresApi(Build.VERSION_CODES.O)
         fun getMonths(startDate:LocalDateTime, endDate:LocalDateTime):Long{
             val period = Period.between(startDate.toLocalDate(),endDate.toLocalDate())
             val month = period.months

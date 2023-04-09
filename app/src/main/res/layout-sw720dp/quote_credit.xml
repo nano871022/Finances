@@ -77,6 +77,22 @@
         <com.google.android.material.textfield.TextInputLayout
             android:layout_height="match_parent"
             android:layout_width="match_parent"
+            android:layout_margin="@dimen/space_min"
+            android:layout_weight="1"
+            app:endIconMode="clear_text">
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etKindOfTax"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:focusable="false"
+                android:hint="@string/kind_of_tax"
+                android:textAlignment="textEnd"
+                />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_height="match_parent"
+            android:layout_width="match_parent"
             app:endIconMode="clear_text"
             android:layout_margin="@dimen/space_min"
             android:layout_weight="1">

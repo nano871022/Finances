@@ -64,7 +64,7 @@ class AdditionalCreditHolder(val view:View,val supportManager: FragmentManager):
     private fun loadMoney(){
         value.setOnFocusChangeListener { _, focusable ->
             if(!focusable){
-                value.setText(NumbersUtil.toString(value.text.toString().replace(", ","").toBigDecimal()))
+                value.setCOPtoField()
             }
         }
     }

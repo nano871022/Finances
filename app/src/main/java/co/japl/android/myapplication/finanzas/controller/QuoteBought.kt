@@ -72,7 +72,7 @@ class QuoteBought : Fragment(), View.OnClickListener{
                 val dto = CreditCardBoughtDTO(
                     creditCardCode, creditCard.get().name, "", BigDecimal.ZERO, tax.get()
                         .value, 0, LocalDateTime.now(), cutOffDate, LocalDateTime.now(), 0, 0, 0
-                ,KindOfTaxEnum.EM.name )
+                ,tax.get().kindOfTax!! )
                 holder.loadFields(dto)
             } else {
                 Toast.makeText(

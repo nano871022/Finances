@@ -71,7 +71,8 @@ class QuoteCreditVariable : Fragment(), View.OnClickListener{
             ,quote.response.orElse(BigDecimal.ZERO)
             ,quote.interestValue.orElse(BigDecimal.ZERO)
             ,quote.capitalValue.orElse(BigDecimal.ZERO)
-            ,findNavController())
+            ,quote.kindOfTax.orElse(KindOfTaxEnum.EM.name),
+            findNavController())
     }
 
     @RequiresApi(Build.VERSION_CODES.N)
@@ -79,10 +80,10 @@ class QuoteCreditVariable : Fragment(), View.OnClickListener{
         if (holder.validate()) {
 
             val quote = holder.downLoadFields()
-            val response = calc.calc(quote.value.get(), quote.period.get(), quote.tax.get(),KindOfTaxEnum.EM)
+            val response = calc.calc(quote.value.get(), quote.period.get(), quote.tax.get(),KindOfTaxEnum.valueOf(quote.kindOfTax.get()))
 
             quote.capitalValue = Optional.ofNullable(response)
-            val responseInt = calcInt.calc(quote.value.get(), quote.period.get(), quote.tax.get(),KindOfTaxEnum.EM)
+            val responseInt = calcInt.calc(quote.value.get(), quote.period.get(), quote.tax.get(),KindOfTaxEnum.valueOf(quote.kindOfTax.get()))
             quote.interestValue = Optional.ofNullable(responseInt)
             quote.response =
                 Optional.ofNullable(quote.capitalValue.get().add(quote.interestValue.get()))

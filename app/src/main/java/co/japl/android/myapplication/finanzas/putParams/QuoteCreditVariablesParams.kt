@@ -21,19 +21,20 @@ class QuoteCreditVariablesParams {
         val ARG_QUOTE_VALUE = "quoteValue"
         val ARG_INTEREST_VALUE = "interestValue"
         val ARG_CAPITAL_VALUE = "capitalValue"
+        val ARG_KIND_OF_TAX = "kind_of_tax"
     }
 
     companion object{
         @JvmStatic
-        fun newInstance(creditValue:BigDecimal,interest:Double,period:Long,quoteValue:BigDecimal,interestValue:BigDecimal,capitalValue:BigDecimal,navController:NavController){
+        fun newInstance(creditValue:BigDecimal,interest:Double,period:Long,quoteValue:BigDecimal,interestValue:BigDecimal,capitalValue:BigDecimal,kindOfTax:String,navController:NavController){
             val parameters = bundleOf(
                 Params.ARG_CREDIT_VALUE to creditValue.toString()
                 , Params.ARG_TAX_VALUE to interest.toString()
                 , Params.ARG_PERIOD_VALUE to period.toString()
                 , Params.ARG_QUOTE_VALUE to quoteValue.toString()
                 , Params.ARG_INTEREST_VALUE to interestValue.toString()
-                , Params.ARG_CAPITAL_VALUE to capitalValue.toString())
-            Log.d(this.javaClass.name,"$parameters")
+                , Params.ARG_CAPITAL_VALUE to capitalValue.toString()
+                , Params.ARG_KIND_OF_TAX to kindOfTax)
             navController.navigate(R.id.action_save_quote_credit_variable,parameters)
         }
 
@@ -47,6 +48,7 @@ class QuoteCreditVariablesParams {
                 quote.response = Optional.ofNullable( it.get(Params.ARG_QUOTE_VALUE).toString().toBigDecimal())
                 quote.interestValue = Optional.ofNullable( it.get(Params.ARG_INTEREST_VALUE).toString().toBigDecimal())
                 quote.capitalValue = Optional.ofNullable( it.get(Params.ARG_CAPITAL_VALUE).toString().toBigDecimal())
+                quote.kindOfTax = Optional.of(it.get(Params.ARG_KIND_OF_TAX).toString())
                 quote.type = CalcEnum.VARIABLE
                 return Optional.ofNullable(quote)
             }

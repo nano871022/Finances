@@ -4,14 +4,12 @@ import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import android.util.Log
-import co.japl.android.myapplication.finanzas.bussiness.DB.connections.AddToCapitalConnectDB
-import co.japl.android.myapplication.finanzas.bussiness.DB.connections.AdditionalCreditConnectDB
-import co.japl.android.myapplication.finanzas.bussiness.DB.connections.CreditFixConnectDB
+import co.japl.android.myapplication.finanzas.bussiness.DB.connections.*
 import co.japl.android.myapplication.finanzas.bussiness.queries.AddToCapitalQuery
 import co.japl.android.myapplication.utils.DatabaseConstants
 
 class ConnectDB(context: Context):SQLiteOpenHelper(context,
-    DatabaseConstants.DATA_BASE_NAME,null, 27) {
+    DatabaseConstants.DATA_BASE_NAME,null, 28) {
 
     override fun onCreate(p0: SQLiteDatabase?) {
         Log.i(this.javaClass.name,"<<<=== onCreate - Start $p0")
@@ -24,6 +22,9 @@ class ConnectDB(context: Context):SQLiteOpenHelper(context,
         CreditFixConnectDB().onCreate(p0)
         AdditionalCreditConnectDB().onCreate(p0)
         AddToCapitalConnectDB().onCreate(p0)
+        PaidConnectDB().onCreate(p0)
+        InputConnectDB().onCreate(p0)
+        AccountConnectDB().onCreate(p0)
         Log.i(this.javaClass.name,"<<<=== onCreate - End")
     }
 
@@ -38,6 +39,9 @@ class ConnectDB(context: Context):SQLiteOpenHelper(context,
         CreditFixConnectDB().onUpgrade(p0,p1,p2)
         AdditionalCreditConnectDB().onUpgrade(p0,p1,p2)
         AddToCapitalConnectDB().onUpgrade(p0,p1,p2)
+        PaidConnectDB().onUpgrade(p0,p1,p2)
+        InputConnectDB().onUpgrade(p0,p1,p2)
+        AccountConnectDB().onUpgrade(p0,p1,p2)
         Log.i(this.javaClass.name,"<<<=== onUpgrade - End")
     }
 
@@ -52,6 +56,9 @@ class ConnectDB(context: Context):SQLiteOpenHelper(context,
         CreditFixConnectDB().onDowngrade(db,oldVersion,newVersion)
         AdditionalCreditConnectDB().onDowngrade(db,oldVersion,newVersion)
         AddToCapitalConnectDB().onDowngrade(db,oldVersion,newVersion)
+        PaidConnectDB().onDowngrade(db,oldVersion,newVersion)
+        InputConnectDB().onDowngrade(db,oldVersion,newVersion)
+        AccountConnectDB().onDowngrade(db,oldVersion,newVersion)
         Log.i(this.javaClass.name,"<<<=== onDowngrade - End")
     }
 

@@ -186,8 +186,7 @@ class QuoteCCHolder(var view:View,var parentFragmentManager:FragmentManager,var 
     }
 
     override fun downLoadFields(): CreditCard {
-        val pojo =  CreditCard()
-        return pojo
+        return CreditCard()
     }
 
     override fun cleanField() {
@@ -208,7 +207,6 @@ class QuoteCCHolder(var view:View,var parentFragmentManager:FragmentManager,var 
     }
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onClick(view: View){
-        Log.d(this.javaClass.name,"btn clicked ${view.id}")
         when(view.id){
             R.id.btnAddBuyWalletLCCQ -> boughWallet()
             R.id.btnAddItem->addBuy()
@@ -227,9 +225,7 @@ class QuoteCCHolder(var view:View,var parentFragmentManager:FragmentManager,var 
 
     @RequiresApi(Build.VERSION_CODES.O)
     private fun boughWallet(){
-        Log.d(this.javaClass.name,"before calld to bough Wallet")
         if(validRedirect()){
-            Log.d(this.javaClass.name,"redirect to boughWallet")
             BoughWalletParams.newInstance(codeCreaditCard.get(),navController)
         }
     }
@@ -237,7 +233,7 @@ class QuoteCCHolder(var view:View,var parentFragmentManager:FragmentManager,var 
     @RequiresApi(Build.VERSION_CODES.O)
     private fun cutOffHistory(){
         if(validRedirect()) {
-        PeriodsParams.Companion.Historical.newInstance(codeCreaditCard.get(),navController)
+            PeriodsParams.Companion.Historical.newInstance(codeCreaditCard.get(),navController)
         }else{
             Toast.makeText(view.context,"There is not selected any credit card",Toast.LENGTH_LONG).show()
         }

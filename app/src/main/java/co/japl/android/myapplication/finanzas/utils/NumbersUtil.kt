@@ -16,6 +16,11 @@ class NumbersUtil {
             return DecimalFormat(formatDecimalMoneyCO).format(value)
         }
 
+        fun COPtoString(value: Double): String {
+            return DecimalFormat(formatDecimalMoneyCO).format(value)
+        }
+
+
         fun toString(value: Long): String {
             return DecimalFormat(formatDecimal).format(value)
         }

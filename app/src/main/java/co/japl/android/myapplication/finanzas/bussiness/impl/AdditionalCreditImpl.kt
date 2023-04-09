@@ -60,7 +60,7 @@ class AdditionalCreditImpl(override var dbConnect: SQLiteOpenHelper) : SaveSvc<A
     override fun get(id: Int): Optional<AdditionalCreditDTO> {
         val db = dbConnect.readableDatabase
 
-        val cursor = db.query(AdditionalCreditDB.Entry.TABLE_NAME,COLUMNS,"id = ?",
+        val cursor = db.query(AdditionalCreditDB.Entry.TABLE_NAME,COLUMNS,"${AdditionalCreditDB.Entry.COLUMN_CREDIT_CODE} = ?",
             arrayOf(id.toString()),null,null,null)
         with(cursor){
             while(moveToNext()){

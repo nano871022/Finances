@@ -5,6 +5,8 @@ import android.view.View
 import android.widget.TableLayout
 import android.widget.TableRow
 import android.widget.TextView
+import androidx.core.view.marginStart
+import androidx.core.view.setMargins
 import androidx.core.view.setPadding
 import co.japl.android.myapplication.R
 import co.japl.android.myapplication.bussiness.DTO.CalcDTO
@@ -20,6 +22,7 @@ import co.japl.android.myapplication.utils.NumbersUtil
 import com.google.android.material.textfield.TextInputLayout
 import com.google.android.material.textview.MaterialTextView
 import java.math.BigDecimal
+import java.math.RoundingMode
 
 class AmortizationTableHolder(val view:View):ITableHolder<CalcDTO> {
     private val kindOfTaxSvc:IKindOfTaxSvc = KindOfTaxImpl()
@@ -69,7 +72,7 @@ class AmortizationTableHolder(val view:View):ITableHolder<CalcDTO> {
         creditData = creditValue
         this.creditValue.text = NumbersUtil.COPtoString(creditValue.valueCredit)
         this.quoteValue.text = NumbersUtil.COPtoString(creditValue.quoteCredit)
-        this.tax.text = "${creditValue.interest} %"
+        this.tax.text = "${creditValue.interest} % ${creditValue.kindOfTax}"
         this.periods.text = creditValue.period.toString()
     }
 
@@ -89,9 +92,11 @@ class AmortizationTableHolder(val view:View):ITableHolder<CalcDTO> {
     }
 
     private fun quoteFixCalc(){
+        Log.d(javaClass.name,"Quote Fix")
         var currentCreditValue = creditData.valueCredit
+        val tax = ( kindOfTaxSvc.getNM(creditData.interest,KindOfTaxEnum.valueOf(creditData.kindOfTax))/ 100).toBigDecimal()
         for ( period in 1 .. creditData.period){
-            val interest = currentCreditValue * (creditData.interest / 100).toBigDecimal()
+            val interest = currentCreditValue * tax
             val capital = creditData.quoteCredit -  interest
             currentCreditValue -= capital
             amortizationList.add(Amortization(period.toInt(),
@@ -109,18 +114,23 @@ class AmortizationTableHolder(val view:View):ITableHolder<CalcDTO> {
     }
 
     private fun quoteVariableCalc(){
+        Log.d(javaClass.name,"Quote Variable")
         var currentCreditValue = creditData.valueCredit
+        val periods = creditData.period
+        val capital = currentCreditValue.toDouble() / periods
+        Log.d(javaClass.name,"$capital = $currentCreditValue / $periods")
+        val tax = if(creditData.interest > 0)kindOfTaxSvc.getNM(creditData.interest,KindOfTaxEnum.valueOf(creditData.kindOfTax)) / 100 else creditData.interest
         for ( period in 1 .. creditData.period){
-            val tax = kindOfTaxSvc.getNM(creditData.interest,KindOfTaxEnum.valueOf(creditData.kindOfTax)) / 100
             val interest = currentCreditValue * tax.toBigDecimal()
-            val capital = creditData.quoteCredit - interest
-            currentCreditValue -=  capital
             amortizationList.add(Amortization(period.toInt(),
-                currentCreditValue + creditData.capitalValue,
-                interest,capital,
-                capital + interest,
-                currentCreditValue))
+                currentCreditValue ,
+                interest,
+                capital.toBigDecimal(),
+                capital.toBigDecimal()   + interest,
+                currentCreditValue - capital.toBigDecimal()))
+            currentCreditValue -=  capital.toBigDecimal()
             interesToPay += interest
+            Log.d(javaClass.name,"${amortizationList.size} $currentCreditValue $capital (${creditData.valueCredit} / ${creditData.period}) $interest")
         }
         capitalValue.text = NumbersUtil.COPtoString(creditData.capitalValue)
         capitalValueLayout.visibility = View.VISIBLE
@@ -131,38 +141,52 @@ class AmortizationTableHolder(val view:View):ITableHolder<CalcDTO> {
 
    override fun load(){
        var paid = false
-
+       val layoutParams = TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT,TableRow.LayoutParams.WRAP_CONTENT)
+       val layoutParams1 = TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT,TableRow.LayoutParams.WRAP_CONTENT,1f)
+       val layoutParams2 = TableRow.LayoutParams(0,TableRow.LayoutParams.WRAP_CONTENT,2f)
+       val layoutParams3 = TableRow.LayoutParams(0,TableRow.LayoutParams.WRAP_CONTENT,3f)
+       layoutParams1.setMargins(view.resources.getDimension(R.dimen.column_space_min).toInt())
+       layoutParams2.setMargins(view.resources.getDimension(R.dimen.column_space_min).toInt())
+       layoutParams3.setMargins(view.resources.getDimension(R.dimen.column_space_min).toInt())
+       table.setColumnStretchable(1,false)
+       table.setColumnStretchable(2,true)
+       table.setColumnStretchable(3,true)
+       table.setColumnStretchable(4,true)
+       table.setColumnStretchable(5,true)
+       table.setColumnStretchable(6,true)
         for( amortization in amortizationList){
             paid = false
             val row = TableRow(view.context)
             paid = amortization.order.toLong() == quotesPaid
-            if(paid){
-                row.setBackgroundColor(backgroun)
-            }
 
             val period = createTextView(amortization.order.toString(),paid)
+            period.layoutParams = layoutParams
             row.addView(period)
 
             val currentCreditValue = createTextView(NumbersUtil.COPtoString(amortization.currentValueCredit),paid)
+            currentCreditValue.layoutParams = layoutParams1
             row.addView(currentCreditValue)
+
             val capital = createTextView(NumbersUtil.COPtoString(amortization.capitalValue),paid)
             capital.visibility = capitalValueColumn.visibility
+            capital.layoutParams = layoutParams3
             row.addView(capital)
 
             val interest = createTextView(NumbersUtil.COPtoString(amortization.interestValue),paid)
+            interest.layoutParams = layoutParams3
             row.addView(interest)
 
             val total = createTextView( NumbersUtil.COPtoString(amortization.totalQuote),paid)
+            total.layoutParams = layoutParams2
             total.visibility = totalColumn.visibility
-
             row.addView(total)
 
             val newCurrentValue = createTextView(NumbersUtil.COPtoString(amortization.newCurrentValueCredit),paid)
+            newCurrentValue.layoutParams = layoutParams2
             newCurrentValue.visibility = this.nextValueColumn.visibility
             row.addView(newCurrentValue)
 
-
-            table.addView(row)
+            table.addView(row,TableRow.LayoutParams.MATCH_PARENT,TableRow.LayoutParams.WRAP_CONTENT)
         }
        this.interestToPay.text = NumbersUtil.COPtoString(interesToPay)
     }
@@ -174,6 +198,7 @@ class AmortizationTableHolder(val view:View):ITableHolder<CalcDTO> {
         textView.text = value
         if(paid){
             textView.setTextColor(colorPaid)
+            textView.setBackgroundColor(backgroun)
         }
         return textView
     }

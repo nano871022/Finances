@@ -18,6 +18,7 @@ import co.japl.android.myapplication.finanzas.adapter.ListPeriodCreditAdapter
 import co.japl.android.myapplication.finanzas.bussiness.DTO.CreditDTO
 import co.japl.android.myapplication.finanzas.bussiness.DTO.PeriodCreditDTO
 import co.japl.android.myapplication.finanzas.bussiness.impl.CreditFixImpl
+import co.japl.android.myapplication.finanzas.bussiness.interfaces.ICreditFix
 import java.math.BigDecimal
 import java.time.LocalDate
 import java.util.Date
@@ -25,7 +26,7 @@ import java.util.Date
 class PeriodCreditListFragment : Fragment() {
     private lateinit var recycler: RecyclerView
     private lateinit var credit: CreditDTO
-    private lateinit var creditSvc: SaveSvc<CreditDTO>
+    private lateinit var creditSvc: ICreditFix
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,12 +49,7 @@ class PeriodCreditListFragment : Fragment() {
 
     @RequiresApi(Build.VERSION_CODES.O)
     private fun getPeriods():MutableList<PeriodCreditDTO>{
-        val list = creditSvc.getAll().groupBy {
-                String.format("%4d%02d",it.date.year,it.date.monthValue)
-        }.map {
-            getPeriod(it.key,it.value.size,it.value.map { it.value }.reduceOrNull { acc, bigDecimal -> acc + bigDecimal } ?: BigDecimal.ZERO)
-        }.toMutableList()
-        return list
+        return creditSvc.getPeriods().toMutableList()
     }
 
     @RequiresApi(Build.VERSION_CODES.O)

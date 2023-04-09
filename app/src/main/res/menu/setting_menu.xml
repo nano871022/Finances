@@ -21,6 +21,13 @@
         app:showAsAction="ifRoom" />
 
     <item
+        android:id="@+id/item_menu_setting_account"
+        android:icon="@drawable/ic_credit_card_foreground"
+        android:iconTint="@color/green_background"
+        android:title="@string/account"
+        app:showAsAction="ifRoom" />
+
+    <item
     android:id="@+id/item_menu_setting_about_it"
     android:icon="@drawable/ic_credit_card_foreground"
     android:title="@string/about_it"/>

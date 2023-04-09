@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_margin="@dimen/space_min"
+    app:strokeWidth="@dimen/stroke_with"
+    app:cardCornerRadius="@dimen/radius_corner"
+    app:cardElevation="@dimen/card_elevator"
+    tools:context=".finanzas.controller.PaidListFragment">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/space_min"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_margin="@dimen/space_min"
+                android:padding="@dimen/space_min"
+                app:prefixText="@string/period"
+                android:layout_weight="1"
+                android:background="@color/green_light_trans"
+                android:layout_height="wrap_content">
+                <com.google.android.material.textview.MaterialTextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textAlignment="center"
+                    android:id="@+id/tv_period_pdl"
+                    android:text="@string/date_hint"/>
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_margin="@dimen/space_min"
+                app:prefixText="@string/value"
+                android:padding="@dimen/space_min"
+                android:layout_weight="1"
+                android:background="@color/green_light_trans"
+                android:layout_height="wrap_content">
+                <com.google.android.material.textview.MaterialTextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textAlignment="center"
+                    android:id="@+id/tv_value_pdl"
+                    android:text="@string/money_hint"/>
+
+            </com.google.android.material.textfield.TextInputLayout>
+            </LinearLayout>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/rv_paid_list"/>
+        </LinearLayout>
+
+    </ScrollView>
+
+
+</com.google.android.material.card.MaterialCardView>

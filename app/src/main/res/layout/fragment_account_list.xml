@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:cardElevation="@dimen/card_elevator"
+    app:strokeWidth="@dimen/stroke_with"
+    app:cardCornerRadius="@dimen/radius_corner"
+    android:layout_margin="@dimen/space_min"
+    tools:context=".finanzas.controller.AccountListFragment">
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/space_min"
+            android:orientation="vertical">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/rv_account_list"/>
+
+            <com.google.android.material.button.MaterialButton
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/btn_add_al"
+                app:icon="@android:drawable/ic_menu_add"
+                android:layout_margin="@dimen/space_min"
+                android:text="@string/add"/>
+        </LinearLayout>
+
+    </ScrollView>
+
+
+</com.google.android.material.card.MaterialCardView>

@@ -32,7 +32,7 @@ class TaxItemHolder(var view:View) : RecyclerView.ViewHolder(view) {
         val months = view.resources.getStringArray(R.array.Months)
         month.text = months[values.month.toInt()]
         year.text = values.year.toString()
-        tax.text = "${values.value} %"
+        tax.text = "${values.value} % ${values.kindOfTax ?: "EM"}"
         val kind = TaxEnum.values()[values.kind.toInt()]
         this.kind.text = kind.name
         period.text = values.period.toString()
