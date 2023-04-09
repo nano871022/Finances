@@ -233,7 +233,7 @@
         android:id="@+id/amortizationCreditFragment"
         android:name="co.japl.android.myapplication.finanzas.controller.AmortizationCreditFragment"
         android:label="@string/amortization_table"
-        tools:layout="@layout/fragment_amortization_credit" >
+        tools:layout="@layout/BWCC" >
         <action
             android:id="@+id/action_amortizationCreditFragment_to_additionalListFragment"
             app:destination="@id/additionalListFragment" />

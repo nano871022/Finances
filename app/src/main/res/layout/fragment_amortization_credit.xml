@@ -164,7 +164,7 @@
                     android:text="@string/additional_to_pay"
                     android:layout_margin="@dimen/space_min"
                     android:layout_gravity="right"
-                    app:icon="@drawable/search" />
+                    app:icon="@android:drawable/ic_menu_search" />
 
                 <TableLayout
                     android:layout_width="match_parent"
