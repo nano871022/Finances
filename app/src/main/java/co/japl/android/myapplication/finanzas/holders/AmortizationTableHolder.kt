@@ -119,7 +119,7 @@ class AmortizationTableHolder(val view:View):ITableHolder<CalcDTO> {
         val periods = creditData.period
         val capital = currentCreditValue.toDouble() / periods
         Log.d(javaClass.name,"$capital = $currentCreditValue / $periods")
-        val tax = kindOfTaxSvc.getNM(creditData.interest,KindOfTaxEnum.valueOf(creditData.kindOfTax)) / 100
+        val tax = if(creditData.interest > 0)kindOfTaxSvc.getNM(creditData.interest,KindOfTaxEnum.valueOf(creditData.kindOfTax)) / 100 else creditData.interest
         for ( period in 1 .. creditData.period){
             val interest = currentCreditValue * tax.toBigDecimal()
             amortizationList.add(Amortization(period.toInt(),

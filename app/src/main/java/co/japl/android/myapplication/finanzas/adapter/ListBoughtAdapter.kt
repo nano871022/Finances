@@ -24,6 +24,7 @@ import co.japl.android.myapplication.bussiness.interfaces.SearchSvc
 import co.japl.android.myapplication.bussiness.mapping.CalcMap
 import co.japl.android.myapplication.finanzas.bussiness.impl.BuyCreditCardSettingImpl
 import co.japl.android.myapplication.finanzas.bussiness.impl.CreditCardSettingImpl
+import co.japl.android.myapplication.finanzas.bussiness.impl.KindOfTaxImpl
 import co.japl.android.myapplication.finanzas.putParams.AmortizationTableParams
 import co.japl.android.myapplication.finanzas.utils.KindOfTaxEnum
 import co.japl.android.myapplication.finanzas.utils.TaxEnum
@@ -40,7 +41,8 @@ class ListBoughtAdapter(private val data:MutableList<CreditCardBoughtDTO>,privat
     lateinit var dbConnect: ConnectDB
     lateinit var saveSvc: SaveSvc<CreditCardBoughtDTO>
     lateinit var searchSvc: SearchSvc<CreditCardBoughtDTO>
-    lateinit var taxSvc:ITaxSvc
+    private val  kindOfTaxSvc = KindOfTaxImpl()
+    private lateinit var taxSvc:SaveSvc<TaxDTO>
     lateinit var buyCreditCardSettingSvc: SaveSvc<BuyCreditCardSettingDTO>
     lateinit var creditCardSettingSvc: SaveSvc<CreditCardSettingDTO>
     lateinit var view:View
@@ -72,10 +74,10 @@ class ListBoughtAdapter(private val data:MutableList<CreditCardBoughtDTO>,privat
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    private fun getTax(codCreditCard:Long,kind:TaxEnum):Optional<Double>{
-        val tax = taxSvc.get(codCreditCard,cutOff.month.value,cutOff.year,kind)
+    private fun getTax(codCreditCard:Long,kind:TaxEnum):Optional<Pair<Double,String>>{
+        val tax = (taxSvc as TaxImpl).get(codCreditCard,cutOff.month.value,cutOff.year,kind)
         if(tax.isPresent){
-            return Optional.ofNullable(tax.get().value)
+            return Optional.ofNullable(Pair(tax.get().value,tax.get().kindOfTax ?: KindOfTaxEnum.EM.name))
         }
         return Optional.empty()
     }
@@ -93,22 +95,38 @@ class ListBoughtAdapter(private val data:MutableList<CreditCardBoughtDTO>,privat
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    private fun getInterestValue(creditCardBoughtDTO: CreditCardBoughtDTO,taxCCValue: Optional<Double>,taxADVValue: Optional<Double>):BigDecimal{
+    private fun getInterestValue(creditCardBoughtDTO: CreditCardBoughtDTO,taxCCValue: Optional<Pair<Double,String>>,taxADVValue: Optional<Pair<Double,String>>):BigDecimal{
         val setting = getSettings(creditCardBoughtDTO.id)
         val interestTax = if(setting.isPresent){
-            setting.get()
+            if(setting.get() > 0) {
+                kindOfTaxSvc.getNM(setting.get(), KindOfTaxEnum.EM)
+            }else{
+                setting.get()
+            }
         }else {
             when (creditCardBoughtDTO.kind) {
-                TaxEnum.CASH_ADVANCE.ordinal.toShort() -> taxADVValue.orElse(0.0)
-                TaxEnum.CREDIT_CARD.ordinal.toShort() -> taxCCValue.orElse(0.0)
-                else -> creditCardBoughtDTO.interest
+                TaxEnum.CASH_ADVANCE.ordinal.toShort() -> {
+                    if(taxADVValue.isPresent){
+                        kindOfTaxSvc.getNM(taxADVValue.get().first, KindOfTaxEnum.valueOf(taxADVValue.get().second))
+                    }else{
+                        0.0
+                    }
+                }
+                TaxEnum.CREDIT_CARD.ordinal.toShort() -> {
+                    if(taxCCValue.isPresent){
+                        kindOfTaxSvc.getNM(taxCCValue.get().first, KindOfTaxEnum.valueOf(taxCCValue.get().second))
+                    }else{
+                        0.0
+                    }
+                }
+                else -> kindOfTaxSvc.getNM(creditCardBoughtDTO.interest, KindOfTaxEnum.valueOf(creditCardBoughtDTO.kindOfTax))
             }
         }
         return interestTax.toBigDecimal().divide(BigDecimal(100),8,RoundingMode.CEILING)
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    private fun getInterest(dto:CreditCardBoughtDTO,taxCCValue:Optional<Double>,taxAdvValue:Optional<Double>):BigDecimal{
+    private fun getInterest(dto:CreditCardBoughtDTO,taxCCValue:Optional<Pair<Double,String>>,taxAdvValue:Optional<Pair<Double,String>>):BigDecimal{
         if(dto.month > 1){
             val months = DateUtils.getMonths(dto.boughtDate,cutOff)
             val quote = dto.valueItem.divide(dto.month.toBigDecimal(),8,RoundingMode.CEILING)

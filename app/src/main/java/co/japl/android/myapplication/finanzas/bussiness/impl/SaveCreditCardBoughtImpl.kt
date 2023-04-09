@@ -12,8 +12,10 @@ import co.japl.android.myapplication.bussiness.mapping.CreditCardBoughtMap
 import co.japl.android.myapplication.finanzas.bussiness.DTO.PeriodDTO
 import co.japl.android.myapplication.finanzas.bussiness.impl.BuyCreditCardSettingImpl
 import co.japl.android.myapplication.finanzas.bussiness.impl.CreditCardSettingImpl
+import co.japl.android.myapplication.finanzas.bussiness.impl.KindOfTaxImpl
 import co.japl.android.myapplication.finanzas.bussiness.interfaces.IGetPeriodsServices
 import co.japl.android.myapplication.finanzas.bussiness.mapping.PeriodsMap
+import co.japl.android.myapplication.finanzas.utils.KindOfTaxEnum
 import co.japl.android.myapplication.finanzas.utils.TaxEnum
 import co.japl.android.myapplication.utils.DatabaseConstants
 import co.japl.android.myapplication.utils.DateUtils
@@ -33,6 +35,7 @@ import java.util.*
 
 class SaveCreditCardBoughtImpl(override var dbConnect: SQLiteOpenHelper) : SaveSvc<CreditCardBoughtDTO>,
     SearchSvc<CreditCardBoughtDTO>, IGetPeriodsServices {
+    private val kindOfTaxSvc = KindOfTaxImpl()
     private val COLUMNS_CALC = arrayOf(BaseColumns._ID
         ,CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_CODE_CREDIT_CARD
         ,CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_NAME_ITEM
@@ -227,14 +230,14 @@ class SaveCreditCardBoughtImpl(override var dbConnect: SQLiteOpenHelper) : SaveS
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    private fun getTax(codCreditCard:Long,cutOff:LocalDateTime, kind:TaxEnum):Optional<Double>{
+    private fun getTax(codCreditCard:Long,cutOff:LocalDateTime, kind:TaxEnum):Optional<Pair<Double,String>>{
         Log.d(this.javaClass.name,"<<<=== getTax - Start ${cutOff.month} ${cutOff.month.value} ${cutOff.year}")
             val taxSvc = TaxImpl(dbConnect)
             val tax = taxSvc.get(codCreditCard,cutOff.month.value, cutOff.year,kind)
             if (tax.isPresent) {
-                return Optional.ofNullable(tax.get().value).also { Log.d(this.javaClass.name,"<<<=== getTax - End ${it.get()}") }
+                return Optional.ofNullable(Pair(tax.get().value,tax.get().kindOfTax?:KindOfTaxEnum.EM.name)).also { Log.d(this.javaClass.name,"<<<=== getTax - End ${it.get()}") }
             }
-            return Optional.empty<Double>().also { Log.d(this.javaClass.name,"<<<=== getTax - End Not found Tax") }
+            return Optional.empty<Pair<Double,String>>().also { Log.d(this.javaClass.name,"<<<=== getTax - End Not found Tax") }
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -247,18 +250,22 @@ class SaveCreditCardBoughtImpl(override var dbConnect: SQLiteOpenHelper) : SaveS
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    private fun getInterestValue(creditCardBoughtDTO: CreditCardBoughtDTO,taxDTO: Optional<Double>,taxCashAdv:Optional<Double>):Double{
+    private fun getInterestValue(creditCardBoughtDTO: CreditCardBoughtDTO,taxDTO: Optional<Pair<Double,String>>,taxCashAdv:Optional<Pair<Double,String>>):Double{
         val settingDto = getCreditCardSetting(creditCardBoughtDTO.id)
         if(settingDto.isPresent){
-            return settingDto.get().value.toDouble()
+            if(settingDto.get().value != "0") {
+                return kindOfTaxSvc.getNM(settingDto.get().value.toDouble(),KindOfTaxEnum.EM)
+            }else{
+                0.0
+            }
         }
-        var interest = creditCardBoughtDTO.interest
+        var interest = kindOfTaxSvc.getNM(creditCardBoughtDTO.interest,KindOfTaxEnum.valueOf(creditCardBoughtDTO.kindOfTax))
         when(creditCardBoughtDTO.kind){
             TaxEnum.CREDIT_CARD.ordinal.toShort() ->{
-                interest = taxDTO.orElse(0.0)
+                interest = kindOfTaxSvc.getNM(taxDTO.get().first, KindOfTaxEnum.valueOf(taxDTO.get().second))
             }
             TaxEnum.CASH_ADVANCE.ordinal.toShort()->{
-                interest = taxCashAdv.orElse(0.0)
+                interest = kindOfTaxSvc.getNM(taxCashAdv.get().first, KindOfTaxEnum.valueOf(taxDTO.get().second))
             }
         }
         return interest
