@@ -53,7 +53,9 @@ class InputFragment : Fragment(),OnClickListener {
         val kindof = view.resources.getStringArray(R.array.Months)[0]
         val name = ""
         val value = BigDecimal.ZERO
-        return InputDTO(id,date,accountCode,kindof,name,value)
+        val start = LocalDate.now()
+        val end = LocalDate.of(9999,12,31)
+        return InputDTO(id,date,accountCode,kindof,name,value,start,end)
     }
 
     private fun save(){

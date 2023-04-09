@@ -10,6 +10,8 @@ data class InputDTO(
     val kindOf:String,
     val name:String,
     val value:BigDecimal,
+    val dateStart: LocalDate,
+    val dateEnd: LocalDate
 )
 
 object InputDB{
@@ -20,5 +22,7 @@ object InputDB{
         const val COLUMN_KIND_OF = "cd_kindof"
         const val COLUMN_NAME = "str_name"
         const val COLUMN_VALUE = "nbr_value"
+        const val COLUMN_START_DATE = "dt_start"
+        const val COLUMN_END_DATE = "dt_end"
     }
 }

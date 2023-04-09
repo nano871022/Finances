@@ -40,6 +40,7 @@ class ListCreditCardQuote : Fragment(){
     private lateinit var holder:IHolder<CreditCard>
     private lateinit var listCreditCard:List<CreditCardDTO>
     private val configSvc:ConfigSvc = Config()
+    private lateinit var creditCardDialog:AlertDialog
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreateView(
@@ -120,7 +121,7 @@ class ListCreditCardQuote : Fragment(){
         listCreditCard = svc.getAll()
         holder.setFields(null)
         (holder as ISpinnerHolder<QuoteCCHolder>).lists{
-            onItemSelected(it)
+            onItemSelected(it,container)
             if(listCreditCard.isNotEmpty() && listCreditCard.size == 1) {
                 val creditCardSel = listCreditCard.first()
                 it.spCreditCard.setText(creditCardSel.name)
@@ -134,31 +135,33 @@ class ListCreditCardQuote : Fragment(){
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    private fun onItemSelected(holder:QuoteCCHolder) {
-        holder.spCreditCard.setOnClickListener{
-            val builder = AlertDialog.Builder(it.context)
-            with(builder){
-                setItems(listCreditCard.map { "${it.id}. ${it.name}" }.toTypedArray()){ _,position ->
-                    val creditCard = listCreditCard[position]
-                    holder.cleanField()
-                    this.context?.let {
-                        val now = LocalDateTime.now(ZoneId.systemDefault())
-                        Log.d(this.javaClass.name,"Now:. $now")
-                        val pojo  = creditCard?.let {
-                            CreditCardMap().mapper(it)
-                        }?: CreditCard()
-                        taxSvc.get(creditCard.id.toLong(),now.monthValue,now.year).ifPresent{
-                        pojo.lastTax = Optional.ofNullable(it.value)
-                        }
-                loadDataInfo(pojo)
-            }
-        }
-            }
-            builder.create().show()
-        }
+    private fun onItemSelected(holder:QuoteCCHolder,view:View) {
+        createDialogCreditCard(view)
+        holder.spCreditCard.setOnClickListener{ creditCardDialog.show() }
     }
 
-
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun createDialogCreditCard(view:View){
+        val builder = AlertDialog.Builder(view.context)
+        with(builder){
+            setItems(listCreditCard.map { "${it.id}. ${it.name}" }.toTypedArray()){ _,position ->
+                val creditCard = listCreditCard[position]
+                holder.cleanField()
+                this.context?.let {
+                    val now = LocalDateTime.now(ZoneId.systemDefault())
+                    Log.d(this.javaClass.name,"Now:. $now")
+                    val pojo  = creditCard?.let {
+                        CreditCardMap().mapper(it)
+                    }?: CreditCard()
+                    taxSvc.get(creditCard.id.toLong(),now.monthValue,now.year).ifPresent{
+                        pojo.lastTax = Optional.ofNullable(it.value)
+                    }
+                    loadDataInfo(pojo)
+                }
+            }
+        }
+        creditCardDialog = builder.create()
+    }
 
 
     @RequiresApi(Build.VERSION_CODES.O)

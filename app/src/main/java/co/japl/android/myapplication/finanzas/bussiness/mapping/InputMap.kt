@@ -8,6 +8,7 @@ import androidx.annotation.RequiresApi
 import co.japl.android.myapplication.R
 import co.japl.android.myapplication.finanzas.bussiness.DTO.*
 import co.japl.android.myapplication.utils.DateUtils
+import java.time.LocalDate
 
 class InputMap(view:View) {
     private val monthly = view.resources.getStringArray(R.array.kind_of_pay_list)[0]
@@ -20,7 +21,9 @@ class InputMap(view:View) {
         val kindof = cursor.getString(3) ?: monthly
         val name = cursor.getString(4)
         val value = cursor.getString(5).toBigDecimal()
-        return InputDTO(id,date,accountCode,kindof,name,value)
+        val start = LocalDate.now()
+        val end  = LocalDate.of(9999,12,31)
+        return InputDTO(id,date,accountCode,kindof,name,value,start,end)
     }
 
     @RequiresApi(Build.VERSION_CODES.O)

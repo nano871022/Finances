@@ -55,11 +55,8 @@ class ListCreditCard : Fragment() , View.OnClickListener{
                 val connect = ConnectDB(view.context)
                 val saveSvc = CreditCardImpl(connect)
                 val data = saveSvc.getAll()
-
-                    saveSvc.backup("CreditCard.dat")
-                    saveSvc.restoreBackup("CreditCard.dat")
-
-
+                saveSvc.backup("CreditCard.dat")
+                saveSvc.restoreBackup("CreditCard.dat")
                 recycler.adapter = ListCreditCardAdapter(data.toMutableList(),parentFragmentManager,findNavController())
             }
         }

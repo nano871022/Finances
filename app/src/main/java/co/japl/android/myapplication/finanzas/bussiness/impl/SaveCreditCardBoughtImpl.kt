@@ -90,7 +90,8 @@ class SaveCreditCardBoughtImpl(override var dbConnect: SQLiteOpenHelper) : SaveS
                     )
                     items.add(map.get())
                 }
-            }}
+            }
+        }
             val responseList = items.groupBy { it.periodStart }.map { (startPeriod,items) -> PeriodDTO(creditCardId,startPeriod,
                 items[0].periodEnd,items.sumOf{it.interest},items.sumOf{it.capital},items.sumOf{it.total})}
                 .sortedByDescending { it.periodStart }

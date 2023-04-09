@@ -73,7 +73,9 @@ class InputHolder(val view:View,val supportManager: FragmentManager):IHolder<Inp
         val accountCode = input.accountCode
         val kindof = kindOf.text.toString()
         val value = value.COPtoBigDecimal()
-        return InputDTO(id,date!!,accountCode,kindof,name,value)
+        val start = LocalDate.now()
+        val end = LocalDate.of(9999,12,31)
+        return InputDTO(id,date!!,accountCode,kindof,name,value,start,end)
     }
 
     override fun cleanField() {

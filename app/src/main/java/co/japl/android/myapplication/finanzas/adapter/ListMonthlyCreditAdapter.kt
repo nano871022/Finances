@@ -21,14 +21,17 @@ import co.japl.android.myapplication.finanzas.holders.view.AdditionalCreditItemH
 import co.japl.android.myapplication.finanzas.holders.view.MonthlyCreditItemHolder
 import co.japl.android.myapplication.finanzas.putParams.CreditFixParams
 import com.google.android.material.snackbar.Snackbar
+import java.math.BigDecimal
 import java.time.LocalDate
 
 class ListMonthlyCreditAdapter(val data:MutableList<CreditDTO>,val view:View): RecyclerView.Adapter<MonthlyCreditItemHolder>() {
     private lateinit var creditFixSvc:SaveSvc<CreditDTO>
+    private lateinit var additionalSvc:SaveSvc<AdditionalCreditDTO>
     private lateinit var holder: MonthlyCreditItemHolder
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MonthlyCreditItemHolder {
         creditFixSvc = CreditFixImpl(ConnectDB(view.context))
+        additionalSvc = AdditionalCreditImpl(ConnectDB(view.context))
         val view = LayoutInflater.from(parent.context).inflate(R.layout.fragment_monthly_credit_item_list,parent,false)
         holder = MonthlyCreditItemHolder(view)
         holder.loadField()
@@ -49,6 +52,11 @@ class ListMonthlyCreditAdapter(val data:MutableList<CreditDTO>,val view:View): R
                     dialog.show()
                     dialog.getButton(AlertDialog.BUTTON_POSITIVE)
                         .setOnClickListener {
+                            (additionalSvc as AdditionalCreditImpl).get(getAdditionalDTO(data[position].id))?.let{
+                                if(it.isNotEmpty()){
+                                    it.forEach {  additionalSvc.delete(it.id) }
+                                }
+                            }
                             if (creditFixSvc.delete(data[position].id)) {
                                 dialog.dismiss()
                                 Snackbar.make(
@@ -73,6 +81,16 @@ class ListMonthlyCreditAdapter(val data:MutableList<CreditDTO>,val view:View): R
                 }
             }
         }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun getAdditionalDTO(creditCode:Int):AdditionalCreditDTO{
+        val id = 0
+        val name = ""
+        val value = BigDecimal.ZERO
+        val startDate = LocalDate.MIN
+        val endDate = LocalDate.MAX
+        return AdditionalCreditDTO(id,name,value,creditCode.toLong(),startDate,endDate)
     }
 
     override fun getItemCount(): Int {

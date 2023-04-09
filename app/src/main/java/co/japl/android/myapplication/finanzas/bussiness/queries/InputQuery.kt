@@ -13,7 +13,9 @@ object InputQuery {
             ${InputDB.Entry.COLUMN_ACCOUNT_CODE} INTEGER,
             ${InputDB.Entry.COLUMN_KIND_OF} TEXT,
             ${InputDB.Entry.COLUMN_NAME} TEXT,
-            ${InputDB.Entry.COLUMN_VALUE} NUMBER
+            ${InputDB.Entry.COLUMN_VALUE} NUMBER,
+            ${InputDB.Entry.COLUMN_START_DATE} DATE DEFAULT NOW,
+            ${InputDB.Entry.COLUMN_END_DATE} DATE  DEFAULT "9999/12/31"
         )
     """
     const val DATA_BASE_VERSION_MINUS = 28

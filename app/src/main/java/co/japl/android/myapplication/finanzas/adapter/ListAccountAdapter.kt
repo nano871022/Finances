@@ -58,7 +58,9 @@ class ListAccountAdapter(var data:MutableList<AccountDTO>) : RecyclerView.Adapte
         val value = BigDecimal.ZERO
         val accountCode = code
         val kindof = view.resources.getStringArray(R.array.kind_of_pay_list)
-        return InputDTO(id,date, accountCode,kindof[0],name,value)
+        val start = LocalDate.now()
+        val end = LocalDate.of(9999,12,31)
+        return InputDTO(id,date, accountCode,kindof[0],name,value,start,end)
     }
 
     @RequiresApi(Build.VERSION_CODES.O)

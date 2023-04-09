@@ -54,7 +54,7 @@ class PaidsHolder(val view:View): IHolder<PaidsPOJO> {
     override fun loadFields(values: PaidsPOJO) {
         val valueInputs = inputSvc.getAll()?.let{
             if(it.isNotEmpty()){
-                it.map{it.value}.reduce{acc,value->acc+value}
+                it.filter { it.kindOf == view.resources.getStringArray(R.array.kind_of_pay_list)[0] }.map{it.value}.reduceOrNull{acc,value->acc+value} ?: BigDecimal.ZERO
             }else{
                 BigDecimal.ZERO
             }
