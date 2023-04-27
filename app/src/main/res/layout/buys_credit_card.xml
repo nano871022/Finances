@@ -125,7 +125,7 @@
             android:ems="10"
             android:hint="@string/months_number"
             android:inputType="numberSigned"
-            android:textAlignment="textEnd" />
+            android:textAlignment="center" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout

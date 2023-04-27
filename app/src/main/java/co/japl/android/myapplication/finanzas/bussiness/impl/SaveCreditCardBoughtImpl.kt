@@ -323,6 +323,9 @@ class SaveCreditCardBoughtImpl(override var dbConnect: SQLiteOpenHelper) : SaveS
     override fun getInterestPendingQuotes(codCreditCard: Int,startDate: LocalDateTime, cutOff: LocalDateTime): Optional<BigDecimal> {
         Log.d(this.javaClass.name,"<<<=== getInterestPendingQuotes - Start")
             val tax = getTax(codCreditCard.toLong(),cutOff,TaxEnum.CREDIT_CARD)
+            if(!tax.isPresent){
+                return Optional.of(BigDecimal.ZERO)
+            }
             val taxCashAdv = getTax(codCreditCard.toLong(),cutOff,TaxEnum.CASH_ADVANCE)
         val list = getPendingQuotes(codCreditCard,startDate,cutOff)
         val value = list.stream().map {

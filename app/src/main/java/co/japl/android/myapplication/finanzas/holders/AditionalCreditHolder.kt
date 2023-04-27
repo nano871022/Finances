@@ -54,8 +54,10 @@ class AdditionalCreditHolder(val view:View,val supportManager: FragmentManager):
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun loadFields(values: AdditionalCreditDTO) {
-        name.setText(values.name)
-        value.setText(NumbersUtil.toString(values.value))
+        if(values.id > 0) {
+            name.setText(values.name)
+            value.setText(NumbersUtil.toString(values.value))
+        }
         startDate.setText(DateUtils.localDateToString(values.startDate))
         endDate.setText(DateUtils.localDateToString(values.endDate))
         additionalCredit = values
