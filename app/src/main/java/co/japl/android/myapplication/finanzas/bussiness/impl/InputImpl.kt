@@ -28,7 +28,7 @@ class InputImpl(val view:View,override var dbConnect: SQLiteOpenHelper) : SaveSv
     @RequiresApi(Build.VERSION_CODES.O)
     override fun get(values: InputDTO): List<InputDTO> {
         val db = dbConnect.readableDatabase
-        val cursor = db.query(InputDB.Entry.TABLE_NAME,COLUMNS,"",arrayOf(),null,null,null,null)
+        val cursor = db.query(InputDB.Entry.TABLE_NAME,COLUMNS,"${InputDB.Entry.COLUMN_ACCOUNT_CODE}=?",arrayOf(values.accountCode.toString()),null,null,null,null)
         val items = mutableListOf<InputDTO>()
         val mapper = InputMap(view)
         with(cursor){

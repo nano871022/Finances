@@ -1,5 +1,6 @@
 package co.japl.android.myapplication.holders.view
 
+import android.graphics.Color
 import android.os.Build
 import android.view.View
 import android.widget.ImageButton
@@ -60,6 +61,10 @@ class BoughtViewHolder(itemView:View) : RecyclerView.ViewHolder(itemView) {
         btnAmortization.setOnClickListener(action)
         if(values.month > 1){
             btnAmortization.visibility = View.VISIBLE
+        }
+        if(values.recurrent == (1).toShort()){
+            btnBoughtDelete.setBackgroundColor(Color.RED)
+            btnBoughtDelete.setColorFilter(Color.WHITE)
         }
     }
 }

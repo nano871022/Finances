@@ -18,9 +18,45 @@
             android:padding="@dimen/space_min"
             android:orientation="vertical">
 
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/space_min"
+                android:layout_margin="@dimen/space_min"
+                android:background="@color/green_light_trans"
+                app:prefixText="@string/num_inputs">
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/tv_num_inputs_il"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/months_number_hint"
+                    android:textAlignment="center"
+                    />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/space_min"
+                android:layout_margin="@dimen/space_min"
+                android:background="@color/green_light_trans"
+                app:prefixText="@string/input_total">
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/tv_tot_inputs_il"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/money_hint"
+                    android:textAlignment="center"
+                    />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
             <androidx.recyclerview.widget.RecyclerView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_margin="@dimen/space_min"
+                android:padding="@dimen/space_min"
                 android:id="@+id/rv_input_list"/>
 
             <com.google.android.material.button.MaterialButton

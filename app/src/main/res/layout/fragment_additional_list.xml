@@ -22,10 +22,44 @@
             android:padding="@dimen/space_min"
             android:orientation="vertical" >
 
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/space_min"
+                android:layout_margin="@dimen/space_min"
+                android:background="@color/green_light_trans"
+                app:prefixText="@string/num_additionals"
+                >
+                <com.google.android.material.textview.MaterialTextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textAlignment="center"
+                    android:id="@+id/tv_num_additionals_al"
+                    android:text="@string/months_number_hint"/>
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/space_min"
+                android:layout_margin="@dimen/space_min"
+                android:background="@color/green_light_trans"
+                app:prefixText="@string/tot_additionals"
+                >
+                <com.google.android.material.textview.MaterialTextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/money_hint"
+                    android:id="@+id/tv_tot_additional_al"
+                    android:textAlignment="center"/>
+            </com.google.android.material.textfield.TextInputLayout>
+
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rv_list_al"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+                android:layout_height="match_parent"
+                android:padding="@dimen/space_min"
+                android:layout_margin="@dimen/space_min"/>
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btn_add_al"

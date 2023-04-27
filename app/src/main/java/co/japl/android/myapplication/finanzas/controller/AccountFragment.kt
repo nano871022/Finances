@@ -48,10 +48,10 @@ class AccountFragment : Fragment() , OnClickListener{
     @RequiresApi(Build.VERSION_CODES.O)
     private fun load(){
         arguments?.let {
-            val id = AccountListParams.download(it)
-            Log.d(javaClass.name,"Id $id")
-            if(id > 0){
-                accountSvc.get(id).ifPresent {
+            idAccount = AccountListParams.download(it)
+            Log.d(javaClass.name,"Id $idAccount")
+            if(idAccount > 0){
+                accountSvc.get(idAccount).ifPresent {
                     holder.loadFields(it)
                 }
             }

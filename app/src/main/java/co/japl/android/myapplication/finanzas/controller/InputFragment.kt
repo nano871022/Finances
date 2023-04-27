@@ -27,6 +27,7 @@ class InputFragment : Fragment(),OnClickListener {
 
     private lateinit var holder:IHolder<InputDTO>
     private lateinit var service:SaveSvc<InputDTO>
+    private var accountCode:Int = 0
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
     }
@@ -37,6 +38,7 @@ class InputFragment : Fragment(),OnClickListener {
         savedInstanceState: Bundle?
     ): View? {
         val root = inflater.inflate(R.layout.fragment_input, container, false)
+        accountCode = arguments?.let { InputListParams.download(it) }?:0
         holder = InputHolder(root,parentFragmentManager)
         service = InputImpl(root,ConnectDB( root.context))
         holder.setFields(this)
@@ -49,7 +51,7 @@ class InputFragment : Fragment(),OnClickListener {
     private fun getInput(view:View):InputDTO{
         val id = 0
         val date = LocalDate.MIN
-        val accountCode = 0
+        val accountCode = accountCode
         val kindof = view.resources.getStringArray(R.array.Months)[0]
         val name = ""
         val value = BigDecimal.ZERO

@@ -38,6 +38,7 @@
                     android:layout_height="match_parent"
                     android:layout_margin="@dimen/space_min"
                     android:layout_weight="1"
+                    app:icon="@android:drawable/ic_menu_view"
                     android:text="@string/input_list"
                     android:id="@+id/btn_input_list_acc"/>
                 <com.google.android.material.button.MaterialButton
