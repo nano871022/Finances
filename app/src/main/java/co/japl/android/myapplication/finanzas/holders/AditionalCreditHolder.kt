@@ -1,12 +1,11 @@
 package co.japl.android.myapplication.finanzas.holders
 
 import android.os.Build
-import android.util.Log
 import android.view.View
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.FragmentManager
 import co.japl.android.myapplication.R
-import co.japl.android.myapplication.bussiness.interfaces.IHolder
+import co.japl.android.myapplication.finanzas.holders.interfaces.IHolder
 import co.japl.android.myapplication.finanzas.bussiness.DTO.AdditionalCreditDTO
 import co.japl.android.myapplication.finanzas.holders.validations.*
 import co.japl.android.myapplication.utils.DateUtils
@@ -15,12 +14,12 @@ import com.google.android.material.button.MaterialButton
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.textfield.TextInputEditText
 import java.time.Instant
-import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 
-class AdditionalCreditHolder(val view:View,val supportManager: FragmentManager): IHolder<AdditionalCreditDTO> {
+class AdditionalCreditHolder(val view:View,val supportManager: FragmentManager):
+    IHolder<AdditionalCreditDTO> {
     lateinit var name: TextInputEditText
     lateinit var value: TextInputEditText
     lateinit var startDate: TextInputEditText

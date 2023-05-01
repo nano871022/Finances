@@ -2,7 +2,7 @@ package co.japl.android.myapplication.finanzas.bussiness.impl
 
 import android.util.Log
 import co.japl.android.myapplication.finanzas.bussiness.interfaces.IKindOfTaxSvc
-import co.japl.android.myapplication.finanzas.utils.KindOfTaxEnum
+import co.japl.android.myapplication.finanzas.enums.KindOfTaxEnum
 import kotlin.math.pow
 
 class KindOfTaxImpl:IKindOfTaxSvc {

@@ -8,9 +8,8 @@ import androidx.annotation.RequiresApi
 import androidx.fragment.app.FragmentManager
 import androidx.navigation.NavController
 import co.japl.android.myapplication.R
-import co.japl.android.myapplication.bussiness.DTO.CreditCardSettingDTO
-import co.japl.android.myapplication.bussiness.interfaces.IHolder
-import co.japl.android.myapplication.bussiness.interfaces.ISpinnerHolder
+import co.japl.android.myapplication.finanzas.holders.interfaces.IHolder
+import co.japl.android.myapplication.finanzas.holders.interfaces.ISpinnerHolder
 import co.japl.android.myapplication.finanzas.bussiness.DTO.PeriodDTO
 import co.japl.android.myapplication.putParams.TaxesParams
 import java.math.BigDecimal
@@ -18,7 +17,8 @@ import java.text.DecimalFormat
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
-class PeriodsHolder (var view:View, var parentFragmentManager:FragmentManager, var navController: NavController): IHolder<PeriodDTO>,ISpinnerHolder<PeriodsHolder>, View.OnClickListener {
+class PeriodsHolder (var view:View, var parentFragmentManager:FragmentManager, var navController: NavController): IHolder<PeriodDTO>,
+    ISpinnerHolder<PeriodsHolder>, View.OnClickListener {
 
     lateinit var period: TextView
     lateinit var interest: TextView

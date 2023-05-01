@@ -8,8 +8,6 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AdapterView
-import android.widget.ArrayAdapter
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
@@ -23,6 +21,8 @@ import co.japl.android.myapplication.bussiness.impl.SaveCreditCardBoughtImpl
 import co.japl.android.myapplication.bussiness.impl.TaxImpl
 import co.japl.android.myapplication.bussiness.interfaces.*
 import co.japl.android.myapplication.bussiness.mapping.CreditCardMap
+import co.japl.android.myapplication.finanzas.holders.interfaces.IHolder
+import co.japl.android.myapplication.finanzas.holders.interfaces.ISpinnerHolder
 import co.japl.android.myapplication.holders.QuoteCCHolder
 import co.japl.android.myapplication.pojo.CreditCard
 import co.japl.android.myapplication.utils.DateUtils
@@ -30,14 +30,13 @@ import java.math.BigDecimal
 import java.time.LocalDateTime
 import java.time.ZoneId
 import java.util.*
-import java.util.stream.Collectors
 
 class ListCreditCardQuote : Fragment(){
     private lateinit var saveSvc: SaveSvc<CreditCardBoughtDTO>
     private lateinit var searchSvc: SearchSvc<CreditCardBoughtDTO>
     private lateinit var taxSvc: ITaxSvc
     private lateinit var contexto: Context
-    private lateinit var holder:IHolder<CreditCard>
+    private lateinit var holder: IHolder<CreditCard>
     private lateinit var listCreditCard:List<CreditCardDTO>
     private val configSvc:ConfigSvc = Config()
     private lateinit var creditCardDialog:AlertDialog

@@ -15,12 +15,7 @@ import co.japl.android.myapplication.bussiness.impl.TaxImpl
 import co.japl.android.myapplication.bussiness.interfaces.SaveSvc
 import co.japl.android.myapplication.finanzas.bussiness.DTO.PeriodDTO
 import co.japl.android.myapplication.finanzas.putParams.PeriodsQuotesParams
-import co.japl.android.myapplication.finanzas.utils.TaxEnum
-import co.japl.android.myapplication.holders.PeriodsHolder
 import co.japl.android.myapplication.holders.view.PeriodItemHolder
-import co.japl.android.myapplication.holders.view.TaxItemHolder
-import com.google.android.material.snackbar.Snackbar
-import java.time.Period
 
 class ListPeriodAdapter(var data:MutableList<PeriodDTO>,var navController: NavController) : RecyclerView.Adapter<PeriodItemHolder>() {
     private lateinit var saveSvc: SaveSvc<TaxDTO>

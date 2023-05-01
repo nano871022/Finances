@@ -56,6 +56,13 @@
             android:textStyle="bold" />
 
         <ImageButton
+            android:id="@+id/btn_edit_bil"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:background="#00FFFFFF"
+            app:srcCompat="@drawable/ic_baseline_edit_24" />
+
+        <ImageButton
             android:id="@+id/btnAmortizationItemLCCS"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"

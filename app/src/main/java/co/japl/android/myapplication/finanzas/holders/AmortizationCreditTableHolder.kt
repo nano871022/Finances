@@ -1,40 +1,30 @@
 package co.japl.android.myapplication.finanzas.holders
 
-import android.graphics.Color
 import android.os.Build
-import android.text.style.LineHeightSpan.WithDensity
 import android.util.Log
-import android.view.Gravity
 import android.view.View
-import android.view.ViewGroup
-import android.widget.ImageButton
 import android.widget.TableLayout
 import android.widget.TableRow
 import androidx.annotation.RequiresApi
-import androidx.constraintlayout.widget.ConstraintSet.Layout
 import androidx.core.view.setMargins
 import androidx.core.view.setPadding
 import co.japl.android.myapplication.R
 import co.japl.android.myapplication.bussiness.DTO.CalcDTO
 import co.japl.android.myapplication.bussiness.impl.QuoteCredit
-import co.japl.android.myapplication.finanzas.bussiness.DTO.Amortization
 import co.japl.android.myapplication.finanzas.bussiness.DTO.AmortizationCreditFix
 import co.japl.android.myapplication.finanzas.bussiness.impl.KindOfTaxImpl
 import co.japl.android.myapplication.finanzas.bussiness.interfaces.IKindOfTaxSvc
-import co.japl.android.myapplication.finanzas.bussiness.interfaces.ITableHolder
-import co.japl.android.myapplication.finanzas.utils.AmortizationCreditFixEnum
-import co.japl.android.myapplication.finanzas.utils.KindOfTaxEnum
+import co.japl.android.myapplication.finanzas.holders.interfaces.ITableHolder
+import co.japl.android.myapplication.finanzas.enums.AmortizationCreditFixEnum
+import co.japl.android.myapplication.finanzas.enums.KindOfTaxEnum
 import co.japl.android.myapplication.utils.DateUtils
 import co.japl.android.myapplication.utils.NumbersUtil
 import com.google.android.material.textview.MaterialTextView
 import java.math.BigDecimal
 import java.time.LocalDate
-import co.japl.android.myapplication.finanzas.holders.validations.COPtoBigDecimal
 import com.google.android.material.button.MaterialButton
-import java.text.DecimalFormat
-import java.time.temporal.ChronoUnit
 
-class AmortizationCreditTableHolder(val view:View):ITableHolder<AmortizationCreditFix> {
+class AmortizationCreditTableHolder(val view:View): ITableHolder<AmortizationCreditFix> {
     val kindTaxSvc:IKindOfTaxSvc = KindOfTaxImpl()
     val calc = QuoteCredit()
     lateinit var table:TableLayout
@@ -82,7 +72,7 @@ class AmortizationCreditTableHolder(val view:View):ITableHolder<AmortizationCred
     @RequiresApi(Build.VERSION_CODES.O)
     override fun create() {
         var currentCreditValue = credit.valueCredit
-        val tax = kindTaxSvc.getNM(credit.interest,KindOfTaxEnum.valueOf(credit.kindOfTax)) / 100
+        val tax = kindTaxSvc.getNM(credit.interest, KindOfTaxEnum.valueOf(credit.kindOfTax)) / 100
         for ( period in 1 .. credit.period){
             val interest = (currentCreditValue.toDouble() * tax).toBigDecimal()
             val capital = credit.quoteCredit -  interest

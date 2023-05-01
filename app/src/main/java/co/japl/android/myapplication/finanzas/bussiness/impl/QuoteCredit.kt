@@ -1,15 +1,11 @@
 package co.japl.android.myapplication.bussiness.impl
 
-import android.os.Build
 import android.util.Log
-import androidx.annotation.RequiresApi
 import co.japl.android.myapplication.bussiness.interfaces.Calc
 import co.japl.android.myapplication.finanzas.bussiness.impl.KindOfTaxImpl
 import co.japl.android.myapplication.finanzas.bussiness.interfaces.IKindOfTaxSvc
-import co.japl.android.myapplication.finanzas.utils.KindOfTaxEnum
+import co.japl.android.myapplication.finanzas.enums.KindOfTaxEnum
 import java.math.BigDecimal
-import java.time.LocalDate
-import java.time.temporal.ChronoUnit
 import kotlin.math.pow
 
 class QuoteCredit : Calc {
@@ -34,7 +30,7 @@ class QuoteCredit : Calc {
         return interest.also { Log.d(this.javaClass.name,"<<<=== FINISH:: getTax: $interest = $tax / 100") }
     }
 
-    fun getCreditValue(creditValue:BigDecimal, tax:Double, periodPaid:Int, period:Int, quote:BigDecimal, kindOfTax:KindOfTaxEnum):BigDecimal{
+    fun getCreditValue(creditValue:BigDecimal, tax:Double, periodPaid:Int, period:Int, quote:BigDecimal, kindOfTax: KindOfTaxEnum):BigDecimal{
         var sumCapital = BigDecimal.ZERO
         for (p in 1..periodPaid) {
             val capital = quote - getInterest(creditValue,tax,period,quote,p,kindOfTax)
@@ -44,7 +40,7 @@ class QuoteCredit : Calc {
         return sumCapital
     }
 
-    fun getInterest(creditValue:BigDecimal, tax:Double, period:Int, quote:BigDecimal, periodPaid:Int, kindOfTax:KindOfTaxEnum):BigDecimal{
+    fun getInterest(creditValue:BigDecimal, tax:Double, period:Int, quote:BigDecimal, periodPaid:Int, kindOfTax: KindOfTaxEnum):BigDecimal{
         val tax = kindOfTaxSvc.getNM(tax, kindOfTax) / 100
         val part3 = creditValue.toDouble() * tax
         if(periodPaid > 1) {

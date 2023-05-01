@@ -2,16 +2,12 @@ package co.japl.android.myapplication.finanzas.holders
 
 import android.app.AlertDialog
 import android.graphics.Color
-import android.opengl.Visibility
 import android.os.Build
 import android.util.Log
-import android.view.Display
 import android.view.View
-import android.view.View.OnClickListener
 import android.widget.*
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.FragmentManager
-import androidx.fragment.app.findFragment
 import co.japl.android.myapplication.R
 import co.japl.android.myapplication.bussiness.DB.connections.ConnectDB
 import co.japl.android.myapplication.bussiness.DTO.BuyCreditCardSettingDTO
@@ -20,14 +16,14 @@ import co.japl.android.myapplication.bussiness.DTO.CreditCardSettingDTO
 import co.japl.android.myapplication.bussiness.impl.QuoteCreditVariable
 import co.japl.android.myapplication.bussiness.impl.QuoteCreditVariableInterest
 import co.japl.android.myapplication.bussiness.interfaces.Calc
-import co.japl.android.myapplication.bussiness.interfaces.IHolder
-import co.japl.android.myapplication.bussiness.interfaces.ISpinnerHolder
+import co.japl.android.myapplication.finanzas.holders.interfaces.IHolder
+import co.japl.android.myapplication.finanzas.holders.interfaces.ISpinnerHolder
 import co.japl.android.myapplication.bussiness.interfaces.SaveSvc
 import co.japl.android.myapplication.finanzas.bussiness.impl.BuyCreditCardSettingImpl
 import co.japl.android.myapplication.finanzas.bussiness.impl.CreditCardSettingImpl
 import co.japl.android.myapplication.finanzas.bussiness.interfaces.ICreditCardSettingSvc
-import co.japl.android.myapplication.finanzas.utils.KindBoughtEnum
-import co.japl.android.myapplication.finanzas.utils.KindOfTaxEnum
+import co.japl.android.myapplication.finanzas.enums.KindBoughtEnum
+import co.japl.android.myapplication.finanzas.enums.KindOfTaxEnum
 import co.japl.android.myapplication.utils.DateUtils
 import co.japl.android.myapplication.utils.NumbersUtil
 import com.google.android.material.button.MaterialButton
@@ -36,19 +32,15 @@ import com.google.android.material.textfield.MaterialAutoCompleteTextView
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import com.google.android.material.textview.MaterialTextView
-import java.math.BigDecimal
 import java.math.RoundingMode
-import java.text.DecimalFormat
-import java.text.SimpleDateFormat
 import java.time.Instant
-import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
-import java.time.temporal.TemporalAccessor
 import java.util.*
 
-class QuoteBoughtHolder(var root:View,val supportManager:FragmentManager) : IHolder<CreditCardBoughtDTO>, ISpinnerHolder<QuoteBoughtHolder>{
+class QuoteBoughtHolder(var root:View,val supportManager:FragmentManager) : IHolder<CreditCardBoughtDTO>,
+    ISpinnerHolder<QuoteBoughtHolder> {
     lateinit var etProductName: TextInputEditText
     lateinit var etProductValue: TextInputEditText
     lateinit var etTax: MaterialTextView
@@ -152,12 +144,13 @@ class QuoteBoughtHolder(var root:View,val supportManager:FragmentManager) : IHol
     @RequiresApi(Build.VERSION_CODES.O)
     override fun loadFields(values: CreditCardBoughtDTO) {
         creditCardBought = values
+        Log.d(javaClass.name,"$creditCardBought")
         taxMonthly = values.interest
         creditCardCode = Optional.ofNullable(values.codeCreditCard)
         creditCardName = values.nameCreditCard
         cutOffDate = values.cutOutDate
         dtBought.setText(LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")))
-        etTax.text = "${taxMonthly.toString()} % ${values.kindOfTax}}"
+        etTax.text = "${taxMonthly.toString()} % ${values.kindOfTax}"
         tvCardAssing.text = values.nameCreditCard
         buyCCSDTO = buyCCSsvc.get(values.id)
         cCSettingList = cCSettingsvc.getAll(values.codeCreditCard)
@@ -167,6 +160,15 @@ class QuoteBoughtHolder(var root:View,val supportManager:FragmentManager) : IHol
             createTypeSettingDialog(values.kindOfTax)
             spTypeSetting.setOnClickListener { typeSettingDialog.show() }
         }
+        if(values.id > 0){
+            dtBought.setText(DateUtils.localDateToString(values.boughtDate.toLocalDate()))
+            etProductName.setText(values.nameItem)
+            etProductValue.setText(NumbersUtil.toString(values.valueItem))
+            etMonths.setText(values.month.toString())
+            calc()
+            chRecurrent.isChecked = values.recurrent.toInt() == 1
+        }
+
     }
 
     private fun createTypeSettingDialog(kindOfTax:String){
@@ -327,8 +329,8 @@ class QuoteBoughtHolder(var root:View,val supportManager:FragmentManager) : IHol
             llTax.visibility = View.VISIBLE
         }
 
-        val responseQuote = calc.calc(value, period, tax,KindOfTaxEnum.valueOf(creditCardBought.kindOfTax))
-        val responseiNteres = calcTax.calc(value, period, tax,KindOfTaxEnum.valueOf(creditCardBought.kindOfTax))
+        val responseQuote = calc.calc(value, period, tax, KindOfTaxEnum.valueOf(creditCardBought.kindOfTax))
+        val responseiNteres = calcTax.calc(value, period, tax, KindOfTaxEnum.valueOf(creditCardBought.kindOfTax))
 
         responseQuote.let { quote ->
             responseiNteres.let { interes ->
@@ -365,7 +367,7 @@ class QuoteBoughtHolder(var root:View,val supportManager:FragmentManager) : IHol
             DateUtils.getLocalDateTimeByString(dtBought),
             cutOffDate,
             LocalDateTime.now(),
-            0,
+            creditCardBought.id ?: 0,
             if (chRecurrent.isChecked) 1 else 0,
             KindBoughtEnum.BOUGHT.kind,
             creditCardBought.kindOfTax)

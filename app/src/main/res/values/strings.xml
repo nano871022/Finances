@@ -99,6 +99,7 @@
     <string name="cut_off_history">Periodos</string>
     <string name="quote_bought">Cuotas Pagadas</string>
     <string name="pending_to_pay">Pendiente por Pagar</string>
+    <string name="value_spend">Limite</string>
 
     <string name="capital_value_short">Capital</string>
     <string name="current_capital_value_short">Capital Actual</string>
@@ -219,5 +220,28 @@
     <string name="input_minus_output">Ingresos -  Pagos</string>
     <string name="input_list">Lista de Ingreso</string>
     <string name="date_input">Fecha de Ingreso</string>
+
+    <string name="num_items">Número Productos</string>
+    <string name="num_month_close">Número de Meses Cercano</string>
+    <string name="num_month_far">Número de Meses Lejano</string>
+    <string name="num_save_close">Valor Ahorrado Cercano</string>
+    <string name="num_save_far">Valor Ahorrado Lejano</string>
+    <string name="num_tot_save">Valor Total Ahorrado</string>
+    <string name="dt_close">Fecha Cercano</string>
+    <string name="dt_far">Fecha Lejano</string>
+    <string name="projections">Proyecciones</string>
+    <string name="months_lack">Meses Faltantes</string>
+    <string name="money_saved">Ahorrado</string>
+    <string name="closed">Cercano</string>
+    <string name="fared">Lejano</string>
+    <string name="date">Fecha</string>
+    <string name="projection">Proyección</string>
+    <string name="num_saved">Valor Guardado</string>
+    <array name="kind_of_projection_list">
+        <item>Trimestral</item>
+        <item>Cuatrimestral</item>
+        <item>Semestral</item>
+        <item>Anual</item>
+    </array>
 
 </resources>

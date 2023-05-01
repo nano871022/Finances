@@ -1,17 +1,15 @@
 package co.japl.android.myapplication.finanzas.holders
 
 import android.os.Build
-import android.util.Log
 import android.view.View
 import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.navigation.NavController
-import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import co.japl.android.myapplication.R
 import co.japl.android.myapplication.bussiness.DB.connections.ConnectDB
-import co.japl.android.myapplication.bussiness.interfaces.IHolder
+import co.japl.android.myapplication.finanzas.holders.interfaces.IHolder
 import co.japl.android.myapplication.finanzas.adapter.ListAdditionalCreditAdapter
 import co.japl.android.myapplication.finanzas.bussiness.DTO.AdditionalCreditDTO
 import co.japl.android.myapplication.finanzas.bussiness.impl.AdditionalCreditImpl
@@ -21,7 +19,8 @@ import com.google.android.material.button.MaterialButton
 import java.math.BigDecimal
 import java.time.LocalDate
 
-class AdditionalCreditListHolder(val view:View,val navController: NavController) :IHolder<AdditionalCreditDTO> {
+class AdditionalCreditListHolder(val view:View,val navController: NavController) :
+    IHolder<AdditionalCreditDTO> {
     private lateinit var numAdditional:TextView
     private lateinit var totAdditional:TextView
     private lateinit var button:MaterialButton

@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
@@ -16,22 +15,19 @@ import co.japl.android.myapplication.bussiness.DTO.CreditCardDTO
 import co.japl.android.myapplication.bussiness.DTO.TaxDTO
 import co.japl.android.myapplication.bussiness.impl.CreditCardImpl
 import co.japl.android.myapplication.bussiness.impl.TaxImpl
-import co.japl.android.myapplication.bussiness.interfaces.IHolder
-import co.japl.android.myapplication.bussiness.interfaces.ISpinnerHolder
+import co.japl.android.myapplication.finanzas.holders.interfaces.IHolder
 import co.japl.android.myapplication.bussiness.interfaces.SaveSvc
-import co.japl.android.myapplication.finanzas.utils.KindOfTaxEnum
-import co.japl.android.myapplication.finanzas.utils.TaxEnum
+import co.japl.android.myapplication.finanzas.enums.KindOfTaxEnum
+import co.japl.android.myapplication.finanzas.enums.TaxEnum
 import co.japl.android.myapplication.holders.TaxesHolder
 import co.japl.android.myapplication.putParams.TaxesParams
 import java.time.LocalDate
 import java.time.LocalDateTime
-import java.time.YearMonth
-import java.util.stream.Collectors
 
 class Taxes : Fragment() , View.OnClickListener{
     private var param1: String? = null
     private var param2: String? = null
-    private lateinit var holder:IHolder<TaxDTO>
+    private lateinit var holder: IHolder<TaxDTO>
     private lateinit var service:SaveSvc<TaxDTO>
     private lateinit var creditCardSvc:SaveSvc<CreditCardDTO>
     private lateinit var listCreditCard:List<CreditCardDTO>
@@ -82,9 +78,9 @@ class Taxes : Fragment() , View.OnClickListener{
             ,0
             , LocalDateTime.now()
             ,2.0
-            ,TaxEnum.CREDIT_CARD.ordinal.toShort()
+            , TaxEnum.CREDIT_CARD.ordinal.toShort()
             ,0
-            ,KindOfTaxEnum.EM.name)
+            , KindOfTaxEnum.EM.name)
     }
 
     @RequiresApi(Build.VERSION_CODES.N)

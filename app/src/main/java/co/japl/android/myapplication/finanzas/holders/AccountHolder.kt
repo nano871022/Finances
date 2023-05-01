@@ -4,18 +4,13 @@ import android.os.Build
 import android.view.View
 import androidx.annotation.RequiresApi
 import co.japl.android.myapplication.R
-import co.japl.android.myapplication.bussiness.interfaces.IHolder
+import co.japl.android.myapplication.finanzas.holders.interfaces.IHolder
 import co.japl.android.myapplication.finanzas.bussiness.DTO.AccountDTO
-import co.japl.android.myapplication.finanzas.bussiness.DTO.InputDTO
-import co.japl.android.myapplication.finanzas.bussiness.DTO.PaidDTO
-import co.japl.android.myapplication.utils.DateUtils
-import co.japl.android.myapplication.utils.NumbersUtil
 import com.google.android.material.button.MaterialButton
-import com.google.android.material.checkbox.MaterialCheckBox
 import com.google.android.material.textfield.TextInputEditText
 import java.time.LocalDate
 
-class AccountHolder(val view:View):IHolder<AccountDTO> {
+class AccountHolder(val view:View): IHolder<AccountDTO> {
     lateinit var name:TextInputEditText
     lateinit var account:AccountDTO
     lateinit var list:MaterialButton

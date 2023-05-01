@@ -2,7 +2,7 @@ package co.japl.android.myapplication.finanzas.pojo
 
 import android.os.Build
 import androidx.annotation.RequiresApi
-import co.japl.android.myapplication.utils.CalcEnum
+import co.japl.android.myapplication.finanzas.enums.CalcEnum
 import java.math.BigDecimal
 import java.util.*
 
@@ -12,7 +12,7 @@ class QuoteCreditCard {
     lateinit var tax:Optional<Double>
     lateinit var response:Optional<BigDecimal>
     lateinit var name:Optional<String>
-    lateinit var type:CalcEnum
+    lateinit var type: CalcEnum
     lateinit var interestValue:Optional<BigDecimal>
     lateinit var capitalValue:Optional<BigDecimal>
     lateinit var kindOfTax:Optional<String>

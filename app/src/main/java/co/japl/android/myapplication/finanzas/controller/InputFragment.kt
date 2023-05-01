@@ -2,7 +2,6 @@ package co.japl.android.myapplication.finanzas.controller
 
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -13,11 +12,10 @@ import androidx.annotation.RequiresApi
 import androidx.navigation.fragment.findNavController
 import co.japl.android.myapplication.R
 import co.japl.android.myapplication.bussiness.DB.connections.ConnectDB
-import co.japl.android.myapplication.bussiness.interfaces.IHolder
+import co.japl.android.myapplication.finanzas.holders.interfaces.IHolder
 import co.japl.android.myapplication.bussiness.interfaces.SaveSvc
 import co.japl.android.myapplication.finanzas.bussiness.DTO.InputDTO
 import co.japl.android.myapplication.finanzas.bussiness.impl.InputImpl
-import co.japl.android.myapplication.finanzas.bussiness.interfaces.ISaveSvc
 import co.japl.android.myapplication.finanzas.holders.InputHolder
 import co.japl.android.myapplication.finanzas.putParams.InputListParams
 import java.math.BigDecimal
@@ -25,7 +23,7 @@ import java.time.LocalDate
 
 class InputFragment : Fragment(),OnClickListener {
 
-    private lateinit var holder:IHolder<InputDTO>
+    private lateinit var holder: IHolder<InputDTO>
     private lateinit var service:SaveSvc<InputDTO>
     private var accountCode:Int = 0
     override fun onCreate(savedInstanceState: Bundle?) {

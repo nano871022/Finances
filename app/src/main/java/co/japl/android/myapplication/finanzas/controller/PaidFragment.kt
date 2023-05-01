@@ -10,16 +10,15 @@ import android.widget.Toast
 import androidx.navigation.fragment.findNavController
 import co.japl.android.myapplication.R
 import co.japl.android.myapplication.bussiness.DB.connections.ConnectDB
-import co.japl.android.myapplication.bussiness.interfaces.IHolder
+import co.japl.android.myapplication.finanzas.holders.interfaces.IHolder
 import co.japl.android.myapplication.bussiness.interfaces.SaveSvc
 import co.japl.android.myapplication.finanzas.bussiness.DTO.PaidDTO
 import co.japl.android.myapplication.finanzas.bussiness.impl.PaidImpl
-import co.japl.android.myapplication.finanzas.bussiness.interfaces.ISaveSvc
 import co.japl.android.myapplication.finanzas.holders.PaidHolder
 import co.japl.android.myapplication.finanzas.putParams.PaidsParams
 
 class PaidFragment : Fragment() , OnClickListener{
-    private lateinit var holder:IHolder<PaidDTO>
+    private lateinit var holder: IHolder<PaidDTO>
     private lateinit var service:SaveSvc<PaidDTO>
 
     override fun onCreate(savedInstanceState: Bundle?) {

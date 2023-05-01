@@ -12,7 +12,7 @@ android {
         applicationId "co.japl.android.myapplication"
         minSdk 21
         targetSdk 33
-        versionCode 3_1_1_22
+        versionCode 3_02_01_023
         versionName "Se agrega pantalla para pagos con efectivo y recurrentes ademas de ajuste de algunos bugs encontrados"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"

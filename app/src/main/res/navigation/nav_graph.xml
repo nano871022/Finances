@@ -77,6 +77,9 @@
         <action
             android:id="@+id/action_list_bought_to_amortizationTableFragment"
             app:destination="@id/amortizationTableFragment" />
+        <action
+            android:id="@+id/action_list_bought_to_buy_credit_card"
+            app:destination="@id/buy_credit_card" />
     </fragment>
 
     <fragment
@@ -233,7 +236,7 @@
         android:id="@+id/amortizationCreditFragment"
         android:name="co.japl.android.myapplication.finanzas.controller.AmortizationCreditFragment"
         android:label="@string/amortization_table"
-        tools:layout="@layout/BWCC" >
+        tools:layout="@layout/fragment_amortization_credit" >
         <action
             android:id="@+id/action_amortizationCreditFragment_to_additionalListFragment"
             app:destination="@id/additionalListFragment" />
@@ -339,5 +342,31 @@
             android:id="@+id/action_periodsPaidFragment_to_paidListFragment"
             app:destination="@id/paidListFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/menu_projections"
+        android:name="co.japl.android.myapplication.finanzas.controller.ProjectionsFragment"
+        android:label="@string/projections"
+        tools:layout="@layout/fragment_projections" >
+        <action
+            android:id="@+id/action_menu_projections_to_listProjectFragment"
+            app:destination="@id/listProjectFragment" />
+        <action
+            android:id="@+id/action_menu_projections_to_projectionFragment"
+            app:destination="@id/projectionFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/listProjectFragment"
+        android:name="co.japl.android.myapplication.finanzas.controller.ListProjectFragment"
+        android:label="@string/projections"
+        tools:layout="@layout/fragment_list_projection" >
+        <action
+            android:id="@+id/action_listProjectFragment_to_projectionFragment"
+            app:destination="@id/projectionFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/projectionFragment"
+        android:name="co.japl.android.myapplication.finanzas.controller.ProjectionFragment"
+        android:label="@string/projection"
+        tools:layout="@layout/fragment_projection" />
 
 </navigation>

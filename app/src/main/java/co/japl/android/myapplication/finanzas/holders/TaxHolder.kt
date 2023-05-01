@@ -1,34 +1,27 @@
 package co.japl.android.myapplication.holders
 
-import android.app.AlertDialog
 import android.os.Build
 import android.util.Log
 import android.view.View
-import android.widget.AdapterView
-import android.widget.AdapterView.OnItemClickListener
 import android.widget.Button
-import android.widget.Spinner
-import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.FragmentManager
-import androidx.fragment.app.FragmentTransaction
 import androidx.navigation.NavController
 import androidx.recyclerview.widget.RecyclerView
 import co.japl.android.myapplication.R
 import co.japl.android.myapplication.bussiness.DTO.CreditCardDTO
-import co.japl.android.myapplication.bussiness.DTO.CreditCardSettingDTO
 import co.japl.android.myapplication.bussiness.DTO.TaxDTO
-import co.japl.android.myapplication.bussiness.interfaces.IHolder
-import co.japl.android.myapplication.bussiness.interfaces.ISpinnerHolder
-import co.japl.android.myapplication.controller.Taxes
-import co.japl.android.myapplication.finanzas.utils.KindOfTaxEnum
-import co.japl.android.myapplication.finanzas.utils.TaxEnum
+import co.japl.android.myapplication.finanzas.holders.interfaces.IHolder
+import co.japl.android.myapplication.finanzas.holders.interfaces.ISpinnerHolder
+import co.japl.android.myapplication.finanzas.enums.KindOfTaxEnum
+import co.japl.android.myapplication.finanzas.enums.TaxEnum
 import co.japl.android.myapplication.putParams.TaxesParams
 import com.google.android.material.textfield.MaterialAutoCompleteTextView
 import com.google.android.material.textfield.TextInputLayout
 import java.time.LocalDateTime
 
-class TaxHolder (var view:View,var parentFragmentManager:FragmentManager,var navController: NavController,val list: List<CreditCardDTO>): IHolder<TaxDTO>,ISpinnerHolder<TaxHolder>, View.OnClickListener {
+class TaxHolder (var view:View,var parentFragmentManager:FragmentManager,var navController: NavController,val list: List<CreditCardDTO>): IHolder<TaxDTO>,
+    ISpinnerHolder<TaxHolder>, View.OnClickListener {
     lateinit var creditCard:MaterialAutoCompleteTextView
     lateinit var recyclerView: RecyclerView
     lateinit var add:Button

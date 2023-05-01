@@ -12,7 +12,7 @@ import co.japl.android.myapplication.R
 import co.japl.android.myapplication.bussiness.DB.connections.ConnectDB
 import co.japl.android.myapplication.bussiness.DTO.CalcDTO
 import co.japl.android.myapplication.bussiness.impl.SaveImpl
-import co.japl.android.myapplication.bussiness.interfaces.IHolder
+import co.japl.android.myapplication.finanzas.holders.interfaces.IHolder
 import co.japl.android.myapplication.bussiness.interfaces.SaveSvc
 import co.japl.android.myapplication.bussiness.mapping.CalcMap
 import co.japl.android.myapplication.finanzas.holders.QuoteCreditSaveVariableHolder
@@ -25,7 +25,7 @@ class QuoteCreditSaveVariable :  Fragment(), View.OnClickListener{
     private lateinit var dbConnect: ConnectDB
     private lateinit var saveSvc: SaveSvc<CalcDTO>
     private val mapping = CalcMap()
-    private lateinit var holder:IHolder<QuoteCreditCard>
+    private lateinit var holder: IHolder<QuoteCreditCard>
 
     @RequiresApi(Build.VERSION_CODES.N)
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,

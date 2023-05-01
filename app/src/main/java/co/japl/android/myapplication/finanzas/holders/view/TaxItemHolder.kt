@@ -7,7 +7,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import co.japl.android.myapplication.R
 import co.japl.android.myapplication.bussiness.DTO.TaxDTO
-import co.japl.android.myapplication.finanzas.utils.TaxEnum
+import co.japl.android.myapplication.finanzas.enums.TaxEnum
 
 class TaxItemHolder(var view:View) : RecyclerView.ViewHolder(view) {
     lateinit var month:TextView

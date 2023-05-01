@@ -4,20 +4,17 @@ import android.app.AlertDialog
 import android.os.Build
 import android.util.Log
 import android.view.View
-import android.view.View.OnClickListener
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.FragmentManager
 import co.japl.android.myapplication.R
 import co.japl.android.myapplication.bussiness.impl.QuoteCredit
 import co.japl.android.myapplication.bussiness.interfaces.Calc
-import co.japl.android.myapplication.bussiness.interfaces.IHolder
+import co.japl.android.myapplication.finanzas.holders.interfaces.IHolder
 import co.japl.android.myapplication.finanzas.bussiness.DTO.CreditDTO
-import co.japl.android.myapplication.finanzas.bussiness.impl.KindOfTaxImpl
-import co.japl.android.myapplication.finanzas.bussiness.interfaces.IKindOfTaxSvc
 import co.japl.android.myapplication.finanzas.holders.validations.COPtoBigDecimal
 import co.japl.android.myapplication.finanzas.holders.validations.toLocalDate
 import co.japl.android.myapplication.finanzas.holders.validations.*
-import co.japl.android.myapplication.finanzas.utils.KindOfTaxEnum
+import co.japl.android.myapplication.finanzas.enums.KindOfTaxEnum
 import co.japl.android.myapplication.utils.DateUtils
 import co.japl.android.myapplication.utils.NumbersUtil
 import com.google.android.material.button.MaterialButton
@@ -206,7 +203,7 @@ class CreditFixHolder(val view:View,val supportManager: FragmentManager): IHolde
             val period = period.text.toString().toLong()
             val value = NumbersUtil.toBigDecimal(value)
             val kindOf = kindOfTax.text.toString()
-            val quote = quoteCreditSvc.calc(value,period,tax,KindOfTaxEnum.valueOf(kindOf))
+            val quote = quoteCreditSvc.calc(value,period,tax, KindOfTaxEnum.valueOf(kindOf))
             this.quote.text = NumbersUtil.COPtoString(quote)
             amortization.visibility = View.VISIBLE
             save.visibility = View.VISIBLE

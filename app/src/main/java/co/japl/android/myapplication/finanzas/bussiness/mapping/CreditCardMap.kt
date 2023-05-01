@@ -53,6 +53,7 @@ class CreditCardMap {
         pojo.cutOff =
             Optional.ofNullable(creditCard.cutOffDay.toInt()
                 ?.let { it1 -> Config().nextCutOff( it1) })
+        pojo.warningValue = Optional.ofNullable(creditCard.warningValue)
         return pojo
     }
 

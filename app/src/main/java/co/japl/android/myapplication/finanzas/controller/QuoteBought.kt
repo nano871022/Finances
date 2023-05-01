@@ -20,11 +20,9 @@ import co.japl.android.myapplication.bussiness.impl.*
 import co.japl.android.myapplication.bussiness.interfaces.*
 import co.japl.android.myapplication.finanzas.bussiness.impl.BuyCreditCardSettingImpl
 import co.japl.android.myapplication.finanzas.holders.QuoteBoughtHolder
+import co.japl.android.myapplication.finanzas.holders.interfaces.IHolder
 import co.japl.android.myapplication.finanzas.putParams.CreditCardQuotesParams
-import co.japl.android.myapplication.finanzas.utils.KindOfTaxEnum
-import com.google.android.material.datepicker.MaterialDatePicker
 import java.math.BigDecimal
-import java.text.SimpleDateFormat
 import java.time.LocalDateTime
 import java.util.*
 
@@ -37,7 +35,7 @@ class QuoteBought : Fragment(), View.OnClickListener{
     private lateinit var creditCardSvc:SaveSvc<CreditCardDTO>
     private lateinit var saveSvc: SaveSvc<CreditCardBoughtDTO>
     private lateinit var buyCCSSvc: SaveSvc<BuyCreditCardSettingDTO>
-    private lateinit var holder:IHolder<CreditCardBoughtDTO>
+    private lateinit var holder: IHolder<CreditCardBoughtDTO>
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreateView(
@@ -53,7 +51,6 @@ class QuoteBought : Fragment(), View.OnClickListener{
         holder = activity?.supportFragmentManager?.let { QuoteBoughtHolder(rootView, it) }!!
         holder.setFields(this)
         loadArguments()
-        holder.cleanField()
         return rootView
 
     }
@@ -81,6 +78,14 @@ class QuoteBought : Fragment(), View.OnClickListener{
                     Toast.LENGTH_LONG
                 ).show().also {
                     CreditCardQuotesParams.Companion.CreateQuote.toBack(findNavController())
+                }
+            }
+
+            if(params.third > 0){
+                val dto = saveSvc.get(params.third)
+                Log.d(javaClass.name,"$dto ")
+                dto.ifPresent {
+                    holder.loadFields(it)
                 }
             }
         }

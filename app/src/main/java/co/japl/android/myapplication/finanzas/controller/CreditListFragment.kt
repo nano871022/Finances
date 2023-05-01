@@ -9,16 +9,13 @@ import android.view.View.OnClickListener
 import android.view.ViewGroup
 import androidx.annotation.RequiresApi
 import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.RecyclerView
 import co.japl.android.myapplication.R
 import co.japl.android.myapplication.bussiness.DB.connections.ConnectDB
-import co.japl.android.myapplication.bussiness.interfaces.IHolder
 import co.japl.android.myapplication.bussiness.interfaces.SaveSvc
 import co.japl.android.myapplication.finanzas.bussiness.DTO.CreditDTO
 import co.japl.android.myapplication.finanzas.bussiness.impl.CreditFixImpl
 import co.japl.android.myapplication.finanzas.holders.CreditFixListHolder
 import co.japl.android.myapplication.finanzas.putParams.CreditFixListParams
-import java.math.BigDecimal
 import java.time.LocalDate
 
 class CreditListFragment : Fragment(), OnClickListener{

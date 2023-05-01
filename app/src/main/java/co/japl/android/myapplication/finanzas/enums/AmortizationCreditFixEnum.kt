@@ -1,4 +1,4 @@
-package co.japl.android.myapplication.finanzas.utils
+package co.japl.android.myapplication.finanzas.enums
 
 enum class AmortizationCreditFixEnum {
     ADDITIONAL,

@@ -6,7 +6,6 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.MediaController
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
@@ -23,18 +22,16 @@ import co.japl.android.myapplication.bussiness.impl.CreditCardImpl
 import co.japl.android.myapplication.bussiness.impl.SaveCreditCardBoughtImpl
 import co.japl.android.myapplication.bussiness.impl.TaxImpl
 import co.japl.android.myapplication.bussiness.interfaces.Calc
-import co.japl.android.myapplication.bussiness.interfaces.IHolder
+import co.japl.android.myapplication.finanzas.holders.interfaces.IHolder
 import co.japl.android.myapplication.bussiness.interfaces.ITaxSvc
 import co.japl.android.myapplication.bussiness.interfaces.SaveSvc
 import co.japl.android.myapplication.bussiness.mapping.CreditCardBoughtMap
 import co.japl.android.myapplication.finanzas.bussiness.impl.KindOfTaxImpl
 import co.japl.android.myapplication.finanzas.holders.BoughWalletHolder
-import co.japl.android.myapplication.finanzas.holders.CashAdvanceHolder
 import co.japl.android.myapplication.finanzas.putParams.BoughWalletParams
-import co.japl.android.myapplication.finanzas.putParams.CashAdvanceParams
-import co.japl.android.myapplication.finanzas.utils.KindBoughtEnum
-import co.japl.android.myapplication.finanzas.utils.KindOfTaxEnum
-import co.japl.android.myapplication.finanzas.utils.TaxEnum
+import co.japl.android.myapplication.finanzas.enums.KindBoughtEnum
+import co.japl.android.myapplication.finanzas.enums.KindOfTaxEnum
+import co.japl.android.myapplication.finanzas.enums.TaxEnum
 import java.math.BigDecimal
 import java.math.RoundingMode
 import java.time.LocalDateTime
@@ -42,7 +39,7 @@ import java.util.*
 
 class BoughWalletController: Fragment() , View.OnClickListener{
     private val kindOfTaxSvc = KindOfTaxImpl()
-    lateinit var holder:IHolder<CreditCardBought>
+    lateinit var holder: IHolder<CreditCardBought>
     lateinit var saveSvc: SaveSvc<CreditCardBoughtDTO>
     lateinit var creditCardSvc: SaveSvc<CreditCardDTO>
     lateinit var codeCreditCard:Optional<Int>
@@ -110,7 +107,7 @@ class BoughWalletController: Fragment() , View.OnClickListener{
 
     @RequiresApi(Build.VERSION_CODES.O)
     fun calc(codCreditCard:Long,value:BigDecimal, date:LocalDateTime):CreditCardBought{
-        val lTax = taxSvc.get(codCreditCard,date.monthValue,date.year,TaxEnum.WALLET_BUY)
+        val lTax = taxSvc.get(codCreditCard,date.monthValue,date.year, TaxEnum.WALLET_BUY)
         if(lTax.isPresent){
             this.tax = lTax.get()
         }
@@ -131,7 +128,7 @@ class BoughWalletController: Fragment() , View.OnClickListener{
             BigDecimal.ZERO
         }
         Log.d(this.javaClass.name,"$capital = ${bought.valueItem} / $month")
-        val percent = kindOfTaxSvc.getNM(tax.value,KindOfTaxEnum.valueOf(tax.kindOfTax!!)).toBigDecimal().divide(BigDecimal.valueOf(100))
+        val percent = kindOfTaxSvc.getNM(tax.value, KindOfTaxEnum.valueOf(tax.kindOfTax!!)).toBigDecimal().divide(BigDecimal.valueOf(100))
         val interest = bought.valueItem!!.multiply(percent)
         Log.d(this.javaClass.name,"$interest = ${bought.valueItem} * ${percent}")
         val quote = capital.add(interest)

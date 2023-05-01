@@ -11,18 +11,17 @@ import androidx.annotation.RequiresApi
 import androidx.navigation.fragment.findNavController
 import co.japl.android.myapplication.R
 import co.japl.android.myapplication.bussiness.DB.connections.ConnectDB
-import co.japl.android.myapplication.bussiness.interfaces.IHolder
+import co.japl.android.myapplication.finanzas.holders.interfaces.IHolder
 import co.japl.android.myapplication.bussiness.interfaces.SaveSvc
 import co.japl.android.myapplication.finanzas.bussiness.DTO.PaidDTO
 import co.japl.android.myapplication.finanzas.bussiness.DTO.PaidsPOJO
 import co.japl.android.myapplication.finanzas.bussiness.impl.PaidImpl
-import co.japl.android.myapplication.finanzas.holders.PaidHolder
 import co.japl.android.myapplication.finanzas.holders.PaidsHolder
 import co.japl.android.myapplication.finanzas.putParams.PaidsParams
 import java.time.LocalDate
 
 class PaidsFragment : Fragment(), OnClickListener {
-    private lateinit var holder:IHolder<PaidsPOJO>
+    private lateinit var holder: IHolder<PaidsPOJO>
     private lateinit var service:SaveSvc<PaidDTO>
     @RequiresApi(Build.VERSION_CODES.O)
     private val date = LocalDate.now().withDayOfMonth(1)

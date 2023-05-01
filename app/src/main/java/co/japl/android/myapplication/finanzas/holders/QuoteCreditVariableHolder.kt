@@ -1,7 +1,6 @@
 package co.japl.android.myapplication.finanzas.holders
 
 import android.app.AlertDialog
-import android.graphics.Color
 import android.os.Build
 import android.util.Log
 import android.view.View
@@ -9,29 +8,26 @@ import android.view.View.OnClickListener
 import android.widget.*
 import androidx.annotation.RequiresApi
 import co.japl.android.myapplication.R
-import co.japl.android.myapplication.bussiness.DTO.CreditCardSettingDTO
 import co.japl.android.myapplication.bussiness.impl.QuoteCreditVariable
 import co.japl.android.myapplication.bussiness.impl.QuoteCreditVariableInterestQuote
 import co.japl.android.myapplication.bussiness.interfaces.Calc
 import co.japl.android.myapplication.bussiness.interfaces.CalcInterest
-import co.japl.android.myapplication.bussiness.interfaces.IHolder
-import co.japl.android.myapplication.bussiness.interfaces.ISpinnerHolder
+import co.japl.android.myapplication.finanzas.holders.interfaces.IHolder
 import co.japl.android.myapplication.finanzas.holders.validations.*
 import co.japl.android.myapplication.finanzas.pojo.QuoteCreditCard
-import co.japl.android.myapplication.finanzas.utils.KindOfTaxEnum
-import co.japl.android.myapplication.utils.CalcEnum
+import co.japl.android.myapplication.finanzas.enums.KindOfTaxEnum
+import co.japl.android.myapplication.finanzas.enums.CalcEnum
 import co.japl.android.myapplication.utils.NumbersUtil
 import com.google.android.material.textfield.MaterialAutoCompleteTextView
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textview.MaterialTextView
 import java.math.BigDecimal
 import java.math.RoundingMode
-import java.text.DecimalFormat
 import java.util.*
 import java.util.stream.IntStream
 import kotlin.streams.toList
 
-class QuoteCreditVariableHolder(var container: View):IHolder<QuoteCreditCard>,OnClickListener{
+class QuoteCreditVariableHolder(var container: View): IHolder<QuoteCreditCard>,OnClickListener{
     private val calc: Calc = QuoteCreditVariable()
     private val calcQuoteInt: CalcInterest = QuoteCreditVariableInterestQuote()
     lateinit var listMonths:MutableList<String>
@@ -166,7 +162,7 @@ class QuoteCreditVariableHolder(var container: View):IHolder<QuoteCreditCard>,On
                 val value = NumbersUtil.toBigDecimal(etValueCredit      )
                 val period = etMonths.text.toString().toLong()
                 val tax = etTax.text.toString().toDouble()
-                val response = calc.calc(value, period, tax,KindOfTaxEnum.EM)
+                val response = calc.calc(value, period, tax, KindOfTaxEnum.EM)
                 var totalValue = BigDecimal(0)
 
                 val interest = calcQuoteInt.calc(value,period,tax,month.toString().toLong())
