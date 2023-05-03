@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@+id/item_menu_side_quoteCredit">
+    app:startDestination="@+id/item_menu_side_recap">
 
     <fragment
         android:id="@+id/item_menu_side_boughtmade"
@@ -368,5 +368,10 @@
         android:name="co.japl.android.myapplication.finanzas.controller.ProjectionFragment"
         android:label="@string/projection"
         tools:layout="@layout/fragment_projection" />
+    <fragment
+        android:id="@+id/item_menu_side_recap"
+        android:name="co.japl.android.myapplication.finanzas.controller.RecapFragment"
+        android:label="@string/recap"
+        tools:layout="@layout/fragment_recap" />
 
 </navigation>

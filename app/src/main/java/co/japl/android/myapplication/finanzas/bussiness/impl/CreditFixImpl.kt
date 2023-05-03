@@ -192,5 +192,13 @@ class CreditFixImpl(override var dbConnect: SQLiteOpenHelper) :ICreditFix{
         return list.sortedByDescending { it.date }
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
+    override fun getTotalQuote(): BigDecimal {
+        val list = getAll().filter { LocalDate.now() < it.date.plusMonths(it.periods.toLong()) }
+        val additionals = getAdditionalAll()
+        val quote =  list.sumOf { it.quoteValue }
+        return quote + additionals
+    }
+
 
 }

@@ -14,5 +14,6 @@ interface ICreditFix: SaveSvc<CreditDTO>, ISaveSvc<CreditDTO> {
     fun getPendingToPayAll(date:LocalDate):BigDecimal
     fun getAdditionalAll():BigDecimal
     fun getPeriods():List<PeriodCreditDTO>
+    fun getTotalQuote():BigDecimal
 
 }

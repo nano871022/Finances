@@ -11,4 +11,5 @@ interface IProjectionsSvc: SaveSvc<ProjectionDTO>, ISaveSvc<ProjectionDTO> {
     fun getFar():Triple<LocalDate,Int,BigDecimal>
     fun getTotal():Pair<Int,BigDecimal>
     fun getAllActive():List<ProjectionDTO>
+    fun getTotalSavedAndQuote():Pair<BigDecimal,BigDecimal>
 }

@@ -103,6 +103,14 @@ class ProjectionsImpl(override var dbConnect: SQLiteOpenHelper,val view:View) : 
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
+    override fun getTotalSavedAndQuote(): Pair<BigDecimal, BigDecimal> {
+        val values = getAllActive()
+        val quote = values.sumOf { it.quote }
+        val saved = values.sumOf { it.quote * (getMonths(it.type) - Period.between(LocalDate.now(),it.end).toTotalMonths()).toBigDecimal() }
+        return Pair(saved,quote)
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun save(dto: ProjectionDTO): Long {
         val db = dbConnect.writableDatabase
         val content: ContentValues? = ProjectionMap(view).mapping(dto)

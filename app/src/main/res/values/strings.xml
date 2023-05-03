@@ -244,4 +244,14 @@
         <item>Anual</item>
     </array>
 
+    <string name="total_paid">Total Pagado</string>
+    <string name="total_credits">Total Creditos</string>
+    <string name="total_paids_credits">Total Pagos + Total Creditos</string>
+    <string name="total_inputs_fix">Ingresos - Total Fijos</string>
+    <string name="total_quote_credit_card">Total Cuota Tarjeta de Credito</string>
+    <string name="total_paids">Total Pagos</string>
+    <string name="total_input_paids">Total Ingresos - Total Pagos</string>
+    <string name="cash_paids_credits">Pagos Efectivo y Creditos</string>
+    <string name="recap">Resumen</string>
+
 </resources>

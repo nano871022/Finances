@@ -6,6 +6,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     >
     <item
+        android:id="@+id/item_menu_side_recap"
+        android:icon="@android:drawable/ic_menu_view"
+        android:titleCondensed="@string/recap"
+        android:title="@string/recap" />
+    <item
         android:id="@+id/item_menu_side_quoteCredit"
         android:icon="@drawable/ic_baseline_permanent"
         android:titleCondensed="@string/quote_credit"
