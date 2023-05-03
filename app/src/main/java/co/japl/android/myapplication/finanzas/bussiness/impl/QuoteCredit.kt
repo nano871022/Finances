@@ -13,10 +13,10 @@ class QuoteCredit : Calc {
 
     override fun calc(value: BigDecimal, period: Long, tax: Double,kindOf: KindOfTaxEnum): BigDecimal {
         Log.d(this.javaClass.name,"<<<=== START:: Calc: Credit Value $value")
-        val taxValue = kindOfTaxSvc.getNM(tax,kindOf)
-        val taxDouble = getTax(taxValue)
-        val onePlusTaxPowPeriod = onePlusTaxPowPeriod(taxDouble,period)
-        val taxAndPeriodDiv = (taxDouble*onePlusTaxPowPeriod).div(onePlusTaxPowPeriod-1)
+        val taxDouble = getTax(tax)
+        val taxValue = kindOfTaxSvc.getNM(taxDouble,kindOf)
+        val onePlusTaxPowPeriod = onePlusTaxPowPeriod(taxValue,period)
+        val taxAndPeriodDiv = (taxValue*onePlusTaxPowPeriod).div(onePlusTaxPowPeriod-1)
         val response = value.multiply(taxAndPeriodDiv.toBigDecimal())
         return response.also { Log.d(this.javaClass.name,"<<<=== FINISH:: Calc: $response = $value X (($taxDouble X $onePlusTaxPowPeriod) / ($onePlusTaxPowPeriod - 1))") }
     }
@@ -41,7 +41,7 @@ class QuoteCredit : Calc {
     }
 
     fun getInterest(creditValue:BigDecimal, tax:Double, period:Int, quote:BigDecimal, periodPaid:Int, kindOfTax: KindOfTaxEnum):BigDecimal{
-        val tax = kindOfTaxSvc.getNM(tax, kindOfTax) / 100
+        val tax = kindOfTaxSvc.getNM(tax/100, kindOfTax) / 100
         val part3 = creditValue.toDouble() * tax
         if(periodPaid > 1) {
             val pow1 = (period) - 5

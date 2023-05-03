@@ -16,6 +16,8 @@ class RecapHolder(val view:View):IRecapHolder<RecapHolder> {
     lateinit var quoteTC:TextView
     lateinit var totalPaids:TextView
     lateinit var totalInputsPaids:TextView
+    lateinit var warning: TextView
+    lateinit var limit:TextView
 
     override fun setFields(actions: View.OnClickListener?) {
         inputs = view.findViewById(R.id.tv_total_inputs_rec)
@@ -28,6 +30,8 @@ class RecapHolder(val view:View):IRecapHolder<RecapHolder> {
         quoteTC = view.findViewById(R.id.tv_total_quote_credit_card_rec)
         totalPaids = view.findViewById(R.id.tv_total_paids_rec)
         totalInputsPaids = view.findViewById(R.id.tv_total_input_paids_rec)
+        warning= view.findViewById(R.id.tv_warning_credit_card_rec)
+        limit= view.findViewById(R.id.tv_limit_credit_card_rec)
     }
 
     override fun loadFields(fn: ((RecapHolder) -> Unit)?) {

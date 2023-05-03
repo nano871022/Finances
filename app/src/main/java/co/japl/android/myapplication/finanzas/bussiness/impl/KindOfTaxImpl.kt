@@ -13,7 +13,7 @@ class KindOfTaxImpl:IKindOfTaxSvc {
                 toNominal(value,PERIODS_YEAR)/PERIODS_YEAR
             }
             KindOfTaxEnum.EM->{
-                toNominal(value * PERIODS_YEAR,PERIODS_YEAR) / PERIODS_YEAR
+                toNominal(fromEffectiveMonthlyToEffectiveYearly(value , PERIODS_YEAR),PERIODS_YEAR) / PERIODS_YEAR
             }
             KindOfTaxEnum.NA->{
                 value/PERIODS_YEAR
@@ -27,9 +27,11 @@ class KindOfTaxImpl:IKindOfTaxSvc {
     private fun toNominal(taxEffective:Double,periods:Int):Double{
         val pow = (1 / periods.toDouble())
         val part1 = 1 + taxEffective
-        val tax =  part1.pow(pow) * periods
-        Log.d(javaClass.name,"Tax NA $tax = [$part1](1 + $taxEffective) ^ (1 / $periods)[$pow] X $periods")
-        return tax
+        return  ((part1.pow(pow)-1) * periods).also{Log.d(javaClass.name," (((1 + $taxEffective) ^ (1 / $periods)) - 1) X $periods = $it")}
+    }
+
+    private fun fromEffectiveMonthlyToEffectiveYearly(taxEffective:Double,periods:Int):Double{
+        return ((1 + taxEffective).pow(periods)) -1
     }
 
 }

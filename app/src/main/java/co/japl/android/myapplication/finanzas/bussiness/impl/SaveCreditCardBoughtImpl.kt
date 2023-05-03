@@ -62,14 +62,14 @@ class SaveCreditCardBoughtImpl(override var dbConnect: SQLiteOpenHelper) :IQuote
     override fun save(dto: CreditCardBoughtDTO): Long {
         Log.v(this.javaClass.name,"<<<=== save - Start")
         try{
-        val db = dbConnect.writableDatabase
-        val values = CreditCardBoughtMap().mapping(dto)
-            if(dto.id > 0){
-                return db?.update(CreditCardBoughtDB.CreditCardBoughtEntry.TABLE_NAME,values,"${BaseColumns._ID}=?",
+            val db = dbConnect.writableDatabase
+            val values = CreditCardBoughtMap().mapping(dto)
+            return if(dto.id > 0){
+                 db?.update(CreditCardBoughtDB.CreditCardBoughtEntry.TABLE_NAME,values,"${BaseColumns._ID}=?",
                     arrayOf(dto.id.toString())
                 )?.toLong()?:0
             }else {
-                return (db?.insert(
+                 (db?.insert(
                     CreditCardBoughtDB.CreditCardBoughtEntry.TABLE_NAME,
                     null,
                     values
@@ -489,7 +489,8 @@ class SaveCreditCardBoughtImpl(override var dbConnect: SQLiteOpenHelper) :IQuote
             val interest = getInterest(creditCard.id, startDate, endDate)
             val interestQuote =
                 getInterestPendingQuotes(creditCard.id, startDate, endDate)
-            quote += capital.get() + capitalQuotes.get() + interest.get() + interestQuote.get()
+            quote += capital.orElse(BigDecimal.ZERO) + capitalQuotes.orElse(BigDecimal.ZERO) + interest.orElse(
+                BigDecimal.ZERO) + interestQuote.orElse(BigDecimal.ZERO)
         }
         return quote
     }
