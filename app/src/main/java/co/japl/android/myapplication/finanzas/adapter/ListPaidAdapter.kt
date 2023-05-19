@@ -2,7 +2,6 @@ package co.japl.android.myapplication.adapter
 
 import android.app.AlertDialog
 import android.os.Build
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,20 +9,10 @@ import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.RecyclerView
 import co.japl.android.myapplication.R
 import co.japl.android.myapplication.bussiness.DB.connections.ConnectDB
-import co.japl.android.myapplication.bussiness.DTO.TaxDTO
-import co.japl.android.myapplication.bussiness.impl.TaxImpl
 import co.japl.android.myapplication.bussiness.interfaces.SaveSvc
-import co.japl.android.myapplication.finanzas.bussiness.DTO.AccountDTO
-import co.japl.android.myapplication.finanzas.bussiness.DTO.InputDTO
 import co.japl.android.myapplication.finanzas.bussiness.DTO.PaidDTO
-import co.japl.android.myapplication.finanzas.bussiness.impl.AccountImpl
-import co.japl.android.myapplication.finanzas.bussiness.impl.InputImpl
 import co.japl.android.myapplication.finanzas.bussiness.impl.PaidImpl
-import co.japl.android.myapplication.finanzas.utils.TaxEnum
-import co.japl.android.myapplication.holders.view.AccountItemHolder
-import co.japl.android.myapplication.holders.view.InputItemHolder
 import co.japl.android.myapplication.holders.view.PaidItemHolder
-import co.japl.android.myapplication.holders.view.TaxItemHolder
 import com.google.android.material.snackbar.Snackbar
 
 class ListPaidAdapter(var data:MutableList<PaidDTO>) : RecyclerView.Adapter<PaidItemHolder>() {

@@ -2,7 +2,6 @@ package co.japl.android.myapplication.finanzas.controller
 
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -10,11 +9,10 @@ import android.view.View.OnClickListener
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.annotation.RequiresApi
-import androidx.fragment.app.findFragment
 import androidx.navigation.fragment.findNavController
 import co.japl.android.myapplication.R
 import co.japl.android.myapplication.bussiness.DB.connections.ConnectDB
-import co.japl.android.myapplication.bussiness.interfaces.IHolder
+import co.japl.android.myapplication.finanzas.holders.interfaces.IHolder
 import co.japl.android.myapplication.bussiness.interfaces.SaveSvc
 import co.japl.android.myapplication.finanzas.bussiness.DTO.CreditDTO
 import co.japl.android.myapplication.finanzas.bussiness.impl.CreditFixImpl
@@ -22,10 +20,9 @@ import co.japl.android.myapplication.finanzas.holders.CreditFixHolder
 import co.japl.android.myapplication.finanzas.putParams.CreditFixParams
 import java.math.BigDecimal
 import java.time.LocalDate
-import kotlin.properties.Delegates
 
 class CreditFixFragment : Fragment() , OnClickListener{
-    private lateinit var holder:IHolder<CreditDTO>
+    private lateinit var holder: IHolder<CreditDTO>
     private lateinit var creditSvc:SaveSvc<CreditDTO>
     private  var creditCode = 0L
 

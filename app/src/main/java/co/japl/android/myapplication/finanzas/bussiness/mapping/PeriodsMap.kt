@@ -6,22 +6,16 @@ import android.util.Log
 import androidx.annotation.RequiresApi
 import co.japl.android.myapplication.bussiness.DTO.CreditCardSettingDTO
 import co.japl.android.myapplication.bussiness.DTO.TaxDTO
-import co.japl.android.myapplication.bussiness.impl.TaxImpl
 import co.japl.android.myapplication.bussiness.interfaces.ITaxSvc
 import co.japl.android.myapplication.finanzas.bussiness.DTO.PeriodDTO
 import co.japl.android.myapplication.finanzas.bussiness.impl.BuyCreditCardSettingImpl
 import co.japl.android.myapplication.finanzas.bussiness.impl.CreditCardSettingImpl
-import co.japl.android.myapplication.finanzas.utils.KindBoughtEnum
-import co.japl.android.myapplication.finanzas.utils.TaxEnum
+import co.japl.android.myapplication.finanzas.enums.TaxEnum
 import java.math.BigDecimal
-import java.math.RoundingMode
-import java.nio.file.WatchEvent.Kind
-import java.security.cert.PKIXRevocationChecker.Option
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.Optional
-import kotlin.jvm.optionals.getOrElse
 
 class PeriodsMap (private val taxSvc:ITaxSvc, private val buyCCSettingSvc:BuyCreditCardSettingImpl,private val creditCardSettingSvc:CreditCardSettingImpl){
 

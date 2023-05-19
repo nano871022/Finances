@@ -6,14 +6,13 @@ import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.RecyclerView
 import co.japl.android.myapplication.R
-import co.japl.android.myapplication.bussiness.DTO.CreditCardSettingDTO
-import co.japl.android.myapplication.bussiness.interfaces.IHolder
-import co.japl.android.myapplication.bussiness.interfaces.ISpinnerHolder
+import co.japl.android.myapplication.finanzas.holders.interfaces.IHolder
+import co.japl.android.myapplication.finanzas.holders.interfaces.ISpinnerHolder
 import co.japl.android.myapplication.finanzas.pojo.BoughtRecap
 import co.japl.android.myapplication.utils.NumbersUtil
 import java.math.BigDecimal
 
-class ListBoughtHolder(var view:View):IHolder<BoughtRecap> , ISpinnerHolder<ListBoughtHolder>{
+class ListBoughtHolder(var view:View): IHolder<BoughtRecap>, ISpinnerHolder<ListBoughtHolder> {
     private lateinit var tvCapital: TextView
     private lateinit var tvCurrentCapital: TextView
     private lateinit var tvQuoteCapital: TextView

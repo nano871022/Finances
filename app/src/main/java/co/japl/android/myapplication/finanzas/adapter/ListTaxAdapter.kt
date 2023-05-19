@@ -11,7 +11,6 @@ import co.japl.android.myapplication.bussiness.DB.connections.ConnectDB
 import co.japl.android.myapplication.bussiness.DTO.TaxDTO
 import co.japl.android.myapplication.bussiness.impl.TaxImpl
 import co.japl.android.myapplication.bussiness.interfaces.SaveSvc
-import co.japl.android.myapplication.finanzas.utils.TaxEnum
 import co.japl.android.myapplication.holders.view.TaxItemHolder
 import com.google.android.material.snackbar.Snackbar
 

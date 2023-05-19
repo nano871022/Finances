@@ -1,4 +1,4 @@
-package co.japl.android.myapplication.finanzas.bussiness.interfaces
+package co.japl.android.myapplication.finanzas.holders.interfaces
 
 interface IRecyclerView<T> {
     fun loadRecycler(data:MutableList<T>)

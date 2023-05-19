@@ -7,16 +7,16 @@ import android.util.Log
 import androidx.annotation.RequiresApi
 import co.japl.android.myapplication.bussiness.DTO.*
 import co.japl.android.myapplication.bussiness.interfaces.SaveSvc
-import co.japl.android.myapplication.bussiness.interfaces.SearchSvc
 import co.japl.android.myapplication.bussiness.mapping.CreditCardBoughtMap
+import co.japl.android.myapplication.bussiness.mapping.CreditCardMap
 import co.japl.android.myapplication.finanzas.bussiness.DTO.PeriodDTO
 import co.japl.android.myapplication.finanzas.bussiness.impl.BuyCreditCardSettingImpl
 import co.japl.android.myapplication.finanzas.bussiness.impl.CreditCardSettingImpl
 import co.japl.android.myapplication.finanzas.bussiness.impl.KindOfTaxImpl
-import co.japl.android.myapplication.finanzas.bussiness.interfaces.IGetPeriodsServices
+import co.japl.android.myapplication.finanzas.bussiness.interfaces.IQuoteCreditCardSvc
 import co.japl.android.myapplication.finanzas.bussiness.mapping.PeriodsMap
-import co.japl.android.myapplication.finanzas.utils.KindOfTaxEnum
-import co.japl.android.myapplication.finanzas.utils.TaxEnum
+import co.japl.android.myapplication.finanzas.enums.KindOfTaxEnum
+import co.japl.android.myapplication.finanzas.enums.TaxEnum
 import co.japl.android.myapplication.utils.DatabaseConstants
 import co.japl.android.myapplication.utils.DateUtils
 import com.google.gson.Gson
@@ -25,16 +25,11 @@ import java.math.RoundingMode
 import java.nio.charset.Charset
 import java.nio.file.Files
 import java.nio.file.Paths
-import java.time.Duration
 import java.time.LocalDate
 import java.time.LocalDateTime
-import java.time.Month
-import java.time.Period
-import java.time.format.DateTimeFormatter
 import java.util.*
 
-class SaveCreditCardBoughtImpl(override var dbConnect: SQLiteOpenHelper) : SaveSvc<CreditCardBoughtDTO>,
-    SearchSvc<CreditCardBoughtDTO>, IGetPeriodsServices {
+class SaveCreditCardBoughtImpl(override var dbConnect: SQLiteOpenHelper) :IQuoteCreditCardSvc{
     private val kindOfTaxSvc = KindOfTaxImpl()
     private val COLUMNS_CALC = arrayOf(BaseColumns._ID
         ,CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_CODE_CREDIT_CARD
@@ -67,9 +62,19 @@ class SaveCreditCardBoughtImpl(override var dbConnect: SQLiteOpenHelper) : SaveS
     override fun save(dto: CreditCardBoughtDTO): Long {
         Log.v(this.javaClass.name,"<<<=== save - Start")
         try{
-        val db = dbConnect.writableDatabase
-        val dto = CreditCardBoughtMap().mapping(dto)
-        return (db?.insert(CreditCardBoughtDB.CreditCardBoughtEntry.TABLE_NAME,null,dto)!! ).also { Log.v(this.javaClass.name,"$it") }
+            val db = dbConnect.writableDatabase
+            val values = CreditCardBoughtMap().mapping(dto)
+            return if(dto.id > 0){
+                 db?.update(CreditCardBoughtDB.CreditCardBoughtEntry.TABLE_NAME,values,"${BaseColumns._ID}=?",
+                    arrayOf(dto.id.toString())
+                )?.toLong()?:0
+            }else {
+                 (db?.insert(
+                    CreditCardBoughtDB.CreditCardBoughtEntry.TABLE_NAME,
+                    null,
+                    values
+                )!!).also { Log.v(this.javaClass.name, "$it") }
+            }
         }finally{
             Log.v(this.javaClass.name,"<<<=== save - End")
         }
@@ -173,19 +178,21 @@ class SaveCreditCardBoughtImpl(override var dbConnect: SQLiteOpenHelper) : SaveS
             val cursor = db.query(
                 CreditCardBoughtDB.CreditCardBoughtEntry.TABLE_NAME,
                 COLUMNS_CALC,
-                " ${CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_CODE_CREDIT_CARD} = ? ",
+                " ${CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_CODE_CREDIT_CARD} = ?",
                 arrayOf(key.toString()),
                 null,
                 null,
-                null
+                "${CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_BOUGHT_DATE} ASC"
             )
             val items = mutableListOf<CreditCardBoughtDTO>()
             with(cursor) {
                 while (moveToNext()) {
                     val record = CreditCardBoughtMap().mapping(this)
-                    if ( record.boughtDate == cutOffDate || record.boughtDate == startDate || record.boughtDate.isBefore(cutOffDate) and record.boughtDate.isAfter(
-                            startDate
-                        )
+                    Log.d(javaClass.name,"$cutOffDate $startDate ${record.boughtDate}")
+                    if ( record.boughtDate == cutOffDate ||
+                         record.boughtDate == startDate ||
+                         record.boughtDate.isBefore(cutOffDate) and
+                         record.boughtDate.isAfter(startDate)
                     ) {
                         items.add(record)
                     }
@@ -230,12 +237,12 @@ class SaveCreditCardBoughtImpl(override var dbConnect: SQLiteOpenHelper) : SaveS
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    private fun getTax(codCreditCard:Long,cutOff:LocalDateTime, kind:TaxEnum):Optional<Pair<Double,String>>{
+    private fun getTax(codCreditCard:Long,cutOff:LocalDateTime, kind: TaxEnum):Optional<Pair<Double,String>>{
         Log.d(this.javaClass.name,"<<<=== getTax - Start ${cutOff.month} ${cutOff.month.value} ${cutOff.year}")
             val taxSvc = TaxImpl(dbConnect)
             val tax = taxSvc.get(codCreditCard,cutOff.month.value, cutOff.year,kind)
             if (tax.isPresent) {
-                return Optional.ofNullable(Pair(tax.get().value,tax.get().kindOfTax?:KindOfTaxEnum.EM.name)).also { Log.d(this.javaClass.name,"<<<=== getTax - End ${it.get()}") }
+                return Optional.ofNullable(Pair(tax.get().value,tax.get().kindOfTax?: KindOfTaxEnum.EM.name)).also { Log.d(this.javaClass.name,"<<<=== getTax - End ${it.get()}") }
             }
             return Optional.empty<Pair<Double,String>>().also { Log.d(this.javaClass.name,"<<<=== getTax - End Not found Tax") }
     }
@@ -254,12 +261,12 @@ class SaveCreditCardBoughtImpl(override var dbConnect: SQLiteOpenHelper) : SaveS
         val settingDto = getCreditCardSetting(creditCardBoughtDTO.id)
         if(settingDto.isPresent){
             if(settingDto.get().value != "0") {
-                return kindOfTaxSvc.getNM(settingDto.get().value.toDouble(),KindOfTaxEnum.EM)
+                return kindOfTaxSvc.getNM(settingDto.get().value.toDouble(), KindOfTaxEnum.EM)
             }else{
                 0.0
             }
         }
-        var interest = kindOfTaxSvc.getNM(creditCardBoughtDTO.interest,KindOfTaxEnum.valueOf(creditCardBoughtDTO.kindOfTax))
+        var interest = kindOfTaxSvc.getNM(creditCardBoughtDTO.interest, KindOfTaxEnum.valueOf(creditCardBoughtDTO.kindOfTax))
         when(creditCardBoughtDTO.kind){
             TaxEnum.CREDIT_CARD.ordinal.toShort() ->{
                 interest = kindOfTaxSvc.getNM(taxDTO.get().first, KindOfTaxEnum.valueOf(taxDTO.get().second))
@@ -284,9 +291,9 @@ class SaveCreditCardBoughtImpl(override var dbConnect: SQLiteOpenHelper) : SaveS
                 .peek{Log.v(this.javaClass.name," InterestRec:: $it")}
                 .reduce{ accumulator, interest -> accumulator.add(interest)}
         Log.v(this.javaClass.name,"InterestRecurrent:: $interestRecurrent")
-            val tax = getTax(codCreditCard.toLong(),cutOff,TaxEnum.CREDIT_CARD)
+            val tax = getTax(codCreditCard.toLong(),cutOff, TaxEnum.CREDIT_CARD)
 
-            val taxCashAdv = getTax(codCreditCard.toLong(),cutOff,TaxEnum.CASH_ADVANCE)
+            val taxCashAdv = getTax(codCreditCard.toLong(),cutOff, TaxEnum.CASH_ADVANCE)
             val list = getToDate(codCreditCard,startDate,cutOff)
             var value = list.stream().filter{ it.month > 1}
                                  .map{
@@ -322,8 +329,11 @@ class SaveCreditCardBoughtImpl(override var dbConnect: SQLiteOpenHelper) : SaveS
     @RequiresApi(Build.VERSION_CODES.O)
     override fun getInterestPendingQuotes(codCreditCard: Int,startDate: LocalDateTime, cutOff: LocalDateTime): Optional<BigDecimal> {
         Log.d(this.javaClass.name,"<<<=== getInterestPendingQuotes - Start")
-            val tax = getTax(codCreditCard.toLong(),cutOff,TaxEnum.CREDIT_CARD)
-            val taxCashAdv = getTax(codCreditCard.toLong(),cutOff,TaxEnum.CASH_ADVANCE)
+            val tax = getTax(codCreditCard.toLong(),cutOff, TaxEnum.CREDIT_CARD)
+            if(!tax.isPresent){
+                return Optional.of(BigDecimal.ZERO)
+            }
+            val taxCashAdv = getTax(codCreditCard.toLong(),cutOff, TaxEnum.CASH_ADVANCE)
         val list = getPendingQuotes(codCreditCard,startDate,cutOff)
         val value = list.stream().map {
             val months = DateUtils.getMonths(it.boughtDate,cutOff)
@@ -416,7 +426,7 @@ class SaveCreditCardBoughtImpl(override var dbConnect: SQLiteOpenHelper) : SaveS
         val cursor = db.query(
             CreditCardBoughtDB.CreditCardBoughtEntry.TABLE_NAME,
             COLUMNS_CALC,
-            " id = ?",
+            " ${BaseColumns._ID}= ?",
             arrayOf(id.toString()),
             null,
             null,
@@ -464,5 +474,26 @@ class SaveCreditCardBoughtImpl(override var dbConnect: SQLiteOpenHelper) : SaveS
         val list = Files.newBufferedReader(path, Charset.defaultCharset()).use { Gson().fromJson(it,List::class.java) } as List<CreditCardBoughtDTO>
         list.forEach(this::save)
     }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    override fun getTotalQuoteTC(): BigDecimal {
+        val creditCards = creditCardSvc.getAll().filter { it.status.toInt() == 1 }
+        var quote = BigDecimal.ZERO
+        for ( creditCard in creditCards) {
+            val creditCardPojo = CreditCardMap().mapper(creditCard)
+            val endDate = creditCardPojo.cutOff.get()
+            val startDate = DateUtils.startDateFromCutoff(creditCardPojo.cutoffDay.get(),endDate)
+            val capital = getCapital(creditCard.id, startDate, endDate)
+            val capitalQuotes =
+                getCapitalPendingQuotes(creditCard.id, startDate, endDate)
+            val interest = getInterest(creditCard.id, startDate, endDate)
+            val interestQuote =
+                getInterestPendingQuotes(creditCard.id, startDate, endDate)
+            quote += capital.orElse(BigDecimal.ZERO) + capitalQuotes.orElse(BigDecimal.ZERO) + interest.orElse(
+                BigDecimal.ZERO) + interestQuote.orElse(BigDecimal.ZERO)
+        }
+        return quote
+    }
+
 
 }

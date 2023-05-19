@@ -2,7 +2,6 @@ package co.japl.android.myapplication.finanzas.adapter
 
 import android.app.AlertDialog
 import android.os.Build
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,9 +10,7 @@ import androidx.navigation.NavController
 import androidx.recyclerview.widget.RecyclerView
 import co.japl.android.myapplication.R
 import co.japl.android.myapplication.bussiness.DB.connections.ConnectDB
-import co.japl.android.myapplication.bussiness.interfaces.IHolder
 import co.japl.android.myapplication.bussiness.interfaces.SaveSvc
-import co.japl.android.myapplication.finanzas.bussiness.DTO.AdditionalCreditDB
 import co.japl.android.myapplication.finanzas.bussiness.DTO.AdditionalCreditDTO
 import co.japl.android.myapplication.finanzas.bussiness.impl.AdditionalCreditImpl
 import co.japl.android.myapplication.finanzas.holders.view.AdditionalCreditItemHolder

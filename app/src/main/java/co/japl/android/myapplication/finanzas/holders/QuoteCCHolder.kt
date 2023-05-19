@@ -1,5 +1,6 @@
 package co.japl.android.myapplication.holders
 
+import android.graphics.Color
 import android.os.Build
 import android.util.Log
 import android.view.View
@@ -8,31 +9,34 @@ import androidx.annotation.RequiresApi
 import androidx.fragment.app.FragmentManager
 import androidx.navigation.NavController
 import co.japl.android.myapplication.R
-import co.japl.android.myapplication.bussiness.DTO.CreditCardSettingDTO
-import co.japl.android.myapplication.bussiness.interfaces.IHolder
-import co.japl.android.myapplication.bussiness.interfaces.ISpinnerHolder
+import co.japl.android.myapplication.finanzas.holders.interfaces.IHolder
+import co.japl.android.myapplication.finanzas.holders.interfaces.ISpinnerHolder
 import co.japl.android.myapplication.bussiness.interfaces.ITaxSvc
 import co.japl.android.myapplication.finanzas.putParams.BoughWalletParams
 import co.japl.android.myapplication.finanzas.putParams.CashAdvanceParams
 import co.japl.android.myapplication.finanzas.putParams.CreditCardQuotesParams
 import co.japl.android.myapplication.finanzas.putParams.PeriodsParams
-import co.japl.android.myapplication.finanzas.utils.TaxEnum
+import co.japl.android.myapplication.finanzas.enums.TaxEnum
 import co.japl.android.myapplication.pojo.CreditCard
 import co.japl.android.myapplication.utils.DateUtils
 import co.japl.android.myapplication.utils.NumbersUtil
 import com.google.android.material.textfield.MaterialAutoCompleteTextView
+import org.w3c.dom.Text
 import java.math.BigDecimal
 import java.time.LocalDateTime
 import java.time.Period
 import java.util.*
 
-class QuoteCCHolder(var view:View,var parentFragmentManager:FragmentManager,var navController: NavController,var taxSvc: ITaxSvc): IHolder<CreditCard>, ISpinnerHolder<QuoteCCHolder>, View.OnClickListener{
+class QuoteCCHolder(var view:View,var parentFragmentManager:FragmentManager,var navController: NavController,var taxSvc: ITaxSvc): IHolder<CreditCard>,
+    ISpinnerHolder<QuoteCCHolder>, View.OnClickListener{
     lateinit var spCreditCard:MaterialAutoCompleteTextView
     lateinit var tvRemainderCutOffDate: TextView
     lateinit var tvCutOffDateQuote: TextView
     lateinit var tvTotalValueQuote: TextView
     lateinit var tvEquityValueQuote: TextView
     lateinit var tvIterestValueQuote: TextView
+    lateinit var tvWarning:TextView
+    lateinit var tvLimit:TextView
     lateinit var tvNumQuotes: TextView
     lateinit var tvNumOneQuote: TextView
     lateinit var tvLastMonthDate: TextView
@@ -61,6 +65,8 @@ class QuoteCCHolder(var view:View,var parentFragmentManager:FragmentManager,var 
             tvIterestValueQuote = it.findViewById(R.id.tvInterestValueQuote)!!
             tvNumOneQuote = it.findViewById(R.id.tvNumOneQuote)
             tvNumQuotes = it.findViewById(R.id.tvNumQuotes)
+            tvWarning = it.findViewById(R.id.tv_warning_lccq)
+            tvLimit = it.findViewById(R.id.tv_limit_lccq)
             tvRemainderCutOffDate = it.findViewById(R.id.tvRemainderCutOffDate)
             btnAddBuy = it.findViewById(R.id.btnAddItem)
             btnAddBought = it.findViewById(R.id.btnBought)
@@ -109,11 +115,23 @@ class QuoteCCHolder(var view:View,var parentFragmentManager:FragmentManager,var 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun loadFields(values: CreditCard) {
         view.let {
-            val taxAdvance = taxSvc.get(values.codeCreditCard.get().toLong(),values.cutOff.get().monthValue,values.cutOff.get().year,TaxEnum.CASH_ADVANCE)
-            val taxCreditCard = taxSvc.get(values.codeCreditCard.get().toLong(),values.cutOff.get().monthValue,values.cutOff.get().year,TaxEnum.CREDIT_CARD)
-            val taxWallet = taxSvc.get(values.codeCreditCard.get().toLong(),values.cutOff.get().monthValue,values.cutOff.get().year,TaxEnum.WALLET_BUY)
+            val taxAdvance = taxSvc.get(values.codeCreditCard.get().toLong(),values.cutOff.get().monthValue,values.cutOff.get().year,
+                TaxEnum.CASH_ADVANCE)
+            val taxCreditCard = taxSvc.get(values.codeCreditCard.get().toLong(),values.cutOff.get().monthValue,values.cutOff.get().year,
+                TaxEnum.CREDIT_CARD)
+            val taxWallet = taxSvc.get(values.codeCreditCard.get().toLong(),values.cutOff.get().monthValue,values.cutOff.get().year,
+                TaxEnum.WALLET_BUY)
             codeCreaditCard = values.codeCreditCard
             nameCreaditCard = values.nameCreditCard
+            values.warningValue.ifPresent {
+                tvLimit.text = NumbersUtil.COPtoString(it)
+                val limit = it - values.capital.get().plus(values.interest.get())
+                tvWarning.text = NumbersUtil.COPtoString(limit)
+                if(limit < BigDecimal.ZERO ){
+                    tvWarning.setTextColor(Color.RED)
+                }
+            }
+
             cutOff = values.cutOff
             cutOffDay = values.cutoffDay
             tvCutOffDateQuote.text =  DateUtils.localDateTimeToString(values.cutOff.get())

@@ -13,7 +13,7 @@ import co.japl.android.myapplication.bussiness.impl.SaveImpl
 import co.japl.android.myapplication.bussiness.interfaces.SaveSvc
 import co.japl.android.myapplication.finanzas.putParams.AmortizationTableParams
 import co.japl.android.myapplication.holders.view.ViewHolder
-import co.japl.android.myapplication.utils.CalcEnum
+import co.japl.android.myapplication.finanzas.enums.CalcEnum
 import com.google.android.material.snackbar.Snackbar
 import java.text.DecimalFormat
 

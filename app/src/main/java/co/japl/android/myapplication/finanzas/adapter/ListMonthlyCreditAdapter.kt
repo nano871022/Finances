@@ -10,14 +10,11 @@ import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import co.japl.android.myapplication.R
 import co.japl.android.myapplication.bussiness.DB.connections.ConnectDB
-import co.japl.android.myapplication.bussiness.interfaces.IHolder
 import co.japl.android.myapplication.bussiness.interfaces.SaveSvc
-import co.japl.android.myapplication.finanzas.bussiness.DTO.AdditionalCreditDB
 import co.japl.android.myapplication.finanzas.bussiness.DTO.AdditionalCreditDTO
 import co.japl.android.myapplication.finanzas.bussiness.DTO.CreditDTO
 import co.japl.android.myapplication.finanzas.bussiness.impl.AdditionalCreditImpl
 import co.japl.android.myapplication.finanzas.bussiness.impl.CreditFixImpl
-import co.japl.android.myapplication.finanzas.holders.view.AdditionalCreditItemHolder
 import co.japl.android.myapplication.finanzas.holders.view.MonthlyCreditItemHolder
 import co.japl.android.myapplication.finanzas.putParams.CreditFixParams
 import com.google.android.material.snackbar.Snackbar

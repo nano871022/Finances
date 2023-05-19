@@ -13,8 +13,8 @@ import co.japl.android.myapplication.R
 import co.japl.android.myapplication.bussiness.DB.connections.ConnectDB
 import co.japl.android.myapplication.bussiness.DTO.CreditCardDTO
 import co.japl.android.myapplication.bussiness.DTO.CreditCardSettingDTO
-import co.japl.android.myapplication.bussiness.interfaces.IHolder
-import co.japl.android.myapplication.bussiness.interfaces.ISpinnerHolder
+import co.japl.android.myapplication.finanzas.holders.interfaces.IHolder
+import co.japl.android.myapplication.finanzas.holders.interfaces.ISpinnerHolder
 import co.japl.android.myapplication.bussiness.interfaces.SaveSvc
 import co.japl.android.myapplication.finanzas.bussiness.impl.CreditCardSettingImpl
 import co.japl.android.myapplication.putParams.CreditCardSettingParams
@@ -23,7 +23,8 @@ import com.google.android.material.textfield.MaterialAutoCompleteTextView
 import com.google.android.material.textfield.TextInputEditText
 import java.time.LocalDateTime
 
-class CreditCardSettingHolder (var view:View,val creditCardList:List<CreditCardDTO>, var parentFragmentManager:FragmentManager, var navController: NavController): IHolder<CreditCardSettingDTO>,ISpinnerHolder<CreditCardSettingHolder>, View.OnClickListener{
+class CreditCardSettingHolder (var view:View,val creditCardList:List<CreditCardDTO>, var parentFragmentManager:FragmentManager, var navController: NavController): IHolder<CreditCardSettingDTO>,
+    ISpinnerHolder<CreditCardSettingHolder>, View.OnClickListener{
     lateinit var creditCard:MaterialAutoCompleteTextView
     lateinit var type:MaterialAutoCompleteTextView
     lateinit var name:TextInputEditText

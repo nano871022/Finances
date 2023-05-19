@@ -6,14 +6,13 @@ import android.os.Build
 import android.provider.BaseColumns
 import android.util.Log
 import androidx.annotation.RequiresApi
-import co.japl.android.myapplication.bussiness.DTO.CreditCardDTO
 import co.japl.android.myapplication.bussiness.DTO.TaxDB
 import co.japl.android.myapplication.bussiness.DTO.TaxDTO
 import co.japl.android.myapplication.bussiness.interfaces.IMapper
 import co.japl.android.myapplication.bussiness.interfaces.ITaxSvc
 import co.japl.android.myapplication.bussiness.interfaces.SaveSvc
 import co.japl.android.myapplication.bussiness.mapping.TaxMap
-import co.japl.android.myapplication.finanzas.utils.TaxEnum
+import co.japl.android.myapplication.finanzas.enums.TaxEnum
 import co.japl.android.myapplication.utils.DatabaseConstants
 import com.google.gson.Gson
 import java.nio.charset.Charset
@@ -100,7 +99,7 @@ class TaxImpl(override var dbConnect: SQLiteOpenHelper) :  SaveSvc<TaxDTO>,ITaxS
     }
 
     @RequiresApi(Build.VERSION_CODES.N)
-    override fun get(codCreditCard:Long,month:Int, year:Int,kind:TaxEnum):Optional<TaxDTO>{
+    override fun get(codCreditCard:Long,month:Int, year:Int,kind: TaxEnum):Optional<TaxDTO>{
         Log.d(this.javaClass.name,"<<<=== Start get - $month , $year")
         try {
             val db = dbConnect.writableDatabase

@@ -3,16 +3,13 @@ package co.japl.android.myapplication.holders
 import android.os.Build
 import android.view.View
 import android.widget.Button
-import android.widget.EditText
 import androidx.annotation.RequiresApi
 import co.japl.android.myapplication.R
 import co.japl.android.myapplication.bussiness.DTO.CreditCardDTO
-import co.japl.android.myapplication.bussiness.DTO.CreditCardSettingDTO
-import co.japl.android.myapplication.bussiness.interfaces.IHolder
+import co.japl.android.myapplication.finanzas.holders.interfaces.IHolder
 import co.japl.android.myapplication.utils.NumbersUtil
 import com.google.android.material.textfield.TextInputEditText
 import java.math.BigDecimal
-import java.text.DecimalFormat
 import java.time.LocalDateTime
 import java.util.*
 

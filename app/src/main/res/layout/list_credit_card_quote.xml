@@ -184,11 +184,54 @@
         </com.google.android.material.textfield.TextInputLayout>
     </LinearLayout>
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:padding="@dimen/space_min"
+                android:layout_margin="@dimen/space_min"
+                android:background="@color/green_light_trans"
+                app:prefixText="@string/warning_quote_value">
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/tv_limit_lccq"
+                    android:layout_width="match_parent"
+                    android:textAlignment="textEnd"
+                    android:hint="@string/money_hint"
+                    android:layout_height="wrap_content"/>
+            </com.google.android.material.textfield.TextInputLayout>
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/space_min"
+                android:layout_margin="@dimen/space_min"
+                android:background="@color/green_light_trans"
+                android:layout_weight="1"
+                app:prefixText="@string/value_spend">
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/tv_warning_lccq"
+                    android:layout_width="match_parent"
+                    android:textAlignment="textEnd"
+                    android:hint="@string/money_hint"
+                    android:layout_height="wrap_content"/>
+            </com.google.android.material.textfield.TextInputLayout>
+
+        </LinearLayout>
+
+
+<com.google.android.material.card.MaterialCardView
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="@dimen/space_min">
+
     <LinearLayout
         android:id="@+id/llLastMonth"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
+        android:padding="@dimen/space_min"
         android:layout_weight="1"
         android:orientation="vertical"
         app:layout_constraintTop_toBottomOf="@+id/llItemQuotes"
@@ -301,6 +344,7 @@
         </LinearLayout>
 
     </LinearLayout>
+</com.google.android.material.card.MaterialCardView>
        <LinearLayout
             android:id="@+id/llBtnQuotes"
             android:layout_width="match_parent"

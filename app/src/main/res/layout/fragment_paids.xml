@@ -95,39 +95,45 @@
                     android:hint="@string/money_hint"/>
             </com.google.android.material.textfield.TextInputLayout>
 
-
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btn_detail_ps"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="@dimen/space_min"
+                        android:layout_weight="1"
+                        android:text="@string/detail"
+                        app:icon="@android:drawable/ic_menu_view" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btn_periods_ps"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="@dimen/space_min"
+                        android:layout_weight="1"
+                        android:text="@string/periods"
+                        app:icon="@android:drawable/ic_menu_agenda" />
+
+                </LinearLayout>
 
                 <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_add_ps"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="@dimen/space_min"
-                    android:layout_weight="1"
-                    android:id="@+id/btn_detail_ps"
-                    android:text="@string/detail"/>
-
-                <com.google.android.material.button.MaterialButton
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="@dimen/space_min"
-                    android:layout_weight="1"
-                    android:id="@+id/btn_periods_ps"
-                    android:text="@string/periods"/>
+                    android:text="@string/add"
+                    app:icon="@android:drawable/ic_menu_add" />
 
             </LinearLayout>
-
-            <com.google.android.material.button.MaterialButton
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="@dimen/space_min"
-                android:id="@+id/btn_add_ps"
-                app:icon="@android:drawable/ic_menu_add"
-                android:text="@string/add"/>
-
-
         </LinearLayout>
 
     </ScrollView>

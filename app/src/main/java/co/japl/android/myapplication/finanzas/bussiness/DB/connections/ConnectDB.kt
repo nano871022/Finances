@@ -5,11 +5,12 @@ import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import android.util.Log
 import co.japl.android.myapplication.finanzas.bussiness.DB.connections.*
+import co.japl.android.myapplication.finanzas.bussiness.DTO.ProjectionDB
 import co.japl.android.myapplication.finanzas.bussiness.queries.AddToCapitalQuery
 import co.japl.android.myapplication.utils.DatabaseConstants
 
 class ConnectDB(context: Context):SQLiteOpenHelper(context,
-    DatabaseConstants.DATA_BASE_NAME,null, 28) {
+    DatabaseConstants.DATA_BASE_NAME,null, 3_02_01_023) {
 
     override fun onCreate(p0: SQLiteDatabase?) {
         Log.i(this.javaClass.name,"<<<=== onCreate - Start $p0")
@@ -25,6 +26,7 @@ class ConnectDB(context: Context):SQLiteOpenHelper(context,
         PaidConnectDB().onCreate(p0)
         InputConnectDB().onCreate(p0)
         AccountConnectDB().onCreate(p0)
+        ProjectionsDB().onCreate(p0)
         Log.i(this.javaClass.name,"<<<=== onCreate - End")
     }
 
@@ -42,6 +44,7 @@ class ConnectDB(context: Context):SQLiteOpenHelper(context,
         PaidConnectDB().onUpgrade(p0,p1,p2)
         InputConnectDB().onUpgrade(p0,p1,p2)
         AccountConnectDB().onUpgrade(p0,p1,p2)
+        ProjectionsDB().onUpgrade(p0,p1,p2)
         Log.i(this.javaClass.name,"<<<=== onUpgrade - End")
     }
 
@@ -59,6 +62,7 @@ class ConnectDB(context: Context):SQLiteOpenHelper(context,
         PaidConnectDB().onDowngrade(db,oldVersion,newVersion)
         InputConnectDB().onDowngrade(db,oldVersion,newVersion)
         AccountConnectDB().onDowngrade(db,oldVersion,newVersion)
+        ProjectionsDB().onDowngrade(db,oldVersion,newVersion)
         Log.i(this.javaClass.name,"<<<=== onDowngrade - End")
     }
 

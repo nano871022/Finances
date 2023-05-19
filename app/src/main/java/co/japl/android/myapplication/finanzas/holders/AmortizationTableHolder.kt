@@ -4,27 +4,22 @@ import android.util.Log
 import android.view.View
 import android.widget.TableLayout
 import android.widget.TableRow
-import android.widget.TextView
-import androidx.core.view.marginStart
 import androidx.core.view.setMargins
 import androidx.core.view.setPadding
 import co.japl.android.myapplication.R
 import co.japl.android.myapplication.bussiness.DTO.CalcDTO
-import co.japl.android.myapplication.bussiness.impl.TaxImpl
-import co.japl.android.myapplication.bussiness.interfaces.ITaxSvc
 import co.japl.android.myapplication.finanzas.bussiness.DTO.Amortization
 import co.japl.android.myapplication.finanzas.bussiness.impl.KindOfTaxImpl
 import co.japl.android.myapplication.finanzas.bussiness.interfaces.IKindOfTaxSvc
-import co.japl.android.myapplication.finanzas.bussiness.interfaces.ITableHolder
-import co.japl.android.myapplication.finanzas.utils.KindOfTaxEnum
-import co.japl.android.myapplication.utils.CalcEnum
+import co.japl.android.myapplication.finanzas.holders.interfaces.ITableHolder
+import co.japl.android.myapplication.finanzas.enums.KindOfTaxEnum
+import co.japl.android.myapplication.finanzas.enums.CalcEnum
 import co.japl.android.myapplication.utils.NumbersUtil
 import com.google.android.material.textfield.TextInputLayout
 import com.google.android.material.textview.MaterialTextView
 import java.math.BigDecimal
-import java.math.RoundingMode
 
-class AmortizationTableHolder(val view:View):ITableHolder<CalcDTO> {
+class AmortizationTableHolder(val view:View): ITableHolder<CalcDTO> {
     private val kindOfTaxSvc:IKindOfTaxSvc = KindOfTaxImpl()
     private lateinit var table: TableLayout
     private lateinit var creditData: CalcDTO
@@ -94,7 +89,7 @@ class AmortizationTableHolder(val view:View):ITableHolder<CalcDTO> {
     private fun quoteFixCalc(){
         Log.d(javaClass.name,"Quote Fix")
         var currentCreditValue = creditData.valueCredit
-        val tax = ( kindOfTaxSvc.getNM(creditData.interest,KindOfTaxEnum.valueOf(creditData.kindOfTax))/ 100).toBigDecimal()
+        val tax = ( kindOfTaxSvc.getNM(creditData.interest, KindOfTaxEnum.valueOf(creditData.kindOfTax))/ 100).toBigDecimal()
         for ( period in 1 .. creditData.period){
             val interest = currentCreditValue * tax
             val capital = creditData.quoteCredit -  interest
@@ -119,7 +114,7 @@ class AmortizationTableHolder(val view:View):ITableHolder<CalcDTO> {
         val periods = creditData.period
         val capital = currentCreditValue.toDouble() / periods
         Log.d(javaClass.name,"$capital = $currentCreditValue / $periods")
-        val tax = if(creditData.interest > 0)kindOfTaxSvc.getNM(creditData.interest,KindOfTaxEnum.valueOf(creditData.kindOfTax)) / 100 else creditData.interest
+        val tax = if(creditData.interest > 0)kindOfTaxSvc.getNM(creditData.interest, KindOfTaxEnum.valueOf(creditData.kindOfTax)) / 100 else creditData.interest
         for ( period in 1 .. creditData.period){
             val interest = currentCreditValue * tax.toBigDecimal()
             amortizationList.add(Amortization(period.toInt(),

@@ -1,6 +1,8 @@
 package co.japl.android.myapplication.holders.view
 
+import android.graphics.Color
 import android.os.Build
+import android.util.Log
 import android.view.View
 import android.widget.ImageButton
 import android.widget.TextView
@@ -8,10 +10,11 @@ import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.RecyclerView
 import co.japl.android.myapplication.R
 import co.japl.android.myapplication.bussiness.DTO.CreditCardBoughtDTO
-import co.japl.android.myapplication.finanzas.utils.KindOfTaxEnum
+import co.japl.android.myapplication.finanzas.enums.KindOfTaxEnum
 import co.japl.android.myapplication.utils.DateUtils
 import co.japl.android.myapplication.utils.NumbersUtil
 import java.math.BigDecimal
+import java.time.LocalDate
 import java.util.*
 
 class BoughtViewHolder(itemView:View) : RecyclerView.ViewHolder(itemView) {
@@ -23,6 +26,7 @@ class BoughtViewHolder(itemView:View) : RecyclerView.ViewHolder(itemView) {
     lateinit var tvInterestBought:TextView
     lateinit var btnBoughtDelete:ImageButton
     lateinit var btnAmortization:ImageButton
+    lateinit var btnEdit:ImageButton
     lateinit var tvTotalQuoteBought:TextView
     lateinit var tvBoughtDate:TextView
     lateinit var tvPendingToPay:TextView
@@ -36,6 +40,7 @@ class BoughtViewHolder(itemView:View) : RecyclerView.ViewHolder(itemView) {
         tvCapitalBought = view.findViewById(R.id.tvCreditCardLCCS)
         tvInterestBought = view.findViewById(R.id.tvInterestBought)
         btnBoughtDelete = view.findViewById(R.id.btnDeleteItemLCCS)
+        btnEdit = view.findViewById(R.id.btn_edit_bil)
         tvTotalQuoteBought = view.findViewById(R.id.tvTotalQuoteBought)
         tvBoughtDate = view.findViewById(R.id.tvBoughtDate)
         tvPendingToPay = view.findViewById(R.id.tvPendingToPay)
@@ -58,8 +63,22 @@ class BoughtViewHolder(itemView:View) : RecyclerView.ViewHolder(itemView) {
         tvTaxBoughtICC.text = "${tax.orElse(values.interest)} % ${KindOfTaxEnum.NM.name}"
         btnBoughtDelete.setOnClickListener(action)
         btnAmortization.setOnClickListener(action)
+        btnEdit.setOnClickListener(action)
         if(values.month > 1){
             btnAmortization.visibility = View.VISIBLE
         }
+        val dateFirst = LocalDate.now().withDayOfMonth(1)
+        val dateLast = dateFirst.plusMonths(1).minusDays(1)
+        Log.d(javaClass.name,"$dateFirst $dateLast ${values.createDate}")
+        if(values.createDate.toLocalDate() >= dateFirst && values.createDate.toLocalDate() <= dateLast){
+            btnEdit.visibility = View.VISIBLE
+        }else{
+            btnEdit.visibility = View.GONE
+        }
+        if(values.recurrent == (1).toShort()){
+            btnBoughtDelete.setBackgroundColor(Color.RED)
+            btnBoughtDelete.setColorFilter(Color.WHITE)
+        }
+
     }
 }

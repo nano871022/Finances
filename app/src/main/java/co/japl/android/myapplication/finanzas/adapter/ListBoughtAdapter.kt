@@ -1,7 +1,6 @@
 package co.japl.android.myapplication.adapter
 
 import android.app.AlertDialog
-import android.app.Dialog
 import android.os.Build
 import android.util.Log
 import android.view.LayoutInflater
@@ -18,7 +17,6 @@ import co.japl.android.myapplication.bussiness.DTO.CreditCardSettingDTO
 import co.japl.android.myapplication.bussiness.DTO.TaxDTO
 import co.japl.android.myapplication.bussiness.impl.SaveCreditCardBoughtImpl
 import co.japl.android.myapplication.bussiness.impl.TaxImpl
-import co.japl.android.myapplication.bussiness.interfaces.ITaxSvc
 import co.japl.android.myapplication.bussiness.interfaces.SaveSvc
 import co.japl.android.myapplication.bussiness.interfaces.SearchSvc
 import co.japl.android.myapplication.bussiness.mapping.CalcMap
@@ -26,11 +24,11 @@ import co.japl.android.myapplication.finanzas.bussiness.impl.BuyCreditCardSettin
 import co.japl.android.myapplication.finanzas.bussiness.impl.CreditCardSettingImpl
 import co.japl.android.myapplication.finanzas.bussiness.impl.KindOfTaxImpl
 import co.japl.android.myapplication.finanzas.putParams.AmortizationTableParams
-import co.japl.android.myapplication.finanzas.utils.KindOfTaxEnum
-import co.japl.android.myapplication.finanzas.utils.TaxEnum
+import co.japl.android.myapplication.finanzas.enums.KindOfTaxEnum
+import co.japl.android.myapplication.finanzas.enums.TaxEnum
+import co.japl.android.myapplication.finanzas.putParams.CreditCardQuotesParams
 import co.japl.android.myapplication.holders.view.BoughtViewHolder
 import co.japl.android.myapplication.utils.DateUtils
-import co.japl.android.myapplication.utils.NumbersUtil
 import com.google.android.material.snackbar.Snackbar
 import java.math.BigDecimal
 import java.math.RoundingMode
@@ -74,7 +72,7 @@ class ListBoughtAdapter(private val data:MutableList<CreditCardBoughtDTO>,privat
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    private fun getTax(codCreditCard:Long,kind:TaxEnum):Optional<Pair<Double,String>>{
+    private fun getTax(codCreditCard:Long,kind: TaxEnum):Optional<Pair<Double,String>>{
         val tax = (taxSvc as TaxImpl).get(codCreditCard,cutOff.month.value,cutOff.year,kind)
         if(tax.isPresent){
             return Optional.ofNullable(Pair(tax.get().value,tax.get().kindOfTax ?: KindOfTaxEnum.EM.name))
@@ -167,8 +165,8 @@ class ListBoughtAdapter(private val data:MutableList<CreditCardBoughtDTO>,privat
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onBindViewHolder(holder: BoughtViewHolder, position: Int) {
-        val taxAdv = getTax(data[position].codeCreditCard.toLong(),TaxEnum.CASH_ADVANCE)
-        val taxCC = getTax(data[position].codeCreditCard.toLong(),TaxEnum.CREDIT_CARD)
+        val taxAdv = getTax(data[position].codeCreditCard.toLong(), TaxEnum.CASH_ADVANCE)
+        val taxCC = getTax(data[position].codeCreditCard.toLong(), TaxEnum.CREDIT_CARD)
         val capital = getCapital(data[position])
         val tax = Optional.ofNullable(getInterestValue(data[position],taxCC,taxAdv).multiply(BigDecimal(100)).toDouble())
         val interest = getInterest(data[position],taxCC,taxAdv)
@@ -219,6 +217,14 @@ class ListBoughtAdapter(private val data:MutableList<CreditCardBoughtDTO>,privat
                           KindOfTaxEnum.EM
                       ), quotesBought, it.findNavController()
                   )
+              R.id.btn_edit_bil -> {
+                  Log.d(javaClass.name, "Called quote")
+                  CreditCardQuotesParams.Companion.ListBought.newInstance(
+                      data[position].id,
+                      data[position].codeCreditCard,
+                      it.findNavController()
+                  )
+              }
           }
       }
     }

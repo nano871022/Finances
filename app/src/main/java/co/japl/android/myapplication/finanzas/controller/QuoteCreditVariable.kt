@@ -11,19 +11,16 @@ import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import co.japl.android.myapplication.R
-import co.japl.android.myapplication.bussiness.DTO.CalcDTO
 import co.japl.android.myapplication.bussiness.impl.QuoteCreditVariable
 import co.japl.android.myapplication.bussiness.impl.QuoteCreditVariableInterest
 import co.japl.android.myapplication.bussiness.interfaces.Calc
-import co.japl.android.myapplication.bussiness.interfaces.IHolder
-import co.japl.android.myapplication.bussiness.interfaces.ISpinnerHolder
+import co.japl.android.myapplication.finanzas.holders.interfaces.IHolder
 import co.japl.android.myapplication.bussiness.mapping.CalcMap
 import co.japl.android.myapplication.finanzas.holders.QuoteCreditVariableHolder
 import co.japl.android.myapplication.finanzas.pojo.QuoteCreditCard
 import co.japl.android.myapplication.finanzas.putParams.AmortizationTableParams
 import co.japl.android.myapplication.finanzas.putParams.QuoteCreditVariablesParams
-import co.japl.android.myapplication.finanzas.utils.KindOfTaxEnum
-import co.japl.android.myapplication.utils.CalcEnum
+import co.japl.android.myapplication.finanzas.enums.KindOfTaxEnum
 import java.math.BigDecimal
 import java.util.*
 
@@ -32,7 +29,7 @@ class QuoteCreditVariable : Fragment(), View.OnClickListener{
     private val calc: Calc = QuoteCreditVariable()
     private val calcInt: Calc = QuoteCreditVariableInterest()
 
-    private lateinit var holder:IHolder<QuoteCreditCard>
+    private lateinit var holder: IHolder<QuoteCreditCard>
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -80,10 +77,12 @@ class QuoteCreditVariable : Fragment(), View.OnClickListener{
         if (holder.validate()) {
 
             val quote = holder.downLoadFields()
-            val response = calc.calc(quote.value.get(), quote.period.get(), quote.tax.get(),KindOfTaxEnum.valueOf(quote.kindOfTax.get()))
+            val response = calc.calc(quote.value.get(), quote.period.get(), quote.tax.get(),
+                KindOfTaxEnum.valueOf(quote.kindOfTax.get()))
 
             quote.capitalValue = Optional.ofNullable(response)
-            val responseInt = calcInt.calc(quote.value.get(), quote.period.get(), quote.tax.get(),KindOfTaxEnum.valueOf(quote.kindOfTax.get()))
+            val responseInt = calcInt.calc(quote.value.get(), quote.period.get(), quote.tax.get(),
+                KindOfTaxEnum.valueOf(quote.kindOfTax.get()))
             quote.interestValue = Optional.ofNullable(responseInt)
             quote.response =
                 Optional.ofNullable(quote.capitalValue.get().add(quote.interestValue.get()))

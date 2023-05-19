@@ -5,7 +5,7 @@ import android.view.View
 import androidx.annotation.RequiresApi
 import co.japl.android.myapplication.R
 import co.japl.android.myapplication.bussiness.DB.connections.ConnectDB
-import co.japl.android.myapplication.bussiness.interfaces.IHolder
+import co.japl.android.myapplication.finanzas.holders.interfaces.IHolder
 import co.japl.android.myapplication.bussiness.interfaces.SaveSvc
 import co.japl.android.myapplication.finanzas.bussiness.DTO.AccountDTO
 import co.japl.android.myapplication.finanzas.bussiness.DTO.InputDTO
@@ -17,7 +17,6 @@ import co.japl.android.myapplication.finanzas.bussiness.impl.PaidImpl
 import co.japl.android.myapplication.utils.NumbersUtil
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.textview.MaterialTextView
-import com.google.api.client.util.StringUtils
 import java.math.BigDecimal
 import java.time.LocalDate
 import java.time.format.TextStyle

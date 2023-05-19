@@ -7,16 +7,15 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import co.japl.android.myapplication.R
 import co.japl.android.myapplication.adapter.ListPaidAdapter
-import co.japl.android.myapplication.bussiness.interfaces.IHolder
+import co.japl.android.myapplication.finanzas.holders.interfaces.IHolder
 import co.japl.android.myapplication.finanzas.bussiness.DTO.PaidDTO
-import co.japl.android.myapplication.finanzas.bussiness.interfaces.IRecyclerView
-import co.japl.android.myapplication.finanzas.bussiness.interfaces.ISaveSvc
+import co.japl.android.myapplication.finanzas.holders.interfaces.IRecyclerView
 import co.japl.android.myapplication.utils.NumbersUtil
 import com.google.android.material.textview.MaterialTextView
 import java.time.format.TextStyle
 import java.util.*
 
-class PaidListHolder(val view:View):IHolder<PaidDTO> , IRecyclerView<PaidDTO>{
+class PaidListHolder(val view:View): IHolder<PaidDTO>, IRecyclerView<PaidDTO> {
 
     private lateinit var recycler: RecyclerView
     private lateinit var value: MaterialTextView

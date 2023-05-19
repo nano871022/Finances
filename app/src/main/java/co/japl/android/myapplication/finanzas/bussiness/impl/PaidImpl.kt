@@ -8,6 +8,7 @@ import android.util.Log
 import androidx.annotation.RequiresApi
 import co.japl.android.myapplication.bussiness.interfaces.SaveSvc
 import co.japl.android.myapplication.finanzas.bussiness.DTO.*
+import co.japl.android.myapplication.finanzas.bussiness.interfaces.IPaidSvc
 import co.japl.android.myapplication.finanzas.bussiness.interfaces.ISaveSvc
 import co.japl.android.myapplication.finanzas.bussiness.mapping.CreditMap
 import co.japl.android.myapplication.finanzas.bussiness.mapping.PaidMap
@@ -18,7 +19,7 @@ import java.time.LocalDate
 import java.time.Period
 import java.util.*
 
-class PaidImpl(override var dbConnect: SQLiteOpenHelper) : SaveSvc<PaidDTO>,ISaveSvc<PaidDTO> {
+class PaidImpl(override var dbConnect: SQLiteOpenHelper) : IPaidSvc{
     val COLUMNS = arrayOf(
         BaseColumns._ID,
         PaidDB.Entry.COLUMN_DATE_PAID,
@@ -62,6 +63,17 @@ class PaidImpl(override var dbConnect: SQLiteOpenHelper) : SaveSvc<PaidDTO>,ISav
             }
         }
         return items
+    }
+
+    override fun getTotalPaid(): BigDecimal {
+        val db = dbConnect.readableDatabase
+        val cursor = db.rawQuery("SELECT SUM(${PaidDB.Entry.COLUMN_VALUE}) AS value FROM ${PaidDB.Entry.TABLE_NAME} WHERE ${PaidDB.Entry.COLUMN_DATE_PAID} >= date('now') OR ${PaidDB.Entry.COLUMN_RECURRENT} = 1", arrayOf())
+        with(cursor){
+            while (moveToNext()){
+                return cursor.getDouble(0).toBigDecimal()
+            }
+        }
+        return BigDecimal.ZERO
     }
 
     @RequiresApi(Build.VERSION_CODES.O)

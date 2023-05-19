@@ -134,11 +134,13 @@
                         android:layout_height="wrap_content"
                         android:layout_margin="@dimen/space_min"
                         android:id="@+id/btn_detail_cfl"
+                        app:icon="@android:drawable/ic_menu_view"
                         android:layout_weight="1"
                         android:text="@string/detail"/>
                     <com.google.android.material.button.MaterialButton
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        app:icon="@android:drawable/ic_menu_agenda"
                         android:layout_margin="@dimen/space_min"
                         android:id="@+id/btn_periods_cfl"
                         android:layout_weight="1"
@@ -149,6 +151,7 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="@dimen/space_min"
                     android:id="@+id/btn_add_cfl"
+                    app:icon="@android:drawable/ic_menu_add"
                     android:text="@string/add"/>
 
 

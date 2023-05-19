@@ -8,8 +8,8 @@ import co.japl.android.myapplication.bussiness.DTO.CalcDB
 import co.japl.android.myapplication.bussiness.DTO.CalcDTO
 import co.japl.android.myapplication.bussiness.DTO.CreditCardBoughtDTO
 import co.japl.android.myapplication.finanzas.pojo.QuoteCreditCard
-import co.japl.android.myapplication.finanzas.utils.KindOfTaxEnum
-import co.japl.android.myapplication.utils.CalcEnum
+import co.japl.android.myapplication.finanzas.enums.KindOfTaxEnum
+import co.japl.android.myapplication.finanzas.enums.CalcEnum
 import java.math.BigDecimal
 
 class CalcMap {
@@ -60,7 +60,7 @@ class CalcMap {
             ,quoteCreditCard.tax.orElse(0.0)
             ,quoteCreditCard.period.orElse(0)
             ,quoteCreditCard.response.orElse(BigDecimal.ZERO)
-            , quoteCreditCard?.type?.toString()?:CalcEnum.FIX.toString()
+            , quoteCreditCard?.type?.toString()?: CalcEnum.FIX.toString()
             ,0
             , quoteCreditCard.interestValue.orElse(BigDecimal.ZERO)
             , quoteCreditCard.capitalValue.orElse(BigDecimal.ZERO)
@@ -68,7 +68,7 @@ class CalcMap {
         )
     }
 
-    fun mapping(creditCardBought:CreditCardBoughtDTO,quoteValue:BigDecimal,interestValue:BigDecimal,capitalValue:BigDecimal,kindOfTax:KindOfTaxEnum):CalcDTO{
+    fun mapping(creditCardBought:CreditCardBoughtDTO,quoteValue:BigDecimal,interestValue:BigDecimal,capitalValue:BigDecimal,kindOfTax: KindOfTaxEnum):CalcDTO{
         return CalcDTO(creditCardBought.nameItem,
         creditCardBought.valueItem,
         creditCardBought.interest,

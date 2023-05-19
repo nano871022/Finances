@@ -1,4 +1,4 @@
-package co.japl.android.myapplication.finanzas.bussiness.interfaces
+package co.japl.android.myapplication.finanzas.holders.interfaces
 
 import android.view.View
 import co.japl.android.myapplication.bussiness.DTO.CalcDTO

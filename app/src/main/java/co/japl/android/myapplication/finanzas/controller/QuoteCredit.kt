@@ -1,6 +1,5 @@
 package co.japl.android.myapplication.controller
 
-import android.app.AlertDialog
 import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -12,25 +11,22 @@ import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import androidx.navigation.fragment.findNavController
 import co.japl.android.myapplication.R
-import co.japl.android.myapplication.bussiness.DTO.CalcDTO
 import co.japl.android.myapplication.bussiness.impl.QuoteCredit
 import co.japl.android.myapplication.bussiness.interfaces.Calc
-import co.japl.android.myapplication.bussiness.interfaces.IHolder
+import co.japl.android.myapplication.finanzas.holders.interfaces.IHolder
 import co.japl.android.myapplication.bussiness.mapping.CalcMap
 import co.japl.android.myapplication.finanzas.holders.QuoteCreditHolder
 import co.japl.android.myapplication.finanzas.pojo.QuoteCreditCard
 import co.japl.android.myapplication.finanzas.putParams.AmortizationTableParams
 import co.japl.android.myapplication.finanzas.putParams.QuoteCreditParams
-import co.japl.android.myapplication.finanzas.utils.KindOfTaxEnum
-import co.japl.android.myapplication.finanzas.utils.TaxEnum
-import co.japl.android.myapplication.utils.CalcEnum
+import co.japl.android.myapplication.finanzas.enums.KindOfTaxEnum
 import java.math.BigDecimal
 import java.util.*
 
 class QuoteCredit : Fragment(), View.OnClickListener{
     private lateinit var navController:NavController
     private val calc: Calc = QuoteCredit()
-    private lateinit var holder:IHolder<QuoteCreditCard>
+    private lateinit var holder: IHolder<QuoteCreditCard>
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,

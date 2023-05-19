@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:cardCornerRadius="@dimen/radius_corner"
+    android:elevation="@dimen/card_elevator"
+    app:strokeWidth="@dimen/stroke_with"
+    android:layout_margin="@dimen/space_min"
+    tools:context=".finanzas.controller.ProjectionFragment">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="@dimen/space_min">
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/space_min"
+                android:layout_margin="@dimen/space_min"
+                android:hint="@string/date_paid">
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/et_dt_date_prj"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/date_hint"
+                    android:textAlignment="center"
+                    android:focusable="false"
+                    />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/space_min"
+                android:layout_margin="@dimen/space_min"
+                android:hint="@string/period">
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/et_type_prj"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:focusable="false"
+                    android:textAlignment="center"/>
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/space_min"
+                app:endIconMode="clear_text"
+                android:layout_margin="@dimen/space_min"
+                android:hint="@string/name">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/et_name_prj"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textAlignment="center"
+                    />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/space_min"
+                android:layout_margin="@dimen/space_min"
+                app:prefixText="$"
+                app:endIconMode="clear_text"
+                android:hint="@string/value">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/et_value_prj"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textAlignment="center"
+                    android:hint="@string/money_hint"
+                    />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/space_min"
+                android:background="@color/green_light_trans"
+                android:layout_margin="@dimen/space_min"
+                app:prefixText="@string/quote_value">
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/tv_quote_prj"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textAlignment="center"
+                    android:hint="@string/money_hint"
+                    />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.switchmaterial.SwitchMaterial
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/space_min"
+                android:padding="@dimen/space_min"
+                android:id="@+id/sw_active_prj"
+                android:checked="true"
+                android:text="@string/Active"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btn_cancel_prj"
+                        android:layout_weight="1"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_margin="@dimen/space_min"
+                        app:icon="@android:drawable/ic_delete"
+                        android:text="@string/cancel"/>
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_save_prj"
+                    android:layout_weight="1"
+                    android:layout_margin="@dimen/space_min"
+                    app:icon="@android:drawable/ic_menu_save"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="@string/save"
+                    />
+            </LinearLayout>
+
+
+        </LinearLayout>
+
+    </ScrollView>
+
+
+</com.google.android.material.card.MaterialCardView>

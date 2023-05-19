@@ -7,21 +7,17 @@ import android.view.View
 import android.view.View.OnClickListener
 import android.widget.*
 import androidx.annotation.RequiresApi
-import androidx.core.view.size
 import co.japl.android.myapplication.R
 import co.japl.android.myapplication.bussiness.DTO.CreditCardDTO
-import co.japl.android.myapplication.bussiness.DTO.CreditCardSettingDTO
 import co.japl.android.myapplication.bussiness.DTO.TaxDTO
-import co.japl.android.myapplication.bussiness.interfaces.IHolder
-import co.japl.android.myapplication.bussiness.interfaces.ISpinnerHolder
+import co.japl.android.myapplication.finanzas.holders.interfaces.IHolder
 import co.japl.android.myapplication.finanzas.holders.validations.*
-import co.japl.android.myapplication.finanzas.utils.TaxEnum
+import co.japl.android.myapplication.finanzas.enums.TaxEnum
 import com.google.android.material.textfield.MaterialAutoCompleteTextView
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import java.time.LocalDate
 import java.time.LocalDateTime
-import java.time.YearMonth
 import java.util.*
 
 class TaxesHolder(var view:View,val creditCardList:List<CreditCardDTO>) : IHolder<TaxDTO>, OnClickListener{

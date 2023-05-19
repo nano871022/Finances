@@ -13,17 +13,16 @@ import androidx.annotation.RequiresApi
 import androidx.navigation.fragment.findNavController
 import co.japl.android.myapplication.R
 import co.japl.android.myapplication.bussiness.DB.connections.ConnectDB
-import co.japl.android.myapplication.bussiness.interfaces.IHolder
+import co.japl.android.myapplication.finanzas.holders.interfaces.IHolder
 import co.japl.android.myapplication.bussiness.interfaces.SaveSvc
 import co.japl.android.myapplication.finanzas.bussiness.DTO.AccountDTO
 import co.japl.android.myapplication.finanzas.bussiness.impl.AccountImpl
 import co.japl.android.myapplication.finanzas.holders.AccountHolder
 import co.japl.android.myapplication.finanzas.putParams.AccountListParams
 import co.japl.android.myapplication.finanzas.putParams.AccountParams
-import java.time.LocalDate
 
 class AccountFragment : Fragment() , OnClickListener{
-    private lateinit var holder:IHolder<AccountDTO>
+    private lateinit var holder: IHolder<AccountDTO>
     private lateinit var accountSvc:SaveSvc<AccountDTO>
     private var idAccount = 0
 
@@ -48,10 +47,10 @@ class AccountFragment : Fragment() , OnClickListener{
     @RequiresApi(Build.VERSION_CODES.O)
     private fun load(){
         arguments?.let {
-            val id = AccountListParams.download(it)
-            Log.d(javaClass.name,"Id $id")
-            if(id > 0){
-                accountSvc.get(id).ifPresent {
+            idAccount = AccountListParams.download(it)
+            Log.d(javaClass.name,"Id $idAccount")
+            if(idAccount > 0){
+                accountSvc.get(idAccount).ifPresent {
                     holder.loadFields(it)
                 }
             }

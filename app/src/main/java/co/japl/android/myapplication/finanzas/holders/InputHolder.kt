@@ -6,14 +6,11 @@ import android.view.View
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.FragmentManager
 import co.japl.android.myapplication.R
-import co.japl.android.myapplication.bussiness.interfaces.IHolder
-import co.japl.android.myapplication.finanzas.bussiness.DTO.AccountDTO
+import co.japl.android.myapplication.finanzas.holders.interfaces.IHolder
 import co.japl.android.myapplication.finanzas.bussiness.DTO.InputDTO
-import co.japl.android.myapplication.finanzas.bussiness.DTO.PaidDTO
 import co.japl.android.myapplication.utils.DateUtils
 import co.japl.android.myapplication.utils.NumbersUtil
 import com.google.android.material.button.MaterialButton
-import com.google.android.material.checkbox.MaterialCheckBox
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.textfield.TextInputEditText
 import java.time.Instant
@@ -22,7 +19,7 @@ import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 
-class InputHolder(val view:View,val supportManager: FragmentManager):IHolder<InputDTO> {
+class InputHolder(val view:View,val supportManager: FragmentManager): IHolder<InputDTO> {
     private lateinit var dialog:AlertDialog
     lateinit var date:TextInputEditText
     lateinit var kindOf:TextInputEditText

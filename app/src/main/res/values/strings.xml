@@ -99,6 +99,7 @@
     <string name="cut_off_history">Periodos</string>
     <string name="quote_bought">Cuotas Pagadas</string>
     <string name="pending_to_pay">Pendiente por Pagar</string>
+    <string name="value_spend">Limite</string>
 
     <string name="capital_value_short">Capital</string>
     <string name="current_capital_value_short">Capital Actual</string>
@@ -108,6 +109,9 @@
     <string name="interest_value_short">Interes</string>
     <string name="pending_to_pay_short">Pendiente</string>
     <string name="total_quote_value_short">Cuota</string>
+    <string name="total_quote">Cuota Total</string>
+    <string name="total_debt">Deuda Total</string>
+    <array name="num_credits">Número de Créditos</array>
 
     <string name="create_credit_card">Crear Nueva Tarjeta Credito</string>
     <string name="cut_off_day">Dia de Corte</string>
@@ -165,7 +169,7 @@
     <string name="toast_unsuccessful_insert">El registro no se agrego</string>
     <string name="toast_successful_update">El actualizo se agrego exitosamente</string>
     <string name="toast_invalid_option">Opción Invalida</string>
-
+    <string name="add_credit_card_setting">Agregar Configuración</string>
     <string name="title_toolbar_fragment_list_credit_card_setting">Configuraciones</string>
     <string name="title_toolbar_fragment_credit_card_setting">Configuración</string>
 
@@ -176,6 +180,8 @@
     <string name="additional_monthly">Adicional Mensual</string>
     <string name="additional_to_pay">Adicional a Pagar</string>
     <string name="additional_list">Lista Adicional</string>
+    <string name="num_additionals">Cantidad Adicionales</string>
+    <string name="tot_additionals">Total Adicionales</string>
     <string name="start_date">Fecha Inicio</string>
     <string name="end_date">Fecha Fin</string>
     <string name="date_bill">Fecha Facturacion</string>
@@ -209,9 +215,43 @@
     <string name="list_paid">Lista de Pagos</string>
     <string name="count">Cantidad</string>
     <string name="input">Ingreso</string>
+    <string name="num_inputs">Cantidad Ingresos</string>
     <string name="input_total">Total Ingresos</string>
     <string name="input_minus_output">Ingresos -  Pagos</string>
     <string name="input_list">Lista de Ingreso</string>
     <string name="date_input">Fecha de Ingreso</string>
+
+    <string name="num_items">Número Productos</string>
+    <string name="num_month_close">Número de Meses Cercano</string>
+    <string name="num_month_far">Número de Meses Lejano</string>
+    <string name="num_save_close">Valor Ahorrado Cercano</string>
+    <string name="num_save_far">Valor Ahorrado Lejano</string>
+    <string name="num_tot_save">Valor Total Ahorrado</string>
+    <string name="dt_close">Fecha Cercano</string>
+    <string name="dt_far">Fecha Lejano</string>
+    <string name="projections">Proyecciones</string>
+    <string name="months_lack">Meses Faltantes</string>
+    <string name="money_saved">Ahorrado</string>
+    <string name="closed">Cercano</string>
+    <string name="fared">Lejano</string>
+    <string name="date">Fecha</string>
+    <string name="projection">Proyección</string>
+    <string name="num_saved">Valor Guardado</string>
+    <array name="kind_of_projection_list">
+        <item>Trimestral</item>
+        <item>Cuatrimestral</item>
+        <item>Semestral</item>
+        <item>Anual</item>
+    </array>
+
+    <string name="total_paid">Total Pagado</string>
+    <string name="total_credits">Total Creditos</string>
+    <string name="total_paids_credits">Total Pagos + Total Creditos</string>
+    <string name="total_inputs_fix">Ingresos - Total Fijos</string>
+    <string name="total_quote_credit_card">Total Cuota Tarjeta de Credito</string>
+    <string name="total_paids">Total Pagos</string>
+    <string name="total_input_paids">Total Ingresos - Total Pagos</string>
+    <string name="cash_paids_credits">Pagos Efectivo y Creditos</string>
+    <string name="recap">Resumen</string>
 
 </resources>

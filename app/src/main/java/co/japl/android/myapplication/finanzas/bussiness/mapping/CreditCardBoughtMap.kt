@@ -7,12 +7,8 @@ import androidx.annotation.RequiresApi
 import co.japl.android.myapplication.bussiness.DTO.CreditCardBought
 import co.japl.android.myapplication.bussiness.DTO.CreditCardBoughtDB
 import co.japl.android.myapplication.bussiness.DTO.CreditCardBoughtDTO
-import co.japl.android.myapplication.finanzas.pojo.QuoteCreditCard
-import co.japl.android.myapplication.finanzas.utils.KindBoughtEnum
 import co.japl.android.myapplication.utils.DateUtils
-import co.japl.android.myapplication.utils.NumbersUtil
 import java.time.LocalDateTime
-import java.util.Optional
 
 class CreditCardBoughtMap {
 

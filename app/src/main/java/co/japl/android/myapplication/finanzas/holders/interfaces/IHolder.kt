@@ -1,7 +1,6 @@
-package co.japl.android.myapplication.bussiness.interfaces
+package co.japl.android.myapplication.finanzas.holders.interfaces
 
 import android.view.View
-import co.japl.android.myapplication.bussiness.DTO.CreditCardSettingDTO
 
 interface IHolder<T> {
     fun setFields(actions: View.OnClickListener?)

@@ -16,8 +16,16 @@ class CreditCardQuotesParams {
         val PARAM_CREDIT_CARD_NAME = "CreditCardName"
         val PARAM_CREDIT_CARD_CUTOFF = "CreditCardCutoff"
         val PARAM_CREDIT_CARD_CUTOFF_DAY = "CreditCardCutOffDay"
+        val PARAM_BOUGHT_ID = "bought_id_credit_card"
     }
     companion object {
+        object ListBought{
+            fun newInstance(quoteId:Int,creditCard:Int,navController: NavController){
+                val parameters = bundleOf(Params.PARAM_CREDIT_CARD_CODE  to creditCard.toString(),Params.PARAM_BOUGHT_ID to quoteId)
+                navController.navigate(R.id.action_list_bought_to_buy_credit_card,parameters)
+            }
+        }
+
         object Historical {
             @RequiresApi(Build.VERSION_CODES.O)
             fun newInstance(code: Int, cutOffDay:Short,cutOff: LocalDateTime, navController: NavController) {
@@ -55,12 +63,14 @@ class CreditCardQuotesParams {
                 navController.navigate(R.id.action_item_menu_side_boughtmade_to_buy_credit_card, parameter)
             }
 
+
             @RequiresApi(Build.VERSION_CODES.O)
-            fun download(argument: Bundle): Pair<Int, String> {
+            fun download(argument: Bundle): Triple<Int, String,Int> {
                 argument.let {
                     val code = it.get(Params.PARAM_CREDIT_CARD_CODE).toString().toInt()
                     val name = it.get(Params.PARAM_CREDIT_CARD_NAME).toString()
-                    return Pair(code, name)
+                    val id = it.getInt(Params.PARAM_BOUGHT_ID,0)
+                    return Triple(code, name,id)
                 }
             }
 

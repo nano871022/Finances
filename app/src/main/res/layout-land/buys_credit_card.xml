@@ -150,7 +150,7 @@
             android:layout_weight="1"
             android:hint="@string/months"
             android:inputType="numberSigned"
-            android:textAlignment="textEnd" />
+            android:textAlignment="center" />
         </com.google.android.material.textfield.TextInputLayout>
     </LinearLayout>
 

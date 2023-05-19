@@ -21,16 +21,16 @@ import co.japl.android.myapplication.bussiness.impl.Config
 import co.japl.android.myapplication.bussiness.impl.CreditCardImpl
 import co.japl.android.myapplication.bussiness.impl.SaveCreditCardBoughtImpl
 import co.japl.android.myapplication.bussiness.impl.TaxImpl
-import co.japl.android.myapplication.bussiness.interfaces.IHolder
+import co.japl.android.myapplication.finanzas.holders.interfaces.IHolder
 import co.japl.android.myapplication.bussiness.interfaces.ITaxSvc
 import co.japl.android.myapplication.bussiness.interfaces.SaveSvc
 import co.japl.android.myapplication.bussiness.mapping.CreditCardBoughtMap
 import co.japl.android.myapplication.finanzas.bussiness.impl.KindOfTaxImpl
 import co.japl.android.myapplication.finanzas.holders.CashAdvanceHolder
 import co.japl.android.myapplication.finanzas.putParams.CashAdvanceParams
-import co.japl.android.myapplication.finanzas.utils.KindBoughtEnum
-import co.japl.android.myapplication.finanzas.utils.KindOfTaxEnum
-import co.japl.android.myapplication.finanzas.utils.TaxEnum
+import co.japl.android.myapplication.finanzas.enums.KindBoughtEnum
+import co.japl.android.myapplication.finanzas.enums.KindOfTaxEnum
+import co.japl.android.myapplication.finanzas.enums.TaxEnum
 import java.math.BigDecimal
 import java.math.RoundingMode
 import java.time.LocalDateTime
@@ -38,7 +38,7 @@ import java.util.*
 
 class CashAdvanceSave: Fragment() , View.OnClickListener{
     private val kindOfTaxSvc = KindOfTaxImpl()
-    lateinit var holder:IHolder<CreditCardBought>
+    lateinit var holder: IHolder<CreditCardBought>
     lateinit var saveSvc: SaveSvc<CreditCardBoughtDTO>
     lateinit var creditCardSvc: SaveSvc<CreditCardDTO>
     lateinit var codeCreditCard:Optional<Int>
@@ -97,7 +97,7 @@ class CashAdvanceSave: Fragment() , View.OnClickListener{
 
     @RequiresApi(Build.VERSION_CODES.O)
     fun calc(codCreditCard:Long,value:BigDecimal, date:LocalDateTime):CreditCardBought{
-        val lTax = taxSvc.get(codCreditCard,date.monthValue,date.year,TaxEnum.CASH_ADVANCE)
+        val lTax = taxSvc.get(codCreditCard,date.monthValue,date.year, TaxEnum.CASH_ADVANCE)
         if(lTax.isPresent){
             this.tax = lTax.get()
         }

@@ -3,14 +3,13 @@ import co.japl.android.myapplication.finanzas.holders.validations.setCOPtoField
 import android.app.AlertDialog
 import co.japl.android.myapplication.finanzas.holders.validations.*
 import android.os.Build
-import android.util.Log
 import android.view.View
 import android.widget.CheckBox
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.FragmentManager
 import co.japl.android.myapplication.R
 import co.japl.android.myapplication.bussiness.DB.connections.ConnectDB
-import co.japl.android.myapplication.bussiness.interfaces.IHolder
+import co.japl.android.myapplication.finanzas.holders.interfaces.IHolder
 import co.japl.android.myapplication.bussiness.interfaces.SaveSvc
 import co.japl.android.myapplication.finanzas.bussiness.DTO.AccountDTO
 import co.japl.android.myapplication.finanzas.bussiness.DTO.PaidDTO
@@ -18,7 +17,6 @@ import co.japl.android.myapplication.finanzas.bussiness.impl.AccountImpl
 import co.japl.android.myapplication.utils.DateUtils
 import co.japl.android.myapplication.utils.NumbersUtil
 import com.google.android.material.button.MaterialButton
-import com.google.android.material.checkbox.MaterialCheckBox
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.textfield.TextInputEditText
 import java.time.Instant
@@ -27,7 +25,7 @@ import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 
-class PaidHolder(val view:View,val supportManager: FragmentManager):IHolder<PaidDTO> {
+class PaidHolder(val view:View,val supportManager: FragmentManager): IHolder<PaidDTO> {
     private val
             service:SaveSvc<AccountDTO> = AccountImpl(ConnectDB(view.context))
     private lateinit var accountList:List<AccountDTO>

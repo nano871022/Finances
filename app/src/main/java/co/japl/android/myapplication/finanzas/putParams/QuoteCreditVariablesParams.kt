@@ -2,14 +2,12 @@ package co.japl.android.myapplication.finanzas.putParams
 
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.core.os.bundleOf
 import androidx.navigation.NavController
-import androidx.navigation.fragment.findNavController
 import co.japl.android.myapplication.R
 import co.japl.android.myapplication.finanzas.pojo.QuoteCreditCard
-import co.japl.android.myapplication.utils.CalcEnum
+import co.japl.android.myapplication.finanzas.enums.CalcEnum
 import java.math.BigDecimal
 import java.util.*
 

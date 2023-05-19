@@ -12,7 +12,7 @@ import androidx.annotation.RequiresApi
 import androidx.navigation.fragment.findNavController
 import co.japl.android.myapplication.R
 import co.japl.android.myapplication.bussiness.DB.connections.ConnectDB
-import co.japl.android.myapplication.bussiness.interfaces.IHolder
+import co.japl.android.myapplication.finanzas.holders.interfaces.IHolder
 import co.japl.android.myapplication.bussiness.interfaces.SaveSvc
 import co.japl.android.myapplication.finanzas.bussiness.DTO.AdditionalCreditDTO
 import co.japl.android.myapplication.finanzas.bussiness.impl.AdditionalCreditImpl
@@ -22,7 +22,7 @@ import java.math.BigDecimal
 import java.time.LocalDate
 
 class AdditionalCreditFragment : Fragment(), OnClickListener {
-    private lateinit var holder:IHolder<AdditionalCreditDTO>
+    private lateinit var holder: IHolder<AdditionalCreditDTO>
     private lateinit var additionalSvc:SaveSvc<AdditionalCreditDTO>
     private var creditCode = 0L
 
