@@ -67,12 +67,14 @@
                     android:padding="@dimen/space_min"
                     android:layout_weight="1"
                     app:prefixText="@string/total_paids">
+
                     <com.google.android.material.textview.MaterialTextView
+                        android:id="@+id/tv_total_paids_rec"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:id="@+id/tv_total_paids_rec"
+                        android:hint="@string/money_hint"
                         android:textAlignment="textEnd"
-                        android:hint="@string/money_hint"/>
+                        android:textStyle="italic" />
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <com.google.android.material.textfield.TextInputLayout

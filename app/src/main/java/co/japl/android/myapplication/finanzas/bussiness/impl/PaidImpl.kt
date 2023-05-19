@@ -49,20 +49,17 @@ class PaidImpl(override var dbConnect: SQLiteOpenHelper) : IPaidSvc{
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    fun getRecurrent(date:LocalDate):List<PaidDTO>{
+    override fun getRecurrent(date:LocalDate):List<PaidDTO>{
         val db = dbConnect.readableDatabase
-        val cursor = db.query(PaidDB.Entry.TABLE_NAME,COLUMNS,null,null,null,null,null,null)
+        val cursor = db.query(PaidDB.Entry.TABLE_NAME,COLUMNS,"${PaidDB.Entry.COLUMN_RECURRENT} = 1",null,null,null,null,null)
         val items = mutableListOf<PaidDTO>()
         val mapper = PaidMap()
         with(cursor){
             while(moveToNext()){
-                val dto = mapper.mapping(cursor)
-                if(dto.date < date && dto.recurrent == (1).toShort()) {
-                    items.add(dto)
-                }
+                mapper.mapping(cursor).takeIf { it.date < date }?.let {  items.add(it) }
             }
         }
-        return items
+        return items.also { Log.d(javaClass.name,"Recurrent Size ${it.size}") }
     }
 
     override fun getTotalPaid(): BigDecimal {

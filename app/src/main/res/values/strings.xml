@@ -253,5 +253,9 @@
     <string name="total_input_paids">Total Ingresos - Total Pagos</string>
     <string name="cash_paids_credits">Pagos Efectivo y Creditos</string>
     <string name="recap">Resumen</string>
+    <string name="num_paids">Número Pagos</string>
+
+    <string name="check_payments_title">Pagos</string>
+    <string name="to_pay">A Pagar</string>
 
 </resources>
