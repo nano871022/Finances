@@ -159,17 +159,18 @@
             android:id="@+id/textView8"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingLeft="@dimen/margin_start_input_layout"
-            android:layout_margin="@dimen/space_min"
-            android:background="@color/green_light_trans"
-            app:prefixText="@string/quote_value">
+            style="@style/MaterialTextInputLayoutView"
+            app:prefixText="$"
+            android:hint="@string/quote_value">
 
-        <com.google.android.material.textview.MaterialTextView
+        <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/tvQuoteValue"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textAlignment="center"
-            android:hint="@string/quote_credit_hint"/>
+            android:enabled="false"
+            style="@style/MaterialTextInputLayoutView"
+            android:text="@string/quote_credit_hint"/>
         </com.google.android.material.textfield.TextInputLayout>
 
     </LinearLayout>

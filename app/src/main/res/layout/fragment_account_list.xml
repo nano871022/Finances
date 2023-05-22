@@ -4,9 +4,6 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    app:cardElevation="@dimen/card_elevator"
-    app:strokeWidth="@dimen/stroke_with"
-    app:cardCornerRadius="@dimen/radius_corner"
     android:layout_margin="@dimen/space_min"
     tools:context=".finanzas.controller.AccountListFragment">
     <ScrollView

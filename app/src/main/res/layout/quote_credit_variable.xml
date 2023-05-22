@@ -145,17 +145,18 @@
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="@dimen/space_min"
-            android:layout_margin="@dimen/space_min"
-            android:background="@color/green_light_trans"
-            app:prefixText="@string/capital_value" >
+            style="@style/MaterialTextInputLayoutView"
+            app:prefixText="$"
+            android:hint="@string/capital_value" >
 
-        <com.google.android.material.textview.MaterialTextView
+        <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/tvCapitalValue"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:hint="@string/money_hint"
+            android:text="@string/money_hint"
+            android:enabled="false"
+            style="@style/MaterialTextInputLayoutView"
             android:textAlignment="center"/>
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -163,16 +164,17 @@
             android:id="@+id/textView9"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="@dimen/space_min"
-            android:layout_margin="@dimen/space_min"
-            android:background="@color/green_light_trans"
-            app:prefixText="@string/interest_value">
+            app:prefixText="$"
+            style="@style/MaterialTextInputLayoutView"
+            android:hint="@string/interest_value">
 
-        <com.google.android.material.textview.MaterialTextView
+        <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/tvInterestValueList"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/money_hint"
+            android:text="@string/money_hint"
+            style="@style/MaterialTextInputLayoutView"
+            android:enabled="false"
             android:textAlignment="center"/>
 
         </com.google.android.material.textfield.TextInputLayout>>
@@ -181,17 +183,18 @@
             android:id="@+id/textView12"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="@dimen/space_min"
-            android:layout_margin="@dimen/space_min"
-            android:background="@color/green_light_trans"
-            app:prefixText="@string/total_value">
+            app:prefixText="$"
+            style="@style/MaterialTextInputLayoutView"
+            android:hint="@string/total_value">
 
-        <com.google.android.material.textview.MaterialTextView
+        <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/tvTotalValue"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:hint="@string/money_hint"
+            android:text="@string/money_hint"
+            android:enabled="false"
+            style="@style/MaterialTextInputLayoutView"
             android:textAlignment="center" />
 
         </com.google.android.material.textfield.TextInputLayout>

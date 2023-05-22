@@ -4,30 +4,20 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginLeft="5dp"
-    android:layout_marginTop="5dp"
-    android:layout_marginRight="5dp"
     android:orientation="vertical"
-
-
     app:layout_dodgeInsetEdges="all">
 <com.google.android.material.card.MaterialCardView
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    app:cardCornerRadius="12dp"
-    app:strokeWidth="1dp"
-    app:cardElevation="2dp">
+    android:layout_margin="@dimen/space_min">
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:background="?attr/colorPrimary"
+        android:background="?attr/colorPrimaryVariant"
         tools:layout_editor_absoluteX="5dp"
         tools:layout_editor_absoluteY="5dp"
-        android:paddingLeft="5dp"
-        android:paddingTop="5dp"
-        android:paddingRight="5dp"
-        android:paddingBottom="5dp">
+        android:padding="@dimen/space_min">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -131,7 +121,7 @@
             android:layout_height="42dp"
             android:layout_weight="1"
             android:background="#00FFFFFF"
-            app:srcCompat="@android:drawable/ic_search_category_default" />
+            app:srcCompat="@drawable/search" />
 
     </LinearLayout>
 </com.google.android.material.card.MaterialCardView>

@@ -5,7 +5,6 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
-    android:padding="@dimen/padding_page"
     tools:context=".finanzas.controller.CreditListFragment">
 
     <ScrollView
@@ -13,27 +12,24 @@
         android:layout_height="wrap_content">
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
-            app:strokeWidth="@dimen/stroke_with"
-            app:cardElevation="@dimen/card_elevator"
-            app:cardCornerRadius="@dimen/radius_corner"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/space_min">
             <LinearLayout
                 android:layout_width="match_parent"
-                android:padding="@dimen/space_min"
                 android:orientation="vertical"
                 android:layout_height="wrap_content">
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:padding="@dimen/space_min"
-                    android:layout_margin="@dimen/space_min"
-                    android:background="@color/green_light_trans"
-                    app:prefixText="@string/date_bill">
-                    <com.google.android.material.textview.MaterialTextView
+                    style="@style/MaterialTextInputLayoutView"
+                    android:hint="@string/date_bill">
+                    <com.google.android.material.textfield.TextInputEditText
                         android:layout_width="match_parent"
                         android:textAlignment="center"
-                        android:hint="@string/date_hint"
+                        android:text="@string/date_hint"
+                        android:enabled="false"
+                        style="@style/MaterialTextInputLayoutView"
                         android:id="@+id/date_bill_cfl"
                         android:layout_height="wrap_content"/>
                 </com.google.android.material.textfield.TextInputLayout>
@@ -41,69 +37,74 @@
                 <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:padding="@dimen/space_min"
-                    android:layout_margin="@dimen/space_min"
-                    android:background="@color/green_light_trans"
-                    app:prefixText="@string/quote_value">
-                    <com.google.android.material.textview.MaterialTextView
+                    app:prefixText="$"
+                    style="@style/MaterialTextInputLayoutView"
+                    android:hint="@string/quote_value">
+                    <com.google.android.material.textfield.TextInputEditText
                         android:layout_width="match_parent"
                         android:textAlignment="center"
                         android:id="@+id/value_cfl"
-                        android:hint="@string/money_hint"
+                        android:enabled="false"
+                        style="@style/MaterialTextInputLayoutView"
+                        android:text="@string/money_hint"
                         android:layout_height="wrap_content"/>
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="@dimen/space_min"
                     android:orientation="horizontal">
                     <com.google.android.material.textfield.TextInputLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:padding="@dimen/space_min"
                         android:layout_weight="1"
-                        android:background="@color/green_light_trans"
-                        app:prefixText="@string/interest_value">
-                        <com.google.android.material.textview.MaterialTextView
+                        app:prefixText="$"
+                        style="@style/MaterialTextInputLayoutView"
+                        android:hint="@string/interest_value">
+                        <com.google.android.material.textfield.TextInputEditText
                             android:layout_width="match_parent"
                             android:textAlignment="center"
                             android:id="@+id/interest_cfl"
-                            android:hint="@string/money_hint"
+                            android:enabled="false"
+                            style="@style/MaterialTextInputLayoutView"
+                            android:text="@string/money_hint"
                             android:layout_height="wrap_content"/>
                     </com.google.android.material.textfield.TextInputLayout>
 
                     <com.google.android.material.textfield.TextInputLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:padding="@dimen/space_min"
                         android:layout_weight="1"
-                        android:background="@color/green_light_trans"
-                        app:prefixText="@string/capital_value">
-                        <com.google.android.material.textview.MaterialTextView
+                        app:prefixText="$"
+                        style="@style/MaterialTextInputLayoutView"
+                        android:hint="@string/capital_value">
+                        <com.google.android.material.textfield.TextInputEditText
                             android:layout_width="match_parent"
                             android:textAlignment="center"
                             android:id="@+id/capital_cfl"
-                            android:hint="@string/money_hint"
+                            android:enabled="false"
+                            style="@style/MaterialTextInputLayoutView"
+                            android:text="@string/money_hint"
                             android:layout_height="wrap_content"/>
                     </com.google.android.material.textfield.TextInputLayout>
                 </LinearLayout>
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_margin="@dimen/space_min"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
                     <com.google.android.material.textfield.TextInputLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:padding="@dimen/space_min"
                         android:layout_weight="1"
-                        android:background="@color/green_light_trans"
-                        app:prefixText="@string/pending_to_pay">
-                        <com.google.android.material.textview.MaterialTextView
+                        app:prefixText="$"
+                        style="@style/MaterialTextInputLayoutView"
+                        android:hint="@string/pending_to_pay">
+                        <com.google.android.material.textfield.TextInputEditText
                             android:layout_width="match_parent"
                             android:textAlignment="center"
-                            android:hint="@string/money_hint"
+                            android:enabled="false"
+                            style="@style/MaterialTextInputLayoutView"
+                            android:text="@string/money_hint"
                             android:id="@+id/pending_cfl"
                             android:layout_height="wrap_content"/>
                     </com.google.android.material.textfield.TextInputLayout>
@@ -111,14 +112,16 @@
                     <com.google.android.material.textfield.TextInputLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:padding="@dimen/space_min"
                         android:layout_weight="1"
-                        android:background="@color/green_light_trans"
-                        app:prefixText="@string/aditional">
-                        <com.google.android.material.textview.MaterialTextView
+                        app:prefixText="$"
+                        style="@style/MaterialTextInputLayoutView"
+                        android:hint="@string/aditional">
+                        <com.google.android.material.textfield.TextInputEditText
                             android:layout_width="match_parent"
                             android:textAlignment="center"
-                            android:hint="@string/money_hint"
+                            android:text="@string/money_hint"
+                            style="@style/MaterialTextInputLayoutView"
+                            android:enabled="false"
                             android:id="@+id/additional_cfl"
                             android:layout_height="wrap_content"/>
                     </com.google.android.material.textfield.TextInputLayout>

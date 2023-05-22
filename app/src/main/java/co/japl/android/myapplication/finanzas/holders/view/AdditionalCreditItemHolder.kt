@@ -4,6 +4,7 @@ import android.view.View
 import android.view.View.OnClickListener
 import android.widget.ImageButton
 import android.widget.ImageView
+import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import co.japl.android.myapplication.R
 import co.japl.android.myapplication.finanzas.bussiness.DTO.AdditionalCreditDTO
@@ -12,8 +13,8 @@ import com.google.android.material.button.MaterialButton
 import com.google.android.material.textview.MaterialTextView
 
 class AdditionalCreditItemHolder(val view:View): ViewHolder(view) {
-    lateinit var name:MaterialTextView
-    lateinit var value:MaterialTextView
+    lateinit var name:TextView
+    lateinit var value: TextView
     lateinit var delete:ImageView
     lateinit var edit:ImageView
 

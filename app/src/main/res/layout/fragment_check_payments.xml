@@ -5,9 +5,6 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_margin="@dimen/space_min"
-    app:strokeWidth="@dimen/stroke_with"
-    android:elevation="@dimen/card_elevator"
-    app:cardCornerRadius="@dimen/radius_corner"
     tools:context=".finanzas.controller.CheckPaymentsFragment">
 
     <ScrollView
@@ -35,33 +32,37 @@
                  <com.google.android.material.textfield.TextInputLayout
                      android:layout_width="match_parent"
                      android:layout_height="wrap_content"
-                     app:prefixText="@string/to_pay"
-                     android:background="@color/green_light_trans"
+                     android:hint="@string/to_pay"
+                     app:prefixText="$"
+                     style="@style/MaterialTextInputLayoutView"
                      android:layout_margin="@dimen/space_min"
-                     android:layout_weight="1"
-                     android:padding="@dimen/space_min">
-                     <com.google.android.material.textview.MaterialTextView
+                     android:layout_weight="1">
+                     <com.google.android.material.textfield.TextInputEditText
                          android:id="@+id/et_payments_cps"
                          android:layout_width="match_parent"
                          android:layout_height="wrap_content"
+                         android:enabled="false"
+                         style="@style/MaterialTextInputLayoutView"
                          android:textAlignment="center"
-                         android:hint="@string/money_hint"/>
+                         android:text="@string/money_hint"/>
                  </com.google.android.material.textfield.TextInputLayout>
 
                  <com.google.android.material.textfield.TextInputLayout
                      android:layout_width="match_parent"
                      android:layout_height="wrap_content"
-                     app:prefixText="@string/paid"
+                     android:hint="@string/paid"
+                     app:prefixText="$"
+                     style="@style/MaterialTextInputLayoutView"
                      android:layout_margin="@dimen/space_min"
-                     android:layout_weight="1"
-                     android:background="@color/green_light_trans"
-                     android:padding="@dimen/space_min">
-                     <com.google.android.material.textview.MaterialTextView
+                     android:layout_weight="1">
+                     <com.google.android.material.textfield.TextInputEditText
                          android:id="@+id/et_paid_cps"
                          android:layout_width="match_parent"
                          android:layout_height="wrap_content"
+                         android:enabled="false"
+                         style="@style/MaterialTextInputLayoutView"
                          android:textAlignment="center"
-                         android:hint="@string/money_hint"/>
+                         android:text="@string/money_hint"/>
                  </com.google.android.material.textfield.TextInputLayout>
 
 

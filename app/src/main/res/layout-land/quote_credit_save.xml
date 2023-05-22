@@ -40,17 +40,18 @@
                 android:id="@+id/textView16"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="@dimen/space_min"
                 android:layout_weight="1"
-                android:layout_margin="@dimen/space_min"
-                android:background="@color/green_light_trans"
-                app:prefixText="@string/credit_value"
+                style="@style/MaterialTextInputLayoutView"
+                app:prefixText="$"
+                android:hint="@string/credit_value"
                 android:textStyle="bold" >
 
-            <com.google.android.material.textview.MaterialTextView
+            <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/tvValueCreditSave"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                style="@style/MaterialTextInputLayoutView"
+                android:enabled="false"
                 android:text="@string/quote_credit_hint"
                 android:textAlignment="textEnd" />
             </com.google.android.material.textfield.TextInputLayout>
@@ -59,18 +60,19 @@
                 android:id="@+id/textView18"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/space_min"
-                android:padding="@dimen/space_min"
-                android:background="@color/green_light_trans"
                 android:layout_weight="1"
-                app:prefixText="@string/tax"
+                style="@style/MaterialTextInputLayoutView"
+                android:hint="@string/tax"
+                app:suffixText="%"
                 android:textStyle="bold" >
 
-            <com.google.android.material.textview.MaterialTextView
+            <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/tvInterestSave"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:enabled="false"
+                style="@style/MaterialTextInputLayoutView"
                 android:text="@string/interest_value_hint"
                 android:textAlignment="textEnd" />
             </com.google.android.material.textfield.TextInputLayout>
@@ -79,18 +81,18 @@
                 android:id="@+id/textView20"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/space_min"
-                android:padding="@dimen/space_min"
-                android:background="@color/green_light_trans"
                 android:layout_weight="1"
-                app:prefixText="@string/months"
+                style="@style/MaterialTextInputLayoutView"
+                android:hint="@string/months"
                 android:textStyle="bold" >
 
-            <com.google.android.material.textview.MaterialTextView
+            <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/tvMonthsSave"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:enabled="false"
+                style="@style/MaterialTextInputLayoutView"
                 android:text="@string/months_number_hint"
                 android:textAlignment="textEnd" />
             </com.google.android.material.textfield.TextInputLayout>
@@ -103,14 +105,18 @@
                 android:padding="@dimen/space_min"
                 android:layout_margin="@dimen/space_min"
                 android:background="@color/green_light_trans"
-                app:prefixText="@string/quote_credit"
+                android:hint="@string/quote_credit"
+                app:prefixText="$"
+                style="@style/MaterialTextInputLayoutView"
                 android:textStyle="bold" >
 
-            <com.google.android.material.textview.MaterialTextView
+            <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/tvQuoteValueSave"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/quote_credit_hint"
+                android:enabled="false"
+                style="@style/MaterialTextInputLayoutView"
                 android:textAlignment="center" />
             </com.google.android.material.textfield.TextInputLayout>
 

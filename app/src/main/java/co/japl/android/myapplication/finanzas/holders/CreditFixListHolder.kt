@@ -4,6 +4,7 @@ import android.os.Build
 import android.view.View
 import android.view.View.OnClickListener
 import android.view.View.VISIBLE
+import android.widget.TextView
 import androidx.annotation.RequiresApi
 import co.japl.android.myapplication.R
 import co.japl.android.myapplication.bussiness.DB.connections.ConnectDB
@@ -19,12 +20,12 @@ import java.time.LocalDate
 
 class CreditFixListHolder(val view:View){
     lateinit var creditSvc :SaveSvc<CreditDTO>
-    lateinit var date:MaterialTextView
-    lateinit var quote:MaterialTextView
-    lateinit var interest:MaterialTextView
-    lateinit var capital:MaterialTextView
-    lateinit var pendingToPay:MaterialTextView
-    lateinit var additional:MaterialTextView
+    lateinit var date:TextView
+    lateinit var quote:TextView
+    lateinit var interest:TextView
+    lateinit var capital:TextView
+    lateinit var pendingToPay: TextView
+    lateinit var additional:TextView
     lateinit var detail:MaterialButton
     lateinit var period:MaterialButton
     lateinit var add:MaterialButton

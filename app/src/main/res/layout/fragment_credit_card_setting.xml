@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="@dimen/padding_page"
     tools:context=".finanzas.controller.CreditCardSettingFragment">
     <ScrollView
         android:layout_width="match_parent"
@@ -12,9 +11,7 @@
     <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:cardCornerRadius="@dimen/radius_corner"
-        app:strokeWidth="@dimen/stroke_with"
-        app:cardElevation="@dimen/card_elevator">
+        android:layout_margin="@dimen/space_min">
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -27,28 +24,23 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:endIconMode="clear_text"
-                android:layout_margin="@dimen/space_min"
                 android:hint="@string/credit_card" >
 
             <com.google.android.material.textfield.MaterialAutoCompleteTextView
                 android:id="@+id/spCreditCardCCSF"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingStart="20dp"
-                android:layout_weight="1"
                 android:textAlignment="center"/>
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/space_min"
                 android:hint="@string/credit_card_setting_type"
                 app:endIconMode="clear_text">
 
             <com.google.android.material.textfield.MaterialAutoCompleteTextView
                 android:id="@+id/spTypeCCS"
-                android:paddingStart="20dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textAlignment="center"/>
@@ -58,7 +50,6 @@
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/space_min"
                 app:endIconMode="clear_text"
                 android:hint="@string/name" >
 
@@ -73,7 +64,6 @@
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/space_min"
                 app:endIconMode="clear_text"
                 android:hint="@string/value" >
 
@@ -88,7 +78,6 @@
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/space_min"
                 android:hint="@string/Active">
             <com.google.android.material.checkbox.MaterialCheckBox
                 android:id="@+id/cbActiveCCS"

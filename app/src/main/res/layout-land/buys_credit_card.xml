@@ -12,10 +12,7 @@
         android:layout_height="match_parent">
 <com.google.android.material.card.MaterialCardView
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    app:cardCornerRadius="@dimen/radius_corner"
-    app:strokeWidth="@dimen/stroke_with"
-    app:cardElevation="@dimen/card_elevator">
+    android:layout_height="match_parent">
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -26,18 +23,17 @@
             <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/space_min"
-            android:padding="@dimen/space_min"
-            android:background="@color/green_light_trans"
-            app:prefixText="@string/assing_credit_Card"
+            android:hint="@string/assing_credit_Card"
+                style="@style/MaterialTextInputLayoutView"
             android:textStyle="bold" >
 
-        <com.google.android.material.textview.MaterialTextView
+        <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/etCreditCardAssign"
             android:layout_width="match_parent"
+            android:enabled="false"
             android:layout_height="match_parent"
-            android:paddingLeft="@dimen/margin_start_input_layout"
-            android:hint="@string/assing_credit_Card"
+            style="@style/MaterialTextInputLayoutView"
+            android:text="@string/assing_credit_Card"
             android:textAlignment="center"/>
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -119,19 +115,19 @@
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_margin="@dimen/space_min"
-            android:paddingLeft="@dimen/space_min"
             android:id="@+id/linearLayoutTax"
-            android:background="@color/green_light_trans"
-            app:prefixText="@string/tax"
+            android:hint="@string/tax"
+            app:suffixText="%"
+            style="@style/MaterialTextInputLayoutView"
             android:layout_weight="1">
 
-        <com.google.android.material.textview.MaterialTextView
+        <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/etTaxBought"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:hint="@string/interest_value_hint"
+            android:text="@string/interest_value_hint"
+            android:enabled="false"
+            style="@style/MaterialTextInputLayoutView"
             android:inputType="numberSigned"
             android:textAlignment="textEnd" />
         </com.google.android.material.textfield.TextInputLayout>
@@ -167,16 +163,17 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:layout_margin="@dimen/space_min"
-            android:padding="@dimen/space_min"
-            android:background="@color/green_light_trans"
-            app:prefixText="@string/quotes_value">
+            style="@style/MaterialTextInputLayoutView"
+            android:hint="@string/quotes_value"
+            app:prefixText="$">
 
-        <com.google.android.material.textview.MaterialTextView
+        <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/etQuoteValue"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/money_hint"
+            android:enabled="false"
+            style="@style/MaterialTextInputLayoutView"
+            android:text="@string/money_hint"
             android:textAlignment="textEnd" />
 
         </com.google.android.material.textfield.TextInputLayout>
@@ -200,7 +197,6 @@
                 <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="@dimen/space_min"
                     app:endIconMode="clear_text"
                     android:id="@+id/llSetingTypeBCC"
                     android:hint="@string/credit_card_setting_type_setting">
@@ -217,14 +213,12 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     app:endIconMode="clear_text"
-                    android:layout_margin="@dimen/space_min"
                     android:hint="@string/credit_card_setting_name_setting">
 
                 <com.google.android.material.textfield.MaterialAutoCompleteTextView
                     android:id="@+id/spNameSettingBCC"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
                     android:textAlignment="center"/>
                 </com.google.android.material.textfield.TextInputLayout>
 

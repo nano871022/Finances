@@ -2,6 +2,7 @@ package co.japl.android.myapplication.finanzas.holders
 
 import android.os.Build
 import android.view.View
+import android.widget.TextView
 import androidx.annotation.RequiresApi
 import co.japl.android.myapplication.R
 import co.japl.android.myapplication.bussiness.DB.connections.ConnectDB
@@ -26,11 +27,11 @@ class PaidsHolder(val view:View): IHolder<PaidsPOJO> {
     private val service:SaveSvc<AccountDTO> = AccountImpl(ConnectDB(view.context))
     private val inputSvc:SaveSvc<InputDTO> = InputImpl(view,ConnectDB(view.context))
     private val paidSvc:SaveSvc<PaidDTO> = PaidImpl(ConnectDB(view.context))
-        private lateinit var period:MaterialTextView
-    private lateinit var paid:MaterialTextView
-    private lateinit var count:MaterialTextView
-    private lateinit var inputs:MaterialTextView
-    private lateinit var inputLessOutput:MaterialTextView
+        private lateinit var period:TextView
+    private lateinit var paid:TextView
+    private lateinit var count:TextView
+    private lateinit var inputs:TextView
+    private lateinit var inputLessOutput:TextView
     private lateinit var btnDetail:MaterialButton
     private lateinit var btnPeriods:MaterialButton
     private lateinit var btnAdd:MaterialButton

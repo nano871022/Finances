@@ -3,6 +3,7 @@ package co.japl.android.myapplication.finanzas.holders.view
 import android.os.Build
 import android.view.View
 import android.widget.ImageView
+import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.navigation.NavController
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
@@ -14,9 +15,9 @@ import co.japl.android.myapplication.utils.NumbersUtil
 import com.google.android.material.textview.MaterialTextView
 
 class PeriodCreditItemHolder(val view:View,val navController: NavController):ViewHolder(view) {
-    lateinit var date:MaterialTextView
-    lateinit var count:MaterialTextView
-    lateinit var value:MaterialTextView
+    lateinit var date:TextView
+    lateinit var count:TextView
+    lateinit var value: TextView
     lateinit var credits:ImageView
 
     fun loadField(){

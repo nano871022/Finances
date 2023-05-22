@@ -5,31 +5,27 @@
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_margin="@dimen/space_min"
-    app:strokeWidth="@dimen/stroke_with"
-    app:cardCornerRadius="@dimen/radius_corner"
-    android:elevation="@dimen/card_elevator"
     >
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="@dimen/space_min"
-        android:background="@color/green_background"
+        android:background="?attr/colorPrimaryVariant"
         android:orientation="horizontal">
 
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
-            android:padding="@dimen/space_min"
             android:layout_weight="1"
-            android:layout_margin="@dimen/space_min"
-            android:background="@color/green_light_trans"
-            app:prefixText="@string/period"
+            android:hint="@string/period"
+            style="@style/MaterialTextInputLayoutView"
             android:layout_height="match_parent">
-        <com.google.android.material.textview.MaterialTextView
+        <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/tv_period_pcpi"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="@dimen/space_min"
-            android:hint="@string/date_hint"
+            android:text="@string/date_hint"
+            android:enabled="false"
+            style="@style/MaterialTextInputLayoutView"
             android:textAlignment="textStart"/>
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -37,16 +33,16 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            app:prefixText="@string/num_paids"
-            android:layout_margin="@dimen/space_min"
-            android:padding="@dimen/space_min"
-            android:background="@color/green_light_trans">
-        <com.google.android.material.textview.MaterialTextView
+            style="@style/MaterialTextInputLayoutView"
+            app:prefixText="$"
+            android:hint="@string/num_paids">
+        <com.google.android.material.textfield.TextInputEditText
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:padding="@dimen/space_min"
             android:id="@+id/tv_count_pcpi"
-            android:hint="@string/money_hint"
+            android:text="@string/money_hint"
+            android:enabled="false"
+            style="@style/MaterialTextInputLayoutView"
             android:textAlignment="center"
             />
         </com.google.android.material.textfield.TextInputLayout>
@@ -54,18 +50,17 @@
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:padding="@dimen/space_min"
             android:layout_weight="1"
-            app:prefixText="@string/total_paid"
-            android:layout_margin="@dimen/space_min"
-            android:background="@color/green_light_trans">
-        <com.google.android.material.textview.MaterialTextView
+            style="@style/MaterialTextInputLayoutView"
+            app:prefixText="$"
+            android:hint="@string/total_paid">
+        <com.google.android.material.textfield.TextInputEditText
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:padding="@dimen/space_min"
             android:id="@+id/tv_paid_pcpi"
-            android:hint="@string/money_hint"
+            android:text="@string/money_hint"
+            android:enabled="false"
+            style="@style/MaterialTextInputLayoutView"
             android:textAlignment="center"
             />
         </com.google.android.material.textfield.TextInputLayout>

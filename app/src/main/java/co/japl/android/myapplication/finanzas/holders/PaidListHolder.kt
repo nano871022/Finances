@@ -2,6 +2,7 @@ package co.japl.android.myapplication.finanzas.holders
 
 import android.os.Build
 import android.view.View
+import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -18,8 +19,8 @@ import java.util.*
 class PaidListHolder(val view:View): IHolder<PaidDTO>, IRecyclerView<PaidDTO> {
 
     private lateinit var recycler: RecyclerView
-    private lateinit var value: MaterialTextView
-    private lateinit var period: MaterialTextView
+    private lateinit var value: TextView
+    private lateinit var period: TextView
 
     override fun setFields(actions: View.OnClickListener?) {
         recycler = view.findViewById(R.id.rv_paid_list)

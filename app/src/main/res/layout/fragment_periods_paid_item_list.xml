@@ -2,29 +2,28 @@
 <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    app:strokeWidth="@dimen/stroke_with"
-    app:cardCornerRadius="@dimen/radius_corner"
-    app:cardElevation="@dimen/card_elevator"
     android:orientation="vertical"
+    android:layout_margin="@dimen/space_min"
     android:layout_height="wrap_content">
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="?attr/colorPrimary"
+        android:background="?attr/colorPrimaryVariant"
         android:orientation="horizontal">
+
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:layout_weight="1"
-            android:background="@color/green_light_trans"
-            android:padding="@dimen/space_min"
-            android:layout_margin="@dimen/space_min"
-            app:prefixText="@string/period"
-            android:layout_height="match_parent">
-            <com.google.android.material.textview.MaterialTextView
+            style="@style/MaterialTextInputLayoutView"
+            android:hint="@string/period">
+            <com.google.android.material.textfield.TextInputEditText
                 android:layout_width="match_parent"
                 android:textAlignment="center"
                 android:id="@+id/date_paid_ppil"
-                android:hint="@string/date_hint"
+                android:enabled="false"
+                style="@style/MaterialTextInputLayoutView"
+                android:text="@string/date_hint"
                 android:layout_height="wrap_content"/>
 
         </com.google.android.material.textfield.TextInputLayout>
@@ -32,15 +31,16 @@
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_weight="1"
-            android:background="@color/green_light_trans"
-            android:padding="@dimen/space_min"
-            android:layout_margin="@dimen/space_min"
-            app:prefixText="@string/value"
+            style="@style/MaterialTextInputLayoutView"
+            app:prefixText="$"
+            android:hint="@string/value"
             android:layout_height="match_parent">
-            <com.google.android.material.textview.MaterialTextView
+            <com.google.android.material.textfield.TextInputEditText
                 android:layout_width="match_parent"
                 android:textAlignment="textEnd"
-                android:hint="@string/money_hint"
+                android:text="@string/money_hint"
+                android:enabled="false"
+                style="@style/MaterialTextInputLayoutView"
                 android:id="@+id/value_ppil"
                 android:layout_height="wrap_content"/>
 
@@ -52,7 +52,7 @@
             android:layout_margin="@dimen/space_min"
             android:id="@+id/btn_search_ppil"
             android:backgroundTint="#00FFFFFF"
-            android:src="@android:drawable/ic_menu_search" />
+            android:src="@drawable/search" />
     </LinearLayout>
 
 

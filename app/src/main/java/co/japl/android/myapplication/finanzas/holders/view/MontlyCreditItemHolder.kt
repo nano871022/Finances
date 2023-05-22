@@ -4,6 +4,7 @@ import android.os.Build
 import android.view.View
 import android.view.View.OnClickListener
 import android.widget.ImageView
+import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import co.japl.android.myapplication.R
@@ -21,9 +22,9 @@ import java.time.LocalDate
 
 class MonthlyCreditItemHolder(val view:View): ViewHolder(view) {
     val additionalSvc = AdditionalCreditImpl(ConnectDB(view.context))
-    lateinit var date:MaterialTextView
-    lateinit var name:MaterialTextView
-    lateinit var value:MaterialTextView
+    lateinit var date:TextView
+    lateinit var name:TextView
+    lateinit var value: TextView
     lateinit var delete:ImageView
     lateinit var edit:ImageView
 

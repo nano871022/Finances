@@ -88,17 +88,17 @@
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="@dimen/space_min"
-                android:background="@color/green_light_trans"
-                android:layout_margin="@dimen/space_min"
-                app:prefixText="@string/quote_value">
+                style="@style/MaterialTextInputLayoutView"
+                android:hint="@string/quote_value">
 
-                <com.google.android.material.textview.MaterialTextView
+                <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/tv_quote_prj"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textAlignment="center"
-                    android:hint="@string/money_hint"
+                    android:enabled="false"
+                    style="@style/MaterialTextInputLayoutView"
+                    android:text="@string/money_hint"
                     />
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -126,10 +126,10 @@
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btn_save_prj"
                     android:layout_weight="1"
-                    android:layout_margin="@dimen/space_min"
                     app:icon="@android:drawable/ic_menu_save"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:layout_margin="@dimen/space_min"
                     android:text="@string/save"
                     />
             </LinearLayout>

@@ -4,6 +4,7 @@ import android.util.Log
 import android.view.View
 import android.widget.TableLayout
 import android.widget.TableRow
+import android.widget.TextView
 import androidx.core.view.setMargins
 import androidx.core.view.setPadding
 import co.japl.android.myapplication.R
@@ -25,17 +26,17 @@ class AmortizationTableHolder(val view:View): ITableHolder<CalcDTO> {
     private lateinit var creditData: CalcDTO
     private lateinit var amortizationList: ArrayList<Amortization>
     private lateinit var interesToPay:BigDecimal
-    private lateinit var creditValue: MaterialTextView
-    private lateinit var quoteValue: MaterialTextView
-    private lateinit var capitalValue: MaterialTextView
+    private lateinit var creditValue: TextView
+    private lateinit var quoteValue: TextView
+    private lateinit var capitalValue: TextView
     private lateinit var quoteValueLayout:TextInputLayout
     private lateinit var capitalValueLayout:TextInputLayout
-    private lateinit var tax: MaterialTextView
-    private lateinit var periods: MaterialTextView
-    private lateinit var interestToPay: MaterialTextView
-    private lateinit var totalColumn: MaterialTextView
-    private lateinit var nextValueColumn: MaterialTextView
-    private lateinit var capitalValueColumn: MaterialTextView
+    private lateinit var tax: TextView
+    private lateinit var periods: TextView
+    private lateinit var interestToPay: TextView
+    private lateinit var totalColumn: TextView
+    private lateinit var nextValueColumn: TextView
+    private lateinit var capitalValueColumn: TextView
     private var quotesPaid:Long = 0
     private val colorPaid = view.resources.getColor(androidx.media.R.color.primary_text_default_material_dark)
     private val backgroun = view.resources.getColor(R.color.green_background)

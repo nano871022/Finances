@@ -5,28 +5,22 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
-    android:padding="@dimen/padding_page"
     tools:context=".finanzas.controller.CreditFixFragment">
-
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 <com.google.android.material.card.MaterialCardView
     android:layout_width="match_parent"
-    app:cardCornerRadius="@dimen/radius_corner"
-    app:strokeWidth="@dimen/stroke_with"
-    app:cardElevation="@dimen/card_elevator"
+    android:layout_margin="@dimen/space_min"
     android:layout_height="wrap_content">
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/space_min"
             android:orientation="vertical" >
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/space_min"
                 android:hint="@string/kind_of_pay">
                 <com.google.android.material.textfield.TextInputEditText
                     android:layout_width="match_parent"
@@ -41,7 +35,6 @@
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/space_min"
                 app:endIconMode="clear_text"
                 android:hint="@string/date_credit">
                 <com.google.android.material.textfield.TextInputEditText
@@ -57,7 +50,6 @@
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/space_min"
                 app:endIconMode="clear_text"
                 android:hint="@string/name">
                 <com.google.android.material.textfield.TextInputEditText
@@ -71,7 +63,6 @@
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/space_min"
                 app:endIconMode="clear_text"
                 android:hint="@string/value"
                 app:prefixText="$">
@@ -92,7 +83,6 @@
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/space_min"
                 android:layout_weight="1"
                 app:endIconMode="clear_text"
                 app:suffixText="@string/percent_symbol"
@@ -109,7 +99,6 @@
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/space_min"
                 android:layout_weight="2"
                 app:endIconMode="clear_text"
                 android:hint="@string/kind_of_tax">
@@ -127,7 +116,6 @@
             <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-                android:layout_margin="@dimen/space_min"
             app:endIconMode="clear_text"
             android:hint="@string/periods">
             <com.google.android.material.textfield.TextInputEditText
@@ -142,21 +130,32 @@
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/space_min"
                 android:background="@color/green_light_trans"
-                app:prefixText="@string/quote_value">
-                <com.google.android.material.textview.MaterialTextView
+                app:prefixText="$"
+                style="@style/MaterialTextInputLayoutView"
+                android:hint="@string/quote_value">
+                <com.google.android.material.textfield.TextInputEditText
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:id="@+id/quoteValueCFF"
+                    android:enabled="false"
+                    style="@style/MaterialTextInputLayoutView"
+                    android:text="@string/money_hint"
                     android:textAlignment="center"
                     />
             </com.google.android.material.textfield.TextInputLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnAdditionalCFF"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                app:icon="@android:drawable/ic_menu_add"
+                android:layout_weight="1"
                 android:layout_margin="@dimen/space_min"
                 android:text="@string/aditional" />
 
@@ -165,8 +164,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/space_min"
+                android:layout_weight="1"
                 app:icon="@android:drawable/ic_menu_search"
                 android:text="@string/amortization"/>
+            </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"

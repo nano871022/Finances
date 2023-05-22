@@ -37,9 +37,9 @@ class QuoteCreditVariableHolder(var container: View): IHolder<QuoteCreditCard>,O
     private lateinit var etTax: TextInputEditText
     private lateinit var etMonths: TextInputEditText
     private lateinit var kindOfTax: TextInputEditText
-    private lateinit var tvCapitalValue: MaterialTextView
-    private lateinit var tvInterestValue: MaterialTextView
-    private lateinit var tvTotalValue: MaterialTextView
+    private lateinit var tvCapitalValue: TextView
+    private lateinit var tvInterestValue: TextView
+    private lateinit var tvTotalValue: TextView
     private lateinit var llCalculation: LinearLayout
      lateinit var spMonth: MaterialAutoCompleteTextView
      private lateinit var kindOfTaxDialog:AlertDialog

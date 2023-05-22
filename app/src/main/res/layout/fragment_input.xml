@@ -4,9 +4,6 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    app:cardCornerRadius="@dimen/radius_corner"
-    app:cardElevation="@dimen/card_elevator"
-    app:strokeWidth="@dimen/stroke_with"
     android:layout_margin="@dimen/space_min"
     tools:context=".finanzas.controller.InputFragment">
 
@@ -17,13 +14,11 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="@dimen/space_min"
             android:orientation="vertical">
 
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/space_min"
                 android:hint="@string/date_input">
                 <com.google.android.material.textfield.TextInputEditText
                     android:layout_width="match_parent"
@@ -37,7 +32,6 @@
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/space_min"
                 android:hint="@string/kind_of_pay">
                 <com.google.android.material.textfield.TextInputEditText
                     android:layout_width="match_parent"
@@ -51,7 +45,6 @@
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/space_min"
                 android:hint="@string/name">
                 <com.google.android.material.textfield.TextInputEditText
                     android:layout_width="match_parent"
@@ -64,7 +57,6 @@
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/space_min"
                 android:hint="@string/value">
                 <com.google.android.material.textfield.TextInputEditText
                     android:layout_width="match_parent"

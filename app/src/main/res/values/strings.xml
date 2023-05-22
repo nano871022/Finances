@@ -250,7 +250,7 @@
     <string name="total_inputs_fix">Ingresos - Total Fijos</string>
     <string name="total_quote_credit_card">Total Cuota Tarjeta de Credito</string>
     <string name="total_paids">Total Pagos</string>
-    <string name="total_input_paids">Total Ingresos - Total Pagos</string>
+    <string name="total_input_paids">Ingresos - Pagos</string>
     <string name="cash_paids_credits">Pagos Efectivo y Creditos</string>
     <string name="recap">Resumen</string>
     <string name="num_paids">Número Pagos</string>

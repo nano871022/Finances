@@ -1,20 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <style name="ButtonStyle" parent="Widget.MaterialComponents.Button.OutlinedButton">
-        <item name="android:textColor">@color/green_background_dark</item>
-        <item name="rippleColor">@color/green_background_dark</item>
-        <item name="iconTint">@color/green_background_dark</item>
-        <item name="strokeColor">@color/green_background_dark</item>
+        <item name="android:textColor">@color/green_background</item>
+        <item name="strokeColor">@color/green_background</item>
+        <item name="iconTint">@color/green_background</item>
         <item name="cornerRadius">@dimen/radius_corner</item>
+        <item name="rippleColor">@color/green_background</item>
+        <item name="materialButtonStyle">?attr/materialButtonOutlinedStyle</item>
     </style>
 
     <style name="MaterialTextInputLayout" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
-        <item name="boxBackgroundColor">@color/green_dark_trans</item>
+        <item name="boxBackgroundColor">@color/green_light_trans</item>
         <item name="android:padding">@dimen/space_min</item>
-        <item name="android:textColorHint">@color/green_background_dark</item>
-        <item name="prefixTextColor">@color/green_background_dark</item>
         <item name="boxCornerRadiusBottomEnd">@dimen/radius_corner</item>
         <item name="boxCornerRadiusBottomStart">@dimen/radius_corner</item>
+        <item name="android:textColorHint">@color/green_background</item>
+        <item name="prefixTextColor">@color/green_background</item>
         <item name="endIconTint">@color/green_background</item>
         <item name="boxStrokeWidth">1dp</item>
         <item name="boxStrokeWidthFocused">2dp</item>
@@ -24,31 +26,30 @@
         <item name="prefixTextColor">@color/green_background</item>
         <item name="android:textColorHint">@color/green_background</item>
         <item name="android:textColor">@color/green_background</item>
+        <item name="suffixTextColor">@color/green_background</item>
         <item name="boxCornerRadiusBottomStart">5dp</item>
         <item name="boxCornerRadiusBottomEnd">5dp</item>
         <item name="boxCornerRadiusTopEnd">@dimen/radius_corner</item>
         <item name="boxCornerRadiusTopStart">@dimen/radius_corner</item>
         <item name="boxStrokeWidth">2dp</item>
-        <item name="suffixTextColor">@color/green_background</item>
         <item name="boxStrokeColor">@color/green_background</item>
     </style>
 
     <style name="MaterialTextView" parent="Widget.MaterialComponents.TextView">
-        <item name="android:textColor">@color/green_background_dark</item>
-        <item name="boxBackgroundColor">@color/green_dark_trans</item>
+        <item name="android:textColor">@color/green_background</item>
+        <item name="strokeWidth">2dp</item>
+        <item name="strokeColor">@color/green_light_trans</item>
     </style>
 
     <style name="MaterialToolBar" parent="Widget.MaterialComponents.Toolbar.Surface">
-        <item name="titleTextColor">@color/green_background_dark</item>
-        <item name="navigationIconTint">@color/green_background_dark</item>
+        <item name="titleTextColor">@color/green_background</item>
+        <item name="navigationIconTint">@color/green_background</item>
     </style>
 
     <style name="MaterialCardView" parent="Widget.MaterialComponents.CardView">
         <item name="strokeColor">@color/green_background</item>
-        <item name="strokeWidth">1dp</item>
+        <item name="strokeWidth">@dimen/stroke_with</item>
         <item name="cardCornerRadius">@dimen/radius_corner</item>
         <item name="cardElevation">@dimen/card_elevator_5</item>
     </style>
-
-
 </resources>

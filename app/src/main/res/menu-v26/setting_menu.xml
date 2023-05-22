@@ -9,7 +9,7 @@
     <item
         android:id="@+id/item_menu_setting_check_payments"
         android:icon="@drawable/ic_baseline_attach_money_24"
-        android:iconTint="@color/green_background"
+        android:tint="@color/green_background"
         android:title="@string/check_payments_title"
         android:titleCondensed="@string/check_payments_title"
         app:showAsAction="ifRoom" />
@@ -17,7 +17,6 @@
     <item
         android:id="@+id/item_menu_setting_credit_card"
         android:icon="@drawable/ic_credit_card_foreground"
-        android:iconTint="@color/green_background"
         android:title="@string/credit_cards"
         android:titleCondensed="@string/credit_card"
         app:showAsAction="ifRoom" />
@@ -25,21 +24,19 @@
     <item
         android:id="@+id/item_menu_setting_taxes"
         android:icon="@android:drawable/sym_contact_card"
-        android:iconTint="@color/green_background"
+        android:iconTint="?attr/colorPrimary"
         android:title="@string/taxes_credit_card"
         app:showAsAction="ifRoom" />
 
     <item
         android:id="@+id/item_menu_setting_account"
         android:icon="@drawable/ic_credit_card_foreground"
-        android:iconTint="@color/green_background"
         android:title="@string/account"
         app:showAsAction="ifRoom" />
 
     <item
         android:id="@+id/item_menu_setting_check_paids"
         android:icon="@drawable/ic_credit_card_foreground"
-        android:iconTint="@color/green_background"
         android:title="@string/paids"
         />
 

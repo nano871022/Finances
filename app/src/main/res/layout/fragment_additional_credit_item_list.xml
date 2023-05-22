@@ -3,26 +3,25 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    app:cardCornerRadius="@dimen/card_elevator"
-    app:strokeWidth="@dimen/stroke_with"
-    app:cardElevation="@dimen/card_elevator"
-    android:layout_margin="@dimen/space_min"
-    android:padding="@dimen/space_min">
+    android:layout_margin="@dimen/space_min">
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/green_background">
+        android:background="?attr/colorPrimaryVariant">
+
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
-            app:prefixText="@string/name"
-            android:background="@color/green_light_trans"
+            android:hint="@string/name"
             android:layout_margin="@dimen/space_min"
             android:layout_weight="1"
-            android:padding="@dimen/space_min"
+            style="@style/MaterialTextInputLayoutView"
             android:layout_height="wrap_content">
-            <com.google.android.material.textview.MaterialTextView
+
+            <com.google.android.material.textfield.TextInputEditText
                 android:layout_width="match_parent"
-                android:hint="@string/name"
+                android:text="@string/name"
+                android:enabled="false"
+                style="@style/MaterialTextInputLayoutView"
                 android:id="@+id/name_acil"
                 android:textAlignment="center"
                 android:layout_height="wrap_content"/>
@@ -31,16 +30,16 @@
 
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
-            app:prefixText="@string/value"
-            android:background="@color/green_light_trans"
-            android:layout_margin="@dimen/space_min"
-            android:padding="@dimen/space_min"
+            android:hint="@string/value"
             android:layout_weight="1"
+            style="@style/MaterialTextInputLayoutView"
+            app:prefixText="$"
             android:layout_height="wrap_content">
-            <com.google.android.material.textview.MaterialTextView
+            <com.google.android.material.textfield.TextInputEditText
                 android:layout_width="match_parent"
-                android:hint="@string/money_hint"
+                android:text="@string/money_hint"
                 android:textAlignment="center"
+                style="@style/MaterialTextInputLayoutView"
                 android:id="@+id/value_acil"
                 android:layout_height="wrap_content"/>
 
@@ -53,7 +52,7 @@
             android:layout_weight="0"
             android:padding="@dimen/space_min"
             android:layout_margin="@dimen/space_min"
-            app:srcCompat="@android:drawable/ic_menu_search" />
+            app:srcCompat="@drawable/search" />
 
         <ImageView
             android:id="@+id/btn_delete_acil"

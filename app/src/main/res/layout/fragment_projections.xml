@@ -27,15 +27,15 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:layout_margin="@dimen/space_min"
-                android:background="@color/green_light_trans"
-                android:padding="@dimen/space_min"
-                app:prefixText="@string/num_items">
+                style="@style/MaterialTextInputLayoutView"
+                android:hint="@string/num_items">
 
-                <com.google.android.material.textview.MaterialTextView
+                <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/tv_num_items_pjs"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:enabled="false"
+                    style="@style/MaterialTextInputLayoutView"
                     android:text="@string/num_credits_hint"
                     android:textAlignment="center" />
             </com.google.android.material.textfield.TextInputLayout>
@@ -43,17 +43,18 @@
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/space_min"
-                android:background="@color/green_light_trans"
                 android:layout_weight="1"
-                android:padding="@dimen/space_min"
-                app:prefixText="@string/num_tot_save">
+                style="@style/MaterialTextInputLayoutView"
+                app:prefixText="$"
+                android:hint="@string/num_tot_save">
 
-                <com.google.android.material.textview.MaterialTextView
+                <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/tv_tot_save_pjs"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/money_hint"
+                    android:enabled="false"
+                    style="@style/MaterialTextInputLayoutView"
                     android:textAlignment="center" />
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -82,48 +83,50 @@
                     <com.google.android.material.textfield.TextInputLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_margin="@dimen/space_min"
-                        android:background="@color/green_light_trans"
-                        android:padding="@dimen/space_min"
-                        app:prefixText="@string/date">
+                        style="@style/MaterialTextInputLayoutView"
+                        android:hint="@string/date">
 
-                        <com.google.android.material.textview.MaterialTextView
+                        <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/tv_dt_close_pjs"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:text="@string/date_hint"
+                            enabled="false"
+                            style="@style/MaterialTextInputLayoutView"
+                            android:enabled="false"
                             android:textAlignment="center" />
                     </com.google.android.material.textfield.TextInputLayout>
 
                     <com.google.android.material.textfield.TextInputLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_margin="@dimen/space_min"
-                        android:background="@color/green_light_trans"
-                        android:padding="@dimen/space_min"
-                        app:prefixText="@string/months_lack">
+                        style="@style/MaterialTextInputLayoutView"
+                        android:hint="@string/months_lack">
 
-                        <com.google.android.material.textview.MaterialTextView
+                        <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/tv_month_close_pjs"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:text="@string/num_credits_hint"
+                            android:enabled="false"
+                            style="@style/MaterialTextInputLayoutView"
                             android:textAlignment="center" />
                     </com.google.android.material.textfield.TextInputLayout>
 
                     <com.google.android.material.textfield.TextInputLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_margin="@dimen/space_min"
-                        android:background="@color/green_light_trans"
-                        android:padding="@dimen/space_min"
-                        app:prefixText="@string/num_saved">
+                        style="@style/MaterialTextInputLayoutView"
+                        app:prefixText="$"
+                        android:hint="@string/num_saved">
 
-                        <com.google.android.material.textview.MaterialTextView
+                        <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/tv_save_close_pjs"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:text="@string/money_hint"
+                            style="@style/MaterialTextInputLayoutView"
+                            android:enabled="false"
                             android:textAlignment="center" />
                     </com.google.android.material.textfield.TextInputLayout>
 
@@ -136,10 +139,7 @@
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:cardCornerRadius="@dimen/radius_corner"
-                app:strokeWidth="@dimen/stroke_with"
                 android:layout_margin="@dimen/space_min"
-                android:elevation="@dimen/card_elevator"
                 >
 
             <LinearLayout
@@ -161,13 +161,17 @@
                     android:layout_margin="@dimen/space_min"
                     android:background="@color/green_light_trans"
                     android:padding="@dimen/space_min"
-                    app:prefixText="@string/date">
+                    android:enabled="false"
+                    style="@style/MaterialTextInputLayoutView"
+                    android:hint="@string/date">
 
-                    <com.google.android.material.textview.MaterialTextView
+                    <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/tv_dt_far_pjs"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="@string/date_hint"
+                        android:enabled="false"
+                        style="@style/MaterialTextInputLayoutView"
                         android:textAlignment="center" />
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -177,13 +181,16 @@
                 android:layout_margin="@dimen/space_min"
                 android:background="@color/green_light_trans"
                 android:padding="@dimen/space_min"
-                app:prefixText="@string/months_lack">
+                style="@style/MaterialTextInputLayoutView"
+                android:hint="@string/months_lack">
 
-                <com.google.android.material.textview.MaterialTextView
+                <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/tv_month_far_pjs"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/num_credits_hint"
+                    style="@style/MaterialTextInputLayoutView"
+                    android:enabled="false"
                     android:textAlignment="center" />
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -194,13 +201,17 @@
                 android:layout_margin="@dimen/space_min"
                 android:background="@color/green_light_trans"
                 android:padding="@dimen/space_min"
-                app:prefixText="@string/num_saved">
+                style="@style/MaterialTextInputLayoutView"
+                app:prefixText="$"
+                android:hint="@string/num_saved">
 
-                <com.google.android.material.textview.MaterialTextView
+                <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/tv_save_far_pjs"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/money_hint"
+                    android:enabled="false"
+                    style="@style/MaterialTextInputLayoutView"
                     android:textAlignment="center" />
             </com.google.android.material.textfield.TextInputLayout>
 

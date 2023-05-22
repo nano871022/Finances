@@ -5,6 +5,7 @@ import android.util.Log
 import android.view.View
 import android.widget.TableLayout
 import android.widget.TableRow
+import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.core.view.setMargins
 import androidx.core.view.setPadding
@@ -28,13 +29,13 @@ class AmortizationCreditTableHolder(val view:View): ITableHolder<AmortizationCre
     val kindTaxSvc:IKindOfTaxSvc = KindOfTaxImpl()
     val calc = QuoteCredit()
     lateinit var table:TableLayout
-    lateinit var date:MaterialTextView
-    lateinit var periods:MaterialTextView
-    lateinit var additionalMonthly:MaterialTextView
-    lateinit var additional:MaterialTextView
-    lateinit var interest:MaterialTextView
-    lateinit var tax:MaterialTextView
-    lateinit var quote:MaterialTextView
+    lateinit var date:TextView
+    lateinit var periods:TextView
+    lateinit var additionalMonthly:TextView
+    lateinit var additional:TextView
+    lateinit var interest:TextView
+    lateinit var tax: TextView
+    lateinit var quote:TextView
     lateinit var btnAdditional:MaterialButton
     lateinit var credit:CalcDTO
     private val amortizationList:MutableList<AmortizationCreditFix> = ArrayList()

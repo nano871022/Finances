@@ -3,6 +3,7 @@ package co.japl.android.myapplication.finanzas.holders
 import android.os.Build
 import android.view.View
 import android.widget.Button
+import android.widget.TextView
 import androidx.annotation.RequiresApi
 import co.japl.android.myapplication.R
 import co.japl.android.myapplication.finanzas.holders.interfaces.IHolder
@@ -15,12 +16,12 @@ import java.util.*
 
 class QuoteCreditSaveVariableHolder(var view:View): IHolder<QuoteCreditCard> {
      lateinit var etName: TextInputEditText
-     lateinit var tvValueCredit: MaterialTextView
-     lateinit var tvInterest: MaterialTextView
-     lateinit var tvMonths: MaterialTextView
-     lateinit var tvQuoteCredit: MaterialTextView
-     lateinit var tvInterestValue: MaterialTextView
-     lateinit var tvCapitalValue: MaterialTextView
+     lateinit var tvValueCredit: TextView
+     lateinit var tvInterest: TextView
+     lateinit var tvMonths: TextView
+     lateinit var tvQuoteCredit: TextView
+     lateinit var tvInterestValue: TextView
+     lateinit var tvCapitalValue: TextView
      private lateinit var quoteCredit:QuoteCreditCard
 
     override fun setFields(actions: View.OnClickListener?) {
