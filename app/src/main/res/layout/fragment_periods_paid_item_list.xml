@@ -49,10 +49,9 @@
         <ImageButton
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_margin="@dimen/space_min"
-            android:id="@+id/btn_search_ppil"
+            android:id="@+id/btn_more_ppil"
             android:backgroundTint="#00FFFFFF"
-            android:src="@drawable/search" />
+            android:src="@drawable/more_vertical" />
     </LinearLayout>
 
 

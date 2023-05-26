@@ -57,8 +57,8 @@ class MonthlyCreditListFragment : Fragment() {
         ListMonthlyCreditAdapter(list.toMutableList(),root).let {
             recycler.adapter = it
         }
-        totDebt.text = NumbersUtil.COPtoString(totalDebt)
-        totQuote.text = NumbersUtil.COPtoString(totalQuote)
+        totDebt.text = NumbersUtil.toString(totalDebt)
+        totQuote.text = NumbersUtil.toString(totalQuote)
         numCredit.text =  numCredits.toString()
 
         return root

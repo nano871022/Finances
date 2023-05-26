@@ -32,7 +32,7 @@ class PaidListHolder(val view:View): IHolder<PaidDTO>, IRecyclerView<PaidDTO> {
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun loadFields(values: PaidDTO) {
-        value.text = NumbersUtil.COPtoString(values.value)
+        value.text = NumbersUtil.toString(values.value)
         period.text = "${values.date.month.getDisplayName(TextStyle.FULL, Locale.getDefault())} ${values.date.year}"
     }
 

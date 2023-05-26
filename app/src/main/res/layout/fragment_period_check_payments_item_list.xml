@@ -22,7 +22,7 @@
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/tv_period_pcpi"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:text="@string/date_hint"
             android:enabled="false"
             style="@style/MaterialTextInputLayoutView"
@@ -34,13 +34,12 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             style="@style/MaterialTextInputLayoutView"
-            app:prefixText="$"
             android:hint="@string/num_paids">
         <com.google.android.material.textfield.TextInputEditText
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:id="@+id/tv_count_pcpi"
-            android:text="@string/money_hint"
+            android:text="@string/integer_hint"
             android:enabled="false"
             style="@style/MaterialTextInputLayoutView"
             android:textAlignment="center"

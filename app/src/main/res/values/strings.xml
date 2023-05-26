@@ -258,4 +258,34 @@
     <string name="check_payments_title">Pagos</string>
     <string name="to_pay">A Pagar</string>
 
+    <string name="pick_option">Seleccionar Opción</string>
+    <array name="credit_card_item_options">
+        <item >Amortizacion</item>
+        <item >Editar</item>
+        <item >Eliminar</item>
+    </array>
+
+    <array name="credit_item_options">
+        <item >Amortizacion</item>
+        <item >Eliminar</item>
+    </array>
+
+    <array name="paids_item_options">
+        <item >Eliminar</item>
+    </array>
+
+    <array name="period_item_options">
+        <item >Ver</item>
+    </array>
+
+    <array name="projection_item_options">
+        <item >Editar</item>
+        <item >Eliminar</item>
+    </array>
+
+    <array name="quote_save_item_options">
+        <item >Amortizacion</item>
+        <item >Eliminar</item>
+    </array>
+
 </resources>

@@ -39,14 +39,14 @@ class ListBoughtHolder(var view:View): IHolder<BoughtRecap>, ISpinnerHolder<List
 
     @RequiresApi(Build.VERSION_CODES.N)
     override fun loadFields(values: BoughtRecap) {
-        tvCapital.text = NumbersUtil.COPtoString(values.capitalValue.orElse(BigDecimal.ZERO))
-        tvCurrentCapital.text = NumbersUtil.COPtoString(values.currentValueCapital.orElse(BigDecimal.ZERO))
-        tvQuoteCapital.text = NumbersUtil.COPtoString(values.quotesValueCapital.orElse(BigDecimal.ZERO))
-        tvCurrentInterest.text = NumbersUtil.COPtoString(values.currentValueInterest.orElse(BigDecimal.ZERO))
-        tvQuoteInterest.text = NumbersUtil.COPtoString(values.quotesValueInterest.orElse(BigDecimal.ZERO))
-        tvInterest.text = NumbersUtil.COPtoString(values.interestValue.orElse(BigDecimal.ZERO))
-        tvPendingToPay.text = NumbersUtil.COPtoString(values.pendingToPay.orElse(BigDecimal.ZERO))
-        tvTotalQuote.text = NumbersUtil.COPtoString(values.totalValue.orElse(BigDecimal.ZERO))
+        tvCapital.text = NumbersUtil.toString(values.capitalValue.orElse(BigDecimal.ZERO))
+        tvCurrentCapital.text = NumbersUtil.toString(values.currentValueCapital.orElse(BigDecimal.ZERO))
+        tvQuoteCapital.text = NumbersUtil.toString(values.quotesValueCapital.orElse(BigDecimal.ZERO))
+        tvCurrentInterest.text = NumbersUtil.toString(values.currentValueInterest.orElse(BigDecimal.ZERO))
+        tvQuoteInterest.text = NumbersUtil.toString(values.quotesValueInterest.orElse(BigDecimal.ZERO))
+        tvInterest.text = NumbersUtil.toString(values.interestValue.orElse(BigDecimal.ZERO))
+        tvPendingToPay.text = NumbersUtil.toString(values.pendingToPay.orElse(BigDecimal.ZERO))
+        tvTotalQuote.text = NumbersUtil.toString(values.totalValue.orElse(BigDecimal.ZERO))
     }
 
     override fun downLoadFields(): BoughtRecap {

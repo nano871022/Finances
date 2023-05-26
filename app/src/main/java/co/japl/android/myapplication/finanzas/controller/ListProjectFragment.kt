@@ -51,7 +51,7 @@ class ListProjectFragment : Fragment(){
                         .toTotalMonths()).toBigDecimal()
                 }
                 it.items.text = data.count().toString()
-                it.total.text = NumbersUtil.COPtoString(tot)
+                it.total.text = NumbersUtil.toString(tot)
             }
             holder.loadRecycler(data)
         return root

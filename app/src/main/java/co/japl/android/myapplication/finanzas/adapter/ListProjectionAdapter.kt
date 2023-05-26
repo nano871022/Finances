@@ -13,6 +13,7 @@ import co.japl.android.myapplication.bussiness.DB.connections.ConnectDB
 import co.japl.android.myapplication.finanzas.bussiness.DTO.ProjectionDTO
 import co.japl.android.myapplication.finanzas.bussiness.impl.ProjectionsImpl
 import co.japl.android.myapplication.finanzas.bussiness.interfaces.IProjectionsSvc
+import co.japl.android.myapplication.finanzas.enums.MoreOptionalItemsProjection
 import co.japl.android.myapplication.finanzas.putParams.ProjectionsParams
 import co.japl.android.myapplication.holders.view.ProjectionItemHolder
 import com.google.android.material.snackbar.Snackbar
@@ -38,8 +39,8 @@ class ListProjectionAdapter(var data:MutableList<ProjectionDTO>,val navControlle
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onBindViewHolder(holder: ProjectionItemHolder, position: Int) {
        holder.setFields(data[position]) {
-           when (it?.id) {
-               R.id.btn_delete_lip -> {
+           when (it) {
+               MoreOptionalItemsProjection.DELETE -> {
                    val dialog = AlertDialog.Builder(view.context)
                        .setTitle(R.string.do_you_want_to_delete_this_record)
                        .setNegativeButton(R.string.cancel, null)
@@ -61,7 +62,7 @@ class ListProjectionAdapter(var data:MutableList<ProjectionDTO>,val navControlle
                        }
                    }
                }
-               R.id.btn_edit_lip -> {
+               MoreOptionalItemsProjection.EDIT -> {
                    ProjectionsParams.newInstanceFromList(data[position].id.toLong(), navController)
                }
            }

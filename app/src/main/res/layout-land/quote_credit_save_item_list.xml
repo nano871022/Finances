@@ -74,21 +74,14 @@
             android:textColor="@android:color/primary_text_dark"
             android:textSize="18sp"
             android:textStyle="bold" />
+
         <ImageButton
-            android:id="@+id/btnAmortization"
+            android:id="@+id/btn_more_qcsil"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="0"
-            android:background="@color/green_background"
-            app:srcCompat="@android:drawable/ic_menu_search" />
-
-        <ImageButton
-            android:id="@+id/btnDelete"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_weight="0"
-            android:background="@color/green_background"
-            app:srcCompat="@drawable/ic_baseline_delete_24" />
+            android:background="?attr/colorPrimaryVariant"
+            app:srcCompat="@drawable/more_vertical" />
 
     </LinearLayout>
 

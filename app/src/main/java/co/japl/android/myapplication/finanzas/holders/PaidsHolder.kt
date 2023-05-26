@@ -72,12 +72,12 @@ class PaidsHolder(val view:View): IHolder<PaidsPOJO> {
         val month = periodStr.substring(5).toString()
         val date = LocalDate.of(year.toInt(),month.toInt(),1)
         period.text = "${date.getMonth().getDisplayName(TextStyle.FULL,Locale("es","CO"))} ${date.year}"
-        paid.text = NumbersUtil.COPtoString(values.paid)
+        paid.text = NumbersUtil.toString(values.paid)
         count.text = values.count.toString()
         val list = service.getAll()
         if(valueInputs > BigDecimal.ZERO){
-            inputs.text = NumbersUtil.COPtoString(valueInputs)
-            inputLessOutput.text = NumbersUtil.COPtoString(valueInputs - values.paid.toBigDecimal())
+            inputs.text = NumbersUtil.toString(valueInputs)
+            inputLessOutput.text = NumbersUtil.toString(valueInputs - values.paid.toBigDecimal())
         }
         if(list.isEmpty()){
             btnDetail.visibility = View.GONE

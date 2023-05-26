@@ -25,6 +25,7 @@ import co.japl.android.myapplication.finanzas.bussiness.impl.CreditCardSettingIm
 import co.japl.android.myapplication.finanzas.bussiness.impl.KindOfTaxImpl
 import co.japl.android.myapplication.finanzas.putParams.AmortizationTableParams
 import co.japl.android.myapplication.finanzas.enums.KindOfTaxEnum
+import co.japl.android.myapplication.finanzas.enums.MoreOptionsItemsCreditCard
 import co.japl.android.myapplication.finanzas.enums.TaxEnum
 import co.japl.android.myapplication.finanzas.putParams.CreditCardQuotesParams
 import co.japl.android.myapplication.holders.view.BoughtViewHolder
@@ -174,8 +175,8 @@ class ListBoughtAdapter(private val data:MutableList<CreditCardBoughtDTO>,privat
         val pendintToPay = getPendingToPay(data[position])
 
       holder.setFields(data[position],capital,interest,quotesBought,pendintToPay,tax) {
-          when (it.id) {
-              R.id.btnDeleteItemLCCS -> {
+          when (it) {
+              MoreOptionsItemsCreditCard.DELETE -> {
                   val dialog = AlertDialog.Builder(view.context)
                       .setTitle(R.string.do_you_want_to_delete_this_record)
                       .setPositiveButton(R.string.delete, null)
@@ -186,7 +187,7 @@ class ListBoughtAdapter(private val data:MutableList<CreditCardBoughtDTO>,privat
                       if (saveSvc.delete(data[position].id)) {
                           dialog.dismiss()
                           Snackbar.make(
-                              holder.itemView,
+                              view,
                               R.string.delete_successfull,
                               Snackbar.LENGTH_LONG
                           )
@@ -207,7 +208,7 @@ class ListBoughtAdapter(private val data:MutableList<CreditCardBoughtDTO>,privat
                       }
                   }
               }
-                  R.id.btnAmortizationItemLCCS ->
+                  MoreOptionsItemsCreditCard.AMORTIZATION ->
                   AmortizationTableParams.newInstanceQuotes(
                       CalcMap().mapping(
                           data[position],
@@ -215,17 +216,21 @@ class ListBoughtAdapter(private val data:MutableList<CreditCardBoughtDTO>,privat
                           interest,
                           capital,
                           KindOfTaxEnum.EM
-                      ), quotesBought, it.findNavController()
+                      ), quotesBought, view.findNavController()
                   )
-              R.id.btn_edit_bil -> {
+              MoreOptionsItemsCreditCard.EDIT -> {
                   Log.d(javaClass.name, "Called quote")
                   CreditCardQuotesParams.Companion.ListBought.newInstance(
                       data[position].id,
                       data[position].codeCreditCard,
-                      it.findNavController()
+                      view.findNavController()
                   )
               }
           }
       }
+    }
+
+    fun delete(){
+
     }
 }

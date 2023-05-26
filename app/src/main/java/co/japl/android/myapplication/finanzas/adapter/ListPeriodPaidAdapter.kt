@@ -32,11 +32,7 @@ class ListPeriodPaidAdapter(var data:MutableList<PaidDTO>,val navController: Nav
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onBindViewHolder(holder: PeriodPaidItemHolder, position: Int) {
         holder.setFields(data[position]){
-            when(it?.id){
-                R.id.btn_search_ppil->{
                     PaidsParams.newInstanceDetail(data[position].date, navController)
-                }
-            }
         }
     }
 }

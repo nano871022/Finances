@@ -1,9 +1,11 @@
 package co.japl.android.myapplication.holders.view
 
+import android.app.AlertDialog
 import android.graphics.Color
 import android.os.Build
 import android.util.Log
 import android.view.View
+import android.widget.ArrayAdapter
 import android.widget.ImageButton
 import android.widget.TextView
 import androidx.annotation.RequiresApi
@@ -11,22 +13,21 @@ import androidx.recyclerview.widget.RecyclerView
 import co.japl.android.myapplication.R
 import co.japl.android.myapplication.bussiness.DTO.CreditCardBoughtDTO
 import co.japl.android.myapplication.finanzas.enums.KindOfTaxEnum
+import co.japl.android.myapplication.finanzas.enums.MoreOptionsItemsCreditCard
 import co.japl.android.myapplication.utils.DateUtils
 import co.japl.android.myapplication.utils.NumbersUtil
 import java.math.BigDecimal
 import java.time.LocalDate
 import java.util.*
 
-class BoughtViewHolder(itemView:View) : RecyclerView.ViewHolder(itemView) {
+class BoughtViewHolder(val itemView:View) : RecyclerView.ViewHolder(itemView) {
     lateinit var tvBoughtName:TextView
     lateinit var tvCreditValueBought:TextView
     lateinit var tvQuotesBought:TextView
     lateinit var tvMonthBought:TextView
     lateinit var tvCapitalBought:TextView
     lateinit var tvInterestBought:TextView
-    lateinit var btnBoughtDelete:ImageButton
-    lateinit var btnAmortization:ImageButton
-    lateinit var btnEdit:ImageButton
+    lateinit var btnMore:ImageButton
     lateinit var tvTotalQuoteBought:TextView
     lateinit var tvBoughtDate:TextView
     lateinit var tvPendingToPay:TextView
@@ -39,18 +40,15 @@ class BoughtViewHolder(itemView:View) : RecyclerView.ViewHolder(itemView) {
         tvMonthBought = view.findViewById(R.id.tvStatusLCCS)
         tvCapitalBought = view.findViewById(R.id.tvCreditCardLCCS)
         tvInterestBought = view.findViewById(R.id.tvInterestBought)
-        btnBoughtDelete = view.findViewById(R.id.btnDeleteItemLCCS)
-        btnEdit = view.findViewById(R.id.btn_edit_bil)
+        btnMore = view.findViewById(R.id.btn_more_bil)
         tvTotalQuoteBought = view.findViewById(R.id.tvTotalQuoteBought)
         tvBoughtDate = view.findViewById(R.id.tvBoughtDate)
         tvPendingToPay = view.findViewById(R.id.tvPendingToPay)
         tvTaxBoughtICC = view.findViewById(R.id.tvTaxBoughtICC)
-        btnAmortization = view.findViewById(R.id.btnAmortizationItemLCCS)
-        btnAmortization.visibility = View.INVISIBLE
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    fun setFields(values:CreditCardBoughtDTO, capital:BigDecimal, interest:BigDecimal, quotesBought:Long, pendintToPay:BigDecimal,tax:Optional<Double>, action:View.OnClickListener){
+    fun setFields(values:CreditCardBoughtDTO, capital:BigDecimal, interest:BigDecimal, quotesBought:Long, pendintToPay:BigDecimal,tax:Optional<Double>, callback:(MoreOptionsItemsCreditCard)->Unit){
         tvBoughtName.text = values.nameItem
         tvCapitalBought.text = NumbersUtil.COPtoString(capital)
         tvMonthBought.text = values.month.toString()
@@ -61,24 +59,30 @@ class BoughtViewHolder(itemView:View) : RecyclerView.ViewHolder(itemView) {
         tvInterestBought.text = NumbersUtil.COPtoString(interest)
         tvPendingToPay.text = NumbersUtil.COPtoString(pendintToPay)
         tvTaxBoughtICC.text = "${tax.orElse(values.interest)} % ${KindOfTaxEnum.NM.name}"
-        btnBoughtDelete.setOnClickListener(action)
-        btnAmortization.setOnClickListener(action)
-        btnEdit.setOnClickListener(action)
-        if(values.month > 1){
-            btnAmortization.visibility = View.VISIBLE
-        }
-        val dateFirst = LocalDate.now().withDayOfMonth(1)
-        val dateLast = dateFirst.plusMonths(1).minusDays(1)
-        Log.d(javaClass.name,"$dateFirst $dateLast ${values.createDate}")
-        if(values.createDate.toLocalDate() >= dateFirst && values.createDate.toLocalDate() <= dateLast){
-            btnEdit.visibility = View.VISIBLE
-        }else{
-            btnEdit.visibility = View.GONE
-        }
-        if(values.recurrent == (1).toShort()){
-            btnBoughtDelete.setBackgroundColor(Color.RED)
-            btnBoughtDelete.setColorFilter(Color.WHITE)
-        }
 
+        val builder = AlertDialog.Builder(itemView.context)
+        builder.apply {
+            setTitle(R.string.pick_option)
+            val itemsOrigin = itemView.context.resources.getStringArray(R.array.credit_card_item_options)
+            var items = itemsOrigin
+            val dateFirst = LocalDate.now().withDayOfMonth(1)
+            val dateLast = dateFirst.plusMonths(1).minusDays(1)
+            Log.d(javaClass.name,"$dateFirst $dateLast ${values.createDate}")
+            if(values.month <= 1){
+                items = items.filterIndexed { index, _ -> index != 0 }.toTypedArray()
+            }
+            if(values.createDate.toLocalDate() !in dateFirst..dateLast){
+                items = items.filterIndexed{ index, _ -> index != 1 }.toTypedArray()
+            }
+            setItems(items) { dialog, which ->
+                val itemSelect = (dialog as AlertDialog).listView.getItemAtPosition(which)
+                val item = itemsOrigin.indexOf(itemSelect)
+                Log.d(javaClass.name,"Item select $item $itemSelect ${items} ")
+                callback.invoke(MoreOptionsItemsCreditCard.values().find { it.i == item }!!)
+            }
+        }
+        btnMore.setOnClickListener {
+            builder.create().show()
+        }
     }
 }

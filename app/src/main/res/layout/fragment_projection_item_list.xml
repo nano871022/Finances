@@ -24,15 +24,15 @@
                     android:layout_weight="1"
                     style="@style/MaterialTextInputLayoutView"
                     android:hint="@string/date_paid">
+
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/tv_dt_paid_lip"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="@string/date_hint"
-                        android:enabled="false"
                         style="@style/MaterialTextInputLayoutView"
-                        android:textAlignment="center"
-                        />
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:enabled="false"
+                        android:text="@string/date_hint"
+                        android:textAlignment="center" />
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <com.google.android.material.textfield.TextInputLayout
@@ -41,15 +41,15 @@
                     android:layout_weight="1"
                     style="@style/MaterialTextInputLayoutView"
                     android:hint="@string/name">
+
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/tv_name_lip"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="@string/name"
-                        android:enabled="false"
                         style="@style/MaterialTextInputLayoutView"
-                        android:textAlignment="center"
-                        />
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:enabled="false"
+                        android:text="@string/name"
+                        android:textAlignment="center" />
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <com.google.android.material.textfield.TextInputLayout
@@ -59,29 +59,22 @@
                     style="@style/MaterialTextInputLayoutView"
                     app:prefixText="$"
                     android:hint="@string/value">
+
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/tv_tot_value_lip"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="@string/money_hint"
-                        android:enabled="false"
                         style="@style/MaterialTextInputLayoutView"
-                        android:textAlignment="center"
-                        />
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:enabled="false"
+                        android:text="@string/money_hint"
+                        android:textAlignment="center" />
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <ImageButton
-                    android:id="@+id/btn_edit_lip"
+                    android:id="@+id/btn_more_lip"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    app:srcCompat="@drawable/ic_baseline_edit_24"
-                    android:background="?attr/colorPrimaryVariant"/>
-
-                <ImageButton
-                    android:id="@+id/btn_delete_lip"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    app:srcCompat="@drawable/ic_baseline_delete_24"
+                    app:srcCompat="@drawable/more_vertical"
                     android:background="?attr/colorPrimaryVariant"/>
 
             </LinearLayout>
@@ -97,15 +90,15 @@
                     android:layout_weight="1"
                     style="@style/MaterialTextInputLayoutView"
                     android:hint="@string/months_lack">
+
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/tv_months_lip"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="@string/months_number_hint"
-                        android:enabled="false"
                         style="@style/MaterialTextInputLayoutView"
-                        android:textAlignment="center"
-                        />
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:enabled="false"
+                        android:text="@string/months_number_hint"
+                        android:textAlignment="center" />
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <com.google.android.material.textfield.TextInputLayout
@@ -115,15 +108,15 @@
                     style="@style/MaterialTextInputLayoutView"
                     app:prefixText="$"
                     android:hint="@string/money_saved">
+
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/tv_saved_lip"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="@string/money_hint"
-                        android:enabled="false"
                         style="@style/MaterialTextInputLayoutView"
-                        android:textAlignment="center"
-                        />
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:enabled="false"
+                        android:text="@string/money_hint"
+                        android:textAlignment="center" />
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <com.google.android.material.textfield.TextInputLayout
@@ -133,15 +126,15 @@
                     app:prefixText="$"
                     style="@style/MaterialTextInputLayoutView"
                     android:hint="@string/quote_value">
+
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/tv_quote_lip"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:enabled="false"
                         style="@style/MaterialTextInputLayoutView"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:enabled="false"
                         android:text="@string/money_hint"
-                        android:textAlignment="center"
-                        />
+                        android:textAlignment="center" />
                 </com.google.android.material.textfield.TextInputLayout>
 
             </LinearLayout>
