@@ -17,6 +17,7 @@ import co.japl.android.myapplication.finanzas.enums.MoreOptionsItemsCreditCard
 import co.japl.android.myapplication.utils.DateUtils
 import co.japl.android.myapplication.utils.NumbersUtil
 import java.math.BigDecimal
+import java.math.RoundingMode
 import java.time.LocalDate
 import java.util.*
 
@@ -48,7 +49,7 @@ class BoughtViewHolder(val itemView:View) : RecyclerView.ViewHolder(itemView) {
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    fun setFields(values:CreditCardBoughtDTO, capital:BigDecimal, interest:BigDecimal, quotesBought:Long, pendintToPay:BigDecimal,tax:Optional<Double>, callback:(MoreOptionsItemsCreditCard)->Unit){
+    fun setFields(values:CreditCardBoughtDTO, capital:BigDecimal, interest:BigDecimal, quotesBought:Long, pendintToPay:BigDecimal,tax:Optional<Double>, callback:(MoreOptionsItemsCreditCard)->Unit) {
         tvBoughtName.text = values.nameItem
         tvCapitalBought.text = NumbersUtil.COPtoString(capital)
         tvMonthBought.text = values.month.toString()
@@ -58,8 +59,12 @@ class BoughtViewHolder(val itemView:View) : RecyclerView.ViewHolder(itemView) {
         tvBoughtDate.text = DateUtils.localDateTimeToString(values.boughtDate!!)
         tvInterestBought.text = NumbersUtil.COPtoString(interest)
         tvPendingToPay.text = NumbersUtil.COPtoString(pendintToPay)
-        tvTaxBoughtICC.text = "${tax.orElse(values.interest)} % ${KindOfTaxEnum.NM.name}"
-
+        val taxs = BigDecimal(tax.orElse(values.interest)).multiply(BigDecimal(100)).setScale(3,RoundingMode.CEILING)
+        tvTaxBoughtICC.text = "$taxs % ${KindOfTaxEnum.NM.name}"
+        loadAlert(values,callback)
+    }
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun loadAlert(values:CreditCardBoughtDTO, callback:(MoreOptionsItemsCreditCard)->Unit){
         val builder = AlertDialog.Builder(itemView.context)
         builder.apply {
             setTitle(R.string.pick_option)

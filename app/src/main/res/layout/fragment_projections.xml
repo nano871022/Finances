@@ -159,9 +159,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="@dimen/space_min"
-                    android:background="@color/green_light_trans"
-                    android:padding="@dimen/space_min"
-                    android:enabled="false"
                     style="@style/MaterialTextInputLayoutView"
                     android:hint="@string/date">
 
@@ -179,8 +176,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/space_min"
-                android:background="@color/green_light_trans"
-                android:padding="@dimen/space_min"
                 style="@style/MaterialTextInputLayoutView"
                 android:hint="@string/months_lack">
 
@@ -199,8 +194,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/space_min"
-                android:background="@color/green_light_trans"
-                android:padding="@dimen/space_min"
                 style="@style/MaterialTextInputLayoutView"
                 app:prefixText="$"
                 android:hint="@string/num_saved">

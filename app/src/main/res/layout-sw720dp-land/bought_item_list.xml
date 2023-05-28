@@ -94,27 +94,13 @@
             android:textAlignment="textEnd"
             android:textColor="@android:color/primary_text_dark"
             android:textStyle="italic" />
-        <ImageButton
-            android:id="@+id/btn_edit_bil"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:background="#00FFFFFF"
-            app:srcCompat="@drawable/ic_baseline_edit_24" />
-        <ImageButton
-            android:id="@+id/btnAmortizationItemLCCS"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:background="@color/green_background"
-            android:layout_marginEnd="@dimen/space_min"
-            app:srcCompat="@android:drawable/ic_menu_search" />
 
         <ImageButton
-            android:id="@+id/btnDeleteItemLCCS"
+            android:id="@+id/btn_more_bil"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_weight="0"
-            android:background="#00FFFFFF"
-            app:srcCompat="@drawable/ic_baseline_delete_24" />
+            android:background="?attr/colorPrimaryVariant"
+            app:srcCompat="@drawable/more_vertical" />
 
     </LinearLayout>
 

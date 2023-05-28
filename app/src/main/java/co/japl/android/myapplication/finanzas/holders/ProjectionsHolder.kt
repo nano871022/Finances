@@ -52,13 +52,13 @@ class ProjectionsHolder(val view:View) : IRecapHolder<ProjectionsHolder> {
         val tot = svc.getTotal()
 
         items.text = tot.first.toString()
-        total.text = NumbersUtil.COPtoString(tot.second)
+        total.text = NumbersUtil.toString(tot.second)
         dtClose.text = DateUtils.localDateToString(close.first)
         monthClose.text = close.second.toString()
-        valueClose.text = NumbersUtil.COPtoString(close.third)
+        valueClose.text = NumbersUtil.toString(close.third)
         dtFar.text = DateUtils.localDateToString(far.first)
         monthFar.text = far.second.toString()
-        valueFar.text = NumbersUtil.COPtoString(far.third)
+        valueFar.text = NumbersUtil.toString(far.third)
     }
 
 }

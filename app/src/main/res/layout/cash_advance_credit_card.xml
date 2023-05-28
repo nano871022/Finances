@@ -140,7 +140,7 @@
             android:ems="10"
             style="@style/MaterialTextInputLayoutView"
             android:enabled="false"
-            android:text="@string/money_hint"
+            android:hint="@string/money_hint"
             android:inputType="number|textPersonName"
             android:textAlignment="textEnd" />
         </com.google.android.material.textfield.TextInputLayout>

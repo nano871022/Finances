@@ -94,34 +94,33 @@ class ListBoughtAdapter(private val data:MutableList<CreditCardBoughtDTO>,privat
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    private fun getInterestValue(creditCardBoughtDTO: CreditCardBoughtDTO,taxCCValue: Optional<Pair<Double,String>>,taxADVValue: Optional<Pair<Double,String>>):BigDecimal{
+    private fun getInterestValue(creditCardBoughtDTO: CreditCardBoughtDTO,taxCCValue: Optional<Pair<Double,String>>,taxADVValue: Optional<Pair<Double,String>>):Pair<Double,KindOfTaxEnum>{
         val setting = getSettings(creditCardBoughtDTO.id)
-        val interestTax = if(setting.isPresent){
+        return if(setting.isPresent){
             if(setting.get() > 0) {
-                kindOfTaxSvc.getNM(setting.get(), KindOfTaxEnum.EM)
+                Pair(kindOfTaxSvc.getNM(setting.get(), KindOfTaxEnum.EM),KindOfTaxEnum.EM)
             }else{
-                setting.get()
+                Pair(setting.get(),KindOfTaxEnum.EM)
             }
         }else {
             when (creditCardBoughtDTO.kind) {
                 TaxEnum.CASH_ADVANCE.ordinal.toShort() -> {
                     if(taxADVValue.isPresent){
-                        kindOfTaxSvc.getNM(taxADVValue.get().first, KindOfTaxEnum.valueOf(taxADVValue.get().second))
+                        Pair(kindOfTaxSvc.getNM(taxADVValue.get().first, KindOfTaxEnum.valueOf(taxADVValue.get().second)), KindOfTaxEnum.valueOf(taxADVValue.get().second))
                     }else{
-                        0.0
+                        Pair(0.0,KindOfTaxEnum.EM)
                     }
                 }
                 TaxEnum.CREDIT_CARD.ordinal.toShort() -> {
                     if(taxCCValue.isPresent){
-                        kindOfTaxSvc.getNM(taxCCValue.get().first, KindOfTaxEnum.valueOf(taxCCValue.get().second))
+                        Pair(kindOfTaxSvc.getNM(taxCCValue.get().first, KindOfTaxEnum.valueOf(taxCCValue.get().second)), KindOfTaxEnum.valueOf(taxCCValue.get().second))
                     }else{
-                        0.0
+                        Pair(0.0,KindOfTaxEnum.EM)
                     }
                 }
-                else -> kindOfTaxSvc.getNM(creditCardBoughtDTO.interest, KindOfTaxEnum.valueOf(creditCardBoughtDTO.kindOfTax))
+                else -> Pair(kindOfTaxSvc.getNM(creditCardBoughtDTO.interest, KindOfTaxEnum.valueOf(creditCardBoughtDTO.kindOfTax)), KindOfTaxEnum.valueOf(creditCardBoughtDTO.kindOfTax))
             }
         }
-        return interestTax.toBigDecimal().divide(BigDecimal(100),8,RoundingMode.CEILING)
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -132,9 +131,9 @@ class ListBoughtAdapter(private val data:MutableList<CreditCardBoughtDTO>,privat
             val capitalBought = quote.multiply(months.toBigDecimal())
             val pendingCapital = dto.valueItem.minus(capitalBought)
             val interest = getInterestValue(dto,taxCCValue,taxAdvValue)
-            Log.v(this.javaClass.name,"Value ${dto.valueItem} - Bought $capitalBought X $months =  Pending $pendingCapital interest $interest")
+            Log.v(this.javaClass.name,"Value ${dto.valueItem} - Bought $capitalBought X $months =  Pending $pendingCapital interest ${interest.first.toBigDecimal()} ${interest.second}")
             if(pendingCapital > BigDecimal(0)){
-                return pendingCapital.multiply(interest)
+                return pendingCapital.multiply(interest.first.toBigDecimal())
             }
         }
         return BigDecimal(0)
@@ -169,68 +168,71 @@ class ListBoughtAdapter(private val data:MutableList<CreditCardBoughtDTO>,privat
         val taxAdv = getTax(data[position].codeCreditCard.toLong(), TaxEnum.CASH_ADVANCE)
         val taxCC = getTax(data[position].codeCreditCard.toLong(), TaxEnum.CREDIT_CARD)
         val capital = getCapital(data[position])
-        val tax = Optional.ofNullable(getInterestValue(data[position],taxCC,taxAdv).multiply(BigDecimal(100)).toDouble())
+        val tax = Optional.ofNullable(getInterestValue(data[position],taxCC,taxAdv))
         val interest = getInterest(data[position],taxCC,taxAdv)
         val quotesBought = getQuotesBought(data[position])
-        val pendintToPay = getPendingToPay(data[position])
+        val pendingToPay = getPendingToPay(data[position])
 
-      holder.setFields(data[position],capital,interest,quotesBought,pendintToPay,tax) {
+      holder.setFields(data[position],capital,interest,quotesBought,pendingToPay,Optional.of(tax.get().first)) {
           when (it) {
-              MoreOptionsItemsCreditCard.DELETE -> {
-                  val dialog = AlertDialog.Builder(view.context)
-                      .setTitle(R.string.do_you_want_to_delete_this_record)
-                      .setPositiveButton(R.string.delete, null)
-                      .setNegativeButton(R.string.cancel, null)
-                      .create()
-                  dialog.show()
-                  dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
-                      if (saveSvc.delete(data[position].id)) {
-                          dialog.dismiss()
-                          Snackbar.make(
-                              view,
-                              R.string.delete_successfull,
-                              Snackbar.LENGTH_LONG
-                          )
-                              .setAction(R.string.close) {}
-                              .show().also{
-                                  data.removeAt(position)
-                                  this.notifyDataSetChanged()
-                                  this.notifyItemRemoved(position)
-                              }
-                      } else {
-                          dialog.dismiss()
-                          Snackbar.make(
-                              holder.itemView,
-                              R.string.dont_deleted,
-                              Snackbar.LENGTH_LONG
-                          )
-                              .setAction(R.string.close, null).show()
-                      }
-                  }
-              }
-                  MoreOptionsItemsCreditCard.AMORTIZATION ->
-                  AmortizationTableParams.newInstanceQuotes(
-                      CalcMap().mapping(
-                          data[position],
-                          interest + capital,
-                          interest,
-                          capital,
-                          KindOfTaxEnum.EM
-                      ), quotesBought, view.findNavController()
-                  )
-              MoreOptionsItemsCreditCard.EDIT -> {
-                  Log.d(javaClass.name, "Called quote")
-                  CreditCardQuotesParams.Companion.ListBought.newInstance(
-                      data[position].id,
-                      data[position].codeCreditCard,
-                      view.findNavController()
-                  )
-              }
+              MoreOptionsItemsCreditCard.DELETE -> delete(  holder,position)
+              MoreOptionsItemsCreditCard.AMORTIZATION -> amortization( quotesBought,capital,interest,tax.get().second,position)
+              MoreOptionsItemsCreditCard.EDIT -> edit(position)
           }
       }
     }
 
-    fun delete(){
+    fun edit(position:Int){
+        Log.d(javaClass.name, "Called quote")
+        CreditCardQuotesParams.Companion.ListBought.newInstance(
+            data[position].id,
+            data[position].codeCreditCard,
+            view.findNavController()
+        )
+    }
 
+    fun amortization(quotesBought:Long,capital:BigDecimal,interest:BigDecimal,kindOfTax:KindOfTaxEnum,position:Int){
+        AmortizationTableParams.newInstanceQuotes(
+            CalcMap().mapping(
+                data[position],
+                interest + capital,
+                interest,
+                capital,
+                kindOfTax
+            ), quotesBought, view.findNavController()
+        )
+    }
+
+    fun delete(holder: BoughtViewHolder,position:Int){
+        val dialog = AlertDialog.Builder(view.context)
+            .setTitle(R.string.do_you_want_to_delete_this_record)
+            .setPositiveButton(R.string.delete, null)
+            .setNegativeButton(R.string.cancel, null)
+            .create()
+        dialog.show()
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
+            if (saveSvc.delete(data[position].id)) {
+                dialog.dismiss()
+                Snackbar.make(
+                    view,
+                    R.string.delete_successfull,
+                    Snackbar.LENGTH_LONG
+                )
+                    .setAction(R.string.close) {}
+                    .show().also{
+                        data.removeAt(position)
+                        this.notifyDataSetChanged()
+                        this.notifyItemRemoved(position)
+                    }
+            } else {
+                dialog.dismiss()
+                Snackbar.make(
+                    holder.itemView,
+                    R.string.dont_deleted,
+                    Snackbar.LENGTH_LONG
+                )
+                    .setAction(R.string.close, null).show()
+            }
+        }
     }
 }

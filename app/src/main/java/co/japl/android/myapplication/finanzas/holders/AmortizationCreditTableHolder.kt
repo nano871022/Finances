@@ -64,7 +64,7 @@ class AmortizationCreditTableHolder(val view:View): ITableHolder<AmortizationCre
     override fun setData(creditValue: CalcDTO) {
         credit = creditValue
         val quoteValue = credit.quoteCredit + (additionalValue?.let { additionalValue }?:BigDecimal.ZERO)
-        quote.text = NumbersUtil.COPtoString(quoteValue)
+        quote.text = NumbersUtil.toString(quoteValue)
         periods.text = credit.period.toString()
         Log.d(javaClass.name,"Tax:. ${creditValue.interest}")
         tax.text = "${creditValue.interest} % ${creditValue.kindOfTax}"
@@ -90,7 +90,7 @@ class AmortizationCreditTableHolder(val view:View): ITableHolder<AmortizationCre
             sumAdditionalValue += additionalValue
             interestToPay += interest
         }
-        additional.text = NumbersUtil.COPtoString(sumAdditionalValue)
+        additional.text = NumbersUtil.toString(sumAdditionalValue)
     }
 
     override fun load() {
@@ -132,7 +132,7 @@ class AmortizationCreditTableHolder(val view:View): ITableHolder<AmortizationCre
 
             table.addView(row,TableLayout.LayoutParams.MATCH_PARENT,TableLayout.LayoutParams.WRAP_CONTENT)
         }
-        interest.text = NumbersUtil.COPtoString(interestToPay)
+        interest.text = NumbersUtil.toString(interestToPay)
     }
 
     private fun createTextView(value:String,paid:Boolean):MaterialTextView{
@@ -151,7 +151,7 @@ class AmortizationCreditTableHolder(val view:View): ITableHolder<AmortizationCre
         when(name){
             AmortizationCreditFixEnum.ADDITIONAL.name-> {
                 additionalValue = value as BigDecimal
-                additionalMonthly.text = NumbersUtil.COPtoString(additionalValue)
+                additionalMonthly.text = NumbersUtil.toString(additionalValue)
             }
             AmortizationCreditFixEnum.QUOTES_PAID.name-> quotesPaid = (value as Long).toInt()
             AmortizationCreditFixEnum.DATE_BILL.name-> {

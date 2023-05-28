@@ -299,7 +299,7 @@ class SaveCreditCardBoughtImpl(override var dbConnect: SQLiteOpenHelper) :IQuote
                                  .map{
                                      val interest = getInterestValue(it,tax,taxCashAdv)
                                      Log.v(this.javaClass.name,"${it.valueItem} X ${interest}%")
-                                     it.valueItem.multiply(interest.toBigDecimal().divide(BigDecimal(100),8,RoundingMode.CEILING))
+                                     it.valueItem.multiply(interest.toBigDecimal())
                                  }
                                  .reduce{ accumulator  ,interest -> accumulator.add(interest)}
         Log.v(this.javaClass.name," Interest Calc:: Interest: $value Recurrent: $interestRecurrent")

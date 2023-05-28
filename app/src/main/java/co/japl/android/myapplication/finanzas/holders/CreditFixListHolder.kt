@@ -50,11 +50,11 @@ class CreditFixListHolder(val view:View){
     fun setField(date:LocalDate, quote:BigDecimal, interest:BigDecimal, capital:BigDecimal, pending:BigDecimal, additional:BigDecimal, actions:OnClickListener){
         val months = view.resources.getStringArray(R.array.Months)
         this.date.text = "${months[date.monthValue]} ${date.year}"
-        this.quote.text = NumbersUtil.COPtoString(quote)
-        this.interest.text = NumbersUtil.COPtoString(interest)
-        this.capital.text = NumbersUtil.COPtoString(capital)
-        this.additional.text = NumbersUtil.COPtoString(additional)
-        this.pendingToPay.text = NumbersUtil.COPtoString(pending)
+        this.quote.text = NumbersUtil.toString(quote)
+        this.interest.text = NumbersUtil.toString(interest)
+        this.capital.text = NumbersUtil.toString(capital)
+        this.additional.text = NumbersUtil.toString(additional)
+        this.pendingToPay.text = NumbersUtil.toString(pending)
         detail.setOnClickListener(actions)
         period.setOnClickListener(actions)
         add.setOnClickListener(actions)

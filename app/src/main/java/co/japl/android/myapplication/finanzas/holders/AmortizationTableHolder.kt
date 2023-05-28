@@ -66,9 +66,9 @@ class AmortizationTableHolder(val view:View): ITableHolder<CalcDTO> {
 
     override fun setData(creditValue: CalcDTO) {
         creditData = creditValue
-        this.creditValue.text = NumbersUtil.COPtoString(creditValue.valueCredit)
-        this.quoteValue.text = NumbersUtil.COPtoString(creditValue.quoteCredit)
-        this.tax.text = "${creditValue.interest} % ${creditValue.kindOfTax}"
+        this.creditValue.text = NumbersUtil.toString(creditValue.valueCredit)
+        this.quoteValue.text = NumbersUtil.toString(creditValue.quoteCredit)
+        this.tax.text = "${creditValue.interest} ${creditValue.kindOfTax}"
         this.periods.text = creditValue.period.toString()
     }
 
@@ -90,7 +90,7 @@ class AmortizationTableHolder(val view:View): ITableHolder<CalcDTO> {
     private fun quoteFixCalc(){
         Log.d(javaClass.name,"Quote Fix")
         var currentCreditValue = creditData.valueCredit
-        val tax = ( kindOfTaxSvc.getNM(creditData.interest, KindOfTaxEnum.valueOf(creditData.kindOfTax))/ 100).toBigDecimal()
+        val tax = getTax().toBigDecimal()
         for ( period in 1 .. creditData.period){
             val interest = currentCreditValue * tax
             val capital = creditData.quoteCredit -  interest
@@ -115,7 +115,7 @@ class AmortizationTableHolder(val view:View): ITableHolder<CalcDTO> {
         val periods = creditData.period
         val capital = currentCreditValue.toDouble() / periods
         Log.d(javaClass.name,"$capital = $currentCreditValue / $periods")
-        val tax = if(creditData.interest > 0)kindOfTaxSvc.getNM(creditData.interest, KindOfTaxEnum.valueOf(creditData.kindOfTax)) / 100 else creditData.interest
+        val tax = getTax()
         for ( period in 1 .. creditData.period){
             val interest = currentCreditValue * tax.toBigDecimal()
             amortizationList.add(Amortization(period.toInt(),
@@ -126,13 +126,22 @@ class AmortizationTableHolder(val view:View): ITableHolder<CalcDTO> {
                 currentCreditValue - capital.toBigDecimal()))
             currentCreditValue -=  capital.toBigDecimal()
             interesToPay += interest
-            Log.d(javaClass.name,"${amortizationList.size} $currentCreditValue $capital (${creditData.valueCredit} / ${creditData.period}) $interest")
+            Log.d(javaClass.name,"${amortizationList.size} $currentCreditValue $capital (${creditData.valueCredit} / ${creditData.period}) $interest - $tax - ${creditData.interest}")
         }
-        capitalValue.text = NumbersUtil.COPtoString(creditData.capitalValue)
+        capitalValue.text = NumbersUtil.toString(creditData.capitalValue)
         capitalValueLayout.visibility = View.VISIBLE
         quoteValueLayout.visibility = View.GONE
         this.totalColumn.visibility = View.VISIBLE
         this.capitalValueColumn.visibility = View.GONE
+    }
+
+    fun getTax():Double{
+        return if(creditData.interest > 0){
+            Log.d(javaClass.name,"${creditData.interest} ${creditData.kindOfTax}")
+            kindOfTaxSvc.getNM(creditData.interest, KindOfTaxEnum.valueOf(creditData.kindOfTax))
+        } else {
+            creditData.interest
+        }
     }
 
    override fun load(){
@@ -184,7 +193,7 @@ class AmortizationTableHolder(val view:View): ITableHolder<CalcDTO> {
 
             table.addView(row,TableRow.LayoutParams.MATCH_PARENT,TableRow.LayoutParams.WRAP_CONTENT)
         }
-       this.interestToPay.text = NumbersUtil.COPtoString(interesToPay)
+       this.interestToPay.text = NumbersUtil.toString(interesToPay)
     }
 
     private fun createTextView(value:String,paid:Boolean):MaterialTextView{
