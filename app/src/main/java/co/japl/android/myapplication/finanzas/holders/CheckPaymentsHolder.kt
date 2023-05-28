@@ -38,9 +38,9 @@ class CheckPaymentsHolder(val view:View,val checkPaymentsList:MutableList<CheckP
         recyclerView.layoutManager = LinearLayoutManager(view.context,
             LinearLayoutManager.VERTICAL,false)
         payment = data.sumOf { it.value }
-        toPay.text = NumbersUtil.COPtoString(payment)
+        toPay.text = NumbersUtil.toString(payment)
         ListPaymentsAdapter(data,checkPaymentsList){ adapter,holder->
-            paid.text = NumbersUtil.COPtoString(adapter.paid)
+            paid.text = NumbersUtil.toString(adapter.paid)
             val sum = data.sumOf { it.value }
             val sumPaid = data.filter{ paid->checkPaymentsList.firstOrNull{ it.codPaid == paid.codPaid.toInt()} != null }.sumOf { it.value }
             if(sum == sumPaid){

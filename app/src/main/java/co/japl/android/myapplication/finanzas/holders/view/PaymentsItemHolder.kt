@@ -46,7 +46,7 @@ class PaymentsItemHolder(var view:View,val checkPaymentList:MutableList<CheckPay
     fun setFields(values:CheckPaymentsPOJO){
         Log.d(javaClass.name,"$values")
         name.text = values.name
-        value.text = NumbersUtil.toString(values.value)
+        value.text = NumbersUtil.COPtoString(values.value)
         check.isChecked = values.checkValue
         date.visibility = View.GONE
         codPaid = values.codPaid

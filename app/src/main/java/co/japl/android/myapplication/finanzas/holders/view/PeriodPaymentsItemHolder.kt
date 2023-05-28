@@ -22,7 +22,7 @@ class PeriodPaymentsItemHolder(val view:View): RecyclerView.ViewHolder(view) {
 
     fun setValues(values:PeriodCheckPaymentsPOJO){
         tvPeriod.text = getPeriodFormat(values.period)
-        tvPaid.text = (NumbersUtil.COPtoString(values.paid))
+        tvPaid.text = (NumbersUtil.toString(values.paid))
         tvCount.text = values.count.toString()
     }
 

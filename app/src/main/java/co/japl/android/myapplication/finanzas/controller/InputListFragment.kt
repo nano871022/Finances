@@ -68,7 +68,7 @@ class InputListFragment : Fragment(),OnClickListener {
         val countInputs = data.count()
         val totalInputs = data.sumOf { it.value }
         numInputs.text = countInputs.toString()
-        totInputs.text = NumbersUtil.COPtoString(totalInputs)
+        totInputs.text = NumbersUtil.toString(totalInputs)
         recyclerView.layoutManager = LinearLayoutManager(root.context,LinearLayoutManager.VERTICAL,false)
         ListInputAdapter(data)?.let {
             recyclerView.adapter = it

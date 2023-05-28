@@ -65,12 +65,12 @@
                 android:textSize="14sp" />
 
             <ImageButton
-                android:id="@+id/btnDeleteItemLCCS"
-                android:layout_width="60dp"
-                android:layout_height="50dp"
+                android:id="@+id/btn_more_itccs"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_weight="0"
-                android:background="#00FFFFFF"
-                app:srcCompat="@drawable/ic_baseline_delete_24" />
+                android:background="?attr/colorPrimaryVariant"
+                app:srcCompat="@drawable/more_vertical" />
 
         </LinearLayout>
 

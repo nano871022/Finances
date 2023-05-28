@@ -21,6 +21,7 @@ import co.japl.android.myapplication.bussiness.impl.CreditCardImpl
 import co.japl.android.myapplication.bussiness.interfaces.SaveSvc
 import co.japl.android.myapplication.controller.CreateCreditCard
 import co.japl.android.myapplication.finanzas.bussiness.impl.CreditCardSettingImpl
+import co.japl.android.myapplication.finanzas.enums.MoreOptionsItemsListCreditCard
 import co.japl.android.myapplication.holders.ListCreditCardItemHolder
 import co.japl.android.myapplication.putParams.CreditCardParams
 import co.japl.android.myapplication.utils.NumbersUtil
@@ -38,7 +39,7 @@ class ListCreditCardAdapter(var data:MutableList<CreditCardDTO>,var parentFragme
         val view =
             LayoutInflater.from(parent.context).inflate(R.layout.credit_card_item_list, parent, false)
         val viewHolder =  ListCreditCardItemHolder(view)
-        viewHolder.loadFields()
+        viewHolder.setFields()
         return viewHolder
     }
 
@@ -48,43 +49,43 @@ class ListCreditCardAdapter(var data:MutableList<CreditCardDTO>,var parentFragme
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onBindViewHolder(holder: ListCreditCardItemHolder, position: Int) {
-        holder.name.text =data[position].name
-        holder.cutOffDay.text = data[position].cutOffDay.toString()
-        holder.warningQuote.text = NumbersUtil.COPtoString(data[position].warningValue)
-        holder.status.text = data[position].status.toString()
-        holder.delete.setOnClickListener {
-            val dialog = AlertDialog.Builder(view.context)
-            .setNegativeButton(R.string.cancel,this)
-            .setPositiveButton(R.string.delete, this)
-            .setTitle(R.string.do_you_want_to_delete_this_record)
-            .create()
-            dialog.show()
-            dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
-                (settingSvc as CreditCardSettingImpl ).getAll(data[position].id)?.let{
-                    if(it.isNotEmpty()){
-                        it.forEach{settingSvc.delete(it.id)}
+        holder.loadFields(data[position]) {
+            when (it) {
+                MoreOptionsItemsListCreditCard.DELETE -> {
+                    val dialog = AlertDialog.Builder(view.context)
+                        .setNegativeButton(R.string.cancel, this)
+                        .setPositiveButton(R.string.delete, this)
+                        .setTitle(R.string.do_you_want_to_delete_this_record)
+                        .create()
+                    dialog.show()
+                    dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
+                        (settingSvc as CreditCardSettingImpl).getAll(data[position].id)?.let {
+                            if (it.isNotEmpty()) {
+                                it.forEach { settingSvc.delete(it.id) }
+                            }
+                        }
+                        if (saveSvc.delete(data[position].id)) {
+                            dialog.dismiss()
+                            Snackbar.make(view, R.string.delete_successfull, Snackbar.LENGTH_LONG)
+                                .setAction(R.string.close) {
+
+                                }
+                                .show().also {
+                                    data.removeAt(position)
+                                    this.notifyDataSetChanged()
+                                    this.notifyItemRemoved(position)
+                                }
+                        } else {
+                            dialog.dismiss()
+                            Snackbar.make(view, R.string.dont_deleted, Snackbar.LENGTH_LONG)
+                                .setAction(R.string.close, null).show()
+                        }
                     }
                 }
-                if (saveSvc.delete(data[position].id)) {
-                    dialog.dismiss()
-                    Snackbar.make(view, R.string.delete_successfull, Snackbar.LENGTH_LONG)
-                        .setAction(R.string.close) {
-
-                        }
-                        .show().also {
-                            data.removeAt(position)
-                            this.notifyDataSetChanged()
-                            this.notifyItemRemoved(position)
-                        }
-                } else {
-                    dialog.dismiss()
-                    Snackbar.make(view, R.string.dont_deleted, Snackbar.LENGTH_LONG)
-                        .setAction(R.string.close, null).show()
+                MoreOptionsItemsListCreditCard.EDIT -> {
+                    CreditCardParams.newInstance(data[position].id.toString(), navController)
                 }
             }
-        }
-        holder.edit.setOnClickListener{
-            CreditCardParams.newInstance(data[position].id.toString(), navController)
         }
     }
 

@@ -13,6 +13,7 @@ import co.japl.android.myapplication.bussiness.DB.connections.ConnectDB
 import co.japl.android.myapplication.bussiness.interfaces.SaveSvc
 import co.japl.android.myapplication.finanzas.bussiness.DTO.InputDTO
 import co.japl.android.myapplication.finanzas.bussiness.impl.InputImpl
+import co.japl.android.myapplication.finanzas.enums.MoreOptionsItemsInput
 import co.japl.android.myapplication.holders.view.InputItemHolder
 import com.google.android.material.snackbar.Snackbar
 
@@ -41,25 +42,33 @@ class ListInputAdapter(var data:MutableList<InputDTO>) : RecyclerView.Adapter<In
     override fun onBindViewHolder(holder: InputItemHolder, position: Int) {
         Log.d(this.javaClass.name,"on binging view holder $position")
        holder.setFields(data[position]) {
-           val dialog = AlertDialog.Builder(view.context).setTitle(R.string.do_you_want_to_delete_this_record).setNegativeButton(R.string.cancel,null).setPositiveButton(R.string.delete,null).create()
-           dialog.show()
-           dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
-               if (saveSvc.delete(data[position].id)) {
-                   dialog.dismiss()
-                   Snackbar.make(view, R.string.delete_successfull, Snackbar.LENGTH_LONG)
-                       .setAction(R.string.close) {
+           when (it) {
+               MoreOptionsItemsInput.DELETE -> {
+                   val dialog = AlertDialog.Builder(view.context)
+                       .setTitle(R.string.do_you_want_to_delete_this_record)
+                       .setNegativeButton(R.string.cancel, null)
+                       .setPositiveButton(R.string.delete, null).create()
 
+                   dialog.show()
+                   dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
+                       if (saveSvc.delete(data[position].id)) {
+                           dialog.dismiss()
+                           Snackbar.make(view, R.string.delete_successfull, Snackbar.LENGTH_LONG)
+                               .setAction(R.string.close) {
+
+                               }
+                               .show().also {
+                                   data.removeAt(position)
+                                   this.notifyItemRemoved(position)
+                                   this.notifyDataSetChanged()
+                               }
+                       } else {
+                           Snackbar.make(view, R.string.dont_deleted, Snackbar.LENGTH_LONG)
+                               .setAction(R.string.close, null).show()
                        }
-                       .show().also {
-                           data.removeAt(position)
-                           this.notifyItemRemoved(position)
-                           this.notifyDataSetChanged()
-                       }
-               } else {
-                   Snackbar.make(view, R.string.dont_deleted, Snackbar.LENGTH_LONG)
-                       .setAction(R.string.close, null).show()
+                   }
                }
            }
-        }
+       }
     }
 }

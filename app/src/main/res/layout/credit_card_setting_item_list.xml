@@ -36,20 +36,12 @@
                 android:textStyle="bold" />
 
             <ImageButton
-                android:id="@+id/btnEditLCCS"
+                android:id="@+id/btn_more_ilccs"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="0"
-                android:background="#03FFFFFF"
-                app:srcCompat="@drawable/ic_baseline_edit_24" />
-
-            <ImageButton
-                android:id="@+id/btnDeleteItemLCCS"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="0"
-                android:background="#01FFFFFF"
-                app:srcCompat="@drawable/ic_baseline_delete_24" />
+                android:background="?attr/colorPrimaryVariant"
+                app:srcCompat="@drawable/more_vertical" />
 
         </LinearLayout>
 

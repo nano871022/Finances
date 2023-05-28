@@ -29,18 +29,11 @@
         </com.google.android.material.textfield.TextInputLayout>
 
         <ImageView
-            android:id="@+id/btn_search_accil"
+            android:id="@+id/btn_more_accil"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_weight="0"
-            app:srcCompat="@android:drawable/ic_menu_search" />
-
-        <ImageView
-            android:id="@+id/btn_delete_accil"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_weight="0"
-            app:srcCompat="@drawable/ic_baseline_delete_24" />
+            app:srcCompat="@drawable/more_vertical" />
     </LinearLayout>
 
 
