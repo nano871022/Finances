@@ -48,6 +48,7 @@ class ListQuotesPaid : Fragment() ,LoaderManager.LoaderCallbacks<List<PeriodDTO>
             creditCardId = PeriodsParams.Companion.Historical.download(it)
         }
         getPeriodsSvc = SaveCreditCardBoughtImpl(ConnectDB(rootView.context))
+        holder = ListQuotePaidHolder(rootView,findNavController())
         holder.setFields(null)
         loaderManager.initLoader(1, null, this)
         return rootView

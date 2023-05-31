@@ -72,11 +72,11 @@ class ListCreditCardQuote : Fragment(), LoaderManager.LoaderCallbacks<CreditCard
         if((holder as QuoteCCHolder).spCreditCard.text.isNotBlank()){
             val value = (holder as QuoteCCHolder).spCreditCard.text.toString()
             val creditCard = listCreditCard.firstOrNull { cc -> cc.name == value }
-            val pojo  = creditCard?.let {
+            pojo  = creditCard?.let {
                 CreditCardMap().mapper(it)
             }?: CreditCard()
-            loadDataInfo(pojo)
         }
+        loaderManager.initLoader(1,null,this)
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -183,23 +183,21 @@ class ListCreditCardQuote : Fragment(), LoaderManager.LoaderCallbacks<CreditCard
         val value = pojo!!
 
         return object: AsyncTaskLoader<CreditCard>(requireContext()){
-            private var data : CreditCard? = null
+             var data : CreditCard? = null
             @RequiresApi(Build.VERSION_CODES.O)
             override fun loadInBackground(): CreditCard? {
                 data = loadDataInfo(value)
-                Log.d(javaClass.name,"loadInBackground $data")
                 return data
             }
             override fun onStartLoading() {
                 super.onStartLoading()
-                Log.d(javaClass.name,"onStartLoading $data")
                 if(data != null){
                     deliverResult(data)
                 }else{
                     forceLoad()
                 }
             }
-        }
+        }.also { it.data = null }
     }
 
     override fun onLoaderReset(loader: Loader<CreditCard>) {
