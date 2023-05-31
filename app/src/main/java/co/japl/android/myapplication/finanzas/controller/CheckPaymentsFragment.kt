@@ -10,9 +10,13 @@ import android.view.View.OnClickListener
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.annotation.RequiresApi
+import androidx.loader.app.LoaderManager
+import androidx.loader.content.AsyncTaskLoader
+import androidx.loader.content.Loader
 import co.japl.android.myapplication.R
 import co.japl.android.myapplication.adapter.ListPaymentsAdapter
 import co.japl.android.myapplication.bussiness.DB.connections.ConnectDB
+import co.japl.android.myapplication.finanzas.bussiness.DTO.CheckPaymentsDTO
 import co.japl.android.myapplication.finanzas.bussiness.impl.CheckPaymentImpl
 import co.japl.android.myapplication.finanzas.bussiness.impl.PaidImpl
 import co.japl.android.myapplication.finanzas.bussiness.interfaces.ICheckPaymentSvc
@@ -25,11 +29,13 @@ import co.japl.android.myapplication.finanzas.pojo.mapper.CheckPaymentsMapper
 import java.time.LocalDate
 import java.util.Optional
 
-class CheckPaymentsFragment : Fragment() , OnClickListener{
+class CheckPaymentsFragment : Fragment() , OnClickListener,LoaderManager.LoaderCallbacks<List<CheckPaymentsPOJO>>{
     private lateinit var checkPaymentSvc:ICheckPaymentSvc
     private lateinit var holder:IListHolder<CheckPaymentsHolder,CheckPaymentsPOJO>
     private lateinit var svc:IPaidSvc
     private lateinit var list:MutableList<CheckPaymentsPOJO>
+    private lateinit var period:String
+    private lateinit var date:LocalDate
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,15 +50,17 @@ class CheckPaymentsFragment : Fragment() , OnClickListener{
         val connect = ConnectDB(root.context)
         svc = PaidImpl(connect)
         checkPaymentSvc = CheckPaymentImpl(connect)
-        val date = LocalDate.now().withDayOfMonth(1).plusMonths(1)
-        val paids = svc.getRecurrent(date)
-        val period = getPeriod()
-        list = paids.map { CheckPaymentsMapper().mapper(it,period) }.toMutableList()
-        val checkPaymentList = list.map { checkPaymentSvc.getCheckPayment(it.codPaid.toInt(),period) }.filter { it.isPresent }.map { it.get() }.toMutableList()
-        holder = CheckPaymentsHolder(root,checkPaymentList)
+        holder = CheckPaymentsHolder(root)
         holder.setFields(this)
-        holder.loadRecycler(list)
+        period = getPeriod()
+        date = LocalDate.now().withDayOfMonth(1).plusMonths(1)
+        loaderManager.initLoader(1,null,this)
         return root
+    }
+
+    override fun onResume() {
+        super.onResume()
+        loaderManager.initLoader(1,null,this)
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -80,6 +88,39 @@ class CheckPaymentsFragment : Fragment() , OnClickListener{
                         }
                     }
             }
+        }
+    }
+
+    override fun onCreateLoader(id: Int, args: Bundle?): Loader<List<CheckPaymentsPOJO>> {
+        return object:AsyncTaskLoader<List<CheckPaymentsPOJO>>(requireContext()){
+            private var data:List<CheckPaymentsPOJO>? = null
+            override fun onStartLoading() {
+                super.onStartLoading()
+                Log.d(javaClass.name,"onStartingLoading $data")
+                if(data != null){
+                    deliverResult(data)
+                }else{
+                    forceLoad()
+                }
+            }
+            @RequiresApi(Build.VERSION_CODES.O)
+            override fun loadInBackground(): List<CheckPaymentsPOJO>? {
+                val paids = svc.getRecurrent(date)
+                list = paids.map { CheckPaymentsMapper().mapper(it,period) }.toMutableList()
+                return list
+            }
+        }
+    }
+
+    override fun onLoaderReset(loader: Loader<List<CheckPaymentsPOJO>>) {
+    }
+
+    @RequiresApi(Build.VERSION_CODES.N)
+    override fun onLoadFinished(loader: Loader<List<CheckPaymentsPOJO>>, data: List<CheckPaymentsPOJO>?) {
+        data?.let{
+            val checkPaymentList = it.map { checkPaymentSvc.getCheckPayment(it.codPaid.toInt(),period) }.filter { it.isPresent }.map { it.get() }.toMutableList()
+            (holder as CheckPaymentsHolder).set(checkPaymentList)
+            holder.loadRecycler(it.toMutableList())
         }
     }
 

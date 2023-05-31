@@ -2,6 +2,7 @@ package co.japl.android.myapplication.finanzas.holders
 
 import android.util.Log
 import android.view.View
+import android.widget.ProgressBar
 import android.widget.TableLayout
 import android.widget.TableRow
 import android.widget.TextView
@@ -37,6 +38,7 @@ class AmortizationTableHolder(val view:View): ITableHolder<CalcDTO> {
     private lateinit var totalColumn: TextView
     private lateinit var nextValueColumn: TextView
     private lateinit var capitalValueColumn: TextView
+    private lateinit var progressBar:ProgressBar
     private var quotesPaid:Long = 0
     private val colorPaid = view.resources.getColor(androidx.media.R.color.primary_text_default_material_dark)
     private val backgroun = view.resources.getColor(R.color.green_background)
@@ -56,12 +58,14 @@ class AmortizationTableHolder(val view:View): ITableHolder<CalcDTO> {
         interestToPay = view.findViewById(R.id.interest_to_pay_at)
         capitalValueLayout = view.findViewById(R.id.capitalValueLayout)
         quoteValueLayout = view.findViewById(R.id.quoteValueLayout)
+        progressBar = view.findViewById(R.id.pb_load_at)
 
         amortizationList = ArrayList<Amortization>()
         interesToPay = BigDecimal.ZERO
         totalColumn.visibility= View.GONE
         nextValueColumn.visibility = View.GONE
         capitalValueLayout.visibility = View.GONE
+        progressBar.visibility = View.VISIBLE
     }
 
     override fun setData(creditValue: CalcDTO) {
@@ -194,6 +198,7 @@ class AmortizationTableHolder(val view:View): ITableHolder<CalcDTO> {
             table.addView(row,TableRow.LayoutParams.MATCH_PARENT,TableRow.LayoutParams.WRAP_CONTENT)
         }
        this.interestToPay.text = NumbersUtil.toString(interesToPay)
+       progressBar.visibility = View.GONE
     }
 
     private fun createTextView(value:String,paid:Boolean):MaterialTextView{

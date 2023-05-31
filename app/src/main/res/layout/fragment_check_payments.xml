@@ -16,6 +16,11 @@
              android:padding="@dimen/space_min"
           android:orientation="vertical">
 
+             <ProgressBar
+                 android:layout_width="match_parent"
+                 android:layout_height="wrap_content"
+                 android:id="@+id/pb_load_cps"/>
+
           <com.google.android.material.textview.MaterialTextView
               android:layout_width="wrap_content"
               android:layout_height="wrap_content"

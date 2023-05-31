@@ -2,6 +2,7 @@ package co.japl.android.myapplication.finanzas.holders
 
 import android.os.Build
 import android.view.View
+import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.annotation.RequiresApi
 import co.japl.android.myapplication.R
@@ -18,17 +19,17 @@ import java.math.BigDecimal
 import java.time.LocalDate
 
 class ProjectionsHolder(val view:View) : IRecapHolder<ProjectionsHolder> {
-    private val svc:IProjectionsSvc = ProjectionsImpl(ConnectDB(view.context),view)
-    private lateinit var items:TextView
-    private lateinit var total:TextView
-    private lateinit var dtClose:TextView
-    private lateinit var monthClose:TextView
-    private lateinit var valueClose:TextView
-    private lateinit var dtFar:TextView
-    private lateinit var monthFar:TextView
-    private lateinit var valueFar:TextView
+     lateinit var items:TextView
+     lateinit var total:TextView
+     lateinit var dtClose:TextView
+     lateinit var monthClose:TextView
+     lateinit var valueClose:TextView
+     lateinit var dtFar:TextView
+     lateinit var monthFar:TextView
+     lateinit var valueFar:TextView
     private lateinit var btnDetail:MaterialButton
     private lateinit var btnAdd:MaterialButton
+    private lateinit var progressBar: ProgressBar
 
     override fun setFields(actions: View.OnClickListener?) {
         items = view.findViewById(R.id.tv_num_items_pjs)
@@ -41,24 +42,16 @@ class ProjectionsHolder(val view:View) : IRecapHolder<ProjectionsHolder> {
         valueFar = view.findViewById(R.id.tv_save_far_pjs)
         btnDetail = view.findViewById(R.id.btn_detail_pjs)
         btnAdd = view.findViewById(R.id.btn_add_pjs)
+        progressBar = view.findViewById(R.id.pb_load_pjs)
         btnDetail.setOnClickListener(actions)
         btnAdd.setOnClickListener(actions)
+        progressBar.visibility = View.VISIBLE
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun loadFields(fn: ((ProjectionsHolder) -> Unit)?) {
-        val close = svc.getClose()
-        val far = svc.getFar()
-        val tot = svc.getTotal()
-
-        items.text = tot.first.toString()
-        total.text = NumbersUtil.toString(tot.second)
-        dtClose.text = DateUtils.localDateToString(close.first)
-        monthClose.text = close.second.toString()
-        valueClose.text = NumbersUtil.toString(close.third)
-        dtFar.text = DateUtils.localDateToString(far.first)
-        monthFar.text = far.second.toString()
-        valueFar.text = NumbersUtil.toString(far.third)
+        fn?.invoke(this)
+        progressBar.visibility = View.GONE
     }
 
 }

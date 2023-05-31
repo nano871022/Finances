@@ -2,6 +2,7 @@ package co.japl.android.myapplication.finanzas.holders
 
 import android.os.Build
 import android.view.View
+import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -21,13 +22,16 @@ class PaidListHolder(val view:View): IHolder<PaidDTO>, IRecyclerView<PaidDTO> {
     private lateinit var recycler: RecyclerView
     private lateinit var value: TextView
     private lateinit var period: TextView
+    private lateinit var progressBar: ProgressBar
 
     override fun setFields(actions: View.OnClickListener?) {
         recycler = view.findViewById(R.id.rv_paid_list)
         value = view.findViewById(R.id.tv_value_pdl)
         period = view.findViewById(R.id.tv_period_pdl)
+        progressBar = view.findViewById(R.id.pb_load_pdl)
         recycler.layoutManager = LinearLayoutManager(view.context,
             LinearLayoutManager.VERTICAL,false)
+        progressBar.visibility = View.VISIBLE
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -52,5 +56,6 @@ class PaidListHolder(val view:View): IHolder<PaidDTO>, IRecyclerView<PaidDTO> {
         ListPaidAdapter(data)?.let{
             recycler.adapter = it
         }
+        progressBar.visibility = View.GONE
     }
 }

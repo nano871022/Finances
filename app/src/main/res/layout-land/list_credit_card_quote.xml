@@ -10,17 +10,19 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-
-
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-
-
-
+        <ProgressBar
+            android:id="@+id/pb_load_qcc"
+            style="?android:attr/progressBarStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:elevation="@dimen/card_elevator_5"
+            android:progressBackgroundTint="@color/green_background"
+            android:rotationX="-2" />
 
     <LinearLayout
         android:id="@+id/llRemainderCutOffDate"

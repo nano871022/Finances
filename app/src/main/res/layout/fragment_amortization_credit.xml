@@ -19,6 +19,14 @@
                 android:layout_margin="@dimen/space_min"
                 android:orientation="vertical">
 
+                <ProgressBar
+                    android:id="@+id/pb_load_acf"
+                    style="?android:attr/progressBarStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:elevation="@dimen/card_elevator_5"
+                    android:progressBackgroundTint="?attr/colorPrimaryVariant"/>
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

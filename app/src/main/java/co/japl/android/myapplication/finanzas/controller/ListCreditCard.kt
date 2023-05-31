@@ -9,24 +9,33 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.loader.app.LoaderManager
+import androidx.loader.content.AsyncTaskLoader
+import androidx.loader.content.Loader
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import co.japl.android.myapplication.R
 import co.japl.android.myapplication.adapter.ListCreditCardAdapter
 import co.japl.android.myapplication.bussiness.DB.connections.ConnectDB
+import co.japl.android.myapplication.bussiness.DTO.CreditCardDTO
 import co.japl.android.myapplication.bussiness.impl.CreditCardImpl
+import co.japl.android.myapplication.bussiness.interfaces.SaveSvc
+import co.japl.android.myapplication.finanzas.bussiness.interfaces.ISaveSvc
+import co.japl.android.myapplication.finanzas.holders.ListCreditCardHolder
+import co.japl.android.myapplication.finanzas.holders.interfaces.IListHolder
 import co.japl.android.myapplication.putParams.CreditCardParams
 import java.util.Arrays
 
-class ListCreditCard : Fragment() , View.OnClickListener{
-    private lateinit var recycle:RecyclerView
-    private lateinit var button:Button
+class ListCreditCard : Fragment() , View.OnClickListener, LoaderManager.LoaderCallbacks<List<CreditCardDTO>> {
+    private lateinit var saveSvc:SaveSvc<CreditCardDTO>
+    private lateinit var holder:IListHolder<ListCreditCardHolder,CreditCardDTO>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,48 +48,54 @@ class ListCreditCard : Fragment() , View.OnClickListener{
         savedInstanceState: Bundle?
     ): View? {
         val view =  inflater.inflate(R.layout.fragment_list_credit_card, container, false)
-        setField(view)
-        loadRecyclerView(view)
+        val connect = ConnectDB(view.context)
+        saveSvc = CreditCardImpl(connect)
+        holder = ListCreditCardHolder(view,parentFragmentManager,findNavController())
+        holder.setFields(this)
+        loaderManager.initLoader(1,null,this)
         return view
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
-    private fun loadRecyclerView(view:View){
-        view?.let {
-            recycle?.let { recycler->
-                recycler.layoutManager = LinearLayoutManager(
-                    it.context,
-                    LinearLayoutManager.VERTICAL, false
-                )
-                val connect = ConnectDB(view.context)
-                val saveSvc = CreditCardImpl(connect)
-                val data = saveSvc.getAll()
-                saveSvc.backup("CreditCard.dat")
-                saveSvc.restoreBackup("CreditCard.dat")
-                recycler.adapter = ListCreditCardAdapter(data.toMutableList(),parentFragmentManager,findNavController())
-            }
-        }
-    }
-
     private fun add(){
-        Log.d(this.javaClass.name,"add - start")
         CreditCardParams.newInstance(findNavController())
-    }
-
-    private fun setField(view:View){
-        view?.let {
-            recycle = it.findViewById (R.id.rvCreditCardSettingCCS)
-            button = it.findViewById(R.id.btnAddNewCCS)
-            button.setOnClickListener(this)
-        }
     }
 
     override fun onClick(v: View?) {
         when(v?.id){
-            R.id.btnAddNewCCS ->{add()}
-            else->{
+            R.id.btnAddNewCCS ->add()
+            else->
                 view.let{
                 Toast.makeText(it!!.context,"Invalid Option",Toast.LENGTH_LONG).show()}}
+
+    }
+
+    override fun onCreateLoader(id: Int, args: Bundle?): Loader<List<CreditCardDTO>> {
+        return object:AsyncTaskLoader<List<CreditCardDTO>>(requireContext()){
+            private var data:List<CreditCardDTO>? = null
+            override fun onStartLoading() {
+                super.onStartLoading()
+                if(data != null){
+                    deliverResult(data)
+                }else{
+                    forceLoad()
+                }
+            }
+            override fun loadInBackground(): List<CreditCardDTO>? {
+                data = saveSvc.getAll()
+                return data
+            }
+
+        }
+    }
+
+    override fun onLoaderReset(loader: Loader<List<CreditCardDTO>>) {
+    }
+
+    override fun onLoadFinished(loader: Loader<List<CreditCardDTO>>, data: List<CreditCardDTO>?) {
+        data?.let {
+            holder.loadRecycler(it.toMutableList())
+            saveSvc.backup("CreditCard.dat")
+            saveSvc.restoreBackup("CreditCard.dat")
         }
     }
 

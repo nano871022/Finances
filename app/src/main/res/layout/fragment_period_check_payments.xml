@@ -4,9 +4,6 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    app:cardCornerRadius="@dimen/radius_corner"
-    app:cardElevation="@dimen/card_elevator"
-    app:strokeWidth="@dimen/stroke_with"
     android:layout_margin="@dimen/space_min"
     tools:context=".finanzas.controller.PeriodCheckPaymentsFragment">
 
@@ -16,6 +13,11 @@
         android:orientation="vertical"
         android:layout_margin="@dimen/space_min"
         android:padding="@dimen/space_min">
+
+        <ProgressBar
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/pb_load_pcp"/>
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_periods_pcp"

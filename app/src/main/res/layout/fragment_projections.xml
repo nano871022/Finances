@@ -18,6 +18,11 @@
             android:orientation="vertical"
             android:padding="@dimen/space_min">
 
+            <ProgressBar
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/pb_load_pjs"/>
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -80,9 +85,16 @@
                         android:layout_margin="@dimen/space_min"
                         android:text="@string/closed"/>
 
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+
                     <com.google.android.material.textfield.TextInputLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_weight="1"
                         style="@style/MaterialTextInputLayoutView"
                         android:hint="@string/date">
 
@@ -100,6 +112,7 @@
                     <com.google.android.material.textfield.TextInputLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_weight="1"
                         style="@style/MaterialTextInputLayoutView"
                         android:hint="@string/months_lack">
 
@@ -112,6 +125,7 @@
                             style="@style/MaterialTextInputLayoutView"
                             android:textAlignment="center" />
                     </com.google.android.material.textfield.TextInputLayout>
+                    </LinearLayout>
 
                     <com.google.android.material.textfield.TextInputLayout
                         android:layout_width="match_parent"
@@ -155,8 +169,14 @@
                     android:layout_margin="@dimen/space_min"
                     android:text="@string/fared"/>
 
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
                 <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="match_parent"
+                    android:layout_weight="1"
                     android:layout_height="wrap_content"
                     android:layout_margin="@dimen/space_min"
                     style="@style/MaterialTextInputLayoutView"
@@ -175,6 +195,7 @@
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:layout_margin="@dimen/space_min"
                 style="@style/MaterialTextInputLayoutView"
                 android:hint="@string/months_lack">
@@ -188,7 +209,7 @@
                     android:enabled="false"
                     android:textAlignment="center" />
             </com.google.android.material.textfield.TextInputLayout>
-
+                </LinearLayout>
 
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"

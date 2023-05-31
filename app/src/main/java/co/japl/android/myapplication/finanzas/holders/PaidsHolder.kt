@@ -2,6 +2,7 @@ package co.japl.android.myapplication.finanzas.holders
 
 import android.os.Build
 import android.view.View
+import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.annotation.RequiresApi
 import co.japl.android.myapplication.R
@@ -35,6 +36,7 @@ class PaidsHolder(val view:View): IHolder<PaidsPOJO> {
     private lateinit var btnDetail:MaterialButton
     private lateinit var btnPeriods:MaterialButton
     private lateinit var btnAdd:MaterialButton
+    private lateinit var progressBar:ProgressBar
 
     override fun setFields(actions: View.OnClickListener?) {
         period = view.findViewById(R.id.period_ps)
@@ -45,9 +47,11 @@ class PaidsHolder(val view:View): IHolder<PaidsPOJO> {
         btnAdd = view.findViewById(R.id.btn_add_ps)
         btnDetail = view.findViewById(R.id.btn_detail_ps)
         btnPeriods = view.findViewById(R.id.btn_periods_ps)
+        progressBar = view.findViewById(R.id.pb_load_ps)
         btnAdd.setOnClickListener(actions)
         btnPeriods.setOnClickListener(actions)
         btnDetail.setOnClickListener(actions)
+        progressBar.visibility = View.VISIBLE
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -83,6 +87,7 @@ class PaidsHolder(val view:View): IHolder<PaidsPOJO> {
             btnDetail.visibility = View.GONE
             btnAdd.visibility = View.GONE
         }
+        progressBar.visibility = View.GONE
     }
 
     override fun downLoadFields(): PaidsPOJO {

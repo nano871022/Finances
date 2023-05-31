@@ -3,6 +3,7 @@ package co.japl.android.myapplication.finanzas.holders
 import android.os.Build
 import android.util.Log
 import android.view.View
+import android.widget.ProgressBar
 import android.widget.TableLayout
 import android.widget.TableRow
 import android.widget.TextView
@@ -47,6 +48,7 @@ class AmortizationCreditTableHolder(val view:View): ITableHolder<AmortizationCre
     private val background = view.resources.getColor(R.color.green_background)
     @RequiresApi(Build.VERSION_CODES.O)
     private var dateBill:LocalDate = LocalDate.MIN
+    private lateinit var progressBar:ProgressBar
 
     override fun setup(actions: View.OnClickListener?) {
         table = view.findViewById(R.id.amortization_acf)
@@ -58,7 +60,9 @@ class AmortizationCreditTableHolder(val view:View): ITableHolder<AmortizationCre
         interest = view.findViewById(R.id.interest_acf)
         tax = view.findViewById(R.id.tv_interest_acf)
         quote = view.findViewById(R.id.quote_acf)
+        progressBar = view.findViewById(R.id.pb_load_acf)
         btnAdditional.setOnClickListener(actions)
+        progressBar.visibility = View.VISIBLE
     }
 
     override fun setData(creditValue: CalcDTO) {
@@ -133,6 +137,7 @@ class AmortizationCreditTableHolder(val view:View): ITableHolder<AmortizationCre
             table.addView(row,TableLayout.LayoutParams.MATCH_PARENT,TableLayout.LayoutParams.WRAP_CONTENT)
         }
         interest.text = NumbersUtil.toString(interestToPay)
+        progressBar.visibility = View.GONE
     }
 
     private fun createTextView(value:String,paid:Boolean):MaterialTextView{

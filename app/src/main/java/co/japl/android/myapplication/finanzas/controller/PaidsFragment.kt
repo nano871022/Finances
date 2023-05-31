@@ -8,6 +8,9 @@ import android.view.View
 import android.view.View.OnClickListener
 import android.view.ViewGroup
 import androidx.annotation.RequiresApi
+import androidx.loader.app.LoaderManager
+import androidx.loader.content.AsyncTaskLoader
+import androidx.loader.content.Loader
 import androidx.navigation.fragment.findNavController
 import co.japl.android.myapplication.R
 import co.japl.android.myapplication.bussiness.DB.connections.ConnectDB
@@ -20,7 +23,7 @@ import co.japl.android.myapplication.finanzas.holders.PaidsHolder
 import co.japl.android.myapplication.finanzas.putParams.PaidsParams
 import java.time.LocalDate
 
-class PaidsFragment : Fragment(), OnClickListener {
+class PaidsFragment : Fragment(), OnClickListener ,LoaderManager.LoaderCallbacks<PaidsPOJO>{
     private lateinit var holder: IHolder<PaidsPOJO>
     private lateinit var service:SaveSvc<PaidDTO>
     @RequiresApi(Build.VERSION_CODES.O)
@@ -39,13 +42,8 @@ class PaidsFragment : Fragment(), OnClickListener {
         service = PaidImpl(ConnectDB(root.context))
         holder = PaidsHolder(root)
         holder.setFields(this)
-        holder.loadFields(getPaids())
+        loaderManager.initLoader(0,null,this)
         return root
-    }
-
-    @RequiresApi(Build.VERSION_CODES.O)
-    private fun getPaids():PaidsPOJO{
-        return (service as PaidImpl).getPaids(date)
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -55,6 +53,33 @@ class PaidsFragment : Fragment(), OnClickListener {
             R.id.btn_detail_ps->PaidsParams.newInstanceList(date,findNavController())
             R.id.btn_periods_ps->PaidsParams.newInstancePeriods(findNavController())
         }
+    }
+
+    override fun onCreateLoader(id: Int, args: Bundle?): Loader<PaidsPOJO> {
+    return object:AsyncTaskLoader<PaidsPOJO>(requireContext()){
+        private var data:PaidsPOJO? = null
+        override fun onStartLoading() {
+            super.onStartLoading()
+            if(data != null){
+                deliverResult(data)
+            }else{
+                forceLoad()
+            }
+        }
+        @RequiresApi(Build.VERSION_CODES.O)
+        override fun loadInBackground(): PaidsPOJO? {
+            data = (service as PaidImpl).getPaids(date)
+            return data
+        }
+
+    }
+    }
+
+    override fun onLoaderReset(loader: Loader<PaidsPOJO>) {
+    }
+
+    override fun onLoadFinished(loader: Loader<PaidsPOJO>, data: PaidsPOJO?) {
+        data?.let{holder.loadFields(data)}
     }
 
 }

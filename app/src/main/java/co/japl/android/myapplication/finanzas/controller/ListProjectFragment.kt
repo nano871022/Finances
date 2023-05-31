@@ -8,6 +8,9 @@ import android.view.View
 import android.view.View.OnClickListener
 import android.view.ViewGroup
 import androidx.annotation.RequiresApi
+import androidx.loader.app.LoaderManager
+import androidx.loader.content.AsyncTaskLoader
+import androidx.loader.content.Loader
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import co.japl.android.myapplication.R
@@ -24,7 +27,7 @@ import co.japl.android.myapplication.utils.NumbersUtil
 import java.time.LocalDate
 import java.time.Period
 
-class ListProjectFragment : Fragment(){
+class ListProjectFragment : Fragment(),LoaderManager.LoaderCallbacks<List<ProjectionDTO>>{
     private lateinit var holder: IListHolder<ListProjectionHolder,ProjectionDTO>
     private lateinit var svc:IProjectionsSvc
     private lateinit var kindOfList:Array<String>
@@ -40,9 +43,36 @@ class ListProjectFragment : Fragment(){
         val root = inflater.inflate(R.layout.fragment_list_projection, container, false)
         svc = ProjectionsImpl(ConnectDB(root.context),root)
         kindOfList = root.resources.getStringArray(R.array.kind_of_projection_list)
-        val data = svc.getAllActive().toMutableList()
-            holder = ListProjectionHolder(root,findNavController())
-            holder.setFields(null)
+        holder = ListProjectionHolder(root,findNavController())
+        holder.setFields(null)
+        loaderManager.initLoader(0,null,this)
+        return root
+    }
+
+    override fun onCreateLoader(id: Int, args: Bundle?): Loader<List<ProjectionDTO>> {
+        return object:AsyncTaskLoader<List<ProjectionDTO>>(requireContext()){
+            private var data:List<ProjectionDTO>? = null
+            override fun onStartLoading() {
+                super.onStartLoading()
+                if(data != null){
+                    deliverResult(data)
+                }else{
+                    forceLoad()
+                }
+            }
+            override fun loadInBackground(): List<ProjectionDTO>? {
+                data = svc.getAllActive()
+                return data
+            }
+        }
+    }
+
+    override fun onLoaderReset(loader: Loader<List<ProjectionDTO>>) {
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    override fun onLoadFinished(loader: Loader<List<ProjectionDTO>>, data: List<ProjectionDTO>?) {
+        data?.let {
             holder.loadFields {
                 val tot = data.sumOf {
                     val index = kindOfList.indexOf(it.type)
@@ -53,7 +83,7 @@ class ListProjectFragment : Fragment(){
                 it.items.text = data.count().toString()
                 it.total.text = NumbersUtil.toString(tot)
             }
-            holder.loadRecycler(data)
-        return root
+            holder.loadRecycler(it.toMutableList())
+        }
     }
 }

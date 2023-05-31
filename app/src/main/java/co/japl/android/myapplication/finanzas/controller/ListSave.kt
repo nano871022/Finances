@@ -6,6 +6,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.loader.app.LoaderManager
+import androidx.loader.content.AsyncTaskLoader
+import androidx.loader.content.Loader
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import co.japl.android.myapplication.R
@@ -14,14 +17,12 @@ import co.japl.android.myapplication.bussiness.DB.connections.ConnectDB
 import co.japl.android.myapplication.bussiness.DTO.CalcDTO
 import co.japl.android.myapplication.bussiness.impl.SaveImpl
 import co.japl.android.myapplication.bussiness.interfaces.SaveSvc
+import co.japl.android.myapplication.finanzas.holders.ListSaveHolder
+import co.japl.android.myapplication.finanzas.holders.interfaces.IListHolder
 import co.japl.android.myapplication.holders.view.ViewHolder
 
-class ListSave : Fragment() {
-    lateinit var recyclerView:RecyclerView
-    lateinit var adapter:RecyclerView.Adapter<ViewHolder>
-    lateinit var list:List<CalcDTO>
-    lateinit var contexts:Context
-    lateinit var dbConnect: ConnectDB
+class ListSave : Fragment(), LoaderManager.LoaderCallbacks<List<CalcDTO>> {
+    lateinit var holder:ListSaveHolder
     lateinit var saveSvc: SaveSvc<CalcDTO>
 
     override fun onCreateView(
@@ -29,22 +30,38 @@ class ListSave : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val rootView = inflater.inflate(R.layout.fragment_list_save, container, false)
-        contexts = rootView.context
-        recyclerView = rootView.findViewById(R.id.list_save)
-        connectDB()
-        loadRecyclerView(rootView)
+        saveSvc = SaveImpl(ConnectDB(rootView.context))
+        holder = ListSaveHolder(rootView)
+        holder.setFields(null)
+        loaderManager.initLoader(1, null, this)
         return rootView
     }
 
-    private fun loadRecyclerView(view:View){
-        recyclerView.layoutManager = LinearLayoutManager(contexts,LinearLayoutManager.VERTICAL,false)
-        adapter = ListSaveAdapter(list.toMutableList(),view)
-        recyclerView.adapter = adapter
+    override fun onCreateLoader(id: Int, args: Bundle?): Loader<List<CalcDTO>> {
+        return object:AsyncTaskLoader<List<CalcDTO>>(requireContext()){
+            private var data:List<CalcDTO>? = null
+            override fun onStartLoading() {
+                super.onStartLoading()
+                if(data != null){
+                    deliverResult(data)
+                }else{
+                    forceLoad()
+                }
+            }
+            override fun loadInBackground(): List<CalcDTO>? {
+                data = saveSvc.getAll()
+                return data
+            }
+        }
     }
-    private fun connectDB(){
-        dbConnect = ConnectDB(contexts)
-        saveSvc = SaveImpl(dbConnect)
-        list = saveSvc.getAll()
+
+    override fun onLoaderReset(loader: Loader<List<CalcDTO>>) {
+    }
+
+    override fun onLoadFinished(loader: Loader<List<CalcDTO>>, data: List<CalcDTO>?) {
+        data?.let {
+            holder.loadRecycler(it.toMutableList())
+        }
     }
 
 

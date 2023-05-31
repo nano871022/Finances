@@ -16,12 +16,10 @@
 
 
     <!-- TODO: Update blank fragment layout -->
-    <com.google.android.material.progressindicator.CircularProgressIndicator
-        android:id="@+id/pbTaxTCC"
+    <ProgressBar
+        android:id="@+id/pb_load_tcc"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:keepScreenOn="true"
-       android:indeterminate="true" />
+        android:layout_height="match_parent"/>
 
     <LinearLayout
         android:id="@+id/llMainTTCC"

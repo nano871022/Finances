@@ -4,6 +4,7 @@ import android.os.Build
 import android.view.View
 import android.view.View.OnClickListener
 import android.view.View.VISIBLE
+import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.annotation.RequiresApi
 import co.japl.android.myapplication.R
@@ -29,6 +30,7 @@ class CreditFixListHolder(val view:View){
     lateinit var detail:MaterialButton
     lateinit var period:MaterialButton
     lateinit var add:MaterialButton
+    lateinit var progressBar:ProgressBar
 
     fun loadField(){
         creditSvc = CreditFixImpl(ConnectDB(view.context))
@@ -41,9 +43,11 @@ class CreditFixListHolder(val view:View){
         detail = view.findViewById(R.id.btn_detail_cfl)
         period = view.findViewById(R.id.btn_periods_cfl)
         add = view.findViewById(R.id.btn_add_cfl)
+        progressBar = view.findViewById(R.id.pb_load_cfl)
 
         detail.visibility = View.GONE
         period.visibility = View.GONE
+        progressBar.visibility = View.VISIBLE
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -62,5 +66,6 @@ class CreditFixListHolder(val view:View){
             detail.visibility = View.VISIBLE
             period.visibility = View.VISIBLE
         }
+        progressBar.visibility = View.GONE
     }
 }
