@@ -67,6 +67,7 @@ class AdditionalListFragment : Fragment() ,OnClickListener,LoaderManager.LoaderC
                     forceLoad()
                 }
             }
+            @RequiresApi(Build.VERSION_CODES.O)
             override fun loadInBackground(): AdditionalCreditDTO? {
                 val creditCode = arguments?.let {
                     CreditFixParams.downloadAdditionalList(it) ?: 0
