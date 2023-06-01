@@ -54,7 +54,7 @@ class ProjectionsFragment : Fragment(),OnClickListener ,LoaderManager.LoaderCall
 
     override fun onResume() {
         super.onResume()
-        loaderManager.initLoader(0,null,this)
+        loaderManager.restartLoader(0,null,this)
     }
 
     override fun onCreateLoader(id: Int, args: Bundle?): Loader<Map<String, Any>> {

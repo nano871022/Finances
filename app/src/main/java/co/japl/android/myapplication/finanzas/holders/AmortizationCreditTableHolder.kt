@@ -77,7 +77,7 @@ class AmortizationCreditTableHolder(val view:View): ITableHolder<AmortizationCre
     @RequiresApi(Build.VERSION_CODES.O)
     override fun create() {
         var currentCreditValue = credit.valueCredit
-        val tax = kindTaxSvc.getNM(credit.interest, KindOfTaxEnum.valueOf(credit.kindOfTax)) / 100
+        val tax = kindTaxSvc.getNM(credit.interest, KindOfTaxEnum.valueOf(credit.kindOfTax))
         for ( period in 1 .. credit.period){
             val interest = (currentCreditValue.toDouble() * tax).toBigDecimal()
             val capital = credit.quoteCredit -  interest

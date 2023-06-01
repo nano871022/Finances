@@ -54,6 +54,11 @@ class ListQuotesPaid : Fragment() ,LoaderManager.LoaderCallbacks<List<PeriodDTO>
         return rootView
     }
 
+    override fun onResume() {
+        super.onResume()
+        loaderManager.restartLoader(1, null, this)
+    }
+
     override fun onCreateLoader(id: Int, args: Bundle?): Loader<List<PeriodDTO>> {
         return object:AsyncTaskLoader<List<PeriodDTO>>(requireContext()){
             private var data: List<PeriodDTO>? = null

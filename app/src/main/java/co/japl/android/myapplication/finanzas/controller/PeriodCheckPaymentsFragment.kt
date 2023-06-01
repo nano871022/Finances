@@ -40,6 +40,11 @@ class PeriodCheckPaymentsFragment : Fragment() , LoaderManager.LoaderCallbacks<L
         return root
     }
 
+    override fun onResume() {
+        super.onResume()
+        loaderManager.restartLoader(1,null,this)
+    }
+
     override fun onCreateLoader(id: Int, args: Bundle?): Loader<List<PeriodCheckPaymentsPOJO>> {
         return object:AsyncTaskLoader<List<PeriodCheckPaymentsPOJO>>(requireContext()){
             private var data:List<PeriodCheckPaymentsPOJO>? = null

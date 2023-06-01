@@ -50,12 +50,17 @@ class MonthlyCreditListFragment : Fragment() ,LoaderManager.LoaderCallbacks<List
         return root
     }
 
+    override fun onResume() {
+        super.onResume()
+        loaderManager.restartLoader(0,null,this)
+    }
+
     @RequiresApi(Build.VERSION_CODES.O)
     private fun getDate():LocalDate{
         val date = CreditFixListParams.downloadMonthly(arguments)
-        return date?.let {
+        return (date?.let {
             return date.withDayOfMonth(1).plusMonths(1).minusDays(1)
-        } ?: LocalDate.now().withDayOfMonth(1).plusMonths(1).minusDays(1)
+        } ?: LocalDate.now().withDayOfMonth(1).plusMonths(1).minusDays(1)).also { Log.d(javaClass.name,"Date $it") }
     }
 
     @RequiresApi(Build.VERSION_CODES.O)

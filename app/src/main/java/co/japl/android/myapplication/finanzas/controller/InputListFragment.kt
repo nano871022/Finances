@@ -68,11 +68,17 @@ class InputListFragment : Fragment(),OnClickListener,LoaderManager.LoaderCallbac
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        loaderManager.restartLoader(1,null,this)
+    }
+
     override fun onCreateLoader(id: Int, args: Bundle?): Loader<List<InputDTO>> {
         return object:AsyncTaskLoader<List<InputDTO>>(requireContext()){
-            private var data:List<InputDTO> ?= null
+             var data:List<InputDTO> ?= null
             override fun onStartLoading() {
                 super.onStartLoading()
+                Log.d(javaClass.name,"onStartLoading $data")
                 if(data != null){
                     deliverResult(data)
                 }else{
@@ -81,10 +87,11 @@ class InputListFragment : Fragment(),OnClickListener,LoaderManager.LoaderCallbac
             }
             @RequiresApi(Build.VERSION_CODES.O)
             override fun loadInBackground(): List<InputDTO>? {
+                Log.d(javaClass.name,"loadInBackground $data")
                 data = getData()
                 return data
             }
-        }
+        }.also { it.data = null }
     }
 
     override fun onLoaderReset(loader: Loader<List<InputDTO>>) {

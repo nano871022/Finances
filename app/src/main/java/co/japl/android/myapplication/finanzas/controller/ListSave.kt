@@ -37,6 +37,11 @@ class ListSave : Fragment(), LoaderManager.LoaderCallbacks<List<CalcDTO>> {
         return rootView
     }
 
+    override fun onResume() {
+        super.onResume()
+        loaderManager.restartLoader(1, null, this)
+    }
+
     override fun onCreateLoader(id: Int, args: Bundle?): Loader<List<CalcDTO>> {
         return object:AsyncTaskLoader<List<CalcDTO>>(requireContext()){
             private var data:List<CalcDTO>? = null

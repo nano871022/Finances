@@ -60,6 +60,11 @@ class ListCreditCard : Fragment() , View.OnClickListener, LoaderManager.LoaderCa
         CreditCardParams.newInstance(findNavController())
     }
 
+    override fun onResume() {
+        super.onResume()
+        loaderManager.restartLoader(1,null,this)
+    }
+
     override fun onClick(v: View?) {
         when(v?.id){
             R.id.btnAddNewCCS ->add()

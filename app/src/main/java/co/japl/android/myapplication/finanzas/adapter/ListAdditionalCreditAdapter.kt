@@ -13,6 +13,7 @@ import co.japl.android.myapplication.bussiness.DB.connections.ConnectDB
 import co.japl.android.myapplication.bussiness.interfaces.SaveSvc
 import co.japl.android.myapplication.finanzas.bussiness.DTO.AdditionalCreditDTO
 import co.japl.android.myapplication.finanzas.bussiness.impl.AdditionalCreditImpl
+import co.japl.android.myapplication.finanzas.enums.MoreOptionsItemsAdditional
 import co.japl.android.myapplication.finanzas.holders.view.AdditionalCreditItemHolder
 import co.japl.android.myapplication.finanzas.putParams.AdditionalCreditParams
 import com.google.android.material.snackbar.Snackbar
@@ -34,8 +35,8 @@ class ListAdditionalCreditAdapter(val data:MutableList<AdditionalCreditDTO>,val 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onBindViewHolder(holder: AdditionalCreditItemHolder, position: Int) {
         holder.setField(data[position]) {
-            when (it.id) {
-                R.id.btn_delete_acil -> {
+            when (it) {
+                MoreOptionsItemsAdditional.DELETE -> {
                     val dialog = AlertDialog
                         .Builder(view.context)
                         .setTitle(R.string.do_you_want_to_delete_this_record)
@@ -64,7 +65,7 @@ class ListAdditionalCreditAdapter(val data:MutableList<AdditionalCreditDTO>,val 
                             }
                         }
                 }
-             R.id.btn_edit_acil-> AdditionalCreditParams.newInstance(data[position], navController)
+             MoreOptionsItemsAdditional.EDIT-> AdditionalCreditParams.newInstance(data[position], navController)
             }
         }
     }

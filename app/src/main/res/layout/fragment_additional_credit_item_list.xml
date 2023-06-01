@@ -46,22 +46,11 @@
         </com.google.android.material.textfield.TextInputLayout>
 
         <ImageView
-            android:id="@+id/btn_edit_acil"
+            android:id="@+id/btn_more_acil"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_weight="0"
-            android:padding="@dimen/space_min"
-            android:layout_margin="@dimen/space_min"
-            app:srcCompat="@drawable/search" />
-
-        <ImageView
-            android:id="@+id/btn_delete_acil"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_weight="0"
-            android:padding="@dimen/space_min"
-            android:layout_margin="@dimen/space_min"
-            app:srcCompat="@drawable/ic_baseline_delete_24" />
+            app:srcCompat="@drawable/more_vertical" />
 
 
     </LinearLayout>

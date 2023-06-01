@@ -55,6 +55,11 @@ class PaidsFragment : Fragment(), OnClickListener ,LoaderManager.LoaderCallbacks
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        loaderManager.restartLoader(0,null,this)
+    }
+
     override fun onCreateLoader(id: Int, args: Bundle?): Loader<PaidsPOJO> {
     return object:AsyncTaskLoader<PaidsPOJO>(requireContext()){
         private var data:PaidsPOJO? = null

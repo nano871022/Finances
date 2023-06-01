@@ -40,6 +40,11 @@ class AdditionalListFragment : Fragment() ,OnClickListener,LoaderManager.LoaderC
         return root
     }
 
+    override fun onResume() {
+        super.onResume()
+        loaderManager.restartLoader(1,null,this)
+    }
+
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onClick(view: View?) {
          when(view?.id){

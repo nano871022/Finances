@@ -70,14 +70,18 @@ class ListCreditCardQuote : Fragment(), LoaderManager.LoaderCallbacks<CreditCard
         super.onResume()
         Log.d(this.javaClass.name,">>> En resume")
         if((holder as QuoteCCHolder).spCreditCard.text.isNotBlank()){
+            (holder as QuoteCCHolder).progresBar.visibility = View.GONE
             val value = (holder as QuoteCCHolder).spCreditCard.text.toString()
             val creditCard = listCreditCard.firstOrNull { cc -> cc.name == value }
             pojo  = creditCard?.let {
                 CreditCardMap().mapper(it)
             }?: CreditCard()
+            loaderManager.restartLoader(1,null,this)
+        }else{
+            (holder as QuoteCCHolder).progresBar.visibility = View.GONE
         }
-        loaderManager.initLoader(1,null,this)
     }
+
 
     @RequiresApi(Build.VERSION_CODES.O)
     private fun loadData(pojo:CreditCard):CreditCard{
@@ -129,6 +133,7 @@ class ListCreditCardQuote : Fragment(), LoaderManager.LoaderCallbacks<CreditCard
         (holder as ISpinnerHolder<QuoteCCHolder>).lists{
             onItemSelected(it,container)
             if(listCreditCard.isNotEmpty() && listCreditCard.size == 1) {
+                (holder as QuoteCCHolder).progresBar.visibility = View.GONE
                 val creditCardSel = listCreditCard.first()
                 it.spCreditCard.setText(creditCardSel.name)
                  pojo = CreditCardMap().mapper(creditCardSel)
@@ -140,6 +145,7 @@ class ListCreditCardQuote : Fragment(), LoaderManager.LoaderCallbacks<CreditCard
         }
 
     }
+
 
     @RequiresApi(Build.VERSION_CODES.O)
     private fun onItemSelected(holder:QuoteCCHolder,view:View) {
@@ -157,14 +163,14 @@ class ListCreditCardQuote : Fragment(), LoaderManager.LoaderCallbacks<CreditCard
                 holder.cleanField()
                 this.context?.let {
                     val now = LocalDateTime.now(ZoneId.systemDefault())
-                    Log.d(this.javaClass.name,"Now:. $now")
+                    (holder as QuoteCCHolder).progresBar.visibility = View.GONE
                      pojo  = creditCard?.let {
                         CreditCardMap().mapper(it)
                     }?: CreditCard()
                     taxSvc.get(creditCard.id.toLong(),now.monthValue,now.year).ifPresent{
                         pojo!!.lastTax = Optional.ofNullable(it.value)
                     }
-                    loaderManager.initLoader(1,null,thisBuild)
+                    loaderManager.restartLoader(1,null,thisBuild)
                 }
             }
         }

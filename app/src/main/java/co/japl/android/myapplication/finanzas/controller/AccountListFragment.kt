@@ -19,14 +19,13 @@ import co.japl.android.myapplication.bussiness.DB.connections.ConnectDB
 import co.japl.android.myapplication.bussiness.interfaces.SaveSvc
 import co.japl.android.myapplication.finanzas.bussiness.DTO.AccountDTO
 import co.japl.android.myapplication.finanzas.bussiness.impl.AccountImpl
+import co.japl.android.myapplication.finanzas.holders.AccountListHolder
 import co.japl.android.myapplication.finanzas.putParams.AccountListParams
 import com.google.android.material.button.MaterialButton
 
 class AccountListFragment : Fragment() , OnClickListener,LoaderManager.LoaderCallbacks<List<AccountDTO>>{
-    private lateinit var recycler:RecyclerView
-    private lateinit var btnAdd:MaterialButton
-    private lateinit var progressBar:ProgressBar
     private lateinit var service:SaveSvc<AccountDTO>
+    private lateinit var holder:AccountListHolder
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
     }
@@ -36,15 +35,16 @@ class AccountListFragment : Fragment() , OnClickListener,LoaderManager.LoaderCal
         savedInstanceState: Bundle?
     ): View? {
         val root = inflater.inflate(R.layout.fragment_account_list, container, false)
-        progressBar = root.findViewById(R.id.pb_load_al)
-        recycler = root.findViewById(R.id.rv_account_list)
-        btnAdd = root.findViewById(R.id.btn_add_al)
         service = AccountImpl(ConnectDB(root.context))
-        recycler.layoutManager = LinearLayoutManager(root.context,LinearLayoutManager.VERTICAL,false)
-        btnAdd.setOnClickListener(this)
-        progressBar.visibility = View.VISIBLE
+        holder = AccountListHolder(root)
+        holder.setFields(this)
         loaderManager.initLoader(1,null,this)
         return root
+    }
+
+    override fun onResume() {
+        super.onResume()
+        loaderManager.restartLoader(1,null,this)
     }
 
     override fun onClick(p0: View?) {
@@ -75,11 +75,8 @@ class AccountListFragment : Fragment() , OnClickListener,LoaderManager.LoaderCal
     }
 
     override fun onLoadFinished(loader: Loader<List<AccountDTO>>, data: List<AccountDTO>?) {
-        data?.let { list->
-            ListAccountAdapter(list.toMutableList())?.let {
-                recycler.adapter = it
-            }
-            progressBar.visibility = View.GONE
+        data?.let {
+            holder.loadRecycler(data.toMutableList())
         }
     }
 

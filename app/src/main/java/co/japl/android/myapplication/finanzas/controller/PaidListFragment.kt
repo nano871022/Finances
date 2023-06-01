@@ -66,6 +66,11 @@ class PaidListFragment : Fragment() , LoaderManager.LoaderCallbacks<List<PaidDTO
         return data
     }
 
+    override fun onResume() {
+        super.onResume()
+        loaderManager.restartLoader(1,null,this)
+    }
+
     @RequiresApi(Build.VERSION_CODES.O)
     private fun getPaids():PaidDTO{
         val id = 0

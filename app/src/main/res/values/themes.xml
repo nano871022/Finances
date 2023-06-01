@@ -19,5 +19,6 @@
         <item name="colorControlNormal">?attr/colorPrimaryVariant</item>
         <item name="android:textColorPrimary">@color/green_background_dark_variant</item>
         <item name="materialCardViewStyle">@style/MaterialCardView</item>
+        <item name="progressBarStyle">@style/ProgressBar</item>
     </style>
 </resources>

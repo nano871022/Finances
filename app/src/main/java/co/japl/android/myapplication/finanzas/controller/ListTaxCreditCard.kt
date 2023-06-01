@@ -73,6 +73,11 @@ class ListTaxCreditCard : Fragment() ,LoaderManager.LoaderCallbacks<Pair<List<Cr
         holder.recyclerView.adapter?.notifyDataSetChanged()
     }
 
+    override fun onResume() {
+        super.onResume()
+        loaderManager.restartLoader(1,null,this)
+    }
+
     override fun onCreateLoader(id: Int, args: Bundle?): Loader<Pair<List<CreditCardDTO>,List<TaxDTO>>> {
         return object:AsyncTaskLoader<Pair<List<CreditCardDTO>,List<TaxDTO>>>(requireContext()){
             private var data:Pair<List<CreditCardDTO>,List<TaxDTO>>? = null

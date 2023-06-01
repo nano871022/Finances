@@ -43,6 +43,11 @@ class PeriodsPaidFragment : Fragment() , LoaderManager.LoaderCallbacks<List<Paid
         return root
     }
 
+    override fun onResume() {
+        super.onResume()
+        loaderManager.restartLoader(1,null,this)
+    }
+
     override fun onCreateLoader(id: Int, args: Bundle?): Loader<List<PaidDTO>> {
         return object : AsyncTaskLoader<List<PaidDTO>>(requireContext()) {
             private var data: List<PaidDTO>? = null

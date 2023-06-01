@@ -314,4 +314,9 @@
         <item >Eliminar</item>
     </array>
 
+    <array name="additional_items_options">
+        <item >Editar</item>
+        <item >Eliminar</item>
+    </array>
+
 </resources>

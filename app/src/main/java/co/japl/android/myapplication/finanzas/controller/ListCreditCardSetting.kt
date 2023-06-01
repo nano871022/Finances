@@ -75,6 +75,11 @@ class ListCreditCardSetting : Fragment() , View.OnClickListener,LoaderManager.Lo
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        loaderManager.restartLoader(1, null, this)
+    }
+
     override fun onCreateLoader(id: Int, args: Bundle?): Loader<List<CreditCardSettingDTO>> {
         return object:AsyncTaskLoader<List<CreditCardSettingDTO>>(requireContext()){
             private var data: List<CreditCardSettingDTO>? = null

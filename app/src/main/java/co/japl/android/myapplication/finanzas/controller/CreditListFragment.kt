@@ -44,6 +44,11 @@ class CreditListFragment : Fragment(), OnClickListener,LoaderManager.LoaderCallb
         return root
     }
 
+    override fun onResume() {
+        super.onResume()
+        loaderManager.restartLoader(0,null,this)
+    }
+
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onClick(view: View?) {
         when(view?.id){

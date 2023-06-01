@@ -49,6 +49,11 @@ class ListProjectFragment : Fragment(),LoaderManager.LoaderCallbacks<List<Projec
         return root
     }
 
+    override fun onResume() {
+        super.onResume()
+        loaderManager.restartLoader(0,null,this)
+    }
+
     override fun onCreateLoader(id: Int, args: Bundle?): Loader<List<ProjectionDTO>> {
         return object:AsyncTaskLoader<List<ProjectionDTO>>(requireContext()){
             private var data:List<ProjectionDTO>? = null

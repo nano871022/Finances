@@ -60,7 +60,7 @@ class CheckPaymentsFragment : Fragment() , OnClickListener,LoaderManager.LoaderC
 
     override fun onResume() {
         super.onResume()
-        loaderManager.initLoader(1,null,this)
+        loaderManager.restartLoader(1,null,this)
     }
 
     @RequiresApi(Build.VERSION_CODES.O)

@@ -50,5 +50,10 @@
         <item name="cardElevation">@dimen/card_elevator_5</item>
     </style>
 
+    <style name="ProgressBar" parent="Widget.AppCompat.ProgressBar.Horizontal">
+        <item name="android:progressBackgroundTint">@color/green_background</item>
+        <item name="android:progressTint">@color/green_background</item>
+    </style>
+
 
 </resources>

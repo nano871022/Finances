@@ -48,6 +48,11 @@ class PeriodCreditListFragment : Fragment() ,LoaderManager.LoaderCallbacks<List<
         return root
     }
 
+    override fun onResume() {
+        super.onResume()
+        loaderManager.restartLoader(1,null,this)
+    }
+
     override fun onCreateLoader(id: Int, args: Bundle?): Loader<List<PeriodCreditDTO>> {
         return object:AsyncTaskLoader<List<PeriodCreditDTO>>(requireContext()){
             private var data:List<PeriodCreditDTO>? = null

@@ -61,6 +61,11 @@ class ListBought : Fragment() , LoaderManager.LoaderCallbacks<Pair<List<CreditCa
         return rootView
     }
 
+    override fun onResume() {
+        super.onResume()
+        loaderManager.restartLoader(1,null,this)
+    }
+
     @RequiresApi(Build.VERSION_CODES.O)
     private fun loadRecyclerView(list:List<CreditCardBoughtDTO>){
         if( list.isEmpty()){
