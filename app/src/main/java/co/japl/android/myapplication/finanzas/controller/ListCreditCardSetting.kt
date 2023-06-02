@@ -10,6 +10,9 @@ import android.widget.Button
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
+import androidx.loader.app.LoaderManager
+import androidx.loader.content.AsyncTaskLoader
+import androidx.loader.content.Loader
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -17,17 +20,20 @@ import co.japl.android.myapplication.R
 import co.japl.android.myapplication.adapter.ListCreditCardAdapter
 import co.japl.android.myapplication.adapter.ListCreditCardSettingAdapter
 import co.japl.android.myapplication.bussiness.DB.connections.ConnectDB
+import co.japl.android.myapplication.bussiness.DTO.CreditCardSettingDTO
 import co.japl.android.myapplication.bussiness.impl.CreditCardImpl
+import co.japl.android.myapplication.bussiness.interfaces.SaveSvc
 import co.japl.android.myapplication.finanzas.bussiness.impl.CreditCardSettingImpl
+import co.japl.android.myapplication.finanzas.holders.ListCreditCardSettingHolder
+import co.japl.android.myapplication.finanzas.holders.interfaces.IListHolder
 import co.japl.android.myapplication.putParams.CreditCardParams
 import co.japl.android.myapplication.putParams.CreditCardSettingParams
 import co.japl.android.myapplication.putParams.ListCreditCardSettingParams
 import kotlin.properties.Delegates
 
-class ListCreditCardSetting : Fragment() , View.OnClickListener{
-    private lateinit var recycle:RecyclerView
-    private lateinit var btnAdd:Button
-    private lateinit var btnCancel:Button
+class ListCreditCardSetting : Fragment() , View.OnClickListener,LoaderManager.LoaderCallbacks<List<CreditCardSettingDTO>> {
+    private lateinit var holder: IListHolder<ListCreditCardSettingHolder,CreditCardSettingDTO>
+    private lateinit var saveSvc: SaveSvc<CreditCardSettingDTO>
     private var codeCreditCard : Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -42,44 +48,19 @@ class ListCreditCardSetting : Fragment() , View.OnClickListener{
     ): View? {
         val view =  inflater.inflate(R.layout.fragment_list_credit_card_setting, container, false)
         val map = ListCreditCardSettingParams.download(arguments)
-        Log.v(this.javaClass.name,"CreateView  $map")
+        val connect = ConnectDB(view.context)
+        saveSvc = CreditCardSettingImpl(connect)
         if(map.containsKey(ListCreditCardSettingParams.Params.ARG_CODE_CREDIT_CARD)) {
             codeCreditCard = map[ListCreditCardSettingParams.Params.ARG_CODE_CREDIT_CARD]!!
         }
-        setField(view)
-        loadRecyclerView(view)
+        holder = ListCreditCardSettingHolder(view,parentFragmentManager,findNavController())
+        holder.setFields(this)
+        loaderManager.initLoader(1, null, this)
         return view
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
-    private fun loadRecyclerView(view:View){
-        view?.let {
-            recycle?.let { recycler->
-                recycler.layoutManager = LinearLayoutManager(
-                    it.context,
-                    LinearLayoutManager.VERTICAL, false
-                )
-                val connect = ConnectDB(view.context)
-                val saveSvc = CreditCardSettingImpl(connect)
-                val data = saveSvc.getAll(codeCreditCard)
-                recycler.adapter = ListCreditCardSettingAdapter(data.toMutableList(),parentFragmentManager,findNavController())
-            }
-        }
-    }
-
     private fun add(){
-        Log.d(this.javaClass.name,"add - start")
         CreditCardSettingParams.newInstance(codeCreditCard,findNavController())
-    }
-
-    private fun setField(view:View){
-        view?.let {
-            recycle = it.findViewById (R.id.rvCreditCardSettingCCS)
-            btnAdd = it.findViewById(R.id.btnAddNewCCS)
-            btnAdd.setOnClickListener(this)
-            btnCancel = it.findViewById(R.id.btnCancelLCCS)
-            btnCancel.setOnClickListener(this)
-        }
     }
 
     override fun onClick(v: View?) {
@@ -91,6 +72,43 @@ class ListCreditCardSetting : Fragment() , View.OnClickListener{
             else->{
                 view.let{
                 Toast.makeText(it!!.context,getString(R.string.toast_invalid_option),Toast.LENGTH_LONG).show()}}
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        loaderManager.restartLoader(1, null, this)
+    }
+
+    override fun onCreateLoader(id: Int, args: Bundle?): Loader<List<CreditCardSettingDTO>> {
+        return object:AsyncTaskLoader<List<CreditCardSettingDTO>>(requireContext()){
+            private var data: List<CreditCardSettingDTO>? = null
+            override fun onStartLoading() {
+                super.onStartLoading()
+                if(data != null){
+                    deliverResult(data)
+                }else{
+                    forceLoad()
+                }
+            }
+            @RequiresApi(Build.VERSION_CODES.O)
+            override fun loadInBackground(): List<CreditCardSettingDTO>? {
+                data = (saveSvc as CreditCardSettingImpl).getAll(codeCreditCard)
+                return data
+            }
+
+        }
+    }
+
+    override fun onLoaderReset(loader: Loader<List<CreditCardSettingDTO>>) {
+    }
+
+    override fun onLoadFinished(
+        loader: Loader<List<CreditCardSettingDTO>>,
+        data: List<CreditCardSettingDTO>?
+    ) {
+        data?.let {
+            holder.loadRecycler(it.toMutableList())
         }
     }
 

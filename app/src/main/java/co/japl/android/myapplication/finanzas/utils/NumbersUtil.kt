@@ -25,6 +25,10 @@ class NumbersUtil {
             return DecimalFormat(formatDecimal).format(value)
         }
 
+        fun toString(value: Double): String {
+            return DecimalFormat(formatDecimal).format(value)
+        }
+
         fun toString(value: BigDecimal): String {
             return DecimalFormat(formatDecimal).format(value)
         }

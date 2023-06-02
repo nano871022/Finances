@@ -3,6 +3,8 @@ package co.japl.android.myapplication.finanzas.bussiness.impl
 import android.util.Log
 import co.japl.android.myapplication.finanzas.bussiness.interfaces.IKindOfTaxSvc
 import co.japl.android.myapplication.finanzas.enums.KindOfTaxEnum
+import java.math.BigDecimal
+import java.math.RoundingMode
 import kotlin.math.pow
 
 class KindOfTaxImpl:IKindOfTaxSvc {
@@ -26,8 +28,8 @@ class KindOfTaxImpl:IKindOfTaxSvc {
 
     private fun toNominal(taxEffective:Double,periods:Int):Double{
         val pow = (1 / periods.toDouble())
-        val part1 = 1 + taxEffective
-        return  ((part1.pow(pow)-1) * periods).also{Log.d(javaClass.name," (((1 + $taxEffective) ^ (1 / $periods)) - 1) X $periods = $it")}
+        val part1 = 1 + (taxEffective/100)
+        return  ((part1.pow(pow)-1) * periods).also{Log.d(javaClass.name," (((1 + $taxEffective/100) ^ (1 / $periods)) - 1) X $periods = $it")}
     }
 
     private fun fromEffectiveMonthlyToEffectiveYearly(taxEffective:Double,periods:Int):Double{

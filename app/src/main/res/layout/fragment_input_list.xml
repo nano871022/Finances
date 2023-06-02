@@ -4,9 +4,6 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    app:cardElevation="@dimen/card_elevator"
-    app:strokeWidth="@dimen/stroke_with"
-    app:cardCornerRadius="@dimen/radius_corner"
     android:layout_margin="@dimen/space_min"
     tools:context=".finanzas.controller.InputListFragment">
     <ScrollView
@@ -18,16 +15,26 @@
             android:padding="@dimen/space_min"
             android:orientation="vertical">
 
+            <ProgressBar
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/pb_load_il"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="@dimen/space_min"
-                android:layout_margin="@dimen/space_min"
-                android:background="@color/green_light_trans"
-                app:prefixText="@string/num_inputs">
-                <com.google.android.material.textview.MaterialTextView
+                android:layout_weight="2"
+                android:hint="@string/num_inputs"
+                style="@style/MaterialTextInputLayoutView">
+                <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/tv_num_inputs_il"
                     android:layout_width="match_parent"
+                    android:enabled="false"
+                    style="@style/MaterialTextInputLayoutView"
                     android:layout_height="wrap_content"
                     android:text="@string/months_number_hint"
                     android:textAlignment="center"
@@ -38,20 +45,21 @@
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="@dimen/space_min"
-                android:layout_margin="@dimen/space_min"
-                android:background="@color/green_light_trans"
-                app:prefixText="@string/input_total">
-                <com.google.android.material.textview.MaterialTextView
+                android:layout_weight="1"
+                android:hint="@string/input_total"
+                app:prefixText="$"
+                style="@style/MaterialTextInputLayoutView">
+                <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/tv_tot_inputs_il"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:enabled="false"
                     android:text="@string/money_hint"
                     android:textAlignment="center"
                     />
 
             </com.google.android.material.textfield.TextInputLayout>
-
+            </LinearLayout>
             <androidx.recyclerview.widget.RecyclerView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

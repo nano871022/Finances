@@ -2,11 +2,8 @@
 <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:elevation="@dimen/card_elevator"
-    app:strokeWidth="@dimen/stroke_with"
-    app:cardCornerRadius="@dimen/radius_corner"
     android:layout_margin="@dimen/space_min"
     tools:context=".finanzas.controller.MonthlyCreditListFragment">
 <ScrollView
@@ -15,8 +12,12 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="@dimen/space_min"
         android:orientation="vertical">
+
+        <ProgressBar
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/pb_load_mcl"/>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -25,49 +26,60 @@
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="@dimen/space_min"
-                android:background="@color/green_light_trans"
-                app:prefixText="@string/num_credits">
-                <com.google.android.material.textview.MaterialTextView
-                    android:id="@+id/tv_num_credits_mcl"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/months_number_hint"
-                    android:textAlignment="center"
-                    />
-            </com.google.android.material.textfield.TextInputLayout>
-
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:padding="@dimen/space_min"
-                android:background="@color/green_light_trans"
-                app:prefixText="@string/total_debt">
-                <com.google.android.material.textview.MaterialTextView
+                app:prefixText="$"
+                style="@style/MaterialTextInputLayoutView"
+                android:hint="@string/total_debt">
+                <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/tv_tot_debt_mcl"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/money_hint"
+                    android:enabled="false"
+                    style="@style/MaterialTextInputLayoutView"
                     android:textAlignment="center"
                     />
             </com.google.android.material.textfield.TextInputLayout>
+
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal">
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="2"
+        style="@style/MaterialTextInputLayoutView"
+        android:hint="@string/num_credits">
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/tv_num_credits_mcl"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/months_number_hint"
+            android:enabled="false"
+            style="@style/MaterialTextInputLayoutView"
+            android:textAlignment="center"
+            />
+    </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="@dimen/space_min"
-                android:background="@color/green_light_trans"
-                app:prefixText="@string/total_quote">
-                <com.google.android.material.textview.MaterialTextView
+                app:prefixText="$"
+                android:layout_weight="1"
+                style="@style/MaterialTextInputLayoutView"
+                android:hint="@string/total_quote">
+                <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/tv_tot_quote_mcl"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/money_hint"
+                    android:enabled="false"
+                    style="@style/MaterialTextInputLayoutView"
                     android:textAlignment="center"
                     />
             </com.google.android.material.textfield.TextInputLayout>
-
+</LinearLayout>
         </LinearLayout>
 
 

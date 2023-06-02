@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<MotionScene xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:motion="http://schemas.android.com/apk/res-auto">
+
+    <Transition android:id="@+id/forward"
+        motion:constraintSetStart="@id/start"
+        motion:constraintSetEnd="@id/next"
+        motion:duration="1300">
+        <OnSwipe motion:touchAnchorSide="right"  motion:dragDirection="dragLeft" />
+    </Transition>
+    <Transition android:id="@+id/backward"
+        motion:constraintSetStart="@id/start"
+        motion:constraintSetEnd="@id/previous"
+        motion:duration="1300"
+        >
+        <OnSwipe motion:touchAnchorSide="left" motion:dragDirection="dragRight" />
+    </Transition>
+
+    <ConstraintSet android:id="@+id/start">
+        <Constraint android:id="@+id/cv_recap_rec" />
+        <Constraint android:id="@+id/cv_projections_rec" />
+        <Constraint android:id="@+id/cv_paids_rec" />
+        <Constraint android:id="@+id/cv_credit_card_rec" />
+    </ConstraintSet>
+
+    <ConstraintSet android:id="@+id/next">
+        <Constraint android:id="@+id/cv_recap_rec" >
+            <Transform android:translationX="-150dp"/>
+        </Constraint>
+        <Constraint android:id="@+id/cv_projections_rec" >
+            <Transform android:translationX="-150dp"/>
+        </Constraint>
+        <Constraint android:id="@+id/cv_paids_rec" >
+        <Transform android:translationX="-150dp"/>
+        </Constraint>
+        <Constraint android:id="@+id/cv_credit_card_rec" >
+            <Transform android:translationX="-10dp" />
+        </Constraint>
+    </ConstraintSet>
+
+    <ConstraintSet android:id="@+id/previous">
+        <Constraint android:id="@+id/cv_recap_rec">
+            <Transform android:translationX="10dp"/>
+        </Constraint>
+        <Constraint android:id="@+id/cv_projections_rec" >
+            <Transform android:translationX="150dp"/>
+        </Constraint>
+        <Constraint android:id="@+id/cv_paids_rec" >
+            <Transform android:translationX="150dp"/>
+        </Constraint>
+        <Constraint android:id="@+id/cv_credit_card_rec" >
+            <Transform android:translationX="150dp"/>
+        </Constraint>
+    </ConstraintSet>
+
+
+</MotionScene>

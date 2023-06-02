@@ -17,6 +17,7 @@ import co.japl.android.myapplication.bussiness.impl.CreditCardImpl
 import co.japl.android.myapplication.bussiness.interfaces.SaveSvc
 import co.japl.android.myapplication.controller.CreateCreditCard
 import co.japl.android.myapplication.finanzas.bussiness.impl.CreditCardSettingImpl
+import co.japl.android.myapplication.finanzas.enums.MoreOptionsItemsSettingsCreditCard
 import co.japl.android.myapplication.holders.ListCreditCardItemHolder
 import co.japl.android.myapplication.holders.ListCreditCardSettingItemHolder
 import co.japl.android.myapplication.putParams.CreditCardParams
@@ -34,7 +35,7 @@ class ListCreditCardSettingAdapter(var data:MutableList<CreditCardSettingDTO>, v
         val view =
             LayoutInflater.from(parent.context).inflate(R.layout.credit_card_setting_item_list, parent, false)
         val viewHolder =  ListCreditCardSettingItemHolder(view)
-        viewHolder.loadFields()
+        viewHolder.setFields()
         return viewHolder
     }
 
@@ -43,34 +44,39 @@ class ListCreditCardSettingAdapter(var data:MutableList<CreditCardSettingDTO>, v
     }
 
     override fun onBindViewHolder(holder: ListCreditCardSettingItemHolder, position: Int) {
-        holder.name.text =data[position].name
-        holder.value.text = data[position].value
-        holder.type.text = data[position].type
-        holder.status.text = if(data[position].active == 1.toShort()) "Si" else "No"
-        holder.delete.setOnClickListener {
-            var dialog = AlertDialog.Builder(view.context)
-                .setTitle(R.string.do_you_want_to_delete_this_record)
-                .setNegativeButton(R.string.cancel, null).setPositiveButton(R.string.delete, null)
-                .create()
-            dialog.show()
-            dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
-                if (saveSvc.delete(data[position].id)) {
-                    dialog.dismiss()
-                    Snackbar.make(view, R.string.delete_successfull, Snackbar.LENGTH_LONG)
-                        .setAction(R.string.close) {}
-                        .show().also {
-                            data.removeAt(position)
-                            this.notifyDataSetChanged()
-                            this.notifyItemRemoved(position)
-                        }
-                } else {
-                    Snackbar.make(view, R.string.dont_deleted, Snackbar.LENGTH_LONG)
-                        .setAction(R.string.close, null).show()
-                }
-            }
-        }
-        holder.edit.setOnClickListener{
-            CreditCardSettingParams.newInstance(data[position].codeCreditCard,data[position].id, navController)
-        }
+       holder.loadFields(data[position]) {
+           when (it) {
+               MoreOptionsItemsSettingsCreditCard.DELETE -> {
+                   var dialog = AlertDialog.Builder(view.context)
+                       .setTitle(R.string.do_you_want_to_delete_this_record)
+                       .setNegativeButton(R.string.cancel, null)
+                       .setPositiveButton(R.string.delete, null)
+                       .create()
+                   dialog.show()
+                   dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
+                       if (saveSvc.delete(data[position].id)) {
+                           dialog.dismiss()
+                           Snackbar.make(view, R.string.delete_successfull, Snackbar.LENGTH_LONG)
+                               .setAction(R.string.close) {}
+                               .show().also {
+                                   data.removeAt(position)
+                                   this.notifyDataSetChanged()
+                                   this.notifyItemRemoved(position)
+                               }
+                       } else {
+                           Snackbar.make(view, R.string.dont_deleted, Snackbar.LENGTH_LONG)
+                               .setAction(R.string.close, null).show()
+                       }
+                   }
+               }
+               MoreOptionsItemsSettingsCreditCard.EDIT -> {
+                   CreditCardSettingParams.newInstance(
+                       data[position].codeCreditCard,
+                       data[position].id,
+                       navController
+                   )
+               }
+           }
+       }
     }
 }

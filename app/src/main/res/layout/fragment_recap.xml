@@ -10,170 +10,204 @@
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        >
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="@dimen/space_min"
             android:orientation="vertical">
 
-            <com.google.android.material.card.MaterialCardView
+            <ProgressBar
+                android:id="@+id/pb_load_rec"
+                style="?android:attr/progressBarStyle"
                 android:layout_width="match_parent"
-                android:layout_margin="@dimen/space_min"
-                app:cardCornerRadius="@dimen/radius_corner"
-                app:cardElevation="@dimen/card_elevator"
-                app:strokeWidth="@dimen/stroke_with"
-                android:layout_height="wrap_content">
-                <LinearLayout
+                android:layout_height="wrap_content"
+                android:elevation="@dimen/card_elevator_5"
+                android:progressBackgroundTint="@color/green_background"
+                android:rotationX="-2" />
+
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/cv_recap_rec"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="@dimen/space_min"
-                    android:padding="2dp"
-                    android:orientation="vertical"
-                    >
-                    <com.google.android.material.textview.MaterialTextView
+                    tools:layout_editor_absoluteX="10dp"
+                    tools:layout_editor_absoluteY="5dp">
+
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="@string/recap"/>
+                        android:background="@color/green_light_trans"
+                        android:orientation="vertical"
+                        android:padding="@dimen/space_min">
+
+                        <com.google.android.material.textview.MaterialTextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@string/recap" />
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:padding="@dimen/space_min">
+
+                            <com.google.android.material.textfield.TextInputLayout
+                                style="@style/MaterialTextInputLayoutView"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_margin="@dimen/space_min"
+                                android:hint="@string/input_total"
+                                app:prefixText="$">
+
+                                <com.google.android.material.textfield.TextInputEditText
+                                    android:id="@+id/tv_total_inputs_rec"
+                                    style="@style/MaterialTextInputLayoutView"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:enabled="false"
+                                    android:hint="@string/money_hint"
+                                    android:textAlignment="textEnd"
+
+                                    />
+                            </com.google.android.material.textfield.TextInputLayout>
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal">
+
+                                <com.google.android.material.textfield.TextInputLayout
+                                    style="@style/MaterialTextInputLayoutView"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:layout_margin="@dimen/space_min"
+                                    android:layout_weight="1"
+                                    android:hint="@string/total_paids"
+                                    app:prefixText="$">
+
+                                    <com.google.android.material.textfield.TextInputEditText
+                                        android:id="@+id/tv_total_paids_rec"
+                                        style="@style/MaterialTextInputLayoutView"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:enabled="false"
+                                        android:hint="@string/money_hint"
+                                        android:textAlignment="textEnd"
+                                        android:textStyle="italic" />
+                                </com.google.android.material.textfield.TextInputLayout>
+
+                                <com.google.android.material.textfield.TextInputLayout
+                                    style="@style/MaterialTextInputLayoutView"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_margin="@dimen/space_min"
+                                    android:layout_weight="1"
+                                    android:hint="@string/total_input_paids"
+                                    app:prefixText="$">
+
+                                    <com.google.android.material.textfield.TextInputEditText
+                                        android:id="@+id/tv_total_input_paids_rec"
+                                        style="@style/MaterialTextInputLayoutView"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:enabled="false"
+                                        android:hint="@string/money_hint"
+                                        android:textAlignment="textEnd" />
+                                </com.google.android.material.textfield.TextInputLayout>
+
+                            </LinearLayout>
+                        </LinearLayout>
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/cv_projections_rec"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/space_min"
+                    tools:layout_editor_absoluteX="10dp"
+                    tools:layout_editor_absoluteY="5dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@color/green_light_trans"
+                        android:orientation="vertical"
+                        android:padding="@dimen/space_min">
+
+                        <com.google.android.material.textview.MaterialTextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="@dimen/space_min"
+                            android:enabled="false"
+                            android:text="@string/projections" />
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="@dimen/space_min"
+                            android:orientation="horizontal"
+                            android:padding="@dimen/space_min">
+
+                            <com.google.android.material.textfield.TextInputLayout
+                                style="@style/MaterialTextInputLayoutView"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_margin="@dimen/space_min"
+                                android:layout_weight="1"
+                                android:hint="@string/money_saved"
+                                app:prefixText="$">
+
+                                <com.google.android.material.textfield.TextInputEditText
+                                    android:id="@+id/tv_saved_rec"
+                                    style="@style/MaterialTextInputLayoutView"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:enabled="false"
+                                    android:hint="@string/money_hint"
+                                    android:textAlignment="textEnd" />
+                            </com.google.android.material.textfield.TextInputLayout>
+
+                            <com.google.android.material.textfield.TextInputLayout
+                                style="@style/MaterialTextInputLayoutView"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_margin="@dimen/space_min"
+                                android:layout_weight="1"
+                                android:hint="@string/quote_value"
+                                app:prefixText="$">
+
+                                <com.google.android.material.textfield.TextInputEditText
+                                    android:id="@+id/tv_quote_save_rec"
+                                    style="@style/MaterialTextInputLayoutView"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:enabled="false"
+                                    android:hint="@string/money_hint"
+                                    android:textAlignment="textEnd" />
+                            </com.google.android.material.textfield.TextInputLayout>
+                        </LinearLayout>
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cv_paids_rec"
+                android:layout_width="match_parent"
+                android:layout_margin="@dimen/space_min"
+                android:layout_height="wrap_content">
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:padding="@dimen/space_min"
-                    android:orientation="vertical">
-            <com.google.android.material.textfield.TextInputLayout
-                android:layout_width="match_parent"
-                android:background="@color/green_light_trans"
-                android:layout_margin="@dimen/space_min"
-                android:padding="@dimen/space_min"
-                app:prefixText="@string/input_total"
-                android:layout_height="wrap_content">
-                <com.google.android.material.textview.MaterialTextView
-                    android:id="@+id/tv_total_inputs_rec"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="@string/money_hint"
-                    android:textAlignment="textEnd"/>
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-                <com.google.android.material.textfield.TextInputLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
                     android:background="@color/green_light_trans"
-                    android:layout_margin="@dimen/space_min"
-                    android:padding="@dimen/space_min"
-                    android:layout_weight="1"
-                    app:prefixText="@string/total_paids">
-                    <com.google.android.material.textview.MaterialTextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/tv_total_paids_rec"
-                        android:textAlignment="textEnd"
-                        android:hint="@string/money_hint"/>
-                </com.google.android.material.textfield.TextInputLayout>
-
-                <com.google.android.material.textfield.TextInputLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@color/green_light_trans"
-                    android:layout_margin="@dimen/space_min"
-                    android:padding="@dimen/space_min"
-                    android:layout_weight="1"
-                    app:prefixText="@string/total_input_paids">
-                    <com.google.android.material.textview.MaterialTextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/tv_total_input_paids_rec"
-                        android:textAlignment="textEnd"
-                        android:hint="@string/money_hint"/>
-                </com.google.android.material.textfield.TextInputLayout>
-
-            </LinearLayout>
-                </LinearLayout>
-                </LinearLayout>
-            </com.google.android.material.card.MaterialCardView>
-
-            <com.google.android.material.card.MaterialCardView
-                android:layout_width="match_parent"
-                android:layout_margin="@dimen/space_min"
-                app:cardElevation="@dimen/card_elevator"
-                app:cardCornerRadius="@dimen/radius_corner"
-                app:strokeWidth="@dimen/stroke_with"
-                android:layout_height="wrap_content">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:padding="@dimen/space_min"
-                    android:orientation="vertical">
-                <com.google.android.material.textview.MaterialTextView
-                    android:layout_width="match_parent"
-                    android:layout_margin="@dimen/space_min"
-                    android:layout_height="wrap_content"
-                    android:text="@string/projections"/>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="@dimen/space_min"
-                android:padding="@dimen/space_min"
-                android:orientation="horizontal">
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:padding="@dimen/space_min"
-                android:layout_weight="1"
-                android:background="@color/green_light_trans"
-                app:prefixText="@string/money_saved"
-                android:layout_margin="@dimen/space_min">
-                <com.google.android.material.textview.MaterialTextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/tv_saved_rec"
-                    android:hint="@string/money_hint"
-                    android:textAlignment="textEnd"
-                    />
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:padding="@dimen/space_min"
-                android:layout_weight="1"
-                android:layout_margin="@dimen/space_min"
-                app:prefixText="@string/quote_value"
-                android:background="@color/green_light_trans">
-                <com.google.android.material.textview.MaterialTextView
-                    android:id="@+id/tv_quote_save_rec"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="@string/money_hint"
-                    android:textAlignment="textEnd"/>
-            </com.google.android.material.textfield.TextInputLayout>
-            </LinearLayout>
-                </LinearLayout>
-            </com.google.android.material.card.MaterialCardView>
-
-            <com.google.android.material.card.MaterialCardView
-                android:layout_width="match_parent"
-                android:layout_margin="@dimen/space_min"
-                app:cardElevation="@dimen/card_elevator"
-                app:cardCornerRadius="@dimen/radius_corner"
-                app:strokeWidth="@dimen/stroke_with"
-                android:layout_height="wrap_content">
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:padding="@dimen/space_min"
                     android:orientation="vertical">
                     <com.google.android.material.textview.MaterialTextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_margin="@dimen/space_min"
+                        android:enabled="false"
                         android:text="@string/cash_paids_credits"/>
             <LinearLayout
                 android:layout_width="match_parent"
@@ -182,15 +216,17 @@
                 <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@color/green_light_trans"
                     android:layout_margin="@dimen/space_min"
-                    android:padding="@dimen/space_min"
+                    style="@style/MaterialTextInputLayoutView"
                     android:layout_weight="1"
-                    app:prefixText="@string/total_paid">
-                    <com.google.android.material.textview.MaterialTextView
+                    app:prefixText="$"
+                    android:hint="@string/total_paid">
+                    <com.google.android.material.textfield.TextInputEditText
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        style="@style/MaterialTextInputLayoutView"
                         android:textAlignment="textEnd"
+                        android:enabled="false"
                         android:id="@+id/tv_total_paid_rec"
                         android:hint="@string/money_hint"/>
                 </com.google.android.material.textfield.TextInputLayout>
@@ -198,15 +234,17 @@
                 <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@color/green_light_trans"
-                    android:padding="@dimen/space_min"
+                    style="@style/MaterialTextInputLayoutView"
                     android:layout_margin="@dimen/space_min"
                     android:layout_weight="1"
-                    app:prefixText="@string/total_credits">
-                    <com.google.android.material.textview.MaterialTextView
+                    app:prefixText="$"
+                    android:hint="@string/total_credits">
+                    <com.google.android.material.textfield.TextInputEditText
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:id="@+id/tv_total_credits_rec"
+                        style="@style/MaterialTextInputLayoutView"
+                        android:enabled="false"
                         android:hint="@string/money_hint"
                         android:textAlignment="textEnd"/>
                 </com.google.android.material.textfield.TextInputLayout>
@@ -220,68 +258,78 @@
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@color/green_light_trans"
                 android:layout_margin="@dimen/space_min"
+                style="@style/MaterialTextInputLayoutView"
                 android:layout_weight="1"
-                android:padding="@dimen/space_min"
-                app:prefixText="@string/total_paids_credits">
-                <com.google.android.material.textview.MaterialTextView
+                app:prefixText="$"
+                android:hint="@string/total_paids_credits">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/tv_total_paids_credits_rec"
+                    style="@style/MaterialTextInputLayoutView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:id="@+id/tv_total_paids_credits_rec"
+                    android:enabled="false"
+                    android:hint="@string/money_hint"
                     android:textAlignment="textEnd"
-                    android:hint="@string/money_hint"/>
+                    tools:ignore="DuplicateClickableBoundsCheck" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
+                style="@style/MaterialTextInputLayoutView"
                 android:layout_height="match_parent"
-                android:background="@color/green_light_trans"
                 android:layout_margin="@dimen/space_min"
                 android:layout_weight="1"
-                android:padding="@dimen/space_min"
-                app:prefixText="@string/total_inputs_fix">
-                <com.google.android.material.textview.MaterialTextView
+                app:prefixText="$"
+                android:hint="@string/total_inputs_fix">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/tv_total_inputs_fix"
+                    style="@style/MaterialTextInputLayoutView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:id="@+id/tv_total_inputs_fix"
+                    android:enabled="false"
+                    android:hint="@string/money_hint"
                     android:textAlignment="textEnd"
-                    android:hint="@string/money_hint"/>
+                    tools:ignore="DuplicateClickableBoundsCheck,DuplicateClickableBoundsCheck" />
             </com.google.android.material.textfield.TextInputLayout>
             </LinearLayout>
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
             <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cv_credit_card_rec"
                 android:layout_width="match_parent"
                 android:layout_margin="@dimen/space_min"
-                app:cardElevation="@dimen/card_elevator"
-                app:cardCornerRadius="@dimen/radius_corner"
-                app:strokeWidth="@dimen/stroke_with"
                 android:layout_height="wrap_content">
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="@dimen/space_min"
+                android:background="@color/green_light_trans"
                 android:orientation="vertical">
 
                 <com.google.android.material.textview.MaterialTextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="@dimen/space_min"
+                    android:enabled="false"
                     android:text="@string/credit_card"/>
 
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/green_light_trans"
                 android:layout_margin="@dimen/space_min"
-                android:padding="@dimen/space_min"
-                app:prefixText="@string/total_quote_credit_card">
-                <com.google.android.material.textview.MaterialTextView
+                style="@style/MaterialTextInputLayoutView"
+                app:prefixText="$"
+                android:hint="@string/total_quote_credit_card">
+                <com.google.android.material.textfield.TextInputEditText
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:id="@+id/tv_total_quote_credit_card_rec"
+                    android:enabled="false"
+                    style="@style/MaterialTextInputLayoutView"
                     android:textAlignment="textEnd"
                     android:hint="@string/money_hint"/>
             </com.google.android.material.textfield.TextInputLayout>
@@ -294,15 +342,17 @@
                 <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@color/green_light_trans"
                     android:layout_margin="@dimen/space_min"
-                    android:padding="@dimen/space_min"
+                    style="@style/MaterialTextInputLayoutView"
                     android:layout_weight="1"
-                    app:prefixText="@string/warning_quote_value">
-                    <com.google.android.material.textview.MaterialTextView
+                    android:hint="@string/warning_quote_value"
+                    app:prefixText="$">
+                    <com.google.android.material.textfield.TextInputEditText
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:id="@+id/tv_warning_credit_card_rec"
+                        style="@style/MaterialTextInputLayoutView"
+                        android:enabled="false"
                         android:textAlignment="textEnd"
                         android:hint="@string/money_hint"/>
                 </com.google.android.material.textfield.TextInputLayout>
@@ -310,17 +360,19 @@
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="match_parent"
+                    style="@style/MaterialTextInputLayoutView"
                     android:layout_height="wrap_content"
-                    android:background="@color/green_light_trans"
                     android:layout_margin="@dimen/space_min"
                     android:layout_weight="1"
-                    android:padding="@dimen/space_min"
-                    app:prefixText="@string/value_spend">
-                    <com.google.android.material.textview.MaterialTextView
+                    app:prefixText="$"
+                    android:hint="@string/value_spend">
+                    <com.google.android.material.textfield.TextInputEditText
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        style="@style/MaterialTextInputLayoutView"
                         android:id="@+id/tv_limit_credit_card_rec"
                         android:textAlignment="textEnd"
+                        android:enabled="false"
                         android:hint="@string/money_hint"/>
                 </com.google.android.material.textfield.TextInputLayout>
                 </LinearLayout>
@@ -328,6 +380,7 @@
 
         </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
+
         </LinearLayout>
 
     </ScrollView>

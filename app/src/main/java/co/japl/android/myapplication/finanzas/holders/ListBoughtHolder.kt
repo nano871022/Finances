@@ -2,6 +2,7 @@ package co.japl.android.myapplication.finanzas.holders
 
 import android.os.Build
 import android.view.View
+import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.RecyclerView
@@ -21,6 +22,7 @@ class ListBoughtHolder(var view:View): IHolder<BoughtRecap>, ISpinnerHolder<List
     private lateinit var tvInterest: TextView
     private lateinit var tvPendingToPay: TextView
     private lateinit var tvTotalQuote: TextView
+    private lateinit var progressBar:ProgressBar
     lateinit var recyclerView: RecyclerView
 
 
@@ -35,18 +37,22 @@ class ListBoughtHolder(var view:View): IHolder<BoughtRecap>, ISpinnerHolder<List
         tvPendingToPay = view.findViewById(R.id.tvPendingToPayList)
         tvTotalQuote = view.findViewById(R.id.tvTotalQuoteList)
         recyclerView = view.findViewById(R.id.list_bought)
+        progressBar = view.findViewById(R.id.pb_load_lbcc)
+        progressBar.visibility = View.VISIBLE
     }
 
     @RequiresApi(Build.VERSION_CODES.N)
     override fun loadFields(values: BoughtRecap) {
-        tvCapital.text = NumbersUtil.COPtoString(values.capitalValue.orElse(BigDecimal.ZERO))
-        tvCurrentCapital.text = NumbersUtil.COPtoString(values.currentValueCapital.orElse(BigDecimal.ZERO))
-        tvQuoteCapital.text = NumbersUtil.COPtoString(values.quotesValueCapital.orElse(BigDecimal.ZERO))
-        tvCurrentInterest.text = NumbersUtil.COPtoString(values.currentValueInterest.orElse(BigDecimal.ZERO))
-        tvQuoteInterest.text = NumbersUtil.COPtoString(values.quotesValueInterest.orElse(BigDecimal.ZERO))
-        tvInterest.text = NumbersUtil.COPtoString(values.interestValue.orElse(BigDecimal.ZERO))
-        tvPendingToPay.text = NumbersUtil.COPtoString(values.pendingToPay.orElse(BigDecimal.ZERO))
-        tvTotalQuote.text = NumbersUtil.COPtoString(values.totalValue.orElse(BigDecimal.ZERO))
+        tvCapital.text = NumbersUtil.toString(values.capitalValue.orElse(BigDecimal.ZERO))
+        tvCurrentCapital.text = NumbersUtil.toString(values.currentValueCapital.orElse(BigDecimal.ZERO))
+        tvQuoteCapital.text = NumbersUtil.toString(values.quotesValueCapital.orElse(BigDecimal.ZERO))
+        tvCurrentInterest.text = NumbersUtil.toString(values.currentValueInterest.orElse(BigDecimal.ZERO))
+        tvQuoteInterest.text = NumbersUtil.toString(values.quotesValueInterest.orElse(BigDecimal.ZERO))
+        tvInterest.text = NumbersUtil.toString(values.interestValue.orElse(BigDecimal.ZERO))
+        tvPendingToPay.text = NumbersUtil.toString(values.pendingToPay.orElse(BigDecimal.ZERO))
+        tvTotalQuote.text = NumbersUtil.toString(values.totalValue.orElse(BigDecimal.ZERO))
+        progressBar.visibility = View.GONE
+
     }
 
     override fun downLoadFields(): BoughtRecap {

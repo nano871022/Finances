@@ -2,6 +2,8 @@ package co.japl.android.myapplication.finanzas.holders
 
 import android.os.Build
 import android.view.View
+import android.widget.ProgressBar
+import android.widget.TextView
 import androidx.annotation.RequiresApi
 import co.japl.android.myapplication.R
 import co.japl.android.myapplication.bussiness.DB.connections.ConnectDB
@@ -26,14 +28,15 @@ class PaidsHolder(val view:View): IHolder<PaidsPOJO> {
     private val service:SaveSvc<AccountDTO> = AccountImpl(ConnectDB(view.context))
     private val inputSvc:SaveSvc<InputDTO> = InputImpl(view,ConnectDB(view.context))
     private val paidSvc:SaveSvc<PaidDTO> = PaidImpl(ConnectDB(view.context))
-        private lateinit var period:MaterialTextView
-    private lateinit var paid:MaterialTextView
-    private lateinit var count:MaterialTextView
-    private lateinit var inputs:MaterialTextView
-    private lateinit var inputLessOutput:MaterialTextView
+        private lateinit var period:TextView
+    private lateinit var paid:TextView
+    private lateinit var count:TextView
+    private lateinit var inputs:TextView
+    private lateinit var inputLessOutput:TextView
     private lateinit var btnDetail:MaterialButton
     private lateinit var btnPeriods:MaterialButton
     private lateinit var btnAdd:MaterialButton
+    private lateinit var progressBar:ProgressBar
 
     override fun setFields(actions: View.OnClickListener?) {
         period = view.findViewById(R.id.period_ps)
@@ -44,9 +47,11 @@ class PaidsHolder(val view:View): IHolder<PaidsPOJO> {
         btnAdd = view.findViewById(R.id.btn_add_ps)
         btnDetail = view.findViewById(R.id.btn_detail_ps)
         btnPeriods = view.findViewById(R.id.btn_periods_ps)
+        progressBar = view.findViewById(R.id.pb_load_ps)
         btnAdd.setOnClickListener(actions)
         btnPeriods.setOnClickListener(actions)
         btnDetail.setOnClickListener(actions)
+        progressBar.visibility = View.VISIBLE
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -71,17 +76,18 @@ class PaidsHolder(val view:View): IHolder<PaidsPOJO> {
         val month = periodStr.substring(5).toString()
         val date = LocalDate.of(year.toInt(),month.toInt(),1)
         period.text = "${date.getMonth().getDisplayName(TextStyle.FULL,Locale("es","CO"))} ${date.year}"
-        paid.text = NumbersUtil.COPtoString(values.paid)
+        paid.text = NumbersUtil.toString(values.paid)
         count.text = values.count.toString()
         val list = service.getAll()
         if(valueInputs > BigDecimal.ZERO){
-            inputs.text = NumbersUtil.COPtoString(valueInputs)
-            inputLessOutput.text = NumbersUtil.COPtoString(valueInputs - values.paid.toBigDecimal())
+            inputs.text = NumbersUtil.toString(valueInputs)
+            inputLessOutput.text = NumbersUtil.toString(valueInputs - values.paid.toBigDecimal())
         }
         if(list.isEmpty()){
             btnDetail.visibility = View.GONE
             btnAdd.visibility = View.GONE
         }
+        progressBar.visibility = View.GONE
     }
 
     override fun downLoadFields(): PaidsPOJO {

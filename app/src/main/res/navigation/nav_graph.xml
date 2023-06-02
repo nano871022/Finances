@@ -373,5 +373,15 @@
         android:name="co.japl.android.myapplication.finanzas.controller.RecapFragment"
         android:label="@string/recap"
         tools:layout="@layout/fragment_recap" />
+    <fragment
+        android:id="@+id/item_menu_setting_check_payments"
+        android:name="co.japl.android.myapplication.finanzas.controller.CheckPaymentsFragment"
+        android:label="@string/check_payments_title"
+        tools:layout="@layout/fragment_check_payments" />
+    <fragment
+        android:id="@+id/item_menu_setting_check_paids"
+        android:name="co.japl.android.myapplication.finanzas.controller.PeriodCheckPaymentsFragment"
+        android:label="@string/paids"
+        tools:layout="@layout/fragment_period_check_payments" />
 
 </navigation>

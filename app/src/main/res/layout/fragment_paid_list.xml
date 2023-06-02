@@ -5,9 +5,6 @@
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_margin="@dimen/space_min"
-    app:strokeWidth="@dimen/stroke_with"
-    app:cardCornerRadius="@dimen/radius_corner"
-    app:cardElevation="@dimen/card_elevator"
     tools:context=".finanzas.controller.PaidListFragment">
 
     <ScrollView
@@ -20,6 +17,11 @@
             android:padding="@dimen/space_min"
             android:orientation="vertical">
 
+            <ProgressBar
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/pb_load_pdl"/>
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -28,16 +30,16 @@
 
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
-                android:layout_margin="@dimen/space_min"
-                android:padding="@dimen/space_min"
-                app:prefixText="@string/period"
+                android:hint="@string/period"
                 android:layout_weight="1"
-                android:background="@color/green_light_trans"
+                style="@style/MaterialTextInputLayoutView"
                 android:layout_height="wrap_content">
-                <com.google.android.material.textview.MaterialTextView
+                <com.google.android.material.textfield.TextInputEditText
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textAlignment="center"
+                    android:enabled="false"
+                    style="@style/MaterialTextInputLayoutView"
                     android:id="@+id/tv_period_pdl"
                     android:text="@string/date_hint"/>
 
@@ -45,16 +47,17 @@
 
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
-                android:layout_margin="@dimen/space_min"
-                app:prefixText="@string/value"
-                android:padding="@dimen/space_min"
+                android:hint="@string/value"
+                style="@style/MaterialTextInputLayoutView"
                 android:layout_weight="1"
-                android:background="@color/green_light_trans"
+                app:prefixText="$"
                 android:layout_height="wrap_content">
-                <com.google.android.material.textview.MaterialTextView
+                <com.google.android.material.textfield.TextInputEditText
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textAlignment="center"
+                    style="@style/MaterialTextInputLayoutView"
+                    android:enabled="false"
                     android:id="@+id/tv_value_pdl"
                     android:text="@string/money_hint"/>
 

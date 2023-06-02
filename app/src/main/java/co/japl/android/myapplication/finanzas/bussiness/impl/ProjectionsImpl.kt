@@ -44,7 +44,10 @@ class ProjectionsImpl(override var dbConnect: SQLiteOpenHelper,val view:View) : 
                 val months = getMonths(type)
                 val faltantes = Period.between(LocalDate.now(),date).toTotalMonths()
                 val month = months - faltantes
-                val saved = quote * month.toBigDecimal()
+                var saved = quote * month.toBigDecimal()
+                if(saved < BigDecimal.ZERO){
+                    saved = BigDecimal.ZERO
+                }
                 return Triple(date,faltantes.toInt(),saved)
             }
         return Triple(LocalDate.now(),0,BigDecimal.ZERO)
@@ -61,7 +64,10 @@ class ProjectionsImpl(override var dbConnect: SQLiteOpenHelper,val view:View) : 
                 val months = getMonths(type)
                 val faltantes = Period.between(LocalDate.now(),date).toTotalMonths()
                 val month = months - faltantes
-                val saved = quote * month.toBigDecimal()
+                var saved = quote * month.toBigDecimal()
+                if(saved < BigDecimal.ZERO){
+                    saved = BigDecimal.ZERO
+                }
                 return Triple(date,faltantes.toInt(),saved)
             }
         return Triple(LocalDate.now(),0,BigDecimal.ZERO)
@@ -72,7 +78,11 @@ class ProjectionsImpl(override var dbConnect: SQLiteOpenHelper,val view:View) : 
         val items = getAllActive().filter{ LocalDate.now() <= it.end }
         return Pair(items.size,items.sumOf {
             val months = getMonths(it.type)
-            it.quote * (months-Period.between(LocalDate.now(),it.end).toTotalMonths()).toBigDecimal()
+            var value = it.quote * (months-Period.between(LocalDate.now(),it.end).toTotalMonths()).toBigDecimal()
+            if(value < BigDecimal.ZERO){
+                value = BigDecimal.ZERO
+            }
+            value
         })
     }
 

@@ -2,6 +2,7 @@ package co.japl.android.myapplication.finanzas.holders
 
 import android.os.Build
 import android.view.View
+import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.navigation.NavController
@@ -26,6 +27,7 @@ class AdditionalCreditListHolder(val view:View,val navController: NavController)
     private lateinit var button:MaterialButton
     private lateinit var recyclerView:RecyclerView
     private lateinit var additionalSvc :ISaveSvc<AdditionalCreditDTO>
+    private lateinit var progressBar:ProgressBar
 
     override fun setFields(actions: View.OnClickListener?) {
         additionalSvc = AdditionalCreditImpl(ConnectDB(view.context))
@@ -33,8 +35,9 @@ class AdditionalCreditListHolder(val view:View,val navController: NavController)
         totAdditional = view.findViewById(R.id.tv_tot_additional_al)
         recyclerView = view.findViewById(R.id.rv_list_al)
         button = view.findViewById(R.id.btn_add_al)
-
+        progressBar = view.findViewById(R.id.pb_load_adl)
         button.setOnClickListener(actions)
+        progressBar.visibility = View.VISIBLE
     }
 
     override fun loadFields(values: AdditionalCreditDTO) {
@@ -47,6 +50,7 @@ class AdditionalCreditListHolder(val view:View,val navController: NavController)
         ListAdditionalCreditAdapter(list.toMutableList(), navController).let {
             recyclerView.adapter = it
         }
+        progressBar.visibility = View.GONE
     }
 
     @RequiresApi(Build.VERSION_CODES.O)

@@ -5,6 +5,7 @@ import android.os.Build
 import android.view.View
 import android.widget.Button
 import android.widget.LinearLayout
+import android.widget.TextView
 import androidx.annotation.RequiresApi
 import co.japl.android.myapplication.R
 import co.japl.android.myapplication.finanzas.holders.interfaces.IHolder
@@ -23,7 +24,7 @@ class QuoteCreditHolder(var container:View): IHolder<QuoteCreditCard> {
     lateinit var etValueCredit: TextInputEditText
     lateinit var etTax: TextInputEditText
     lateinit var etMonths: TextInputEditText
-    lateinit var tvQuoteValue: MaterialTextView
+    lateinit var tvQuoteValue: TextView
     lateinit var lyQuoteCredit: LinearLayout
     lateinit var kindOfTax:TextInputEditText
     lateinit var btnSave: Button

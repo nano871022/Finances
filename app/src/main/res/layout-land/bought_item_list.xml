@@ -1,28 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_marginBottom="10dp"
-    android:layout_marginTop="5dp"
-    app:layout_dodgeInsetEdges="all">
-
-    <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginLeft="5dp"
-        android:layout_marginRight="5dp"
-        app:cardCornerRadius="12dp"
-        app:strokeWidth="1dp"
-        app:cardElevation="2dp">
+        android:layout_marginRight="@dimen/space_min">
 
     <LinearLayout
         android:id="@+id/llTitleBought"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:background="?attr/colorPrimary"
+        android:background="?attr/colorPrimaryVariant"
         android:paddingLeft="5dp"
         android:paddingTop="5dp"
         android:paddingRight="5dp"
@@ -85,28 +74,13 @@
             android:textAlignment="textEnd"
             android:textColor="@android:color/primary_text_dark"
             android:textStyle="italic" />
-            <ImageButton
-                android:id="@+id/btn_edit_bil"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:background="#00FFFFFF"
-                app:srcCompat="@drawable/ic_baseline_edit_24" />
 
             <ImageButton
-                android:id="@+id/btnAmortizationItemLCCS"
+                android:id="@+id/btn_more_bil"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:background="@color/green_background"
-                android:layout_marginEnd="@dimen/space_min"
-                app:srcCompat="@android:drawable/ic_menu_search" />
-
-        <ImageButton
-            android:id="@+id/btnDeleteItemLCCS"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_weight="0"
-            android:background="#01FFFFFF"
-            app:srcCompat="@drawable/ic_baseline_delete_24" />
+                android:background="?attr/colorPrimaryVariant"
+                app:srcCompat="@drawable/more_vertical" />
 
     </LinearLayout>
 
@@ -321,5 +295,4 @@
         android:orientation="horizontal"
         app:layout_constraintGuide_begin="68dp" />
     </LinearLayout>
-    </com.google.android.material.card.MaterialCardView>
-</androidx.constraintlayout.widget.ConstraintLayout>
+</com.google.android.material.card.MaterialCardView>

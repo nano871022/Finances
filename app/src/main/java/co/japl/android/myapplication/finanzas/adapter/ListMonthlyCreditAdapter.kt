@@ -15,6 +15,7 @@ import co.japl.android.myapplication.finanzas.bussiness.DTO.AdditionalCreditDTO
 import co.japl.android.myapplication.finanzas.bussiness.DTO.CreditDTO
 import co.japl.android.myapplication.finanzas.bussiness.impl.AdditionalCreditImpl
 import co.japl.android.myapplication.finanzas.bussiness.impl.CreditFixImpl
+import co.japl.android.myapplication.finanzas.enums.MoreOptionalItemsCredit
 import co.japl.android.myapplication.finanzas.holders.view.MonthlyCreditItemHolder
 import co.japl.android.myapplication.finanzas.putParams.CreditFixParams
 import com.google.android.material.snackbar.Snackbar
@@ -38,8 +39,8 @@ class ListMonthlyCreditAdapter(val data:MutableList<CreditDTO>,val view:View): R
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onBindViewHolder(holder: MonthlyCreditItemHolder, position: Int) {
         holder.setField(data[position]) {
-            when (it.id) {
-                R.id.btn_delete_mcil -> {
+            when (it) {
+                MoreOptionalItemsCredit.DELETE -> {
                     val dialog = AlertDialog
                         .Builder(view.context)
                         .setTitle(R.string.do_you_want_to_delete_this_record)
@@ -73,7 +74,7 @@ class ListMonthlyCreditAdapter(val data:MutableList<CreditDTO>,val view:View): R
                             }
                         }
                 }
-                R.id.btn_edit_mcil ->{
+                MoreOptionalItemsCredit.AMORTIZATION ->{
                      CreditFixParams.newInstanceAmortizationMonthlyList(data[position],LocalDate.now(),view.findNavController())
                 }
             }

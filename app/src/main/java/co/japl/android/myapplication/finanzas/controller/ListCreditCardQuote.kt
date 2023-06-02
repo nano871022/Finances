@@ -9,7 +9,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.RequiresApi
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
+import androidx.loader.app.LoaderManager
+import androidx.loader.content.AsyncTaskLoader
+import androidx.loader.content.Loader
 import androidx.navigation.fragment.findNavController
 import co.japl.android.myapplication.R
 import co.japl.android.myapplication.bussiness.DB.connections.ConnectDB
@@ -26,12 +30,13 @@ import co.japl.android.myapplication.finanzas.holders.interfaces.ISpinnerHolder
 import co.japl.android.myapplication.holders.QuoteCCHolder
 import co.japl.android.myapplication.pojo.CreditCard
 import co.japl.android.myapplication.utils.DateUtils
+import com.google.gson.Gson
 import java.math.BigDecimal
 import java.time.LocalDateTime
 import java.time.ZoneId
 import java.util.*
 
-class ListCreditCardQuote : Fragment(){
+class ListCreditCardQuote : Fragment(), LoaderManager.LoaderCallbacks<CreditCard>{
     private lateinit var saveSvc: SaveSvc<CreditCardBoughtDTO>
     private lateinit var searchSvc: SearchSvc<CreditCardBoughtDTO>
     private lateinit var taxSvc: ITaxSvc
@@ -40,6 +45,7 @@ class ListCreditCardQuote : Fragment(){
     private lateinit var listCreditCard:List<CreditCardDTO>
     private val configSvc:ConfigSvc = Config()
     private lateinit var creditCardDialog:AlertDialog
+    private var pojo : CreditCard? = null
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreateView(
@@ -64,18 +70,23 @@ class ListCreditCardQuote : Fragment(){
         super.onResume()
         Log.d(this.javaClass.name,">>> En resume")
         if((holder as QuoteCCHolder).spCreditCard.text.isNotBlank()){
+            (holder as QuoteCCHolder).progresBar.visibility = View.GONE
             val value = (holder as QuoteCCHolder).spCreditCard.text.toString()
             val creditCard = listCreditCard.firstOrNull { cc -> cc.name == value }
-            val pojo  = creditCard?.let {
+            pojo  = creditCard?.let {
                 CreditCardMap().mapper(it)
             }?: CreditCard()
-            loadDataInfo(pojo)
+            loaderManager.restartLoader(1,null,this)
+        }else{
+            (holder as QuoteCCHolder).progresBar.visibility = View.GONE
         }
     }
+
 
     @RequiresApi(Build.VERSION_CODES.O)
     private fun loadData(pojo:CreditCard):CreditCard{
          this.context?.let {
+             Log.d(javaClass.name,"${pojo.cutoffDay}")
              val endDate = pojo.cutOff.get()
              val startDate = DateUtils.startDateFromCutoff(pojo.cutoffDay.get(),endDate)
              val capital = searchSvc.getCapital(pojo.codeCreditCard.get(), startDate,endDate)
@@ -122,9 +133,11 @@ class ListCreditCardQuote : Fragment(){
         (holder as ISpinnerHolder<QuoteCCHolder>).lists{
             onItemSelected(it,container)
             if(listCreditCard.isNotEmpty() && listCreditCard.size == 1) {
+                (holder as QuoteCCHolder).progresBar.visibility = View.GONE
                 val creditCardSel = listCreditCard.first()
                 it.spCreditCard.setText(creditCardSel.name)
-                loadDataInfo(CreditCardMap().mapper(creditCardSel))
+                 pojo = CreditCardMap().mapper(creditCardSel)
+                loaderManager.initLoader(1,null,this)
             }else{
                 holder.cleanField()
                 it.spCreditCard.text.clear()
@@ -132,6 +145,7 @@ class ListCreditCardQuote : Fragment(){
         }
 
     }
+
 
     @RequiresApi(Build.VERSION_CODES.O)
     private fun onItemSelected(holder:QuoteCCHolder,view:View) {
@@ -142,20 +156,21 @@ class ListCreditCardQuote : Fragment(){
     @RequiresApi(Build.VERSION_CODES.O)
     private fun createDialogCreditCard(view:View){
         val builder = AlertDialog.Builder(view.context)
+        val thisBuild = this
         with(builder){
             setItems(listCreditCard.map { "${it.id}. ${it.name}" }.toTypedArray()){ _,position ->
                 val creditCard = listCreditCard[position]
                 holder.cleanField()
                 this.context?.let {
                     val now = LocalDateTime.now(ZoneId.systemDefault())
-                    Log.d(this.javaClass.name,"Now:. $now")
-                    val pojo  = creditCard?.let {
+                    (holder as QuoteCCHolder).progresBar.visibility = View.GONE
+                     pojo  = creditCard?.let {
                         CreditCardMap().mapper(it)
                     }?: CreditCard()
                     taxSvc.get(creditCard.id.toLong(),now.monthValue,now.year).ifPresent{
-                        pojo.lastTax = Optional.ofNullable(it.value)
+                        pojo!!.lastTax = Optional.ofNullable(it.value)
                     }
-                    loadDataInfo(pojo)
+                    loaderManager.restartLoader(1,null,thisBuild)
                 }
             }
         }
@@ -164,10 +179,40 @@ class ListCreditCardQuote : Fragment(){
 
 
     @RequiresApi(Build.VERSION_CODES.O)
-    private fun loadDataInfo(value:CreditCard){
-        var pojo = loadData(value)
-        pojo = loadDataLastMonth(pojo)
-        holder.loadFields(pojo)
+    private fun loadDataInfo(value:CreditCard): CreditCard? {
+        val pojo = loadData(value)
+        return loadDataLastMonth(pojo)
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    override fun onCreateLoader(id: Int, args: Bundle?): Loader<CreditCard> {
+        val value = pojo!!
+
+        return object: AsyncTaskLoader<CreditCard>(requireContext()){
+             var data : CreditCard? = null
+            @RequiresApi(Build.VERSION_CODES.O)
+            override fun loadInBackground(): CreditCard? {
+                data = loadDataInfo(value)
+                return data
+            }
+            override fun onStartLoading() {
+                super.onStartLoading()
+                if(data != null){
+                    deliverResult(data)
+                }else{
+                    forceLoad()
+                }
+            }
+        }.also { it.data = null }
+    }
+
+    override fun onLoaderReset(loader: Loader<CreditCard>) {
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    override fun onLoadFinished(loader: Loader<CreditCard>, data: CreditCard?) {
+        Log.d(javaClass.name,"OnLoadFinished $data")
+        holder.loadFields(data!!)
     }
 
 }

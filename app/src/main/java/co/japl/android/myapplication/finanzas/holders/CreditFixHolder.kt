@@ -4,6 +4,7 @@ import android.app.AlertDialog
 import android.os.Build
 import android.util.Log
 import android.view.View
+import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.FragmentManager
 import co.japl.android.myapplication.R
@@ -35,7 +36,7 @@ class CreditFixHolder(val view:View,val supportManager: FragmentManager): IHolde
     lateinit var tax: TextInputEditText
     lateinit var kindOfTax: TextInputEditText
     lateinit var period: TextInputEditText
-    lateinit var quote: MaterialTextView
+    lateinit var quote: TextView
     lateinit var kindOf: TextInputEditText
     lateinit var amortization: MaterialButton
     lateinit var additional: MaterialButton

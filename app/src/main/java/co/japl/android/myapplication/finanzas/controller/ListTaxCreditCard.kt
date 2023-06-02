@@ -15,6 +15,9 @@ import androidx.annotation.RequiresApi
 import androidx.core.view.get
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.loader.app.LoaderManager
+import androidx.loader.content.AsyncTaskLoader
+import androidx.loader.content.Loader
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -31,14 +34,11 @@ import co.japl.android.myapplication.holders.TaxHolder
 import com.google.android.material.progressindicator.CircularProgressIndicator
 import java.util.stream.Collectors
 
-class ListTaxCreditCard : Fragment() {
+class ListTaxCreditCard : Fragment() ,LoaderManager.LoaderCallbacks<Pair<List<CreditCardDTO>,List<TaxDTO>>> {
 
-
-    private lateinit var list:MutableList<TaxDTO>
     private lateinit var holder:TaxHolder
     private lateinit var searchCCSvc: SaveSvc<CreditCardDTO>
     private lateinit var searchTaxSvc: SaveSvc<TaxDTO>
-    private lateinit var listCC:List<CreditCardDTO>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,78 +51,83 @@ class ListTaxCreditCard : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_list_tax_credit_card, container, false)
-        val progressBar = view?.findViewById(R.id.pbTaxTCC) as CircularProgressIndicator
-        progressBar.isEnabled = true
-        progressBar.isVisible = true
-        view.findViewById<LinearLayout>(R.id.llMainTTCC).isVisible = false
         val connect = ConnectDB(view.context)
-        list = ArrayList<TaxDTO>()
         searchCCSvc = CreditCardImpl(connect)
         searchTaxSvc = TaxImpl(connect)
-
+        holder = TaxHolder(view,parentFragmentManager,findNavController())
+        holder.setFields(null)
+        loaderManager.initLoader(1,null,this)
         return view
     }
 
-    @RequiresApi(Build.VERSION_CODES.N)
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        setField(view)
-        (view?.findViewById(R.id.pbTaxTCC) as CircularProgressIndicator).isVisible = false
-        view.findViewById<LinearLayout>(R.id.llMainTTCC).isVisible = true
+    private fun search(creditCard:CreditCardDTO){
+        val list = searchTaxSvc.getAll().filter {
+            it.codCreditCard == creditCard.id
+        }.sortedByDescending{ String.format("%04d%02d",it.year,it.month).toInt() }
+            .toMutableList()
+        holder.loadRecycler(list)
+
     }
 
+    private fun clearList(){
+        holder.recyclerView.adapter?.notifyDataSetChanged()
+    }
 
-    @RequiresApi(Build.VERSION_CODES.N)
-    fun setField(view:View){
-        view.let{
-            listCC = searchCCSvc.getAll()
-            holder = TaxHolder(view,parentFragmentManager,findNavController(),listCC)
-            holder.setFields(){
-                val builder = AlertDialog.Builder(view.context)
+    override fun onResume() {
+        super.onResume()
+        loaderManager.restartLoader(1,null,this)
+    }
+
+    override fun onCreateLoader(id: Int, args: Bundle?): Loader<Pair<List<CreditCardDTO>,List<TaxDTO>>> {
+        return object:AsyncTaskLoader<Pair<List<CreditCardDTO>,List<TaxDTO>>>(requireContext()){
+            private var data:Pair<List<CreditCardDTO>,List<TaxDTO>>? = null
+            override fun onStartLoading() {
+                super.onStartLoading()
+                if(data != null){
+                deliverResult(data)
+                }else{
+                    forceLoad()
+                }
+            }
+            override fun loadInBackground(): Pair<List<CreditCardDTO>,List<TaxDTO>>? {
+                var ccList = searchCCSvc.getAll()
+                var taxList = searchTaxSvc.getAll()
+                data = Pair(ccList,taxList)
+                return data
+            }
+        }
+    }
+
+    override fun onLoaderReset(loader: Loader<Pair<List<CreditCardDTO>,List<TaxDTO>>>) {
+    }
+
+    override fun onLoadFinished(loader: Loader<Pair<List<CreditCardDTO>,List<TaxDTO>>>, pair: Pair<List<CreditCardDTO>,List<TaxDTO>>?) {
+        pair?.let {
+
+            holder.setFields() {
+                val builder = AlertDialog.Builder(requireContext())
                 with(builder) {
-                    setItems(holder.list.map { "${it.id}. ${it.name}" }
-                        .toTypedArray()) { _, position ->
-                        holder.creditCard.setText(holder.list [position].name )
-                        search(holder.list[position])
+                    setItems(pair.first?.map { "${it.id}. ${it.name}" }
+                        ?.toTypedArray()) { _, position ->
+                        holder.creditCard.setText(pair.first[position].name)
+                        search(pair.first[position])
                     }
                 }
                 val dialog = builder.create()
                 dialog.show()
             }
-            holder.lists{
-                it.lbNameTCC.setEndIconOnClickListener { _->
+
+            holder.lists {
+                it.lbNameTCC.setEndIconOnClickListener { _ ->
                     it.creditCard.setText("")
                     clearList()
                 }
-                loadRecycleView(it.recyclerView)
-                if(listCC.isNotEmpty() && listCC.size == 1){
-                    it.creditCard.setText(listCC.first().name)
-                    search(listCC.first())
+                holder.loadRecycler(pair.second.toMutableList())
+                if (pair.first.isNotEmpty() && pair.first.size == 1) {
+                    it.creditCard.setText(pair.first.first().name)
+                    search(pair.first.first())
                 }
             }
         }
-    }
-
-    fun loadRecycleView(recyclerView:RecyclerView){
-        view.let {
-            recyclerView.let { rv ->
-                rv.layoutManager = LinearLayoutManager(it?.context,LinearLayoutManager.VERTICAL,false)
-                rv.adapter = ListTaxAdapter(list)
-
-            }
-        }
-    }
-
-    private fun search(creditCard:CreditCardDTO){
-        this.list = searchTaxSvc.getAll().filter {
-            it.codCreditCard == creditCard.id
-        }.sortedByDescending{ String.format("%04d%02d",it.year,it.month).toInt() }
-            .toMutableList()
-        holder.recyclerView.adapter = ListTaxAdapter(this.list)
-    }
-
-    private fun clearList(){
-        this.list.clear()
-        holder.recyclerView.adapter?.notifyDataSetChanged()
     }
 }

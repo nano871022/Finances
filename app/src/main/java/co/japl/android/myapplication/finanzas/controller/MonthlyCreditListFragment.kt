@@ -9,6 +9,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.annotation.RequiresApi
+import androidx.loader.app.LoaderManager
+import androidx.loader.content.AsyncTaskLoader
+import androidx.loader.content.Loader
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import co.japl.android.myapplication.R
@@ -17,18 +20,16 @@ import co.japl.android.myapplication.finanzas.adapter.ListMonthlyCreditAdapter
 import co.japl.android.myapplication.finanzas.bussiness.DTO.CreditDTO
 import co.japl.android.myapplication.finanzas.bussiness.impl.CreditFixImpl
 import co.japl.android.myapplication.finanzas.bussiness.interfaces.ICreditFix
+import co.japl.android.myapplication.finanzas.holders.MonthlyCreditListHolder
 import co.japl.android.myapplication.finanzas.putParams.CreditFixListParams
 import co.japl.android.myapplication.utils.NumbersUtil
 import java.math.BigDecimal
 import java.time.LocalDate
 
-class MonthlyCreditListFragment : Fragment() {
-    private lateinit var recycler: RecyclerView
+class MonthlyCreditListFragment : Fragment() ,LoaderManager.LoaderCallbacks<List<CreditDTO>> {
     private lateinit var credit:CreditDTO
     private lateinit var creditSvc:ICreditFix
-    private lateinit var totDebt:TextView
-    private lateinit var totQuote:TextView
-    private lateinit var numCredit:TextView
+    private lateinit var holder:MonthlyCreditListHolder
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,36 +41,26 @@ class MonthlyCreditListFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val root = inflater.inflate(R.layout.fragment_monthly_credit_list, container, false)
+        holder = MonthlyCreditListHolder(root)
         val date = getDate()
-        Log.d(javaClass.name,"Date get $date")
-        recycler = root.findViewById(R.id.rv_list_mcl)
-        totDebt = root.findViewById(R.id.tv_tot_debt_mcl)
-        totQuote = root.findViewById(R.id.tv_tot_quote_mcl)
-        numCredit = root.findViewById(R.id.tv_num_credits_mcl)
-            creditSvc = CreditFixImpl(ConnectDB(root.context))
+        creditSvc = CreditFixImpl(ConnectDB(root.context))
         credit = getCredit(date!!)
-        val list = creditSvc.get(credit)
-        val totalDebt = list.sumOf { it.value }
-        val totalQuote = list.sumOf { it.quoteValue }
-        val numCredits = list.count()
-        Log.d(javaClass.name,"list credit: $list")
-        recycler.layoutManager = LinearLayoutManager(root.context, LinearLayoutManager.VERTICAL,false)
-        ListMonthlyCreditAdapter(list.toMutableList(),root).let {
-            recycler.adapter = it
-        }
-        totDebt.text = NumbersUtil.COPtoString(totalDebt)
-        totQuote.text = NumbersUtil.COPtoString(totalQuote)
-        numCredit.text =  numCredits.toString()
-
+        holder.setFields(null)
+        loaderManager.initLoader(0,null,this)
         return root
+    }
+
+    override fun onResume() {
+        super.onResume()
+        loaderManager.restartLoader(0,null,this)
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
     private fun getDate():LocalDate{
         val date = CreditFixListParams.downloadMonthly(arguments)
-        return date?.let {
+        return (date?.let {
             return date.withDayOfMonth(1).plusMonths(1).minusDays(1)
-        } ?: LocalDate.now().withDayOfMonth(1).plusMonths(1).minusDays(1)
+        } ?: LocalDate.now().withDayOfMonth(1).plusMonths(1).minusDays(1)).also { Log.d(javaClass.name,"Date $it") }
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -83,6 +74,31 @@ class MonthlyCreditListFragment : Fragment() {
         val kindOf = ""
         val kindOfTax = ""
         return CreditDTO(id, name ,date,tax,period,value,quote,kindOf,kindOfTax)
+    }
+
+    override fun onCreateLoader(id: Int, args: Bundle?): Loader<List<CreditDTO>> {
+        return object:AsyncTaskLoader<List<CreditDTO>>(requireContext()){
+            private var data:List<CreditDTO>? = null
+            override fun onStartLoading() {
+                super.onStartLoading()
+                if(data != null){
+                    deliverResult(data)
+                }else{
+                    forceLoad()
+                }
+            }
+            override fun loadInBackground(): List<CreditDTO>? {
+                data = creditSvc.get(credit)
+                return data
+            }
+        }
+    }
+
+    override fun onLoaderReset(loader: Loader<List<CreditDTO>>) {
+    }
+
+    override fun onLoadFinished(loader: Loader<List<CreditDTO>>, data: List<CreditDTO>?) {
+        data?.let{holder.loadRecycler(data.toMutableList())}
     }
 
 }

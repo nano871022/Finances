@@ -2,8 +2,10 @@ package co.japl.android.myapplication.finanzas.holders
 
 import android.util.Log
 import android.view.View
+import android.widget.ProgressBar
 import android.widget.TableLayout
 import android.widget.TableRow
+import android.widget.TextView
 import androidx.core.view.setMargins
 import androidx.core.view.setPadding
 import co.japl.android.myapplication.R
@@ -25,17 +27,18 @@ class AmortizationTableHolder(val view:View): ITableHolder<CalcDTO> {
     private lateinit var creditData: CalcDTO
     private lateinit var amortizationList: ArrayList<Amortization>
     private lateinit var interesToPay:BigDecimal
-    private lateinit var creditValue: MaterialTextView
-    private lateinit var quoteValue: MaterialTextView
-    private lateinit var capitalValue: MaterialTextView
+    private lateinit var creditValue: TextView
+    private lateinit var quoteValue: TextView
+    private lateinit var capitalValue: TextView
     private lateinit var quoteValueLayout:TextInputLayout
     private lateinit var capitalValueLayout:TextInputLayout
-    private lateinit var tax: MaterialTextView
-    private lateinit var periods: MaterialTextView
-    private lateinit var interestToPay: MaterialTextView
-    private lateinit var totalColumn: MaterialTextView
-    private lateinit var nextValueColumn: MaterialTextView
-    private lateinit var capitalValueColumn: MaterialTextView
+    private lateinit var tax: TextView
+    private lateinit var periods: TextView
+    private lateinit var interestToPay: TextView
+    private lateinit var totalColumn: TextView
+    private lateinit var nextValueColumn: TextView
+    private lateinit var capitalValueColumn: TextView
+    private lateinit var progressBar:ProgressBar
     private var quotesPaid:Long = 0
     private val colorPaid = view.resources.getColor(androidx.media.R.color.primary_text_default_material_dark)
     private val backgroun = view.resources.getColor(R.color.green_background)
@@ -55,19 +58,21 @@ class AmortizationTableHolder(val view:View): ITableHolder<CalcDTO> {
         interestToPay = view.findViewById(R.id.interest_to_pay_at)
         capitalValueLayout = view.findViewById(R.id.capitalValueLayout)
         quoteValueLayout = view.findViewById(R.id.quoteValueLayout)
+        progressBar = view.findViewById(R.id.pb_load_at)
 
         amortizationList = ArrayList<Amortization>()
         interesToPay = BigDecimal.ZERO
         totalColumn.visibility= View.GONE
         nextValueColumn.visibility = View.GONE
         capitalValueLayout.visibility = View.GONE
+        progressBar.visibility = View.VISIBLE
     }
 
     override fun setData(creditValue: CalcDTO) {
         creditData = creditValue
-        this.creditValue.text = NumbersUtil.COPtoString(creditValue.valueCredit)
-        this.quoteValue.text = NumbersUtil.COPtoString(creditValue.quoteCredit)
-        this.tax.text = "${creditValue.interest} % ${creditValue.kindOfTax}"
+        this.creditValue.text = NumbersUtil.toString(creditValue.valueCredit)
+        this.quoteValue.text = NumbersUtil.toString(creditValue.quoteCredit)
+        this.tax.text = "${creditValue.interest} ${creditValue.kindOfTax}"
         this.periods.text = creditValue.period.toString()
     }
 
@@ -89,7 +94,7 @@ class AmortizationTableHolder(val view:View): ITableHolder<CalcDTO> {
     private fun quoteFixCalc(){
         Log.d(javaClass.name,"Quote Fix")
         var currentCreditValue = creditData.valueCredit
-        val tax = ( kindOfTaxSvc.getNM(creditData.interest, KindOfTaxEnum.valueOf(creditData.kindOfTax))/ 100).toBigDecimal()
+        val tax = getTax().toBigDecimal()
         for ( period in 1 .. creditData.period){
             val interest = currentCreditValue * tax
             val capital = creditData.quoteCredit -  interest
@@ -114,7 +119,7 @@ class AmortizationTableHolder(val view:View): ITableHolder<CalcDTO> {
         val periods = creditData.period
         val capital = currentCreditValue.toDouble() / periods
         Log.d(javaClass.name,"$capital = $currentCreditValue / $periods")
-        val tax = if(creditData.interest > 0)kindOfTaxSvc.getNM(creditData.interest, KindOfTaxEnum.valueOf(creditData.kindOfTax)) / 100 else creditData.interest
+        val tax = getTax()
         for ( period in 1 .. creditData.period){
             val interest = currentCreditValue * tax.toBigDecimal()
             amortizationList.add(Amortization(period.toInt(),
@@ -125,13 +130,22 @@ class AmortizationTableHolder(val view:View): ITableHolder<CalcDTO> {
                 currentCreditValue - capital.toBigDecimal()))
             currentCreditValue -=  capital.toBigDecimal()
             interesToPay += interest
-            Log.d(javaClass.name,"${amortizationList.size} $currentCreditValue $capital (${creditData.valueCredit} / ${creditData.period}) $interest")
+            Log.d(javaClass.name,"${amortizationList.size} $currentCreditValue $capital (${creditData.valueCredit} / ${creditData.period}) $interest - $tax - ${creditData.interest}")
         }
-        capitalValue.text = NumbersUtil.COPtoString(creditData.capitalValue)
+        capitalValue.text = NumbersUtil.toString(creditData.capitalValue)
         capitalValueLayout.visibility = View.VISIBLE
         quoteValueLayout.visibility = View.GONE
         this.totalColumn.visibility = View.VISIBLE
         this.capitalValueColumn.visibility = View.GONE
+    }
+
+    fun getTax():Double{
+        return if(creditData.interest > 0){
+            Log.d(javaClass.name,"${creditData.interest} ${creditData.kindOfTax}")
+            kindOfTaxSvc.getNM(creditData.interest, KindOfTaxEnum.valueOf(creditData.kindOfTax))
+        } else {
+            creditData.interest
+        }
     }
 
    override fun load(){
@@ -183,7 +197,8 @@ class AmortizationTableHolder(val view:View): ITableHolder<CalcDTO> {
 
             table.addView(row,TableRow.LayoutParams.MATCH_PARENT,TableRow.LayoutParams.WRAP_CONTENT)
         }
-       this.interestToPay.text = NumbersUtil.COPtoString(interesToPay)
+       this.interestToPay.text = NumbersUtil.toString(interesToPay)
+       progressBar.visibility = View.GONE
     }
 
     private fun createTextView(value:String,paid:Boolean):MaterialTextView{

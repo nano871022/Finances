@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_margin="@dimen/space_min"
+    tools:context=".finanzas.controller.CheckPaymentsFragment">
+
+    <ScrollView
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content">
+         <LinearLayout
+             android:layout_width="match_parent"
+             android:layout_height="wrap_content"
+             android:padding="@dimen/space_min"
+          android:orientation="vertical">
+
+             <ProgressBar
+                 android:layout_width="match_parent"
+                 android:layout_height="wrap_content"
+                 android:id="@+id/pb_load_cps"/>
+
+          <com.google.android.material.textview.MaterialTextView
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:layout_margin="@dimen/space_min"
+              android:padding="@dimen/space_min"
+              android:layout_marginTop="@dimen/space_min"
+              android:text="@string/check_payments_title"/>
+
+             <LinearLayout
+                 android:layout_width="match_parent"
+                 android:layout_height="wrap_content"
+                 android:orientation="horizontal">
+
+                 <com.google.android.material.textfield.TextInputLayout
+                     android:layout_width="match_parent"
+                     android:layout_height="wrap_content"
+                     android:hint="@string/to_pay"
+                     app:prefixText="$"
+                     style="@style/MaterialTextInputLayoutView"
+                     android:layout_margin="@dimen/space_min"
+                     android:layout_weight="1">
+                     <com.google.android.material.textfield.TextInputEditText
+                         android:id="@+id/et_payments_cps"
+                         android:layout_width="match_parent"
+                         android:layout_height="wrap_content"
+                         android:enabled="false"
+                         style="@style/MaterialTextInputLayoutView"
+                         android:textAlignment="center"
+                         android:text="@string/money_hint"/>
+                 </com.google.android.material.textfield.TextInputLayout>
+
+                 <com.google.android.material.textfield.TextInputLayout
+                     android:layout_width="match_parent"
+                     android:layout_height="wrap_content"
+                     android:hint="@string/paid"
+                     app:prefixText="$"
+                     style="@style/MaterialTextInputLayoutView"
+                     android:layout_margin="@dimen/space_min"
+                     android:layout_weight="1">
+                     <com.google.android.material.textfield.TextInputEditText
+                         android:id="@+id/et_paid_cps"
+                         android:layout_width="match_parent"
+                         android:layout_height="wrap_content"
+                         android:enabled="false"
+                         style="@style/MaterialTextInputLayoutView"
+                         android:textAlignment="center"
+                         android:text="@string/money_hint"/>
+                 </com.google.android.material.textfield.TextInputLayout>
+
+
+             </LinearLayout>
+
+          <androidx.recyclerview.widget.RecyclerView
+              android:id="@+id/rv_item_cps"
+              android:layout_width="match_parent"
+              android:layout_margin="@dimen/space_min"
+              android:layout_height="wrap_content"/>
+
+             <com.google.android.material.button.MaterialButton
+                 android:id="@+id/btn_add_cps"
+                 android:layout_width="wrap_content"
+                 android:layout_height="wrap_content"
+                 android:layout_margin="@dimen/space_min"
+                 android:text="@string/save"
+                 app:icon="@android:drawable/ic_menu_save" />
+
+         </LinearLayout>
+
+    </ScrollView>
+</com.google.android.material.card.MaterialCardView>

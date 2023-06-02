@@ -34,7 +34,7 @@ class PeriodsHolder (var view:View, var parentFragmentManager:FragmentManager, v
         interest = view.findViewById(R.id.tvValueLCCS)
         capital = view.findViewById(R.id.tvStatusLCCS)
         total = view.findViewById(R.id.tvCreditCardLCCS)
-        paid = view.findViewById(R.id.btnShowPaid)
+        paid = view.findViewById(R.id.btn_more_qpil)
     }
 
     @RequiresApi(Build.VERSION_CODES.O)

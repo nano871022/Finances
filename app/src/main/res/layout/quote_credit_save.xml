@@ -40,15 +40,19 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="@dimen/space_min"
+                style="@style/MaterialTextInputLayoutView"
                 android:layout_margin="@dimen/space_min"
                 android:background="@color/green_light_trans"
-                app:prefixText="@string/credit_value" >
+                app:prefixText="$"
+                android:hint="@string/credit_value" >
 
-            <com.google.android.material.textview.MaterialTextView
+            <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/tvValueCreditSave"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:enabled="false"
+                style="@style/MaterialTextInputLayoutView"
                 android:text="@string/quote_credit_hint"
                 android:textAlignment="center" />
             </com.google.android.material.textfield.TextInputLayout>
@@ -56,14 +60,15 @@
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="@dimen/space_min"
-                android:layout_margin="@dimen/space_min"
-                android:background="@color/green_light_trans"
-                app:prefixText="@string/tax" >
+                style="@style/MaterialTextInputLayoutView"
+                app:suffixText="%"
+                android:hint="@string/tax" >
 
-            <TextView
+            <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/tvInterestSave"
                 android:layout_width="match_parent"
+                android:enabled="false"
+                style="@style/MaterialTextInputLayoutView"
                 android:layout_height="wrap_content"
                 android:text="@string/interest_value_hint"
                 android:textAlignment="center" />
@@ -72,31 +77,32 @@
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="@dimen/space_min"
-                android:layout_margin="@dimen/space_min"
-                android:background="@color/green_light_trans"
-                app:prefixText="@string/months" >
+                style="@style/MaterialTextInputLayoutView"
+                android:hint="@string/months" >
 
-            <com.google.android.material.textview.MaterialTextView
+            <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/tvMonthsSave"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/months_number_hint"
+                android:enabled="false"
+                style="@style/MaterialTextInputLayoutView"
                 android:textAlignment="center" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="@dimen/space_min"
-                android:layout_margin="@dimen/space_min"
-                android:background="@color/green_light_trans"
-                app:prefixText="@string/quote_credit" >
+                style="@style/MaterialTextInputLayoutView"
+                app:prefixText="$"
+                android:hint="@string/quote_credit" >
 
-            <TextView
+            <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/tvQuoteValueSave"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:enabled="false"
+                style="@style/MaterialTextInputLayoutView"
                 android:text="@string/quote_credit_hint"
                 android:textAlignment="center" />
             </com.google.android.material.textfield.TextInputLayout>

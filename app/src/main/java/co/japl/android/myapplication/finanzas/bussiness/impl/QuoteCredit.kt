@@ -13,23 +13,16 @@ class QuoteCredit : Calc {
 
     override fun calc(value: BigDecimal, period: Long, tax: Double,kindOf: KindOfTaxEnum): BigDecimal {
         Log.d(this.javaClass.name,"<<<=== START:: Calc: Credit Value $value")
-        val taxDouble = getTax(tax)
-        val taxValue = kindOfTaxSvc.getNM(taxDouble,kindOf)
+        val taxValue = kindOfTaxSvc.getNM(tax,kindOf)
         val onePlusTaxPowPeriod = onePlusTaxPowPeriod(taxValue,period)
         val taxAndPeriodDiv = (taxValue*onePlusTaxPowPeriod).div(onePlusTaxPowPeriod-1)
-        val response = value.multiply(taxAndPeriodDiv.toBigDecimal())
-        return response.also { Log.d(this.javaClass.name,"<<<=== FINISH:: Calc: $response = $value X (($taxDouble X $onePlusTaxPowPeriod) / ($onePlusTaxPowPeriod - 1))") }
+        return value.multiply(taxAndPeriodDiv.toBigDecimal()).also { Log.d(this.javaClass.name,"<<<=== FINISH:: Calc: $it = $value X (($tax X $onePlusTaxPowPeriod) / ($onePlusTaxPowPeriod - 1))") }
     }
 
     private fun onePlusTaxPowPeriod(tax:Double,period:Long):Double{
         val response = (1+tax).pow(period.toDouble())
         return response.also { Log.d(this.javaClass.name,"<<<=== FINISH:: OnePlusTaxPowPeriod: $response = 1 + $tax ^ $period") }
     }
-    private fun getTax(tax:Double):Double{
-        val interest = tax / 100
-        return interest.also { Log.d(this.javaClass.name,"<<<=== FINISH:: getTax: $interest = $tax / 100") }
-    }
-
     fun getCreditValue(creditValue:BigDecimal, tax:Double, periodPaid:Int, period:Int, quote:BigDecimal, kindOfTax: KindOfTaxEnum):BigDecimal{
         var sumCapital = BigDecimal.ZERO
         for (p in 1..periodPaid) {
@@ -41,7 +34,7 @@ class QuoteCredit : Calc {
     }
 
     fun getInterest(creditValue:BigDecimal, tax:Double, period:Int, quote:BigDecimal, periodPaid:Int, kindOfTax: KindOfTaxEnum):BigDecimal{
-        val tax = kindOfTaxSvc.getNM(tax/100, kindOfTax) / 100
+        val tax = kindOfTaxSvc.getNM(tax, kindOfTax)
         val part3 = creditValue.toDouble() * tax
         if(periodPaid > 1) {
             val pow1 = (period) - 5

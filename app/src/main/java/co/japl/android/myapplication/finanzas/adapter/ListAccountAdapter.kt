@@ -17,6 +17,7 @@ import co.japl.android.myapplication.finanzas.bussiness.DTO.InputDTO
 import co.japl.android.myapplication.finanzas.bussiness.impl.AccountImpl
 import co.japl.android.myapplication.finanzas.bussiness.impl.InputImpl
 import co.japl.android.myapplication.finanzas.bussiness.interfaces.ISaveSvc
+import co.japl.android.myapplication.finanzas.enums.MoreOptionsItemsAccount
 import co.japl.android.myapplication.finanzas.putParams.AccountListParams
 import co.japl.android.myapplication.holders.view.AccountItemHolder
 import com.google.android.material.snackbar.Snackbar
@@ -63,11 +64,11 @@ class ListAccountAdapter(var data:MutableList<AccountDTO>) : RecyclerView.Adapte
     override fun onBindViewHolder(holder: AccountItemHolder, position: Int) {
         Log.d(this.javaClass.name,"on binging view holder $position")
        holder.setFields(data[position]) {
-           when (it?.id) {
-               R.id.btn_search_accil->{
+           when (it) {
+               MoreOptionsItemsAccount.VIEW->{
                    AccountListParams.newInstance(data[position].id,view.findNavController())
                }
-               R.id.btn_delete_accil -> {
+               MoreOptionsItemsAccount.DELETE -> {
                    val dialog = AlertDialog.Builder(view.context)
                        .setTitle(R.string.do_you_want_to_delete_this_record)
                        .setNegativeButton(R.string.cancel, null)

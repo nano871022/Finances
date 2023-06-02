@@ -1,28 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_marginTop="5dp"
-    app:layout_dodgeInsetEdges="all">
-    <com.google.android.material.card.MaterialCardView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="5dp"
-        android:layout_marginRight="5dp"
-        app:strokeWidth="1dp"
-        app:cardElevation="2dp"
-        app:cardCornerRadius="12dp">
+        android:layout_margin="@dimen/space_min">
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="?attr/colorPrimary"
+            android:background="?attr/colorPrimaryVariant"
             android:orientation="vertical"
-            android:paddingLeft="5dp"
-            android:paddingTop="5dp"
-            android:paddingRight="5dp"
-            android:paddingBottom="5dp">
+            android:padding="@dimen/space_min">
 
 
     <LinearLayout
@@ -48,20 +36,12 @@
                 android:textStyle="bold" />
 
             <ImageButton
-                android:id="@+id/btnEditLCCS"
+                android:id="@+id/btn_more_ilccs"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="0"
-                android:background="#03FFFFFF"
-                app:srcCompat="@drawable/ic_baseline_edit_24" />
-
-            <ImageButton
-                android:id="@+id/btnDeleteItemLCCS"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="0"
-                android:background="#01FFFFFF"
-                app:srcCompat="@drawable/ic_baseline_delete_24" />
+                android:background="?attr/colorPrimaryVariant"
+                app:srcCompat="@drawable/more_vertical" />
 
         </LinearLayout>
 
@@ -170,5 +150,4 @@
 
     </LinearLayout>
         </LinearLayout>
-    </com.google.android.material.card.MaterialCardView>
-</androidx.constraintlayout.widget.ConstraintLayout>
+</com.google.android.material.card.MaterialCardView>

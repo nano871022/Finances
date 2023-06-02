@@ -3,8 +3,10 @@ package co.japl.android.myapplication.finanzas.holders
 import android.os.Build
 import android.util.Log
 import android.view.View
+import android.widget.ProgressBar
 import android.widget.TableLayout
 import android.widget.TableRow
+import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.core.view.setMargins
 import androidx.core.view.setPadding
@@ -28,13 +30,13 @@ class AmortizationCreditTableHolder(val view:View): ITableHolder<AmortizationCre
     val kindTaxSvc:IKindOfTaxSvc = KindOfTaxImpl()
     val calc = QuoteCredit()
     lateinit var table:TableLayout
-    lateinit var date:MaterialTextView
-    lateinit var periods:MaterialTextView
-    lateinit var additionalMonthly:MaterialTextView
-    lateinit var additional:MaterialTextView
-    lateinit var interest:MaterialTextView
-    lateinit var tax:MaterialTextView
-    lateinit var quote:MaterialTextView
+    lateinit var date:TextView
+    lateinit var periods:TextView
+    lateinit var additionalMonthly:TextView
+    lateinit var additional:TextView
+    lateinit var interest:TextView
+    lateinit var tax: TextView
+    lateinit var quote:TextView
     lateinit var btnAdditional:MaterialButton
     lateinit var credit:CalcDTO
     private val amortizationList:MutableList<AmortizationCreditFix> = ArrayList()
@@ -46,6 +48,7 @@ class AmortizationCreditTableHolder(val view:View): ITableHolder<AmortizationCre
     private val background = view.resources.getColor(R.color.green_background)
     @RequiresApi(Build.VERSION_CODES.O)
     private var dateBill:LocalDate = LocalDate.MIN
+    private lateinit var progressBar:ProgressBar
 
     override fun setup(actions: View.OnClickListener?) {
         table = view.findViewById(R.id.amortization_acf)
@@ -57,13 +60,15 @@ class AmortizationCreditTableHolder(val view:View): ITableHolder<AmortizationCre
         interest = view.findViewById(R.id.interest_acf)
         tax = view.findViewById(R.id.tv_interest_acf)
         quote = view.findViewById(R.id.quote_acf)
+        progressBar = view.findViewById(R.id.pb_load_acf)
         btnAdditional.setOnClickListener(actions)
+        progressBar.visibility = View.VISIBLE
     }
 
     override fun setData(creditValue: CalcDTO) {
         credit = creditValue
         val quoteValue = credit.quoteCredit + (additionalValue?.let { additionalValue }?:BigDecimal.ZERO)
-        quote.text = NumbersUtil.COPtoString(quoteValue)
+        quote.text = NumbersUtil.toString(quoteValue)
         periods.text = credit.period.toString()
         Log.d(javaClass.name,"Tax:. ${creditValue.interest}")
         tax.text = "${creditValue.interest} % ${creditValue.kindOfTax}"
@@ -72,7 +77,7 @@ class AmortizationCreditTableHolder(val view:View): ITableHolder<AmortizationCre
     @RequiresApi(Build.VERSION_CODES.O)
     override fun create() {
         var currentCreditValue = credit.valueCredit
-        val tax = kindTaxSvc.getNM(credit.interest, KindOfTaxEnum.valueOf(credit.kindOfTax)) / 100
+        val tax = kindTaxSvc.getNM(credit.interest, KindOfTaxEnum.valueOf(credit.kindOfTax))
         for ( period in 1 .. credit.period){
             val interest = (currentCreditValue.toDouble() * tax).toBigDecimal()
             val capital = credit.quoteCredit -  interest
@@ -89,7 +94,7 @@ class AmortizationCreditTableHolder(val view:View): ITableHolder<AmortizationCre
             sumAdditionalValue += additionalValue
             interestToPay += interest
         }
-        additional.text = NumbersUtil.COPtoString(sumAdditionalValue)
+        additional.text = NumbersUtil.toString(sumAdditionalValue)
     }
 
     override fun load() {
@@ -131,7 +136,8 @@ class AmortizationCreditTableHolder(val view:View): ITableHolder<AmortizationCre
 
             table.addView(row,TableLayout.LayoutParams.MATCH_PARENT,TableLayout.LayoutParams.WRAP_CONTENT)
         }
-        interest.text = NumbersUtil.COPtoString(interestToPay)
+        interest.text = NumbersUtil.toString(interestToPay)
+        progressBar.visibility = View.GONE
     }
 
     private fun createTextView(value:String,paid:Boolean):MaterialTextView{
@@ -150,7 +156,7 @@ class AmortizationCreditTableHolder(val view:View): ITableHolder<AmortizationCre
         when(name){
             AmortizationCreditFixEnum.ADDITIONAL.name-> {
                 additionalValue = value as BigDecimal
-                additionalMonthly.text = NumbersUtil.COPtoString(additionalValue)
+                additionalMonthly.text = NumbersUtil.toString(additionalValue)
             }
             AmortizationCreditFixEnum.QUOTES_PAID.name-> quotesPaid = (value as Long).toInt()
             AmortizationCreditFixEnum.DATE_BILL.name-> {

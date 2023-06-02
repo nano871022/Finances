@@ -15,6 +15,10 @@
             android:layout_height="wrap_content"
             android:padding="@dimen/space_min"
             android:orientation="vertical">
+            <ProgressBar
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/pb_load_lpj"/>
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -22,16 +26,16 @@
                 <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@color/green_light_trans"
-                    android:padding="@dimen/space_min"
                     android:layout_weight="1"
-                    android:layout_margin="@dimen/space_min"
-                    app:prefixText="@string/num_items">
-                    <com.google.android.material.textview.MaterialTextView
+                    style="@style/MaterialTextInputLayoutView"
+                    android:hint="@string/num_items">
+                    <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/tv_num_items_lpj"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="@string/months_number_hint"
+                        android:enabled="false"
+                        style="@style/MaterialTextInputLayoutView"
                         android:textAlignment="center"
                         />
                 </com.google.android.material.textfield.TextInputLayout>
@@ -39,16 +43,17 @@
                 <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@color/green_light_trans"
-                    android:padding="@dimen/space_min"
                     android:layout_weight="1"
-                    android:layout_margin="@dimen/space_min"
-                    app:prefixText="@string/num_tot_save">
-                    <com.google.android.material.textview.MaterialTextView
+                    style="@style/MaterialTextInputLayoutView"
+                    app:prefixText="$"
+                    android:hint="@string/num_tot_save">
+                    <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/tv_tot_saved_lpj"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="@string/money_hint"
+                        android:enabled="false"
+                        style="@style/MaterialTextInputLayoutView"
                         android:textAlignment="center"
                         />
                 </com.google.android.material.textfield.TextInputLayout>

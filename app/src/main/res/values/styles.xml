@@ -1,19 +1,59 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="GreenTex" parent="TextAppearance.AppCompat">
-        <item name="android:textColor">#00FF00</item>
-        <item name="windowSplashScreenBackground">@color/green_background</item>
-        <item name="windowSplashScreenAnimatedIcon">@drawable/finanza_logo</item>
-        <item name="windowSplashScreenIconBackgroundColor">@color/green_background_dark
-        </item>
-        <item name="android:layout_margin">2dp</item>
+    <style name="ButtonStyle" parent="Widget.MaterialComponents.Button.OutlinedButton">
+        <item name="android:textColor">@color/green_background_dark</item>
+        <item name="rippleColor">@color/green_background_dark</item>
+        <item name="iconTint">@color/green_background_dark</item>
+        <item name="strokeColor">@color/green_background_dark</item>
+        <item name="cornerRadius">@dimen/radius_corner</item>
     </style>
-    <style name="Theme.App.Starting" parent="Theme.SplashScreen">
-        <item name="windowSplashScreenBackground">@color/green_background</item>
-        <item name="windowSplashScreenAnimatedIcon">@mipmap/ic_finanzas_foreground</item>
-        <item name="windowSplashScreenIconBackgroundColor">@color/green_background_dark
-        </item>
-        <!-- requero para aplicar el spash y aplicar el estilo de la aplicacino si no lo tiene falla-->
-        <item name="postSplashScreenTheme">@style/Theme.myapplication</item>
+
+    <style name="MaterialTextInputLayout" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <item name="boxBackgroundColor">@color/green_dark_trans</item>
+        <item name="android:padding">@dimen/space_min</item>
+        <item name="android:textColorHint">@color/green_background_dark</item>
+        <item name="prefixTextColor">@color/green_background_dark</item>
+        <item name="boxCornerRadiusBottomEnd">@dimen/radius_corner</item>
+        <item name="boxCornerRadiusBottomStart">@dimen/radius_corner</item>
+        <item name="endIconTint">@color/green_background</item>
+        <item name="boxStrokeWidth">1dp</item>
+        <item name="boxStrokeWidthFocused">2dp</item>
     </style>
+
+    <style name="MaterialTextInputLayoutView" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <item name="prefixTextColor">@color/green_background</item>
+        <item name="android:textColorHint">@color/green_background</item>
+        <item name="android:textColor">@color/green_background</item>
+        <item name="boxCornerRadiusBottomStart">5dp</item>
+        <item name="boxCornerRadiusBottomEnd">5dp</item>
+        <item name="boxCornerRadiusTopEnd">@dimen/radius_corner</item>
+        <item name="boxCornerRadiusTopStart">@dimen/radius_corner</item>
+        <item name="boxStrokeWidth">2dp</item>
+        <item name="suffixTextColor">@color/green_background</item>
+        <item name="boxStrokeColor">@color/green_background</item>
+    </style>
+
+    <style name="MaterialTextView" parent="Widget.MaterialComponents.TextView">
+        <item name="android:textColor">@color/green_background_dark</item>
+        <item name="boxBackgroundColor">@color/green_dark_trans</item>
+    </style>
+
+    <style name="MaterialToolBar" parent="Widget.MaterialComponents.Toolbar.Surface">
+        <item name="titleTextColor">@color/green_background_dark</item>
+        <item name="navigationIconTint">@color/green_background_dark</item>
+    </style>
+
+    <style name="MaterialCardView" parent="Widget.MaterialComponents.CardView">
+        <item name="strokeColor">@color/green_background</item>
+        <item name="strokeWidth">1dp</item>
+        <item name="cardCornerRadius">@dimen/radius_corner</item>
+        <item name="cardElevation">@dimen/card_elevator_5</item>
+    </style>
+
+    <style name="ProgressBar" parent="Widget.AppCompat.ProgressBar.Horizontal">
+        <item name="android:progressBackgroundTint">@color/green_background</item>
+        <item name="android:progressTint">@color/green_background</item>
+    </style>
+
+
 </resources>

@@ -250,8 +250,73 @@
     <string name="total_inputs_fix">Ingresos - Total Fijos</string>
     <string name="total_quote_credit_card">Total Cuota Tarjeta de Credito</string>
     <string name="total_paids">Total Pagos</string>
-    <string name="total_input_paids">Total Ingresos - Total Pagos</string>
+    <string name="total_input_paids">Ingresos - Pagos</string>
     <string name="cash_paids_credits">Pagos Efectivo y Creditos</string>
     <string name="recap">Resumen</string>
+    <string name="num_paids">Número Pagos</string>
+
+    <string name="check_payments_title">Pagos</string>
+    <string name="to_pay">A Pagar</string>
+
+    <string name="yes">Si</string>
+    <string name="no">No</string>
+
+    <string name="pick_option">Seleccionar Opción</string>
+    <array name="credit_card_item_options">
+        <item >Amortizacion</item>
+        <item >Editar</item>
+        <item >Eliminar</item>
+    </array>
+
+    <array name="credit_item_options">
+        <item >Amortizacion</item>
+        <item >Eliminar</item>
+    </array>
+
+    <array name="paids_item_options">
+        <item >Eliminar</item>
+    </array>
+
+    <array name="period_item_options">
+        <item >Ver</item>
+    </array>
+
+    <array name="projection_item_options">
+        <item >Editar</item>
+        <item >Eliminar</item>
+    </array>
+
+    <array name="quote_save_item_options">
+        <item >Amortizacion</item>
+        <item >Eliminar</item>
+    </array>
+
+    <array name="account_items_options">
+        <item >Ver</item>
+        <item >Eliminar</item>
+    </array>
+
+    <array name="list_credit_card_items_options">
+        <item >Editar</item>
+        <item >Eliminar</item>
+    </array>
+
+    <array name="setting_credit_card_items_options">
+        <item >Editar</item>
+        <item >Eliminar</item>
+    </array>
+
+    <array name="tax_items_options">
+        <item >Eliminar</item>
+    </array>
+
+    <array name="input_items_options">
+        <item >Eliminar</item>
+    </array>
+
+    <array name="additional_items_options">
+        <item >Editar</item>
+        <item >Eliminar</item>
+    </array>
 
 </resources>

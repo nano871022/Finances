@@ -43,7 +43,7 @@ class QuoteBoughtHolder(var root:View,val supportManager:FragmentManager) : IHol
     ISpinnerHolder<QuoteBoughtHolder> {
     lateinit var etProductName: TextInputEditText
     lateinit var etProductValue: TextInputEditText
-    lateinit var etTax: MaterialTextView
+    lateinit var etTax: TextView
     lateinit var etMonths: TextInputEditText
     lateinit var etQuotesValue: TextView
     lateinit var tvCardAssing: TextView

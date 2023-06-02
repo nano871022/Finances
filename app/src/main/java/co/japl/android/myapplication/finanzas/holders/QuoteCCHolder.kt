@@ -54,6 +54,7 @@ class QuoteCCHolder(var view:View,var parentFragmentManager:FragmentManager,var 
     lateinit var nameCreaditCard: Optional<String>
     lateinit var codeCreaditCard:Optional<Int>
     lateinit var cutOff:Optional<LocalDateTime>
+    lateinit var progresBar:ProgressBar
     private lateinit var cutOffDay:Optional<Short>
 
     override fun setFields(actions: View.OnClickListener?) {
@@ -80,6 +81,7 @@ class QuoteCCHolder(var view:View,var parentFragmentManager:FragmentManager,var 
             tvTotalQuoteLastMonth = it.findViewById(R.id.tvTotalQuoteLastMonth)
             btnBoughtHistory = it.findViewById(R.id.btnBoughtHistory)
             btnCutOffHistory = it.findViewById(R.id.btnCutOffHistory)
+            progresBar = it.findViewById(R.id.pb_load_qcc)
         }
 
         spCreditCard.isFocusable = false
@@ -110,6 +112,7 @@ class QuoteCCHolder(var view:View,var parentFragmentManager:FragmentManager,var 
         btnCutOffHistory.let{
             it.setOnClickListener(this)
         }
+        progresBar.visibility = View.VISIBLE
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -124,9 +127,9 @@ class QuoteCCHolder(var view:View,var parentFragmentManager:FragmentManager,var 
             codeCreaditCard = values.codeCreditCard
             nameCreaditCard = values.nameCreditCard
             values.warningValue.ifPresent {
-                tvLimit.text = NumbersUtil.COPtoString(it)
+                tvLimit.text = NumbersUtil.toString(it)
                 val limit = it - values.capital.get().plus(values.interest.get())
-                tvWarning.text = NumbersUtil.COPtoString(limit)
+                tvWarning.text = NumbersUtil.toString(limit)
                 if(limit < BigDecimal.ZERO ){
                     tvWarning.setTextColor(Color.RED)
                 }
@@ -136,28 +139,28 @@ class QuoteCCHolder(var view:View,var parentFragmentManager:FragmentManager,var 
             cutOffDay = values.cutoffDay
             tvCutOffDateQuote.text =  DateUtils.localDateTimeToString(values.cutOff.get())
             if (values.capital.isPresent and values.interest.isPresent) {
-                tvTotalValueQuote.text = NumbersUtil.COPtoString(values.capital.get().plus(values.interest.get()))
+                tvTotalValueQuote.text = NumbersUtil.toString(values.capital.get().plus(values.interest.get()))
             }
 
             if (values.capital.isPresent) {
-                tvEquityValueQuote.text = NumbersUtil.COPtoString(values.capital.get())
+                tvEquityValueQuote.text = NumbersUtil.toString(values.capital.get())
             } else {
                 tvEquityValueQuote.text = "$ 0.00"
             }
 
             if (values.interest.isPresent) {
-                tvIterestValueQuote.text = NumbersUtil.COPtoString(values.interest.get())
+                tvIterestValueQuote.text = NumbersUtil.toString(values.interest.get())
             } else {
                 tvIterestValueQuote.text = "$ 0.00"
             }
 
             if(values.quotes.isPresent) {
-                tvNumQuotes.text = NumbersUtil.toString(values.quotes.get())
+                tvNumQuotes.text = values.quotes.get().toString()
             }else{
                 tvNumQuotes.text = "00"
             }
             if(values.oneQuote.isPresent) {
-                tvNumOneQuote.text = NumbersUtil.toString(values.oneQuote.get())
+                tvNumOneQuote.text = values.oneQuote.get().toString()
             }else{
                 tvNumOneQuote.text = "00"
             }
@@ -175,11 +178,11 @@ class QuoteCCHolder(var view:View,var parentFragmentManager:FragmentManager,var 
                 it.text = remainders
             }
 
-            tvCapitalQuoteLastMonth.text = NumbersUtil.COPtoString(values.capitalQuote.orElse(BigDecimal(0)))
-            tvCapitalQuotesLastMonth.text = NumbersUtil.COPtoString(values.capitalQuotes.orElse(BigDecimal(0)))
-            tvInteresLastMonth.text = NumbersUtil.COPtoString(values.interestQuotes.orElse(BigDecimal(0)))
+            tvCapitalQuoteLastMonth.text = NumbersUtil.toString(values.capitalQuote.orElse(BigDecimal(0)))
+            tvCapitalQuotesLastMonth.text = NumbersUtil.toString(values.capitalQuotes.orElse(BigDecimal(0)))
+            tvInteresLastMonth.text = NumbersUtil.toString(values.interestQuotes.orElse(BigDecimal(0)))
             tvLastMonthDate.text = DateUtils.localDateTimeToString(values.cutOff.get().minusMonths(1))
-            tvTotalQuoteLastMonth.text = NumbersUtil.COPtoString(values.capitalQuote.orElse(BigDecimal(0)).plus(values.capitalQuotes.orElse(
+            tvTotalQuoteLastMonth.text = NumbersUtil.toString(values.capitalQuote.orElse(BigDecimal(0)).plus(values.capitalQuotes.orElse(
                 BigDecimal(0)
             )).plus(values.interestQuotes.orElse(BigDecimal(0))))
 
@@ -200,6 +203,7 @@ class QuoteCCHolder(var view:View,var parentFragmentManager:FragmentManager,var 
                 btnAddBuyWallet.visibility = View.VISIBLE
             }
             btnBoughtHistory.visibility = View.VISIBLE
+            progresBar.visibility = View.GONE
         }
     }
 

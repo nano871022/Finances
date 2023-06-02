@@ -2,29 +2,26 @@
 <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    app:strokeWidth="@dimen/stroke_with"
-    app:cardCornerRadius="@dimen/radius_corner"
-    app:cardElevation="@dimen/card_elevator"
     android:orientation="vertical"
     android:layout_margin="@dimen/space_min"
     android:layout_height="wrap_content">
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="?attr/colorPrimary"
+        android:background="?attr/colorPrimaryVariant"
         android:orientation="horizontal">
 
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_weight="1"
-            android:background="@color/green_light_trans"
-            android:padding="@dimen/space_min"
-            android:layout_margin="@dimen/space_min"
-            app:prefixText="@string/name"
+            android:hint="@string/name"
+            style="@style/MaterialTextInputLayoutView"
             android:layout_height="match_parent">
-            <com.google.android.material.textview.MaterialTextView
+            <com.google.android.material.textfield.TextInputEditText
                 android:layout_width="match_parent"
-                android:hint="@string/name"
+                android:text="@string/name"
+                android:enabled="false"
+                style="@style/MaterialTextInputLayoutView"
                 android:id="@+id/name_accil"
                 android:textAlignment="center"
                 android:layout_height="wrap_content"/>
@@ -32,18 +29,11 @@
         </com.google.android.material.textfield.TextInputLayout>
 
         <ImageView
-            android:id="@+id/btn_search_accil"
+            android:id="@+id/btn_more_accil"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_weight="0"
-            app:srcCompat="@android:drawable/ic_menu_search" />
-
-        <ImageView
-            android:id="@+id/btn_delete_accil"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_weight="0"
-            app:srcCompat="@drawable/ic_baseline_delete_24" />
+            app:srcCompat="@drawable/more_vertical" />
     </LinearLayout>
 
 
