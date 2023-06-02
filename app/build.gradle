@@ -13,7 +13,7 @@ android {
         minSdk 21
         targetSdk 33
         versionCode 4_04_04_028
-        versionName "Se canmbia el diseño de la interfaz grafica y se ajustan los calculos porque presentaban fallas en los valores de los creditos a cuotas de tasas tipo EA"
+        versionName "Arreglo con calculos con EM Y NM"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
