@@ -13,7 +13,7 @@ android {
         minSdk 21
         targetSdk 33
         versionCode 4_04_03_027
-        versionName "Se agrega pagina para seleccionar los pagos realizados y se crea otra para ver los periodos que fueron pagados"
+        versionName "Se canmbia el diseño de la interfaz grafica y se ajustan los calculos porque presentaban fallas en los valores de los creditos a cuotas de tasas tipo EA"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
