@@ -261,9 +261,9 @@ class SaveCreditCardBoughtImpl(override var dbConnect: SQLiteOpenHelper) :IQuote
         val settingDto = getCreditCardSetting(creditCardBoughtDTO.id)
         if(settingDto.isPresent){
             if(settingDto.get().value != "0") {
-                return kindOfTaxSvc.getNM(settingDto.get().value.toDouble(), KindOfTaxEnum.EM)
+                return kindOfTaxSvc.getNM(settingDto.get().value.toDouble(), KindOfTaxEnum.EM).also { Log.d(javaClass.name,"<<<=== getInterestValue :: $it") }
             }else{
-                0.0
+                return 0.0.also { Log.d(javaClass.name,"<<<=== getInterestValue :: $it") }
             }
         }
         var interest = kindOfTaxSvc.getNM(creditCardBoughtDTO.interest, KindOfTaxEnum.valueOf(creditCardBoughtDTO.kindOfTax))
@@ -275,7 +275,7 @@ class SaveCreditCardBoughtImpl(override var dbConnect: SQLiteOpenHelper) :IQuote
                 interest = kindOfTaxSvc.getNM(taxCashAdv.get().first, KindOfTaxEnum.valueOf(taxDTO.get().second))
             }
         }
-        return interest
+        return interest.also { Log.d(javaClass.name,"<<<=== getInterestValue :: $it") }
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
