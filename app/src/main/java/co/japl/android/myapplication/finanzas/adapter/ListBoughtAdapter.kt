@@ -82,12 +82,17 @@ class ListBoughtAdapter(private val data:MutableList<CreditCardBoughtDTO>,privat
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    private fun getSettings(codBought:Int):Optional<Double>{
+    private fun getSettings(codBought:Int,taxSettup:Double):Optional<Double>{
         val buyCCSettingDto = buyCreditCardSettingSvc.get(codBought).also { Log.v(this.javaClass.name," response buy setting $it") }
         if(buyCCSettingDto.isPresent){
             val creditCardSettingDto = creditCardSettingSvc.get(buyCCSettingDto.get().codeCreditCardSetting).also { Log.v(this.javaClass.name," response setting $it") }
             if(creditCardSettingDto.isPresent){
                 return Optional.of(creditCardSettingDto.get().value.toDouble()).also { Log.v(this.javaClass.name,"getSettings: $it") }
+            }else if(taxSettup == 0.0){
+                val creditCardSettingDto = creditCardSettingSvc.get(0).also { Log.v(this.javaClass.name," response setting $it") }
+                if(creditCardSettingDto.isPresent){
+                    return Optional.of(creditCardSettingDto.get().value.toDouble()).also { Log.v(this.javaClass.name,"getSettings: $it") }
+                }
             }
         }
         return Optional.empty()
@@ -95,7 +100,7 @@ class ListBoughtAdapter(private val data:MutableList<CreditCardBoughtDTO>,privat
 
     @RequiresApi(Build.VERSION_CODES.O)
     private fun getInterestValue(creditCardBoughtDTO: CreditCardBoughtDTO,taxCCValue: Optional<Pair<Double,String>>,taxADVValue: Optional<Pair<Double,String>>):Pair<Double,KindOfTaxEnum>{
-        val setting = getSettings(creditCardBoughtDTO.id)
+        val setting = getSettings(creditCardBoughtDTO.id,creditCardBoughtDTO.interest)
         return if(setting.isPresent){
             if(setting.get() > 0) {
                 Pair(kindOfTaxSvc.getNM(setting.get(), KindOfTaxEnum.EM),KindOfTaxEnum.EM)
@@ -167,9 +172,9 @@ class ListBoughtAdapter(private val data:MutableList<CreditCardBoughtDTO>,privat
     override fun onBindViewHolder(holder: BoughtViewHolder, position: Int) {
         val taxAdv = getTax(data[position].codeCreditCard.toLong(), TaxEnum.CASH_ADVANCE)
         val taxCC = getTax(data[position].codeCreditCard.toLong(), TaxEnum.CREDIT_CARD)
-        val capital = getCapital(data[position])
         val tax = Optional.ofNullable(getInterestValue(data[position],taxCC,taxAdv))
         val interest = getInterest(data[position],taxCC,taxAdv)
+        val capital = getCapital(data[position])
         val quotesBought = getQuotesBought(data[position])
         val pendingToPay = getPendingToPay(data[position])
 
@@ -183,7 +188,6 @@ class ListBoughtAdapter(private val data:MutableList<CreditCardBoughtDTO>,privat
     }
 
     fun edit(position:Int){
-        Log.d(javaClass.name, "Called quote")
         CreditCardQuotesParams.Companion.ListBought.newInstance(
             data[position].id,
             data[position].codeCreditCard,

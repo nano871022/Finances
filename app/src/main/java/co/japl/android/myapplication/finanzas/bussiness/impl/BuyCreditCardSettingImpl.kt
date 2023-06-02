@@ -87,7 +87,7 @@ class BuyCreditCardSettingImpl(override var dbConnect: SQLiteOpenHelper) : SaveS
             null
         )
         with(cursor) {
-            while (moveToNext()) {
+            if (moveToNext()) {
                 return Optional.ofNullable(mapper.mapping(this))
             }
         }

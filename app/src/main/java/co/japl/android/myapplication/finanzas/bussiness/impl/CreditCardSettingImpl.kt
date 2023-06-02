@@ -106,14 +106,14 @@ class CreditCardSettingImpl(override var dbConnect: SQLiteOpenHelper) : SaveSvc<
         val cursor = db.query(
             CreditCardSettingDB.CreditCardEntry.TABLE_NAME,
             COLUMNS,
-            " _id = ?",
+            " ${BaseColumns._ID} = ?",
             arrayOf(id.toString()),
             null,
             null,
             null
         )
         with(cursor) {
-            while (moveToNext()) {
+            if (moveToNext()) {
                 return mapper.mapping(this)
             }
         }
