@@ -38,8 +38,8 @@ class ViewHolder(itemView:View) : RecyclerView.ViewHolder(itemView) {
         llCapitalValue = view.findViewById(R.id.llCapitalBought)
         llInterestValue = view.findViewById(R.id.llInterestBought)
         btnMore = view.findViewById(R.id.btn_more_qcsil)
-        llCapitalValue.visibility = View.INVISIBLE
-        llInterestValue.visibility = View.INVISIBLE
+        llCapitalValue.visibility = View.GONE
+        llInterestValue.visibility = View.GONE
     }
 
     fun load(data: CalcDTO, callback:(MoreOptionsItemsQuoteSave)->Unit){

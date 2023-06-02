@@ -13,12 +13,6 @@ class QuoteCreditVariableInterest : Calc {
     override fun calc(value: BigDecimal, period: Long, tax: Double,kindOf: KindOfTaxEnum): BigDecimal {
         Log.d(this.javaClass.name,"<<<=== START:: Calc: Credit Value $value")
         val taxValue = kindOfTaxSvc.getNM(tax,kindOf)
-        val taxDouble = getTax(taxValue)
-        return value.multiply(taxDouble.toBigDecimal())
-    }
-
-    private fun getTax(tax:Double):Double{
-        val interest = tax / 100
-        return interest.also { Log.d(this.javaClass.name,"<<<=== FINISH:: getTax: $interest = $tax / 100") }
+        return value.multiply(taxValue.toBigDecimal()).also { Log.d(javaClass.name,"$it = $value X $taxValue ") }
     }
 }
