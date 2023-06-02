@@ -451,15 +451,24 @@ class SaveCreditCardBoughtImpl(override var dbConnect: SQLiteOpenHelper) :IQuote
             with(cursor){
                 while(moveToNext()){
                     val record = CreditCardBoughtMap().mapping(this)
-                    Log.d(this.javaClass.name," ${record.boughtDate} < $cutOffLastMonth")
                     if(record.boughtDate.isBefore(cutOffLastMonth)) {
-                        Log.d(this.javaClass.name,"Added")
-                        record.boughtDate = LocalDateTime.of(cutOff.year,cutOff.month,record.boughtDate.dayOfMonth,record.boughtDate.hour,record.boughtDate.minute)
+                        record.boughtDate = getDate(cutOff,record)
                         items.add(record)
                     }
                 }
             }
             return items.also { Log.d(this.javaClass.name,"<<<=== getRecurrentBuys - End ${it.size}") }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun getDate( cutOff: LocalDateTime,record: CreditCardBoughtDTO): LocalDateTime {
+        val dayOfMonth = LocalDate.of(cutOff.year,cutOff.month,1).plusMonths(1).minusDays(1).dayOfMonth
+        val day = if(record.boughtDate.dayOfMonth <= dayOfMonth){
+            record.boughtDate.dayOfMonth
+        }else{
+            dayOfMonth
+        }
+        return LocalDateTime.of(cutOff.year,cutOff.month,day,record.boughtDate.hour,record.boughtDate.minute)
     }
     @RequiresApi(Build.VERSION_CODES.O)
     override fun backup(pathFile: String) {
