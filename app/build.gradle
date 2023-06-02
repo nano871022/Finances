@@ -12,7 +12,7 @@ android {
         applicationId "co.japl.android.myapplication"
         minSdk 21
         targetSdk 33
-        versionCode 3_04_03_026
+        versionCode 4_04_03_027
         versionName "Se agrega pagina para seleccionar los pagos realizados y se crea otra para ver los periodos que fueron pagados"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
