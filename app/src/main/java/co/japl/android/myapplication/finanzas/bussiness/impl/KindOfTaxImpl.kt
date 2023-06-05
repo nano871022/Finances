@@ -21,7 +21,7 @@ class KindOfTaxImpl:IKindOfTaxSvc {
                 value/PERIODS_YEAR
             }
             KindOfTaxEnum.NM->{
-                value
+                value/100
             }
         }
     }
@@ -33,7 +33,7 @@ class KindOfTaxImpl:IKindOfTaxSvc {
     }
 
     private fun fromEffectiveMonthlyToEffectiveYearly(taxEffective:Double,periods:Int):Double{
-        return ((1 + taxEffective).pow(periods)) -1
+        return (((1 + (taxEffective/100)).pow(periods)) -1) * 100
     }
 
 }
