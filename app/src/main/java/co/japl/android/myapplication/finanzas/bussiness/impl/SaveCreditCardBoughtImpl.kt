@@ -281,24 +281,24 @@ class SaveCreditCardBoughtImpl(override var dbConnect: SQLiteOpenHelper) :IQuote
     @RequiresApi(Build.VERSION_CODES.O)
     override fun getInterest(codCreditCard: Int, startDate:LocalDateTime,cutOff: LocalDateTime): Optional<BigDecimal> {
         Log.d(this.javaClass.name,"<<<=== getInterest - Start")
-            val listRecurrent = getRecurrentBuys(codCreditCard,cutOff)
+        val tax = getTax(codCreditCard.toLong(),cutOff, TaxEnum.CREDIT_CARD)
+        val taxCashAdv = getTax(codCreditCard.toLong(),cutOff, TaxEnum.CASH_ADVANCE)
+
+        val listRecurrent = getRecurrentBuys(codCreditCard,cutOff)
         Log.v(this.javaClass.name,"List Recurrent: $listRecurrent")
             val interestRecurrent = listRecurrent.stream().filter{ it.month > 1}.map {
-                val interest = it.interest / 100
+                val interest = kindOfTaxSvc.getNM(tax.get().first,KindOfTaxEnum.valueOf(tax.get().second)?:KindOfTaxEnum.EM)
                 Log.d(this.javaClass.name," InterestRec:: ${it.valueItem} X ${interest}  = ${it.valueItem.multiply(interest.toBigDecimal())}")
                 it.valueItem.multiply(interest.toBigDecimal())
             }
                 .peek{Log.v(this.javaClass.name," InterestRec:: $it")}
                 .reduce{ accumulator, interest -> accumulator.add(interest)}
         Log.v(this.javaClass.name,"InterestRecurrent:: $interestRecurrent")
-            val tax = getTax(codCreditCard.toLong(),cutOff, TaxEnum.CREDIT_CARD)
-
-            val taxCashAdv = getTax(codCreditCard.toLong(),cutOff, TaxEnum.CASH_ADVANCE)
             val list = getToDate(codCreditCard,startDate,cutOff)
             var value = list.stream().filter{ it.month > 1}
                                  .map{
                                      val interest = getInterestValue(it,tax,taxCashAdv)
-                                     Log.v(this.javaClass.name,"${it.valueItem} X ${interest}%")
+                                     Log.v(this.javaClass.name,"Interest: ${it.valueItem * interest.toBigDecimal()} = ${it.valueItem} X ${interest}%")
                                      it.valueItem.multiply(interest.toBigDecimal())
                                  }
                                  .reduce{ accumulator  ,interest -> accumulator.add(interest)}
@@ -344,7 +344,7 @@ class SaveCreditCardBoughtImpl(override var dbConnect: SQLiteOpenHelper) :IQuote
             if(capital > BigDecimal(0)){
                 val interest = getInterestValue(it, tax,taxCashAdv)
                 Log.v(this.javaClass.name,"$capital X ${interest}%")
-                capital.multiply(interest.div(100).toBigDecimal())
+                capital.multiply(interest.toBigDecimal())
             }else{
                 BigDecimal(0)
             }
