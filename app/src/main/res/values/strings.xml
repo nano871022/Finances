@@ -47,6 +47,7 @@
     <string name="quote_credit_save">Guardar - Cuota Credito Fija</string>
     <string name="quote_credit_save_variable">Guardar - Cuota Credito Variable</string>
     <string name="name">Nombre</string>
+    <string name="max_quotes">Cuotas Maximas</string>
     <string name="cancel">Cancelar</string>
     <string name="delete">Eliminar</string>
     <string name="dont_able_to_save">No se logro guardar</string>
@@ -124,6 +125,8 @@
     <string name="year_hint">0.000</string>
     <string name="status">Estado</string>
     <string name="credit_cards">Tarjetas de Credito</string>
+    <string name="interest_1_quote">No Pagar Interes 1era Cuota</string>
+    <string name="interest_1not_quote">Pagar Interes en 2da Cuota</string>
     <string name="add_credit_card">Agregar Tarjeta Credito</string>
     <string name="add_tax">Agregar Tasa</string>
     <string name="taxs_credit_card">Tasas de Tarjeta de Credito</string>

@@ -7,6 +7,7 @@ import java.util.*
 class CreditCard {
     lateinit var nameCreditCard:Optional<String>
     lateinit var codeCreditCard:Optional<Int>
+    lateinit var maxQuotes:Optional<Short>
     lateinit var cutOff: Optional<LocalDateTime>
     lateinit var capital: Optional<BigDecimal>
     lateinit var capitalQuotes: Optional<BigDecimal>

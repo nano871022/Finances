@@ -3,20 +3,27 @@ package co.japl.android.myapplication.holders
 import android.os.Build
 import android.view.View
 import android.widget.Button
+import android.widget.ToggleButton
 import androidx.annotation.RequiresApi
 import co.japl.android.myapplication.R
 import co.japl.android.myapplication.bussiness.DTO.CreditCardDTO
 import co.japl.android.myapplication.finanzas.holders.interfaces.IHolder
 import co.japl.android.myapplication.utils.NumbersUtil
+import com.google.android.material.switchmaterial.SwitchMaterial
 import com.google.android.material.textfield.TextInputEditText
 import java.math.BigDecimal
 import java.time.LocalDateTime
 import java.util.*
+import kotlin.math.max
 
 class CreditCardHolder(var view:View) : IHolder<CreditCardDTO> {
     lateinit var name:TextInputEditText
+    lateinit var maxQuotes:TextInputEditText
     lateinit var cutOffDay:TextInputEditText
     lateinit var warningQuote:TextInputEditText
+    lateinit var status:SwitchMaterial
+    lateinit var interest1Quote:SwitchMaterial
+    lateinit var interest1NotQuote:SwitchMaterial
     lateinit var save:Button
     lateinit var clear:Button
     lateinit var setting:Button
@@ -25,11 +32,18 @@ class CreditCardHolder(var view:View) : IHolder<CreditCardDTO> {
     @RequiresApi(Build.VERSION_CODES.N)
     override fun setFields(action: View.OnClickListener?) {
         name = view.findViewById(R.id.etNameCCC)
+        maxQuotes = view.findViewById(R.id.et_max_quotes_ccc)
         cutOffDay = view.findViewById(R.id.edCutOffDayCCC)
         warningQuote = view.findViewById(R.id.edWarningQuoteCCC)
         save = view.findViewById(R.id.btnSaveCCC)
         clear = view.findViewById(R.id.btnCleanCCC)
         setting = view.findViewById(R.id.btnSettingsCCC)
+        interest1NotQuote = view.findViewById(R.id.tb_interest_1not_quote_ccc)
+        interest1Quote = view.findViewById(R.id.tb_interest_1quote_ccc)
+        status = view.findViewById(R.id.tb_status_ccc)
+        status.isChecked = true
+        interest1Quote.isChecked = false
+        interest1NotQuote.isChecked = false
         save.setOnClickListener(action)
         clear.setOnClickListener(action)
         setting.setOnClickListener(action)
@@ -47,6 +61,10 @@ class CreditCardHolder(var view:View) : IHolder<CreditCardDTO> {
         name.setText(values.name)
         cutOffDay.setText(values.cutOffDay.toString())
         warningQuote.setText(NumbersUtil.toString(values.warningValue))
+        status.isChecked = values.status
+        interest1Quote.isChecked = values.interest1Quote
+        interest1NotQuote.isChecked = values.interest1NotQuote
+        maxQuotes.setText(values.maxQuotes.toString())
         id = Optional.ofNullable(values.id)
         if(values.id > 0){
             setting.visibility = View.VISIBLE
@@ -60,17 +78,19 @@ class CreditCardHolder(var view:View) : IHolder<CreditCardDTO> {
         if(this.cutOffDay.text?.isNotBlank() == true) {
             cutOffDay = this.cutOffDay.text.toString().toShort()
         }
-        var warningQuote = NumbersUtil.toBigDecimal(this.warningQuote)
+        val warningQuote = NumbersUtil.toBigDecimal(this.warningQuote)
         val create:LocalDateTime = LocalDateTime.now()
-        val status:Short = 1
-        val dto = CreditCardDTO(id.orElse(0),name,cutOffDay,warningQuote,create,status)
-        return dto
+        val maxQuotes = maxQuotes.text.toString().toShort()
+        return CreditCardDTO(id.orElse(0),name,maxQuotes,cutOffDay,warningQuote,create,status.isChecked,interest1Quote.isChecked, interest1NotQuote.isChecked)
     }
 
     override fun cleanField() {
         name.editableText.clear()
         cutOffDay.editableText.clear()
         warningQuote.editableText.clear()
+        status.isChecked = true
+        interest1Quote.isChecked = false
+        interest1NotQuote.isChecked = false
     }
 
     override fun validate(): Boolean {

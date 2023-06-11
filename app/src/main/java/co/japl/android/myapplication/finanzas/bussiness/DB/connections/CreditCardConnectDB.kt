@@ -20,6 +20,10 @@ class CreditCardConnectDB: IConnectDB {
         if(oldVersion <  DatabaseConstants.DATA_BASE_VERSION_MINUS) {
             db?.execSQL(CreditCardQuery.SQL_DELETE_ENTRIES)
             onCreate(db)
+        }else {
+            TaxConnectDB().update(oldVersion, newVersion, CreditCardQuery.SQL_ALTER) {
+                db?.execSQL(it)
+            }
         }
         Log.i(this.javaClass.name,"<<<=== CreditCardConnectDB#onUpgrade - End")
     }

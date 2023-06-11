@@ -26,9 +26,12 @@ import kotlin.io.path.isWritable
 class CreditCardImpl(override var dbConnect: SQLiteOpenHelper) :  SaveSvc<CreditCardDTO>{
     private val COLUMNS = arrayOf(BaseColumns._ID,
                                   CreditCardDB.CreditCardEntry.COLUMN_NAME,
+                                  CreditCardDB.CreditCardEntry.COLUMN_MAX_QUOTES,
                                   CreditCardDB.CreditCardEntry.COLUMN_CUT_OFF_DAY,
                                   CreditCardDB.CreditCardEntry.COLUMN_WARNING_VALUE,
                                   CreditCardDB.CreditCardEntry.COLUMN_STATUS,
+                                  CreditCardDB.CreditCardEntry.COLUMN_INTEREST_1Q,
+                                  CreditCardDB.CreditCardEntry.COLUMN_INTEREST_1NOTQ,
                                   CreditCardDB.CreditCardEntry.COLUMN_CREATE_DATE)
     private val mapper = CreditCardMap()
     @RequiresApi(Build.VERSION_CODES.O)
@@ -38,7 +41,7 @@ class CreditCardImpl(override var dbConnect: SQLiteOpenHelper) :  SaveSvc<Credit
         if(dto.id <= 0){
             return db.insert(CreditCardDB.CreditCardEntry.TABLE_NAME,null,columns)
         }
-        return  db.update(CreditCardDB.CreditCardEntry.TABLE_NAME ,mapper.mapping(dto),"_id = ?", arrayOf(dto.id.toString())  ).toLong()
+        return  db.update(CreditCardDB.CreditCardEntry.TABLE_NAME ,mapper.mapping(dto),"${BaseColumns._ID} = ?", arrayOf(dto.id.toString())  ).toLong()
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -82,7 +85,7 @@ class CreditCardImpl(override var dbConnect: SQLiteOpenHelper) :  SaveSvc<Credit
         val cursor = db.query(
             CreditCardDB.CreditCardEntry.TABLE_NAME,
             COLUMNS,
-            " _id = ?",
+            " ${BaseColumns._ID} = ?",
             arrayOf(id.toString()),
             null,
             null,

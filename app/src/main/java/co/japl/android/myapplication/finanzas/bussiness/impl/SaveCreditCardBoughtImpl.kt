@@ -278,33 +278,47 @@ class SaveCreditCardBoughtImpl(override var dbConnect: SQLiteOpenHelper) :IQuote
         return interest.also { Log.d(javaClass.name,"<<<=== getInterestValue :: $it") }
     }
 
+    /**
+     * FIRST QUOTE TO BOUGHT TO CREDIT
+     */
     @RequiresApi(Build.VERSION_CODES.O)
     override fun getInterest(codCreditCard: Int, startDate:LocalDateTime,cutOff: LocalDateTime): Optional<BigDecimal> {
         Log.d(this.javaClass.name,"<<<=== getInterest - Start")
         val tax = getTax(codCreditCard.toLong(),cutOff, TaxEnum.CREDIT_CARD)
         val taxCashAdv = getTax(codCreditCard.toLong(),cutOff, TaxEnum.CASH_ADVANCE)
+        val creditCard = creditCardSvc.get(codCreditCard)
+        val firstQuote = if(creditCard.get().interest1Quote) 1 else 0
 
         val listRecurrent = getRecurrentBuys(codCreditCard,cutOff)
         Log.v(this.javaClass.name,"List Recurrent: $listRecurrent")
-            val interestRecurrent = listRecurrent.stream().filter{ it.month > 1}.map {
-                val interest = kindOfTaxSvc.getNM(tax.get().first,KindOfTaxEnum.valueOf(tax.get().second)?:KindOfTaxEnum.EM)
-                Log.d(this.javaClass.name," InterestRec:: ${it.valueItem} X ${interest}  = ${it.valueItem.multiply(interest.toBigDecimal())}")
-                it.valueItem.multiply(interest.toBigDecimal())
+        // FIRST QUOTE TO RECURRENT QUOTES
+            val interestRecurrent = listRecurrent.stream().filter{ it.month > firstQuote}.map {
+                if( (it.month == 1 && !creditCard.get().interest1Quote) || !creditCard.get().interest1NotQuote) {
+                    val interest = kindOfTaxSvc.getNM(tax.get().first,KindOfTaxEnum.valueOf(tax.get().second)?:KindOfTaxEnum.EM)
+                    Log.d(this.javaClass.name," InterestRec:: ${it.valueItem} X ${interest}  = ${it.valueItem.multiply(interest.toBigDecimal())}")
+                    it.valueItem.multiply(interest.toBigDecimal())
+                }else{
+                    BigDecimal.ZERO
+                }
             }
                 .peek{Log.v(this.javaClass.name," InterestRec:: $it")}
                 .reduce{ accumulator, interest -> accumulator.add(interest)}
         Log.v(this.javaClass.name,"InterestRecurrent:: $interestRecurrent")
             val list = getToDate(codCreditCard,startDate,cutOff)
-            var value = list.stream().filter{ it.month > 1}
+
+            val value = list.stream().filter{ it.month > firstQuote}
                                  .map{
-                                     val interest = getInterestValue(it,tax,taxCashAdv)
-                                     Log.v(this.javaClass.name,"Interest: ${it.valueItem * interest.toBigDecimal()} = ${it.valueItem} X ${interest}%")
-                                     it.valueItem.multiply(interest.toBigDecimal())
+                                     if((it.month == 1 && !creditCard.get().interest1Quote) || !creditCard.get().interest1NotQuote) {
+                                         val interest = getInterestValue(it, tax, taxCashAdv)
+                                         Log.v(javaClass.name,"Interest: ${it.valueItem * interest.toBigDecimal()} = ${it.valueItem} X ${interest}%")
+                                         it.valueItem.multiply(interest.toBigDecimal())
+                                     }else{
+                                         BigDecimal.ZERO
+                                     }
                                  }
                                  .reduce{ accumulator  ,interest -> accumulator.add(interest)}
         Log.v(this.javaClass.name," Interest Calc:: Interest: $value Recurrent: $interestRecurrent")
-            value = Optional.ofNullable(value.orElse(BigDecimal(0)).add(interestRecurrent.orElse(BigDecimal.ZERO)))
-        return value.also { Log.d(this.javaClass.name,"<<<=== FINISH getInterest $value ") }
+        return Optional.ofNullable(value.orElse(BigDecimal(0)).add(interestRecurrent.orElse(BigDecimal.ZERO))).also { Log.d(this.javaClass.name,"<<<=== FINISH getInterest $value ") }
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -326,9 +340,13 @@ class SaveCreditCardBoughtImpl(override var dbConnect: SQLiteOpenHelper) :IQuote
         return value.also { Log.v(this.javaClass.name,"<<<=== getCapitalPendingQuotes - End $it") }
     }
 
+    /**
+     * QUOTES PENDING MORE THAN ONE QUOTE TO PAID
+     */
     @RequiresApi(Build.VERSION_CODES.O)
     override fun getInterestPendingQuotes(codCreditCard: Int,startDate: LocalDateTime, cutOff: LocalDateTime): Optional<BigDecimal> {
         Log.d(this.javaClass.name,"<<<=== getInterestPendingQuotes - Start")
+        val creditCard = creditCardSvc.get(codCreditCard)
             val tax = getTax(codCreditCard.toLong(),cutOff, TaxEnum.CREDIT_CARD)
             if(!tax.isPresent){
                 return Optional.of(BigDecimal.ZERO)
@@ -341,12 +359,17 @@ class SaveCreditCardBoughtImpl(override var dbConnect: SQLiteOpenHelper) :IQuote
             val bought = quote.multiply(months.toBigDecimal())
             val capital = it.valueItem.minus(bought)
             Log.v(this.javaClass.name,"Month $months; Quote $quote; Bought $bought; Capital $capital; Value ${it.valueItem}; Date ${it.boughtDate}")
-            if(capital > BigDecimal(0)){
+
+            if(creditCard.get().interest1NotQuote && months == 1L && capital > BigDecimal.ZERO){
                 val interest = getInterestValue(it, tax,taxCashAdv)
-                Log.v(this.javaClass.name,"$capital X ${interest}%")
+                Log.v(this.javaClass.name,"$capital X ${interest}% + ${it.valueItem} x ${interest}% = ${capital.multiply(interest.toBigDecimal())} + ${it.valueItem.multiply(interest.toBigDecimal())} = ${capital.multiply(interest.toBigDecimal()) + it.valueItem.multiply(interest.toBigDecimal())}")
+                capital.multiply(interest.toBigDecimal()) + it.valueItem.multiply(interest.toBigDecimal())
+            }else if(capital > BigDecimal.ZERO){
+                val interest = getInterestValue(it, tax,taxCashAdv)
+                Log.v(this.javaClass.name,"$capital X ${interest}% = ${capital.multiply(interest.toBigDecimal())}")
                 capital.multiply(interest.toBigDecimal())
             }else{
-                BigDecimal(0)
+                BigDecimal.ZERO
             }
         }.reduce{val1,val2->val1.plus(val2)}
         return value.also { Log.d(this.javaClass.name,"<<<=== getInterestPendingQuotes - End $it") }
@@ -486,7 +509,7 @@ class SaveCreditCardBoughtImpl(override var dbConnect: SQLiteOpenHelper) :IQuote
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun getTotalQuoteTC(): BigDecimal {
-        val creditCards = creditCardSvc.getAll().filter { it.status.toInt() == 1 }
+        val creditCards = creditCardSvc.getAll().filter { it.status }
         var quote = BigDecimal.ZERO
         for ( creditCard in creditCards) {
             val creditCardPojo = CreditCardMap().mapper(creditCard)
