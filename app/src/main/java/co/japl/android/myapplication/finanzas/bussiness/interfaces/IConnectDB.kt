@@ -10,6 +10,9 @@ interface IConnectDB {
     fun onUpgrade(db: SQLiteDatabase?, oldVersion: Int, newVersion: Int)
     fun onDowngrade(db: SQLiteDatabase?, oldVersion: Int, newVersion: Int)
 
+    fun updateRevert(){
+
+    }
     fun update(oldVersion:Int,newVersion:Int,sqlAlter:Map<String,String>,fn:(sql:String)->Unit) {
         var findVersion = oldVersion+1
         while(findVersion <= newVersion) {

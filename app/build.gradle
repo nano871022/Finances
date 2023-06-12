@@ -13,14 +13,14 @@ android {
         minSdk 21
         targetSdk 33
         versionCode 4_04_06_030
-        versionName "Arreglo con calculos con EM Y NM"
+        versionName "Enable credit card option to interest quotes"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }

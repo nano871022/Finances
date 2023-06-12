@@ -8,6 +8,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
@@ -35,6 +36,7 @@ import java.math.BigDecimal
 import java.time.LocalDateTime
 import java.time.ZoneId
 import java.util.*
+import kotlin.NoSuchElementException
 
 class ListCreditCardQuote : Fragment(), LoaderManager.LoaderCallbacks<CreditCard>{
     private lateinit var saveSvc: SaveSvc<CreditCardBoughtDTO>
@@ -180,8 +182,13 @@ class ListCreditCardQuote : Fragment(), LoaderManager.LoaderCallbacks<CreditCard
 
     @RequiresApi(Build.VERSION_CODES.O)
     private fun loadDataInfo(value:CreditCard): CreditCard? {
-        val pojo = loadData(value)
-        return loadDataLastMonth(pojo)
+        try {
+            val pojo = loadData(value)
+            return loadDataLastMonth(pojo)
+        }catch(e:NoSuchElementException){
+            Log.e(javaClass.name,"$e")
+            return null
+        }
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -211,8 +218,10 @@ class ListCreditCardQuote : Fragment(), LoaderManager.LoaderCallbacks<CreditCard
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onLoadFinished(loader: Loader<CreditCard>, data: CreditCard?) {
-        Log.d(javaClass.name,"OnLoadFinished $data")
-        holder.loadFields(data!!)
+        data?.let {
+            Log.d(javaClass.name, "OnLoadFinished $data")
+            holder.loadFields(data!!)
+        }
     }
 
 }

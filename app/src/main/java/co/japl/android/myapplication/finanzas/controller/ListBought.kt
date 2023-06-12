@@ -100,6 +100,7 @@ class ListBought : Fragment() , LoaderManager.LoaderCallbacks<Pair<List<CreditCa
         val pendingToPay = saveSvc.getPendingToPay(creditCard.codeCreditCard.get(),startDate,creditCard.cutOff.get())
         val pendingToPayQuotes = saveSvc.getPendingToPayQuotes(creditCard.codeCreditCard.get(),startDate,creditCard.cutOff.get())
         val boughtRecap = BoughtRecap()
+        Log.d(javaClass.name,"Interest: $interest + $interestQuotes")
         boughtRecap.capitalValue = Optional.ofNullable(capital.orElse(BigDecimal(0)).plus(capitalQuotes.orElse(BigDecimal(0))))
         boughtRecap.interestValue = Optional.ofNullable(interest.orElse(BigDecimal(0)).plus(interestQuotes.orElse(BigDecimal(0))))
         boughtRecap.pendingToPay = Optional.ofNullable(pendingToPay.orElse(BigDecimal(0)).plus(pendingToPayQuotes.orElse(BigDecimal(0))))

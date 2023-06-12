@@ -9,12 +9,15 @@ import androidx.loader.app.LoaderManager
 import androidx.loader.content.AsyncTaskLoader
 import androidx.loader.content.Loader
 import co.japl.android.myapplication.R
+import co.japl.android.myapplication.bussiness.DB.connections.ConnectDB
 import co.japl.android.myapplication.bussiness.DTO.CalcDTO
+import co.japl.android.myapplication.bussiness.DTO.CreditCardDTO
+import co.japl.android.myapplication.bussiness.impl.CreditCardImpl
 import co.japl.android.myapplication.finanzas.bussiness.DTO.Amortization
 import co.japl.android.myapplication.finanzas.holders.AmortizationTableHolder
 import co.japl.android.myapplication.finanzas.putParams.AmortizationTableParams
 
-class AmortizationTableFragment : Fragment() , LoaderManager.LoaderCallbacks<Pair<CalcDTO, Long>> {
+class AmortizationTableFragment : Fragment() , LoaderManager.LoaderCallbacks<Triple<CalcDTO, Long,Boolean>> {
     lateinit var holder: AmortizationTableHolder
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -37,9 +40,9 @@ class AmortizationTableFragment : Fragment() , LoaderManager.LoaderCallbacks<Pai
         loaderManager.restartLoader(1, null, this)
     }
 
-    override fun onCreateLoader(id: Int, args: Bundle?): Loader<Pair<CalcDTO, Long>> {
-        return object:AsyncTaskLoader<Pair<CalcDTO, Long>>(requireContext()){
-            var data: Pair<CalcDTO, Long>? = null
+    override fun onCreateLoader(id: Int, args: Bundle?): Loader<Triple<CalcDTO, Long,Boolean>> {
+        return object:AsyncTaskLoader<Triple<CalcDTO, Long,Boolean>>(requireContext()){
+            var data: Triple<CalcDTO, Long,Boolean>? = null
             override fun onStartLoading() {
                 super.onStartLoading()
                 if(data != null){
@@ -48,20 +51,21 @@ class AmortizationTableFragment : Fragment() , LoaderManager.LoaderCallbacks<Pai
                     forceLoad()
                 }
             }
-            override fun loadInBackground(): Pair<CalcDTO, Long>? {
+            override fun loadInBackground(): Triple<CalcDTO, Long,Boolean>? {
                 data = AmortizationTableParams.download(requireArguments())
                 return data
             }
         }
     }
 
-    override fun onLoaderReset(loader: Loader<Pair<CalcDTO, Long>>) {
+    override fun onLoaderReset(loader: Loader<Triple<CalcDTO, Long,Boolean>>) {
     }
 
-    override fun onLoadFinished(loader: Loader<Pair<CalcDTO, Long>>, data: Pair<CalcDTO, Long>?) {
+    override fun onLoadFinished(loader: Loader<Triple<CalcDTO, Long,Boolean>>, data: Triple<CalcDTO, Long,Boolean>?) {
         data?.let {
             holder.setData(data.first)
             holder.add("QuotesPaid", data.second)
+            holder.add("quote1NotPaid",data.third)
             holder.create()
             holder.load()
         }

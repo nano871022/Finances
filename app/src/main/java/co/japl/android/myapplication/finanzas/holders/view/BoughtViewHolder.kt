@@ -12,8 +12,10 @@ import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.RecyclerView
 import co.japl.android.myapplication.R
 import co.japl.android.myapplication.bussiness.DTO.CreditCardBoughtDTO
+import co.japl.android.myapplication.bussiness.DTO.CreditCardDTO
 import co.japl.android.myapplication.finanzas.enums.KindOfTaxEnum
 import co.japl.android.myapplication.finanzas.enums.MoreOptionsItemsCreditCard
+import co.japl.android.myapplication.finanzas.enums.TaxEnum
 import co.japl.android.myapplication.utils.DateUtils
 import co.japl.android.myapplication.utils.NumbersUtil
 import java.math.BigDecimal
@@ -49,7 +51,7 @@ class BoughtViewHolder(val itemView:View) : RecyclerView.ViewHolder(itemView) {
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    fun setFields(values:CreditCardBoughtDTO, capital:BigDecimal, interest:BigDecimal, quotesBought:Long, pendintToPay:BigDecimal,tax:Optional<Double>, callback:(MoreOptionsItemsCreditCard)->Unit) {
+    fun setFields(values:CreditCardBoughtDTO, capital:BigDecimal, interest:BigDecimal, quotesBought:Long, pendintToPay:BigDecimal,tax:Pair<Double,KindOfTaxEnum>, callback:(MoreOptionsItemsCreditCard)->Unit) {
         tvBoughtName.text = values.nameItem
         tvCapitalBought.text = NumbersUtil.COPtoString(capital)
         tvMonthBought.text = values.month.toString()
@@ -59,8 +61,7 @@ class BoughtViewHolder(val itemView:View) : RecyclerView.ViewHolder(itemView) {
         tvBoughtDate.text = DateUtils.localDateTimeToString(values.boughtDate!!)
         tvInterestBought.text = NumbersUtil.COPtoString(interest)
         tvPendingToPay.text = NumbersUtil.COPtoString(pendintToPay)
-        val taxs = BigDecimal(tax.orElse(values.interest)).multiply(BigDecimal(100)).setScale(3,RoundingMode.CEILING)
-        tvTaxBoughtICC.text = "$taxs % ${KindOfTaxEnum.NM.name}"
+        tvTaxBoughtICC.text = "${(tax.first * 100).toBigDecimal().setScale(3,RoundingMode.CEILING)} % ${tax.second.name}"
         loadAlert(values,callback)
     }
     @RequiresApi(Build.VERSION_CODES.O)
