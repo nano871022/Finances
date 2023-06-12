@@ -118,13 +118,15 @@ class SaveCreditCardBoughtImpl(override var dbConnect: SQLiteOpenHelper) :IQuote
                     val interestRecurrent = list.stream().filter{(monthInterest && it.month == 1) || monthMore1Interest && it.month > 1}.map {
                         val tax = getTax(creditCardId.toLong(),it.cutOutDate,TaxEnum.CREDIT_CARD).orElse(Pair(it.interest/100,KindOfTaxEnum.EM.name))
                         val month = DateUtils.getMonths(it.boughtDate,it.cutOutDate)
-                        if(creditCardDto.isPresent && creditCardDto.get().interest1NotQuote && month == 1L){
+
+                        if(creditCardDto.isPresent && creditCardDto.get().interest1NotQuote && month == 1L && TaxEnum.findByOrdinal(it.kind) == TaxEnum.CREDIT_CARD){
                             it.valueItem.multiply(tax.first.toBigDecimal()) + (it.valueItem - (it.valueItem / it.month.toBigDecimal())).multiply(tax.first.toBigDecimal())
-                        } else if(creditCardDto.isPresent && creditCardDto.get().interest1NotQuote && month == 0L){
+                        } else if(creditCardDto.isPresent && creditCardDto.get().interest1NotQuote && month == 0L  && TaxEnum.findByOrdinal(it.kind) == TaxEnum.CREDIT_CARD){
                             BigDecimal.ZERO
                         }else {
                             it.valueItem.multiply(tax.first.toBigDecimal())
                         }
+
                     }
                         .reduce{ accumulator , bought -> accumulator.add(bought)}
                     map.capital = map.capital.add(capitalRecurrent.orElse(BigDecimal.ZERO))
@@ -311,13 +313,16 @@ class SaveCreditCardBoughtImpl(override var dbConnect: SQLiteOpenHelper) :IQuote
         Log.v(this.javaClass.name,"List Recurrent: $listRecurrent")
         // FIRST QUOTE TO RECURRENT QUOTES
             val interestRecurrent = listRecurrent.stream().filter{ it.month > firstQuote}.map {
-                if( (it.month == 1 && !creditCard.get().interest1Quote) || !creditCard.get().interest1NotQuote) {
+                val month = DateUtils.getMonths(it.boughtDate,cutOff)
+                if(it.month == 1 && creditCard.get().interest1Quote && TaxEnum.findByOrdinal(it.kind) == TaxEnum.CREDIT_CARD){
+                    BigDecimal.ZERO
+                }else if(it.month > 1 && month == 0L && creditCard.get().interest1NotQuote && TaxEnum.findByOrdinal(it.kind) == TaxEnum.CREDIT_CARD){
+                    BigDecimal.ZERO
+                }else{
                     Log.d(javaClass.name,"$tax")
                     val interest = kindOfTaxSvc.getNM(tax.get().first,KindOfTaxEnum.valueOf(tax.get().second)?:KindOfTaxEnum.EM)
                     Log.d(this.javaClass.name," InterestRec:: ${it.valueItem} X ${interest}  = ${it.valueItem.multiply(interest.toBigDecimal())}")
                     it.valueItem.multiply(interest.toBigDecimal())
-                }else{
-                    BigDecimal.ZERO
                 }
             }
                 .peek{Log.v(this.javaClass.name," InterestRec:: $it")}
@@ -327,12 +332,16 @@ class SaveCreditCardBoughtImpl(override var dbConnect: SQLiteOpenHelper) :IQuote
 
             val value = list.stream().filter{ it.month > firstQuote}
                                  .map{
-                                     if((it.month == 1 && !creditCard.get().interest1Quote) || !creditCard.get().interest1NotQuote) {
-                                         val interest = getInterestValue(it, tax, taxCashAdv)
-                                         Log.v(javaClass.name,"Interest: ${it.valueItem * interest.toBigDecimal()} = ${it.valueItem} X ${interest}%")
-                                         it.valueItem.multiply(interest.toBigDecimal())
-                                     }else{
+                                     val month = DateUtils.getMonths(it.boughtDate,cutOff)
+                                     if(it.month == 1 && creditCard.get().interest1Quote && TaxEnum.findByOrdinal(it.kind) == TaxEnum.CREDIT_CARD){
                                          BigDecimal.ZERO
+                                     }else if(it.month > 1 && month == 0L && creditCard.get().interest1NotQuote && TaxEnum.findByOrdinal(it.kind) == TaxEnum.CREDIT_CARD){
+                                         BigDecimal.ZERO
+                                     }else{
+                                         val interest = getInterestValue(it, tax, taxCashAdv)
+                                         it.valueItem.multiply(interest.toBigDecimal()).also{a->
+                                             Log.v(javaClass.name,"Interest: $a = ${it.valueItem} X ${interest}%")
+                                         }
                                      }
                                  }
                                  .reduce{ accumulator  ,interest -> accumulator.add(interest)}
@@ -379,7 +388,7 @@ class SaveCreditCardBoughtImpl(override var dbConnect: SQLiteOpenHelper) :IQuote
             val capital = it.valueItem.minus(bought)
             Log.v(this.javaClass.name,"Month $months; Quote $quote; Bought $bought; Capital $capital; Value ${it.valueItem}; Date ${it.boughtDate}")
 
-            if(creditCard.get().interest1NotQuote && months == 1L && capital > BigDecimal.ZERO){
+            if(creditCard.get().interest1NotQuote && months == 1L && capital > BigDecimal.ZERO && TaxEnum.findByOrdinal(it.kind) == TaxEnum.CREDIT_CARD){
                 val interest = getInterestValue(it, tax,taxCashAdv)
                 Log.v(this.javaClass.name,"$capital X ${interest}% + ${it.valueItem} x ${interest}% = ${capital.multiply(interest.toBigDecimal())} + ${it.valueItem.multiply(interest.toBigDecimal())} = ${capital.multiply(interest.toBigDecimal()) + it.valueItem.multiply(interest.toBigDecimal())}")
                 capital.multiply(interest.toBigDecimal()) + it.valueItem.multiply(interest.toBigDecimal())

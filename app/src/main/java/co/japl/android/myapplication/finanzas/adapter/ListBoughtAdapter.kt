@@ -137,14 +137,14 @@ class ListBoughtAdapter(private val data:MutableList<CreditCardBoughtDTO>,privat
     private fun getInterest(dto:CreditCardBoughtDTO,taxCCValue:Optional<Pair<Double,String>>,taxAdvValue:Optional<Pair<Double,String>>,creditCard:Optional<CreditCardDTO>):BigDecimal{
         if( dto.month > 1){
             val months = DateUtils.getMonths(dto.boughtDate,cutOff)
-            if(creditCard.isPresent && creditCard.get().interest1NotQuote && months == 0L) {
+            if(creditCard.isPresent && creditCard.get().interest1NotQuote && months == 0L && TaxEnum.findByOrdinal(dto.kind) == TaxEnum.CREDIT_CARD) {
                 return BigDecimal.ZERO
             }
                 val quote = dto.valueItem.divide(dto.month.toBigDecimal(), 8, RoundingMode.CEILING)
                 val capitalBought = quote.multiply(months.toBigDecimal())
                 val pendingCapital = dto.valueItem.minus(capitalBought)
                 val interest = getInterestValue(dto, taxCCValue, taxAdvValue)
-                if(creditCard.isPresent && creditCard.get().interest1NotQuote && months == 1L && dto.month > 1){
+                if(creditCard.isPresent && creditCard.get().interest1NotQuote && months == 1L && dto.month > 1 && TaxEnum.findByOrdinal(dto.kind) == TaxEnum.CREDIT_CARD){
                     return pendingCapital.multiply(interest.first.toBigDecimal()) + dto.valueItem.multiply(interest.first.toBigDecimal()).also {
                         Log.v(javaClass.name,"$pendingCapital X $interest + ${dto.valueItem} X $interest = ${pendingCapital.multiply(interest.first.toBigDecimal())} + ${dto.valueItem.multiply(interest.first.toBigDecimal())} = $it")
                     }
@@ -194,8 +194,8 @@ class ListBoughtAdapter(private val data:MutableList<CreditCardBoughtDTO>,privat
         val capital = getCapital(data[position])
         val quotesBought = getQuotesBought(data[position])
         val pendingToPay = getPendingToPay(data[position])
-        val interestQuote = if((creditCard.isPresent && creditCard.get().interest1Quote && quotesBought == 0L && data[position].month == 1) ||
-            (creditCard.isPresent && creditCard.get().interest1NotQuote && quotesBought == 0L && data[position].month > 1)) {
+        val interestQuote = if(((creditCard.isPresent && creditCard.get().interest1Quote && quotesBought == 0L && data[position].month == 1) ||
+            (creditCard.isPresent && creditCard.get().interest1NotQuote && quotesBought == 0L && data[position].month > 1)) && TaxEnum.findByOrdinal(data[position].kind) == TaxEnum.CREDIT_CARD){
             Pair(0.0,KindOfTaxEnum.EM)
         } else{
             tax.orElse(Pair(data[position].interest,KindOfTaxEnum.valueOf(data[position].kindOfTax)))
@@ -203,7 +203,7 @@ class ListBoughtAdapter(private val data:MutableList<CreditCardBoughtDTO>,privat
       holder.setFields(data[position],capital,interest,quotesBought,pendingToPay,interestQuote) {
           when (it) {
               MoreOptionsItemsCreditCard.DELETE -> delete(  holder,position)
-              MoreOptionsItemsCreditCard.AMORTIZATION -> amortization( quotesBought,capital,interest,KindOfTaxEnum.valueOf(data[position].kindOfTax),position,creditCard.get().interest1NotQuote)
+              MoreOptionsItemsCreditCard.AMORTIZATION -> amortization( quotesBought,capital,interest,KindOfTaxEnum.valueOf(data[position].kindOfTax),position,creditCard.get().interest1NotQuote && TaxEnum.findByOrdinal(data[position].kind) == TaxEnum.CREDIT_CARD)
               MoreOptionsItemsCreditCard.EDIT -> edit(position)
           }
       }

@@ -13,15 +13,17 @@ interface IConnectDB {
     fun updateRevert(){
 
     }
-    fun update(oldVersion:Int,newVersion:Int,sqlAlter:Map<String,String>,fn:(sql:String)->Unit) {
+    fun update(oldVersion:Int,newVersion:Int,sqlAlter:Map<String,List<String>>,fn:(sql:String)->Unit) {
         var findVersion = oldVersion+1
         while(findVersion <= newVersion) {
             try {
                 val value = findVersion.toString()
                 if(sqlAlter.containsKey(value)) {
                     sqlAlter[value]?.let{
-                        fn.invoke(it)
-                        Log.d(this.javaClass.name, "Version $value query $it")
+                        it?.forEach {
+                            fn.invoke(it)
+                            Log.d(this.javaClass.name, "Version $value query $it")
+                        }
                     }
                 }
             }catch (e: Exception){

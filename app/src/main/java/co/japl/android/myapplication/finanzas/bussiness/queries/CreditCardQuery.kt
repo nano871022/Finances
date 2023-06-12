@@ -17,6 +17,10 @@ object CreditCardQuery {
         )"""
     const val SQL_DELETE_ENTRIES = "DROP TABLE IF EXISTS ${CreditCardDB.CreditCardEntry.TABLE_NAME}"
     val SQL_ALTER = mapOf(
-        "40406030" to "ALTER TABLE ${CreditCardDB.CreditCardEntry.TABLE_NAME} ADD ${CreditCardDB.CreditCardEntry.COLUMN_MAX_QUOTES} SHORT DEFAULT 36; ADD ${CreditCardDB.CreditCardEntry.COLUMN_INTEREST_1NOTQ} SHORT DEFAULT 0; ADD ${CreditCardDB.CreditCardEntry.COLUMN_INTEREST_1Q} SHORT DEFAULT 0;"
+        "40406030" to listOf(
+            "ALTER TABLE ${CreditCardDB.CreditCardEntry.TABLE_NAME} ADD ${CreditCardDB.CreditCardEntry.COLUMN_MAX_QUOTES} SHORT DEFAULT 36",
+            "ALTER TABLE ${CreditCardDB.CreditCardEntry.TABLE_NAME} ADD ${CreditCardDB.CreditCardEntry.COLUMN_INTEREST_1NOTQ} SHORT DEFAULT 0",
+            "ALTER TABLE ${CreditCardDB.CreditCardEntry.TABLE_NAME} ADD ${CreditCardDB.CreditCardEntry.COLUMN_INTEREST_1Q} SHORT DEFAULT 0"
+        )
     )
 }

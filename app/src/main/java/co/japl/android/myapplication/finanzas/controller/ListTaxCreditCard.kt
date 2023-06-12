@@ -122,7 +122,9 @@ class ListTaxCreditCard : Fragment() ,LoaderManager.LoaderCallbacks<Pair<List<Cr
                     it.creditCard.setText("")
                     clearList()
                 }
-                holder.loadRecycler(pair.second.toMutableList())
+                var list = pair.second.toMutableList()
+                    list.sortByDescending { it.year + it.month }
+                holder.loadRecycler(list)
                 if (pair.first.isNotEmpty() && pair.first.size == 1) {
                     it.creditCard.setText(pair.first.first().name)
                     search(pair.first.first())
