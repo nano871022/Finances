@@ -357,6 +357,12 @@ class QuoteBoughtHolder(var root:View,val supportManager:FragmentManager) : IHol
 
     @RequiresApi(Build.VERSION_CODES.O)
     private fun map():CreditCardBoughtDTO{
+
+        val endDate = if(chRecurrent.isChecked){
+            LocalDateTime.of(9999,12,31,23,59,59)
+        }else{
+            cutOffDate.plusMonths(etMonths.text.toString().toLong()).plusDays(1)
+        }
         return CreditCardBoughtDTO(
             creditCardCode.get(),
             creditCardName,
@@ -367,6 +373,7 @@ class QuoteBoughtHolder(var root:View,val supportManager:FragmentManager) : IHol
             DateUtils.getLocalDateTimeByString(dtBought),
             cutOffDate,
             LocalDateTime.now(),
+            endDate,
             creditCardBought.id ?: 0,
             if (chRecurrent.isChecked) 1 else 0,
             KindBoughtEnum.BOUGHT.kind,

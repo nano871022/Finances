@@ -38,6 +38,21 @@
                 android:inputType="textPersonName" />
             </com.google.android.material.textfield.TextInputLayout>
 
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="textPersonName"
+        app:endIconMode="clear_text"
+        android:layout_margin="@dimen/space_min"
+        android:hint="@string/max_quotes">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/et_max_quotes_ccc"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textPersonName" />
+    </com.google.android.material.textfield.TextInputLayout>
+
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -70,9 +85,32 @@
                 android:textAlignment="textStart" />
             </com.google.android.material.textfield.TextInputLayout>
 
+            <com.google.android.material.switchmaterial.SwitchMaterial
+                android:id="@+id/tb_status_ccc"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/space_min"
+                android:padding="@dimen/space_min"
+                android:hint="@string/status" />
+
+    <com.google.android.material.switchmaterial.SwitchMaterial
+        android:id="@+id/tb_interest_1quote_ccc"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/space_min"
+        android:padding="@dimen/space_min"
+        android:hint="@string/interest_1_quote" />
+
+    <com.google.android.material.switchmaterial.SwitchMaterial
+        android:id="@+id/tb_interest_1not_quote_ccc"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/space_min"
+        android:padding="@dimen/space_min"
+        android:hint="@string/interest_1not_quote" />
 
 
-        <Button
+    <Button
             android:id="@+id/btnSettingsCCC"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

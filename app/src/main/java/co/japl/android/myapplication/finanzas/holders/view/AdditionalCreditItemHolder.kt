@@ -29,7 +29,7 @@ class AdditionalCreditItemHolder(val view:View): ViewHolder(view) {
 
     fun setField(values:AdditionalCreditDTO,callback:(MoreOptionsItemsAdditional)->Unit){
         name.text = values.name
-        value.text = NumbersUtil.COPtoString(values.value)
+        value.text = NumbersUtil.toString(values.value)
 
         val builder = AlertDialog.Builder(itemView.context)
         builder.apply {

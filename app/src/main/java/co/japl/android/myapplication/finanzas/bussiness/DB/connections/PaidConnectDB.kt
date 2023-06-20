@@ -19,6 +19,10 @@ class PaidConnectDB: IConnectDB {
         if(oldVersion < PaidQuery.DATA_BASE_VERSION_MINUS) {
             db?.execSQL(PaidQuery.SQL_DELETE_ENTRIES)
             onCreate(db)
+        }else{
+            update(oldVersion,newVersion,PaidQuery.SQL_ALTER_TABLE){
+                db?.execSQL(it)
+            }
         }
         Log.i(this.javaClass.name,"<<<=== PaidConnectDB#upgrade - END")
     }

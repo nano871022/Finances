@@ -138,6 +138,7 @@ class TaxesHolder(var view:View,val creditCardList:List<CreditCardDTO>) : IHolde
 
     private val validations2  by lazy{
         arrayOf(
+            creditCard set R.string.error_empty `when` { text().isEmpty() },
             month set R.string.error_empty `when` { text().isEmpty() },
             creditCard set R.string.error_empty `when` { text().isEmpty()} ,
             kind set R.string.error_empty `when` { text().isEmpty() },
@@ -146,7 +147,7 @@ class TaxesHolder(var view:View,val creditCardList:List<CreditCardDTO>) : IHolde
 
     @RequiresApi(Build.VERSION_CODES.N)
     override fun validate(): Boolean {
-        var valid = true
+        var valid = false
         validations.firstInvalid{ requestFocus() }.notNull {
             validations2.firstInvalid { requestFocus() }.notNull { valid = true }
         }

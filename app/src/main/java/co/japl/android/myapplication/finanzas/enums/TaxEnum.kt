@@ -5,4 +5,9 @@ enum class TaxEnum {
     CASH_ADVANCE,
     WALLET_BUY;
 
+    companion object {
+        fun findByOrdinal(ordinal:Short):TaxEnum{
+            return TaxEnum.values()[ordinal.toInt()]
+        }
+    }
 }

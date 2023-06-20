@@ -3,6 +3,7 @@ package co.japl.android.myapplication.holders.view
 import android.app.AlertDialog
 import android.graphics.Color
 import android.os.Build
+import android.util.Log
 import android.view.View
 import android.widget.TextView
 import androidx.annotation.RequiresApi
@@ -11,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView
 import co.japl.android.myapplication.R
 import co.japl.android.myapplication.finanzas.bussiness.DTO.PaidDTO
 import co.japl.android.myapplication.finanzas.enums.MoreOptionalItemsCredit
+import co.japl.android.myapplication.finanzas.enums.MoreOptionsItemsPayments
 import co.japl.android.myapplication.utils.DateUtils
 import co.japl.android.myapplication.utils.NumbersUtil
 
@@ -38,7 +40,7 @@ class PaidItemHolder(var view:View) : RecyclerView.ViewHolder(view) {
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    fun setFields(values:PaidDTO, callback:()->Unit){
+    fun setFields(values:PaidDTO, callback:(MoreOptionsItemsPayments)->Unit){
         if(this::date.isInitialized) {
             date.text = DateUtils.localDateToString(values.date)
         }
@@ -50,9 +52,17 @@ class PaidItemHolder(var view:View) : RecyclerView.ViewHolder(view) {
         }
         val builder = AlertDialog.Builder(itemView.context)
         builder.apply {
+            var itemsShow = items
+            if(values.recurrent != (1).toShort()){
+                itemsShow = itemsShow.filter { it != items.filterIndexed{index,_ -> index == 0}[0]}.toTypedArray()
+                itemsShow = itemsShow.filter { it != items.filterIndexed{index,_ -> index == 1}[0]}.toTypedArray()
+            }
+
             setTitle(view.resources.getString(R.string.pick_option))
-            setItems(items) { _, _ ->
-                callback.invoke()
+            setItems(itemsShow) { _, wich ->
+                val item = itemsShow[wich]
+                val itemPosition = items.indexOf(item)
+                callback.invoke(MoreOptionsItemsPayments.finByPosition(itemPosition))
             }
         }
         if(this::more.isInitialized) {

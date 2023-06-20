@@ -13,6 +13,7 @@ class AmortizationTableParams {
     object params{
         val ARG_PARAM_CREDIT_VALUE = "credit_value"
         val ARG_PARAM_QUOTE_PAID = "quote_paid"
+        val ARG_PARAM_QUOTE1_NOT_PAID = "quote_1_not_paid"
     }
 
     companion object{
@@ -31,14 +32,14 @@ class AmortizationTableParams {
             navController.navigate(R.id.action_item_menu_side_quoteCreditVariable_to_amortizationTableFragment,parameters)
         }
 
-        fun newInstanceQuotes(creditValue:CalcDTO,quotesPaid:Long,navController: NavController){
-            val parameters = bundleOf(params.ARG_PARAM_CREDIT_VALUE to Gson().toJson(creditValue),params.ARG_PARAM_QUOTE_PAID to quotesPaid)
+        fun newInstanceQuotes(creditValue:CalcDTO,quotesPaid:Long,quote1NotPaid:Boolean,navController: NavController){
+            val parameters = bundleOf(params.ARG_PARAM_CREDIT_VALUE to Gson().toJson(creditValue),params.ARG_PARAM_QUOTE_PAID to quotesPaid,params.ARG_PARAM_QUOTE1_NOT_PAID to quote1NotPaid)
             navController.navigate(R.id.action_list_bought_to_amortizationTableFragment,parameters)
         }
 
-        fun download(argument: Bundle):Pair<CalcDTO,Long>{
+        fun download(argument: Bundle):Triple<CalcDTO,Long,Boolean>{
             argument.let {
-                return Pair(Gson().fromJson(it.get(params.ARG_PARAM_CREDIT_VALUE) as String,CalcDTO::class.java), it.getLong(params.ARG_PARAM_QUOTE_PAID))
+                return Triple(Gson().fromJson(it.get(params.ARG_PARAM_CREDIT_VALUE) as String,CalcDTO::class.java), it.getLong(params.ARG_PARAM_QUOTE_PAID),it.getBoolean(params.ARG_PARAM_QUOTE1_NOT_PAID)?:false)
             }
         }
         fun toBack(navController: NavController){

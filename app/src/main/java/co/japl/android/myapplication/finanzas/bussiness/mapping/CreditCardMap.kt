@@ -17,29 +17,37 @@ class CreditCardMap {
     fun mapping(dto:CreditCardDTO ):ContentValues{
         return ContentValues().apply {
             put(CreditCardDB.CreditCardEntry.COLUMN_NAME,dto.name)
+            put(CreditCardDB.CreditCardEntry.COLUMN_MAX_QUOTES,dto.maxQuotes)
             put(CreditCardDB.CreditCardEntry.COLUMN_CUT_OFF_DAY,dto.cutOffDay)
             put(CreditCardDB.CreditCardEntry.COLUMN_WARNING_VALUE,dto.warningValue.toString())
-            put(CreditCardDB.CreditCardEntry.COLUMN_STATUS,dto.status)
+            put(CreditCardDB.CreditCardEntry.COLUMN_STATUS,if(dto.status) 1 else 0)
+            put(CreditCardDB.CreditCardEntry.COLUMN_INTEREST_1Q,if(dto.interest1Quote) 1 else 0)
+            put(CreditCardDB.CreditCardEntry.COLUMN_INTEREST_1NOTQ,if(dto.interest1NotQuote)1 else 0)
             put(CreditCardDB.CreditCardEntry.COLUMN_CREATE_DATE,DateUtils.localDateTimeToString(dto.create))
-
         }
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
     fun mapping(cursor:Cursor):CreditCardDTO{
         val name = cursor.getString(1)
-        val cutOffDay = cursor.getShort(2)
-        val warningValue = cursor.getString(3).toBigDecimal()
-        val status = cursor.getShort(4)
-        val createDate = DateUtils.toLocalDateTime(cursor.getString(5))
+        val maxQuotes = cursor.getShort(2)
+        val cutOffDay = cursor.getShort(3)
+        val warningValue = cursor.getString(4).toBigDecimal()
+        val status = cursor.getShort(5) > 0
+        val interest1Quote = cursor.getShort(6) > 0
+        val interest1NotQuote = cursor.getShort(7) > 0
+        val createDate = DateUtils.toLocalDateTime(cursor.getString(8))
         val id = cursor.getString(0).toInt()
         return  CreditCardDTO(
             id,
             name,
+            maxQuotes,
             cutOffDay,
             warningValue,
             createDate,
-            status
+            status,
+            interest1Quote,
+            interest1NotQuote
         )
     }
 
@@ -54,6 +62,7 @@ class CreditCardMap {
             Optional.ofNullable(creditCard.cutOffDay.toInt()
                 ?.let { it1 -> Config().nextCutOff( it1) })
         pojo.warningValue = Optional.ofNullable(creditCard.warningValue)
+        pojo.maxQuotes = Optional.ofNullable(creditCard.maxQuotes)
         return pojo
     }
 

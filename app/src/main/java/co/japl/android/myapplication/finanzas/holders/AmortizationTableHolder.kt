@@ -10,6 +10,7 @@ import androidx.core.view.setMargins
 import androidx.core.view.setPadding
 import co.japl.android.myapplication.R
 import co.japl.android.myapplication.bussiness.DTO.CalcDTO
+import co.japl.android.myapplication.bussiness.DTO.CreditCardDTO
 import co.japl.android.myapplication.finanzas.bussiness.DTO.Amortization
 import co.japl.android.myapplication.finanzas.bussiness.impl.KindOfTaxImpl
 import co.japl.android.myapplication.finanzas.bussiness.interfaces.IKindOfTaxSvc
@@ -40,6 +41,7 @@ class AmortizationTableHolder(val view:View): ITableHolder<CalcDTO> {
     private lateinit var capitalValueColumn: TextView
     private lateinit var progressBar:ProgressBar
     private var quotesPaid:Long = 0
+    private var quote1NotPaid:Boolean = false
     private val colorPaid = view.resources.getColor(androidx.media.R.color.primary_text_default_material_dark)
     private val backgroun = view.resources.getColor(R.color.green_background)
 
@@ -79,6 +81,9 @@ class AmortizationTableHolder(val view:View): ITableHolder<CalcDTO> {
     override fun add(name:String,value:Any){
         if(name == "QuotesPaid"){
             quotesPaid = value as Long
+        }else
+        if(name == "quote1NotPaid"){
+            quote1NotPaid = value as Boolean
         }
     }
 
@@ -121,7 +126,13 @@ class AmortizationTableHolder(val view:View): ITableHolder<CalcDTO> {
         Log.d(javaClass.name,"$capital = $currentCreditValue / $periods")
         val tax = getTax()
         for ( period in 1 .. creditData.period){
-            val interest = currentCreditValue * tax.toBigDecimal()
+            val interest = if(quote1NotPaid && period == 1L){
+                BigDecimal.ZERO
+            }else if(quote1NotPaid && period == 2L){
+                currentCreditValue * tax.toBigDecimal() + creditData.valueCredit *  tax.toBigDecimal()
+            }else {
+                currentCreditValue * tax.toBigDecimal()
+            }
             amortizationList.add(Amortization(period.toInt(),
                 currentCreditValue ,
                 interest,

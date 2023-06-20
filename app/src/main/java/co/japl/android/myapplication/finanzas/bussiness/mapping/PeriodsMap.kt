@@ -6,18 +6,20 @@ import android.util.Log
 import androidx.annotation.RequiresApi
 import co.japl.android.myapplication.bussiness.DTO.CreditCardSettingDTO
 import co.japl.android.myapplication.bussiness.DTO.TaxDTO
+import co.japl.android.myapplication.bussiness.impl.CreditCardImpl
 import co.japl.android.myapplication.bussiness.interfaces.ITaxSvc
 import co.japl.android.myapplication.finanzas.bussiness.DTO.PeriodDTO
 import co.japl.android.myapplication.finanzas.bussiness.impl.BuyCreditCardSettingImpl
 import co.japl.android.myapplication.finanzas.bussiness.impl.CreditCardSettingImpl
 import co.japl.android.myapplication.finanzas.enums.TaxEnum
+import co.japl.android.myapplication.utils.DateUtils
 import java.math.BigDecimal
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.Optional
 
-class PeriodsMap (private val taxSvc:ITaxSvc, private val buyCCSettingSvc:BuyCreditCardSettingImpl,private val creditCardSettingSvc:CreditCardSettingImpl){
+class PeriodsMap (private val taxSvc:ITaxSvc, private val buyCCSettingSvc:BuyCreditCardSettingImpl,private val creditCardSettingSvc:CreditCardSettingImpl,private val creditcardSvc:CreditCardImpl){
 
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -64,11 +66,8 @@ class PeriodsMap (private val taxSvc:ITaxSvc, private val buyCCSettingSvc:BuyCre
         return endDate
     }
 
-    private fun getInterestValue(month:BigDecimal,valueBought:BigDecimal,interestPercent:BigDecimal):BigDecimal{
-        val interest = if(month > BigDecimal.ONE){
-            (valueBought.toDouble() * (interestPercent.toDouble() / 100 )).toBigDecimal()
-        }else{ BigDecimal.ZERO }
-        return interest
+    private fun getInterestValue(valueBought:BigDecimal,interestPercent:BigDecimal):BigDecimal{
+        return (valueBought.toDouble() * (interestPercent.toDouble() / 100 )).toBigDecimal()
     }
 
     private fun getCapitalValue(month: BigDecimal,valueBought: BigDecimal):BigDecimal{
@@ -84,7 +83,7 @@ class PeriodsMap (private val taxSvc:ITaxSvc, private val buyCCSettingSvc:BuyCre
     fun maping(cursor:Cursor,cutoffDate:Int):Optional<PeriodDTO>{
         val id = cursor.getInt(0)
         val creditCardSettingDto = getSettings(id)
-            Log.d(javaClass.name, "Mapping $creditCardSettingDto $id")
+        Log.d(javaClass.name, "Mapping $creditCardSettingDto $id")
             val endDate = getEndDate(cursor, cutoffDate)
 
             val tax = taxSvc.get(
@@ -94,12 +93,27 @@ class PeriodsMap (private val taxSvc:ITaxSvc, private val buyCCSettingSvc:BuyCre
                 TaxEnum.CREDIT_CARD
             )
 
+            val creditDto = creditcardSvc.get(id)
             val startDate = getStartDate(endDate, cutoffDate)
+            val months = DateUtils.getMonths(startDate ,endDate)
+
+            val int1q = creditDto.isPresent && creditDto.get().interest1Quote
+            val int1Notq = creditDto.isPresent && creditDto.get().interest1NotQuote
+
             val interestPercent = getTax(cursor, tax, creditCardSettingDto)
 
             val valueBought = cursor.getDouble(6).toBigDecimal()
             val month = cursor.getInt(7).toBigDecimal()
-            val interest = getInterestValue(month, valueBought, interestPercent)
+
+        val interest = if(month == BigDecimal.ONE && !int1q){
+                getInterestValue(valueBought, interestPercent)
+            }else if(month > BigDecimal.ONE && !int1Notq && months == 0L){
+                getInterestValue(valueBought, interestPercent)
+            }else if(month > BigDecimal.ONE && int1Notq && months == 1L){
+                getInterestValue(valueBought, interestPercent) + getInterestValue(valueBought - (valueBought / month), interestPercent)
+            }else{
+                getInterestValue(valueBought - ((valueBought / month) * months.toBigDecimal()), interestPercent)
+            }
 
             val capital = getCapitalValue(month, valueBought)
 

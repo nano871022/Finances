@@ -9,7 +9,8 @@ data class PaidDTO(
     var account:String,
     var name:String,
     var value:BigDecimal,
-    var recurrent:Short
+    var recurrent:Short,
+    var end:LocalDate,
 )
 
 object PaidDB{
@@ -20,5 +21,6 @@ object PaidDB{
         const val COLUMN_NAME = "str_name"
         const val COLUMN_VALUE = "nbr_value"
         const val COLUMN_RECURRENT = "nbr_recurrent"
+        const val COLUMN_END_DATE = "dt_end"
     }
 }

@@ -12,15 +12,15 @@ android {
         applicationId "co.japl.android.myapplication"
         minSdk 21
         targetSdk 33
-        versionCode 4_04_05_029
-        versionName "Arreglo con calculos con EM Y NM"
+        versionCode 4_04_07_031
+        versionName "Added end date to quote creditcard and payment recurrent records, finalice recurrent quote and change value of quote, it aviod loss values in periods"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }

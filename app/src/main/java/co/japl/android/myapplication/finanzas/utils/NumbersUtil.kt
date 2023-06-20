@@ -45,7 +45,7 @@ class NumbersUtil {
             return if(value.isEmpty()){
                 BigDecimal.ZERO
             }else {
-                value.replace("$", "").replace(",", "").trim().toBigDecimal()
+                value.replace("$", "").replace("'", "").replace(",", "").trim().toBigDecimal()
             }
         }
 
