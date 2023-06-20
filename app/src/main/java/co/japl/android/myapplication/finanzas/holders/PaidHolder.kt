@@ -132,7 +132,8 @@ class PaidHolder(val view:View,val supportManager: FragmentManager): IHolder<Pai
         val name = name.text.toString()
         val value = value.COPtoBigDecimal()
         val recurrent = if(recurrent.isChecked) 1 else 0
-        return PaidDTO(id,date!!,account,name,value,recurrent.toShort())
+        val endDate = LocalDate.of(9999,12,31)
+        return PaidDTO(id,date!!,account,name,value,recurrent.toShort(),endDate)
     }
 
     override fun cleanField() {

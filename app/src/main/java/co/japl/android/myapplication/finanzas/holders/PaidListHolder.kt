@@ -1,10 +1,12 @@
 package co.japl.android.myapplication.finanzas.holders
 
 import android.os.Build
+import android.view.LayoutInflater
 import android.view.View
 import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.annotation.RequiresApi
+import androidx.navigation.NavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import co.japl.android.myapplication.R
@@ -17,7 +19,7 @@ import com.google.android.material.textview.MaterialTextView
 import java.time.format.TextStyle
 import java.util.*
 
-class PaidListHolder(val view:View): IHolder<PaidDTO>, IRecyclerView<PaidDTO> {
+class PaidListHolder(val view:View,var inflater: LayoutInflater,val navController: NavController): IHolder<PaidDTO>, IRecyclerView<PaidDTO> {
 
     private lateinit var recycler: RecyclerView
     private lateinit var value: TextView
@@ -53,7 +55,7 @@ class PaidListHolder(val view:View): IHolder<PaidDTO>, IRecyclerView<PaidDTO> {
     }
 
     override fun loadRecycler(data: MutableList<PaidDTO>) {
-        ListPaidAdapter(data)?.let{
+        ListPaidAdapter(data,inflater, navController)?.let{
             recycler.adapter = it
         }
         progressBar.visibility = View.GONE

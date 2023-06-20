@@ -83,7 +83,7 @@ class PeriodsMap (private val taxSvc:ITaxSvc, private val buyCCSettingSvc:BuyCre
     fun maping(cursor:Cursor,cutoffDate:Int):Optional<PeriodDTO>{
         val id = cursor.getInt(0)
         val creditCardSettingDto = getSettings(id)
-            Log.d(javaClass.name, "Mapping $creditCardSettingDto $id")
+        Log.d(javaClass.name, "Mapping $creditCardSettingDto $id")
             val endDate = getEndDate(cursor, cutoffDate)
 
             val tax = taxSvc.get(

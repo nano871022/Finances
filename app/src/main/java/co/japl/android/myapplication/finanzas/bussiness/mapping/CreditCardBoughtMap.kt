@@ -24,6 +24,7 @@ class CreditCardBoughtMap {
             quote.boughtDate!!,
             quote.cutOutDate!!,
             LocalDateTime.now(),
+            quote.boughtDate!!.plusMonths(quote.month!!.toLong()),
             0,
             0,
             quote.kind!!,
@@ -44,6 +45,7 @@ class CreditCardBoughtMap {
             put(CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_RECURRENT,dto.recurrent)
             put(CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_KIND,dto.kind)
             put(CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_KIND_OF_TAX,dto.kindOfTax)
+            put(CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_END_DATE,DateUtils.localDateTimeToString(dto.endDate))
         }
     }
 
@@ -57,6 +59,7 @@ class CreditCardBoughtMap {
         val boughtDate = DateUtils.toLocalDateTime( cursor.getString(6))
         val cutOffDate = DateUtils.toLocalDateTime(cursor.getString(7))
         val createDate = DateUtils.toLocalDateTime(cursor.getString(8))
+        val endDate = DateUtils.toLocalDateTime(cursor.getString(12),LocalDateTime.of(9999,12,31,23,59,59))
         val recurrent = cursor.getShort(9)
         val kind = cursor.getShort(10)
         val kindOfTax = cursor.getString(11)
@@ -71,6 +74,7 @@ class CreditCardBoughtMap {
             boughtDate,
             cutOffDate,
             createDate,
+            endDate,
             id,
             recurrent,
             kind,

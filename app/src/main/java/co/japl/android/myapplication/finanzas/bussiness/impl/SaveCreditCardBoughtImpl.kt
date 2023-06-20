@@ -43,7 +43,8 @@ class SaveCreditCardBoughtImpl(override var dbConnect: SQLiteOpenHelper) :IQuote
         ,CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_CREATE_DATE
         ,CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_RECURRENT
         ,CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_KIND
-        ,CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_KIND_OF_TAX)
+        ,CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_KIND_OF_TAX
+    ,CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_END_DATE)
 
     private val COLUMNS_PERIOD = arrayOf(BaseColumns._ID,
         CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_VALUE_ITEM
@@ -204,11 +205,13 @@ class SaveCreditCardBoughtImpl(override var dbConnect: SQLiteOpenHelper) :IQuote
             with(cursor) {
                 while (moveToNext()) {
                     val record = CreditCardBoughtMap().mapping(this)
-                    Log.d(javaClass.name,"$cutOffDate $startDate ${record.boughtDate}")
-                    if ( record.boughtDate == cutOffDate ||
-                         record.boughtDate == startDate ||
-                         record.boughtDate.isBefore(cutOffDate) and
-                         record.boughtDate.isAfter(startDate)
+                    Log.d(javaClass.name,"GetDate Name: ${record.nameItem} Value: ${record.valueItem} CutOff: $cutOffDate Start: $startDate Bought: ${record.boughtDate} End: ${record.endDate}")
+                    if (( record.boughtDate == cutOffDate ||
+                         record.boughtDate.isBefore(cutOffDate)) and
+                        (record.boughtDate.isAfter(startDate) ||
+                         record.boughtDate.isEqual(startDate)) and
+                        (record.endDate.isAfter(cutOffDate) ||
+                         record.endDate.isEqual(cutOffDate)       )
                     ) {
                         items.add(record)
                     }
@@ -229,9 +232,11 @@ class SaveCreditCardBoughtImpl(override var dbConnect: SQLiteOpenHelper) :IQuote
                 val record = CreditCardBoughtMap().mapping(this)
                 val difference = DateUtils.getMonths(record.boughtDate,cutoffCurrent)
                 Log.d(this.javaClass.name," ${record.boughtDate} < $startDate -  $difference < ${record.month}")
-                if(record.boughtDate.isBefore(startDate) &&
-                    difference < record.month ) {
-                    Log.d(this.javaClass.name,"Added")
+                if((record.boughtDate.isAfter(startDate) ||
+                            record.boughtDate.isEqual(startDate)) &&
+                    difference < record.month &&
+                    (record.endDate.isBefore(cutoffCurrent) ||
+                            record.endDate.isEqual(cutoffCurrent))) {
                     items.add(record)
                 }
             }
@@ -410,7 +415,9 @@ class SaveCreditCardBoughtImpl(override var dbConnect: SQLiteOpenHelper) :IQuote
             val listRecurrent = getRecurrentBuys(key,cutOff)
             val countRecurrent = listRecurrent.count { it.month == 1}
             val value = list.count { it.month <= 1 }
-            return Optional.ofNullable((value + countRecurrent).toLong()).also { Log.d(this.javaClass.name,"<<<=== getBought - End $it") }
+            return Optional.ofNullable((value + countRecurrent).toLong()).also {
+                Log.d(this.javaClass.name,"<<<=== getBought - End $it")
+            }
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -502,7 +509,11 @@ class SaveCreditCardBoughtImpl(override var dbConnect: SQLiteOpenHelper) :IQuote
             with(cursor){
                 while(moveToNext()){
                     val record = CreditCardBoughtMap().mapping(this)
-                    if(record.boughtDate.isBefore(cutOffLastMonth)) {
+                    Log.d(javaClass.name,"Valid end date : name: ${record.nameItem} Value: ${record.valueItem} Bought: ${record.boughtDate} Create: ${record.createDate} End: ${record.endDate} Last Cutoff:$cutOffLastMonth")
+                    if((record.boughtDate.isBefore(cutOffLastMonth) ||
+                        record.boughtDate.isEqual(cutOffLastMonth)) &&
+                        (record.endDate.isAfter(cutOffLastMonth) ||
+                         record.endDate.isEqual(cutOffLastMonth))) {
                         record.boughtDate = getDate(cutOff,record)
                         items.add(record)
                     }

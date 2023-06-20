@@ -68,7 +68,7 @@ class QuoteBought : Fragment(), View.OnClickListener{
                 val cutOffDate = config.nextCutOff(creditCard.get().cutOffDay.toInt())
                 val dto = CreditCardBoughtDTO(
                     creditCardCode, creditCard.get().name, "", BigDecimal.ZERO, tax.get()
-                        .value, 0, LocalDateTime.now(), cutOffDate, LocalDateTime.now(), 0, 0, 0
+                        .value, 0, LocalDateTime.now(), cutOffDate, LocalDateTime.now(), LocalDateTime.now(),0, 0, 0
                 ,tax.get().kindOfTax!! )
                 holder.loadFields(dto)
             } else {

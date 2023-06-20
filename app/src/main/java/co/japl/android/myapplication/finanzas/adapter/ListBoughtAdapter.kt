@@ -1,12 +1,15 @@
 package co.japl.android.myapplication.adapter
 
+import android.app.Activity
 import android.app.AlertDialog
 import android.os.Build
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.EditText
 import androidx.annotation.RequiresApi
+import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import co.japl.android.myapplication.R
@@ -32,6 +35,7 @@ import co.japl.android.myapplication.finanzas.enums.TaxEnum
 import co.japl.android.myapplication.finanzas.putParams.CreditCardQuotesParams
 import co.japl.android.myapplication.holders.view.BoughtViewHolder
 import co.japl.android.myapplication.utils.DateUtils
+import co.japl.android.myapplication.utils.NumbersUtil
 import com.google.android.material.snackbar.Snackbar
 import java.math.BigDecimal
 import java.math.RoundingMode
@@ -39,7 +43,7 @@ import java.time.LocalDateTime
 import java.util.*
 import kotlin.jvm.optionals.getOrNull
 
-class ListBoughtAdapter(private val data:MutableList<CreditCardBoughtDTO>,private val cutOff:LocalDateTime) : RecyclerView.Adapter<BoughtViewHolder>() {
+class ListBoughtAdapter(private val data:MutableList<CreditCardBoughtDTO>,private val cutOff:LocalDateTime,private val inflater: LayoutInflater,val navController: NavController) : RecyclerView.Adapter<BoughtViewHolder>() {
     lateinit var dbConnect: ConnectDB
     lateinit var saveSvc: SaveSvc<CreditCardBoughtDTO>
     lateinit var searchSvc: SearchSvc<CreditCardBoughtDTO>
@@ -205,6 +209,8 @@ class ListBoughtAdapter(private val data:MutableList<CreditCardBoughtDTO>,privat
               MoreOptionsItemsCreditCard.DELETE -> delete(  holder,position)
               MoreOptionsItemsCreditCard.AMORTIZATION -> amortization( quotesBought,capital,interest,KindOfTaxEnum.valueOf(data[position].kindOfTax),position,creditCard.get().interest1NotQuote && TaxEnum.findByOrdinal(data[position].kind) == TaxEnum.CREDIT_CARD)
               MoreOptionsItemsCreditCard.EDIT -> edit(position)
+              MoreOptionsItemsCreditCard.ENDING->ending(holder,position)
+              MoreOptionsItemsCreditCard.UPDATE_VALUE->updateRecurrentValue(holder,position)
           }
       }
     }
@@ -255,6 +261,92 @@ class ListBoughtAdapter(private val data:MutableList<CreditCardBoughtDTO>,privat
                 Snackbar.make(
                     holder.itemView,
                     R.string.dont_deleted,
+                    Snackbar.LENGTH_LONG
+                )
+                    .setAction(R.string.close, null).show()
+            }
+        }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun ending(holder: BoughtViewHolder, position:Int){
+        val dialog = AlertDialog.Builder(view.context)
+            .setTitle(R.string.do_you_want_to_ending_recurrent_payment)
+            .setPositiveButton(R.string.ending, null)
+            .setNegativeButton(R.string.cancel, null)
+            .create()
+        dialog.show()
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
+            val dto = data[position]
+            dto.endDate = cutOff.minusMonths(1).plusDays(1)
+            if (saveSvc.save(dto)>0) {
+                dialog.dismiss()
+                Snackbar.make(
+                    view,
+                    R.string.ending_recurrent_payment_successfull,
+                    Snackbar.LENGTH_LONG
+                )
+                    .setAction(R.string.close) {}
+                    .show()
+            } else {
+                dialog.dismiss()
+                Snackbar.make(
+                    holder.itemView,
+                    R.string.dont_ending_recurrent_payment,
+                    Snackbar.LENGTH_LONG
+                )
+                    .setAction(R.string.close, null).show()
+            }
+        }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun updateRecurrentValue(holder: BoughtViewHolder, position:Int){
+        val inflaterr = inflater.inflate(R.layout.dialog_update_value_cop,null)
+        val dialog = AlertDialog.Builder(view.context)
+            .setTitle(R.string.update_value_recurrent_paymner)
+            .setView(inflaterr)
+            .setPositiveButton(R.string.ending, null)
+            .setNegativeButton(R.string.cancel, null)
+            .create()
+        dialog.show()
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
+            val value = inflaterr.findViewById<EditText>(R.id.ed_value_dupv)
+            val dtoNew = data[position].copy()
+            dtoNew.endDate = LocalDateTime.of(9999, 12, 31, 0, 0)
+            dtoNew.createDate = LocalDateTime.now()
+            dtoNew.id = 0
+            dtoNew.valueItem = NumbersUtil.toBigDecimal(value)
+            dtoNew.boughtDate = dtoNew.boughtDate.withYear(dtoNew.createDate.year).withMonth(dtoNew.createDate.monthValue)
+            val dto = data[position]
+            dto.endDate = cutOff.minusMonths(1).plusDays(1)
+            dto.createDate = LocalDateTime.now()
+            if(saveSvc.save(dtoNew) >0){
+                if (saveSvc.save(dto)>0) {
+                    dialog.dismiss()
+                    Snackbar.make(
+                        view,
+                        R.string.ending_recurrent_payment_successfull,
+                        Snackbar.LENGTH_LONG
+                    )
+                        .setAction(R.string.close) {}
+                        .show().also {
+                            CreditCardQuotesParams.Companion.CreateQuote.toBack(navController)
+                        }
+                }else {
+                    dialog.dismiss()
+                    Snackbar.make(
+                        holder.itemView,
+                        R.string.dont_ending_recurrent_payment,
+                        Snackbar.LENGTH_LONG
+                    )
+                        .setAction(R.string.close, null).show()
+                }
+            } else {
+                dialog.dismiss()
+                Snackbar.make(
+                    holder.itemView,
+                    R.string.dont_ending_recurrent_payment,
                     Snackbar.LENGTH_LONG
                 )
                     .setAction(R.string.close, null).show()

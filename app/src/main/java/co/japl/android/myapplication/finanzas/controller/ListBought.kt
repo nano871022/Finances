@@ -69,14 +69,14 @@ class ListBought : Fragment() , LoaderManager.LoaderCallbacks<Pair<List<CreditCa
     @RequiresApi(Build.VERSION_CODES.O)
     private fun loadRecyclerView(list:List<CreditCardBoughtDTO>){
         if( list.isEmpty()){
-            Toast.makeText(requireContext(),"No hay registros para mostrar", Toast.LENGTH_LONG).show()
+            Toast.makeText(requireContext(),R.string.theres_not_records_to_show_you, Toast.LENGTH_LONG).show()
             CreditCardQuotesParams.Companion.Historical.toBack(findNavController())
         }
         list.let {
             holder.lists {
                 it.recyclerView.layoutManager =
                     LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
-                adapter = ListBoughtAdapter(list.toMutableList(), creditCard.cutOff.get())
+                adapter = ListBoughtAdapter(list.toMutableList(), creditCard.cutOff.get(),layoutInflater,findNavController())
                 it.recyclerView.adapter = adapter
             }
         }
@@ -94,13 +94,11 @@ class ListBought : Fragment() , LoaderManager.LoaderCallbacks<Pair<List<CreditCa
 
         val capital = saveSvc.getCapital(creditCard.codeCreditCard.get(),startDate,creditCard.cutOff.get())
         val capitalQuotes = saveSvc.getCapitalPendingQuotes(creditCard.codeCreditCard.get(),startDate,creditCard.cutOff.get())
-        Log.d(this.javaClass.name,"Capital: $capital capital Quotes: $capitalQuotes")
         val interest = saveSvc.getInterest(creditCard.codeCreditCard.get(),startDate,creditCard.cutOff.get())
         val interestQuotes = saveSvc.getInterestPendingQuotes(creditCard.codeCreditCard.get(),startDate,creditCard.cutOff.get())
         val pendingToPay = saveSvc.getPendingToPay(creditCard.codeCreditCard.get(),startDate,creditCard.cutOff.get())
         val pendingToPayQuotes = saveSvc.getPendingToPayQuotes(creditCard.codeCreditCard.get(),startDate,creditCard.cutOff.get())
         val boughtRecap = BoughtRecap()
-        Log.d(javaClass.name,"Interest: $interest + $interestQuotes")
         boughtRecap.capitalValue = Optional.ofNullable(capital.orElse(BigDecimal(0)).plus(capitalQuotes.orElse(BigDecimal(0))))
         boughtRecap.interestValue = Optional.ofNullable(interest.orElse(BigDecimal(0)).plus(interestQuotes.orElse(BigDecimal(0))))
         boughtRecap.pendingToPay = Optional.ofNullable(pendingToPay.orElse(BigDecimal(0)).plus(pendingToPayQuotes.orElse(BigDecimal(0))))

@@ -26,7 +26,8 @@ class PaidImpl(override var dbConnect: SQLiteOpenHelper) : IPaidSvc{
         PaidDB.Entry.COLUMN_ACCOUNT,
         PaidDB.Entry.COLUMN_NAME,
         PaidDB.Entry.COLUMN_VALUE,
-        PaidDB.Entry.COLUMN_RECURRENT
+        PaidDB.Entry.COLUMN_RECURRENT,
+        PaidDB.Entry.COLUMN_END_DATE
     )
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -39,10 +40,9 @@ class PaidImpl(override var dbConnect: SQLiteOpenHelper) : IPaidSvc{
         val mapper = PaidMap()
         with(cursor){
             while(moveToNext()){
-                val dto = mapper.mapping(cursor)
-                if(dto.date >= values.date && dto.date <= maxDate) {
-                    items.add(dto)
-                }
+                mapper.mapping(cursor)
+                    .takeIf {it.date >= values.date && it.date <= maxDate && it.end >= maxDate}
+                    ?.let{items.add(it)}
             }
         }
         return items
@@ -56,7 +56,7 @@ class PaidImpl(override var dbConnect: SQLiteOpenHelper) : IPaidSvc{
         val mapper = PaidMap()
         with(cursor){
             while(moveToNext()){
-                mapper.mapping(cursor).takeIf { it.date < date }?.let {  items.add(it) }
+                mapper.mapping(cursor).takeIf { it.date < date && it.end > date }?.let {  items.add(it) }
             }
         }
         return items.also { Log.d(javaClass.name,"Recurrent Size ${it.size}") }
@@ -77,9 +77,9 @@ class PaidImpl(override var dbConnect: SQLiteOpenHelper) : IPaidSvc{
     override fun save(dto: PaidDTO): Long {
         val db = dbConnect.writableDatabase
         val content: ContentValues? = PaidMap().mapping(dto)
-        Log.d(javaClass.name,"${dto.id} ${dto.date} ${dto.recurrent}")
+        Log.d(javaClass.name,"${dto.id} ${dto.date} ${dto.recurrent} ${dto.end}")
         return if(dto.id > 0){
-            db?.update(PaidDB.Entry.TABLE_NAME,content,"id=?", arrayOf(dto.id.toString()))?.toLong() ?: 0
+            db?.update(PaidDB.Entry.TABLE_NAME,content,"${BaseColumns._ID}=?", arrayOf(dto.id.toString()))?.toLong() ?: 0
         }else {
             db?.insert(PaidDB.Entry.TABLE_NAME, null, content) ?: 0
         }
@@ -122,13 +122,15 @@ class PaidImpl(override var dbConnect: SQLiteOpenHelper) : IPaidSvc{
         return Optional.empty()
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun getPaid(date:LocalDate):PaidDTO{
         val id = 0
         val account = ""
         val name = ""
         val value = BigDecimal.ZERO
         val recurrent = 0
-        return PaidDTO(id,date, account,name,value,recurrent.toShort())
+        val endDate = LocalDate.of(9999,12,31)
+        return PaidDTO(id,date, account,name,value,recurrent.toShort(),endDate)
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -189,12 +191,14 @@ class PaidImpl(override var dbConnect: SQLiteOpenHelper) : IPaidSvc{
         return list.sortedByDescending { it.date }
     }
 
-    private fun getPeriodPaidDTO(date:LocalDate,value:BigDecimal):PaidDTO{
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun getPeriodPaidDTO(date:LocalDate, value:BigDecimal):PaidDTO{
         val id = 0
         val account = ""
         val name = ""
         val recurrent = 0
-        return PaidDTO(id,date,account,name,value,recurrent.toShort())
+        val endDate = LocalDate.of(9999,12,31)
+        return PaidDTO(id,date,account,name,value,recurrent.toShort(),endDate)
     }
 
 

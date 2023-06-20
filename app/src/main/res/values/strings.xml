@@ -50,6 +50,7 @@
     <string name="max_quotes">Cuotas Maximas</string>
     <string name="cancel">Cancelar</string>
     <string name="delete">Eliminar</string>
+    <string name="ending">Finalizar</string>
     <string name="dont_able_to_save">No se logro guardar</string>
     <string name="success_save_quote_credit">Se almaceno correctamente</string>
     <string name="close">Cerrar</string>
@@ -267,6 +268,8 @@
     <string name="pick_option">Seleccionar Opción</string>
     <array name="credit_card_item_options">
         <item >Amortizacion</item>
+        <item >Finalizar</item>
+        <item >Actualizar Valor</item>
         <item >Editar</item>
         <item >Eliminar</item>
     </array>
@@ -277,6 +280,8 @@
     </array>
 
     <array name="paids_item_options">
+        <item >Finalizar</item>
+        <item >Actualizar Valor</item>
         <item >Eliminar</item>
     </array>
 
@@ -321,5 +326,11 @@
         <item >Editar</item>
         <item >Eliminar</item>
     </array>
+
+    <string name="do_you_want_to_ending_recurrent_payment">¿Desea finalizar pago recurrente?</string>
+    <string name="update_value_recurrent_paymner">Actualizar valor pago recurrente</string>
+    <string name="dont_ending_recurrent_payment">No se logro finaliazr el pago recurrente</string>
+    <string name="ending_recurrent_payment_successfull">Se elimino correctamente</string>
+    <string name="theres_not_records_to_show_you">No hay registros para mostrar</string>
 
 </resources>

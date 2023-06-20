@@ -19,8 +19,33 @@ class DateUtils {
         }
 
         @RequiresApi(Build.VERSION_CODES.O)
+        fun toLocalDateTime(value: String,default:LocalDateTime): LocalDateTime {
+            if(value == "" || value == null){
+                return default
+            }
+            val date = value.split("/")
+            if(date.size <= 1){
+                return default
+            }
+            return LocalDateTime.of(date[2].toInt(), date[1].toInt(), date[0].toInt(), 0, 0, 0)
+        }
+
+
+        @RequiresApi(Build.VERSION_CODES.O)
         fun toLocalDate(value: String): LocalDate {
             val date = value.split("/")
+            return LocalDate.of(date[2].toInt(), date[1].toInt(), date[0].toInt())
+        }
+
+        @RequiresApi(Build.VERSION_CODES.O)
+        fun toLocalDate(value: String, default:LocalDate): LocalDate {
+            if(value == null || value == ""){
+                return default
+            }
+            val date = value.split("/")
+            if(date.size < 2){
+                return default
+            }
             return LocalDate.of(date[2].toInt(), date[1].toInt(), date[0].toInt())
         }
 
@@ -86,8 +111,13 @@ class DateUtils {
             if(month == Month.MARCH && day.toInt() == 30){
                 day = 28
             }
-            println("$month $cutOffDay $day")
-            return LocalDateTime.of(cutOff.minusMonths(1).year,cutOff.minusMonths(1).monthValue,1,0,0,0,0).plusDays(day.toLong()).plusDays(dayIncrease)
+
+            var start = LocalDateTime.of(cutOff.minusMonths(1).year,cutOff.minusMonths(1).monthValue,1,0,0)
+            return if(start.plusMonths(1).minusDays(1).dayOfMonth < cutOffDay){
+                 start.plusMonths(1)
+            }else{
+                 cutOff.minusMonths(1).plusDays(1)
+            }.also { Log.d(javaClass.name,"<<<=== FINISH:startDateFromCutoff Response: $it Month: $month Cutoff Day: $cutOffDay Day: $day CutOff: $cutOff") }
         }
 
     }

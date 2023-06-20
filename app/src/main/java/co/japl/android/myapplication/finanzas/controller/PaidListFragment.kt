@@ -11,6 +11,7 @@ import androidx.annotation.RequiresApi
 import androidx.loader.app.LoaderManager
 import androidx.loader.content.AsyncTaskLoader
 import androidx.loader.content.Loader
+import androidx.navigation.fragment.findNavController
 import co.japl.android.myapplication.R
 import co.japl.android.myapplication.bussiness.DB.connections.ConnectDB
 import co.japl.android.myapplication.finanzas.holders.interfaces.IHolder
@@ -39,7 +40,7 @@ class PaidListFragment : Fragment() , LoaderManager.LoaderCallbacks<List<PaidDTO
     ): View? {
         val root = inflater.inflate(R.layout.fragment_paid_list, container, false)
         date = getDate(arguments)
-        holder = PaidListHolder(root)
+        holder = PaidListHolder(root,layoutInflater,findNavController())
         service = PaidImpl(ConnectDB(root.context))
         holder.setFields(null)
         loaderManager.initLoader(1,null,this)
@@ -78,7 +79,8 @@ class PaidListFragment : Fragment() , LoaderManager.LoaderCallbacks<List<PaidDTO
         val name = ""
         val value = BigDecimal.ZERO
         val recurrent = 0
-        return PaidDTO(id, date,account,name,value,recurrent.toShort())
+        val endDate = LocalDate.of(9999,12,31)
+        return PaidDTO(id, date,account,name,value,recurrent.toShort(),endDate)
     }
 
     override fun onCreateLoader(id: Int, args: Bundle?): Loader<List<PaidDTO>> {

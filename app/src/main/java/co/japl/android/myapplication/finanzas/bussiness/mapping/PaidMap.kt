@@ -9,6 +9,7 @@ import co.japl.android.myapplication.finanzas.bussiness.DTO.CreditDTO
 import co.japl.android.myapplication.finanzas.bussiness.DTO.PaidDB
 import co.japl.android.myapplication.finanzas.bussiness.DTO.PaidDTO
 import co.japl.android.myapplication.utils.DateUtils
+import java.time.LocalDate
 
 class PaidMap {
 
@@ -20,7 +21,8 @@ class PaidMap {
         val name = cursor.getString(3)
         val value = cursor.getString(4).toBigDecimal()
         val recurrent = cursor.getInt(5)
-        return PaidDTO(id,date,account,name,value,recurrent.toShort())
+        val endDate = DateUtils.toLocalDate(cursor.getString(6),LocalDate.of(9999,12,31))
+        return PaidDTO(id,date,account,name,value,recurrent.toShort(),endDate)
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -31,6 +33,7 @@ class PaidMap {
             put(PaidDB.Entry.COLUMN_ACCOUNT,dto.account)
             put(PaidDB.Entry.COLUMN_DATE_PAID, DateUtils.localDateToString(dto.date))
             put(PaidDB.Entry.COLUMN_RECURRENT,dto.recurrent)
+            put(PaidDB.Entry.COLUMN_END_DATE, DateUtils.localDateToString(dto.end))
         }
     }
 }

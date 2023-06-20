@@ -18,6 +18,7 @@ import co.japl.android.myapplication.finanzas.enums.MoreOptionsItemsCreditCard
 import co.japl.android.myapplication.finanzas.enums.TaxEnum
 import co.japl.android.myapplication.utils.DateUtils
 import co.japl.android.myapplication.utils.NumbersUtil
+import com.google.common.primitives.Shorts
 import java.math.BigDecimal
 import java.math.RoundingMode
 import java.time.LocalDate
@@ -73,18 +74,20 @@ class BoughtViewHolder(val itemView:View) : RecyclerView.ViewHolder(itemView) {
             var items = itemsOrigin
             val dateFirst = LocalDate.now().withDayOfMonth(1)
             val dateLast = dateFirst.plusMonths(1).minusDays(1)
-            Log.d(javaClass.name,"$dateFirst $dateLast ${values.createDate}")
             if(values.month <= 1){
-                items = items.filterIndexed { index, _ -> index != 0 }.toTypedArray()
+                items = items.filter { it != itemsOrigin.filterIndexed { index, _ -> index == 0 }[0] }.toTypedArray()
             }
             if(values.createDate.toLocalDate() !in dateFirst..dateLast){
-                items = items.filterIndexed{ index, _ -> index != 1 }.toTypedArray()
+                items = items.filter{ it != itemsOrigin.filterIndexed { index, _ -> index == 3 }[0] }.toTypedArray()
+            }
+            if(values.recurrent != (1).toShort() || (values.recurrent == (1).toShort() && values.createDate.toLocalDate() in dateFirst..dateLast)){
+                items = items.filter{ it != itemsOrigin.filterIndexed { index, _ ->  index == 1 }[0] }.toTypedArray()
+                items = items.filter{ it != itemsOrigin.filterIndexed{ index,_-> index == 2}[0] }.toTypedArray()
             }
             setItems(items) { dialog, which ->
                 val itemSelect = (dialog as AlertDialog).listView.getItemAtPosition(which)
                 val item = itemsOrigin.indexOf(itemSelect)
-                Log.d(javaClass.name,"Item select $item $itemSelect ${items} ")
-                callback.invoke(MoreOptionsItemsCreditCard.values().find { it.i == item }!!)
+                callback.invoke(MoreOptionsItemsCreditCard.findByOrdinal(item))
             }
         }
         btnMore.setOnClickListener {
