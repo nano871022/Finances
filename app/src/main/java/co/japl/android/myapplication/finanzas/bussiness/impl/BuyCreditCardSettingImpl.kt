@@ -41,9 +41,8 @@ class BuyCreditCardSettingImpl(override var dbConnect: SQLiteOpenHelper) : SaveS
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun getAll(): List<BuyCreditCardSettingDTO> {
-        Log.d(this.javaClass.name,"<<<=== getAll - Start")
+        Log.d(this.javaClass.name,"<<<=== STARTING::getAll ")
         val list = mutableListOf<BuyCreditCardSettingDTO>()
-        try {
             val db = dbConnect.writableDatabase
             val cursor = db.query(
                 BuyCreditCardSettingDB.Entry.TABLE_NAME,
@@ -59,13 +58,7 @@ class BuyCreditCardSettingImpl(override var dbConnect: SQLiteOpenHelper) : SaveS
                     list.add(mapper.mapping(this))
                 }
             }
-            return list
-        }catch(e: SQLiteException){
-            Log.e(this.javaClass.name,e.message,e)
-            return list
-        }finally {
-            Log.d(this.javaClass.name, "<<<=== getAll - End")
-        }
+            return list.also { Log.d(this.javaClass.name, "<<<=== ENDING::getAll Size: ${it.size}")}
     }
 
     override fun delete(id: Int): Boolean {
@@ -76,6 +69,7 @@ class BuyCreditCardSettingImpl(override var dbConnect: SQLiteOpenHelper) : SaveS
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun get(id: Int): Optional<BuyCreditCardSettingDTO> {
+        Log.d(javaClass.name,"<<<=== STARTING::get Id: $id")
         val db = dbConnect.writableDatabase
         val cursor = db.query(
             BuyCreditCardSettingDB.Entry.TABLE_NAME,
@@ -88,9 +82,10 @@ class BuyCreditCardSettingImpl(override var dbConnect: SQLiteOpenHelper) : SaveS
         )
         with(cursor) {
             if (moveToNext()) {
-                return Optional.ofNullable(mapper.mapping(this))
+                return Optional.ofNullable(mapper.mapping(this)).also{Log.d(javaClass.name,"<<<=== ENDING::get $it")}
             }
         }
+           Log.d(javaClass.name,"<<<=== ENDING::get EMPTY")
         return Optional.empty()
     }
 

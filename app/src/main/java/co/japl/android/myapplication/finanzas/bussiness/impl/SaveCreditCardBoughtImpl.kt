@@ -297,13 +297,17 @@ class SaveCreditCardBoughtImpl(override var dbConnect: SQLiteOpenHelper) :IQuote
 
     @RequiresApi(Build.VERSION_CODES.O)
     private fun calculateInterest(creditCard:Optional<CreditCardDTO>,dto:CreditCardBoughtDTO,tax: Optional<Pair<Double, String>>,taxCashAdv: Optional<Pair<Double, String>>,taxWalletBuy: Optional<Pair<Double, String>>,cutOff: LocalDateTime):BigDecimal{
+        val defaultTax = Pair(dto.interest,dto.kindOfTax)
         val month = DateUtils.getMonths(dto.boughtDate,cutOff)
-        val interest = kindOfTaxSvc.getNM(tax.get().first,KindOfTaxEnum.valueOf(tax.get().second)?:KindOfTaxEnum.EM)
-        val interestCashAdv = kindOfTaxSvc.getNM(taxCashAdv.get().first,KindOfTaxEnum.valueOf(taxCashAdv.get().second)?:KindOfTaxEnum.EM)
-        val interestWalletBuy = kindOfTaxSvc.getNM(taxWalletBuy.get().first,KindOfTaxEnum.valueOf(taxCashAdv.get().second)?:KindOfTaxEnum.EM)
+        val interest = kindOfTaxSvc.getNM(tax.orElse (defaultTax).first,KindOfTaxEnum.valueOf(tax.orElse(defaultTax).second)?:KindOfTaxEnum.EM)
+        val interestCashAdv = kindOfTaxSvc.getNM(taxCashAdv.orElse(defaultTax).first,KindOfTaxEnum.valueOf(taxCashAdv.orElse(defaultTax).second)?:KindOfTaxEnum.EM)
+        val interestWalletBuy = kindOfTaxSvc.getNM(taxWalletBuy.orElse(defaultTax).first,KindOfTaxEnum.valueOf(taxCashAdv.orElse(defaultTax).second)?:KindOfTaxEnum.EM)
         var setting = false
+        buyCCSettingSvc.getAll().forEach { Log.d(javaClass.name,"=== $it") }
         buyCCSettingSvc.get(dto.id).ifPresent {
+            Log.d(javaClass.name,"=== Get Buy Setting: $it")
             creditCardSettingSvc.get(it.codeCreditCardSetting).ifPresent{
+                Log.d(javaClass.name,"=== Get CC Setting: $it")
                  setting = true
             }
         }
@@ -518,7 +522,8 @@ class SaveCreditCardBoughtImpl(override var dbConnect: SQLiteOpenHelper) :IQuote
             items.forEach{
                 val copy = it.copy()
                 copy.boughtDate = it.boughtDate.withMonth(cutOffNew.monthValue).withYear(cutOffNew.year)
-                if(DateUtils.getMonths(copy.boughtDate,cutOff) < it.month){
+                val startCutOff = DateUtils.startDateFromCutoff(cutOffDay,cutOffNew)
+                if(DateUtils.getMonths(copy.boughtDate,cutOff) < it.month && copy.endDate.isAfter(startCutOff)){
                     itemsTemp.add(copy)
                 }
             }
