@@ -120,6 +120,14 @@ class DateUtils {
             }.also { Log.d(javaClass.name,"<<<=== FINISH:startDateFromCutoff Response: $it Month: $month Cutoff Day: $cutOffDay Day: $day CutOff: $cutOff") }
         }
 
+        @RequiresApi(Build.VERSION_CODES.O)
+        fun cutOffLastMonth(cutOffDay:Short, cutOff:LocalDateTime):LocalDateTime{
+            val cutOffEndMonth = cutOff.withDayOfMonth(1).minusDays(1)
+            if(cutOffEndMonth.dayOfMonth < cutOffDay){
+                return cutOffEndMonth
+            }
+            return cutOff.minusMonths(1)
+        }
     }
 
 }

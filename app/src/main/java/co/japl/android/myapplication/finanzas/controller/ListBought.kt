@@ -21,6 +21,7 @@ import co.japl.android.myapplication.bussiness.DB.connections.ConnectDB
 import co.japl.android.myapplication.bussiness.DTO.CreditCardBoughtDTO
 import co.japl.android.myapplication.bussiness.impl.SaveCreditCardBoughtImpl
 import co.japl.android.myapplication.bussiness.interfaces.SearchSvc
+import co.japl.android.myapplication.finanzas.bussiness.interfaces.IQuoteCreditCardSvc
 import co.japl.android.myapplication.finanzas.holders.ListBoughtHolder
 import co.japl.android.myapplication.finanzas.pojo.BoughtRecap
 import co.japl.android.myapplication.finanzas.putParams.CreditCardQuotesParams
@@ -86,11 +87,14 @@ class ListBought : Fragment() , LoaderManager.LoaderCallbacks<Pair<List<CreditCa
         val startDate = DateUtils.startDateFromCutoff(creditCard.cutoffDay.get(),creditCard.cutOff.get())
         val list = saveSvc.getToDate(creditCard.codeCreditCard.get(),startDate,creditCard.cutOff.get())
         val listRecurrent = saveSvc.getRecurrentBuys(creditCard.codeCreditCard.get(),creditCard.cutOff.get())
+        listRecurrent.forEach { it.boughtDate = it.boughtDate.withMonth(creditCard.cutOff.get().monthValue) }
+        val listRecurrentPending = (saveSvc as IQuoteCreditCardSvc).getRecurrentPendingQuotes(creditCard.codeCreditCard.get(),creditCard.cutOff.get())
         val pending = saveSvc.getPendingQuotes(creditCard.codeCreditCard.get(),startDate,creditCard.cutOff.get())
         var joinList = ArrayList<CreditCardBoughtDTO>().toMutableList()
         joinList.addAll(list)
         joinList.addAll(pending)
         joinList.addAll(listRecurrent)
+        joinList.addAll(listRecurrentPending)
 
         val capital = saveSvc.getCapital(creditCard.codeCreditCard.get(),startDate,creditCard.cutOff.get())
         val capitalQuotes = saveSvc.getCapitalPendingQuotes(creditCard.codeCreditCard.get(),startDate,creditCard.cutOff.get())
