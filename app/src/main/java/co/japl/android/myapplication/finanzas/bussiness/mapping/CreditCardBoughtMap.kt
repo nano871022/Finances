@@ -3,6 +3,7 @@ package co.japl.android.myapplication.bussiness.mapping
 import android.content.ContentValues
 import android.database.Cursor
 import android.os.Build
+import android.util.Log
 import androidx.annotation.RequiresApi
 import co.japl.android.myapplication.bussiness.DTO.CreditCardBought
 import co.japl.android.myapplication.bussiness.DTO.CreditCardBoughtDB
