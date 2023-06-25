@@ -211,8 +211,13 @@ class ListBoughtAdapter(private val data:MutableList<CreditCardBoughtDTO>,privat
               MoreOptionsItemsCreditCard.EDIT -> edit(position)
               MoreOptionsItemsCreditCard.ENDING->ending(holder,position)
               MoreOptionsItemsCreditCard.UPDATE_VALUE->updateRecurrentValue(holder,position)
+              MoreOptionsItemsCreditCard.DIFFER_INSTALLMENT->differInstallment(position)
           }
       }
+    }
+
+    private fun differInstallment(position:Int){
+
     }
 
     fun edit(position:Int){

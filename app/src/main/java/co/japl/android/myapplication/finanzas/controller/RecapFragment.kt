@@ -30,6 +30,7 @@ import co.japl.android.myapplication.utils.NumbersUtil
 import com.google.android.material.card.MaterialCardView
 import org.apache.commons.codec.language.Nysiis
 import java.math.BigDecimal
+import java.time.LocalDate
 
 class RecapFragment : Fragment() , LoaderManager.LoaderCallbacks<Map<String, Any>>{
     private lateinit var holder:IRecapHolder<RecapHolder>
@@ -73,7 +74,7 @@ class RecapFragment : Fragment() , LoaderManager.LoaderCallbacks<Map<String, Any
 
     fun loadData():Map<String, Any>{
         val projection = projectionSvc.getTotalSavedAndQuote()
-        val totalQuoteCredit = creditSvc.getTotalQuote()
+        val totalQuoteCredit = creditSvc.getTotalQuote(LocalDate.now())
         val totalPaid = paidSvc.getTotalPaid()
         val totalQuoteTC = quoteCreditCardSvc.getTotalQuoteTC()
         val totalInputs = inputSvc.getTotalInputs()

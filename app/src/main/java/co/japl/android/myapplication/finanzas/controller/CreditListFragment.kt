@@ -79,11 +79,11 @@ class CreditListFragment : Fragment(), OnClickListener,LoaderManager.LoaderCallb
             override fun loadInBackground(): Map<String,BigDecimal>? {
                 val svc = creditList as CreditFixImpl
 
-                val quote = svc.getQuoteAll()
+                val quote = svc.getQuoteAll(date)
                 val interest = svc.getInterestAll(date)
                 val capital = svc.getCapitalAll(date)
                 val pending = svc.getPendingToPayAll(date)
-                val additional = svc.getAdditionalAll()
+                val additional = svc.getAdditionalAll(date)
                 return mapOf("quote" to quote,"interest" to interest,"capital" to capital,"pending" to pending,"additional" to additional)
             }
 

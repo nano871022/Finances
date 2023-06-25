@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="@dimen/space_min"
+    android:orientation="vertical">
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/pending_payable"
+        style="@style/MaterialTextInputLayoutView">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/tv_pending_payable_ddi"
+            android:enabled="false"
+            android:hint="@string/money_hint"
+            android:textAlignment="textEnd"
+            style="@style/MaterialTextInputLayoutView"
+            />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/periods">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/et_period_ddi"
+            android:inputType="numberSigned"
+            android:hint="@string/periods"/>
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/capital_quotes"
+        style="@style/MaterialTextInputLayoutView">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/tv_capital_quote_ddi"
+            android:enabled="false"
+            android:hint="@string/money_hint"
+            android:textAlignment="textEnd"
+            style="@style/MaterialTextInputLayoutView"
+            />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+</LinearLayout>

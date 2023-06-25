@@ -11,7 +11,7 @@ import co.japl.android.myapplication.finanzas.bussiness.queries.AddToCapitalQuer
 import co.japl.android.myapplication.utils.DatabaseConstants
 
 class ConnectDB(context: Context):SQLiteOpenHelper(context,
-        DatabaseConstants.DATA_BASE_NAME,null, 4_04_07_031) {
+        DatabaseConstants.DATA_BASE_NAME,null, 4_04_08_032) {
 
     override fun onCreate(p0: SQLiteDatabase?) {
         Log.i(this.javaClass.name,"<<<=== onCreate - Start $p0")
@@ -29,6 +29,8 @@ class ConnectDB(context: Context):SQLiteOpenHelper(context,
         AccountConnectDB().onCreate(p0)
         ProjectionsDB().onCreate(p0)
         CheckPaymentConnectDB().onCreate(p0)
+        DifferInstallmentConnectDB().onCreate(p0)
+        GracePeriodConnectDB().onCreate(p0)
         Log.i(this.javaClass.name,"<<<=== onCreate - End")
     }
 
@@ -48,6 +50,8 @@ class ConnectDB(context: Context):SQLiteOpenHelper(context,
         AccountConnectDB().onUpgrade(p0,p1,p2)
         ProjectionsDB().onUpgrade(p0,p1,p2)
         CheckPaymentConnectDB().onUpgrade(p0,p1,p2)
+        DifferInstallmentConnectDB().onUpgrade(p0,p1,p2)
+        GracePeriodConnectDB().onUpgrade(p0,p1,p2)
         Log.i(this.javaClass.name,"<<<=== onUpgrade - End")
     }
 
@@ -67,6 +71,8 @@ class ConnectDB(context: Context):SQLiteOpenHelper(context,
         AccountConnectDB().onDowngrade(db,oldVersion,newVersion)
         ProjectionsDB().onDowngrade(db,oldVersion,newVersion)
         CheckPaymentConnectDB().onDowngrade(db,oldVersion,newVersion)
+        DifferInstallmentConnectDB().onDowngrade(db,oldVersion,newVersion)
+        GracePeriodConnectDB().onDowngrade(db,oldVersion,newVersion)
         Log.i(this.javaClass.name,"<<<=== onDowngrade - End")
     }
 

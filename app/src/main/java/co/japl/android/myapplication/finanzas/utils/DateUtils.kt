@@ -33,8 +33,15 @@ class DateUtils {
 
         @RequiresApi(Build.VERSION_CODES.O)
         fun toLocalDate(value: String): LocalDate {
-            val date = value.split("/")
-            return LocalDate.of(date[2].toInt(), date[1].toInt(), date[0].toInt())
+            var date = value.split("/")
+            if(date.size > 1) {
+                return LocalDate.of(date[2].toInt(), date[1].toInt(), date[0].toInt())
+            }
+            date = value.split("-")
+            if(date.size > 1) {
+                return LocalDate.of(date[0].toInt(), date[1].toInt(), date[2].toInt())
+            }
+            throw Exception("Invalid date: $value");
         }
 
         @RequiresApi(Build.VERSION_CODES.O)

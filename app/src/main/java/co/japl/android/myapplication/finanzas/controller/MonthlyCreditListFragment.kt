@@ -12,6 +12,7 @@ import androidx.annotation.RequiresApi
 import androidx.loader.app.LoaderManager
 import androidx.loader.content.AsyncTaskLoader
 import androidx.loader.content.Loader
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import co.japl.android.myapplication.R
@@ -41,7 +42,7 @@ class MonthlyCreditListFragment : Fragment() ,LoaderManager.LoaderCallbacks<List
         savedInstanceState: Bundle?
     ): View? {
         val root = inflater.inflate(R.layout.fragment_monthly_credit_list, container, false)
-        holder = MonthlyCreditListHolder(root)
+        holder = MonthlyCreditListHolder(root,layoutInflater,findNavController())
         val date = getDate()
         creditSvc = CreditFixImpl(ConnectDB(root.context))
         credit = getCredit(date!!)
