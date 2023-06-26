@@ -11,6 +11,7 @@ import co.japl.android.myapplication.bussiness.impl.QuoteCredit
 import co.japl.android.myapplication.bussiness.interfaces.SaveSvc
 import co.japl.android.myapplication.finanzas.bussiness.DTO.*
 import co.japl.android.myapplication.finanzas.bussiness.interfaces.ICreditFix
+import co.japl.android.myapplication.finanzas.bussiness.interfaces.IGracePeriod
 import co.japl.android.myapplication.finanzas.bussiness.interfaces.ISaveSvc
 import co.japl.android.myapplication.finanzas.bussiness.mapping.CreditMap
 import co.japl.android.myapplication.finanzas.enums.KindOfTaxEnum
@@ -24,7 +25,7 @@ import java.util.*
 
 class CreditFixImpl(override var dbConnect: SQLiteOpenHelper) :ICreditFix{
     private val additionalSvc:SaveSvc<AdditionalCreditDTO> = AdditionalCreditImpl(dbConnect)
-    private val gracePeriodSvc:SaveSvc<GracePeriodDTO> = GracePeriodImpl(dbConnect)
+    private val gracePeriodSvc:IGracePeriod = GracePeriodImpl(dbConnect)
     private val calcTaxSvc = KindOfTaxImpl()
     private val calc = QuoteCredit()
     val COLUMNS = arrayOf(
@@ -73,8 +74,7 @@ class CreditFixImpl(override var dbConnect: SQLiteOpenHelper) :ICreditFix{
     @RequiresApi(Build.VERSION_CODES.O)
     override fun get(id: Int): Optional<CreditDTO> {
         val db = dbConnect.readableDatabase
-
-        val cursor = db.query(AdditionalCreditDB.Entry.TABLE_NAME,COLUMNS,"${BaseColumns._ID} = ?",
+        val cursor = db.query(CreditDB.Entry.TABLE_NAME,COLUMNS,"${BaseColumns._ID} = ?",
             arrayOf(id.toString()),null,null,null)
         with(cursor){
             while(moveToNext()){
@@ -95,7 +95,7 @@ class CreditFixImpl(override var dbConnect: SQLiteOpenHelper) :ICreditFix{
         with(cursor){
             while(moveToNext()){
                 val value = CreditMap().mapping(cursor)
-                if((gracePeriodSvc as GracePeriodImpl).get(value.id,LocalDate.now()).isPresent){
+                if(gracePeriodSvc.get(value.id,values.date).isPresent){
                     value.quoteValue = BigDecimal.ZERO
                 }
                 list.add(value)
@@ -122,13 +122,18 @@ class CreditFixImpl(override var dbConnect: SQLiteOpenHelper) :ICreditFix{
         return CreditDTO(id, name ,date,tax,period,value,quote,kindOf,kindOfTax)
     }
 
+    private fun getCountGracePeriods(id:Int):Int{
+        return gracePeriodSvc.get(id.toLong()).takeIf { it.isNotEmpty() }?.map {it.periods.toInt()}?.reduce { acc, sh -> acc+ sh } ?: 0
+    }
+
     @RequiresApi(Build.VERSION_CODES.O)
     override fun getInterestAll(date:LocalDate): BigDecimal {
         return get(getCredit(date)).filter {
-            !(gracePeriodSvc as GracePeriodImpl).get(it.id,LocalDate.now()).isPresent
+            !gracePeriodSvc.get(it.id,LocalDate.now()).isPresent
         }.map {
-          val periodPaid = ChronoUnit.MONTHS.between(date, it.date).toInt()
-          calc.getInterest(
+            val gracePeriods = getCountGracePeriods(it.id)
+            val periodPaid = ChronoUnit.MONTHS.between(date, it.date).toInt() - gracePeriods
+            calc.getInterest(
                     it.value, it.tax, it.periods, it.quoteValue, periodPaid,
                     KindOfTaxEnum.valueOf(it.kindOfTax)
                 )
@@ -138,9 +143,10 @@ class CreditFixImpl(override var dbConnect: SQLiteOpenHelper) :ICreditFix{
     @RequiresApi(Build.VERSION_CODES.O)
     override fun getCapitalAll(date:LocalDate): BigDecimal {
         return get(getCredit(date)).filter {
-            !(gracePeriodSvc as GracePeriodImpl).get(it.id,LocalDate.now()).isPresent
+            !gracePeriodSvc.get(it.id,LocalDate.now()).isPresent
         }.map {
-            val periodPaid =  ChronoUnit.MONTHS.between(date,it.date).toInt()
+            val gracePeriods = getCountGracePeriods(it.id)
+            val periodPaid =  ChronoUnit.MONTHS.between(date,it.date).toInt() - gracePeriods
             it.quoteValue - calc.getInterest(it.value,it.tax,it.periods,it.quoteValue,periodPaid,
                 KindOfTaxEnum.valueOf(it.kindOfTax))
         }.reduceOrNull{acc,bigDecimal->acc+bigDecimal} ?: BigDecimal.ZERO
@@ -149,7 +155,7 @@ class CreditFixImpl(override var dbConnect: SQLiteOpenHelper) :ICreditFix{
     @RequiresApi(Build.VERSION_CODES.O)
     override fun getQuoteAll(date: LocalDate): BigDecimal {
         return get(getCredit(date)).filter {
-            !(gracePeriodSvc as GracePeriodImpl).get(it.id,LocalDate.now()).isPresent
+            !gracePeriodSvc.get(it.id,LocalDate.now()).isPresent
         }.map { it.quoteValue + getAdditional(it.id.toLong()) }
             .reduceOrNull{ acc, bigDecimal->acc+bigDecimal} ?: BigDecimal.ZERO
     }
@@ -172,7 +178,8 @@ class CreditFixImpl(override var dbConnect: SQLiteOpenHelper) :ICreditFix{
     @RequiresApi(Build.VERSION_CODES.O)
     override fun getPendingToPayAll(date:LocalDate): BigDecimal {
         return get(getCredit(date)).map {
-            val periodPaid = ChronoUnit.MONTHS.between(it.date,date).toInt()
+            val gracePeriods = getCountGracePeriods(it.id)
+            val periodPaid = ChronoUnit.MONTHS.between(it.date,date).toInt() - gracePeriods
             it.value - calc.getCreditValue(it.value,it.tax,periodPaid,it.periods,it.quoteValue, KindOfTaxEnum.valueOf(it.kindOfTax))
         }.reduceOrNull{ acc, bigDecimal->acc+bigDecimal} ?: BigDecimal.ZERO
     }
@@ -187,7 +194,7 @@ class CreditFixImpl(override var dbConnect: SQLiteOpenHelper) :ICreditFix{
     private fun getQuoteValue(date:LocalDate):Pair<Int,BigDecimal>{
         val list = get(getCredit(date))
             .filter { (it.date > date && it.date < date.plusMonths(1).minusDays(1)) || it.date < date }
-            .filter{!(gracePeriodSvc as GracePeriodImpl).get(it.id,date).isPresent}.toMutableList()
+            .filter{!gracePeriodSvc.get(it.id,date).isPresent}.toMutableList()
         val quote =  list
             .map { it.quoteValue }
             .reduceOrNull(){acc,value->acc + value} ?: BigDecimal.ZERO

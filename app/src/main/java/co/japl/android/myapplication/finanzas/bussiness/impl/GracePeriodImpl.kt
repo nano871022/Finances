@@ -8,13 +8,14 @@ import android.view.View
 import androidx.annotation.RequiresApi
 import co.japl.android.myapplication.bussiness.interfaces.SaveSvc
 import co.japl.android.myapplication.finanzas.bussiness.DTO.*
+import co.japl.android.myapplication.finanzas.bussiness.interfaces.IGracePeriod
 import co.japl.android.myapplication.finanzas.bussiness.mapping.GracePeriodMap
 import co.japl.android.myapplication.utils.DatabaseConstants
 import co.japl.android.myapplication.utils.DateUtils
 import java.time.LocalDate
 import java.util.*
 
-class GracePeriodImpl(override var dbConnect: SQLiteOpenHelper) : SaveSvc<GracePeriodDTO>{
+class GracePeriodImpl(override var dbConnect: SQLiteOpenHelper) : IGracePeriod{
     val COLUMNS = arrayOf(
         BaseColumns._ID,
         GracePeriodDB.Entry.COLUMN_DATE_CREATE,
@@ -48,6 +49,24 @@ class GracePeriodImpl(override var dbConnect: SQLiteOpenHelper) : SaveSvc<GraceP
         return items
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
+   override fun get(codCredit:Long): List<GracePeriodDTO> {
+        val db = dbConnect.readableDatabase
+        val cursor = db.query(GracePeriodDB.Entry.TABLE_NAME,COLUMNS
+            ,"${GracePeriodDB.Entry.COLUMN_CODE_CREDIT} = ?"
+            , arrayOf(codCredit.toString())
+            ,null,null,null)
+        val items = mutableListOf<GracePeriodDTO>()
+        val mapper = GracePeriodMap()
+        with(cursor){
+            while(moveToNext()){
+                items.add(mapper.mapping(cursor))
+            }
+        }
+        return items
+    }
+
+
     override fun delete(id: Int): Boolean {
         val db = dbConnect.writableDatabase
         return db.delete(
@@ -72,7 +91,7 @@ class GracePeriodImpl(override var dbConnect: SQLiteOpenHelper) : SaveSvc<GraceP
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    fun get(id: Int, date: LocalDate): Optional<GracePeriodDTO> {
+    override fun get(id: Int, date: LocalDate): Optional<GracePeriodDTO> {
         val db = dbConnect.readableDatabase
 
         val cursor = db.query(
@@ -91,6 +110,7 @@ class GracePeriodImpl(override var dbConnect: SQLiteOpenHelper) : SaveSvc<GraceP
         }
         return Optional.empty()
     }
+
 
     override fun backup(path: String) {
         TODO("Not yet implemented")

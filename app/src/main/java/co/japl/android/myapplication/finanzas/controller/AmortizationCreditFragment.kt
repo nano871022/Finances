@@ -18,8 +18,11 @@ import co.japl.android.myapplication.bussiness.interfaces.SaveSvc
 import co.japl.android.myapplication.finanzas.bussiness.DTO.AdditionalCreditDTO
 import co.japl.android.myapplication.finanzas.bussiness.DTO.AmortizationCreditFix
 import co.japl.android.myapplication.finanzas.bussiness.DTO.CreditDTO
+import co.japl.android.myapplication.finanzas.bussiness.DTO.GracePeriodDTO
 import co.japl.android.myapplication.finanzas.bussiness.impl.AdditionalCreditImpl
 import co.japl.android.myapplication.finanzas.bussiness.impl.CreditFixImpl
+import co.japl.android.myapplication.finanzas.bussiness.impl.GracePeriodImpl
+import co.japl.android.myapplication.finanzas.bussiness.interfaces.IGracePeriod
 import co.japl.android.myapplication.finanzas.bussiness.interfaces.ISaveSvc
 import co.japl.android.myapplication.finanzas.holders.interfaces.ITableHolder
 import co.japl.android.myapplication.finanzas.holders.AmortizationCreditTableHolder
@@ -28,12 +31,15 @@ import co.japl.android.myapplication.finanzas.enums.AmortizationCreditFixEnum
 import java.math.BigDecimal
 import java.time.LocalDate
 import java.time.temporal.ChronoUnit
+import java.util.Optional
 
-class AmortizationCreditFragment : Fragment() ,LoaderManager.LoaderCallbacks<List<AdditionalCreditDTO>>{
+class AmortizationCreditFragment : Fragment() ,LoaderManager.LoaderCallbacks<Triple<Optional<CreditDTO>,List<AdditionalCreditDTO>,List<GracePeriodDTO>>>{
     private lateinit var holder: ITableHolder<AmortizationCreditFix>
     private lateinit var credit:SaveSvc<CreditDTO>
     private lateinit var svc: ISaveSvc<AdditionalCreditDTO>
+    private lateinit var gracePeriodSvc: IGracePeriod
     private lateinit var creditDto: CreditDTO
+    private lateinit var lastDate: LocalDate
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,6 +53,7 @@ class AmortizationCreditFragment : Fragment() ,LoaderManager.LoaderCallbacks<Lis
         val root = inflater.inflate(R.layout.fragment_amortization_credit, container, false)
         credit = CreditFixImpl(ConnectDB(root.context))
         svc = AdditionalCreditImpl(ConnectDB(root.context))
+        gracePeriodSvc = GracePeriodImpl(ConnectDB(root.context))
         holder = AmortizationCreditTableHolder(root)
         holder.setup{
             when(it?.id){
@@ -63,6 +70,7 @@ class AmortizationCreditFragment : Fragment() ,LoaderManager.LoaderCallbacks<Lis
         arguments?.let {
             val values = CreditFixParams.downloadAmortizationList(it)
             creditDto = values.first
+            lastDate = values?.second ?: LocalDate.now()
             holder.add(AmortizationCreditFixEnum.DATE_BILL.name,creditDto.date)
         }
     }
@@ -93,9 +101,9 @@ class AmortizationCreditFragment : Fragment() ,LoaderManager.LoaderCallbacks<Lis
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    override fun onCreateLoader(id: Int, args: Bundle?): Loader<List<AdditionalCreditDTO>> {
-        return object:AsyncTaskLoader<List<AdditionalCreditDTO>>(requireContext()){
-            private var data:List<AdditionalCreditDTO>? = null
+    override fun onCreateLoader(id: Int, args: Bundle?): Loader<Triple<Optional<CreditDTO>,List<AdditionalCreditDTO>,List<GracePeriodDTO>>> {
+        return object:AsyncTaskLoader<Triple<Optional<CreditDTO>,List<AdditionalCreditDTO>,List<GracePeriodDTO>>>(requireContext()){
+            private var data:Triple<Optional<CreditDTO>,List<AdditionalCreditDTO>,List<GracePeriodDTO>>? = null
             override fun onStartLoading() {
                 super.onStartLoading()
                 if(data != null){
@@ -105,31 +113,33 @@ class AmortizationCreditFragment : Fragment() ,LoaderManager.LoaderCallbacks<Lis
                 }
             }
             @RequiresApi(Build.VERSION_CODES.O)
-            override fun loadInBackground(): List<AdditionalCreditDTO>? {
-                data = svc.get(getAdditional(creditDto))
+            override fun loadInBackground(): Triple<Optional<CreditDTO>,List<AdditionalCreditDTO>,List<GracePeriodDTO>>? {
+                val credit = if(creditDto.quoteValue == BigDecimal.ZERO) credit.get(creditDto.id) else Optional.of(creditDto)
+                val additionalList = svc.get(getAdditional(creditDto))
+                val gracePeriodList = gracePeriodSvc.get(creditDto.id.toLong())
+                data = Triple(credit,additionalList,gracePeriodList)
                 return data
             }
         }
     }
 
-    override fun onLoaderReset(loader: Loader<List<AdditionalCreditDTO>>) {
+    override fun onLoaderReset(loader: Loader<Triple<Optional<CreditDTO>,List<AdditionalCreditDTO>,List<GracePeriodDTO>>>) {
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onLoadFinished(
-        loader: Loader<List<AdditionalCreditDTO>>,
-        data: List<AdditionalCreditDTO>?
+        loader: Loader<Triple<Optional<CreditDTO>,List<AdditionalCreditDTO>,List<GracePeriodDTO>>>,
+        data: Triple<Optional<CreditDTO>,List<AdditionalCreditDTO>,List<GracePeriodDTO>>?
     ) {
         data?.let {
             val additional =
-                data.map { it.value }.reduceOrNull { acc, bigDecimal -> acc + bigDecimal }
+                data.second.map { it.value }.reduceOrNull { acc, bigDecimal -> acc + bigDecimal }
                     ?: BigDecimal.ZERO
             holder.add(AmortizationCreditFixEnum.ADDITIONAL.name, additional)
-            holder.add(
-                AmortizationCreditFixEnum.QUOTES_PAID.name,
-                ChronoUnit.MONTHS.between(creditDto.date, LocalDate.now())
-            )
-            holder.setData(getCalc(creditDto))
+            val gracePeriods = data.third.filter { it.create > lastDate || it.end < lastDate }.takeIf { it.isNotEmpty() }?.map{it.periods.toInt()}?.reduceOrNull{a,b->a+b}?:0
+            val months = ChronoUnit.MONTHS.between(data.first.orElse(creditDto).date, lastDate)
+            holder.add(AmortizationCreditFixEnum.QUOTES_PAID.name,months)
+            holder.setData(getCalc(data.first.orElse(creditDto)))
             holder.create()
             holder.load()
         }

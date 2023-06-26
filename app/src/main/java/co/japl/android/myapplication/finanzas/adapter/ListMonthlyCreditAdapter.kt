@@ -1,5 +1,5 @@
 package co.japl.android.myapplication.finanzas.adapter
-
+import co.japl.android.myapplication.finanzas.holders.validations.COPtoBigDecimal
 import android.app.AlertDialog
 import android.os.Build
 import android.view.LayoutInflater
@@ -23,6 +23,7 @@ import co.japl.android.myapplication.finanzas.bussiness.impl.AdditionalCreditImp
 import co.japl.android.myapplication.finanzas.bussiness.impl.CreditFixImpl
 import co.japl.android.myapplication.finanzas.bussiness.impl.GracePeriodImpl
 import co.japl.android.myapplication.finanzas.enums.MoreOptionalItemsCredit
+import co.japl.android.myapplication.finanzas.holders.validations.COPToBigDecimal
 import co.japl.android.myapplication.finanzas.holders.view.MonthlyCreditItemHolder
 import co.japl.android.myapplication.finanzas.putParams.CreditFixParams
 import co.japl.android.myapplication.utils.DateUtils
@@ -102,7 +103,7 @@ class ListMonthlyCreditAdapter(val data:MutableList<CreditDTO>,val view:View,val
                 when(checked){
                     R.id.rb_previous_dgp->{
                         start.setText(DateUtils.localDateToString(LocalDate.now().withDayOfMonth(1).minusMonths(1)))
-                        period.text.toString()?.toLong()?.let {
+                        period.COPToBigDecimal() ?.toLong()?.let {
                             end.setText(DateUtils.localDateToString(LocalDate.now().withDayOfMonth(1).plusMonths(it-1).minusDays(1)))
                         }}
                     R.id.rb_current_dgp->{

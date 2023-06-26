@@ -345,5 +345,6 @@
     <string  name="grace_period_unsave">Periodo de gracia no fue guardado</string>
     <string  name="delete_grace_period_saved">Periodo de gracia eliminado sadisfactoriamente</string>
     <string  name="delete_grace_period_unsave">Periodo de gracia no fue eliminado</string>
+    <string name="differ_installment">Diferir el Capital Restante</string>
 
 </resources>
