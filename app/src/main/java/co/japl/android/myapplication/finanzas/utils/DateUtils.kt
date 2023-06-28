@@ -76,13 +76,25 @@ class DateUtils {
         }
 
         @RequiresApi(Build.VERSION_CODES.O)
-        fun localDateTimeToStringDate(value: LocalDate): String {
+        fun localDateToStringDate(value: LocalDate): String {
             return DateTimeFormatter.ofPattern("yyyy-MM-dd").format(value)
         }
 
         @RequiresApi(Build.VERSION_CODES.O)
         fun getMonths(startDate:LocalDateTime, endDate:LocalDateTime):Long{
             val period = Period.between(startDate.toLocalDate(),endDate.toLocalDate())
+            val month = period.months
+            val years = period.years
+            var value = (years * 12) + month
+            if(value < 0){
+                value = 0
+            }
+            return value.toLong()
+        }
+
+        @RequiresApi(Build.VERSION_CODES.O)
+        fun getMonths(startDate:LocalDate, endDate:LocalDateTime):Long{
+            val period = Period.between(startDate,endDate.toLocalDate())
             val month = period.months
             val years = period.years
             var value = (years * 12) + month
@@ -134,6 +146,15 @@ class DateUtils {
                 return cutOffEndMonth
             }
             return cutOff.minusMonths(1)
+        }
+
+        @RequiresApi(Build.VERSION_CODES.O)
+        fun cutOffAddMonth(cutOffDay:Short, cutOff:LocalDateTime,months:Long):LocalDateTime{
+            val cutOffEndMonth = cutOff.withDayOfMonth(1).plusMonths(months).minusDays(1)
+            if(cutOffEndMonth.dayOfMonth < cutOffDay){
+                return cutOffEndMonth
+            }
+            return cutOffEndMonth.withDayOfMonth(cutOffDay.toInt())
         }
     }
 

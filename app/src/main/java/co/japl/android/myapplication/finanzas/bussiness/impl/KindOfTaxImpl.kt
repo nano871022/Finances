@@ -29,7 +29,7 @@ class KindOfTaxImpl:IKindOfTaxSvc {
     private fun toNominal(taxEffective:Double,periods:Int):Double{
         val pow = (1 / periods.toDouble())
         val part1 = 1 + (taxEffective/100)
-        return  ((part1.pow(pow)-1) * periods).also{Log.d(javaClass.name," (((1 + $taxEffective/100) ^ (1 / $periods)) - 1) X $periods = $it")}
+        return  ((part1.pow(pow)-1) * periods)
     }
 
     private fun fromEffectiveMonthlyToEffectiveYearly(taxEffective:Double,periods:Int):Double{

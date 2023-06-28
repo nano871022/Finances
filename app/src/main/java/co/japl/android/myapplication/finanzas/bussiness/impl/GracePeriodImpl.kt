@@ -101,7 +101,7 @@ class GracePeriodImpl(override var dbConnect: SQLiteOpenHelper) : IGracePeriod{
                 AND ${GracePeriodDB.Entry.COLUMN_DATE_CREATE} <= ?
                 AND ${GracePeriodDB.Entry.COLUMN_DATE_END} >= ?
             """.trimMargin(),
-            arrayOf(id.toString(),DateUtils.localDateTimeToStringDate(date),DateUtils.localDateTimeToStringDate(date)),null,null,null)
+            arrayOf(id.toString(),DateUtils.localDateToStringDate(date),DateUtils.localDateToStringDate(date)),null,null,null)
         val mapper = GracePeriodMap()
         with(cursor){
             while(moveToNext()){

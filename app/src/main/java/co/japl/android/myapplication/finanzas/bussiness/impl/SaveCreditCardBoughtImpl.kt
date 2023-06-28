@@ -12,6 +12,8 @@ import co.japl.android.myapplication.bussiness.mapping.CreditCardMap
 import co.japl.android.myapplication.finanzas.bussiness.DTO.PeriodDTO
 import co.japl.android.myapplication.finanzas.bussiness.impl.BuyCreditCardSettingImpl
 import co.japl.android.myapplication.finanzas.bussiness.impl.CreditCardSettingImpl
+import co.japl.android.myapplication.finanzas.bussiness.impl.DifferInstallmentImpl
+import co.japl.android.myapplication.finanzas.bussiness.impl.GracePeriodImpl
 import co.japl.android.myapplication.finanzas.bussiness.impl.KindOfTaxImpl
 import co.japl.android.myapplication.finanzas.bussiness.interfaces.IQuoteCreditCardSvc
 import co.japl.android.myapplication.finanzas.bussiness.mapping.PeriodsMap
@@ -29,6 +31,7 @@ import java.nio.file.Files
 import java.nio.file.Paths
 import java.time.LocalDate
 import java.time.LocalDateTime
+import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 import java.util.*
 
@@ -61,7 +64,9 @@ class SaveCreditCardBoughtImpl(override var dbConnect: SQLiteOpenHelper) :IQuote
     private val taxSvc = TaxImpl(dbConnect)
     private val buyCCSettingSvc = BuyCreditCardSettingImpl(dbConnect)
     private val creditCardSettingSvc = CreditCardSettingImpl(dbConnect)
+    private val differInstallmentSvc = DifferInstallmentImpl(dbConnect)
     private val FORMAT_DATE_BOUGHT_WHERE = "substr(${CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_BOUGHT_DATE},7,4)||'-'||substr(${CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_BOUGHT_DATE},4,2)||'-'||substr(${CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_BOUGHT_DATE},1,2)"
+    private val FORMAT_DATE_END_WHERE = "substr(${CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_END_DATE},7,4)||'-'||substr(${CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_END_DATE},4,2)||'-'||substr(${CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_END_DATE},1,2)"
     @RequiresApi(Build.VERSION_CODES.O)
     override fun save(dto: CreditCardBoughtDTO): Long {
         Log.v(this.javaClass.name,"<<<=== save - Start")
@@ -150,11 +155,46 @@ class SaveCreditCardBoughtImpl(override var dbConnect: SQLiteOpenHelper) :IQuote
             return items.also { Log.v(this.javaClass.name,"<<<=== getAll - End ${it.size}") }
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun delete(id:Int):Boolean{
         Log.v(this.javaClass.name,"<<<=== delete - Start")
+        differInstallmentSvc.get(id)
+            ?.takeIf { it.isPresent }
+            ?.let { differ->
+                val differ = get(id)
+                getDifferOriginBought(differ.get().nameItem,differ.get().boughtDate,differ.get().endDate)
+                    ?.let {bought->
+                        bought.createDate = LocalDateTime.of(9999,12,31,11,59,59)
+                        save(bought)
+                }
+                differInstallmentSvc.delete(differ.get().id)
+            }
+
+
         val db = dbConnect.writableDatabase
         return (db.delete(CreditCardBoughtDB.CreditCardBoughtEntry.TABLE_NAME,
             DatabaseConstants.SQL_DELETE_CALC_ID, arrayOf(id.toString())) > 0).also { Log.v(this.javaClass.name,"<<<=== delete - End $it") }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun getDifferOriginBought(name:String,bougthDate:LocalDateTime,endDate:LocalDateTime):CreditCardBoughtDTO?{
+        val db = dbConnect.writableDatabase
+        val boughtStr = DateUtils.localDateTimeToStringDate(bougthDate)
+        val endStr = DateUtils.localDateTimeToStringDate(endDate)
+        val cursor = db.query(CreditCardBoughtDB.CreditCardBoughtEntry.TABLE_NAME,
+            COLUMNS_CALC,
+            """
+                $FORMAT_DATE_BOUGHT_WHERE = ?
+                AND ${CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_NAME_ITEM} = ?
+                AND $FORMAT_DATE_END_WHERE <= ? 
+             """,
+            arrayOf(boughtStr,name,endStr),null,null,"${CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_END_DATE} DESC")
+        with(cursor) {
+            if (moveToNext()) {
+                return CreditCardBoughtMap().mapping(this)
+            }
+        }
+        return null
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -169,7 +209,7 @@ class SaveCreditCardBoughtImpl(override var dbConnect: SQLiteOpenHelper) :IQuote
                 """ 
                     ${CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_CODE_CREDIT_CARD} = ?
                     and $FORMAT_DATE_BOUGHT_WHERE between ? and ?
-                    and ${CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_END_DATE} > ?
+                    and $FORMAT_DATE_END_WHERE > ?
                 """.trimMargin(),
                 arrayOf(key.toString(),startDateStr, endDateStr,startDateStr),
                 null,
@@ -199,25 +239,43 @@ class SaveCreditCardBoughtImpl(override var dbConnect: SQLiteOpenHelper) :IQuote
                     and $FORMAT_DATE_BOUGHT_WHERE < ?
                     """,
             arrayOf(1.toString(),key.toString(),"0",startDateStr),null,null,null)
+
         val items = mutableListOf<CreditCardBoughtDTO>()
         with(cursor){
             while(moveToNext()){
                 CreditCardBoughtMap().mapping(this)
-                    .takeIf {DateUtils.getMonths(it.boughtDate,cutoffCurrent) < it.month}
+                    .takeIf {getValidMonths(it,cutoffCurrent,startDate)}
                     ?.let{items.add(it)}
             }
         }
         return items.also { Log.d(this.javaClass.name,"<<<=== FINISH::getPendingQuotes Size: ${it.size}") }
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun getValidMonths(creditCardBoughtDTO:CreditCardBoughtDTO,cutoffCurrent: LocalDateTime,startCutOff:LocalDateTime):Boolean{
+        val differInstallment = differInstallmentSvc.get(creditCardBoughtDTO.id)
+        return (differInstallment.takeIf { it.isPresent }?.let {
+            return (DateUtils.getMonths(LocalDateTime.of(it.get().create, LocalTime.MAX),cutoffCurrent) < it.get().newInstallment).also {
+                Log.d(javaClass.name,"validMonths: ${creditCardBoughtDTO.endDate} $cutoffCurrent ${creditCardBoughtDTO.boughtDate} ${creditCardBoughtDTO.nameItem} $it")
+            }
+        } ?: (DateUtils.getMonths(creditCardBoughtDTO.boughtDate,cutoffCurrent) < creditCardBoughtDTO.month)
+                && creditCardBoughtDTO.endDate > startCutOff).also {
+            Log.d(javaClass.name,"validMonths: ${creditCardBoughtDTO.endDate} $cutoffCurrent ${creditCardBoughtDTO.boughtDate} ${creditCardBoughtDTO.nameItem} $it")
+        }
+    }
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun getCapital(key: Int, startDate:LocalDateTime,cutOff: LocalDateTime): Optional<BigDecimal> {
         Log.v(this.javaClass.name,"<<<=== getCapital - Start")
+        val differQuotes = differInstallmentSvc.get(cutOff.toLocalDate())
             val list = getToDate(key,startDate, cutOff)
             val capitalRecurrent = getRecurrentBuys(key,cutOff).map { it.valueItem / it.month.toBigDecimal() }.reduceOrNull{ val1,val2 -> val1.add(val2)}?:BigDecimal.ZERO
             val capital = list.filter{it.month == 1}.map{it.valueItem}.reduceOrNull{val1,val2->val1.plus(val2)}?:BigDecimal.ZERO
-            val capitalQuotes = list.filter{it.month > 1}.map{it.valueItem.divide(it.month.toBigDecimal(),8,RoundingMode.CEILING)}.reduceOrNull{ val1, val2->val1.plus(val2)}?:BigDecimal.ZERO
+            val capitalQuotes = list.filter{it.month > 1}.map{
+                differQuotes.firstOrNull { differ->differ.cdBoughtCreditCard.toInt() == it.id }?.let {
+                    return Optional.of((it.pendingValuePayable / it.newInstallment).toBigDecimal())
+                }?:(it.valueItem / it.month.toBigDecimal())
+            }.reduceOrNull{ val1, val2->val1.plus(val2)}?:BigDecimal.ZERO
             return Optional.ofNullable(capital.add(capitalQuotes).add(capitalRecurrent)).also { Log.v(this.javaClass.name,"<<<=== getCapital - End $it") }
     }
 
@@ -297,8 +355,13 @@ class SaveCreditCardBoughtImpl(override var dbConnect: SQLiteOpenHelper) :IQuote
 
     @RequiresApi(Build.VERSION_CODES.O)
     private fun calculateInterest(creditCard:Optional<CreditCardDTO>,dto:CreditCardBoughtDTO,tax: Optional<Pair<Double, String>>,taxCashAdv: Optional<Pair<Double, String>>,taxWalletBuy: Optional<Pair<Double, String>>,cutOff: LocalDateTime):BigDecimal{
+        Log.d(javaClass.name,"=== calculateInterest: ${dto.nameItem} ${dto.boughtDate}")
+        val differQuote = differInstallmentSvc.get(dto.id)
         val defaultTax = Pair(dto.interest,dto.kindOfTax)
-        val month = DateUtils.getMonths(dto.boughtDate,cutOff)
+        val month:Long = differQuote?.takeIf { it.isPresent }?.let{
+            DateUtils.getMonths(LocalDateTime.of(it.get().create,LocalTime.MAX),cutOff)
+        }?: DateUtils.getMonths(dto.boughtDate,cutOff)
+
         val interest = kindOfTaxSvc.getNM(tax.orElse (defaultTax).first,KindOfTaxEnum.valueOf(tax.orElse(defaultTax).second)?:KindOfTaxEnum.EM)
         val interestCashAdv = kindOfTaxSvc.getNM(taxCashAdv.orElse(defaultTax).first,KindOfTaxEnum.valueOf(taxCashAdv.orElse(defaultTax).second)?:KindOfTaxEnum.EM)
         val interestWalletBuy = kindOfTaxSvc.getNM(taxWalletBuy.orElse(defaultTax).first,KindOfTaxEnum.valueOf(taxCashAdv.orElse(defaultTax).second)?:KindOfTaxEnum.EM)
@@ -311,18 +374,23 @@ class SaveCreditCardBoughtImpl(override var dbConnect: SQLiteOpenHelper) :IQuote
                  setting = true
             }
         }
+
         return if(setting){
             (dto.valueItem / dto.month.toBigDecimal()) * dto.interest.toBigDecimal().also { Log.d(javaClass.name," calculateInterest: setting ${dto.valueItem} Interest: $interestWalletBuy Reponse: $it") }
-        }else if(dto.month == 1 && creditCard.get().interest1Quote && TaxEnum.findByOrdinal(dto.kind) == TaxEnum.CREDIT_CARD){
-            BigDecimal.ZERO
-        }else if(dto.month > 1 && month == 0L && creditCard.get().interest1NotQuote && TaxEnum.findByOrdinal(dto.kind) == TaxEnum.CREDIT_CARD){
-            BigDecimal.ZERO
+        }else if(dto.month == 1 && creditCard.get().interest1Quote && TaxEnum.findByOrdinal(dto.kind) == TaxEnum.CREDIT_CARD && !differQuote.isPresent){
+            BigDecimal.ZERO.also { Log.d(javaClass.name," calculateInterest: 1 quote 0") }
+        }else if(dto.month > 1 && month == 0L && creditCard.get().interest1NotQuote && TaxEnum.findByOrdinal(dto.kind) == TaxEnum.CREDIT_CARD && !differQuote.isPresent){
+            BigDecimal.ZERO.also { Log.d(javaClass.name," calculateInterest: 1 not quote") }
         }else if(dto.month > 1 && month == 1L && creditCard.get().interest1NotQuote && TaxEnum.findByOrdinal(dto.kind) == TaxEnum.CREDIT_CARD){
             (dto.valueItem.multiply(interest.toBigDecimal()) + ((dto.valueItem - ((dto.valueItem/dto.month.toBigDecimal()) * month.toBigDecimal())) * interest.toBigDecimal())).also { Log.d(javaClass.name," calculateInterest: 1L ${dto.valueItem} Interest: $interest Response: $it") }
-        }else if(dto.month > 1 && month > 1 && TaxEnum.findByOrdinal(dto.kind) == TaxEnum.CREDIT_CARD){
-            val capital = dto.valueItem.toDouble() / dto.month
+        }else if(dto.month > 1 && month > 1 && TaxEnum.findByOrdinal(dto.kind) == TaxEnum.CREDIT_CARD || differQuote.isPresent){
+            val capital:Double = differQuote.takeIf { it.isPresent }?.let{
+                it.get().pendingValuePayable / it.get().newInstallment
+            }?: (dto.valueItem.toDouble() / dto.month)
             val paid = capital * month
-            val  lack = dto.valueItem.toDouble() - paid
+            val  lack:Double = differQuote.takeIf { it.isPresent }?.let{
+                it.get().pendingValuePayable - paid
+            } ?:(dto.valueItem.toDouble() - paid)
             (lack* interest).toBigDecimal().also { Log.d(javaClass.name," calculateInterest: month > 1 ${dto.valueItem} Month: ${dto.month} Diff: $month Capital: $capital Paid: $paid lack: $lack Interest: $interest Response: $it") }
         }else if(TaxEnum.findByOrdinal(dto.kind) == TaxEnum.CASH_ADVANCE){
             dto.valueItem.multiply(interestCashAdv.toBigDecimal()).also { Log.d(javaClass.name," calculateInterest: cash ${dto.valueItem} Interest: $interestCashAdv Response: $it") }
@@ -336,18 +404,30 @@ class SaveCreditCardBoughtImpl(override var dbConnect: SQLiteOpenHelper) :IQuote
     @RequiresApi(Build.VERSION_CODES.O)
     override fun getCapitalPendingQuotes(key: Int,startDate: LocalDateTime, cutOff: LocalDateTime): Optional<BigDecimal> {
         Log.v(this.javaClass.name,"<<<=== STARTING::getCapitalPendingQuotes ")
+        val differQuotes = differInstallmentSvc.get(cutOff.toLocalDate())
+
         val list = getPendingQuotes(key,startDate,cutOff).toMutableList()
         getRecurrentPendingQuotes(key, cutOff)?.let{list.addAll(it)}
         val value = list.stream().map {
-            val months = DateUtils.getMonths(it.boughtDate,cutOff)
-            val quote = it.valueItem.divide(it.month.toBigDecimal(),8,RoundingMode.CEILING)
+            val differ = differQuotes.firstOrNull{differ->differ.cdBoughtCreditCard.toInt() == it.id}
+            val months:Long = differ?.let{
+               DateUtils.getMonths(LocalDateTime.of(it.create,LocalTime.MAX),cutOff)
+            }?:DateUtils.getMonths(it.boughtDate,cutOff)
+
+
+            val quote:BigDecimal = differ?.let{
+               (it.pendingValuePayable / it.newInstallment).toBigDecimal()
+            }?:it.valueItem.divide(it.month.toBigDecimal(),8,RoundingMode.CEILING)
+
             val bought = quote.multiply(months.toBigDecimal())
-            val capital = it.valueItem.minus(bought)
-            if(capital > BigDecimal(0)){
-                Log.v(this.javaClass.name," Calculate Quite: ${it.valueItem}/${it.month} = $quote")
+            val capital:BigDecimal = differ?.let{
+                (it.pendingValuePayable.minus(bought.toLong())).toBigDecimal()
+            }?:it.valueItem.minus(bought)
+
+            if(capital > BigDecimal.ZERO){
                  quote
             }else {
-                BigDecimal(0)
+                BigDecimal.ZERO
             }
         }.reduce{val1,val2->val1.plus(val2)}.orElse(BigDecimal.ZERO)
         return Optional.of(value).also { Log.v(this.javaClass.name,"<<<=== ENDING::getCapitalPendingQuotes $it") }
@@ -386,10 +466,12 @@ class SaveCreditCardBoughtImpl(override var dbConnect: SQLiteOpenHelper) :IQuote
     @RequiresApi(Build.VERSION_CODES.O)
     override fun getBoughtPendingQuotes(key: Int, startDate: LocalDateTime,cutOff: LocalDateTime): Optional<Long> {
         Log.d(this.javaClass.name,"<<<=== getBoughtPendingQuotes - Start")
+            val differQuotes = differInstallmentSvc.get(cutOff.toLocalDate())
             val list = getPendingQuotes(key, startDate,cutOff)
             val value = list.stream().filter {
-                val months = DateUtils.getMonths(it.boughtDate,cutOff)
-                months <= it.month
+                differQuotes.firstOrNull{differ->differ.cdBoughtCreditCard.toInt() == it.id}?.let{
+                    DateUtils.getMonths(LocalDateTime.of(it.create,LocalTime.MAX),cutOff) <= it.newInstallment
+                }?:(DateUtils.getMonths(it.boughtDate,cutOff) <= it.month)
             }.count()
             return Optional.ofNullable(value).also{Log.d(this.javaClass.name,"<<<=== getBoughtPendingQuotes - End $it")}
     }
@@ -408,16 +490,18 @@ class SaveCreditCardBoughtImpl(override var dbConnect: SQLiteOpenHelper) :IQuote
     @RequiresApi(Build.VERSION_CODES.O)
     override fun getPendingToPay(key: Int, startDate:LocalDateTime,cutOff: LocalDateTime): Optional<BigDecimal> {
         Log.d(this.javaClass.name,"<<<=== getPendingToPay - Start")
+            val differQuotes = differInstallmentSvc.get(cutOff.toLocalDate())
             val list = getToDate(key,startDate,cutOff)
             val value = list.stream().map {
-                val months = DateUtils.getMonths(it.boughtDate,cutOff)
-                val quote = it.valueItem.divide(it.month.toBigDecimal(),8,RoundingMode.CEILING)
+                val differ = differQuotes.firstOrNull{differ->differ.cdBoughtCreditCard.toInt() == it.id}
+                val months = differ?.let{DateUtils.getMonths(it.create,cutOff)}?:DateUtils.getMonths(it.boughtDate,cutOff)
+                val quote = differ?.let{(it.pendingValuePayable / it.newInstallment).toBigDecimal()}?:it.valueItem.divide(it.month.toBigDecimal(),8,RoundingMode.CEILING)
                 val bought = quote.multiply(months.toBigDecimal())
-                val capital = it.valueItem.minus(bought)
-                if(capital > BigDecimal(0) && it.month > 1){
+                val capital = differ?.let{it.pendingValuePayable.toBigDecimal().minus(bought)}?:it.valueItem.minus(bought)
+                if(capital > BigDecimal.ZERO && it.month > 1){
                     capital
                 }else{
-                    BigDecimal(0)
+                    BigDecimal.ZERO
                 }
             }.reduce{val1,val2->val1.plus(val2)}
             return value.also { Log.d(this.javaClass.name,"<<<=== getPendingToPay - End $it") }
@@ -426,17 +510,18 @@ class SaveCreditCardBoughtImpl(override var dbConnect: SQLiteOpenHelper) :IQuote
     @RequiresApi(Build.VERSION_CODES.O)
     override fun getPendingToPayQuotes(key: Int,startDate: LocalDateTime, cutOff: LocalDateTime): Optional<BigDecimal> {
         Log.d(this.javaClass.name,"<<<=== getPendingToPayQuotes - Start")
+            val differQuotes = differInstallmentSvc.get(cutOff.toLocalDate())
             val list = getPendingQuotes(key,startDate,cutOff)
             val value = list.stream().map {
-                val months = DateUtils.getMonths(it.boughtDate,cutOff)
-                val quote = it.valueItem.divide(it.month.toBigDecimal(),8,RoundingMode.CEILING)
+                val differ = differQuotes.firstOrNull{differ->differ.cdBoughtCreditCard.toInt() == it.id}
+                val months =  differ?.let{DateUtils.getMonths(it.create,cutOff)}?:DateUtils.getMonths(it.boughtDate,cutOff)
+                val quote = differ?.let{(it.pendingValuePayable / it.newInstallment).toBigDecimal()}?: it.valueItem.divide(it.month.toBigDecimal(),8,RoundingMode.CEILING)
                 val bought = quote.multiply(months.toBigDecimal())
-                Log.d(this.javaClass.name,"${it.valueItem} - $bought")
-                val capital = it.valueItem.minus(bought)
-                if(capital > BigDecimal(0)){
+                val capital = differ?.let{it.pendingValuePayable.toBigDecimal().minus(bought)}?: it.valueItem.minus(bought)
+                if(capital > BigDecimal.ZERO){
                     capital
                 }else{
-                    BigDecimal(0)
+                    BigDecimal.ZERO
                 }
             }.reduce{val1,val2->val1.plus(val2)}
             return value.also { Log.d(this.javaClass.name,"<<<=== getPendingToPayQuotes - End $it") }
@@ -478,14 +563,12 @@ class SaveCreditCardBoughtImpl(override var dbConnect: SQLiteOpenHelper) :IQuote
                     ${CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_RECURRENT} = ? 
                     and ${CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_CODE_CREDIT_CARD} = ?
                     and $FORMAT_DATE_BOUGHT_WHERE <= ?
-                    and ${CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_END_DATE} >= ?
                 """.trimMargin(),
-                arrayOf(1.toString(),key.toString(),endDateStr,startDateStr),null,null,null)
+                arrayOf(1.toString(),key.toString(),endDateStr),null,null,null)
             val items = mutableListOf<CreditCardBoughtDTO>()
             with(cursor){
                 while(moveToNext()){
-                     CreditCardBoughtMap().mapping(this)?.let{
-                    Log.d(javaClass.name,"=== Valid end date : name: ${it.nameItem} Value: ${it.valueItem} Bought: ${it.boughtDate} Create: ${it.createDate} End: ${it.endDate} Last Cutoff:$cutOffLastMonth")
+                     CreditCardBoughtMap().mapping(this)?.takeIf { it.endDate >= cutOffLastMonth }?.let{
                         items.add(it)
                     }
                 }

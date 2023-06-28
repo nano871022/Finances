@@ -346,5 +346,9 @@
     <string  name="delete_grace_period_saved">Periodo de gracia eliminado sadisfactoriamente</string>
     <string  name="delete_grace_period_unsave">Periodo de gracia no fue eliminado</string>
     <string name="differ_installment">Diferir el Capital Restante</string>
+    <string name="not_save_differ_installment">No se logro diferir la cuota</string>
+    <string name="not_save_new_quote_differ_installment">No se logro crear el nuevo registro de la cuota diferida</string>
+    <string name="not_update_old_quote_differ_installment">No se logro actualizar el registro a diferir cuota</string>
+    <string name="save_differ_installment">Cuota Diferida agregada</string>
 
 </resources>

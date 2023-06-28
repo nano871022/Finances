@@ -88,7 +88,7 @@ class CreditFixImpl(override var dbConnect: SQLiteOpenHelper) :ICreditFix{
     override fun get(values: CreditDTO): List<CreditDTO> {
         val db = dbConnect.readableDatabase
         val list = mutableListOf<CreditDTO>()
-        val dateFormatter = DateUtils.localDateTimeToStringDate(values.date)
+        val dateFormatter = DateUtils.localDateToStringDate(values.date)
         val cursor = db.query(CreditDB.Entry.TABLE_NAME,COLUMNS
             ,"$FORMAT_DATE_BOUGHT_WHERE < ?",
             arrayOf(dateFormatter),null,null,null)

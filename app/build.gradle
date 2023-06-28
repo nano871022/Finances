@@ -13,7 +13,7 @@ android {
         minSdk 21
         targetSdk 33
         versionCode 4_04_09_033
-        versionName ""
+        versionName "Agregado cuotas diferidas para tc y periodo de gracia para creditos"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }

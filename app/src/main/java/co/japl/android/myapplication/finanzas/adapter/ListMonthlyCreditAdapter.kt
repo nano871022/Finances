@@ -78,7 +78,10 @@ class ListMonthlyCreditAdapter(val data:MutableList<CreditDTO>,val view:View,val
                             R.string.delete_grace_period_saved,
                             Snackbar.LENGTH_SHORT
                         ).show()
-                            .also { CreditFixParams.toBack(navController) }
+                            .also {
+                                dialog.dismiss()
+                                CreditFixParams.toBack(navController)
+                            }
                     }else{
                         Snackbar.make(view, R.string.delete_grace_period_unsave, Snackbar.LENGTH_SHORT)
                             .show()
@@ -158,6 +161,7 @@ class ListMonthlyCreditAdapter(val data:MutableList<CreditDTO>,val view:View,val
             if(gracePeriodSvc.save(dto)>0) {
                 Snackbar.make(view, R.string.grace_period_saved, Snackbar.LENGTH_SHORT).show()
                     .also {
+                        dialog.dismiss()
                         CreditFixParams.toBack(navController)
                     }
             }else{

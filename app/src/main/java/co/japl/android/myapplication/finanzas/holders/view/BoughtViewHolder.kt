@@ -22,6 +22,8 @@ import com.google.common.primitives.Shorts
 import java.math.BigDecimal
 import java.math.RoundingMode
 import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.LocalTime
 import java.util.*
 
 class BoughtViewHolder(val itemView:View) : RecyclerView.ViewHolder(itemView) {
@@ -74,15 +76,26 @@ class BoughtViewHolder(val itemView:View) : RecyclerView.ViewHolder(itemView) {
             var items = itemsOrigin
             val dateFirst = LocalDate.now().withDayOfMonth(1)
             val dateLast = dateFirst.plusMonths(1).minusDays(1)
+            val months = DateUtils.getMonths(values.boughtDate, LocalDateTime.of(dateLast,
+                LocalTime.MAX))
+
             if(values.month <= 1){
-                items = items.filter { it != itemsOrigin.filterIndexed { index, _ -> index == 0 }[0] }.toTypedArray()
+                items = items.filter { it != itemsOrigin.filterIndexed { index, _ -> index == MoreOptionsItemsCreditCard.AMORTIZATION.i}[0] }.toTypedArray()
+                items = items.filter { it != itemsOrigin.filterIndexed { index, _ -> index == MoreOptionsItemsCreditCard.DIFFER_INSTALLMENT.i}[0] }.toTypedArray()
             }
             if(values.createDate.toLocalDate() !in dateFirst..dateLast){
-                items = items.filter{ it != itemsOrigin.filterIndexed { index, _ -> index == 3 }[0] }.toTypedArray()
+                items = items.filter{ it != itemsOrigin.filterIndexed { index, _ -> index == MoreOptionsItemsCreditCard.EDIT.i }[0] }.toTypedArray()
             }
             if(values.recurrent != (1).toShort() || (values.recurrent == (1).toShort() && values.createDate.toLocalDate() in dateFirst..dateLast)){
-                items = items.filter{ it != itemsOrigin.filterIndexed { index, _ ->  index == 1 }[0] }.toTypedArray()
-                items = items.filter{ it != itemsOrigin.filterIndexed{ index,_-> index == 2}[0] }.toTypedArray()
+                items = items.filter{ it != itemsOrigin.filterIndexed { index, _ ->  index == MoreOptionsItemsCreditCard.ENDING.i }[0] }.toTypedArray()
+                items = items.filter{ it != itemsOrigin.filterIndexed{ index,_-> index == MoreOptionsItemsCreditCard.UPDATE_VALUE.i}[0] }.toTypedArray()
+            }
+            if(values.month > 1 && months < 1 ){
+                items = items.filter{ it != itemsOrigin.filterIndexed { index, _ ->  index == MoreOptionsItemsCreditCard.DIFFER_INSTALLMENT.i }[0] }.toTypedArray()
+            }
+
+            if(values.recurrent == (1).toShort() ){
+                items = items.filter{ it != itemsOrigin.filterIndexed { index, _ ->  index == MoreOptionsItemsCreditCard.DIFFER_INSTALLMENT.i }[0] }.toTypedArray()
             }
             setItems(items) { dialog, which ->
                 val itemSelect = (dialog as AlertDialog).listView.getItemAtPosition(which)

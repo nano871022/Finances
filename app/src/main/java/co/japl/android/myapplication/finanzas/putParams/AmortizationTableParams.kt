@@ -14,6 +14,9 @@ class AmortizationTableParams {
         val ARG_PARAM_CREDIT_VALUE = "credit_value"
         val ARG_PARAM_QUOTE_PAID = "quote_paid"
         val ARG_PARAM_QUOTE1_NOT_PAID = "quote_1_not_paid"
+        val ARG_PARAM_HAS_DIFFER_INSTALLMENT = "has_differ_installment"
+        val ARG_PARAM_BOUGHT_ID = "bought_id"
+        val ARG_PARAM_MONTHS_CALC = "months_calc"
     }
 
     companion object{
@@ -37,9 +40,24 @@ class AmortizationTableParams {
             navController.navigate(R.id.action_list_bought_to_amortizationTableFragment,parameters)
         }
 
-        fun download(argument: Bundle):Triple<CalcDTO,Long,Boolean>{
+        fun newInstanceQuotes(creditValue:CalcDTO,id:Long,quotesPaid:Long,quote1NotPaid:Boolean,hasDifferInstallment:Boolean,monthsCalc:Long,navController: NavController){
+            val parameters = bundleOf(params.ARG_PARAM_CREDIT_VALUE to Gson().toJson(creditValue)
+                ,params.ARG_PARAM_QUOTE_PAID to quotesPaid
+                ,params.ARG_PARAM_QUOTE1_NOT_PAID to quote1NotPaid
+                ,params.ARG_PARAM_HAS_DIFFER_INSTALLMENT to hasDifferInstallment
+                ,params.ARG_PARAM_BOUGHT_ID to id
+                ,params.ARG_PARAM_MONTHS_CALC to monthsCalc)
+            navController.navigate(R.id.action_list_bought_to_amortizationTableFragment,parameters)
+        }
+
+        fun download(argument: Bundle):Map<String,Any>{
             argument.let {
-                return Triple(Gson().fromJson(it.get(params.ARG_PARAM_CREDIT_VALUE) as String,CalcDTO::class.java), it.getLong(params.ARG_PARAM_QUOTE_PAID),it.getBoolean(params.ARG_PARAM_QUOTE1_NOT_PAID)?:false)
+                return mapOf(params.ARG_PARAM_CREDIT_VALUE to Gson().fromJson(it.get(params.ARG_PARAM_CREDIT_VALUE) as String,CalcDTO::class.java)
+                ,params.ARG_PARAM_QUOTE_PAID to it.getLong(params.ARG_PARAM_QUOTE_PAID)
+                ,params.ARG_PARAM_QUOTE1_NOT_PAID to (it.getBoolean(params.ARG_PARAM_QUOTE1_NOT_PAID)?:false)
+                ,params.ARG_PARAM_HAS_DIFFER_INSTALLMENT to (it.getBoolean(params.ARG_PARAM_HAS_DIFFER_INSTALLMENT)?:false)
+                ,params.ARG_PARAM_BOUGHT_ID to it.getLong(params.ARG_PARAM_BOUGHT_ID)
+                ,params.ARG_PARAM_MONTHS_CALC to it.getLong(params.ARG_PARAM_MONTHS_CALC))
             }
         }
         fun toBack(navController: NavController){

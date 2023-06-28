@@ -25,8 +25,8 @@ class GracePeriodMap() {
     @RequiresApi(Build.VERSION_CODES.O)
     fun mapping(dto: GracePeriodDTO): ContentValues {
         return ContentValues().apply {
-            put(GracePeriodDB.Entry.COLUMN_DATE_CREATE,DateUtils.localDateTimeToStringDate(dto.create))
-            put(GracePeriodDB.Entry.COLUMN_DATE_END,DateUtils.localDateTimeToStringDate(dto.end))
+            put(GracePeriodDB.Entry.COLUMN_DATE_CREATE,DateUtils.localDateToStringDate(dto.create))
+            put(GracePeriodDB.Entry.COLUMN_DATE_END,DateUtils.localDateToStringDate(dto.end))
             put(GracePeriodDB.Entry.COLUMN_CODE_CREDIT,dto.codeCredit)
             put(GracePeriodDB.Entry.COLUMN_PERIODS,dto.periods)
         }

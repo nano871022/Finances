@@ -24,6 +24,10 @@ class CreditCardQuotesParams {
                 val parameters = bundleOf(Params.PARAM_CREDIT_CARD_CODE  to creditCard.toString(),Params.PARAM_BOUGHT_ID to quoteId)
                 navController.navigate(R.id.action_list_bought_to_buy_credit_card,parameters)
             }
+
+            fun toBack(navController: NavController) {
+                navController.popBackStack()
+            }
         }
 
         object Historical {

@@ -8,11 +8,14 @@ import android.view.View
 import androidx.annotation.RequiresApi
 import co.japl.android.myapplication.bussiness.interfaces.SaveSvc
 import co.japl.android.myapplication.finanzas.bussiness.DTO.*
+import co.japl.android.myapplication.finanzas.bussiness.interfaces.IDifferInstallment
 import co.japl.android.myapplication.finanzas.bussiness.mapping.DifferInstallmentMap
 import co.japl.android.myapplication.utils.DatabaseConstants
+import co.japl.android.myapplication.utils.DateUtils
+import java.time.LocalDate
 import java.util.*
 
-class DifferInstallmentImpl(val view:View, override var dbConnect: SQLiteOpenHelper) : SaveSvc<DifferInstallmentDTO>{
+class DifferInstallmentImpl( override var dbConnect: SQLiteOpenHelper) : IDifferInstallment{
     val COLUMNS = arrayOf(
         BaseColumns._ID,
         DifferInstallmentDB.Entry.COLUMN_DATE_CREATE,
@@ -26,7 +29,7 @@ class DifferInstallmentImpl(val view:View, override var dbConnect: SQLiteOpenHel
     @RequiresApi(Build.VERSION_CODES.O)
     override fun save(dto: DifferInstallmentDTO): Long {
         val db = dbConnect.writableDatabase
-        val content: ContentValues? = DifferInstallmentMap(view).mapping(dto)
+        val content: ContentValues? = DifferInstallmentMap().mapping(dto)
         return if(dto.id > 0){
             db?.update(DifferInstallmentDB.Entry.TABLE_NAME,content,"${BaseColumns._ID}=?", arrayOf(dto.id.toString()))?.toLong() ?: 0
         }else {
@@ -39,7 +42,25 @@ class DifferInstallmentImpl(val view:View, override var dbConnect: SQLiteOpenHel
         val db = dbConnect.readableDatabase
         val cursor = db.query(DifferInstallmentDB.Entry.TABLE_NAME,COLUMNS,null,null,null,null,null)
         val items = mutableListOf<DifferInstallmentDTO>()
-        val mapper = DifferInstallmentMap(view)
+        val mapper = DifferInstallmentMap()
+        with(cursor){
+            while(moveToNext()){
+                items.add(mapper.mapping(cursor))
+            }
+        }
+        return items
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    override fun get(cutOff:LocalDate):List<DifferInstallmentDTO>{
+        val items = mutableListOf<DifferInstallmentDTO>()
+        val db = dbConnect.readableDatabase
+        val formatDate = DateUtils.localDateToStringDate(cutOff)
+        val cursor = db.query(DifferInstallmentDB.Entry.TABLE_NAME,COLUMNS
+            ,"${DifferInstallmentDB.Entry.COLUMN_DATE_CREATE} <= ?"
+            , arrayOf(formatDate)
+            ,null,null,null)
+        val mapper = DifferInstallmentMap()
         with(cursor){
             while(moveToNext()){
                 items.add(mapper.mapping(cursor))
@@ -62,7 +83,7 @@ class DifferInstallmentImpl(val view:View, override var dbConnect: SQLiteOpenHel
         val cursor = db.query(
             DifferInstallmentDB.Entry.TABLE_NAME,COLUMNS,"${DifferInstallmentDB.Entry.COLUMN_CODE_QUOTE} = ?",
             arrayOf(id.toString()),null,null,null)
-        val mapper = DifferInstallmentMap(view)
+        val mapper = DifferInstallmentMap()
         with(cursor){
             while(moveToNext()){
                 return Optional.ofNullable(mapper.mapping(cursor))

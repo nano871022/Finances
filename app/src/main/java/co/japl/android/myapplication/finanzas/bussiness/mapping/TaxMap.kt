@@ -29,7 +29,6 @@ class TaxMap : IMapper<TaxDTO>{
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun mapping(cursor:Cursor):TaxDTO{
-        Log.d(this.javaClass.name,"${cursor.columnCount} ${cursor.columnNames} ")
         val tax = cursor.getDouble(1)
         val month = cursor.getShort(2)
         val year = cursor.getInt(3)
