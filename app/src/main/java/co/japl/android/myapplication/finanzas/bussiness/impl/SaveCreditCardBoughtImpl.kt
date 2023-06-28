@@ -5,6 +5,7 @@ import android.os.Build
 import android.provider.BaseColumns
 import android.util.Log
 import androidx.annotation.RequiresApi
+import androidx.core.content.contentValuesOf
 import co.japl.android.myapplication.bussiness.DTO.*
 import co.japl.android.myapplication.bussiness.interfaces.SaveSvc
 import co.japl.android.myapplication.bussiness.mapping.CreditCardBoughtMap
@@ -70,23 +71,19 @@ class SaveCreditCardBoughtImpl(override var dbConnect: SQLiteOpenHelper) :IQuote
     @RequiresApi(Build.VERSION_CODES.O)
     override fun save(dto: CreditCardBoughtDTO): Long {
         Log.v(this.javaClass.name,"<<<=== save - Start")
-        try{
             val db = dbConnect.writableDatabase
             val values = CreditCardBoughtMap().mapping(dto)
             return if(dto.id > 0){
-                 db?.update(CreditCardBoughtDB.CreditCardBoughtEntry.TABLE_NAME,values,"${BaseColumns._ID}=?",
+                (db?.update(CreditCardBoughtDB.CreditCardBoughtEntry.TABLE_NAME,values,"${BaseColumns._ID}=?",
                     arrayOf(dto.id.toString())
-                )?.toLong()?:0
+                )?.toLong()?:0).also { Log.v(this.javaClass.name, "<<<=== END:Save $values $it") }
             }else {
                  (db?.insert(
                     CreditCardBoughtDB.CreditCardBoughtEntry.TABLE_NAME,
                     null,
                     values
-                )!!).also { Log.v(this.javaClass.name, "$it") }
+                )!!).also { Log.v(this.javaClass.name, "<<<=== END:Save  $it") }
             }
-        }finally{
-            Log.v(this.javaClass.name,"<<<=== save - End")
-        }
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -164,12 +161,12 @@ class SaveCreditCardBoughtImpl(override var dbConnect: SQLiteOpenHelper) :IQuote
                 val differ = get(id)
                 getDifferOriginBought(differ.get().nameItem,differ.get().boughtDate,differ.get().endDate)
                     ?.let {bought->
-                        bought.createDate = LocalDateTime.of(9999,12,31,11,59,59)
+                        bought.endDate = LocalDateTime.of(9999,12,31,11,59,59)
+                        bought.id = 0
                         save(bought)
-                }
+                    }
                 differInstallmentSvc.delete(differ.get().id)
             }
-
 
         val db = dbConnect.writableDatabase
         return (db.delete(CreditCardBoughtDB.CreditCardBoughtEntry.TABLE_NAME,
@@ -191,7 +188,7 @@ class SaveCreditCardBoughtImpl(override var dbConnect: SQLiteOpenHelper) :IQuote
             arrayOf(boughtStr,name,endStr),null,null,"${CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_END_DATE} DESC")
         with(cursor) {
             if (moveToNext()) {
-                return CreditCardBoughtMap().mapping(this)
+                return CreditCardBoughtMap().mapping(this).also { Log.d(javaClass.name,"<<<=== END:getDifferOriginBought $it") }
             }
         }
         return null
@@ -209,7 +206,7 @@ class SaveCreditCardBoughtImpl(override var dbConnect: SQLiteOpenHelper) :IQuote
                 """ 
                     ${CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_CODE_CREDIT_CARD} = ?
                     and $FORMAT_DATE_BOUGHT_WHERE between ? and ?
-                    and $FORMAT_DATE_END_WHERE > ?
+                    and ${CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_END_DATE} > ?
                 """.trimMargin(),
                 arrayOf(key.toString(),startDateStr, endDateStr,startDateStr),
                 null,
@@ -260,7 +257,7 @@ class SaveCreditCardBoughtImpl(override var dbConnect: SQLiteOpenHelper) :IQuote
             }
         } ?: (DateUtils.getMonths(creditCardBoughtDTO.boughtDate,cutoffCurrent) < creditCardBoughtDTO.month)
                 && creditCardBoughtDTO.endDate > startCutOff).also {
-            Log.d(javaClass.name,"validMonths: ${creditCardBoughtDTO.endDate} $cutoffCurrent ${creditCardBoughtDTO.boughtDate} ${creditCardBoughtDTO.nameItem} $it")
+            Log.d(javaClass.name,"validMonths: ${creditCardBoughtDTO.endDate} $cutoffCurrent ${creditCardBoughtDTO.boughtDate} ${creditCardBoughtDTO.nameItem} ${creditCardBoughtDTO.createDate} $it")
         }
     }
 

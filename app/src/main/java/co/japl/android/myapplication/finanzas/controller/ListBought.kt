@@ -87,7 +87,7 @@ class ListBought : Fragment() , LoaderManager.LoaderCallbacks<Pair<List<CreditCa
         val startDate = DateUtils.startDateFromCutoff(creditCard.cutoffDay.get(),creditCard.cutOff.get())
         val list = saveSvc.getToDate(creditCard.codeCreditCard.get(),startDate,creditCard.cutOff.get())
         val listRecurrent = saveSvc.getRecurrentBuys(creditCard.codeCreditCard.get(),creditCard.cutOff.get())
-        listRecurrent.forEach { it.boughtDate = it.boughtDate.withMonth(creditCard.cutOff.get().monthValue) }
+        listRecurrent.forEach { it.boughtDate = it.boughtDate.withYear(creditCard.cutOff.get().year).withMonth(creditCard.cutOff.get().monthValue) }
         val listRecurrentPending = (saveSvc as IQuoteCreditCardSvc).getRecurrentPendingQuotes(creditCard.codeCreditCard.get(),creditCard.cutOff.get())
         val pending = saveSvc.getPendingQuotes(creditCard.codeCreditCard.get(),startDate,creditCard.cutOff.get())
         var joinList = ArrayList<CreditCardBoughtDTO>().toMutableList()
