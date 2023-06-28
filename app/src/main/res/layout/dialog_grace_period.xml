@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:padding="@dimen/space_min"
+    android:orientation="vertical">
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/periods"
+        app:endIconMode="clear_text">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/ed_period_dgp"
+            android:hint="@string/integer_hint"
+            android:textAlignment="center"
+            android:inputType="numberSigned"/>
+
+        <RadioGroup
+            android:id="@+id/rg_option_dgp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:checkedButton="@id/rb_current_dgp">
+
+            <RadioButton
+                android:id="@+id/rb_previous_dgp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/previous_month" />
+
+            <RadioButton
+                android:id="@+id/rb_current_dgp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/current_month" />
+
+            <RadioButton
+                android:id="@+id/rb_next_dgp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/next_month" />
+        </RadioGroup>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/start_date"
+            style="@style/MaterialTextInputLayoutView">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/tv_start_dgp"
+                android:hint="@string/date_hint"
+                android:textAlignment="textEnd"
+                android:enabled="false"
+                style="@style/MaterialTextInputLayoutView"/>
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/end_date"
+            style="@style/MaterialTextInputLayoutView">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/tv_end_dgp"
+                android:hint="@string/date_hint"
+                android:textAlignment="textEnd"
+                android:enabled="false"
+                style="@style/MaterialTextInputLayoutView"/>
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+
+
+</LinearLayout>

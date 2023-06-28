@@ -1,5 +1,6 @@
 package co.japl.android.myapplication.bussiness.impl
 
+import android.database.CursorWindowAllocationException
 import android.database.sqlite.SQLiteException
 import android.database.sqlite.SQLiteOpenHelper
 import android.os.Build
@@ -101,7 +102,6 @@ class TaxImpl(override var dbConnect: SQLiteOpenHelper) :  SaveSvc<TaxDTO>,ITaxS
     @RequiresApi(Build.VERSION_CODES.N)
     override fun get(codCreditCard:Long,month:Int, year:Int,kind: TaxEnum):Optional<TaxDTO>{
         Log.d(this.javaClass.name,"<<<=== Start get - $month , $year")
-        try {
             val db = dbConnect.writableDatabase
             val cursor = db.query(
                 TaxDB.TaxEntry.TABLE_NAME,
@@ -112,13 +112,15 @@ class TaxImpl(override var dbConnect: SQLiteOpenHelper) :  SaveSvc<TaxDTO>,ITaxS
                 null,
                 null
             )
-            with(cursor) {
-                while (moveToNext()) {
-                    return Optional.ofNullable(mapper.mapping(this)).also {
-                        Log.d(this.javaClass.name,"response $it")
+            try {
+                with(cursor) {
+                    while (moveToNext()) {
+                        return Optional.ofNullable(mapper.mapping(this)).also {
+                            Log.d(this.javaClass.name, "response $it")
+                        }
                     }
                 }
-            }
+
             return Optional.empty()
         }finally{
             Log.d(this.javaClass.name,"<<<=== End - get $month , $year")

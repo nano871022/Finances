@@ -25,13 +25,18 @@ import co.japl.android.myapplication.bussiness.impl.TaxImpl
 import co.japl.android.myapplication.bussiness.interfaces.SaveSvc
 import co.japl.android.myapplication.bussiness.interfaces.SearchSvc
 import co.japl.android.myapplication.bussiness.mapping.CalcMap
+import co.japl.android.myapplication.finanzas.bussiness.DTO.DifferInstallmentDTO
 import co.japl.android.myapplication.finanzas.bussiness.impl.BuyCreditCardSettingImpl
 import co.japl.android.myapplication.finanzas.bussiness.impl.CreditCardSettingImpl
+import co.japl.android.myapplication.finanzas.bussiness.impl.DifferInstallmentImpl
 import co.japl.android.myapplication.finanzas.bussiness.impl.KindOfTaxImpl
+import co.japl.android.myapplication.finanzas.bussiness.interfaces.IDifferInstallment
 import co.japl.android.myapplication.finanzas.putParams.AmortizationTableParams
 import co.japl.android.myapplication.finanzas.enums.KindOfTaxEnum
 import co.japl.android.myapplication.finanzas.enums.MoreOptionsItemsCreditCard
 import co.japl.android.myapplication.finanzas.enums.TaxEnum
+import co.japl.android.myapplication.finanzas.holders.validations.COPToBigDecimal
+import  co.japl.android.myapplication.finanzas.holders.validations.setCOPtoField
 import co.japl.android.myapplication.finanzas.putParams.CreditCardQuotesParams
 import co.japl.android.myapplication.holders.view.BoughtViewHolder
 import co.japl.android.myapplication.utils.DateUtils
@@ -39,7 +44,9 @@ import co.japl.android.myapplication.utils.NumbersUtil
 import com.google.android.material.snackbar.Snackbar
 import java.math.BigDecimal
 import java.math.RoundingMode
+import java.time.LocalDate
 import java.time.LocalDateTime
+import java.time.LocalTime
 import java.util.*
 import kotlin.jvm.optionals.getOrNull
 
@@ -51,18 +58,24 @@ class ListBoughtAdapter(private val data:MutableList<CreditCardBoughtDTO>,privat
     private lateinit var taxSvc:SaveSvc<TaxDTO>
     lateinit var buyCreditCardSettingSvc: SaveSvc<BuyCreditCardSettingDTO>
     lateinit var creditCardSettingSvc: SaveSvc<CreditCardSettingDTO>
+    lateinit var differInstallmentSvc: IDifferInstallment
     lateinit var creditCardSvc: CreditCardImpl
     lateinit var view:View
+    lateinit var creditCard:Optional<CreditCardDTO>
+    lateinit var differQuotes:List<DifferInstallmentDTO>
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BoughtViewHolder {
         dbConnect = ConnectDB(parent.context)
         saveSvc = SaveCreditCardBoughtImpl(dbConnect)
         searchSvc = saveSvc as SearchSvc<CreditCardBoughtDTO>
         creditCardSvc = CreditCardImpl(dbConnect)
+        differInstallmentSvc = DifferInstallmentImpl(dbConnect)
         taxSvc = TaxImpl(dbConnect)
         creditCardSettingSvc = CreditCardSettingImpl(dbConnect)
         buyCreditCardSettingSvc = BuyCreditCardSettingImpl(dbConnect)
         view = parent
+        differQuotes = differInstallmentSvc.get(cutOff.toLocalDate())
         val view =
             LayoutInflater.from(parent.context).inflate(R.layout.bought_item_list, parent, false)
         val viewHolder =  BoughtViewHolder(view)
@@ -75,19 +88,24 @@ class ListBoughtAdapter(private val data:MutableList<CreditCardBoughtDTO>,privat
     }
 
     private fun getCapital(dto:CreditCardBoughtDTO):BigDecimal{
-        if(dto.month > 1){
-            return dto.valueItem.divide(dto.month.toBigDecimal(),8,RoundingMode.CEILING)
+        return if(dto.month > 1){
+            val differQuote = differQuotes.firstOrNull{ it.cdBoughtCreditCard.toInt() == dto.id }
+            differQuote?.let {
+                return (it.pendingValuePayable / it.newInstallment).toBigDecimal()
+            }?:dto.valueItem.divide(dto.month.toBigDecimal(),8,RoundingMode.CEILING)
+        }else {
+            dto.valueItem
         }
-        return dto.valueItem
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
     private fun getTax(codCreditCard:Long,kind: TaxEnum):Optional<Pair<Double,String>>{
         val tax = (taxSvc as TaxImpl).get(codCreditCard,cutOff.month.value,cutOff.year,kind)
-        if(tax.isPresent){
-            return Optional.ofNullable(Pair(tax.get().value,tax.get().kindOfTax ?: KindOfTaxEnum.EM.name))
+        return if(tax.isPresent){
+            Optional.ofNullable(Pair(tax.get().value,tax.get().kindOfTax ?: KindOfTaxEnum.EM.name))
+        }else {
+            Optional.empty()
         }
-        return Optional.empty()
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -140,22 +158,21 @@ class ListBoughtAdapter(private val data:MutableList<CreditCardBoughtDTO>,privat
     @RequiresApi(Build.VERSION_CODES.O)
     private fun getInterest(dto:CreditCardBoughtDTO,taxCCValue:Optional<Pair<Double,String>>,taxAdvValue:Optional<Pair<Double,String>>,creditCard:Optional<CreditCardDTO>):BigDecimal{
         if( dto.month > 1){
-            val months = DateUtils.getMonths(dto.boughtDate,cutOff)
-            if(creditCard.isPresent && creditCard.get().interest1NotQuote && months == 0L && TaxEnum.findByOrdinal(dto.kind) == TaxEnum.CREDIT_CARD) {
+            val differQuote = differQuotes.firstOrNull{ it.cdBoughtCreditCard.toInt() == dto.id }
+            val months = getQuotesBought(dto)
+            if(creditCard.isPresent && creditCard.get().interest1NotQuote && months == 0L && TaxEnum.findByOrdinal(dto.kind) == TaxEnum.CREDIT_CARD && differQuote == null){
                 return BigDecimal.ZERO
             }
-                val quote = dto.valueItem.divide(dto.month.toBigDecimal(), 8, RoundingMode.CEILING)
-                val capitalBought = quote.multiply(months.toBigDecimal())
-                val pendingCapital = dto.valueItem.minus(capitalBought)
-                val interest = getInterestValue(dto, taxCCValue, taxAdvValue)
-                if(creditCard.isPresent && creditCard.get().interest1NotQuote && months == 1L && dto.month > 1 && TaxEnum.findByOrdinal(dto.kind) == TaxEnum.CREDIT_CARD){
+            val pendingCapital = getPendingToPay(dto)
+            val interest = getInterestValue(dto, taxCCValue, taxAdvValue)
+            if(creditCard.isPresent && creditCard.get().interest1NotQuote && months == 1L && dto.month > 1 && TaxEnum.findByOrdinal(dto.kind) == TaxEnum.CREDIT_CARD){
                     return pendingCapital.multiply(interest.first.toBigDecimal()) + dto.valueItem.multiply(interest.first.toBigDecimal()).also {
                         Log.v(javaClass.name,"$pendingCapital X $interest + ${dto.valueItem} X $interest = ${pendingCapital.multiply(interest.first.toBigDecimal())} + ${dto.valueItem.multiply(interest.first.toBigDecimal())} = $it")
                     }
-                }else if (  pendingCapital > BigDecimal.ZERO) {
+            }else if (  pendingCapital > BigDecimal.ZERO) {
                     return pendingCapital.multiply(interest.first.toBigDecimal()).also{                    Log.v(
                         this.javaClass.name,
-                        "Value ${dto.valueItem} - Bought $capitalBought X $months =  Pending $pendingCapital interest ${interest.first.toBigDecimal()} ${interest.second} = $it"
+                        "Value ${dto.valueItem} -  Pending $pendingCapital interest ${interest.first.toBigDecimal()} ${interest.second} = $it"
                     )
                     }
                 }
@@ -166,37 +183,55 @@ class ListBoughtAdapter(private val data:MutableList<CreditCardBoughtDTO>,privat
     @RequiresApi(Build.VERSION_CODES.O)
     private fun getPendingToPay(dto:CreditCardBoughtDTO):BigDecimal{
         if(dto.month > 1){
-            val months = DateUtils.getMonths(dto.boughtDate,cutOff)
-            val quote = dto.valueItem.divide(dto.month.toBigDecimal(),8,RoundingMode.CEILING)
+            val differQuote = differQuotes.firstOrNull{ it.cdBoughtCreditCard.toInt() == dto.id }
+            val months = getQuotesBought(dto)
+            val quote = getCapital(dto)
             val capitalBought = quote.multiply(months.toBigDecimal())
-            val pendingCapital = dto.valueItem.minus(capitalBought)
-            if(pendingCapital > BigDecimal(0)){
+            val pendingCapital = differQuote?.let {
+                return (it.pendingValuePayable - capitalBought.toDouble()).toBigDecimal()
+            }?:dto.valueItem.minus(capitalBought)
+
+            if(pendingCapital > BigDecimal.ZERO){
                 return pendingCapital
+            }else{
+                BigDecimal.ZERO
             }
         }
-        return BigDecimal(0)
+        return dto.valueItem
 
     }
     @RequiresApi(Build.VERSION_CODES.O)
     private fun getQuotesBought(dto:CreditCardBoughtDTO):Long{
-        if(dto.month > 1) {
-            val months = DateUtils.getMonths(dto.boughtDate,cutOff)
-            return months.toLong()
+        val cutOffLast = DateUtils.cutOffLastMonth(creditCard.get().cutOffDay,cutOff)
+        return  if(dto.month > 1) {
+            val differQuote = differQuotes.firstOrNull{ it.cdBoughtCreditCard.toInt() == dto.id }
+            return differQuote?.let {
+                return DateUtils.getMonths(LocalDateTime.of(it.create, LocalTime.MAX),cutOff)
+            }?: DateUtils.getMonths(dto.boughtDate,cutOff)
+        }else {
+          0
         }
-        return 0
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun getQuotesBoughtTotal(dto:CreditCardBoughtDTO):Long{
+        return if(dto.month > 1) {
+            DateUtils.getMonths(dto.boughtDate,cutOff)
+        }else {
+            0
+        }
     }
 
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onBindViewHolder(holder: BoughtViewHolder, position: Int) {
-        val creditCard = creditCardSvc.get(data[position].codeCreditCard)
-        Log.d(javaClass.name,"$creditCard")
+        creditCard = creditCardSvc.get(data[position].codeCreditCard)
         val taxAdv = getTax(data[position].codeCreditCard.toLong(), TaxEnum.CASH_ADVANCE)
         val taxCC = getTax(data[position].codeCreditCard.toLong(), TaxEnum.CREDIT_CARD)
         val tax = Optional.ofNullable(getInterestValue(data[position],taxCC,taxAdv))
         val interest = getInterest(data[position],taxCC,taxAdv,creditCard)
         val capital = getCapital(data[position])
-        val quotesBought = getQuotesBought(data[position])
+        val quotesBought = getQuotesBoughtTotal(data[position])
         val pendingToPay = getPendingToPay(data[position])
         val interestQuote = if(((creditCard.isPresent && creditCard.get().interest1Quote && quotesBought == 0L && data[position].month == 1) ||
             (creditCard.isPresent && creditCard.get().interest1NotQuote && quotesBought == 0L && data[position].month > 1)) && TaxEnum.findByOrdinal(data[position].kind) == TaxEnum.CREDIT_CARD){
@@ -211,8 +246,81 @@ class ListBoughtAdapter(private val data:MutableList<CreditCardBoughtDTO>,privat
               MoreOptionsItemsCreditCard.EDIT -> edit(position)
               MoreOptionsItemsCreditCard.ENDING->ending(holder,position)
               MoreOptionsItemsCreditCard.UPDATE_VALUE->updateRecurrentValue(holder,position)
+              MoreOptionsItemsCreditCard.DIFFER_INSTALLMENT->differInstallment(position)
           }
       }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun differInstallment(position:Int){
+        val inflater = inflater.inflate(R.layout.dialog_differ_installment, null)
+        val pendingValue = getPendingToPay(data[position])
+        val pending = inflater.findViewById<EditText>(R.id.tv_pending_payable_ddi)
+        pending.setText(NumbersUtil.COPtoString(pendingValue.toDouble()))
+        val period = inflater.findViewById<EditText>(R.id.et_period_ddi)
+        val quoteCapital = inflater.findViewById<EditText>(R.id.tv_capital_quote_ddi)
+        period.setOnFocusChangeListener { _, focus ->
+            if(!focus){
+                val period = period.COPToBigDecimal().toLong()
+                quoteCapital.setText(NumbersUtil.COPtoString(pendingValue.toDouble() / period))
+            }
+        }
+        val dialog = AlertDialog.Builder(view.context)
+            .setTitle(R.string.differ_installment)
+            .setView(inflater)
+            .setPositiveButton(R.string.save, null)
+            .setNegativeButton(R.string.cancel, null)
+            .create()
+        dialog.show()
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
+            val dayOfMonth:Short = creditCard?.takeIf { it.isPresent }?.map { it.cutOffDay }?.get()?:data[position].cutOutDate.dayOfMonth.toShort()
+            val periods = period.COPToBigDecimal().toInt()
+            val months = DateUtils.getMonths(data[position].boughtDate,cutOff)
+            val origin = data[position].copy()
+            origin.endDate = DateUtils.cutOffLastMonth(dayOfMonth,cutOff)
+            if(saveSvc.save(origin)>0) {
+                val boughtDiffer = CreditCardBoughtDTO(
+                    data[position].codeCreditCard,
+                    data[position].nameCreditCard,
+                    data[position].nameItem,
+                    data[position].valueItem,
+                    data[position].interest,
+                    months.toInt() + periods,
+                    data[position].boughtDate,
+                    cutOff,
+                    LocalDateTime.now(),
+                    DateUtils.cutOffAddMonth(dayOfMonth, cutOff, periods.toLong()),
+                    0,
+                    data[position].recurrent,
+                    data[position].kind,
+                    data[position].kindOfTax
+                )
+                val differSaveId = saveSvc.save(boughtDiffer)
+                if (differSaveId > 0) {
+                    val differInstallment = DifferInstallmentDTO(
+                        0,
+                        LocalDate.now(),
+                        differSaveId,
+                        pendingValue.toDouble(),
+                        data[position].valueItem.toDouble(),
+                        period.COPToBigDecimal().toDouble(),
+                        data[position].month.toDouble()
+                    )
+                    if(differInstallmentSvc.save(differInstallment)>0){
+                        Snackbar.make(view, R.string.save_differ_installment, Snackbar.LENGTH_SHORT).show().also {
+                            dialog.dismiss()
+                            CreditCardQuotesParams.Companion.ListBought.toBack(navController)
+                        }
+                    }else{
+                        Snackbar.make(view, R.string.not_save_differ_installment, Snackbar.LENGTH_SHORT).show()
+                    }
+                }else{
+                    Snackbar.make(view, R.string.not_save_new_quote_differ_installment, Snackbar.LENGTH_SHORT).show()
+                }
+            }else{
+                Snackbar.make(view, R.string.not_update_old_quote_differ_installment, Snackbar.LENGTH_SHORT).show()
+            }
+        }
     }
 
     fun edit(position:Int){
@@ -223,7 +331,12 @@ class ListBoughtAdapter(private val data:MutableList<CreditCardBoughtDTO>,privat
         )
     }
 
-    fun amortization(quotesBought:Long,capital:BigDecimal,interest:BigDecimal,kindOfTax:KindOfTaxEnum,position:Int,quote1NotPaid:Boolean){
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun amortization(quotesBought:Long, capital:BigDecimal, interest:BigDecimal, kindOfTax:KindOfTaxEnum, position:Int, quote1NotPaid:Boolean){
+        val hasDifferInstallment = differQuotes.firstOrNull{ it.cdBoughtCreditCard.toInt() == data[position].id }?.let {true}?:false
+        val monthsCalc:Long = if( data[position].endDate.toLocalDate() != LocalDate.of(9999,12,31)){
+            DateUtils.getMonths(data[position].boughtDate,data[position].endDate)
+        }else{ data[position].month.toLong() }
         AmortizationTableParams.newInstanceQuotes(
             CalcMap().mapping(
                 data[position],
@@ -231,7 +344,7 @@ class ListBoughtAdapter(private val data:MutableList<CreditCardBoughtDTO>,privat
                 interest,
                 capital,
                 kindOfTax
-            ), quotesBought,quote1NotPaid, view.findNavController()
+            ), data[position].id.toLong(),quotesBought,quote1NotPaid,hasDifferInstallment, monthsCalc,view.findNavController()
         )
     }
 

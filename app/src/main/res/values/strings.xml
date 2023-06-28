@@ -270,12 +270,15 @@
         <item >Amortizacion</item>
         <item >Finalizar</item>
         <item >Actualizar Valor</item>
+        <item >Diferir Cuotas</item>
         <item >Editar</item>
         <item >Eliminar</item>
     </array>
 
     <array name="credit_item_options">
         <item >Amortizacion</item>
+        <item >Periodo de Gracia</item>
+        <item >Eliminar Periodo de Gracia</item>
         <item >Eliminar</item>
     </array>
 
@@ -332,5 +335,20 @@
     <string name="dont_ending_recurrent_payment">No se logro finaliazr el pago recurrente</string>
     <string name="ending_recurrent_payment_successfull">Se elimino correctamente</string>
     <string name="theres_not_records_to_show_you">No hay registros para mostrar</string>
+
+    <string name="pending_payable">Valor Pendiente</string>
+    <string name="previous_month">Mes Anterior</string>
+    <string name="current_month">Mes Actual</string>
+    <string name="next_month">Siguiente Mes</string>
+    <string name="grace_period">Periodo Gracia</string>
+    <string  name="grace_period_saved">Periodo de gracia guardado sadisfactoriamente</string>
+    <string  name="grace_period_unsave">Periodo de gracia no fue guardado</string>
+    <string  name="delete_grace_period_saved">Periodo de gracia eliminado sadisfactoriamente</string>
+    <string  name="delete_grace_period_unsave">Periodo de gracia no fue eliminado</string>
+    <string name="differ_installment">Diferir el Capital Restante</string>
+    <string name="not_save_differ_installment">No se logro diferir la cuota</string>
+    <string name="not_save_new_quote_differ_installment">No se logro crear el nuevo registro de la cuota diferida</string>
+    <string name="not_update_old_quote_differ_installment">No se logro actualizar el registro a diferir cuota</string>
+    <string name="save_differ_installment">Cuota Diferida agregada</string>
 
 </resources>

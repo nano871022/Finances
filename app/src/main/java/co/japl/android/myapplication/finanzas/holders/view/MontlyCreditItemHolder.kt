@@ -11,9 +11,12 @@ import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import co.japl.android.myapplication.R
 import co.japl.android.myapplication.bussiness.DB.connections.ConnectDB
+import co.japl.android.myapplication.bussiness.interfaces.SaveSvc
 import co.japl.android.myapplication.finanzas.bussiness.DTO.AdditionalCreditDTO
 import co.japl.android.myapplication.finanzas.bussiness.DTO.CreditDTO
+import co.japl.android.myapplication.finanzas.bussiness.DTO.GracePeriodDTO
 import co.japl.android.myapplication.finanzas.bussiness.impl.AdditionalCreditImpl
+import co.japl.android.myapplication.finanzas.bussiness.impl.GracePeriodImpl
 import co.japl.android.myapplication.finanzas.enums.MoreOptionalItemsCredit
 import co.japl.android.myapplication.finanzas.enums.MoreOptionsItemsCreditCard
 import co.japl.android.myapplication.utils.DateUtils
@@ -26,6 +29,7 @@ import java.time.LocalDate
 
 class MonthlyCreditItemHolder(val view:View): ViewHolder(view) {
     val additionalSvc = AdditionalCreditImpl(ConnectDB(view.context))
+    val gracePeriodSvc = GracePeriodImpl(ConnectDB(view.context))
     lateinit var date:TextView
     lateinit var name:TextView
     lateinit var value: TextView
@@ -45,18 +49,28 @@ class MonthlyCreditItemHolder(val view:View): ViewHolder(view) {
 
     @RequiresApi(Build.VERSION_CODES.O)
     fun setField(value:CreditDTO, callback:(MoreOptionalItemsCredit)->Unit){
-        val additional = additionalSvc
+        val gracePeriod = gracePeriodSvc.get(value.id, LocalDate.now())
+        val additional = if(!gracePeriod.isPresent)additionalSvc
             .get(getAdditional(value.id.toLong()))
             .map { it.value }
             .reduceOrNull { acc, bigDecimal -> acc + bigDecimal } ?: BigDecimal.ZERO
+        else BigDecimal.ZERO
         date.text = DateUtils.localDateToString(value.date)
         name.text = value.name
         this.value.text = NumbersUtil.toString(value.quoteValue + additional)
         val builder = AlertDialog.Builder(itemView.context)
+        var itemsCredit = items
+        if(gracePeriod.isPresent){
+            itemsCredit = items.filterIndexed{ index,_-> index != MoreOptionalItemsCredit.GRACE_PERIOD.i }.toTypedArray()
+        }else{
+            itemsCredit = items.filterIndexed{ index,_-> index != MoreOptionalItemsCredit.DELETE_GRACE_PERIOD.i }.toTypedArray()
+        }
         builder.apply {
             setTitle(view.resources.getString(R.string.pick_option))
-            setItems(items) { dialog, which ->
-                callback.invoke(MoreOptionalItemsCredit.values().find { it.i == which }!!)
+            setItems(itemsCredit) { _, which ->
+                val selected = itemsCredit[which]
+                val index = items.indexOf(selected)
+                callback.invoke(MoreOptionalItemsCredit.values().find { it.i == index }!!)
             }
         }
         more.setOnClickListener {

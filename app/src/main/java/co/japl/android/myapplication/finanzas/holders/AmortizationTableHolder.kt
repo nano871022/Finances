@@ -12,6 +12,7 @@ import co.japl.android.myapplication.R
 import co.japl.android.myapplication.bussiness.DTO.CalcDTO
 import co.japl.android.myapplication.bussiness.DTO.CreditCardDTO
 import co.japl.android.myapplication.finanzas.bussiness.DTO.Amortization
+import co.japl.android.myapplication.finanzas.bussiness.DTO.DifferInstallmentDTO
 import co.japl.android.myapplication.finanzas.bussiness.impl.KindOfTaxImpl
 import co.japl.android.myapplication.finanzas.bussiness.interfaces.IKindOfTaxSvc
 import co.japl.android.myapplication.finanzas.holders.interfaces.ITableHolder
@@ -42,8 +43,10 @@ class AmortizationTableHolder(val view:View): ITableHolder<CalcDTO> {
     private lateinit var progressBar:ProgressBar
     private var quotesPaid:Long = 0
     private var quote1NotPaid:Boolean = false
+    private var differInstallment:DifferInstallmentDTO? = null
     private val colorPaid = view.resources.getColor(androidx.media.R.color.primary_text_default_material_dark)
     private val backgroun = view.resources.getColor(R.color.green_background)
+    private var monthsCalc:Long? = null
 
 
     override fun setup(actions: View.OnClickListener?) {
@@ -85,6 +88,12 @@ class AmortizationTableHolder(val view:View): ITableHolder<CalcDTO> {
         if(name == "quote1NotPaid"){
             quote1NotPaid = value as Boolean
         }
+        if(name == "differInstallment"){
+            differInstallment = value as DifferInstallmentDTO
+        }
+        if(name == "monthsCalc"){
+            monthsCalc = value as Long
+        }
     }
 
     override fun create() {
@@ -121,11 +130,23 @@ class AmortizationTableHolder(val view:View): ITableHolder<CalcDTO> {
     private fun quoteVariableCalc(){
         Log.d(javaClass.name,"Quote Variable")
         var currentCreditValue = creditData.valueCredit
-        val periods = creditData.period
-        val capital = currentCreditValue.toDouble() / periods
+        val periods:Long = differInstallment?.let{
+                it.oldInstallment.toLong()
+            }?:creditData.period
+
+        var capital = differInstallment?.let{
+                (it.originValue / it.oldInstallment)
+            }?:(currentCreditValue.toDouble() / periods)
+
         Log.d(javaClass.name,"$capital = $currentCreditValue / $periods")
         val tax = getTax()
         for ( period in 1 .. creditData.period){
+
+            differInstallment?.takeIf { ((creditData.period - it.newInstallment.toLong()) + 1) == period }
+                ?.let {
+                   capital = it.pendingValuePayable / it.newInstallment
+                }
+
             val interest = if(quote1NotPaid && period == 1L){
                 BigDecimal.ZERO
             }else if(quote1NotPaid && period == 2L){
@@ -142,6 +163,9 @@ class AmortizationTableHolder(val view:View): ITableHolder<CalcDTO> {
             currentCreditValue -=  capital.toBigDecimal()
             interesToPay += interest
             Log.d(javaClass.name,"${amortizationList.size} $currentCreditValue $capital (${creditData.valueCredit} / ${creditData.period}) $interest - $tax - ${creditData.interest}")
+            if(periods > monthsCalc!! && monthsCalc == period && differInstallment == null){
+                break
+            }
         }
         capitalValue.text = NumbersUtil.toString(creditData.capitalValue)
         capitalValueLayout.visibility = View.VISIBLE

@@ -1,9 +1,11 @@
 package co.japl.android.myapplication.finanzas.holders
 
 import android.util.Log
+import android.view.LayoutInflater
 import android.view.View
 import android.widget.ProgressBar
 import android.widget.TextView
+import androidx.navigation.NavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import co.japl.android.myapplication.R
@@ -12,7 +14,7 @@ import co.japl.android.myapplication.finanzas.bussiness.DTO.CreditDTO
 import co.japl.android.myapplication.finanzas.holders.interfaces.IListHolder
 import co.japl.android.myapplication.utils.NumbersUtil
 
-class MonthlyCreditListHolder(val root: View):IListHolder<MonthlyCreditListHolder,CreditDTO> {
+class MonthlyCreditListHolder(val root: View,val inflater: LayoutInflater,val navController: NavController):IListHolder<MonthlyCreditListHolder,CreditDTO> {
     private lateinit var recycler: RecyclerView
     private lateinit var totDebt: TextView
     private lateinit var totQuote: TextView
@@ -34,7 +36,7 @@ class MonthlyCreditListHolder(val root: View):IListHolder<MonthlyCreditListHolde
         val totalQuote = list.sumOf { it.quoteValue }
         val numCredits = list.count()
 
-        ListMonthlyCreditAdapter(list,root).let {
+        ListMonthlyCreditAdapter(list,root,inflater, navController).let {
             recycler.adapter = it
         }
 

@@ -10,10 +10,10 @@ interface ICreditFix: SaveSvc<CreditDTO>, ISaveSvc<CreditDTO> {
 
     fun getInterestAll(date:LocalDate):BigDecimal
     fun getCapitalAll(date:LocalDate):BigDecimal
-    fun getQuoteAll():BigDecimal
+    fun getQuoteAll(date: LocalDate):BigDecimal
     fun getPendingToPayAll(date:LocalDate):BigDecimal
-    fun getAdditionalAll():BigDecimal
+    fun getAdditionalAll(date:LocalDate):BigDecimal
     fun getPeriods():List<PeriodCreditDTO>
-    fun getTotalQuote():BigDecimal
+    fun getTotalQuote(date: LocalDate):BigDecimal
 
 }
