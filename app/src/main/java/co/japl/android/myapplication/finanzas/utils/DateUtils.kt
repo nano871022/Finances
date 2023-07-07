@@ -20,14 +20,22 @@ class DateUtils {
 
         @RequiresApi(Build.VERSION_CODES.O)
         fun toLocalDateTime(value: String,default:LocalDateTime): LocalDateTime {
-            if(value == "" || value == null){
+            if(value.isBlank()){
                 return default
             }
-            val date = value.split("/")
-            if(date.size <= 1){
-                return default
+            if(value.contains("/")) {
+                val date = value.split("/")
+                if (date.size <= 1) {
+                    return default
+                }
+                return LocalDateTime.of(date[2].toInt(), date[1].toInt(), date[0].toInt(), 0, 0, 0)
+            }else{
+                val date = value.split("-")
+                if (date.size <= 1) {
+                    return default
+                }
+                return LocalDateTime.of(date[0].toInt(),date[1].toInt(),date[1].toInt(),23,59,59,999)
             }
-            return LocalDateTime.of(date[2].toInt(), date[1].toInt(), date[0].toInt(), 0, 0, 0)
         }
 
 

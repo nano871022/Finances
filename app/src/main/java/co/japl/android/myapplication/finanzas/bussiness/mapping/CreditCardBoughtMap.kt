@@ -25,7 +25,7 @@ class CreditCardBoughtMap {
             quote.boughtDate!!,
             quote.cutOutDate!!,
             LocalDateTime.now(),
-            quote.boughtDate!!.plusMonths(quote.month!!.toLong()),
+            LocalDateTime.of(9999,12,31,23,59,59,999),
             0,
             0,
             quote.kind!!,
@@ -39,14 +39,14 @@ class CreditCardBoughtMap {
             put(CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_BOUGHT_DATE,DateUtils.localDateTimeToString(dto.boughtDate))
             put(CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_INTEREST,dto.interest)
             put(CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_MONTH,dto.month)
-            put(CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_CREATE_DATE,DateUtils.localDateTimeToString(dto.createDate))
+            put(CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_CREATE_DATE,DateUtils.localDateTimeToStringDate(dto.createDate))
             put(CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_NAME_ITEM,dto.nameItem)
             put(CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_VALUE_ITEM,dto.valueItem.toDouble())
-            put(CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_CUT_OUT_DATE,DateUtils.localDateTimeToString(dto.cutOutDate))
+            put(CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_CUT_OUT_DATE,DateUtils.localDateTimeToStringDate(dto.cutOutDate))
             put(CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_RECURRENT,dto.recurrent)
             put(CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_KIND,dto.kind)
             put(CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_KIND_OF_TAX,dto.kindOfTax)
-            put(CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_END_DATE,DateUtils.localDateTimeToString(dto.endDate))
+            put(CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_END_DATE,DateUtils.localDateTimeToStringDate(dto.endDate))
         }
     }
 
@@ -57,9 +57,9 @@ class CreditCardBoughtMap {
         val etProductValue = cursor.getString(3).toBigDecimal()
         val etTax = cursor.getDouble(4)
         val etMonths = cursor.getInt(5)
-        val boughtDate = DateUtils.toLocalDateTime( cursor.getString(6))
-        val cutOffDate = DateUtils.toLocalDateTime(cursor.getString(7))
-        val createDate = DateUtils.toLocalDateTime(cursor.getString(8))
+        val boughtDate = DateUtils.toLocalDateTime( cursor.getString(6),LocalDateTime.of(9999,12,31,23,59,59))
+        val cutOffDate = DateUtils.toLocalDateTime(cursor.getString(7),LocalDateTime.of(9999,12,31,23,59,59))
+        val createDate = DateUtils.toLocalDateTime(cursor.getString(8),LocalDateTime.of(9999,12,31,23,59,59))
         val endDate = DateUtils.toLocalDateTime(cursor.getString(12),LocalDateTime.of(9999,12,31,23,59,59))
         val recurrent = cursor.getShort(9)
         val kind = cursor.getShort(10)
