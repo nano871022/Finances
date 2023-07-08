@@ -2,11 +2,16 @@ package co.japl.android.myapplication.finanzas.holders
 
 import android.app.AlertDialog
 import android.os.Build
+import android.os.Handler
+import android.os.Looper
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.View
 import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.annotation.RequiresApi
+import androidx.core.widget.addTextChangedListener
 import co.japl.android.myapplication.R
 import co.japl.android.myapplication.finanzas.holders.interfaces.IHolder
 import co.japl.android.myapplication.finanzas.holders.validations.*
@@ -41,11 +46,21 @@ class QuoteCreditHolder(var container:View): IHolder<QuoteCreditCard> {
         btnAmortization = container.findViewById(R.id.btnAmortizationQCF)
         kindOfTax = container.findViewById(R.id.etKindOfTax)
         btnSave  = container.findViewById(R.id.btnSave)
-        etValueCredit.setOnFocusChangeListener{ _,focus->
-            if(!focus && etValueCredit.text?.isNotBlank() == true){
-                etValueCredit.setText(NumbersUtil.toString(etValueCredit))
+        etValueCredit.addTextChangedListener(object:TextWatcher{
+            private val handler = Handler(Looper.getMainLooper())
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+            override fun afterTextChanged(p0: Editable?) {
+                handler.removeCallbacksAndMessages(null)
+                handler.postDelayed({
+                    etValueCredit.removeTextChangedListener(this)
+                    if(etValueCredit.text?.isNotBlank() == true){
+                        etValueCredit.setText(NumbersUtil.toString(etValueCredit))
+                    }
+                    etValueCredit.addTextChangedListener(this)
+                },1000)
             }
-        }
+        })
         val currencyFormat = NumberFormat.getCurrencyInstance()
         currencyFormat.maximumFractionDigits = 2
 

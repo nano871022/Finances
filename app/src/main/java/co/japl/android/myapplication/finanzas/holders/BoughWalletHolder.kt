@@ -1,11 +1,16 @@
 package co.japl.android.myapplication.finanzas.holders
-
+import co.japl.android.myapplication.finanzas.holders.validations.*
 import android.os.Build
+import android.os.Handler
+import android.os.Looper
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.TextView
 import androidx.annotation.RequiresApi
+import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.FragmentManager
 import co.japl.android.myapplication.R
 import co.japl.android.myapplication.bussiness.DTO.CreditCardBought
@@ -20,7 +25,7 @@ import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 
-class BoughWalletHolder(var view:View,val manager:FragmentManager, var caller: (value: BigDecimal, date:LocalDateTime) -> CreditCardBought) : IHolder<CreditCardBought>, View.OnClickListener, View.OnFocusChangeListener{
+class BoughWalletHolder(var view:View,val manager:FragmentManager, var caller: (value: BigDecimal, date:LocalDateTime) -> CreditCardBought) : IHolder<CreditCardBought>, View.OnClickListener{
     lateinit var creditCardName:TextView
     lateinit var date:TextInputEditText
     lateinit var productName: TextInputEditText
@@ -57,8 +62,27 @@ class BoughWalletHolder(var view:View,val manager:FragmentManager, var caller: (
             date.setText(dateSelected.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")))
         }
 
-        productName.onFocusChangeListener = this
-        productValue.onFocusChangeListener = this
+        productValue.addTextChangedListener (object: TextWatcher {
+            private val handler = Handler(Looper.getMainLooper())
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+            override fun afterTextChanged(s:Editable?) {
+                handler.removeCallbacksAndMessages(null)
+                handler.postDelayed({
+                    productValue.removeTextChangedListener(this)
+                    productValue.setText(NumbersUtil.toString(productValue))
+                    if(validate()){
+                        caller.let{
+                            val values = downLoadFields()
+                            it.invoke(values.valueItem!!,values.boughtDate!!).apply {
+                                loadFields(this).also {save.visibility = View.VISIBLE}
+                            }
+                        }
+                    }
+                    productValue.addTextChangedListener (this)
+                },600)
+            }
+        })
 
         save.visibility = View.INVISIBLE
     }
@@ -106,45 +130,21 @@ class BoughWalletHolder(var view:View,val manager:FragmentManager, var caller: (
         month.text = view.resources.getText(R.string.months_number_hint)
         quoteValue.text = view.resources.getText(R.string.money_hint)
     }
+    private val validations by lazy{
+        arrayOf(
+            date set R.string.date_is_not_setting `when` { text().isEmpty()},
+            productValue set R.string.value_product_is_not_setting `when` {text().isEmpty()},
+            productName set R.string.name_product_is_not_setting `when` {text().isEmpty()}
 
+        )
+    }
     override fun validate(): Boolean {
         var valid = true
-        if(date.editableText.isEmpty()){
-            date.error = "La fecha debe estar configurada"
-            valid = false
-        }
-        if(productValue.editableText.isEmpty()){
-            productValue.error = "El valor del producto  de estar configurado"
-            valid = false
-        }
-        if(productName.editableText.isEmpty()){
-            productName.error = "El nombre del producto debe estar codnifgurado"
-            valid = false
-        }
+        validations.firstInvalid { requestFocus() }.notNull { valid = true }
         return valid
     }
 
     override fun onClick(p0: View?) {
         cleanField()
-    }
-
-    @RequiresApi(Build.VERSION_CODES.O)
-    override fun onFocusChange(view: View?, focus: Boolean) {
-        if(!focus) {
-            when (view?.id) {
-                R.id.etProductValueBWCC -> productValue.setText(NumbersUtil.toString(productValue))
-            }
-        }
-
-        if(validate()){
-            caller.let{
-                val values = downLoadFields()
-                it.invoke(values.valueItem!!,values.boughtDate!!).apply {
-                    loadFields(this).also {
-                        save.visibility = View.VISIBLE
-                    }
-                }
-            }
-        }
     }
 }

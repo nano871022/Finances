@@ -126,14 +126,12 @@ class DateUtils {
 
         @RequiresApi(Build.VERSION_CODES.O)
         fun startDateFromCutoff(cutOffDay:Short,cutOff:LocalDateTime):LocalDateTime{
-            var dayIncrease:Long = 1
             var day = cutOff.dayOfMonth
             val month = cutOff.month
             if(month == Month.FEBRUARY && cutOffDay > 28 && cutOffDay < 31){
                 day = cutOffDay.toInt()
             }else if(cutOffDay.toInt() == 31){
                 day = cutOffDay - 1
-                dayIncrease = 2
             }
             if(month == Month.MARCH && day.toInt() == 30){
                 day = 28
@@ -144,7 +142,7 @@ class DateUtils {
                  start.plusMonths(1)
             }else{
                  cutOff.minusMonths(1).plusDays(1)
-            }.also { Log.d(javaClass.name,"<<<=== FINISH:startDateFromCutoff Response: $it Month: $month Cutoff Day: $cutOffDay Day: $day CutOff: $cutOff") }
+            }.also { Log.d(this::class.java.name,"<<<=== FINISH:startDateFromCutoff Response: $it Month: $month Cutoff Day: $cutOffDay Day: $day CutOff: $cutOff") }
         }
 
         @RequiresApi(Build.VERSION_CODES.O)

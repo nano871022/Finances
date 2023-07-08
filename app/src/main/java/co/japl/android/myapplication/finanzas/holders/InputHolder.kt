@@ -2,8 +2,13 @@ package co.japl.android.myapplication.finanzas.holders
 import android.app.AlertDialog
 import co.japl.android.myapplication.finanzas.holders.validations.*
 import android.os.Build
+import android.os.Handler
+import android.os.Looper
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.View
 import androidx.annotation.RequiresApi
+import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.FragmentManager
 import co.japl.android.myapplication.R
 import co.japl.android.myapplication.finanzas.holders.interfaces.IHolder
@@ -88,11 +93,19 @@ class InputHolder(val view:View,val supportManager: FragmentManager): IHolder<In
     }
 
     private fun valueFormat(){
-        value.setOnFocusChangeListener { _,focus ->
-            if(!focus) {
-                value.setCOPtoField()
+        value.addTextChangedListener (object:TextWatcher{
+            private val handler = Handler(Looper.getMainLooper())
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+            override fun afterTextChanged(p0: Editable?) {
+                handler.removeCallbacksAndMessages(null)
+                handler.postDelayed({
+                    value.removeTextChangedListener(this)
+                    value.setCOPtoField()
+                    value.addTextChangedListener (this)
+                },1000)
             }
-        }
+        })
     }
 
     private fun dialog(){

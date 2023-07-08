@@ -4,10 +4,15 @@ import co.japl.android.myapplication.finanzas.holders.validations.*
 import android.app.AlertDialog
 import android.graphics.Color
 import android.os.Build
+import android.os.Handler
+import android.os.Looper
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
 import android.view.View
 import android.widget.*
 import androidx.annotation.RequiresApi
+import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.FragmentManager
 import co.japl.android.myapplication.R
 import co.japl.android.myapplication.bussiness.DB.connections.ConnectDB
@@ -74,6 +79,8 @@ class QuoteBoughtHolder(var root:View, val supportManager:FragmentManager) : IHo
     private lateinit var buyCCSDTO:Optional<BuyCreditCardSettingDTO>
     private lateinit var cCSettingList:List<CreditCardSettingDTO>
     private val itemDefaultSelected = root.resources?.getString(R.string.item_select)
+    private val delayed = 600L
+    private val delayedEdit = 1000L
 
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -107,16 +114,44 @@ class QuoteBoughtHolder(var root:View, val supportManager:FragmentManager) : IHo
 
         spTypeSetting.isFocusable = false
         spNameSetting.isFocusable = false
-
-        etProductName.setOnFocusChangeListener { _, b -> !b and validate() && calc() }
-        etProductValue.setOnFocusChangeListener { _, b -> !b and validate() && calc() }
-        etMonths.setOnFocusChangeListener { _, b -> !b and validate() && calc() }
-        etProductValue.setOnFocusChangeListener{_,focus->
-            if(!focus && etProductName.text?.isNotBlank() == true){
-                etProductValue.setText(NumbersUtil.toString(etProductValue))
-            }
+        val handlerProduct = Handler(Looper.getMainLooper())
+        etProductName.addTextChangedListener  {
+            handlerProduct.removeCallbacksAndMessages(null)
+            handlerProduct.postDelayed({
+                validate() && calc()
+            },delayed)
         }
+        val handlerValue = Handler(Looper.getMainLooper())
+        val handlerValueFormatter = Handler(Looper.getMainLooper())
+        etProductValue.addTextChangedListener  (object:TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+            }
 
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                handlerValue.removeCallbacksAndMessages(null)
+                handlerValue.postDelayed({
+                    validate() && calc()
+                }, delayed)
+            }
+
+            override fun afterTextChanged(s: Editable?) {
+                handlerValueFormatter.removeCallbacksAndMessages(null)
+                handlerValueFormatter.postDelayed({
+                if (s?.isNotBlank() == true) {
+                    etProductValue.removeTextChangedListener(this)
+                    etProductValue.setText(NumbersUtil.toString(etProductValue))
+                    etProductValue.addTextChangedListener (this)
+                }
+                },delayedEdit)
+            }
+        })
+        val handlerMonths = Handler(Looper.getMainLooper())
+        etMonths.addTextChangedListener {
+            handlerMonths.removeCallbacksAndMessages(null)
+            handlerMonths.postDelayed({
+                validate() && calc()
+            },delayed)
+        }
     }
 
     private fun onClick(actions: View.OnClickListener?){
