@@ -350,5 +350,18 @@
     <string name="not_save_new_quote_differ_installment">No se logro crear el nuevo registro de la cuota diferida</string>
     <string name="not_update_old_quote_differ_installment">No se logro actualizar el registro a diferir cuota</string>
     <string name="save_differ_installment">Cuota Diferida agregada</string>
-
+    <string name="name_or_product_is_empty">El nombre del producto o tienda esta vacia</string>
+    <string name="value_is_empty">El  valor esta vacia</string>
+    <string name="interest_is_empty">El tasa es vacia</string>
+    <string name="months_is_empty">El mes esta vacio</string>
+    <string name="months_invalids">La cantidad de meses es invalido, debe ser entre 1 y 72</string>
+    <string name="bought_date_is_empty">La fecha se encuentra vacia</string>
+    <string name="bought_year_invalid">El año es invalido entre 2010 hasta el actual año en curso</string>
+    <string name="bought_month_invalid">Mes ingresado es invalido entre 01-12</string>
+    <string name="bought_day_invalid">El dia ingresado no es valido entre 01-31</string>
+    <string name="name_credit_card_is_empty">El campo nombre de Tarjeta de Credito esta vacia</string>
+    <string name="cutoffday_value_invalid">Valor del dia de corte es invalido</string>
+    <string name="date_is_not_setting">Fecha no esta configurada</string>
+    <string name="value_product_is_not_setting">Valor del producto no esta configurada</string>
+    <string name="name_product_is_not_setting">El nombre del producto no esta configurada</string>
 </resources>

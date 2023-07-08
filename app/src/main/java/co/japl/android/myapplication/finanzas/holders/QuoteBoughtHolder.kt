@@ -1,12 +1,18 @@
 package co.japl.android.myapplication.finanzas.holders
+import co.japl.android.myapplication.finanzas.holders.validations.*
 
 import android.app.AlertDialog
 import android.graphics.Color
 import android.os.Build
+import android.os.Handler
+import android.os.Looper
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
 import android.view.View
 import android.widget.*
 import androidx.annotation.RequiresApi
+import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.FragmentManager
 import co.japl.android.myapplication.R
 import co.japl.android.myapplication.bussiness.DB.connections.ConnectDB
@@ -39,7 +45,8 @@ import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.util.*
 
-class QuoteBoughtHolder(var root:View,val supportManager:FragmentManager) : IHolder<CreditCardBoughtDTO>,
+@RequiresApi(Build.VERSION_CODES.O)
+class QuoteBoughtHolder(var root:View, val supportManager:FragmentManager) : IHolder<CreditCardBoughtDTO>,
     ISpinnerHolder<QuoteBoughtHolder> {
     lateinit var etProductName: TextInputEditText
     lateinit var etProductValue: TextInputEditText
@@ -72,6 +79,8 @@ class QuoteBoughtHolder(var root:View,val supportManager:FragmentManager) : IHol
     private lateinit var buyCCSDTO:Optional<BuyCreditCardSettingDTO>
     private lateinit var cCSettingList:List<CreditCardSettingDTO>
     private val itemDefaultSelected = root.resources?.getString(R.string.item_select)
+    private val delayed = 600L
+    private val delayedEdit = 1000L
 
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -105,16 +114,44 @@ class QuoteBoughtHolder(var root:View,val supportManager:FragmentManager) : IHol
 
         spTypeSetting.isFocusable = false
         spNameSetting.isFocusable = false
-
-        etProductName.setOnFocusChangeListener { _, b -> !b and validate() && calc() }
-        etProductValue.setOnFocusChangeListener { _, b -> !b and validate() && calc() }
-        etMonths.setOnFocusChangeListener { _, b -> !b and validate() && calc() }
-        etProductValue.setOnFocusChangeListener{_,focus->
-            if(!focus && etProductName.text?.isNotBlank() == true){
-                etProductValue.setText(NumbersUtil.toString(etProductValue))
-            }
+        val handlerProduct = Handler(Looper.getMainLooper())
+        etProductName.addTextChangedListener  {
+            handlerProduct.removeCallbacksAndMessages(null)
+            handlerProduct.postDelayed({
+                validate() && calc()
+            },delayed)
         }
+        val handlerValue = Handler(Looper.getMainLooper())
+        val handlerValueFormatter = Handler(Looper.getMainLooper())
+        etProductValue.addTextChangedListener  (object:TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+            }
 
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                handlerValue.removeCallbacksAndMessages(null)
+                handlerValue.postDelayed({
+                    validate() && calc()
+                }, delayed)
+            }
+
+            override fun afterTextChanged(s: Editable?) {
+                handlerValueFormatter.removeCallbacksAndMessages(null)
+                handlerValueFormatter.postDelayed({
+                if (s?.isNotBlank() == true) {
+                    etProductValue.removeTextChangedListener(this)
+                    etProductValue.setText(NumbersUtil.toString(etProductValue))
+                    etProductValue.addTextChangedListener (this)
+                }
+                },delayedEdit)
+            }
+        })
+        val handlerMonths = Handler(Looper.getMainLooper())
+        etMonths.addTextChangedListener {
+            handlerMonths.removeCallbacksAndMessages(null)
+            handlerMonths.postDelayed({
+                validate() && calc()
+            },delayed)
+        }
     }
 
     private fun onClick(actions: View.OnClickListener?){
@@ -249,48 +286,29 @@ class QuoteBoughtHolder(var root:View,val supportManager:FragmentManager) : IHol
         }
     }
 
+    private val validations by lazy{
+        arrayOf(
+            etProductName set R.string.name_or_product_is_empty `when` { text().isBlank()}
+            , etProductValue set R.string.value_is_empty `when` { text().isBlank()}
+            , etMonths set R.string.months_is_empty `when` { text().isBlank()}
+            , etMonths set R.string.months_invalids `when` { text().isNotBlank() && (text().toLong() <= 0L || text().toLong() > 72L)}
+            , dtBought set R.string.bought_date_is_empty `when` { text().isBlank()}
+            , dtBought set R.string.bought_year_invalid `when` { text().isNotBlank() && (text().split("/")[2].toInt() < 2010 || text().split("/")[2].toInt() > LocalDateTime.now().year)}
+            , dtBought set R.string.bought_month_invalid `when` { text().isNotBlank() && (text().split("/")[1].toInt() < 1 || text().split("/")[1].toInt() > 12)}
+            , dtBought set R.string.bought_day_invalid `when` { text().isNotBlank() && (text().split("/")[0].toInt() < 1 || text().split("/")[0].toInt() > 31)}
+        )
+    }
+
     @RequiresApi(Build.VERSION_CODES.O)
     override fun validate(): Boolean {
         var valid: Boolean = true
-        if (etProductName.text?.isBlank() == true) {
-            valid = false
-            etProductName.error = ("El nombre del producto o tienda esta vacia")
-        }
-        if (etProductValue.text?.isBlank() == true) {
-            valid = false
-            etProductValue.error = ("El  valor esta vacia")
-        }
+        validations.firstInvalid{requestFocus()}.notNull { valid = true }
+
         if (etTax.text.isBlank()) {
             valid = false
             etTax.error = ("El tasa es vacia")
         }
-        if (etMonths.text?.isBlank() == true) {
-            valid = false
-            etMonths.error = "El mes es vacio"
-        }
 
-        if (etMonths.text?.isNotBlank() == true && (etMonths.text.toString().toLong() <= 0L || etMonths.text.toString().toLong() > 72L)) {
-            valid = false
-            etMonths.error = ("La cantidad de meses es invalido, debe ser entre 1 y 72")
-        }
-        if(dtBought.text?.isBlank() == true){
-            valid = false
-            dtBought.error = ("La fecha se encuentra vacia")
-        }
-        val bought = dtBought.text.toString()
-        val date = bought.split("/")
-        if(date[2].toInt() < 2010 || date[2].toInt() > LocalDateTime.now().year){
-            valid =  false
-            dtBought.error = ("El año es invalido entre 2010 hasta el actual año en curso")
-        }
-        if(date[1].toInt()  < 1 || date[1].toInt() > 12){
-            valid =  false
-            dtBought.error = ("Mes ingresado es invalido entre 01-12")
-        }
-        if(date[0].toInt() < 1 || date[0].toInt() > 31){
-            valid = false
-            dtBought.error = ("El dia ingresado no es valido entre 01-31")
-        }
         val defaultSelectItem = root.resources.getString(R.string.item_select)
         if(spTypeSetting.text.toString() != defaultSelectItem && spNameSetting.text.toString() == defaultSelectItem){
             valid =  false
@@ -357,12 +375,7 @@ class QuoteBoughtHolder(var root:View,val supportManager:FragmentManager) : IHol
 
     @RequiresApi(Build.VERSION_CODES.O)
     private fun map():CreditCardBoughtDTO{
-
-        val endDate = if(chRecurrent.isChecked){
-            LocalDateTime.of(9999,12,31,23,59,59)
-        }else{
-            cutOffDate.plusMonths(etMonths.text.toString().toLong()).plusDays(1)
-        }
+        val endDate = LocalDateTime.of(9999,12,31,23,59,59)
         return CreditCardBoughtDTO(
             creditCardCode.get(),
             creditCardName,
@@ -374,7 +387,7 @@ class QuoteBoughtHolder(var root:View,val supportManager:FragmentManager) : IHol
             cutOffDate,
             LocalDateTime.now(),
             endDate,
-            creditCardBought.id ?: 0,
+            creditCardBought?.id ?: 0,
             if (chRecurrent.isChecked) 1 else 0,
             KindBoughtEnum.BOUGHT.kind,
             creditCardBought.kindOfTax)

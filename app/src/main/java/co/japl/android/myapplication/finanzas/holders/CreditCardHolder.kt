@@ -1,10 +1,15 @@
 package co.japl.android.myapplication.holders
-
+import co.japl.android.myapplication.finanzas.holders.validations.*
 import android.os.Build
+import android.os.Handler
+import android.os.Looper
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.View
 import android.widget.Button
 import android.widget.ToggleButton
 import androidx.annotation.RequiresApi
+import androidx.core.widget.addTextChangedListener
 import co.japl.android.myapplication.R
 import co.japl.android.myapplication.bussiness.DTO.CreditCardDTO
 import co.japl.android.myapplication.finanzas.holders.interfaces.IHolder
@@ -28,6 +33,11 @@ class CreditCardHolder(var view:View) : IHolder<CreditCardDTO> {
     lateinit var clear:Button
     lateinit var setting:Button
     private lateinit var id:Optional<Int>
+    private val validations by lazy{ arrayOf(
+        name set  R.string.name_credit_card_is_empty  `when` { text().isNotBlank() },
+        cutOffDay set  R.string.cutoffday_value_invalid  `when` { text().isNotBlank() && text().toShort() >= 1 || text().toShort() <= 31 },
+        warningQuote set  R.string.name_credit_card_is_empty  `when` { text().isNotBlank() && text().toBigDecimal() >= BigDecimal.ONE }
+    )}
 
     @RequiresApi(Build.VERSION_CODES.N)
     override fun setFields(action: View.OnClickListener?) {
@@ -44,16 +54,34 @@ class CreditCardHolder(var view:View) : IHolder<CreditCardDTO> {
         status.isChecked = true
         interest1Quote.isChecked = false
         interest1NotQuote.isChecked = false
+        onClick(action)
+        id = Optional.empty()
+        setting.visibility = View.INVISIBLE
+        onFocus()
+    }
+
+    private fun onClick(action: View.OnClickListener?){
         save.setOnClickListener(action)
         clear.setOnClickListener(action)
         setting.setOnClickListener(action)
-        id = Optional.empty()
-        setting.visibility = View.INVISIBLE
-        warningQuote.setOnFocusChangeListener{_,focus->
-            if(!focus && warningQuote.text?.isNotBlank() == true){
-                warningQuote.setText(NumbersUtil.toString(warningQuote))
+    }
+
+    private fun onFocus(){
+        warningQuote.addTextChangedListener(object: TextWatcher{
+            private val handler = Handler(Looper.getMainLooper())
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+            override fun afterTextChanged(p0: Editable?) {
+                handler.removeCallbacksAndMessages(null)
+                handler.postDelayed({
+                    if(warningQuote.text?.isNotBlank() == true){
+                        warningQuote.removeTextChangedListener(this)
+                        warningQuote.setText(NumbersUtil.toString(warningQuote))
+                        warningQuote.addTextChangedListener (this)
+                    }
+                },1000)
             }
-        }
+        })
     }
 
     @RequiresApi(Build.VERSION_CODES.N)
@@ -94,20 +122,8 @@ class CreditCardHolder(var view:View) : IHolder<CreditCardDTO> {
     }
 
     override fun validate(): Boolean {
-        var valid = true
-        if(name.text.toString().isBlank()){
-            name.error = "Fill field with name of credit card"
-            valid = valid and false
-        }
-        if(cutOffDay.text.toString().isBlank() || cutOffDay.text.toString().toShort() < 1 || cutOffDay.text.toString().toShort() > 31 ){
-            cutOffDay.error = "Invalid value permit values 1-31"
-            valid = valid and false
-        }
-
-        if(warningQuote?.text.toString().isNotBlank() && warningQuote?.text.toString().replace(",","").toBigDecimal() < BigDecimal(1)){
-            warningQuote.error = "Invalid value, it should be higher of 0 (Zero)"
-            valid = valid and false
-        }
+        var valid = false
+        validations.firstInvalid{requestFocus()}.notNull { valid = true }
         return valid
     }
 

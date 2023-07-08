@@ -2,6 +2,9 @@ package co.japl.android.myapplication.finanzas.adapter
 import co.japl.android.myapplication.finanzas.holders.validations.COPtoBigDecimal
 import android.app.AlertDialog
 import android.os.Build
+import android.os.Handler
+import android.os.Looper
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,6 +12,7 @@ import android.widget.EditText
 import android.widget.RadioButton
 import android.widget.RadioGroup
 import androidx.annotation.RequiresApi
+import androidx.core.widget.addTextChangedListener
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
@@ -125,8 +129,10 @@ class ListMonthlyCreditAdapter(val data:MutableList<CreditDTO>,val view:View,val
             }
         }
         start.setText(DateUtils.localDateToString(LocalDate.now().withDayOfMonth(1)))
-        period.setOnFocusChangeListener { _, focus ->
-            if(!focus){
+        val handler = Handler(Looper.getMainLooper())
+        period.addTextChangedListener {
+            handler.removeCallbacksAndMessages(null)
+            handler.postDelayed({
                 val periods:Long = period.text.toString()?.toLong() ?: 0
                 option.findViewById<RadioButton>(option.checkedRadioButtonId)?.let{
                     when(it.id){
@@ -141,7 +147,7 @@ class ListMonthlyCreditAdapter(val data:MutableList<CreditDTO>,val view:View,val
                         }
                     }
                 }
-            }
+            },1000)
         }
 
         val dialog = AlertDialog.Builder(view.context)

@@ -2,9 +2,14 @@ package co.japl.android.myapplication.finanzas.holders
 
 import android.app.AlertDialog
 import android.os.Build
+import android.os.Handler
+import android.os.Looper
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.View
 import android.widget.TextView
 import androidx.annotation.RequiresApi
+import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.FragmentManager
 import co.japl.android.myapplication.R
 import co.japl.android.myapplication.finanzas.bussiness.DTO.ProjectionDTO
@@ -68,21 +73,34 @@ class ProjectionHolder(val view:View,val supportManager:FragmentManager): IHolde
     }
 
     private fun settingCOPField(){
-        value.setOnFocusChangeListener{ _ ,focus->
-            if(!focus) {
-                value.toMoneyFormat()
-                calculateQuote()
+        value.addTextChangedListener(object:TextWatcher{
+            private val handler = Handler(Looper.getMainLooper())
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+            override fun afterTextChanged(p0: Editable?) {
+                handler.removeCallbacksAndMessages(null)
+                handler.postDelayed({
+                    value.removeTextChangedListener(this)
+                    value.toMoneyFormat()
+                    calculateQuote()
+                    value.addTextChangedListener (this)
+                },1000)
             }
-        }
+        })
     }
 
     private fun calculateQuote(){
-        val value = value.COPtoBigDecimal()
-        val type = type.text()
-        val postType = list.indexOf(type)
-        val months = KindofProjectionEnum.values()[postType]
-        val quote = value / months.months.toBigDecimal()
-        this.quote.setText(NumbersUtil.COPtoString(quote))
+        if(validate()) {
+            val value = value.COPtoBigDecimal()
+            val type = type.text()
+            val postType = list.indexOf(type)
+            val list = KindofProjectionEnum.values()
+            val quote = list?.takeIf { it.size > postType }?.let {
+                val months = list[postType]
+                value / months.months.toBigDecimal()
+            } ?: BigDecimal.ZERO
+            this.quote.setText(NumbersUtil.COPtoString(quote))
+        }
     }
 
     private fun settingType(){

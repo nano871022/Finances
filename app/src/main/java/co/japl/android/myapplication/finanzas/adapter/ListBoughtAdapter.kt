@@ -3,12 +3,17 @@ package co.japl.android.myapplication.adapter
 import android.app.Activity
 import android.app.AlertDialog
 import android.os.Build
+import android.os.Handler
+import android.os.Looper
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
 import androidx.annotation.RequiresApi
+import androidx.core.widget.addTextChangedListener
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
@@ -259,12 +264,24 @@ class ListBoughtAdapter(private val data:MutableList<CreditCardBoughtDTO>,privat
         pending.setText(NumbersUtil.COPtoString(pendingValue.toDouble()))
         val period = inflater.findViewById<EditText>(R.id.et_period_ddi)
         val quoteCapital = inflater.findViewById<EditText>(R.id.tv_capital_quote_ddi)
-        period.setOnFocusChangeListener { _, focus ->
-            if(!focus){
-                val period = period.COPToBigDecimal().toLong()
-                quoteCapital.setText(NumbersUtil.COPtoString(pendingValue.toDouble() / period))
+        val handler = Handler(Looper.getMainLooper())
+        period.addTextChangedListener(object: TextWatcher {
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
             }
-        }
+
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+            }
+
+            override fun afterTextChanged(p0: Editable?) {
+                handler.removeCallbacksAndMessages(null)
+                handler.postDelayed({
+                    period.removeTextChangedListener(this)
+                    val periods = period.COPToBigDecimal().toLong()
+                    quoteCapital.setText(NumbersUtil.COPtoString(pendingValue.toDouble() / periods))
+                    period.addTextChangedListener(this)
+                },1000)
+            }
+        })
         val dialog = AlertDialog.Builder(view.context)
             .setTitle(R.string.differ_installment)
             .setView(inflater)

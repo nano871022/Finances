@@ -2,11 +2,16 @@ package co.japl.android.myapplication.finanzas.holders
 
 import android.app.AlertDialog
 import android.os.Build
+import android.os.Handler
+import android.os.Looper
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
 import android.view.View
 import android.view.View.OnClickListener
 import android.widget.*
 import androidx.annotation.RequiresApi
+import androidx.core.widget.addTextChangedListener
 import co.japl.android.myapplication.R
 import co.japl.android.myapplication.bussiness.impl.QuoteCreditVariable
 import co.japl.android.myapplication.bussiness.impl.QuoteCreditVariableInterestQuote
@@ -70,11 +75,21 @@ class QuoteCreditVariableHolder(var container: View): IHolder<QuoteCreditCard>,O
         spMonth.isFocusable = false
         quote = QuoteCreditCard()
         llCalculation.visibility=View.INVISIBLE
-        etValueCredit.setOnFocusChangeListener{ _,focus->
-            if(!focus && etValueCredit.text?.isNotBlank() == true){
-                etValueCredit.setText(NumbersUtil.toString(etValueCredit))
+        etValueCredit.addTextChangedListener(object:TextWatcher{
+            private val handler = Handler(Looper.getMainLooper())
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+            override fun afterTextChanged(p0: Editable?) {
+                handler.removeCallbacksAndMessages(null)
+                handler.postDelayed({
+                    if(p0?.isNotBlank() == true){
+                        etValueCredit.removeTextChangedListener(this)
+                        etValueCredit.setText(NumbersUtil.toString(etValueCredit))
+                        etValueCredit.addTextChangedListener(this)
+                    }
+                },1000)
             }
-        }
+        })
         btnAmortization.setOnClickListener(actions)
         spMonth.isFocusable = false
         onClick()

@@ -90,7 +90,8 @@ class SaveCreditCardBoughtImpl(override var dbConnect: SQLiteOpenHelper) :IQuote
     override fun getPeriods(creditCardId:Int):List<PeriodDTO>{
         Log.i(this.javaClass.name,"<<<=== START Get Periods")
         val db = dbConnect.readableDatabase
-        val cursor = db.query(CreditCardBoughtDB.CreditCardBoughtEntry.TABLE_NAME,COLUMNS_PERIOD,"str_code_credit_card = ?",
+        val cursor = db.query(CreditCardBoughtDB.CreditCardBoughtEntry.TABLE_NAME,COLUMNS_PERIOD
+            ,"${CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_CODE_CREDIT_CARD} = ?",
             arrayOf(creditCardId.toString()),null,null,null)
         val creditCardDto = creditCardSvc.get(creditCardId)
         val items = mutableListOf<PeriodDTO>()
@@ -181,11 +182,11 @@ class SaveCreditCardBoughtImpl(override var dbConnect: SQLiteOpenHelper) :IQuote
         val cursor = db.query(CreditCardBoughtDB.CreditCardBoughtEntry.TABLE_NAME,
             COLUMNS_CALC,
             """
-                $FORMAT_DATE_BOUGHT_WHERE = ?
+                ($FORMAT_DATE_BOUGHT_WHERE = ? OR ${CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_BOUGHT_DATE} = ?)
                 AND ${CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_NAME_ITEM} = ?
-                AND $FORMAT_DATE_END_WHERE <= ? 
+                AND ($FORMAT_DATE_END_WHERE <= ? OR ${CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_END_DATE} <= ?) 
              """,
-            arrayOf(boughtStr,name,endStr),null,null,"${CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_END_DATE} DESC")
+            arrayOf(boughtStr,boughtStr,name,endStr,endStr),null,null,"${CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_END_DATE} DESC")
         with(cursor) {
             if (moveToNext()) {
                 return CreditCardBoughtMap().mapping(this).also { Log.d(javaClass.name,"<<<=== END:getDifferOriginBought $it") }
@@ -204,11 +205,11 @@ class SaveCreditCardBoughtImpl(override var dbConnect: SQLiteOpenHelper) :IQuote
                 CreditCardBoughtDB.CreditCardBoughtEntry.TABLE_NAME,
                 COLUMNS_CALC,
                 """ 
-                    ${CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_CODE_CREDIT_CARD} = ?
-                    and $FORMAT_DATE_BOUGHT_WHERE between ? and ?
-                    and ${CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_END_DATE} > ?
+                     ${CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_CODE_CREDIT_CARD} = ?
+                    and ($FORMAT_DATE_BOUGHT_WHERE between ? and ? OR ${CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_BOUGHT_DATE} between ? and ?)
+                    AND ($FORMAT_DATE_END_WHERE > ? OR ${CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_END_DATE} > ?)
                 """.trimMargin(),
-                arrayOf(key.toString(),startDateStr, endDateStr,startDateStr),
+                arrayOf(key.toString(),startDateStr, endDateStr,startDateStr, endDateStr,startDateStr,startDateStr),
                 null,
                 null,
                 "${CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_BOUGHT_DATE} ASC"
@@ -228,14 +229,17 @@ class SaveCreditCardBoughtImpl(override var dbConnect: SQLiteOpenHelper) :IQuote
     override fun getPendingQuotes(key:Int,startDate: LocalDateTime,cutoffCurrent: LocalDateTime): List<CreditCardBoughtDTO> {
         Log.d(this.javaClass.name,"<<<=== START::getPendingQuotes Key: $key Start: $startDate Cutoff: $cutoffCurrent")
         val startDateStr = DateUtils.localDateTimeToStringDate(startDate)
+        val initDateStr = DateUtils.localDateTimeToStringDate(LocalDateTime.of(1900,1,1,0,0,0))
         val db = dbConnect.readableDatabase
         val cursor = db.query(CreditCardBoughtDB.CreditCardBoughtEntry.TABLE_NAME,COLUMNS_CALC,
-            """${CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_MONTH} > ? 
+            """
+                        ${CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_MONTH} > 1 
                     and ${CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_CODE_CREDIT_CARD} = ?
-                    and ${CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_RECURRENT} = ? 
-                    and $FORMAT_DATE_BOUGHT_WHERE < ?
+                    and ${CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_RECURRENT} = 0 
+                    and ($FORMAT_DATE_BOUGHT_WHERE between ? and ? OR ${CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_BOUGHT_DATE} between ? and ?)
+                    and ($FORMAT_DATE_END_WHERE >= ? OR ${CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_END_DATE} >= ?)
                     """,
-            arrayOf(1.toString(),key.toString(),"0",startDateStr),null,null,null)
+            arrayOf(key.toString(),initDateStr,startDateStr,initDateStr,startDateStr,startDateStr,startDateStr),null,null,null)
 
         val items = mutableListOf<CreditCardBoughtDTO>()
         with(cursor){
@@ -253,11 +257,11 @@ class SaveCreditCardBoughtImpl(override var dbConnect: SQLiteOpenHelper) :IQuote
         val differInstallment = differInstallmentSvc.get(creditCardBoughtDTO.id)
         return (differInstallment.takeIf { it.isPresent }?.let {
             return (DateUtils.getMonths(LocalDateTime.of(it.get().create, LocalTime.MAX),cutoffCurrent) < it.get().newInstallment).also {
-                Log.d(javaClass.name,"validMonths: ${creditCardBoughtDTO.endDate} $cutoffCurrent ${creditCardBoughtDTO.boughtDate} ${creditCardBoughtDTO.nameItem} $it")
+                Log.d(javaClass.name,"validMonths: End: ${creditCardBoughtDTO.endDate} CutOff: $cutoffCurrent Bought: ${creditCardBoughtDTO.boughtDate} Name: ${creditCardBoughtDTO.nameItem} It: $it")
             }
         } ?: (DateUtils.getMonths(creditCardBoughtDTO.boughtDate,cutoffCurrent) < creditCardBoughtDTO.month)
-                && creditCardBoughtDTO.endDate > startCutOff).also {
-            Log.d(javaClass.name,"validMonths: ${creditCardBoughtDTO.endDate} $cutoffCurrent ${creditCardBoughtDTO.boughtDate} ${creditCardBoughtDTO.nameItem} ${creditCardBoughtDTO.createDate} $it")
+                ).also {
+            Log.d(javaClass.name,"validMonths: End: ${creditCardBoughtDTO.endDate} CutOff: $cutoffCurrent Bought: ${creditCardBoughtDTO.boughtDate} Name: ${creditCardBoughtDTO.nameItem} Create: ${creditCardBoughtDTO.createDate} It: $it")
         }
     }
 
@@ -559,15 +563,14 @@ class SaveCreditCardBoughtImpl(override var dbConnect: SQLiteOpenHelper) :IQuote
                 """
                     ${CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_RECURRENT} = ? 
                     and ${CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_CODE_CREDIT_CARD} = ?
-                    and $FORMAT_DATE_BOUGHT_WHERE <= ?
+                    and ($FORMAT_DATE_BOUGHT_WHERE <= ? OR ${CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_BOUGHT_DATE} <= ?)
+                    and ($FORMAT_DATE_END_WHERE >= ? OR ${CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_END_DATE} >= ?)
                 """.trimMargin(),
-                arrayOf(1.toString(),key.toString(),endDateStr),null,null,null)
+                arrayOf(1.toString(),key.toString(),startDateStr,startDateStr,endDateStr,endDateStr),null,null,null)
             val items = mutableListOf<CreditCardBoughtDTO>()
             with(cursor){
                 while(moveToNext()){
-                     CreditCardBoughtMap().mapping(this)?.takeIf { it.endDate >= cutOffLastMonth }?.let{
-                        items.add(it)
-                    }
+                     CreditCardBoughtMap().mapping(this)?.let{items.add(it)}
                 }
             }
             return items.also { Log.d(this.javaClass.name,"<<<=== ENDING::getRecurrentBuys Size: ${it.size}") }
@@ -586,8 +589,8 @@ class SaveCreditCardBoughtImpl(override var dbConnect: SQLiteOpenHelper) :IQuote
             ${CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_CODE_CREDIT_CARD} = ?
             and ${CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_RECURRENT} = 1
             and ${CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_MONTH} > 1
-            and $FORMAT_DATE_BOUGHT_WHERE <= ?
-        """.trimIndent(), arrayOf(key.toString(),cutOffLastMonthStr),null,null,null)
+            and ($FORMAT_DATE_BOUGHT_WHERE <= ? OR ${CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_BOUGHT_DATE} <= ?)
+        """.trimIndent(), arrayOf(key.toString(),cutOffLastMonthStr,cutOffLastMonthStr),null,null,null)
         val items = mutableListOf<CreditCardBoughtDTO>()
         with(cursor){
             while (moveToNext()){

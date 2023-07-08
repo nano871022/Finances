@@ -2,10 +2,15 @@ package co.japl.android.myapplication.finanzas.holders
 
 import android.app.AlertDialog
 import android.os.Build
+import android.os.Handler
+import android.os.Looper
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
 import android.view.View
 import android.widget.TextView
 import androidx.annotation.RequiresApi
+import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.FragmentManager
 import co.japl.android.myapplication.R
 import co.japl.android.myapplication.bussiness.impl.QuoteCredit
@@ -44,6 +49,8 @@ class CreditFixHolder(val view:View,val supportManager: FragmentManager): IHolde
     lateinit var save: MaterialButton
     lateinit var dialog:AlertDialog
     lateinit var kindOfTaxDialog:AlertDialog
+    private val delay = 600L
+    private val delayUpdate = 1000L
 
     private val validations  by lazy{
         arrayOf(
@@ -88,14 +95,22 @@ class CreditFixHolder(val view:View,val supportManager: FragmentManager): IHolde
     }
 
     private fun moneyFormat(){
-        value.setOnFocusChangeListener{ _ ,focus->
-            if(!focus && value.text?.isNotBlank() == true){
-                value.setText(NumbersUtil.toString(value))
+        value.addTextChangedListener(object:TextWatcher{
+            private val handler = Handler(Looper.getMainLooper())
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+            override fun afterTextChanged(p0: Editable?) {
+                handler.removeCallbacksAndMessages(null)
+                handler.postDelayed({
+                    value.removeTextChangedListener(this)
+                    if(value.text?.isNotBlank() == true){
+                        value.setText(NumbersUtil.toString(value))
+                    }
+                    calc()
+                    value.addTextChangedListener (this)
+                },delayUpdate)
             }
-            if(!focus && validate()){
-                calc()
-            }
-        }
+        })
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -143,20 +158,28 @@ class CreditFixHolder(val view:View,val supportManager: FragmentManager): IHolde
 
         kindOfTaxDialog = builderKindOf.create()
 
+        onClick()
+        onFocus()
+    }
+    private fun onClick(){
         kindOfTax.setOnClickListener{kindOfTaxDialog.show()}
-
         kindOf.setOnClickListener{dialog.show()}
+    }
 
-        tax.setOnFocusChangeListener { _, b ->
-            if(!b && validate()){
+    private fun onFocus(){
+        val handlerTax = Handler(Looper.getMainLooper())
+        tax.addTextChangedListener {
+            handlerTax.removeCallbacksAndMessages(null)
+            handlerTax.postDelayed({
                 calc()
-            }
+            },delay)
         }
-
-        period.setOnFocusChangeListener { _, b ->
-            if(!b && validate()){
+        val handlerPeriod = Handler(Looper.getMainLooper())
+        period.addTextChangedListener {
+            handlerPeriod.removeCallbacksAndMessages(null)
+            handlerPeriod.postDelayed({
                 calc()
-            }
+            },delay)
         }
     }
 

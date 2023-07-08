@@ -45,7 +45,7 @@ class NumbersUtil {
             return if(value.isEmpty()){
                 BigDecimal.ZERO
             }else {
-                value.replace("$", "").replace("'", "").replace(",", "").trim().toBigDecimal()
+                value.replace(" ", "").replace("$", "").replace("'", "").replace(",", "").trim().toBigDecimal()
             }
         }
 
@@ -55,6 +55,10 @@ class NumbersUtil {
             }else{
                 BigDecimal.ZERO
             }
+        }
+
+        fun toBigDecimal(field:String):BigDecimal{
+            return field?.takeIf { it.isNotBlank() }?.let { it.toString().replace("$", "").replace(",", "").trim().toBigDecimal() }?:BigDecimal.ZERO
         }
         fun toBigDecimal(field:TextView):BigDecimal{
             return if(field.text?.isNotBlank() == true) {
