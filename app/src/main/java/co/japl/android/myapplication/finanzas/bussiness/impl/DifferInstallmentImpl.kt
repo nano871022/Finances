@@ -4,9 +4,8 @@ import android.content.ContentValues
 import android.database.sqlite.SQLiteOpenHelper
 import android.os.Build
 import android.provider.BaseColumns
-import android.view.View
+import android.util.Log
 import androidx.annotation.RequiresApi
-import co.japl.android.myapplication.bussiness.interfaces.SaveSvc
 import co.japl.android.myapplication.finanzas.bussiness.DTO.*
 import co.japl.android.myapplication.finanzas.bussiness.interfaces.IDifferInstallment
 import co.japl.android.myapplication.finanzas.bussiness.mapping.DifferInstallmentMap
@@ -60,11 +59,15 @@ class DifferInstallmentImpl( override var dbConnect: SQLiteOpenHelper) : IDiffer
             ,"${DifferInstallmentDB.Entry.COLUMN_DATE_CREATE} <= ?"
             , arrayOf(formatDate)
             ,null,null,null)
-        val mapper = DifferInstallmentMap()
-        with(cursor){
-            while(moveToNext()){
-                items.add(mapper.mapping(cursor))
+        try {
+            val mapper = DifferInstallmentMap()
+            with(cursor) {
+                while (moveToNext()) {
+                    items.add(mapper.mapping(cursor))
+                }
             }
+        }catch(e: RuntimeException){
+            Log.e(javaClass.name,e?.message!!)
         }
         return items
     }

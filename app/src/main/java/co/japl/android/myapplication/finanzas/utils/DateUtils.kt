@@ -4,8 +4,10 @@ import android.os.Build
 import android.util.Log
 import android.widget.EditText
 import androidx.annotation.RequiresApi
+import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.LocalDateTime
+import java.time.LocalTime
 import java.time.Month
 import java.time.Period
 import java.time.format.DateTimeFormatter
@@ -128,6 +130,7 @@ class DateUtils {
         fun startDateFromCutoff(cutOffDay:Short,cutOff:LocalDateTime):LocalDateTime{
             var day = cutOff.dayOfMonth
             val month = cutOff.month
+
             if(month == Month.FEBRUARY && cutOffDay > 28 && cutOffDay < 31){
                 day = cutOffDay.toInt()
             }else if(cutOffDay.toInt() == 31){
@@ -137,21 +140,57 @@ class DateUtils {
                 day = 28
             }
 
-            var start = LocalDateTime.of(cutOff.minusMonths(1).year,cutOff.minusMonths(1).monthValue,1,0,0)
-            return if(start.plusMonths(1).minusDays(1).dayOfMonth < cutOffDay){
+            val start = LocalDateTime.of(cutOff.minusMonths(1).year,cutOff.minusMonths(1).monthValue,1,0,0)
+            var date =  if(start.plusMonths(1).minusDays(1).dayOfMonth < cutOffDay){
                  start.plusMonths(1)
             }else{
-                 cutOff.minusMonths(1).plusDays(1)
-            }.also { Log.d(this::class.java.name,"<<<=== FINISH:startDateFromCutoff Response: $it Month: $month Cutoff Day: $cutOffDay Day: $day CutOff: $cutOff") }
+                 cutOff.minusMonths(1)
+            }
+
+            date = when(date.dayOfWeek ){
+                DayOfWeek.SATURDAY-> date.minusDays(1)
+                DayOfWeek.SUNDAY-> date.plusDays(1)
+                else -> date
+            }
+            return date.plusDays(1).also { Log.d(this::class.java.name,"<<<=== FINISH:startDateFromCutoff Response: $it Month: $month Cutoff Day: $cutOffDay Day: $day CutOff: $cutOff") }
         }
 
         @RequiresApi(Build.VERSION_CODES.O)
         fun cutOffLastMonth(cutOffDay:Short, cutOff:LocalDateTime):LocalDateTime{
+
             val cutOffEndMonth = cutOff.withDayOfMonth(1).minusDays(1)
-            if(cutOffEndMonth.dayOfMonth < cutOffDay){
-                return cutOffEndMonth
+            var cutOffResponse = if(cutOffEndMonth.dayOfMonth < cutOffDay){
+                 cutOffEndMonth
+            }else {
+                cutOff.minusMonths(1)
             }
-            return cutOff.minusMonths(1)
+            cutOffResponse = when(cutOffResponse.dayOfWeek ){
+                DayOfWeek.SATURDAY-> cutOffResponse.minusDays(1)
+                DayOfWeek.SUNDAY-> cutOffResponse.plusDays(1)
+                else -> cutOffResponse
+            }
+            return cutOffResponse
+        }
+
+        @RequiresApi(Build.VERSION_CODES.O)
+        fun cutOffLastMonth(cutOffDay: Short):LocalDateTime{
+            val now = LocalDate.now()
+            var month = now.month
+            var cutOff = now.withDayOfMonth(1).minusDays(1).plusDays(cutOffDay.toLong())
+            if(cutOff.month != month){
+                cutOff = cutOff.withDayOfMonth(1).minusDays(1)
+            }
+            month = cutOff.month
+            cutOff = cutOff.minusMonths(1)
+            if(month == cutOff.month){
+                cutOff = cutOff.withDayOfMonth(1).minusDays(1)
+            }
+            cutOff = when(cutOff.dayOfWeek ){
+                DayOfWeek.SATURDAY-> cutOff.minusDays(1)
+                DayOfWeek.SUNDAY-> cutOff.plusDays(1)
+                else -> cutOff
+            }
+            return LocalDateTime.of(cutOff, LocalTime.MAX).also { Log.d(javaClass.name,"<<<=== FINISH:cutOffLastMonth Day: $cutOffDay ${cutOff.dayOfWeek } Response: $it") }
         }
 
         @RequiresApi(Build.VERSION_CODES.O)

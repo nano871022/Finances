@@ -10,4 +10,6 @@ interface IQuoteCreditCardSvc:  SaveSvc<CreditCardBoughtDTO>,
     SearchSvc<CreditCardBoughtDTO>, IGetPeriodsServices  {
         public fun getTotalQuoteTC():BigDecimal
         public fun getRecurrentPendingQuotes(key: Int, cutOff: LocalDateTime):List<CreditCardBoughtDTO>
+
+        fun endingRecurrentPayment(idBought: Int,cutOff:LocalDateTime):Boolean
 }

@@ -181,7 +181,7 @@ class QuoteCCHolder(var view:View,var parentFragmentManager:FragmentManager,var 
             tvCapitalQuoteLastMonth.text = NumbersUtil.toString(values.capitalQuote.orElse(BigDecimal(0)))
             tvCapitalQuotesLastMonth.text = NumbersUtil.toString(values.capitalQuotes.orElse(BigDecimal(0)))
             tvInteresLastMonth.text = NumbersUtil.toString(values.interestQuotes.orElse(BigDecimal(0)))
-            tvLastMonthDate.text = DateUtils.localDateTimeToString(values.cutOff.get().minusMonths(1))
+            tvLastMonthDate.text = DateUtils.localDateTimeToString(values.cutOffLast.get())
             tvTotalQuoteLastMonth.text = NumbersUtil.toString(values.capitalQuote.orElse(BigDecimal(0)).plus(values.capitalQuotes.orElse(
                 BigDecimal(0)
             )).plus(values.interestQuotes.orElse(BigDecimal(0))))

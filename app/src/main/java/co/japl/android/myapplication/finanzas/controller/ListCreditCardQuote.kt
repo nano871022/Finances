@@ -111,9 +111,9 @@ class ListCreditCardQuote : Fragment(), LoaderManager.LoaderCallbacks<CreditCard
 
     @RequiresApi(Build.VERSION_CODES.O)
     private fun loadDataLastMonth(pojo:CreditCard):CreditCard{
-        val endDate = pojo.cutOff.get().minusMonths(1)
+        val endDate = DateUtils.cutOffLastMonth(pojo.cutoffDay.get())
         val startDate = DateUtils.startDateFromCutoff(pojo.cutoffDay.get(),endDate)
-
+        pojo.cutOffLast = Optional.ofNullable(endDate)
         pojo.capitalQuote = searchSvc.getCapital(pojo.codeCreditCard.get(),startDate, endDate)
         pojo.capitalQuotes =
                 searchSvc.getCapitalPendingQuotes(pojo.codeCreditCard.get(), startDate,endDate)

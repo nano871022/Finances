@@ -333,7 +333,7 @@
     <string name="do_you_want_to_ending_recurrent_payment">¿Desea finalizar pago recurrente?</string>
     <string name="update_value_recurrent_paymner">Actualizar valor pago recurrente</string>
     <string name="dont_ending_recurrent_payment">No se logro finaliazr el pago recurrente</string>
-    <string name="ending_recurrent_payment_successfull">Se elimino correctamente</string>
+    <string name="ending_recurrent_payment_successfull">Se finalizo correctamente</string>
     <string name="theres_not_records_to_show_you">No hay registros para mostrar</string>
 
     <string name="pending_payable">Valor Pendiente</string>

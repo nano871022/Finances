@@ -2,11 +2,14 @@ package co.japl.android.myapplication.holders
 
 import android.app.AlertDialog
 import android.os.Build
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
 import android.view.View
 import android.view.View.OnClickListener
 import android.widget.*
 import androidx.annotation.RequiresApi
+import androidx.core.widget.addTextChangedListener
 import co.japl.android.myapplication.R
 import co.japl.android.myapplication.bussiness.DTO.CreditCardDTO
 import co.japl.android.myapplication.bussiness.DTO.TaxDTO
@@ -44,6 +47,7 @@ class TaxesHolder(var view:View,val creditCardList:List<CreditCardDTO>) : IHolde
     var taxInitial: TaxDTO? = null
 
 
+    @RequiresApi(Build.VERSION_CODES.N)
     override fun setFields(action: View.OnClickListener?) {
         creditCard = view.findViewById(R.id.spCreditCardTaxes)
         month = view.findViewById(R.id.spMonthTaxes)
@@ -151,7 +155,7 @@ class TaxesHolder(var view:View,val creditCardList:List<CreditCardDTO>) : IHolde
         validations.firstInvalid{ requestFocus() }.notNull {
             validations2.firstInvalid { requestFocus() }.notNull { valid = true }
         }
-        return valid
+        return valid.also { if(it) save.visibility = View.VISIBLE ; Log.d(javaClass.name,"${it} ${save.visibility}") }
     }
 
     @RequiresApi(Build.VERSION_CODES.N)
@@ -166,6 +170,7 @@ class TaxesHolder(var view:View,val creditCardList:List<CreditCardDTO>) : IHolde
         kindOfTax.setOnClickListener(this)
     }
 
+    @RequiresApi(Build.VERSION_CODES.N)
     private fun createDialogKindOfTax(){
         val builderKindOf = AlertDialog.Builder(view.context)
         with(builderKindOf){
@@ -173,11 +178,13 @@ class TaxesHolder(var view:View,val creditCardList:List<CreditCardDTO>) : IHolde
             setItems(items){ _,position ->
                 val kindOf = items[position]
                 kindOfTax.setText(kindOf)
+                validate()
             }
         }
         kindOfTaxDialog = builderKindOf.create()
     }
 
+    @RequiresApi(Build.VERSION_CODES.N)
     private fun createDialogKindTaxes() {
         val builder = AlertDialog.Builder(view.context)
         with(builder) {
@@ -190,6 +197,7 @@ class TaxesHolder(var view:View,val creditCardList:List<CreditCardDTO>) : IHolde
                 } else {
                     llPeriodsTaxes.visibility = View.INVISIBLE
                 }
+                validate()
             }
             kindTaxesDialog = builder.create()
         }
@@ -205,6 +213,7 @@ class TaxesHolder(var view:View,val creditCardList:List<CreditCardDTO>) : IHolde
                 monthStr = selected.toString()
                 monthCode = Optional.ofNullable(position)
                 month.setText(monthStr)
+                validate()
             }
         }
         monthDialog = builder.create()
@@ -220,6 +229,7 @@ class TaxesHolder(var view:View,val creditCardList:List<CreditCardDTO>) : IHolde
                 creditCardStr = creditCardFound.name
                 creditCardCode = Optional.ofNullable(creditCardFound.id)
                 creditCard.setText(creditCardStr)
+                validate()
             }
         }
         creditCardDialog = builder.create()

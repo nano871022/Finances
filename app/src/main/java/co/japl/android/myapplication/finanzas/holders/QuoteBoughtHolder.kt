@@ -79,8 +79,8 @@ class QuoteBoughtHolder(var root:View, val supportManager:FragmentManager) : IHo
     private lateinit var buyCCSDTO:Optional<BuyCreditCardSettingDTO>
     private lateinit var cCSettingList:List<CreditCardSettingDTO>
     private val itemDefaultSelected = root.resources?.getString(R.string.item_select)
-    private val delayed = 600L
-    private val delayedEdit = 1000L
+    private val delayed = 800L
+    private val delayedEdit = 1500L
 
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -111,7 +111,7 @@ class QuoteBoughtHolder(var root:View, val supportManager:FragmentManager) : IHo
     private fun onFocus(){
         dtBought.isClickable = true
         dtBought.isFocusable = false
-
+        btnSave.visibility = View.INVISIBLE
         spTypeSetting.isFocusable = false
         spNameSetting.isFocusable = false
         val handlerProduct = Handler(Looper.getMainLooper())
@@ -301,7 +301,7 @@ class QuoteBoughtHolder(var root:View, val supportManager:FragmentManager) : IHo
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun validate(): Boolean {
-        var valid: Boolean = true
+        var valid: Boolean = false
         validations.firstInvalid{requestFocus()}.notNull { valid = true }
 
         if (etTax.text.isBlank()) {
@@ -316,7 +316,7 @@ class QuoteBoughtHolder(var root:View, val supportManager:FragmentManager) : IHo
         }else{
             spNameSetting.setBackgroundColor(Color.TRANSPARENT)
         }
-        return valid
+        return valid.also { if(it) btnSave.visibility = View.VISIBLE }
     }
 
     private fun calc(): Boolean {
@@ -358,7 +358,6 @@ class QuoteBoughtHolder(var root:View, val supportManager:FragmentManager) : IHo
                 }
                 etQuotesValue.text = NumbersUtil.toString(total.setScale(2, RoundingMode.HALF_EVEN))
                 etQuotesValue.visibility = View.VISIBLE
-                btnSave.visibility = View.VISIBLE
             }
         }
         return true

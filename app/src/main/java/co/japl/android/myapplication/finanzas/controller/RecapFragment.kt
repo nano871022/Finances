@@ -1,6 +1,7 @@
 package co.japl.android.myapplication.finanzas.controller
 
 import android.graphics.Color
+import android.os.Build
 import android.os.Bundle
 import android.provider.CalendarContract.Colors
 import android.util.Log
@@ -9,6 +10,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ProgressBar
+import androidx.annotation.RequiresApi
 import androidx.constraintlayout.helper.widget.Carousel
 import androidx.loader.app.LoaderManager
 import androidx.loader.content.AsyncTaskLoader
@@ -72,6 +74,7 @@ class RecapFragment : Fragment() , LoaderManager.LoaderCallbacks<Map<String, Any
         loaderManager.initLoader(1,null,this)
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     fun loadData():Map<String, Any>{
         val projection = projectionSvc.getTotalSavedAndQuote()
         val totalQuoteCredit = creditSvc.getTotalQuote(LocalDate.now())
@@ -93,6 +96,7 @@ class RecapFragment : Fragment() , LoaderManager.LoaderCallbacks<Map<String, Any
         progressBar.visibility = View.VISIBLE
         return object: AsyncTaskLoader<Map<String,Any>>(requireContext()){
             private var data : Map<String,Any> = HashMap<String,Any>()
+            @RequiresApi(Build.VERSION_CODES.O)
             override fun loadInBackground(): Map<String, Any>? {
                 data =  loadData()
                 return data

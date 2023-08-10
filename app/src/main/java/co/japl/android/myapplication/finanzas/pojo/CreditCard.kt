@@ -9,6 +9,7 @@ class CreditCard {
     lateinit var codeCreditCard:Optional<Int>
     lateinit var maxQuotes:Optional<Short>
     lateinit var cutOff: Optional<LocalDateTime>
+    lateinit var cutOffLast: Optional<LocalDateTime>
     lateinit var capital: Optional<BigDecimal>
     lateinit var capitalQuotes: Optional<BigDecimal>
     lateinit var capitalQuote: Optional<BigDecimal>
