@@ -24,86 +24,6 @@
                 android:elevation="@dimen/card_elevator_5"
                 android:progressBackgroundTint="?attr/colorPrimaryVariant"/>
 
-
-            <LinearLayout
-                android:id="@+id/llSplitDownValues"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <com.google.android.material.textfield.TextInputLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    style="@style/MaterialTextInputLayoutView"
-                    app:prefixText="$"
-                    android:hint="@string/current_capital_value_short" >
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/tvCurrentCapitalList"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/money_hint"
-                    android:enabled="false"
-                    style="@style/MaterialTextInputLayoutView"
-                    android:textAlignment="textEnd" />
-                </com.google.android.material.textfield.TextInputLayout>
-
-                <com.google.android.material.textfield.TextInputLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    app:prefixText="$"
-                    style="@style/MaterialTextInputLayoutView"
-                    android:hint="@string/quote_capital_value_short" >
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/tvQuoteCapitalList"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/money_hint"
-                    android:enabled="false"
-                    style="@style/MaterialTextInputLayoutView"
-                    android:textAlignment="textEnd" />
-                </com.google.android.material.textfield.TextInputLayout>
-
-                <com.google.android.material.textfield.TextInputLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    app:prefixText="$"
-                    style="@style/MaterialTextInputLayoutView"
-                    android:hint="@string/current_interest_value_short" >
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/tvCurrentInterestList"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/money_hint"
-                    android:enabled="false"
-                    style="@style/MaterialTextInputLayoutView"
-                    android:textAlignment="viewEnd" />
-                </com.google.android.material.textfield.TextInputLayout>
-
-                <com.google.android.material.textfield.TextInputLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    app:prefixText="$"
-                    style="@style/MaterialTextInputLayoutView"
-                    android:hint="@string/quote_interest_value_short" >
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/tvQuoteInterestList"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/money_hint"
-                    android:enabled="false"
-                    style="@style/MaterialTextInputLayoutView"
-                    android:textAlignment="textEnd" />
-                </com.google.android.material.textfield.TextInputLayout>
-            </LinearLayout>
-
             <LinearLayout
                 android:id="@+id/llSplitDown"
                 android:layout_width="match_parent"
@@ -152,24 +72,6 @@
                     android:layout_weight="1"
                     app:prefixText="$"
                     style="@style/MaterialTextInputLayoutView"
-                    android:hint="@string/pending_to_pay_short" >
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/tvPendingToPayList"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/money_hint"
-                    android:enabled="false"
-                    style="@style/MaterialTextInputLayoutView"
-                    android:textAlignment="viewEnd" />
-                </com.google.android.material.textfield.TextInputLayout>
-
-                <com.google.android.material.textfield.TextInputLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    app:prefixText="$"
-                    style="@style/MaterialTextInputLayoutView"
                     android:hint="@string/total_quote_value_short" >
 
                 <com.google.android.material.textfield.TextInputEditText
@@ -181,6 +83,14 @@
                     style="@style/MaterialTextInputLayoutView"
                     android:textAlignment="textEnd" />
                 </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_see_more_qccl"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:text="@string/see_more"
+                    />
             </LinearLayout>
 
             <LinearLayout

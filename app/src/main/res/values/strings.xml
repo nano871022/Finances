@@ -364,4 +364,11 @@
     <string name="date_is_not_setting">Fecha no esta configurada</string>
     <string name="value_product_is_not_setting">Valor del producto no esta configurada</string>
     <string name="name_product_is_not_setting">El nombre del producto no esta configurada</string>
+
+    <string name="total_bougth_item"># Compras</string>
+    <string name="quote_item"># Compras a Cuotas </string>
+    <string name="recurrent_item"># Compras Recurrentes </string>
+    <string name="quote_1_item"># Compras 1 Cuota </string>
+    <string name="see_more">Ver más</string>
+    <string name="recap_bought_cc">Resumen de Compras con Tarjeta de Crédito</string>
 </resources>
