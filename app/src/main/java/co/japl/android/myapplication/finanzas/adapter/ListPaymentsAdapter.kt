@@ -18,6 +18,7 @@ import co.japl.android.myapplication.finanzas.bussiness.DTO.CheckQuoteDTO
 import co.japl.android.myapplication.finanzas.bussiness.DTO.ICheck
 import co.japl.android.myapplication.finanzas.bussiness.DTO.PaidDTO
 import co.japl.android.myapplication.finanzas.bussiness.impl.PaidImpl
+import co.japl.android.myapplication.finanzas.enums.CheckPaymentsEnum
 import co.japl.android.myapplication.finanzas.holders.CheckPaymentsHolder
 import co.japl.android.myapplication.finanzas.holders.validations.COPToBigDecimal
 import co.japl.android.myapplication.finanzas.pojo.CheckPaymentsPOJO
@@ -51,13 +52,13 @@ class ListPaymentsAdapter(var data:MutableList<CheckPaymentsPOJO>,
                        viewHolder.isCheck(LocalDateTime.now())
                         paid = paid.plus(viewHolder.value.COPToBigDecimal())
                         val paidDTO = data.first { it.codPaid == viewHolder.codPaid && it.name == viewHolder.name.text }
-                        checkPaymentList.filterIsInstance<CheckPaymentsDTO>().firstOrNull{ it.codPaid == viewHolder.codPaid.toInt()}?.let {
+                        checkPaymentList.filterIsInstance<CheckPaymentsDTO>().firstOrNull{ it.codPaid == viewHolder.codPaid.toInt() && paidDTO.type == CheckPaymentsEnum.PAYMENTS}?.let {
                             paidDTO.id = it.id.toLong()
-                        } ?:
-                        checkPaymentList.filterIsInstance<CheckCreditDTO>().firstOrNull{ it.codCredit == viewHolder.codPaid.toInt()}?.let {
+                        }
+                        checkPaymentList.filterIsInstance<CheckCreditDTO>().firstOrNull{ it.codCredit == viewHolder.codPaid.toInt() && paidDTO.type == CheckPaymentsEnum.CREDITS}?.let {
                             paidDTO.id = it.id.toLong()
-                        } ?:
-                        checkPaymentList.filterIsInstance<CheckQuoteDTO>().firstOrNull{ it.codQuote == viewHolder.codPaid.toInt()}?.let {
+                        }
+                        checkPaymentList.filterIsInstance<CheckQuoteDTO>().firstOrNull{ it.codQuote == viewHolder.codPaid.toInt() && paidDTO.type == CheckPaymentsEnum.QUOTE_CREDIT_CARD}?.let {
                             paidDTO.id = it.id.toLong()
                         }
                         listPaid.add(paidDTO)

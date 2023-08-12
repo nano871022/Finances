@@ -7,6 +7,7 @@ import android.provider.BaseColumns
 import android.util.Log
 import androidx.annotation.RequiresApi
 import co.japl.android.myapplication.bussiness.DTO.CreditCardDB
+import co.japl.android.myapplication.finanzas.bussiness.DB.connections.CreditFixConnectDB
 import co.japl.android.myapplication.finanzas.bussiness.DTO.*
 import co.japl.android.myapplication.finanzas.bussiness.interfaces.ICheckCreditSvc
 import co.japl.android.myapplication.finanzas.bussiness.interfaces.ICheckPaymentSvc
@@ -53,7 +54,7 @@ class CheckCreditImpl(override var dbConnect: SQLiteOpenHelper) :ICheckCreditSvc
         val db = dbConnect.writableDatabase
         val sql = """
             SELECT ${CheckCreditDB.Entry.COLUMN_PERIOD},
-                   SUM((SELECT ${PaidDB.Entry.COLUMN_VALUE} FROM ${PaidDB.Entry.TABLE_NAME} WHERE ${BaseColumns._ID} = ${CheckCreditDB.Entry.COLUMN_COD_CREDIT}) )AS value
+                   SUM((SELECT ${CreditDB.Entry.COLUMN_QUOTE} FROM ${CreditDB.Entry.TABLE_NAME} WHERE ${BaseColumns._ID} = ${CheckCreditDB.Entry.COLUMN_COD_CREDIT}) )AS value
                     , COUNT(1) AS CNT
             FROM ${CheckCreditDB.Entry.TABLE_NAME}  
             

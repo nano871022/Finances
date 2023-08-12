@@ -82,6 +82,12 @@ class PeriodCheckPaymentsFragment : Fragment() , LoaderManager.LoaderCallbacks<L
         loader: Loader<List<PeriodCheckPaymentsPOJO>>,
         data: List<PeriodCheckPaymentsPOJO>?
     ) {
-        data?.let{holder.loadRecycler(data.toMutableList())}
+        data?.groupBy { it.period }
+            ?.mapValues { (_,group) -> group.reduce{ acc, check ->
+                PeriodCheckPaymentsPOJO(acc.period,acc.paid + check.paid,acc.amount + check.amount,acc.count + check.count)
+            } }
+            ?.values?.toList()
+            ?.takeIf { it.isNotEmpty() }
+            ?.let{holder.loadRecycler(it.toMutableList())}
     }
 }

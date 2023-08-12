@@ -138,11 +138,9 @@ class CheckPaymentsFragment : Fragment() , OnClickListener,LoaderManager.LoaderC
 
                 creditsSvc.getCurrentBoughtCredits(date)?.takeIf { it.isNotEmpty() }?.map { CheckMapper().mapper(it,period) }?.toMutableList()?.let { list.addAll(it) }
 
-                creditCardSvc.getAll()?.takeIf { it.isNotEmpty() }?.forEach {
-                        boughtCreditCardSvc.getLastAvailableQuotesTC()
-                            ?.takeIf { it.isNotEmpty() }?.map { CheckMapper().mapper(it, period) }
-                                ?.toMutableList()?.let { list.addAll(it) }
-                        }
+                boughtCreditCardSvc.getLastAvailableQuotesTC()
+                     ?.takeIf { it.isNotEmpty() }?.map { CheckMapper().mapper(it, period) }
+                            ?.toMutableList()?.let { list.addAll(it) }
 
                 return list
             }

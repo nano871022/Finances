@@ -6,7 +6,9 @@ import android.os.Build
 import android.provider.BaseColumns
 import android.util.Log
 import androidx.annotation.RequiresApi
+import co.japl.android.myapplication.bussiness.DTO.CreditCardBoughtDB
 import co.japl.android.myapplication.bussiness.DTO.CreditCardDB
+import co.japl.android.myapplication.bussiness.impl.SaveCreditCardBoughtImpl
 import co.japl.android.myapplication.finanzas.bussiness.DTO.*
 import co.japl.android.myapplication.finanzas.bussiness.interfaces.ICheckPaymentSvc
 import co.japl.android.myapplication.finanzas.bussiness.interfaces.ICheckQuoteSvc
@@ -53,7 +55,9 @@ class CheckQuoteImpl(override var dbConnect: SQLiteOpenHelper) :ICheckQuoteSvc {
         val db = dbConnect.writableDatabase
         val sql = """
             SELECT ${CheckQuoteDB.Entry.COLUMN_PERIOD},
-                   SUM((SELECT ${PaidDB.Entry.COLUMN_VALUE} FROM ${PaidDB.Entry.TABLE_NAME} WHERE ${BaseColumns._ID} = ${CheckQuoteDB.Entry.COLUMN_COD_QUOTE}) )AS value
+                   SUM((SELECT ${CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_VALUE_ITEM} 
+            FROM ${CreditCardBoughtDB.CreditCardBoughtEntry.TABLE_NAME} 
+            WHERE ${BaseColumns._ID} = ${CheckQuoteDB.Entry.COLUMN_COD_QUOTE}) )AS value
                     , COUNT(1) AS CNT
             FROM ${CheckQuoteDB.Entry.TABLE_NAME}  
             
