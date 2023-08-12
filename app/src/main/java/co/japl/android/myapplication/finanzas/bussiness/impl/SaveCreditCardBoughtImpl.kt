@@ -20,6 +20,7 @@ import co.japl.android.myapplication.finanzas.bussiness.interfaces.IQuoteCreditC
 import co.japl.android.myapplication.finanzas.bussiness.mapping.PeriodsMap
 import co.japl.android.myapplication.finanzas.enums.KindOfTaxEnum
 import co.japl.android.myapplication.finanzas.enums.TaxEnum
+import co.japl.android.myapplication.finanzas.pojo.QuoteCreditCard
 import co.japl.android.myapplication.pojo.CreditCard
 import co.japl.android.myapplication.utils.DatabaseConstants
 import co.japl.android.myapplication.utils.DateUtils
@@ -645,6 +646,8 @@ class SaveCreditCardBoughtImpl(override var dbConnect: SQLiteOpenHelper) :IQuote
         return false.also { Log.d(javaClass.name,"<<<=== ENDING::endingRecurrentPayment BAD Validation Id: $idBought cutOff: $cutOff Response: $it")  }
     }
 
+
+
     @RequiresApi(Build.VERSION_CODES.O)
     override fun backup(pathFile: String) {
         val values = getAll()
@@ -677,6 +680,31 @@ class SaveCreditCardBoughtImpl(override var dbConnect: SQLiteOpenHelper) :IQuote
                 BigDecimal.ZERO) + interestQuote.orElse(BigDecimal.ZERO)
         }
         return quote
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    override fun getLastAvailableQuotesTC(): List<QuoteCreditCard> {
+        val creditCards = creditCardSvc.getAll().filter { it.status }
+        val list = arrayListOf <QuoteCreditCard>()
+        for ( creditCard in creditCards) {
+            val creditCardPojo = CreditCardMap().mapper(creditCard)
+            val endDate = DateUtils.cutOffLastMonth(creditCardPojo.cutoffDay.get())
+            val startDate = DateUtils.startDateFromCutoff(creditCardPojo.cutoffDay.get(),endDate)
+            val capital = getCapital(creditCard.id, startDate, endDate)
+            val capitalQuotes =
+                getCapitalPendingQuotes(creditCard.id, startDate, endDate)
+            val interest = getInterest(creditCard.id, startDate, endDate)
+            val interestQuote =
+                getInterestPendingQuotes(creditCard.id, startDate, endDate)
+            val dto = QuoteCreditCard()
+            dto.creditCardId = Optional.of(creditCard.id)
+            dto.name = Optional.of(creditCard.name)
+            dto.capitalValue = Optional.of(capital.orElse(BigDecimal.ZERO) + capitalQuotes.orElse(BigDecimal.ZERO))
+            dto.interestValue = Optional.of(interestQuote.orElse(BigDecimal.ZERO) + interest.orElse(BigDecimal.ZERO))
+            list.add(dto)
+        }
+        return list
+
     }
 
 

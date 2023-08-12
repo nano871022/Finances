@@ -10,7 +10,11 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import co.japl.android.myapplication.R
 import co.japl.android.myapplication.adapter.ListPaymentsAdapter
+import co.japl.android.myapplication.finanzas.bussiness.DTO.CheckCreditDTO
 import co.japl.android.myapplication.finanzas.bussiness.DTO.CheckPaymentsDTO
+import co.japl.android.myapplication.finanzas.bussiness.DTO.CheckQuoteDTO
+import co.japl.android.myapplication.finanzas.bussiness.DTO.ICheck
+import co.japl.android.myapplication.finanzas.enums.CheckPaymentsEnum
 import co.japl.android.myapplication.finanzas.holders.interfaces.IListHolder
 import co.japl.android.myapplication.finanzas.pojo.CheckPaymentsPOJO
 import co.japl.android.myapplication.utils.NumbersUtil
@@ -23,7 +27,7 @@ class CheckPaymentsHolder(val view:View) : IListHolder<CheckPaymentsHolder,Check
     lateinit var btnSave:Button
     lateinit var progressBar: ProgressBar
     var payment = BigDecimal.ZERO
-    lateinit var checkPaymentsList:MutableList<CheckPaymentsDTO>
+    lateinit var checkPaymentsList:MutableList<ICheck>
 
     override fun setFields(actions: View.OnClickListener?) {
         recyclerView = view.findViewById(R.id.rv_item_cps)
@@ -37,7 +41,7 @@ class CheckPaymentsHolder(val view:View) : IListHolder<CheckPaymentsHolder,Check
 
     override fun loadFields(fn: ((CheckPaymentsHolder) -> Unit)?) { fn?.let{it.invoke(this)}}
 
-    public fun  set(checkPaymentsList:MutableList<CheckPaymentsDTO>){
+    public fun  set(checkPaymentsList:MutableList<ICheck>){
         this.checkPaymentsList = checkPaymentsList
     }
 
@@ -53,8 +57,22 @@ class CheckPaymentsHolder(val view:View) : IListHolder<CheckPaymentsHolder,Check
                 paid.text = NumbersUtil.toString(adapter.paid)
                 val sum = data.sumOf { it.value }
                 val sumPaid =
-                    data.filter { paid -> checkPaymentsList.firstOrNull { it.codPaid == paid.codPaid.toInt() } != null }
-                        .sumOf { it.value }
+                    data.filter{ it.type == CheckPaymentsEnum.PAYMENTS}
+                        .filter { paid -> checkPaymentsList
+                            .filterIsInstance<CheckPaymentsDTO>()
+                            .firstOrNull { it.codPaid == paid.codPaid.toInt() } != null }
+                        .sumOf { it.value } +
+                 data.filter{ it.type == CheckPaymentsEnum.CREDITS}
+                     .filter { paid -> checkPaymentsList
+                         .filterIsInstance<CheckCreditDTO>()
+                         .firstOrNull { it.codCredit == paid.codPaid.toInt() } != null }
+                    .sumOf { it.value } +
+                 data.filter{ it.type == CheckPaymentsEnum.QUOTE_CREDIT_CARD}
+                     .filter { paid -> checkPaymentsList
+                         .filterIsInstance<CheckQuoteDTO>()
+                         .firstOrNull { it.codQuote == paid.codPaid.toInt() } != null }
+                                .sumOf { it.value }
+
                 if (sum == sumPaid) {
                     btnSave.visibility = View.GONE
                     adapter.checkEnable = false

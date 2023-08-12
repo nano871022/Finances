@@ -3,36 +3,54 @@ package co.japl.android.myapplication.finanzas.controller
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.OnClickListener
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.annotation.RequiresApi
+import androidx.fragment.app.Fragment
 import androidx.loader.app.LoaderManager
 import androidx.loader.content.AsyncTaskLoader
 import androidx.loader.content.Loader
 import co.japl.android.myapplication.R
 import co.japl.android.myapplication.adapter.ListPaymentsAdapter
 import co.japl.android.myapplication.bussiness.DB.connections.ConnectDB
-import co.japl.android.myapplication.finanzas.bussiness.DTO.CheckPaymentsDTO
+import co.japl.android.myapplication.bussiness.DTO.CreditCardDTO
+import co.japl.android.myapplication.bussiness.impl.CreditCardImpl
+import co.japl.android.myapplication.bussiness.impl.SaveCreditCardBoughtImpl
+import co.japl.android.myapplication.bussiness.interfaces.SaveSvc
+import co.japl.android.myapplication.finanzas.bussiness.DTO.ICheck
+import co.japl.android.myapplication.finanzas.bussiness.impl.CheckCreditImpl
 import co.japl.android.myapplication.finanzas.bussiness.impl.CheckPaymentImpl
+import co.japl.android.myapplication.finanzas.bussiness.impl.CheckQuoteImpl
+import co.japl.android.myapplication.finanzas.bussiness.impl.CreditFixImpl
 import co.japl.android.myapplication.finanzas.bussiness.impl.PaidImpl
+import co.japl.android.myapplication.finanzas.bussiness.interfaces.ICheckCreditSvc
 import co.japl.android.myapplication.finanzas.bussiness.interfaces.ICheckPaymentSvc
+import co.japl.android.myapplication.finanzas.bussiness.interfaces.ICheckQuoteSvc
+import co.japl.android.myapplication.finanzas.bussiness.interfaces.ICreditFix
 import co.japl.android.myapplication.finanzas.bussiness.interfaces.IPaidSvc
+import co.japl.android.myapplication.finanzas.bussiness.interfaces.IQuoteCreditCardSvc
+import co.japl.android.myapplication.finanzas.bussiness.mapping.CheckCreditMap
 import co.japl.android.myapplication.finanzas.bussiness.mapping.CheckPaymentsMap
+import co.japl.android.myapplication.finanzas.bussiness.mapping.CheckQuoteMap
+import co.japl.android.myapplication.finanzas.enums.CheckPaymentsEnum
 import co.japl.android.myapplication.finanzas.holders.CheckPaymentsHolder
 import co.japl.android.myapplication.finanzas.holders.interfaces.IListHolder
 import co.japl.android.myapplication.finanzas.pojo.CheckPaymentsPOJO
-import co.japl.android.myapplication.finanzas.pojo.mapper.CheckPaymentsMapper
+import co.japl.android.myapplication.finanzas.pojo.mapper.CheckMapper
 import java.time.LocalDate
-import java.util.Optional
 
 class CheckPaymentsFragment : Fragment() , OnClickListener,LoaderManager.LoaderCallbacks<List<CheckPaymentsPOJO>>{
     private lateinit var checkPaymentSvc:ICheckPaymentSvc
+    private lateinit var checkQuoteSvc:ICheckQuoteSvc
+    private lateinit var checkCreditSvc:ICheckCreditSvc
     private lateinit var holder:IListHolder<CheckPaymentsHolder,CheckPaymentsPOJO>
     private lateinit var svc:IPaidSvc
+    private lateinit var creditsSvc: ICreditFix
+    private lateinit var creditCardSvc:SaveSvc<CreditCardDTO>
+    private lateinit var boughtCreditCardSvc: IQuoteCreditCardSvc
     private lateinit var list:MutableList<CheckPaymentsPOJO>
     private lateinit var period:String
     private lateinit var date:LocalDate
@@ -49,7 +67,12 @@ class CheckPaymentsFragment : Fragment() , OnClickListener,LoaderManager.LoaderC
         val root = inflater.inflate(R.layout.fragment_check_payments, container, false)
         val connect = ConnectDB(root.context)
         svc = PaidImpl(connect)
+        creditsSvc = CreditFixImpl(connect)
         checkPaymentSvc = CheckPaymentImpl(connect)
+        checkQuoteSvc = CheckQuoteImpl(connect)
+        checkCreditSvc = CheckCreditImpl(connect)
+        boughtCreditCardSvc = SaveCreditCardBoughtImpl(connect)
+        creditCardSvc = CreditCardImpl(connect)
         holder = CheckPaymentsHolder(root)
         holder.setFields(this)
         period = getPeriod()
@@ -77,9 +100,15 @@ class CheckPaymentsFragment : Fragment() , OnClickListener,LoaderManager.LoaderC
             R.id.btn_add_cps ->{
                     holder.loadFields {
                         val listPaid = (it.recyclerView.adapter as ListPaymentsAdapter).listPaid
-                            listPaid.forEach { checkPaymentSvc.save(CheckPaymentsMap().mapper(it)) }
-                        val listPaidRemove = (it.recyclerView.adapter as ListPaymentsAdapter).listPaidRemove
-                            listPaidRemove.forEach{checkPaymentSvc.delete(it.id.toInt())}
+                            listPaid.filter { it.type == CheckPaymentsEnum.PAYMENTS }.forEach { checkPaymentSvc.save(CheckPaymentsMap().mapper(it)) }
+                            listPaid.filter { it.type == CheckPaymentsEnum.CREDITS }.forEach { checkCreditSvc.save(CheckCreditMap().mapper(it)) }
+                            listPaid.filter { it.type == CheckPaymentsEnum.QUOTE_CREDIT_CARD }.forEach { checkQuoteSvc.save(CheckQuoteMap().mapper(it)) }
+
+                        val listRemove = (it.recyclerView.adapter as ListPaymentsAdapter).listPaidRemove
+                            listRemove.filter{ it.type == CheckPaymentsEnum.PAYMENTS}.forEach{checkPaymentSvc.delete(it.id.toInt())}
+                            listRemove.filter{ it.type == CheckPaymentsEnum.CREDITS}.forEach{checkCreditSvc.delete(it.id.toInt())}
+                            listRemove.filter{ it.type == CheckPaymentsEnum.QUOTE_CREDIT_CARD}.forEach{checkQuoteSvc.delete(it.id.toInt())}
+
                         Toast.makeText(context,R.string.success_save_quote_credit,Toast.LENGTH_LONG).show()
                         val sum = listPaid.sumOf { it.value }
                         val paid = list.sumOf { it.value }
@@ -96,7 +125,6 @@ class CheckPaymentsFragment : Fragment() , OnClickListener,LoaderManager.LoaderC
             private var data:List<CheckPaymentsPOJO>? = null
             override fun onStartLoading() {
                 super.onStartLoading()
-                Log.d(javaClass.name,"onStartingLoading $data")
                 if(data != null){
                     deliverResult(data)
                 }else{
@@ -105,8 +133,17 @@ class CheckPaymentsFragment : Fragment() , OnClickListener,LoaderManager.LoaderC
             }
             @RequiresApi(Build.VERSION_CODES.O)
             override fun loadInBackground(): List<CheckPaymentsPOJO>? {
-                val paids = svc.getRecurrent(date)
-                list = paids.map { CheckPaymentsMapper().mapper(it,period) }.toMutableList()
+                list = arrayListOf<CheckPaymentsPOJO>()
+                svc.getRecurrent(date)?.takeIf { it.isNotEmpty() }?.map { CheckMapper().mapper(it,period) }?.toMutableList()?.let { list.addAll(it) }
+
+                creditsSvc.getCurrentBoughtCredits(date)?.takeIf { it.isNotEmpty() }?.map { CheckMapper().mapper(it,period) }?.toMutableList()?.let { list.addAll(it) }
+
+                creditCardSvc.getAll()?.takeIf { it.isNotEmpty() }?.forEach {
+                        boughtCreditCardSvc.getLastAvailableQuotesTC()
+                            ?.takeIf { it.isNotEmpty() }?.map { CheckMapper().mapper(it, period) }
+                                ?.toMutableList()?.let { list.addAll(it) }
+                        }
+
                 return list
             }
         }
@@ -118,8 +155,15 @@ class CheckPaymentsFragment : Fragment() , OnClickListener,LoaderManager.LoaderC
     @RequiresApi(Build.VERSION_CODES.N)
     override fun onLoadFinished(loader: Loader<List<CheckPaymentsPOJO>>, data: List<CheckPaymentsPOJO>?) {
         data?.let{
-            val checkPaymentList = it.map { checkPaymentSvc.getCheckPayment(it.codPaid.toInt(),period) }.filter { it.isPresent }.map { it.get() }.toMutableList()
-            (holder as CheckPaymentsHolder).set(checkPaymentList)
+            val checks = arrayListOf<ICheck>()
+            it.filter{it.type == CheckPaymentsEnum.PAYMENTS}.map { checkPaymentSvc.getCheckPayment(it.codPaid.toInt(),period) }.filter { it.isPresent }.map { it.get() }.toMutableList()
+                ?.takeIf { it.isNotEmpty() }?.forEach { checks.add(it as ICheck) }
+            it.filter{it.type == CheckPaymentsEnum.QUOTE_CREDIT_CARD}.map { checkQuoteSvc.getCheckPayment(it.codPaid.toInt(),period) }.filter { it.isPresent }.map { it.get() }.toMutableList()
+                ?.takeIf { it.isNotEmpty() }?.forEach { checks.add(it as ICheck) }
+            it.filter{it.type == CheckPaymentsEnum.CREDITS}.map { checkCreditSvc.getCheckPayment(it.codPaid.toInt(),period) }.filter { it.isPresent }.map { it.get() }.toMutableList()
+                ?.takeIf { it.isNotEmpty() }?.forEach { checks.add(it as ICheck) }
+
+            (holder as CheckPaymentsHolder).set(checks)
             holder.loadRecycler(it.toMutableList())
         }
     }

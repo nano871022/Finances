@@ -104,6 +104,26 @@ class CreditFixImpl(override var dbConnect: SQLiteOpenHelper) :ICreditFix{
         return list
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
+    override fun getCurrentBoughtCredits(date:LocalDate):List<CreditDTO>{
+        val db = dbConnect.readableDatabase
+        val list = mutableListOf<CreditDTO>()
+        val dateFormatter = DateUtils.localDateToStringDate(date)
+        val cursor = db.query(CreditDB.Entry.TABLE_NAME,COLUMNS
+            ,"$FORMAT_DATE_BOUGHT_WHERE < ?",
+            arrayOf(dateFormatter),null,null,null)
+        with(cursor){
+            while(moveToNext()){
+                val value = CreditMap().mapping(cursor)
+                if(gracePeriodSvc.get(value.id,date).isPresent){
+                    value.quoteValue = BigDecimal.ZERO
+                }
+                list.add(value)
+            }
+        }
+        return list
+    }
+
     override fun backup(path: String) {
     }
 
