@@ -53,6 +53,7 @@ class InputHolder(val view:View,val supportManager: FragmentManager): IHolder<In
         save = view.findViewById(R.id.btn_save_in)
         cancel.setOnClickListener(actions)
         save.setOnClickListener(actions)
+        save.visibility = View.INVISIBLE
         date()
         dialog()
         valueFormat()
@@ -89,7 +90,7 @@ class InputHolder(val view:View,val supportManager: FragmentManager): IHolder<In
     override fun validate(): Boolean {
         var valid = false
         validations.firstInvalid{ requestFocus() }.notNull { valid = true }
-        return valid
+        return valid.also { if(it) save.visibility = View.VISIBLE }
     }
 
     private fun valueFormat(){
@@ -101,8 +102,9 @@ class InputHolder(val view:View,val supportManager: FragmentManager): IHolder<In
                 handler.removeCallbacksAndMessages(null)
                 handler.postDelayed({
                     value.removeTextChangedListener(this)
-                    value.setCOPtoField()
+                    value.setNumberToField()
                     value.addTextChangedListener (this)
+                    validate()
                 },1000)
             }
         })

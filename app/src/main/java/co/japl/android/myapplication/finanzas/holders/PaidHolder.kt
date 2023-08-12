@@ -64,6 +64,7 @@ class PaidHolder(val view:View,val supportManager: FragmentManager): IHolder<Pai
         save = view.findViewById(R.id.btn_save_p)
         cancel.setOnClickListener(actions)
         save.setOnClickListener(actions)
+        save.visibility = View.INVISIBLE
         date()
         accounts()
         value.addTextChangedListener(object:TextWatcher{
@@ -80,6 +81,12 @@ class PaidHolder(val view:View,val supportManager: FragmentManager): IHolder<Pai
 
             }
         })
+        name.addTextChangedListener(object:TextWatcher{
+            private val handler = Handler(Looper.getMainLooper())
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+            override fun afterTextChanged(p0: Editable?) {validate()}
+        })
     }
 
     private fun accounts(){
@@ -94,6 +101,7 @@ class PaidHolder(val view:View,val supportManager: FragmentManager): IHolder<Pai
             setItems(items){ _,position ->
                 val accountItem = items[position]
                 account.setText(accountItem)
+                validate()
             }
         }
 
@@ -120,6 +128,7 @@ class PaidHolder(val view:View,val supportManager: FragmentManager): IHolder<Pai
             dataPicker.addOnPositiveButtonClickListener {
                 val date = LocalDateTime.ofInstant(Instant.ofEpochMilli(it), ZoneId.systemDefault()).plusDays(1)
                 this.date.setText(date.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")))
+                validate()
             }
         }
     }
@@ -161,6 +170,6 @@ class PaidHolder(val view:View,val supportManager: FragmentManager): IHolder<Pai
     override fun validate(): Boolean {
         var valid = false
         validations.firstInvalid{ requestFocus() }.notNull { valid = true }
-        return valid
+        return valid.also { if(it) save.visibility = View.VISIBLE }
     }
 }

@@ -15,7 +15,11 @@ import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.RecyclerView
 import co.japl.android.myapplication.R
 import co.japl.android.myapplication.bussiness.DTO.TaxDTO
+import co.japl.android.myapplication.finanzas.bussiness.DTO.CheckCreditDTO
 import co.japl.android.myapplication.finanzas.bussiness.DTO.CheckPaymentsDTO
+import co.japl.android.myapplication.finanzas.bussiness.DTO.CheckQuoteDTO
+import co.japl.android.myapplication.finanzas.bussiness.DTO.ICheck
+import co.japl.android.myapplication.finanzas.enums.CheckPaymentsEnum
 import co.japl.android.myapplication.finanzas.enums.TaxEnum
 import co.japl.android.myapplication.finanzas.pojo.CheckPaymentsPOJO
 import co.japl.android.myapplication.utils.DateUtils
@@ -23,7 +27,7 @@ import co.japl.android.myapplication.utils.NumbersUtil
 import java.time.LocalDate
 import java.time.LocalDateTime
 
-class PaymentsItemHolder(var view:View,val checkPaymentList:MutableList<CheckPaymentsDTO>,val checkEnable:Boolean) : RecyclerView.ViewHolder(view){
+class PaymentsItemHolder(var view:View,val checkPaymentList:MutableList<ICheck>,val checkEnable:Boolean) : RecyclerView.ViewHolder(view){
     lateinit var name:TextView
     lateinit var value:TextView
     lateinit var date:TextView
@@ -31,7 +35,7 @@ class PaymentsItemHolder(var view:View,val checkPaymentList:MutableList<CheckPay
     var currentColor:Int = 0
     var codPaid:Long = 0
     var id:Long = 0
-    lateinit var checkPaid:CheckPaymentsDTO
+    lateinit var checkPaid:ICheck
 
     fun loadFields(actions:OnClickListener){
         name = view.findViewById(R.id.tv_name_cip)
@@ -51,13 +55,21 @@ class PaymentsItemHolder(var view:View,val checkPaymentList:MutableList<CheckPay
         date.visibility = View.GONE
         codPaid = values.codPaid
         id = values.id
-        Log.d(javaClass.name,"CheckPaids: ${checkPaymentList.size}")
-        val paid = checkPaymentList.firstOrNull { it.codPaid == codPaid.toInt() }
+        val paid = checkPaymentList.filterIsInstance<CheckPaymentsDTO>().firstOrNull { values.type == CheckPaymentsEnum.PAYMENTS && it.codPaid == codPaid.toInt() } ?:
+                   checkPaymentList.filterIsInstance<CheckQuoteDTO>().firstOrNull { values.type == CheckPaymentsEnum.QUOTE_CREDIT_CARD && it.codQuote == codPaid.toInt() } ?:
+                   checkPaymentList.filterIsInstance<CheckCreditDTO>().firstOrNull {  values.type == CheckPaymentsEnum.CREDITS && it.codCredit == codPaid.toInt() }
         paid?.let {
             checkPaid = it
             check.isChecked = true
             check.callOnClick()
-            isCheck(it.date)
+            isCheck(
+                when(it) {
+                    is CheckPaymentsDTO -> it.date
+                    is CheckQuoteDTO -> it.date
+                    is CheckCreditDTO -> it.date
+                    else -> LocalDateTime.MIN
+                }
+            )
         }
     }
 

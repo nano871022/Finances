@@ -30,11 +30,18 @@ fun MaterialTextView.COPtoBigDecimal() = text()?.let{NumbersUtil.stringCOPToBigD
 infix fun TextInputEditText.set(@StringRes resource: Int) = this to resource
 infix fun MaterialAutoCompleteTextView.set(@StringRes resource: Int) = this to resource
 
+infix fun MaterialAutoCompleteTextView.then( input: TextInputEditText.() -> MaterialAutoCompleteTextView) = this to input
+
+infix fun MaterialAutoCompleteTextView.`else`( input: TextInputEditText.() -> Unit) = this to input
+
 infix fun Pair<TextInputEditText,Int>.`when`(valid: TextInputEditText.() -> Boolean) = Validation(first,second,valid)
 infix fun Pair<MaterialAutoCompleteTextView,Int>.`when`(valid:MaterialAutoCompleteTextView.() -> Boolean) = ValidationAutoComplete(first,second,valid)
 
 infix fun <T : Any> T?.isNull(exec: (T) -> Unit): T? = this?.apply{exec(this)}
 infix fun Any?.notNull(exec: () -> Unit) = this ?: exec()
+
+fun MaterialAutoCompleteTextView.execute(exec : () -> Unit) = exec()
+infix fun MaterialAutoCompleteTextView.execute2(input: TextInputEditText.() -> Unit) = this to input
 
 class Validation(val editText: TextInputEditText, @StringRes val resource: Int, val validator: (TextInputEditText.() -> Boolean))
 class ValidationAutoComplete(val editText: MaterialAutoCompleteTextView, @StringRes val resource: Int, val validator: (MaterialAutoCompleteTextView.() -> Boolean))

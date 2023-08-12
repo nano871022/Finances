@@ -20,6 +20,7 @@ import co.japl.android.myapplication.finanzas.bussiness.interfaces.IQuoteCreditC
 import co.japl.android.myapplication.finanzas.bussiness.mapping.PeriodsMap
 import co.japl.android.myapplication.finanzas.enums.KindOfTaxEnum
 import co.japl.android.myapplication.finanzas.enums.TaxEnum
+import co.japl.android.myapplication.finanzas.pojo.QuoteCreditCard
 import co.japl.android.myapplication.pojo.CreditCard
 import co.japl.android.myapplication.utils.DatabaseConstants
 import co.japl.android.myapplication.utils.DateUtils
@@ -206,7 +207,7 @@ class SaveCreditCardBoughtImpl(override var dbConnect: SQLiteOpenHelper) :IQuote
                 COLUMNS_CALC,
                 """ 
                      ${CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_CODE_CREDIT_CARD} = ?
-                    and ($FORMAT_DATE_BOUGHT_WHERE between ? and ? OR ${CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_BOUGHT_DATE} between ? and ?)
+                    AND ($FORMAT_DATE_BOUGHT_WHERE between ? and ? OR ${CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_BOUGHT_DATE} between ? and ?)
                     AND ($FORMAT_DATE_END_WHERE > ? OR ${CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_END_DATE} > ?)
                 """.trimMargin(),
                 arrayOf(key.toString(),startDateStr, endDateStr,startDateStr, endDateStr,startDateStr,startDateStr),
@@ -217,9 +218,14 @@ class SaveCreditCardBoughtImpl(override var dbConnect: SQLiteOpenHelper) :IQuote
             val items = mutableListOf<CreditCardBoughtDTO>()
             with(cursor) {
                 while (moveToNext()) {
-                    CreditCardBoughtMap().mapping(this)?.let{
-                    Log.d(javaClass.name,"=== GetDate Name: ${it.nameItem} Value: ${it.valueItem} CutOff: $cutOffDate Start: $startDate Bought: ${it.boughtDate} End: ${it.endDate}")
-                        items.add(it)
+                    CreditCardBoughtMap().mapping(this)?.let {
+                        if (it.endDate > startDate) {
+                            Log.d(
+                                javaClass.name,
+                                "=== GetDate Name: ${it.nameItem} Value: ${it.valueItem} CutOff: $endDateStr Start: $startDateStr Bought: ${it.boughtDate} End: ${it.endDate}"
+                            )
+                            items.add(it)
+                        }
                     }
                 }
             }
@@ -245,7 +251,8 @@ class SaveCreditCardBoughtImpl(override var dbConnect: SQLiteOpenHelper) :IQuote
         with(cursor){
             while(moveToNext()){
                 CreditCardBoughtMap().mapping(this)
-                    .takeIf {getValidMonths(it,cutoffCurrent,startDate)}
+                    ?.takeIf { it.endDate >= startDate }
+                    ?.takeIf {getValidMonths(it,cutoffCurrent,startDate)}
                     ?.let{items.add(it)}
             }
         }
@@ -566,14 +573,18 @@ class SaveCreditCardBoughtImpl(override var dbConnect: SQLiteOpenHelper) :IQuote
                     and ($FORMAT_DATE_BOUGHT_WHERE <= ? OR ${CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_BOUGHT_DATE} <= ?)
                     and ($FORMAT_DATE_END_WHERE >= ? OR ${CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_END_DATE} >= ?)
                 """.trimMargin(),
-                arrayOf(1.toString(),key.toString(),startDateStr,startDateStr,endDateStr,endDateStr),null,null,null)
+                arrayOf("1",key.toString(),startDateStr,startDateStr,endDateStr,endDateStr),null,null,null)
             val items = mutableListOf<CreditCardBoughtDTO>()
             with(cursor){
                 while(moveToNext()){
-                     CreditCardBoughtMap().mapping(this)?.let{items.add(it)}
+                     CreditCardBoughtMap().mapping(this)?.let {
+                         if (it.endDate >= cutOffLastMonth ){
+                             items.add(it)
+                     }
+                     }
                 }
             }
-            return items.also { Log.d(this.javaClass.name,"<<<=== ENDING::getRecurrentBuys Size: ${it.size}") }
+            return items.also { Log.d(this.javaClass.name,"<<<=== ENDING::getRecurrentBuys StartDate: $startDateStr EndDate: $endDateStr Size: ${it.size}") }
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -621,6 +632,23 @@ class SaveCreditCardBoughtImpl(override var dbConnect: SQLiteOpenHelper) :IQuote
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
+    override fun endingRecurrentPayment(idBought: Int, cutOff:LocalDateTime): Boolean {
+        Log.d(javaClass.name,"<<<=== STARTING::endingRecurrentPayment Id: $idBought CutOff: $cutOff")
+        val bought = get(idBought)
+        if(bought.isPresent){
+            val creditCard = creditCardSvc.get(bought.get().codeCreditCard)
+            if(creditCard.isPresent) {
+                val endDate = DateUtils.startDateFromCutoff(creditCard.get().cutOffDay, cutOff).minusDays(2)
+                bought.get().endDate = endDate
+                return (save(bought.get()) > 0).also { Log.d(javaClass.name,"<<<=== ENDING::endingRecurrentPayment Id: $idBought cutOff: $cutOff EndDate: $endDate Response: $it") }
+            }
+        }
+        return false.also { Log.d(javaClass.name,"<<<=== ENDING::endingRecurrentPayment BAD Validation Id: $idBought cutOff: $cutOff Response: $it")  }
+    }
+
+
+
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun backup(pathFile: String) {
         val values = getAll()
         val path = Paths.get(pathFile)
@@ -640,7 +668,7 @@ class SaveCreditCardBoughtImpl(override var dbConnect: SQLiteOpenHelper) :IQuote
         var quote = BigDecimal.ZERO
         for ( creditCard in creditCards) {
             val creditCardPojo = CreditCardMap().mapper(creditCard)
-            val endDate = creditCardPojo.cutOff.get()
+            val endDate = DateUtils.cutOffLastMonth(creditCardPojo.cutoffDay.get())
             val startDate = DateUtils.startDateFromCutoff(creditCardPojo.cutoffDay.get(),endDate)
             val capital = getCapital(creditCard.id, startDate, endDate)
             val capitalQuotes =
@@ -652,6 +680,31 @@ class SaveCreditCardBoughtImpl(override var dbConnect: SQLiteOpenHelper) :IQuote
                 BigDecimal.ZERO) + interestQuote.orElse(BigDecimal.ZERO)
         }
         return quote
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    override fun getLastAvailableQuotesTC(): List<QuoteCreditCard> {
+        val creditCards = creditCardSvc.getAll().filter { it.status }
+        val list = arrayListOf <QuoteCreditCard>()
+        for ( creditCard in creditCards) {
+            val creditCardPojo = CreditCardMap().mapper(creditCard)
+            val endDate = DateUtils.cutOffLastMonth(creditCardPojo.cutoffDay.get())
+            val startDate = DateUtils.startDateFromCutoff(creditCardPojo.cutoffDay.get(),endDate)
+            val capital = getCapital(creditCard.id, startDate, endDate)
+            val capitalQuotes =
+                getCapitalPendingQuotes(creditCard.id, startDate, endDate)
+            val interest = getInterest(creditCard.id, startDate, endDate)
+            val interestQuote =
+                getInterestPendingQuotes(creditCard.id, startDate, endDate)
+            val dto = QuoteCreditCard()
+            dto.creditCardId = Optional.of(creditCard.id)
+            dto.name = Optional.of(creditCard.name)
+            dto.capitalValue = Optional.of(capital.orElse(BigDecimal.ZERO) + capitalQuotes.orElse(BigDecimal.ZERO))
+            dto.interestValue = Optional.of(interestQuote.orElse(BigDecimal.ZERO) + interest.orElse(BigDecimal.ZERO))
+            list.add(dto)
+        }
+        return list
+
     }
 
 

@@ -1,8 +1,11 @@
 package co.japl.android.myapplication.finanzas.holders
 import co.japl.android.myapplication.finanzas.holders.validations.*
 import android.os.Build
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.View
 import androidx.annotation.RequiresApi
+import androidx.core.widget.addTextChangedListener
 import co.japl.android.myapplication.R
 import co.japl.android.myapplication.finanzas.holders.interfaces.IHolder
 import co.japl.android.myapplication.finanzas.bussiness.DTO.AccountDTO
@@ -29,7 +32,13 @@ class AccountHolder(val view:View): IHolder<AccountDTO> {
         list.setOnClickListener(actions)
         save.setOnClickListener(actions)
         list.visibility = View.GONE
+        save.visibility =  View.GONE
 
+        name.addTextChangedListener(object:TextWatcher{
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+            override fun afterTextChanged(p0: Editable?) {validate()}
+        })
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -58,6 +67,6 @@ class AccountHolder(val view:View): IHolder<AccountDTO> {
     override fun validate(): Boolean {
         var valid = false
         validations.firstInvalid{ requestFocus() }.notNull { valid = true }
-        return valid
+        return valid.also{ if(it) save.visibility = View.VISIBLE }
     }
 }

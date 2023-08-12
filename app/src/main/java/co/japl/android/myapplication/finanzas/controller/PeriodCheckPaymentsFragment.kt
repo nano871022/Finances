@@ -14,14 +14,20 @@ import co.japl.android.myapplication.R
 import co.japl.android.myapplication.adapter.ListPeriodPaidAdapter
 import co.japl.android.myapplication.bussiness.DB.connections.ConnectDB
 import co.japl.android.myapplication.finanzas.adapter.ListPeriodPaymentsAdapter
+import co.japl.android.myapplication.finanzas.bussiness.impl.CheckCreditImpl
 import co.japl.android.myapplication.finanzas.bussiness.impl.CheckPaymentImpl
+import co.japl.android.myapplication.finanzas.bussiness.impl.CheckQuoteImpl
+import co.japl.android.myapplication.finanzas.bussiness.interfaces.ICheckCreditSvc
 import co.japl.android.myapplication.finanzas.bussiness.interfaces.ICheckPaymentSvc
+import co.japl.android.myapplication.finanzas.bussiness.interfaces.ICheckQuoteSvc
 import co.japl.android.myapplication.finanzas.holders.PeriodCheckPaymentsHolder
 import co.japl.android.myapplication.finanzas.pojo.PeriodCheckPaymentsPOJO
 import java.util.*
 
 class PeriodCheckPaymentsFragment : Fragment() , LoaderManager.LoaderCallbacks<List<PeriodCheckPaymentsPOJO>> {
     private lateinit var svc:ICheckPaymentSvc
+    private lateinit var quoteSvc:ICheckQuoteSvc
+    private lateinit var creditSvc:ICheckCreditSvc
     private lateinit var holder:PeriodCheckPaymentsHolder
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -33,7 +39,11 @@ class PeriodCheckPaymentsFragment : Fragment() , LoaderManager.LoaderCallbacks<L
         savedInstanceState: Bundle?
     ): View? {
         val root = inflater.inflate(R.layout.fragment_period_check_payments, container, false)
-        svc = CheckPaymentImpl(ConnectDB(root.context))
+        val connect = ConnectDB(root.context)
+        svc = CheckPaymentImpl(connect)
+        quoteSvc = CheckQuoteImpl(connect)
+        creditSvc = CheckCreditImpl(connect)
+
         holder = PeriodCheckPaymentsHolder(root)
         holder.setFields(null)
         loaderManager.initLoader(1,null,this)
@@ -47,7 +57,7 @@ class PeriodCheckPaymentsFragment : Fragment() , LoaderManager.LoaderCallbacks<L
 
     override fun onCreateLoader(id: Int, args: Bundle?): Loader<List<PeriodCheckPaymentsPOJO>> {
         return object:AsyncTaskLoader<List<PeriodCheckPaymentsPOJO>>(requireContext()){
-            private var data:List<PeriodCheckPaymentsPOJO>? = null
+            private var data: MutableList<PeriodCheckPaymentsPOJO>? = null
             override fun onStartLoading() {
                 super.onStartLoading()
                 if(data != null){
@@ -57,7 +67,9 @@ class PeriodCheckPaymentsFragment : Fragment() , LoaderManager.LoaderCallbacks<L
                 }
             }
             override fun loadInBackground(): List<PeriodCheckPaymentsPOJO>? {
-                data = svc.getPeriodsPayment()
+                data = svc.getPeriodsPayment().toMutableList()
+                quoteSvc.getPeriodsPayment()?.takeIf { it.isNotEmpty() }?.let{data?.addAll(it)}
+                creditSvc.getPeriodsPayment()?.takeIf { it.isNotEmpty() }?.let{data?.addAll(it)}
                 return data
             }
         }
@@ -70,6 +82,12 @@ class PeriodCheckPaymentsFragment : Fragment() , LoaderManager.LoaderCallbacks<L
         loader: Loader<List<PeriodCheckPaymentsPOJO>>,
         data: List<PeriodCheckPaymentsPOJO>?
     ) {
-        data?.let{holder.loadRecycler(data.toMutableList())}
+        data?.groupBy { it.period }
+            ?.mapValues { (_,group) -> group.reduce{ acc, check ->
+                PeriodCheckPaymentsPOJO(acc.period,acc.paid + check.paid,acc.amount + check.amount,acc.count + check.count)
+            } }
+            ?.values?.toList()
+            ?.takeIf { it.isNotEmpty() }
+            ?.let{holder.loadRecycler(it.toMutableList())}
     }
 }

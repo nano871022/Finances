@@ -64,8 +64,7 @@
                 android:id="@+id/edCutOffDayCCC"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="number"
-                android:textAlignment="textEnd" />
+                android:inputType="number" />
             </com.google.android.material.textfield.TextInputLayout>
 
 

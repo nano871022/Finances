@@ -7,6 +7,7 @@ import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
+import android.widget.Button
 import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.core.widget.addTextChangedListener
@@ -39,7 +40,7 @@ class ProjectionHolder(val view:View,val supportManager:FragmentManager): IHolde
     private lateinit var quote:TextView
     private lateinit var active:SwitchMaterial
     private lateinit var cancel:MaterialButton
-    private lateinit var add:MaterialButton
+    private lateinit var add:Button
     private lateinit var dto:ProjectionDTO
     private lateinit var dataPicker:MaterialDatePicker<Long?>
     private lateinit var dialog:AlertDialog
@@ -66,7 +67,7 @@ class ProjectionHolder(val view:View,val supportManager:FragmentManager): IHolde
 
         cancel.setOnClickListener(actions)
         add.setOnClickListener(actions)
-
+        add.visibility = View.INVISIBLE
         settingDatePicket()
         settingType()
         settingCOPField()
@@ -84,8 +85,15 @@ class ProjectionHolder(val view:View,val supportManager:FragmentManager): IHolde
                     value.toMoneyFormat()
                     calculateQuote()
                     value.addTextChangedListener (this)
+                    validate()
                 },1000)
             }
+        })
+        name.addTextChangedListener(object:TextWatcher{
+            private val handler = Handler(Looper.getMainLooper())
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+            override fun afterTextChanged(p0: Editable?) {validate()}
         })
     }
 
@@ -110,6 +118,7 @@ class ProjectionHolder(val view:View,val supportManager:FragmentManager): IHolde
             setItems(list){ _,position->
                 val value = list[position]
                     type.setText(value)
+                validate()
             }
         }
         dialog = builder.create()
@@ -129,6 +138,7 @@ class ProjectionHolder(val view:View,val supportManager:FragmentManager): IHolde
             var date = LocalDateTime.ofInstant(Instant.ofEpochMilli(it!!), ZoneId.systemDefault())
             date = date.plusDays(1)
             this.date.setText(date.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")))
+            validate()
         }
         date.setOnClickListener { dataPicker.show(supportManager,"dt_buy") }
     }
@@ -166,7 +176,7 @@ class ProjectionHolder(val view:View,val supportManager:FragmentManager): IHolde
     override fun validate(): Boolean {
         var valid = false
         validations.firstInvalid{ requestFocus() }.notNull { valid = true }
-        return valid
+        return valid.also { if(it) add.visibility = View.VISIBLE }
     }
 
 }

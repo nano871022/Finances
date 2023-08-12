@@ -12,9 +12,13 @@ import androidx.recyclerview.widget.RecyclerView
 import co.japl.android.myapplication.R
 import co.japl.android.myapplication.bussiness.DB.connections.ConnectDB
 import co.japl.android.myapplication.bussiness.interfaces.SaveSvc
+import co.japl.android.myapplication.finanzas.bussiness.DTO.CheckCreditDTO
 import co.japl.android.myapplication.finanzas.bussiness.DTO.CheckPaymentsDTO
+import co.japl.android.myapplication.finanzas.bussiness.DTO.CheckQuoteDTO
+import co.japl.android.myapplication.finanzas.bussiness.DTO.ICheck
 import co.japl.android.myapplication.finanzas.bussiness.DTO.PaidDTO
 import co.japl.android.myapplication.finanzas.bussiness.impl.PaidImpl
+import co.japl.android.myapplication.finanzas.enums.CheckPaymentsEnum
 import co.japl.android.myapplication.finanzas.holders.CheckPaymentsHolder
 import co.japl.android.myapplication.finanzas.holders.validations.COPToBigDecimal
 import co.japl.android.myapplication.finanzas.pojo.CheckPaymentsPOJO
@@ -25,7 +29,8 @@ import com.google.android.material.snackbar.Snackbar
 import java.math.BigDecimal
 import java.time.LocalDateTime
 
-class ListPaymentsAdapter(var data:MutableList<CheckPaymentsPOJO>,val checkPaymentList:MutableList<CheckPaymentsDTO>,val fn: ((ListPaymentsAdapter,PaymentsItemHolder) -> Unit)?) :
+class ListPaymentsAdapter(var data:MutableList<CheckPaymentsPOJO>,
+                          private val checkPaymentList:MutableList<ICheck>, val fn: ((ListPaymentsAdapter, PaymentsItemHolder) -> Unit)?) :
     RecyclerView.Adapter<PaymentsItemHolder>() {
     private lateinit var view:View
     var paid:BigDecimal = BigDecimal.ZERO
@@ -46,8 +51,14 @@ class ListPaymentsAdapter(var data:MutableList<CheckPaymentsPOJO>,val checkPayme
                     if (viewHolder.check.isChecked) {
                        viewHolder.isCheck(LocalDateTime.now())
                         paid = paid.plus(viewHolder.value.COPToBigDecimal())
-                        val paidDTO = data.first { it.codPaid == viewHolder.codPaid }
-                        checkPaymentList.firstOrNull{ it.codPaid == viewHolder.codPaid.toInt()}?.let {
+                        val paidDTO = data.first { it.codPaid == viewHolder.codPaid && it.name == viewHolder.name.text }
+                        checkPaymentList.filterIsInstance<CheckPaymentsDTO>().firstOrNull{ it.codPaid == viewHolder.codPaid.toInt() && paidDTO.type == CheckPaymentsEnum.PAYMENTS}?.let {
+                            paidDTO.id = it.id.toLong()
+                        }
+                        checkPaymentList.filterIsInstance<CheckCreditDTO>().firstOrNull{ it.codCredit == viewHolder.codPaid.toInt() && paidDTO.type == CheckPaymentsEnum.CREDITS}?.let {
+                            paidDTO.id = it.id.toLong()
+                        }
+                        checkPaymentList.filterIsInstance<CheckQuoteDTO>().firstOrNull{ it.codQuote == viewHolder.codPaid.toInt() && paidDTO.type == CheckPaymentsEnum.QUOTE_CREDIT_CARD}?.let {
                             paidDTO.id = it.id.toLong()
                         }
                         listPaid.add(paidDTO)

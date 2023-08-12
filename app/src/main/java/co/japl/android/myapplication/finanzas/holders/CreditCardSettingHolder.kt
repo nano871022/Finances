@@ -1,8 +1,11 @@
 package co.japl.android.myapplication.holders
-
+import co.japl.android.myapplication.finanzas.holders.validations.*
+import co.japl.android.myapplication.finanzas.holders.validations.firstInvalid
 import android.app.AlertDialog
 import android.graphics.Color
 import android.os.Build
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
 import android.view.View
 import android.widget.*
@@ -38,7 +41,20 @@ class CreditCardSettingHolder (var view:View,val creditCardList:List<CreditCardD
     private var nameCreditCard: String = ""
     private var codeType: Int = -1
     private var valueType: String = ""
+    private val validations by lazy {
+        arrayOf(
+            name set R.string.validation_name_empty `when` { text().isEmpty() }
+            , value set R.string.validation_value_empty `when` { text().isEmpty() }
+        )
+    }
 
+    private val validations2 by lazy {
+        arrayOf(
+            type set R.string.validation_type_not_selected  `when` { !isSelected }
+            , creditCard set R.string.validation_credit_card_not_selected `when` { !isSelected }
+
+        )
+    }
 
     override fun setFields(actions: View.OnClickListener?) {
         creditCard = view.findViewById(R.id.spCreditCardCCSF)
@@ -48,10 +64,25 @@ class CreditCardSettingHolder (var view:View,val creditCardList:List<CreditCardD
         add = view.findViewById(R.id.btnAddCCS)
         cancel = view.findViewById(R.id.btnCancelCCS)
         active = view.findViewById(R.id.cbActiveCCS)
+        add.visibility = View.INVISIBLE
         add.setOnClickListener(this)
         cancel.setOnClickListener(this)
         creditCard.isFocusable = false
         type.isFocusable = false
+        focus()
+    }
+
+    private fun focus(){
+        name.addTextChangedListener(object: TextWatcher {
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+            override fun afterTextChanged(p0: Editable?) {validate()}
+        })
+        value.addTextChangedListener(object:TextWatcher{
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+            override fun afterTextChanged(p0: Editable?) {validate()}
+        })
     }
 
     override fun loadFields(values: CreditCardSettingDTO) {
@@ -89,33 +120,14 @@ class CreditCardSettingHolder (var view:View,val creditCardList:List<CreditCardD
         value.text?.clear()
     }
 
+
+
     override fun validate(): Boolean {
         var validate = true
-        if (name.editableText.isBlank()) {
-            name.error = view.resources.getString(R.string.validation_name_empty)
-            validate = validate and false
-        }
-        if (value.editableText.isBlank()) {
-            value.error = view.resources.getString(R.string.validation_value_empty)
-            validate = validate and false
-        }
-        if(type.isSelected){
-            type.setBackgroundColor(Color.RED)
-            Toast.makeText(view.context,view.resources.getString(R.string.validation_type_not_selected),Toast.LENGTH_LONG).show()
-            validate = validate and false
-        }else{
-            type.setBackgroundColor(Color.TRANSPARENT)
-            validate = validate and true
-        }
-        if(creditCard.isSelected){
-            creditCard.setBackgroundColor(Color.RED)
-            Toast.makeText(view.context,view.resources.getString(R.string.validation_credit_card_not_selected),Toast.LENGTH_LONG).show()
-            validate = validate and false
-        }else{
-            creditCard.setBackgroundColor(Color.TRANSPARENT)
-            validate = validate and true
-        }
-        return validate
+
+        validations.firstInvalid{ requestFocus() } .notNull { validate = true }
+        validations2.firstInvalid{ requestFocus() }.notNull { validate = true }
+        return validate.also { if(it) add.visibility = View.VISIBLE }
     }
 
     override fun lists(fn: ((CreditCardSettingHolder) -> Unit)?) {
@@ -160,6 +172,7 @@ class CreditCardSettingHolder (var view:View,val creditCardList:List<CreditCardD
                     creditCard.setText(creditCardFound.name)
                     nameCreditCard = creditCardFound.name
                     codeCreditCard = creditCardFound.id
+                    validate()
                 }
             }
             val dialog = build.create()
@@ -173,6 +186,7 @@ class CreditCardSettingHolder (var view:View,val creditCardList:List<CreditCardD
                     codeType = position
                     valueType = kind.toString()
                     type.setText(kind)
+                    validate()
                 }
             }
             val dialog = build.create()

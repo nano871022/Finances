@@ -72,6 +72,7 @@ class QuoteCreditHolder(var container:View): IHolder<QuoteCreditCard> {
         btnAmortization.setOnClickListener(actions)
         createDialogTax()
         kindOfTax.setOnClickListener { kindOfTaxDialog.show() }
+        btnSave.visibility = View.INVISIBLE
     }
 
     private fun createDialogTax(){
@@ -134,6 +135,6 @@ class QuoteCreditHolder(var container:View): IHolder<QuoteCreditCard> {
     override fun validate(): Boolean {
         var valid = false
         validations.firstInvalid{ requestFocus() }.notNull { valid = true }
-        return valid
+        return valid.also { if(it) btnSave.visibility = View.VISIBLE }
     }
 }

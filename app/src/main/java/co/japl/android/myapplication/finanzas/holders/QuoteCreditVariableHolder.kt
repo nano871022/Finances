@@ -109,7 +109,6 @@ class QuoteCreditVariableHolder(var container: View): IHolder<QuoteCreditCard>,O
         values.kindOfTax.ifPresent{
             kindOfTax.setText(it)
         }
-        btnSave.visibility = View.VISIBLE
         btnAmortization.visibility = View.VISIBLE
         quote = values
         Log.d(this.javaClass.name,"Assign to quote ${quote.response} ${quote.capitalValue} ${quote.interestValue}")
@@ -158,7 +157,7 @@ class QuoteCreditVariableHolder(var container: View): IHolder<QuoteCreditCard>,O
     override fun validate(): Boolean {
         var valid = false
         validations.firstInvalid{ requestFocus() }.notNull { valid = true }
-        return valid
+        return valid.also { if(it) btnSave.visibility = View.VISIBLE }
     }
 
      private fun onClick() {

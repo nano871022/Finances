@@ -34,9 +34,9 @@ class CreditCardHolder(var view:View) : IHolder<CreditCardDTO> {
     lateinit var setting:Button
     private lateinit var id:Optional<Int>
     private val validations by lazy{ arrayOf(
-        name set  R.string.name_credit_card_is_empty  `when` { text().isNotBlank() },
-        cutOffDay set  R.string.cutoffday_value_invalid  `when` { text().isNotBlank() && text().toShort() >= 1 || text().toShort() <= 31 },
-        warningQuote set  R.string.name_credit_card_is_empty  `when` { text().isNotBlank() && text().toBigDecimal() >= BigDecimal.ONE }
+        name set  R.string.name_credit_card_is_empty  `when` { text().isBlank() },
+        cutOffDay set  R.string.cutoffday_value_invalid  `when` { text().isBlank() || text().isNotBlank() && text().toShort() < 1 || text().toShort() > 31 },
+        warningQuote set  R.string.name_credit_card_is_empty  `when` { text().isBlank() || text().isNotBlank() && NumbersUtil.toBigDecimal(text()) <= BigDecimal.ONE }
     )}
 
     @RequiresApi(Build.VERSION_CODES.N)
@@ -58,6 +58,7 @@ class CreditCardHolder(var view:View) : IHolder<CreditCardDTO> {
         id = Optional.empty()
         setting.visibility = View.INVISIBLE
         onFocus()
+        save.visibility = View.INVISIBLE
     }
 
     private fun onClick(action: View.OnClickListener?){
@@ -79,8 +80,30 @@ class CreditCardHolder(var view:View) : IHolder<CreditCardDTO> {
                         warningQuote.setText(NumbersUtil.toString(warningQuote))
                         warningQuote.addTextChangedListener (this)
                     }
+                    validate()
                 },1000)
             }
+        })
+
+        cutOffDay.addTextChangedListener(object: TextWatcher{
+            private val handler = Handler(Looper.getMainLooper())
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+            override fun afterTextChanged(p0: Editable?) {validate()}
+        })
+
+        maxQuotes.addTextChangedListener(object: TextWatcher{
+            private val handler = Handler(Looper.getMainLooper())
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+            override fun afterTextChanged(p0: Editable?) {validate()}
+        })
+
+        name.addTextChangedListener(object: TextWatcher{
+            private val handler = Handler(Looper.getMainLooper())
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+            override fun afterTextChanged(p0: Editable?) {validate()}
         })
     }
 
@@ -124,7 +147,7 @@ class CreditCardHolder(var view:View) : IHolder<CreditCardDTO> {
     override fun validate(): Boolean {
         var valid = false
         validations.firstInvalid{requestFocus()}.notNull { valid = true }
-        return valid
+        return valid.also { if(it) save.visibility = View.VISIBLE }
     }
 
 

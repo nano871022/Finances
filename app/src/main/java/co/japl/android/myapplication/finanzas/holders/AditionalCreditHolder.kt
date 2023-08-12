@@ -52,6 +52,7 @@ class AdditionalCreditHolder(val view:View,val supportManager: FragmentManager):
         save =  view.findViewById(R.id.btn_save_ac)
         cancel.setOnClickListener(actions)
         save.setOnClickListener(actions)
+        save.visibility = View.INVISIBLE
         loadDates()
         loadMoney()
     }
@@ -70,21 +71,22 @@ class AdditionalCreditHolder(val view:View,val supportManager: FragmentManager):
     private fun loadMoney(){
         val handler = Handler(Looper.getMainLooper())
         value.addTextChangedListener (object:TextWatcher{
-            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-            }
-
-            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-            }
-
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
             override fun afterTextChanged(p0: Editable?) {
                 handler.removeCallbacksAndMessages(null)
                 handler.postDelayed({
                     value.removeTextChangedListener(this)
                     value.setNumberToField()
                     value.addTextChangedListener (this)
+                    validate()
                 },1000)
-
             }
+        })
+        name.addTextChangedListener (object:TextWatcher{
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+            override fun afterTextChanged(p0: Editable?) {validate()}
         })
     }
 
@@ -113,6 +115,7 @@ class AdditionalCreditHolder(val view:View,val supportManager: FragmentManager):
             dataPicker.addOnPositiveButtonClickListener {
                 var date = LocalDateTime.ofInstant(Instant.ofEpochMilli(it), ZoneId.systemDefault())
                 this.startDate.setText(date.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")))
+                validate()
             }
         }
 
@@ -121,6 +124,7 @@ class AdditionalCreditHolder(val view:View,val supportManager: FragmentManager):
             dataPicker2.addOnPositiveButtonClickListener {
                 var date = LocalDateTime.ofInstant(Instant.ofEpochMilli(it), ZoneId.systemDefault())
                 this.endDate.setText(date.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")))
+                validate()
             }
         }
     }
@@ -150,6 +154,6 @@ class AdditionalCreditHolder(val view:View,val supportManager: FragmentManager):
         }.notNull{
             valid = true
         }
-        return valid
+        return valid.also { if(it) save.visibility = View.VISIBLE }
     }
 }

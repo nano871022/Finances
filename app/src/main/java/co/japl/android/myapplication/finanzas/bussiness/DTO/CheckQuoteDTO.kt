@@ -1,24 +1,23 @@
 package co.japl.android.myapplication.finanzas.bussiness.DTO
 
-import co.japl.android.myapplication.finanzas.enums.CheckPaymentsEnum
 import java.math.BigDecimal
 import java.time.LocalDate
 import java.time.LocalDateTime
 
-data class CheckPaymentsDTO(
+data class CheckQuoteDTO(
     var id:Int,
     var date:LocalDateTime,
     var check:Short,
     var period:String,
-    var codPaid:Int,
+    var codQuote:Int
 ) : ICheck
 
-object CheckPaymentsDB{
+object CheckQuoteDB{
     object Entry{
-        const val TABLE_NAME = "TB_CHECK_PAYMENTS"
+        const val TABLE_NAME = "TB_CHECK_QUOTE"
         const val COLUMN_DATE_CREATE = "dt_paid"
         const val COLUMN_PERIOD = "str_period"
-        const val COLUMN_COD_PAID = "cod_paid"
+        const val COLUMN_COD_QUOTE = "cod_quote"
         const val COLUMN_CHECK = "num_check"
     }
 }

@@ -36,6 +36,7 @@ import co.japl.android.myapplication.finanzas.bussiness.impl.CreditCardSettingIm
 import co.japl.android.myapplication.finanzas.bussiness.impl.DifferInstallmentImpl
 import co.japl.android.myapplication.finanzas.bussiness.impl.KindOfTaxImpl
 import co.japl.android.myapplication.finanzas.bussiness.interfaces.IDifferInstallment
+import co.japl.android.myapplication.finanzas.bussiness.interfaces.IQuoteCreditCardSvc
 import co.japl.android.myapplication.finanzas.putParams.AmortizationTableParams
 import co.japl.android.myapplication.finanzas.enums.KindOfTaxEnum
 import co.japl.android.myapplication.finanzas.enums.MoreOptionsItemsCreditCard
@@ -408,8 +409,7 @@ class ListBoughtAdapter(private val data:MutableList<CreditCardBoughtDTO>,privat
         dialog.show()
         dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
             val dto = data[position]
-            dto.endDate = cutOff.minusMonths(1).plusDays(1)
-            if (saveSvc.save(dto)>0) {
+            if ((saveSvc  as IQuoteCreditCardSvc).endingRecurrentPayment(dto.id, cutOff)) {
                 dialog.dismiss()
                 Snackbar.make(
                     view,
@@ -417,7 +417,8 @@ class ListBoughtAdapter(private val data:MutableList<CreditCardBoughtDTO>,privat
                     Snackbar.LENGTH_LONG
                 )
                     .setAction(R.string.close) {}
-                    .show()
+                    .show().also {  CreditCardQuotesParams.Companion.CreateQuote.toBack(navController) }
+
             } else {
                 dialog.dismiss()
                 Snackbar.make(

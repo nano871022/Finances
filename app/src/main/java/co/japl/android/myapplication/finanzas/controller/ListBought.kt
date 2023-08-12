@@ -56,7 +56,7 @@ class ListBought : Fragment() , LoaderManager.LoaderCallbacks<Pair<List<CreditCa
             dbConnect = ConnectDB(it!!)
             saveSvc = SaveCreditCardBoughtImpl(dbConnect)
         }
-        holder = ListBoughtHolder(rootView)
+        holder = ListBoughtHolder(rootView,inflater)
         holder.setFields(null)
         loaderManager.initLoader(1,null,this)
         return rootView
@@ -111,6 +111,12 @@ class ListBought : Fragment() , LoaderManager.LoaderCallbacks<Pair<List<CreditCa
         boughtRecap.quotesValueCapital = capitalQuotes
         boughtRecap.currentValueInterest = interest
         boughtRecap.quotesValueInterest = interestQuotes
+
+        boughtRecap.quoteItem = Optional.of(list.count { it.month == 1 })
+        boughtRecap.quotesItem =  Optional.of(listRecurrentPending.size + pending.size + list.count { it.month > 1 } )
+        boughtRecap.recurrentItem = Optional.of(listRecurrent.size)
+        boughtRecap.totalItem = Optional.of(joinList.size)
+
         joinList = joinList.sortedByDescending { it.boughtDate }.toMutableList()
         return Pair(joinList,boughtRecap)
     }
