@@ -23,7 +23,7 @@ import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 
-class AdditionalCreditHolder(val view:View,val supportManager: FragmentManager):
+class AdditionalCreditHolder(val view:View,val supportManager: FragmentManager,val isView:Boolean):
     IHolder<AdditionalCreditDTO> {
     lateinit var name: TextInputEditText
     lateinit var value: TextInputEditText
@@ -53,7 +53,8 @@ class AdditionalCreditHolder(val view:View,val supportManager: FragmentManager):
         cancel.setOnClickListener(actions)
         save.setOnClickListener(actions)
         save.visibility = View.INVISIBLE
-        loadDates()
+        name.focusable = if(isView)  View.NOT_FOCUSABLE else View.FOCUSABLE
+        value.focusable = if(isView)  View.NOT_FOCUSABLE else View.FOCUSABLE
         loadMoney()
     }
 
@@ -62,9 +63,12 @@ class AdditionalCreditHolder(val view:View,val supportManager: FragmentManager):
         if(values.id > 0) {
             name.setText(values.name)
             value.setText(NumbersUtil.toString(values.value))
+            startDate.setText(DateUtils.localDateToString(values.startDate))
+            endDate.setText(DateUtils.localDateToString(values.endDate))
+        }else{
+            startDate.visibility = View.GONE
+            endDate.visibility = View.GONE
         }
-        startDate.setText(DateUtils.localDateToString(values.startDate))
-        endDate.setText(DateUtils.localDateToString(values.endDate))
         additionalCredit = values
     }
 
@@ -88,45 +92,6 @@ class AdditionalCreditHolder(val view:View,val supportManager: FragmentManager):
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
             override fun afterTextChanged(p0: Editable?) {validate()}
         })
-    }
-
-    @RequiresApi(Build.VERSION_CODES.O)
-    private fun loadDates(){
-
-        val dataPicker = MaterialDatePicker
-            .Builder
-            .datePicker()
-            .setInputMode(MaterialDatePicker.INPUT_MODE_CALENDAR)
-            .setTitleText(R.string.date_bill)
-            .setSelection(MaterialDatePicker.todayInUtcMilliseconds())
-            .build()
-
-        val dataPicker2 = MaterialDatePicker
-            .Builder
-            .datePicker()
-            .setInputMode(MaterialDatePicker.INPUT_MODE_CALENDAR)
-            .setTitleText(R.string.date_bill)
-            .setSelection(MaterialDatePicker.todayInUtcMilliseconds())
-            .build()
-
-
-        startDate.setOnClickListener{
-            dataPicker.show(supportManager,"DT_BILL")
-            dataPicker.addOnPositiveButtonClickListener {
-                var date = LocalDateTime.ofInstant(Instant.ofEpochMilli(it), ZoneId.systemDefault())
-                this.startDate.setText(date.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")))
-                validate()
-            }
-        }
-
-        endDate.setOnClickListener{
-            dataPicker2.show(supportManager,"DT_BILL")
-            dataPicker2.addOnPositiveButtonClickListener {
-                var date = LocalDateTime.ofInstant(Instant.ofEpochMilli(it), ZoneId.systemDefault())
-                this.endDate.setText(date.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")))
-                validate()
-            }
-        }
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -154,6 +119,6 @@ class AdditionalCreditHolder(val view:View,val supportManager: FragmentManager):
         }.notNull{
             valid = true
         }
-        return valid.also { if(it) save.visibility = View.VISIBLE }
+        return valid.also { if(it && !isView) save.visibility = View.VISIBLE }
     }
 }

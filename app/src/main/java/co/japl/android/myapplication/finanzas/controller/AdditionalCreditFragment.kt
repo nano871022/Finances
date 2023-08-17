@@ -17,6 +17,7 @@ import co.japl.android.myapplication.bussiness.interfaces.SaveSvc
 import co.japl.android.myapplication.finanzas.bussiness.DTO.AdditionalCreditDTO
 import co.japl.android.myapplication.finanzas.bussiness.impl.AdditionalCreditImpl
 import co.japl.android.myapplication.finanzas.holders.AdditionalCreditHolder
+import co.japl.android.myapplication.finanzas.holders.validations.isNull
 import co.japl.android.myapplication.finanzas.putParams.AdditionalCreditParams
 import java.math.BigDecimal
 import java.time.LocalDate
@@ -37,17 +38,16 @@ class AdditionalCreditFragment : Fragment(), OnClickListener {
     ): View? {
         val root =  inflater.inflate(R.layout.fragment_additional_credit, container, false)
         additionalSvc = AdditionalCreditImpl(ConnectDB(root.context))
-        activity?.supportFragmentManager?.let {holder = AdditionalCreditHolder(root,it)}
+        val additional = arguments?.let {  AdditionalCreditParams.download(it) }
+        activity?.supportFragmentManager?.let {holder = AdditionalCreditHolder(root,it,additional?.second?:false)}
         holder.setFields(this)
-        holder.loadFields(getAdditionalCredit())
+        holder.loadFields(getAdditionalCredit(additional?.first))
         return root
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    private fun getAdditionalCredit():AdditionalCreditDTO{
-        val additional = arguments?.let {  AdditionalCreditParams.download(it) }
-        return if(additional != null){ additional }
-        else {
+    private fun getAdditionalCredit(additional:AdditionalCreditDTO?):AdditionalCreditDTO{
+        return if(additional != null) additional else {
             val id = 0
             val end = LocalDate.MAX
             val start = LocalDate.now()

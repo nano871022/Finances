@@ -1,6 +1,7 @@
 package co.japl.android.myapplication.finanzas.holders
 
 import android.os.Build
+import android.view.LayoutInflater
 import android.view.View
 import android.widget.ProgressBar
 import android.widget.TextView
@@ -20,7 +21,7 @@ import com.google.android.material.button.MaterialButton
 import java.math.BigDecimal
 import java.time.LocalDate
 
-class AdditionalCreditListHolder(val view:View,val navController: NavController) :
+class AdditionalCreditListHolder(val view:View,val navController: NavController,val inflater: LayoutInflater) :
     IHolder<AdditionalCreditDTO> {
     private lateinit var numAdditional:TextView
     private lateinit var totAdditional:TextView
@@ -47,7 +48,7 @@ class AdditionalCreditListHolder(val view:View,val navController: NavController)
         val total = list.sumOf { it.value }
         numAdditional.text = count.toString()
         totAdditional.text = NumbersUtil.COPtoString(total)
-        ListAdditionalCreditAdapter(list.toMutableList(), navController).let {
+        ListAdditionalCreditAdapter(list.toMutableList(), navController,inflater).let {
             recyclerView.adapter = it
         }
         progressBar.visibility = View.GONE

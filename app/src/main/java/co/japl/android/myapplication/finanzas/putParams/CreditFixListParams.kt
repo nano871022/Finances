@@ -28,6 +28,11 @@ class CreditFixListParams {
             navController.navigate(R.id.action_creditListFragment_to_periodCreditListFragment)
         }
 
+        fun newInstanceAdditionalList(creditCode:Long,navController: NavController){
+            val arguments = bundleOf( CreditFixParams.Params.PARAMS_CREDIT_CODE to creditCode)
+            navController.navigate(R.id.action_monthlyCreditListFragment_to_additionalListFragment,arguments)
+        }
+
         @RequiresApi(Build.VERSION_CODES.O)
         fun downloadMonthly(arguments:Bundle?):LocalDate?{
             return arguments?.let{

@@ -34,7 +34,7 @@ class AdditionalListFragment : Fragment() ,OnClickListener,LoaderManager.LoaderC
         savedInstanceState: Bundle?
     ): View? {
         val root = inflater.inflate(R.layout.fragment_additional_list, container, false)
-        holder = AdditionalCreditListHolder(root,findNavController())
+        holder = AdditionalCreditListHolder(root,findNavController(),inflater)
         holder.setFields(this)
         loaderManager.initLoader(1,null,this)
         return root
@@ -50,7 +50,7 @@ class AdditionalListFragment : Fragment() ,OnClickListener,LoaderManager.LoaderC
          when(view?.id){
             R.id.btn_add_al -> {
                 additional?.let {
-                    AdditionalCreditParams.newInstance(it, findNavController())
+                    AdditionalCreditParams.newInstance(it, false,findNavController())
                 }
             }
         }

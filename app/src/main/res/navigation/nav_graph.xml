@@ -264,6 +264,9 @@
         <action
             android:id="@+id/action_monthlyCreditListFragment_to_amortizationCreditFragment"
             app:destination="@id/amortizationCreditFragment" />
+        <action
+            android:id="@+id/action_monthlyCreditListFragment_to_additionalListFragment"
+            app:destination="@id/additionalListFragment" />
     </fragment>
     <fragment
         android:id="@+id/periodCreditListFragment"
