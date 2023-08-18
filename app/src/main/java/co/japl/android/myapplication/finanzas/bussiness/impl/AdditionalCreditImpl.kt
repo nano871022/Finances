@@ -21,7 +21,7 @@ import java.math.BigDecimal
 import java.time.LocalDate
 import java.util.*
 
-class AdditionalCreditImpl(override var dbConnect: SQLiteOpenHelper) : SaveSvc<AdditionalCreditDTO>,ISaveSvc<AdditionalCreditDTO> , IAdditionalCreditSvc{
+class AdditionalCreditImpl(override var dbConnect: SQLiteOpenHelper) :  IAdditionalCreditSvc{
     public  val COLUMNS = arrayOf(
         BaseColumns._ID,
         AdditionalCreditDB.Entry.COLUMN_NAME,
@@ -74,16 +74,36 @@ class AdditionalCreditImpl(override var dbConnect: SQLiteOpenHelper) : SaveSvc<A
     @RequiresApi(Build.VERSION_CODES.O)
     override fun get(id: Int): Optional<AdditionalCreditDTO> {
         val db = dbConnect.readableDatabase
-
-        val cursor = db.query(AdditionalCreditDB.Entry.TABLE_NAME,COLUMNS,"${AdditionalCreditDB.Entry.COLUMN_CREDIT_CODE} = ?",
-            arrayOf(id.toString()),null,null,null)
+        val date = DateUtils.localDateToStringDate(LocalDate.now())
+        val cursor = db.query(AdditionalCreditDB.Entry.TABLE_NAME
+            ,COLUMNS
+            ,"${AdditionalCreditDB.Entry.COLUMN_CREDIT_CODE} = ? AND $FORMAT_DATE_END_WHERE >= ?"
+            ,arrayOf(id.toString(),date)
+            ,null,null,null)
         with(cursor){
             while(moveToNext()){
                 return Optional.ofNullable(AdditionalMap().mapping(cursor))
             }
         }
         return Optional.empty()
+    }
 
+    @RequiresApi(Build.VERSION_CODES.O)
+    override fun get(id: Long): List<AdditionalCreditDTO> {
+        val db = dbConnect.readableDatabase
+        val list = ArrayList<AdditionalCreditDTO>()
+        val date = DateUtils.localDateToStringDate(LocalDate.now())
+        val cursor = db.query(AdditionalCreditDB.Entry.TABLE_NAME
+            ,COLUMNS
+            ,"${AdditionalCreditDB.Entry.COLUMN_CREDIT_CODE} = ? AND $FORMAT_DATE_END_WHERE >= ?"
+            ,arrayOf(id.toString(),date)
+            ,null,null,null)
+        with(cursor){
+            while(moveToNext()){
+                 AdditionalMap().mapping(cursor)?.let{list.add(it)}
+            }
+        }
+        return list
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -109,11 +129,10 @@ class AdditionalCreditImpl(override var dbConnect: SQLiteOpenHelper) : SaveSvc<A
     @RequiresApi(Build.VERSION_CODES.O)
     override fun get(values: AdditionalCreditDTO): List<AdditionalCreditDTO> {
         val db = dbConnect.readableDatabase
-        val localDate = LocalDate.now()
-
+        val localDate = DateUtils.localDateToStringDate(LocalDate.now())
         val cursor = db.query(AdditionalCreditDB.Entry.TABLE_NAME,COLUMNS
             ,"${AdditionalCreditDB.Entry.COLUMN_CREDIT_CODE} = ? AND $FORMAT_DATE_END_WHERE >= ?"
-            , arrayOf(values.creditCode.toString(),DateUtils.localDateToStringDate(localDate)),null,null,null)
+            , arrayOf(values.creditCode.toString(),localDate),null,null,null)
         val list = arrayListOf<AdditionalCreditDTO>()
         val mapper = AdditionalMap()
         with(cursor){
