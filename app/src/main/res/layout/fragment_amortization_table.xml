@@ -135,6 +135,12 @@
             </com.google.android.material.textfield.TextInputLayout>
     </LinearLayout>
 
+        <Button
+            android:id="@+id/btn_add_payment_at"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/add_extra"/>
+
     <TableLayout
         android:id="@+id/tableAT"
         android:layout_width="match_parent"

@@ -40,7 +40,7 @@ class AmortizationTableFragment : Fragment() , LoaderManager.LoaderCallbacks<Map
     ): View? {
         val view =  inflater.inflate(R.layout.fragment_amortization_table, container, false)
         differInstallmentSvc = DifferInstallmentImpl(ConnectDB(requireContext()))
-        holder = AmortizationTableHolder(view)
+        holder = AmortizationTableHolder(view,layoutInflater)
         holder.setup(null)
         loaderManager.initLoader(1, null, this)
         return view

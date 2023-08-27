@@ -1,7 +1,10 @@
 package co.japl.android.myapplication.finanzas.holders
 
 import android.util.Log
+import android.view.LayoutInflater
 import android.view.View
+import android.view.View.OnClickListener
+import android.widget.Button
 import android.widget.ProgressBar
 import android.widget.TableLayout
 import android.widget.TableRow
@@ -9,12 +12,17 @@ import android.widget.TextView
 import androidx.core.view.setMargins
 import androidx.core.view.setPadding
 import co.japl.android.myapplication.R
+import co.japl.android.myapplication.bussiness.DB.connections.ConnectDB
 import co.japl.android.myapplication.bussiness.DTO.CalcDTO
 import co.japl.android.myapplication.bussiness.DTO.CreditCardDTO
+import co.japl.android.myapplication.finanzas.bussiness.DTO.AddAmortizationDTO
 import co.japl.android.myapplication.finanzas.bussiness.DTO.Amortization
 import co.japl.android.myapplication.finanzas.bussiness.DTO.DifferInstallmentDTO
+import co.japl.android.myapplication.finanzas.bussiness.impl.AddAmortizationImpl
 import co.japl.android.myapplication.finanzas.bussiness.impl.KindOfTaxImpl
+import co.japl.android.myapplication.finanzas.bussiness.interfaces.IAddAmortizationSvc
 import co.japl.android.myapplication.finanzas.bussiness.interfaces.IKindOfTaxSvc
+import co.japl.android.myapplication.finanzas.controller.AddValueAmortizationDialog
 import co.japl.android.myapplication.finanzas.holders.interfaces.ITableHolder
 import co.japl.android.myapplication.finanzas.enums.KindOfTaxEnum
 import co.japl.android.myapplication.finanzas.enums.CalcEnum
@@ -23,8 +31,9 @@ import com.google.android.material.textfield.TextInputLayout
 import com.google.android.material.textview.MaterialTextView
 import java.math.BigDecimal
 
-class AmortizationTableHolder(val view:View): ITableHolder<CalcDTO> {
+class AmortizationTableHolder(val view:View, val inflater:LayoutInflater): ITableHolder<CalcDTO>, OnClickListener {
     private val kindOfTaxSvc:IKindOfTaxSvc = KindOfTaxImpl()
+    private lateinit var addValueAmortizationSvc:IAddAmortizationSvc
     private lateinit var table: TableLayout
     private lateinit var creditData: CalcDTO
     private lateinit var amortizationList: ArrayList<Amortization>
@@ -41,16 +50,17 @@ class AmortizationTableHolder(val view:View): ITableHolder<CalcDTO> {
     private lateinit var nextValueColumn: TextView
     private lateinit var capitalValueColumn: TextView
     private lateinit var progressBar:ProgressBar
+    private lateinit var btnAdd:Button
     private var quotesPaid:Long = 0
     private var quote1NotPaid:Boolean = false
     private var differInstallment:DifferInstallmentDTO? = null
     private val colorPaid = view.resources.getColor(androidx.media.R.color.primary_text_default_material_dark)
     private val backgroun = view.resources.getColor(R.color.green_background)
     private var monthsCalc:Long? = null
-
+    private lateinit var list : List<AddAmortizationDTO>
 
     override fun setup(actions: View.OnClickListener?) {
-
+        addValueAmortizationSvc = AddAmortizationImpl(ConnectDB(view.context))
         table = view.findViewById(R.id.tableAT)
         creditValue = view.findViewById(R.id.credit_value_at)
         quoteValue = view.findViewById(R.id.quote_value_at)
@@ -64,6 +74,7 @@ class AmortizationTableHolder(val view:View): ITableHolder<CalcDTO> {
         capitalValueLayout = view.findViewById(R.id.capitalValueLayout)
         quoteValueLayout = view.findViewById(R.id.quoteValueLayout)
         progressBar = view.findViewById(R.id.pb_load_at)
+        btnAdd = view.findViewById(R.id.btn_add_payment_at)
 
         amortizationList = ArrayList<Amortization>()
         interesToPay = BigDecimal.ZERO
@@ -71,6 +82,7 @@ class AmortizationTableHolder(val view:View): ITableHolder<CalcDTO> {
         nextValueColumn.visibility = View.GONE
         capitalValueLayout.visibility = View.GONE
         progressBar.visibility = View.VISIBLE
+        btnAdd.setOnClickListener(this)
     }
 
     override fun setData(creditValue: CalcDTO) {
@@ -79,6 +91,8 @@ class AmortizationTableHolder(val view:View): ITableHolder<CalcDTO> {
         this.quoteValue.text = NumbersUtil.toString(creditValue.quoteCredit)
         this.tax.text = "${creditValue.interest} ${creditValue.kindOfTax}"
         this.periods.text = creditValue.period.toString()
+
+        list = addValueAmortizationSvc.getAll(creditValue.id)
     }
 
     override fun add(name:String,value:Any){
@@ -138,7 +152,6 @@ class AmortizationTableHolder(val view:View): ITableHolder<CalcDTO> {
                 (it.originValue / it.oldInstallment)
             }?:(currentCreditValue.toDouble() / periods)
 
-        Log.d(javaClass.name,"$capital = $currentCreditValue / $periods")
         val tax = getTax()
         for ( period in 1 .. creditData.period){
 
@@ -147,22 +160,17 @@ class AmortizationTableHolder(val view:View): ITableHolder<CalcDTO> {
                    capital = it.pendingValuePayable / it.newInstallment
                 }
 
-            val interest = if(quote1NotPaid && period == 1L){
-                BigDecimal.ZERO
-            }else if(quote1NotPaid && period == 2L){
-                currentCreditValue * tax.toBigDecimal() + creditData.valueCredit *  tax.toBigDecimal()
-            }else {
-                currentCreditValue * tax.toBigDecimal()
-            }
+            val extraCapitalValue =  getExtraValue(period)
+
+            val interest = getInterest(period,currentCreditValue,tax)
             amortizationList.add(Amortization(period.toInt(),
                 currentCreditValue ,
                 interest,
-                capital.toBigDecimal(),
-                capital.toBigDecimal()   + interest,
-                currentCreditValue - capital.toBigDecimal()))
-            currentCreditValue -=  capital.toBigDecimal()
+                (capital + extraCapitalValue).toBigDecimal()  ,
+                (capital + extraCapitalValue).toBigDecimal()   + interest,
+                currentCreditValue - (capital + extraCapitalValue).toBigDecimal()))
+            currentCreditValue -=  (capital + extraCapitalValue).toBigDecimal()
             interesToPay += interest
-            Log.d(javaClass.name,"${amortizationList.size} $currentCreditValue $capital (${creditData.valueCredit} / ${creditData.period}) $interest - $tax - ${creditData.interest}")
             if(periods > monthsCalc!! && monthsCalc == period && differInstallment == null){
                 break
             }
@@ -174,7 +182,17 @@ class AmortizationTableHolder(val view:View): ITableHolder<CalcDTO> {
         this.capitalValueColumn.visibility = View.GONE
     }
 
-    fun getTax():Double{
+    private fun getInterest(period:Long,currentCreditValue:BigDecimal,tax:Double):BigDecimal{
+        return if(quote1NotPaid && period == 1L){
+            BigDecimal.ZERO
+        }else if(quote1NotPaid && period == 2L){
+            currentCreditValue * tax.toBigDecimal() + creditData.valueCredit *  tax.toBigDecimal()
+        }else {
+            currentCreditValue * tax.toBigDecimal()
+        }
+    }
+
+    private fun getTax():Double{
         return if(creditData.interest > 0){
             Log.d(javaClass.name,"${creditData.interest} ${creditData.kindOfTax}")
             kindOfTaxSvc.getNM(creditData.interest, KindOfTaxEnum.valueOf(creditData.kindOfTax))
@@ -236,6 +254,10 @@ class AmortizationTableHolder(val view:View): ITableHolder<CalcDTO> {
        progressBar.visibility = View.GONE
     }
 
+    private fun getExtraValue(quote:Long):Double{
+        return list.filter { it.nbrQuote == quote }.sumOf { it.value }
+    }
+
     private fun createTextView(value:String,paid:Boolean):MaterialTextView{
         val textView = MaterialTextView(view.context)
         textView.setPadding(view.resources.getDimension(R.dimen.space_min).toInt())
@@ -248,6 +270,9 @@ class AmortizationTableHolder(val view:View): ITableHolder<CalcDTO> {
         return textView
     }
 
+    override fun onClick(p0: View?) {
+        AddValueAmortizationDialog(view.context,inflater,creditData.id).show()
+    }
 
 
 }
