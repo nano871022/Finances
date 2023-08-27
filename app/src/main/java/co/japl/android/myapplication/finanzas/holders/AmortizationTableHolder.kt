@@ -11,6 +11,7 @@ import android.widget.TableRow
 import android.widget.TextView
 import androidx.core.view.setMargins
 import androidx.core.view.setPadding
+import androidx.navigation.NavController
 import co.japl.android.myapplication.R
 import co.japl.android.myapplication.bussiness.DB.connections.ConnectDB
 import co.japl.android.myapplication.bussiness.DTO.CalcDTO
@@ -23,15 +24,18 @@ import co.japl.android.myapplication.finanzas.bussiness.impl.KindOfTaxImpl
 import co.japl.android.myapplication.finanzas.bussiness.interfaces.IAddAmortizationSvc
 import co.japl.android.myapplication.finanzas.bussiness.interfaces.IKindOfTaxSvc
 import co.japl.android.myapplication.finanzas.controller.AddValueAmortizationDialog
+import co.japl.android.myapplication.finanzas.controller.AmortizationGeneralDialog
+import co.japl.android.myapplication.finanzas.enums.AmortizationKindOfEnum
 import co.japl.android.myapplication.finanzas.holders.interfaces.ITableHolder
 import co.japl.android.myapplication.finanzas.enums.KindOfTaxEnum
 import co.japl.android.myapplication.finanzas.enums.CalcEnum
+import co.japl.android.myapplication.finanzas.putParams.ExtraValueListParam
 import co.japl.android.myapplication.utils.NumbersUtil
 import com.google.android.material.textfield.TextInputLayout
 import com.google.android.material.textview.MaterialTextView
 import java.math.BigDecimal
 
-class AmortizationTableHolder(val view:View, val inflater:LayoutInflater): ITableHolder<CalcDTO>, OnClickListener {
+class AmortizationTableHolder(val view:View, val kindOf:AmortizationKindOfEnum, val inflater:LayoutInflater,val navController: NavController): ITableHolder<CalcDTO>, OnClickListener {
     private val kindOfTaxSvc:IKindOfTaxSvc = KindOfTaxImpl()
     private lateinit var addValueAmortizationSvc:IAddAmortizationSvc
     private lateinit var table: TableLayout
@@ -40,17 +44,13 @@ class AmortizationTableHolder(val view:View, val inflater:LayoutInflater): ITabl
     private lateinit var interesToPay:BigDecimal
     private lateinit var creditValue: TextView
     private lateinit var quoteValue: TextView
-    private lateinit var capitalValue: TextView
     private lateinit var quoteValueLayout:TextInputLayout
-    private lateinit var capitalValueLayout:TextInputLayout
-    private lateinit var tax: TextView
-    private lateinit var periods: TextView
-    private lateinit var interestToPay: TextView
     private lateinit var totalColumn: TextView
     private lateinit var nextValueColumn: TextView
     private lateinit var capitalValueColumn: TextView
     private lateinit var progressBar:ProgressBar
-    private lateinit var btnAdd:Button
+    private lateinit var btnList:Button
+    private lateinit var btnSeeMore:Button
     private var quotesPaid:Long = 0
     private var quote1NotPaid:Boolean = false
     private var differInstallment:DifferInstallmentDTO? = null
@@ -67,30 +67,23 @@ class AmortizationTableHolder(val view:View, val inflater:LayoutInflater): ITabl
         totalColumn = view.findViewById(R.id.totalColumn)
         nextValueColumn = view.findViewById(R.id.NextValueColumn)
         capitalValueColumn = view.findViewById(R.id.capital_column_at)
-        capitalValue = view.findViewById(R.id.capital_value_at)
-        tax = view.findViewById(R.id.tax_at)
-        periods = view.findViewById(R.id.periods_at)
-        interestToPay = view.findViewById(R.id.interest_to_pay_at)
-        capitalValueLayout = view.findViewById(R.id.capitalValueLayout)
         quoteValueLayout = view.findViewById(R.id.quoteValueLayout)
         progressBar = view.findViewById(R.id.pb_load_at)
-        btnAdd = view.findViewById(R.id.btn_add_payment_at)
-
+        btnList = view.findViewById(R.id.btn_extra_values_list_at)
+        btnSeeMore = view.findViewById(R.id.btn_see_more_at)
         amortizationList = ArrayList<Amortization>()
         interesToPay = BigDecimal.ZERO
         totalColumn.visibility= View.GONE
         nextValueColumn.visibility = View.GONE
-        capitalValueLayout.visibility = View.GONE
         progressBar.visibility = View.VISIBLE
-        btnAdd.setOnClickListener(this)
+        btnList.setOnClickListener(this)
+        btnSeeMore.setOnClickListener(this)
     }
 
     override fun setData(creditValue: CalcDTO) {
         creditData = creditValue
         this.creditValue.text = NumbersUtil.toString(creditValue.valueCredit)
         this.quoteValue.text = NumbersUtil.toString(creditValue.quoteCredit)
-        this.tax.text = "${creditValue.interest} ${creditValue.kindOfTax}"
-        this.periods.text = creditValue.period.toString()
 
         list = addValueAmortizationSvc.getAll(creditValue.id)
     }
@@ -135,7 +128,6 @@ class AmortizationTableHolder(val view:View, val inflater:LayoutInflater): ITabl
                 currentCreditValue))
             interesToPay += interest
         }
-        capitalValueLayout.visibility = View.GONE
         quoteValueLayout.visibility = View.VISIBLE
         this.totalColumn.visibility = View.GONE
         this.capitalValueColumn.visibility = View.VISIBLE
@@ -160,6 +152,10 @@ class AmortizationTableHolder(val view:View, val inflater:LayoutInflater): ITabl
                    capital = it.pendingValuePayable / it.newInstallment
                 }
 
+            if(capital.toBigDecimal() > currentCreditValue){
+                capital = currentCreditValue.toDouble()
+            }
+
             val extraCapitalValue =  getExtraValue(period)
 
             val interest = getInterest(period,currentCreditValue,tax)
@@ -174,9 +170,10 @@ class AmortizationTableHolder(val view:View, val inflater:LayoutInflater): ITabl
             if(periods > monthsCalc!! && monthsCalc == period && differInstallment == null){
                 break
             }
+            if(currentCreditValue <= BigDecimal.ZERO){
+                break
+            }
         }
-        capitalValue.text = NumbersUtil.toString(creditData.capitalValue)
-        capitalValueLayout.visibility = View.VISIBLE
         quoteValueLayout.visibility = View.GONE
         this.totalColumn.visibility = View.VISIBLE
         this.capitalValueColumn.visibility = View.GONE
@@ -250,7 +247,7 @@ class AmortizationTableHolder(val view:View, val inflater:LayoutInflater): ITabl
 
             table.addView(row,TableRow.LayoutParams.MATCH_PARENT,TableRow.LayoutParams.WRAP_CONTENT)
         }
-       this.interestToPay.text = NumbersUtil.toString(interesToPay)
+       creditData.interestValue = interesToPay
        progressBar.visibility = View.GONE
     }
 
@@ -270,8 +267,11 @@ class AmortizationTableHolder(val view:View, val inflater:LayoutInflater): ITabl
         return textView
     }
 
-    override fun onClick(p0: View?) {
-        AddValueAmortizationDialog(view.context,inflater,creditData.id).show()
+    override fun onClick(view: View?) {
+        when (view?.id) {
+            R.id.btn_extra_values_list_at -> ExtraValueListParam.newInstance(creditData.id,kindOf, navController )
+            R.id.btn_see_more_at -> AmortizationGeneralDialog(view.context,inflater,creditData).show()
+        }
     }
 
 

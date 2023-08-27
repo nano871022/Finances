@@ -13,6 +13,7 @@ import android.view.View
 import android.view.View.OnClickListener
 import android.widget.Button
 import android.widget.Toast
+import androidx.navigation.NavController
 import co.japl.android.myapplication.R
 import co.japl.android.myapplication.bussiness.DB.connections.ConnectDB
 import co.japl.android.myapplication.finanzas.bussiness.impl.AddAmortizationImpl
@@ -25,11 +26,12 @@ import co.japl.android.myapplication.finanzas.holders.validations.set
 import co.japl.android.myapplication.finanzas.holders.validations.setNumberToField
 import co.japl.android.myapplication.finanzas.holders.validations.text
 import co.japl.android.myapplication.finanzas.holders.validations.`when`
+import co.japl.android.myapplication.finanzas.putParams.ExtraValueListParam
 import co.japl.android.myapplication.utils.NumbersUtil
 import com.google.android.material.textfield.TextInputEditText
 import java.math.BigDecimal
 
-class AddValueAmortizationDialog(context:Context, private val inflater: LayoutInflater,private val code:Int) : Dialog(context), OnClickListener {
+class AddValueAmortizationDialog(context:Context, private val inflater: LayoutInflater,private val code:Int,val navController: NavController) : Dialog(context), OnClickListener {
     private lateinit var nbrQuote:TextInputEditText
     private lateinit var value:TextInputEditText
     private lateinit var btnClose:Button
@@ -98,6 +100,7 @@ class AddValueAmortizationDialog(context:Context, private val inflater: LayoutIn
                     if(svc.createNew(code, nbr.toLong(), value.toDouble())){
                         Toast.makeText(context, R.string.add_value_amortization_success, Toast.LENGTH_LONG).show()
                         cancel()
+                        ExtraValueListParam.toBack(navController)
                     }else{
                         Toast.makeText(context, R.string.add_value_amortization_error, Toast.LENGTH_LONG).show()
                     }

@@ -34,6 +34,8 @@ class ConnectDB(context: Context):SQLiteOpenHelper(context,
         DifferInstallmentConnectDB().onCreate(p0)
         GracePeriodConnectDB().onCreate(p0)
         AddValueAmortizationConnectDB().onCreate(p0)
+        ExtraValueAmortizationCreditConnectDB().onCreate(p0)
+        ExtraValueAmortizationQuoteCreditCardConnectDB().onCreate(p0)
         Log.i(this.javaClass.name,"<<<=== onCreate - End")
     }
 
@@ -58,6 +60,8 @@ class ConnectDB(context: Context):SQLiteOpenHelper(context,
         DifferInstallmentConnectDB().onUpgrade(p0,p1,p2)
         GracePeriodConnectDB().onUpgrade(p0,p1,p2)
         AddValueAmortizationConnectDB().onUpgrade(p0,p1,p2)
+        ExtraValueAmortizationCreditConnectDB().onUpgrade(p0,p1,p2)
+        ExtraValueAmortizationQuoteCreditCardConnectDB().onUpgrade(p0,p1,p2)
         Log.i(this.javaClass.name,"<<<=== onUpgrade - End")
     }
 
@@ -82,6 +86,8 @@ class ConnectDB(context: Context):SQLiteOpenHelper(context,
         DifferInstallmentConnectDB().onDowngrade(db,oldVersion,newVersion)
         GracePeriodConnectDB().onDowngrade(db,oldVersion,newVersion)
         AddValueAmortizationConnectDB().onDowngrade(db,oldVersion,newVersion)
+        ExtraValueAmortizationCreditConnectDB().onDowngrade(db,oldVersion,newVersion)
+        ExtraValueAmortizationQuoteCreditCardConnectDB().onDowngrade(db,oldVersion,newVersion)
         Log.i(this.javaClass.name,"<<<=== onDowngrade - End")
     }
 

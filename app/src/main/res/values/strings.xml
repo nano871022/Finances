@@ -382,4 +382,6 @@
     <string name="add_value_amortization_success">Valor Extra Agregado a la Cuota</string>
     <string name="add_value_amortization_error">Valor Extra No fue Agregado</string>
     <string name="error_less_or_equal_than_0_value">Valor menor a 0</string>
+    <string name="credit_info">Información del Crédito</string>
+    <string name="extra_value_list">Valores Extra</string>
 </resources>

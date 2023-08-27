@@ -10,6 +10,7 @@ import androidx.annotation.RequiresApi
 import androidx.loader.app.LoaderManager
 import androidx.loader.content.AsyncTaskLoader
 import androidx.loader.content.Loader
+import androidx.navigation.fragment.findNavController
 import co.japl.android.myapplication.R
 import co.japl.android.myapplication.bussiness.DB.connections.ConnectDB
 import co.japl.android.myapplication.bussiness.DTO.CalcDTO
@@ -19,6 +20,7 @@ import co.japl.android.myapplication.finanzas.bussiness.DTO.Amortization
 import co.japl.android.myapplication.finanzas.bussiness.DTO.DifferInstallmentDTO
 import co.japl.android.myapplication.finanzas.bussiness.impl.DifferInstallmentImpl
 import co.japl.android.myapplication.finanzas.bussiness.interfaces.IDifferInstallment
+import co.japl.android.myapplication.finanzas.enums.AmortizationKindOfEnum
 import co.japl.android.myapplication.finanzas.holders.AmortizationTableHolder
 import co.japl.android.myapplication.finanzas.putParams.AmortizationTableParams
 import java.util.Optional
@@ -40,7 +42,7 @@ class AmortizationTableFragment : Fragment() , LoaderManager.LoaderCallbacks<Map
     ): View? {
         val view =  inflater.inflate(R.layout.fragment_amortization_table, container, false)
         differInstallmentSvc = DifferInstallmentImpl(ConnectDB(requireContext()))
-        holder = AmortizationTableHolder(view,layoutInflater)
+        holder = AmortizationTableHolder(view,AmortizationKindOfEnum.EXTRA_VALUE_AMORTIZATION,layoutInflater,findNavController())
         holder.setup(null)
         loaderManager.initLoader(1, null, this)
         return view
