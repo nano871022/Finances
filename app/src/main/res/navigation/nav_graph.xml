@@ -80,6 +80,12 @@
         <action
             android:id="@+id/action_list_bought_to_buy_credit_card"
             app:destination="@id/buy_credit_card" />
+        <action
+            android:id="@+id/action_list_bought_to_cash_advance_fragment"
+            app:destination="@id/cash_advance_fragment" />
+        <action
+            android:id="@+id/action_list_bought_to_buy_credit_card2"
+            app:destination="@id/buy_credit_card" />
     </fragment>
 
     <fragment

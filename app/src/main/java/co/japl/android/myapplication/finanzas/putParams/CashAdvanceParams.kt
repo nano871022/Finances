@@ -18,6 +18,11 @@ class CashAdvanceParams {
             val parameters = bundleOf(params.ARG_PARAM_CODE_CREDIT_CARD to code.toString())
             navController.navigate(R.id.action_item_menu_side_boughtmade_to_cash_advance_fragment,parameters)
         }
+
+        fun newInstanceFloat(code:Int,navController: NavController){
+            val parameters = bundleOf(params.ARG_PARAM_CODE_CREDIT_CARD to code.toString())
+            navController.navigate(R.id.action_list_bought_to_cash_advance_fragment,parameters)
+        }
         fun download(argument:Bundle):String{
             argument.let {
                 return it.get(params.ARG_PARAM_CODE_CREDIT_CARD).toString()

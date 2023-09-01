@@ -19,9 +19,13 @@ import co.japl.android.myapplication.R
 import co.japl.android.myapplication.adapter.ListBoughtAdapter
 import co.japl.android.myapplication.bussiness.DB.connections.ConnectDB
 import co.japl.android.myapplication.bussiness.DTO.CreditCardBoughtDTO
+import co.japl.android.myapplication.bussiness.DTO.TaxDTO
 import co.japl.android.myapplication.bussiness.impl.SaveCreditCardBoughtImpl
+import co.japl.android.myapplication.bussiness.impl.TaxImpl
+import co.japl.android.myapplication.bussiness.interfaces.ITaxSvc
 import co.japl.android.myapplication.bussiness.interfaces.SearchSvc
 import co.japl.android.myapplication.finanzas.bussiness.interfaces.IQuoteCreditCardSvc
+import co.japl.android.myapplication.finanzas.enums.TaxEnum
 import co.japl.android.myapplication.finanzas.holders.ListBoughtHolder
 import co.japl.android.myapplication.finanzas.pojo.BoughtRecap
 import co.japl.android.myapplication.finanzas.putParams.CreditCardQuotesParams
@@ -38,6 +42,9 @@ class ListBought : Fragment() , LoaderManager.LoaderCallbacks<Pair<List<CreditCa
     lateinit var dbConnect: ConnectDB
     lateinit var saveSvc: SearchSvc<CreditCardBoughtDTO>
     lateinit var creditCard:CreditCard
+    lateinit var taxSvc:ITaxSvc
+    lateinit var taxAdvance:Optional<TaxDTO>
+    lateinit var taxQuote:Optional<TaxDTO>
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreateView(
@@ -55,8 +62,14 @@ class ListBought : Fragment() , LoaderManager.LoaderCallbacks<Pair<List<CreditCa
         rootView.context.let {
             dbConnect = ConnectDB(it!!)
             saveSvc = SaveCreditCardBoughtImpl(dbConnect)
+            taxSvc = TaxImpl(dbConnect)
         }
-        holder = ListBoughtHolder(rootView,inflater)
+        taxAdvance = taxSvc.get(creditCard.codeCreditCard.get().toLong(),creditCard.cutOff.get().monthValue,creditCard.cutOff.get().year,
+            TaxEnum.CASH_ADVANCE)
+        taxQuote = taxSvc.get(creditCard.codeCreditCard.get().toLong(),creditCard.cutOff.get().monthValue,creditCard.cutOff.get().year,
+            TaxEnum.CREDIT_CARD)
+
+        holder = ListBoughtHolder(rootView,inflater,findNavController())
         holder.setFields(null)
         loaderManager.initLoader(1,null,this)
         return rootView
@@ -79,6 +92,9 @@ class ListBought : Fragment() , LoaderManager.LoaderCallbacks<Pair<List<CreditCa
                     LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
                 adapter = ListBoughtAdapter(list.toMutableList(), creditCard.cutOff.get(),layoutInflater,findNavController())
                 it.recyclerView.adapter = adapter
+
+                taxAdvance?.ifPresent{ tax-> it.showButtonsCashAdvance() }
+                taxQuote?.ifPresent{ tax-> it.showButtonsQuote() }
             }
         }
     }
@@ -116,6 +132,8 @@ class ListBought : Fragment() , LoaderManager.LoaderCallbacks<Pair<List<CreditCa
         boughtRecap.quotesItem =  Optional.of(listRecurrentPending.size + pending.size + list.count { it.month > 1 } )
         boughtRecap.recurrentItem = Optional.of(listRecurrent.size)
         boughtRecap.totalItem = Optional.of(joinList.size)
+        boughtRecap.codeCreditCard = creditCard.codeCreditCard.orElse(0)
+        creditCard.cutOff?.ifPresent { boughtRecap.cutOffDate = it }
 
         joinList = joinList.sortedByDescending { it.boughtDate }.toMutableList()
         return Pair(joinList,boughtRecap)
