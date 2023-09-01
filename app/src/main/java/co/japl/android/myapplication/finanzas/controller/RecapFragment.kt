@@ -43,7 +43,6 @@ class RecapFragment : Fragment() , LoaderManager.LoaderCallbacks<Map<String, Any
     private lateinit var inputSvc:IInputSvc
     private lateinit var creditCardSvc: SaveSvc<CreditCardDTO>
     private lateinit var progressBar:ProgressBar
-    private lateinit var carousel:Carousel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
