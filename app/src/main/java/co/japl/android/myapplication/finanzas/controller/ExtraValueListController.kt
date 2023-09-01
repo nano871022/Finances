@@ -56,6 +56,7 @@ class ExtraValueListController : Fragment(), LoaderManager.LoaderCallbacks<List<
             idCredit = params.first
             extraValueKindOf = params.second
         }
+        Log.d(javaClass.name,"extraValueKindOf: $extraValueKindOf")
         LoaderManager.getInstance(this).initLoader(0,null,this)
         return root
     }

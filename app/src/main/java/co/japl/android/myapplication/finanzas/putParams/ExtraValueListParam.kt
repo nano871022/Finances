@@ -17,13 +17,20 @@ class ExtraValueListParam {
 
             fun newInstance(id:Int,kindOf:AmortizationKindOfEnum,navController: NavController) {
                 val parameters = bundleOf(PARAMS.PARAMS_AMORTIZATION_CREDIT_ID to id
-                    , PARAMS.PARAMS_KIND_OF_EXTRA_VALUE.toString() to kindOf)
+                    , PARAMS.PARAMS_KIND_OF_EXTRA_VALUE to kindOf)
                 navController.navigate(R.id.action_amortizationTableFragment_to_extraValueListController,parameters)
             }
 
+            fun newInstance(id:Int,navController: NavController){
+                val parameters = bundleOf(PARAMS.PARAMS_AMORTIZATION_CREDIT_ID to id
+                    , PARAMS.PARAMS_KIND_OF_EXTRA_VALUE to AmortizationKindOfEnum.EXTRA_VALUE_AMORTIZATION_CREDIT)
+                navController.navigate(R.id.action_amortizationCreditFragment_to_extraValueListController,parameters)
+            }
+
+
             fun download(parameters: Bundle):Pair<Int,AmortizationKindOfEnum> {
                 val id = parameters.getInt(PARAMS.PARAMS_AMORTIZATION_CREDIT_ID)?:0
-                val kindOf = parameters.getString(PARAMS.PARAMS_KIND_OF_EXTRA_VALUE)?.let{AmortizationKindOfEnum.valueOf(it)}?:AmortizationKindOfEnum.EXTRA_VALUE_AMORTIZATION
+                val kindOf = parameters.get(PARAMS.PARAMS_KIND_OF_EXTRA_VALUE)?.let{it as AmortizationKindOfEnum}?:AmortizationKindOfEnum.EXTRA_VALUE_AMORTIZATION
                 return Pair(id,kindOf)
             }
 

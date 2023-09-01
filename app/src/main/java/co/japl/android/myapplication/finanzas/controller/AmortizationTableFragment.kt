@@ -31,6 +31,7 @@ class AmortizationTableFragment : Fragment() , LoaderManager.LoaderCallbacks<Map
     lateinit var differInstallmentSvc: IDifferInstallment
     @RequiresApi(Build.VERSION_CODES.N)
     var differQuote: Optional<DifferInstallmentDTO> =Optional.empty()
+    lateinit var originalValue:Map<String,Any>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,8 +42,10 @@ class AmortizationTableFragment : Fragment() , LoaderManager.LoaderCallbacks<Map
         savedInstanceState: Bundle?
     ): View? {
         val view =  inflater.inflate(R.layout.fragment_amortization_table, container, false)
+        originalValue = AmortizationTableParams.download(requireArguments())
         differInstallmentSvc = DifferInstallmentImpl(ConnectDB(requireContext()))
-        holder = AmortizationTableHolder(view,AmortizationKindOfEnum.EXTRA_VALUE_AMORTIZATION,layoutInflater,findNavController())
+        holder = AmortizationTableHolder(view,
+            originalValue[AmortizationTableParams.params.ARG_PARAM_KIND_OF_AMORTIZATION] as AmortizationKindOfEnum,layoutInflater,findNavController())
         holder.setup(null)
         loaderManager.initLoader(1, null, this)
         return view
@@ -66,7 +69,7 @@ class AmortizationTableFragment : Fragment() , LoaderManager.LoaderCallbacks<Map
             }
             @RequiresApi(Build.VERSION_CODES.N)
             override fun loadInBackground(): Map<String,Any>? {
-                data = AmortizationTableParams.download(requireArguments())
+                data = originalValue
                 data?.takeIf { it[AmortizationTableParams.params.ARG_PARAM_HAS_DIFFER_INSTALLMENT] as Boolean }
                     ?.let{
                         val idBought = it.get(AmortizationTableParams.params.ARG_PARAM_BOUGHT_ID) as Long

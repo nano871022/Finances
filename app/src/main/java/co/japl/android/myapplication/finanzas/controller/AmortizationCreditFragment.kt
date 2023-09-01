@@ -5,6 +5,7 @@ import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.OnClickListener
 import android.view.ViewGroup
 import androidx.annotation.RequiresApi
 import androidx.loader.app.LoaderManager
@@ -28,12 +29,13 @@ import co.japl.android.myapplication.finanzas.holders.interfaces.ITableHolder
 import co.japl.android.myapplication.finanzas.holders.AmortizationCreditTableHolder
 import co.japl.android.myapplication.finanzas.putParams.CreditFixParams
 import co.japl.android.myapplication.finanzas.enums.AmortizationCreditFixEnum
+import co.japl.android.myapplication.finanzas.putParams.ExtraValueListParam
 import java.math.BigDecimal
 import java.time.LocalDate
 import java.time.temporal.ChronoUnit
 import java.util.Optional
 
-class AmortizationCreditFragment : Fragment() ,LoaderManager.LoaderCallbacks<Triple<Optional<CreditDTO>,List<AdditionalCreditDTO>,List<GracePeriodDTO>>>{
+class AmortizationCreditFragment : Fragment() ,LoaderManager.LoaderCallbacks<Triple<Optional<CreditDTO>,List<AdditionalCreditDTO>,List<GracePeriodDTO>>>, OnClickListener{
     private lateinit var holder: ITableHolder<AmortizationCreditFix>
     private lateinit var credit:SaveSvc<CreditDTO>
     private lateinit var svc: ISaveSvc<AdditionalCreditDTO>
@@ -44,7 +46,10 @@ class AmortizationCreditFragment : Fragment() ,LoaderManager.LoaderCallbacks<Tri
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
     }
-
+    override fun onResume() {
+        super.onResume()
+        loaderManager.restartLoader(1, null, this)
+    }
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -55,11 +60,7 @@ class AmortizationCreditFragment : Fragment() ,LoaderManager.LoaderCallbacks<Tri
         svc = AdditionalCreditImpl(ConnectDB(root.context))
         gracePeriodSvc = GracePeriodImpl(ConnectDB(root.context))
         holder = AmortizationCreditTableHolder(root)
-        holder.setup{
-            when(it?.id){
-                R.id.btn_additional_acf->CreditFixParams.newInstanceAmortizationToAdditionalList(creditDto.id.toLong(),findNavController())
-            }
-        }
+        holder.setup(this)
         getData()
         loaderManager.initLoader(1,null,this)
         return root
@@ -82,7 +83,7 @@ class AmortizationCreditFragment : Fragment() ,LoaderManager.LoaderCallbacks<Tri
         val period = data.periods
         val quoteCredit = data.quoteValue
         val type = data.kindOf
-        val id = 0
+        val id = data.id
         val interestValue = BigDecimal.ZERO
         val capitalValue = BigDecimal.ZERO
         val kindOfTax = data.kindOfTax
@@ -142,6 +143,13 @@ class AmortizationCreditFragment : Fragment() ,LoaderManager.LoaderCallbacks<Tri
             holder.setData(getCalc(data.first.orElse(creditDto)))
             holder.create()
             holder.load()
+        }
+    }
+
+    override fun onClick(p0: View?) {
+        when(p0?.id){
+            R.id.btn_additional_acf->CreditFixParams.newInstanceAmortizationToAdditionalList(creditDto.id.toLong(),findNavController())
+            R.id.btn_extra_values_list_acf->ExtraValueListParam.newInstance(creditDto.id,findNavController())
         }
     }
 

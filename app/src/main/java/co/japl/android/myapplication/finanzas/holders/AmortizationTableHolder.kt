@@ -9,6 +9,7 @@ import android.widget.ProgressBar
 import android.widget.TableLayout
 import android.widget.TableRow
 import android.widget.TextView
+import androidx.core.view.children
 import androidx.core.view.setMargins
 import androidx.core.view.setPadding
 import androidx.navigation.NavController
@@ -19,9 +20,12 @@ import co.japl.android.myapplication.bussiness.DTO.CreditCardDTO
 import co.japl.android.myapplication.finanzas.bussiness.DTO.AddAmortizationDTO
 import co.japl.android.myapplication.finanzas.bussiness.DTO.Amortization
 import co.japl.android.myapplication.finanzas.bussiness.DTO.DifferInstallmentDTO
+import co.japl.android.myapplication.finanzas.bussiness.DTO.ExtraValueAmortizationQuoteCreditCardDTO
 import co.japl.android.myapplication.finanzas.bussiness.impl.AddAmortizationImpl
+import co.japl.android.myapplication.finanzas.bussiness.impl.ExtraValueAmortizationQuoteCreditCardImpl
 import co.japl.android.myapplication.finanzas.bussiness.impl.KindOfTaxImpl
 import co.japl.android.myapplication.finanzas.bussiness.interfaces.IAddAmortizationSvc
+import co.japl.android.myapplication.finanzas.bussiness.interfaces.IExtraValueAmortizationQuoteCreditCardSvc
 import co.japl.android.myapplication.finanzas.bussiness.interfaces.IKindOfTaxSvc
 import co.japl.android.myapplication.finanzas.controller.AddValueAmortizationDialog
 import co.japl.android.myapplication.finanzas.controller.AmortizationGeneralDialog
@@ -38,6 +42,7 @@ import java.math.BigDecimal
 class AmortizationTableHolder(val view:View, val kindOf:AmortizationKindOfEnum, val inflater:LayoutInflater,val navController: NavController): ITableHolder<CalcDTO>, OnClickListener {
     private val kindOfTaxSvc:IKindOfTaxSvc = KindOfTaxImpl()
     private lateinit var addValueAmortizationSvc:IAddAmortizationSvc
+    private lateinit var extraValueAmortizationSvc:IExtraValueAmortizationQuoteCreditCardSvc
     private lateinit var table: TableLayout
     private lateinit var creditData: CalcDTO
     private lateinit var amortizationList: ArrayList<Amortization>
@@ -57,10 +62,12 @@ class AmortizationTableHolder(val view:View, val kindOf:AmortizationKindOfEnum, 
     private val colorPaid = view.resources.getColor(androidx.media.R.color.primary_text_default_material_dark)
     private val backgroun = view.resources.getColor(R.color.green_background)
     private var monthsCalc:Long? = null
-    private lateinit var list : List<AddAmortizationDTO>
+    private lateinit var listCredit : List<AddAmortizationDTO>
+    private lateinit var listQuote :List<ExtraValueAmortizationQuoteCreditCardDTO>
 
     override fun setup(actions: View.OnClickListener?) {
         addValueAmortizationSvc = AddAmortizationImpl(ConnectDB(view.context))
+        extraValueAmortizationSvc = ExtraValueAmortizationQuoteCreditCardImpl(ConnectDB(view.context))
         table = view.findViewById(R.id.tableAT)
         creditValue = view.findViewById(R.id.credit_value_at)
         quoteValue = view.findViewById(R.id.quote_value_at)
@@ -85,7 +92,12 @@ class AmortizationTableHolder(val view:View, val kindOf:AmortizationKindOfEnum, 
         this.creditValue.text = NumbersUtil.toString(creditValue.valueCredit)
         this.quoteValue.text = NumbersUtil.toString(creditValue.quoteCredit)
 
-        list = addValueAmortizationSvc.getAll(creditValue.id)
+        when(kindOf){
+            AmortizationKindOfEnum.EXTRA_VALUE_AMORTIZATION->listCredit = addValueAmortizationSvc.getAll(creditValue.id)
+            AmortizationKindOfEnum.EXTRA_VALUE_AMORTIZATION_QUOTE_CREDIT_CARD->listQuote = extraValueAmortizationSvc.getAll(creditValue.id)
+            else -> {}
+        }
+
     }
 
     override fun add(name:String,value:Any){
@@ -113,20 +125,27 @@ class AmortizationTableHolder(val view:View, val kindOf:AmortizationKindOfEnum, 
     }
 
     private fun quoteFixCalc(){
-        Log.d(javaClass.name,"Quote Fix")
         var currentCreditValue = creditData.valueCredit
         val tax = getTax().toBigDecimal()
         for ( period in 1 .. creditData.period){
             val interest = currentCreditValue * tax
-            val capital = creditData.quoteCredit -  interest
-            currentCreditValue -= capital
+            var capital = creditData.quoteCredit -  interest
+            if(capital > currentCreditValue){
+                capital = currentCreditValue
+            }
+            val extraCapitalValue =  getExtraValue(period)
+
             amortizationList.add(Amortization(period.toInt(),
-                currentCreditValue + capital,
+                currentCreditValue ,
                 interest,
-                capital,
+                capital + extraCapitalValue.toBigDecimal(),
                 creditData.quoteCredit,
-                currentCreditValue))
+                currentCreditValue - (capital + extraCapitalValue.toBigDecimal())))
+            currentCreditValue -= capital + extraCapitalValue.toBigDecimal()
             interesToPay += interest
+            if(currentCreditValue <= BigDecimal.ZERO){
+                break
+            }
         }
         quoteValueLayout.visibility = View.VISIBLE
         this.totalColumn.visibility = View.GONE
@@ -145,6 +164,7 @@ class AmortizationTableHolder(val view:View, val kindOf:AmortizationKindOfEnum, 
             }?:(currentCreditValue.toDouble() / periods)
 
         val tax = getTax()
+        amortizationList.clear()
         for ( period in 1 .. creditData.period){
 
             differInstallment?.takeIf { ((creditData.period - it.newInstallment.toLong()) + 1) == period }
@@ -207,6 +227,7 @@ class AmortizationTableHolder(val view:View, val kindOf:AmortizationKindOfEnum, 
        layoutParams1.setMargins(view.resources.getDimension(R.dimen.column_space_min).toInt())
        layoutParams2.setMargins(view.resources.getDimension(R.dimen.column_space_min).toInt())
        layoutParams3.setMargins(view.resources.getDimension(R.dimen.column_space_min).toInt())
+       cleanChildren()
        table.setColumnStretchable(1,false)
        table.setColumnStretchable(2,true)
        table.setColumnStretchable(3,true)
@@ -252,7 +273,13 @@ class AmortizationTableHolder(val view:View, val kindOf:AmortizationKindOfEnum, 
     }
 
     private fun getExtraValue(quote:Long):Double{
-        return list.filter { it.nbrQuote == quote }.sumOf { it.value }
+        return when(kindOf){
+            AmortizationKindOfEnum.EXTRA_VALUE_AMORTIZATION->
+                listCredit.filter { it.nbrQuote == quote }.sumOf { it.value }
+            AmortizationKindOfEnum.EXTRA_VALUE_AMORTIZATION_QUOTE_CREDIT_CARD->
+                listQuote.filter { it.nbrQuote == quote }.sumOf { it.value }
+            else -> {0.0}
+        }
     }
 
     private fun createTextView(value:String,paid:Boolean):MaterialTextView{
@@ -274,5 +301,11 @@ class AmortizationTableHolder(val view:View, val kindOf:AmortizationKindOfEnum, 
         }
     }
 
+
+    private fun cleanChildren(){
+        val numRows = table.childCount
+        for(i in 1 until numRows){
+            table.getChildAt(1)?.let { table.removeView(it) } }
+    }
 
 }
