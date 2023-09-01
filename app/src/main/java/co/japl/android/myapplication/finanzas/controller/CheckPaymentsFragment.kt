@@ -20,12 +20,15 @@ import co.japl.android.myapplication.bussiness.DTO.CreditCardDTO
 import co.japl.android.myapplication.bussiness.impl.CreditCardImpl
 import co.japl.android.myapplication.bussiness.impl.SaveCreditCardBoughtImpl
 import co.japl.android.myapplication.bussiness.interfaces.SaveSvc
+import co.japl.android.myapplication.finanzas.bussiness.DTO.AdditionalCreditDTO
 import co.japl.android.myapplication.finanzas.bussiness.DTO.ICheck
+import co.japl.android.myapplication.finanzas.bussiness.impl.AdditionalCreditImpl
 import co.japl.android.myapplication.finanzas.bussiness.impl.CheckCreditImpl
 import co.japl.android.myapplication.finanzas.bussiness.impl.CheckPaymentImpl
 import co.japl.android.myapplication.finanzas.bussiness.impl.CheckQuoteImpl
 import co.japl.android.myapplication.finanzas.bussiness.impl.CreditFixImpl
 import co.japl.android.myapplication.finanzas.bussiness.impl.PaidImpl
+import co.japl.android.myapplication.finanzas.bussiness.interfaces.IAdditionalCreditSvc
 import co.japl.android.myapplication.finanzas.bussiness.interfaces.ICheckCreditSvc
 import co.japl.android.myapplication.finanzas.bussiness.interfaces.ICheckPaymentSvc
 import co.japl.android.myapplication.finanzas.bussiness.interfaces.ICheckQuoteSvc
@@ -40,6 +43,7 @@ import co.japl.android.myapplication.finanzas.holders.CheckPaymentsHolder
 import co.japl.android.myapplication.finanzas.holders.interfaces.IListHolder
 import co.japl.android.myapplication.finanzas.pojo.CheckPaymentsPOJO
 import co.japl.android.myapplication.finanzas.pojo.mapper.CheckMapper
+import java.math.BigDecimal
 import java.time.LocalDate
 
 class CheckPaymentsFragment : Fragment() , OnClickListener,LoaderManager.LoaderCallbacks<List<CheckPaymentsPOJO>>{
@@ -50,6 +54,7 @@ class CheckPaymentsFragment : Fragment() , OnClickListener,LoaderManager.LoaderC
     private lateinit var svc:IPaidSvc
     private lateinit var creditsSvc: ICreditFix
     private lateinit var creditCardSvc:SaveSvc<CreditCardDTO>
+    private lateinit var additionalCredirSvc:IAdditionalCreditSvc
     private lateinit var boughtCreditCardSvc: IQuoteCreditCardSvc
     private lateinit var list:MutableList<CheckPaymentsPOJO>
     private lateinit var period:String
@@ -72,6 +77,7 @@ class CheckPaymentsFragment : Fragment() , OnClickListener,LoaderManager.LoaderC
         checkQuoteSvc = CheckQuoteImpl(connect)
         checkCreditSvc = CheckCreditImpl(connect)
         boughtCreditCardSvc = SaveCreditCardBoughtImpl(connect)
+        additionalCredirSvc = AdditionalCreditImpl(connect)
         creditCardSvc = CreditCardImpl(connect)
         holder = CheckPaymentsHolder(root)
         holder.setFields(this)
@@ -136,7 +142,16 @@ class CheckPaymentsFragment : Fragment() , OnClickListener,LoaderManager.LoaderC
                 list = arrayListOf<CheckPaymentsPOJO>()
                 svc.getRecurrent(date)?.takeIf { it.isNotEmpty() }?.map { CheckMapper().mapper(it,period) }?.toMutableList()?.let { list.addAll(it) }
 
-                creditsSvc.getCurrentBoughtCredits(date)?.takeIf { it.isNotEmpty() }?.map { CheckMapper().mapper(it,period) }?.toMutableList()?.let { list.addAll(it) }
+                creditsSvc.getCurrentBoughtCredits(date)
+                    ?.takeIf { it.isNotEmpty() }
+                    ?.map { CheckMapper().mapper(it,period) }
+                    ?.map{
+                        additionalCredirSvc.get(it.codPaid.toInt(),date)?.takeIf { it.isNotEmpty() }?.let{list->
+                            it.value = it.value + list.sumOf { it.value }
+                        }
+                        it
+                    }
+                    ?.toMutableList()?.let { list.addAll(it) }
 
                 boughtCreditCardSvc.getLastAvailableQuotesTC()
                      ?.takeIf { it.isNotEmpty() }?.map { CheckMapper().mapper(it, period) }

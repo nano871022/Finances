@@ -68,6 +68,8 @@ class AdditionalCreditHolder(val view:View,val supportManager: FragmentManager,v
         }else{
             startDate.visibility = View.GONE
             endDate.visibility = View.GONE
+            startDate.setText(DateUtils.localDateToString(values.startDate))
+            endDate.setText(DateUtils.localDateToString(values.endDate))
         }
         additionalCredit = values
     }

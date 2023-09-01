@@ -143,6 +143,23 @@ class AdditionalCreditImpl(override var dbConnect: SQLiteOpenHelper) :  IAdditio
         return list.also { Log.d(javaClass.name,"<<<=== END Get $it CreditCard: ${values.creditCode}") }
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
+    override fun get(codeCredit:Int, date:LocalDate): List<AdditionalCreditDTO> {
+        val db = dbConnect.readableDatabase
+        val localDate = DateUtils.localDateToStringDate(date)
+        val cursor = db.query(AdditionalCreditDB.Entry.TABLE_NAME,COLUMNS
+            ,"${AdditionalCreditDB.Entry.COLUMN_CREDIT_CODE} = ? AND $FORMAT_DATE_END_WHERE >= ?"
+            , arrayOf(codeCredit.toString(),localDate),null,null,null)
+        val list = arrayListOf<AdditionalCreditDTO>()
+        val mapper = AdditionalMap()
+        with(cursor){
+            while(moveToNext()){
+                list.add( mapper.mapping(cursor) )
+            }
+        }
+        return list.also { Log.d(javaClass.name,"<<<=== END Get $it CreditCard: ${codeCredit}") }
+    }
+
     override fun backup(path: String) {
     }
 
