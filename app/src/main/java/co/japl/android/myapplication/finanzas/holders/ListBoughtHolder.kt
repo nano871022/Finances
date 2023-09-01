@@ -1,13 +1,18 @@
 package co.japl.android.myapplication.finanzas.holders
 
+import android.animation.ObjectAnimator
 import android.app.AlertDialog
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.OnClickListener
 import android.widget.Button
 import android.widget.ProgressBar
+import android.widget.ScrollView
 import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.core.os.bundleOf
@@ -32,11 +37,13 @@ class ListBoughtHolder(var view: View, private val inflater: LayoutInflater,val 
     private lateinit var progressBar: ProgressBar
     private lateinit var btnAddAdvanceBought: FloatingActionButton
     private lateinit var btnAddQuoteBought: FloatingActionButton
+    private lateinit var scroll:ScrollView
     lateinit var recyclerView: RecyclerView
     lateinit var seeMore: Button
     private lateinit var values: BoughtRecap
 
 
+    @RequiresApi(Build.VERSION_CODES.M)
     override fun setFields(actions: View.OnClickListener?) {
         tvCapital = view.findViewById(R.id.tvCapitalList)
         tvInterest = view.findViewById(R.id.tvInterestList)
@@ -46,13 +53,15 @@ class ListBoughtHolder(var view: View, private val inflater: LayoutInflater,val 
         seeMore = view.findViewById(R.id.btn_see_more_qccl)
         btnAddAdvanceBought = view.findViewById(R.id.btn_cashadvc_lbcc)
         btnAddQuoteBought = view.findViewById(R.id.btn_quote_lbcc)
+        scroll = view.findViewById(R.id.scroll_qccl)
         progressBar.visibility = View.VISIBLE
         seeMore.setOnClickListener(this)
         btnAddQuoteBought.setOnClickListener(this)
         btnAddAdvanceBought.setOnClickListener(this)
         btnAddQuoteBought.visibility = View.GONE
         btnAddAdvanceBought.visibility = View.GONE
-    }
+
+   }
 
     @RequiresApi(Build.VERSION_CODES.N)
     override fun loadFields(values: BoughtRecap) {
@@ -66,9 +75,19 @@ class ListBoughtHolder(var view: View, private val inflater: LayoutInflater,val 
 
     fun showButtonsCashAdvance(){
         btnAddAdvanceBought.visibility = View.VISIBLE
+        Handler(Looper.getMainLooper()).postDelayed({
+            val animator = ObjectAnimator.ofFloat(btnAddAdvanceBought, "alpha", 1.0F, 0.2F)
+            animator.duration = 2000L
+            animator.start()
+        },5000)
     }
     fun showButtonsQuote(){
         btnAddQuoteBought.visibility = View.VISIBLE
+        Handler(Looper.getMainLooper()).postDelayed({
+            val animator = ObjectAnimator.ofFloat(btnAddQuoteBought, "alpha", 1.0F, 0.2F)
+            animator.duration = 2000L
+            animator.start()
+        },5000)
     }
 
     override fun downLoadFields(): BoughtRecap {
