@@ -27,7 +27,6 @@
             android:layout_weight="1"
             android:text="@string/date_hint"
             android:textColor="@android:color/primary_text_dark"
-            android:textSize="18sp"
             android:textStyle="bold" />
 
         <TextView
@@ -38,8 +37,17 @@
             android:layout_weight="1"
             android:text="@string/product_name"
             android:textColor="@android:color/primary_text_dark"
-            android:textSize="18sp"
             android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tvTotalQuoteBought"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/quote_credit_hint"
+            android:textAlignment="textEnd"
+            android:textColor="@android:color/primary_text_dark"
+            android:textStyle="italic" />
 
         <ImageButton
             android:id="@+id/btn_more_bil"
@@ -49,6 +57,7 @@
             app:srcCompat="@drawable/more_vertical" />
 
     </LinearLayout>
+
 
     <View
         android:id="@+id/bought_divider"
@@ -262,7 +271,7 @@
             android:textStyle="bold" />
 
         <TextView
-            android:id="@+id/tvTotalQuoteBought"
+            android:id="@+id/tvTotalQuoteBought2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -293,4 +302,5 @@
         android:orientation="horizontal"
         app:layout_constraintGuide_begin="20dp" />
     </LinearLayout>
+
 </com.google.android.material.card.MaterialCardView>
