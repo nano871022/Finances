@@ -30,20 +30,23 @@ import co.japl.android.myapplication.finanzas.holders.RecapHolder
 import co.japl.android.myapplication.finanzas.holders.interfaces.IRecapHolder
 import co.japl.android.myapplication.utils.NumbersUtil
 import com.google.android.material.card.MaterialCardView
+import dagger.hilt.android.AndroidEntryPoint
+import dagger.hilt.android.HiltAndroidApp
 import org.apache.commons.codec.language.Nysiis
 import java.math.BigDecimal
 import java.time.LocalDate
+import javax.inject.Inject
 
-class RecapFragment : Fragment() , LoaderManager.LoaderCallbacks<Map<String, Any>>{
+@AndroidEntryPoint
+class RecapFragment @Inject constructor() : Fragment() , LoaderManager.LoaderCallbacks<Map<String, Any>>{
     private lateinit var holder:IRecapHolder<RecapHolder>
-    private lateinit var projectionSvc:IProjectionsSvc
-    private lateinit var creditSvc:ICreditFix
-    private lateinit var paidSvc:IPaidSvc
-    private lateinit var quoteCreditCardSvc:IQuoteCreditCardSvc
-    private lateinit var inputSvc:IInputSvc
-    private lateinit var creditCardSvc: SaveSvc<CreditCardDTO>
+    @Inject lateinit var projectionSvc:IProjectionsSvc
+    @Inject  lateinit var creditSvc:ICreditFix
+    @Inject  lateinit var paidSvc:IPaidSvc
+    @Inject  lateinit var quoteCreditCardSvc:IQuoteCreditCardSvc
+    @Inject  lateinit var inputSvc:IInputSvc
     private lateinit var progressBar:ProgressBar
-
+    @Inject lateinit var creditCardSvc:ICreditCardSvc
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
     }
@@ -54,17 +57,8 @@ class RecapFragment : Fragment() , LoaderManager.LoaderCallbacks<Map<String, Any
     ): View? {
         val root = inflater.inflate(R.layout.fragment_recap, container, false)
         progressBar = root.findViewById(R.id.pb_load_rec)
-        val connectDB =  ConnectDB(root.context)
-        projectionSvc = ProjectionsImpl(connectDB,root)
-        creditSvc = CreditFixImpl(connectDB)
-        paidSvc = PaidImpl(connectDB)
-        quoteCreditCardSvc = SaveCreditCardBoughtImpl(connectDB)
-        inputSvc = InputImpl(root,connectDB)
-        creditCardSvc = CreditCardImpl(connectDB)
-
         holder = RecapHolder(root)
         holder.setFields(null)
-
         return root
     }
 

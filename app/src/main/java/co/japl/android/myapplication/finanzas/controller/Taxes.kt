@@ -15,22 +15,28 @@ import co.japl.android.myapplication.bussiness.DTO.CreditCardDTO
 import co.japl.android.myapplication.bussiness.DTO.TaxDTO
 import co.japl.android.myapplication.bussiness.impl.CreditCardImpl
 import co.japl.android.myapplication.bussiness.impl.TaxImpl
+import co.japl.android.myapplication.bussiness.interfaces.ITaxSvc
 import co.japl.android.myapplication.finanzas.holders.interfaces.IHolder
 import co.japl.android.myapplication.bussiness.interfaces.SaveSvc
+import co.japl.android.myapplication.finanzas.bussiness.interfaces.ICreditCardSvc
 import co.japl.android.myapplication.finanzas.enums.KindOfTaxEnum
 import co.japl.android.myapplication.finanzas.enums.TaxEnum
 import co.japl.android.myapplication.holders.TaxesHolder
 import co.japl.android.myapplication.putParams.TaxesParams
+import dagger.hilt.android.AndroidEntryPoint
 import java.time.LocalDate
 import java.time.LocalDateTime
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class Taxes : Fragment() , View.OnClickListener{
     private var param1: String? = null
     private var param2: String? = null
     private lateinit var holder: IHolder<TaxDTO>
-    private lateinit var service:SaveSvc<TaxDTO>
-    private lateinit var creditCardSvc:SaveSvc<CreditCardDTO>
     private lateinit var listCreditCard:List<CreditCardDTO>
+
+    @Inject lateinit var service:ITaxSvc
+    @Inject lateinit var creditCardSvc:ICreditCardSvc
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreateView(
@@ -56,8 +62,6 @@ class Taxes : Fragment() , View.OnClickListener{
 
     @RequiresApi(Build.VERSION_CODES.N)
     private fun getData(view:View){
-        service = TaxImpl(ConnectDB(view.context))
-        creditCardSvc = CreditCardImpl( ConnectDB(view.context))
         listCreditCard  = creditCardSvc.getAll()
     }
 

@@ -24,6 +24,7 @@ import java.time.LocalDate
 class AdditionalListFragment : Fragment() ,OnClickListener,LoaderManager.LoaderCallbacks<AdditionalCreditDTO>{
     private lateinit var holder: IHolder<AdditionalCreditDTO>
     private var additional : AdditionalCreditDTO? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
     }

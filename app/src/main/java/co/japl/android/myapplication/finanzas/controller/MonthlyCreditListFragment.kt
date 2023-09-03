@@ -26,15 +26,19 @@ import co.japl.android.myapplication.finanzas.bussiness.interfaces.ICreditFix
 import co.japl.android.myapplication.finanzas.holders.MonthlyCreditListHolder
 import co.japl.android.myapplication.finanzas.putParams.CreditFixListParams
 import co.japl.android.myapplication.utils.NumbersUtil
+import dagger.hilt.android.AndroidEntryPoint
 import java.math.BigDecimal
 import java.time.LocalDate
+import javax.inject.Inject
 import kotlin.jvm.optionals.toList
 
+@AndroidEntryPoint
 class MonthlyCreditListFragment : Fragment() ,LoaderManager.LoaderCallbacks<List<CreditDTO>> {
     private lateinit var credit:CreditDTO
-    private lateinit var creditSvc:ICreditFix
-    private lateinit var additionalCredit:IAdditionalCreditSvc
     private lateinit var holder:MonthlyCreditListHolder
+
+    @Inject lateinit var creditSvc:ICreditFix
+    @Inject lateinit var additionalCredit:IAdditionalCreditSvc
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,8 +52,6 @@ class MonthlyCreditListFragment : Fragment() ,LoaderManager.LoaderCallbacks<List
         val root = inflater.inflate(R.layout.fragment_monthly_credit_list, container, false)
         holder = MonthlyCreditListHolder(root,layoutInflater,findNavController())
         val date = getDate()
-        creditSvc = CreditFixImpl(ConnectDB(root.context))
-        additionalCredit = AdditionalCreditImpl(ConnectDB(root.context))
         credit = getCredit(date!!)
         holder.setFields(null)
         loaderManager.initLoader(0,null,this)

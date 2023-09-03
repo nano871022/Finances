@@ -11,6 +11,7 @@ import co.japl.android.myapplication.bussiness.DTO.CreditCardDB
 import co.japl.android.myapplication.bussiness.DTO.CreditCardDTO
 import co.japl.android.myapplication.bussiness.interfaces.SaveSvc
 import co.japl.android.myapplication.bussiness.mapping.CreditCardMap
+import co.japl.android.myapplication.finanzas.bussiness.interfaces.ICreditCardSvc
 import co.japl.android.myapplication.utils.DatabaseConstants
 import com.google.gson.Gson
 import java.io.File
@@ -20,10 +21,11 @@ import java.nio.charset.Charset
 import java.nio.file.Files
 import java.nio.file.Paths
 import java.util.*
+import javax.inject.Inject
 import kotlin.io.path.isReadable
 import kotlin.io.path.isWritable
 
-class CreditCardImpl(override var dbConnect: SQLiteOpenHelper) :  SaveSvc<CreditCardDTO>{
+class  CreditCardImpl @Inject constructor(override var dbConnect: SQLiteOpenHelper) : ICreditCardSvc {
     private val COLUMNS = arrayOf(BaseColumns._ID,
                                   CreditCardDB.CreditCardEntry.COLUMN_NAME,
                                   CreditCardDB.CreditCardEntry.COLUMN_MAX_QUOTES,

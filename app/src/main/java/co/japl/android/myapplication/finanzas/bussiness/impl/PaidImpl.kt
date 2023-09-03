@@ -18,8 +18,9 @@ import java.math.BigDecimal
 import java.time.LocalDate
 import java.time.Period
 import java.util.*
+import javax.inject.Inject
 
-class PaidImpl(override var dbConnect: SQLiteOpenHelper) : IPaidSvc{
+class PaidImpl @Inject constructor(override var dbConnect: SQLiteOpenHelper) : IPaidSvc{
     val COLUMNS = arrayOf(
         BaseColumns._ID,
         PaidDB.Entry.COLUMN_DATE_PAID,

@@ -30,15 +30,19 @@ import co.japl.android.myapplication.finanzas.enums.MoreOptionesExtraValueItems
 import co.japl.android.myapplication.finanzas.holders.ExtraValueListHolder
 import co.japl.android.myapplication.finanzas.holders.interfaces.IListHolder
 import co.japl.android.myapplication.finanzas.putParams.ExtraValueListParam
+import dagger.hilt.android.AndroidEntryPoint
 import java.math.BigDecimal
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class ExtraValueListController : Fragment(), LoaderManager.LoaderCallbacks<List<Any>>,OnClickListener{
     private lateinit var holder:IListHolder<ExtraValueListHolder,Any>
-    private lateinit var aaSvc:IAddAmortizationSvc
-    private lateinit var evcSvc: IExtraValueAmortizationCreditSvc
-    private lateinit var exqccSvc: IExtraValueAmortizationQuoteCreditCardSvc
     private var idCredit:Int = 0
     private lateinit var extraValueKindOf:AmortizationKindOfEnum
+
+    @Inject lateinit var aaSvc:IAddAmortizationSvc
+    @Inject lateinit var evcSvc: IExtraValueAmortizationCreditSvc
+    @Inject lateinit var exqccSvc: IExtraValueAmortizationQuoteCreditCardSvc
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -46,9 +50,6 @@ class ExtraValueListController : Fragment(), LoaderManager.LoaderCallbacks<List<
         savedInstanceState: Bundle?
     ): View? {
         val root = inflater.inflate(R.layout.fragment_extra_value_list, container, false)
-        aaSvc = AddAmortizationImpl(ConnectDB(root.context))
-        evcSvc = ExtraValueAmortizationCreditImpl(ConnectDB(root.context))
-        exqccSvc = ExtraValueAmortizationQuoteCreditCardImpl(ConnectDB(root.context))
         holder = ExtraValueListHolder(root.rootView)
         holder.setFields(this)
         arguments?.let{

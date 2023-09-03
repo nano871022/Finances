@@ -20,11 +20,16 @@ import co.japl.android.myapplication.bussiness.DB.connections.ConnectDB
 import co.japl.android.myapplication.bussiness.interfaces.SaveSvc
 import co.japl.android.myapplication.finanzas.bussiness.DTO.PaidDTO
 import co.japl.android.myapplication.finanzas.bussiness.impl.PaidImpl
+import co.japl.android.myapplication.finanzas.bussiness.interfaces.IPaidSvc
 import co.japl.android.myapplication.finanzas.holders.PeriodsPaidHolder
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class PeriodsPaidFragment : Fragment() , LoaderManager.LoaderCallbacks<List<PaidDTO>> {
     private lateinit var holder:PeriodsPaidHolder
-    private lateinit var service:SaveSvc<PaidDTO>
+
+    @Inject lateinit var service:IPaidSvc
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,7 +41,6 @@ class PeriodsPaidFragment : Fragment() , LoaderManager.LoaderCallbacks<List<Paid
         savedInstanceState: Bundle?
     ): View? {
         val root = inflater.inflate(R.layout.fragment_periods_paid, container, false)
-        service = PaidImpl(ConnectDB(root.context))
         holder = PeriodsPaidHolder(root,findNavController())
         holder.setFields(null)
         loaderManager.initLoader(1,null,this)

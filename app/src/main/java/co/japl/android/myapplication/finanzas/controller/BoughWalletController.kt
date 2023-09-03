@@ -22,33 +22,41 @@ import co.japl.android.myapplication.bussiness.impl.CreditCardImpl
 import co.japl.android.myapplication.bussiness.impl.SaveCreditCardBoughtImpl
 import co.japl.android.myapplication.bussiness.impl.TaxImpl
 import co.japl.android.myapplication.bussiness.interfaces.Calc
+import co.japl.android.myapplication.bussiness.interfaces.ConfigSvc
 import co.japl.android.myapplication.finanzas.holders.interfaces.IHolder
 import co.japl.android.myapplication.bussiness.interfaces.ITaxSvc
 import co.japl.android.myapplication.bussiness.interfaces.SaveSvc
 import co.japl.android.myapplication.bussiness.mapping.CreditCardBoughtMap
 import co.japl.android.myapplication.finanzas.bussiness.impl.KindOfTaxImpl
+import co.japl.android.myapplication.finanzas.bussiness.interfaces.ICreditCardSvc
+import co.japl.android.myapplication.finanzas.bussiness.interfaces.IKindOfTaxSvc
+import co.japl.android.myapplication.finanzas.bussiness.interfaces.IQuoteCreditCardSvc
 import co.japl.android.myapplication.finanzas.holders.BoughWalletHolder
 import co.japl.android.myapplication.finanzas.putParams.BoughWalletParams
 import co.japl.android.myapplication.finanzas.enums.KindBoughtEnum
 import co.japl.android.myapplication.finanzas.enums.KindOfTaxEnum
 import co.japl.android.myapplication.finanzas.enums.TaxEnum
+import dagger.hilt.android.AndroidEntryPoint
 import java.math.BigDecimal
 import java.math.RoundingMode
 import java.time.LocalDateTime
 import java.util.*
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class BoughWalletController: Fragment() , View.OnClickListener{
-    private val kindOfTaxSvc = KindOfTaxImpl()
     lateinit var holder: IHolder<CreditCardBought>
-    lateinit var saveSvc: SaveSvc<CreditCardBoughtDTO>
-    lateinit var creditCardSvc: SaveSvc<CreditCardDTO>
     lateinit var codeCreditCard:Optional<Int>
     lateinit var creditCard:Optional<CreditCardDTO>
-    val config = Config()
     lateinit var tax:TaxDTO
-    lateinit var taxSvc:ITaxSvc
     private lateinit var calc:Calc
+
     lateinit var navController: NavController
+    @Inject lateinit var creditCardSvc: ICreditCardSvc
+    @Inject lateinit var saveSvc: IQuoteCreditCardSvc
+    @Inject lateinit var taxSvc:ITaxSvc
+    @Inject lateinit var config :ConfigSvc
+    @Inject lateinit var kindOfTaxSvc: IKindOfTaxSvc
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreateView(
@@ -58,11 +66,7 @@ class BoughWalletController: Fragment() , View.OnClickListener{
     ): View? {
         val view = inflater.inflate(R.layout.buy_wallet_credit_card,container,false)
         codeCreditCard = Optional.ofNullable(BoughWalletParams.download(requireArguments()).toInt())
-        val connect = ConnectDB(view.context)
         navController = findNavController()
-        saveSvc = SaveCreditCardBoughtImpl(connect)
-        creditCardSvc = CreditCardImpl(connect)
-        taxSvc = TaxImpl(connect)
         creditCard = creditCardSvc.get(codeCreditCard.get())
         activity?.supportFragmentManager.let {
             holder = BoughWalletHolder(view, it!!) { bought, date ->

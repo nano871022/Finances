@@ -12,8 +12,9 @@ import co.japl.android.myapplication.finanzas.bussiness.interfaces.IAddAmortizat
 import co.japl.android.myapplication.finanzas.bussiness.mapping.AddAmortizationMap
 import java.time.LocalDate
 import java.util.Optional
+import javax.inject.Inject
 
-class AddAmortizationImpl(override var dbConnect: SQLiteOpenHelper) : IAddAmortizationSvc {
+class AddAmortizationImpl @Inject constructor(override var dbConnect: SQLiteOpenHelper) : IAddAmortizationSvc {
     val COLUMNS = arrayOf(
         BaseColumns._ID,
         AddAmortizationDB.Entry.COLUMN_CODE,

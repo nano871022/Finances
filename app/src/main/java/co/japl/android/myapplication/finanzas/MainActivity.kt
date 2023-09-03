@@ -43,8 +43,10 @@ import com.google.android.gms.common.SignInButton
 import com.google.android.gms.common.api.Scope
 import com.google.android.gms.drive.*
 import com.google.android.material.navigation.NavigationView
+import dagger.hilt.android.AndroidEntryPoint
 import java.io.File
 
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity(){
     var drawLayout:DrawerLayout? = null
     var bundle:Bundle?=null

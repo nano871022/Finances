@@ -16,8 +16,9 @@ import co.japl.android.myapplication.bussiness.mapping.CreditCardSettingMap
 import co.japl.android.myapplication.finanzas.bussiness.interfaces.ICreditCardSettingSvc
 import co.japl.android.myapplication.utils.DatabaseConstants
 import java.util.*
+import javax.inject.Inject
 
-class CreditCardSettingImpl(override var dbConnect: SQLiteOpenHelper) : SaveSvc<CreditCardSettingDTO> ,ICreditCardSettingSvc{
+class CreditCardSettingImpl @Inject constructor(override var dbConnect: SQLiteOpenHelper) : ICreditCardSettingSvc{
     private val COLUMNS = arrayOf(
         BaseColumns._ID,
         CreditCardSettingDB.CreditCardEntry.COLUMN_COD_CREDIT_CARD,

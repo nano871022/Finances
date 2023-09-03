@@ -36,8 +36,9 @@ import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 import java.util.*
+import javax.inject.Inject
 
-class SaveCreditCardBoughtImpl(override var dbConnect: SQLiteOpenHelper) :IQuoteCreditCardSvc{
+class SaveCreditCardBoughtImpl @Inject constructor(override var dbConnect: SQLiteOpenHelper) :IQuoteCreditCardSvc{
     private val kindOfTaxSvc = KindOfTaxImpl()
     private val COLUMNS_CALC = arrayOf(BaseColumns._ID
         ,CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_CODE_CREDIT_CARD

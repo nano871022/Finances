@@ -17,17 +17,22 @@ import co.japl.android.myapplication.bussiness.DB.connections.ConnectDB
 import co.japl.android.myapplication.finanzas.holders.interfaces.IHolder
 import co.japl.android.myapplication.finanzas.bussiness.DTO.PaidDTO
 import co.japl.android.myapplication.finanzas.bussiness.impl.PaidImpl
+import co.japl.android.myapplication.finanzas.bussiness.interfaces.IPaidSvc
 import co.japl.android.myapplication.finanzas.holders.interfaces.IRecyclerView
 import co.japl.android.myapplication.finanzas.bussiness.interfaces.ISaveSvc
 import co.japl.android.myapplication.finanzas.holders.PaidListHolder
 import co.japl.android.myapplication.finanzas.putParams.PaidsParams
+import dagger.hilt.android.AndroidEntryPoint
 import java.math.BigDecimal
 import java.time.LocalDate
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class PaidListFragment : Fragment() , LoaderManager.LoaderCallbacks<List<PaidDTO>> {
-    private lateinit var service: ISaveSvc<PaidDTO>
     private lateinit var date:LocalDate
     private lateinit var holder: IHolder<PaidDTO>
+
+    @Inject lateinit var service: IPaidSvc
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,7 +46,6 @@ class PaidListFragment : Fragment() , LoaderManager.LoaderCallbacks<List<PaidDTO
         val root = inflater.inflate(R.layout.fragment_paid_list, container, false)
         date = getDate(arguments)
         holder = PaidListHolder(root,layoutInflater,findNavController())
-        service = PaidImpl(ConnectDB(root.context))
         holder.setFields(null)
         loaderManager.initLoader(1,null,this)
         return root

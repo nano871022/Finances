@@ -6,9 +6,10 @@ import co.japl.android.myapplication.finanzas.bussiness.impl.KindOfTaxImpl
 import co.japl.android.myapplication.finanzas.bussiness.interfaces.IKindOfTaxSvc
 import co.japl.android.myapplication.finanzas.enums.KindOfTaxEnum
 import java.math.BigDecimal
+import javax.inject.Inject
 import kotlin.math.pow
 
-class QuoteCredit : Calc {
+class QuoteCredit @Inject constructor() : Calc {
     private val kindOfTaxSvc:IKindOfTaxSvc = KindOfTaxImpl()
 
     override fun calc(value: BigDecimal, period: Long, tax: Double,kindOf: KindOfTaxEnum): BigDecimal {

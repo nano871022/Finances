@@ -11,10 +11,12 @@ import co.japl.android.myapplication.bussiness.DTO.BuyCreditCardSettingDB
 import co.japl.android.myapplication.bussiness.interfaces.SaveSvc
 import co.japl.android.myapplication.bussiness.mapping.BuyCreditCardSettingMap
 import co.japl.android.myapplication.bussiness.queries.BuyCreditCardSettingQuery
+import co.japl.android.myapplication.finanzas.bussiness.interfaces.IBuyCreditCardSettingSvc
 import co.japl.android.myapplication.utils.DatabaseConstants
 import java.util.*
+import javax.inject.Inject
 
-class BuyCreditCardSettingImpl(override var dbConnect: SQLiteOpenHelper) : SaveSvc<BuyCreditCardSettingDTO> {
+class BuyCreditCardSettingImpl @Inject constructor(override var dbConnect: SQLiteOpenHelper) : IBuyCreditCardSettingSvc {
     private val COLUMNS = arrayOf(
         BaseColumns._ID,
         BuyCreditCardSettingDB.Entry.COLUMN_COD_BUY_CREDIT_CARD,

@@ -32,19 +32,23 @@ import co.japl.android.myapplication.finanzas.putParams.CreditCardQuotesParams
 import co.japl.android.myapplication.holders.view.BoughtViewHolder
 import co.japl.android.myapplication.pojo.CreditCard
 import co.japl.android.myapplication.utils.DateUtils
+import dagger.hilt.android.AndroidEntryPoint
 import java.math.BigDecimal
 import java.util.*
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class ListBought : Fragment() , LoaderManager.LoaderCallbacks<Pair<List<CreditCardBoughtDTO>,BoughtRecap>>{
 
     lateinit var holder:ListBoughtHolder
     lateinit var adapter:RecyclerView.Adapter<BoughtViewHolder>
-    lateinit var dbConnect: ConnectDB
-    lateinit var saveSvc: SearchSvc<CreditCardBoughtDTO>
+
     lateinit var creditCard:CreditCard
-    lateinit var taxSvc:ITaxSvc
     lateinit var taxAdvance:Optional<TaxDTO>
     lateinit var taxQuote:Optional<TaxDTO>
+
+    @Inject lateinit var saveSvc: IQuoteCreditCardSvc
+    @Inject lateinit var taxSvc:ITaxSvc
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreateView(
@@ -58,11 +62,6 @@ class ListBought : Fragment() , LoaderManager.LoaderCallbacks<Pair<List<CreditCa
             creditCard.codeCreditCard = Optional.ofNullable(params.first)
             creditCard.cutOff = Optional.ofNullable(params.second)
             creditCard.cutoffDay = Optional.ofNullable(params.third)
-        }
-        rootView.context.let {
-            dbConnect = ConnectDB(it!!)
-            saveSvc = SaveCreditCardBoughtImpl(dbConnect)
-            taxSvc = TaxImpl(dbConnect)
         }
         taxAdvance = taxSvc.get(creditCard.codeCreditCard.get().toLong(),creditCard.cutOff.get().monthValue,creditCard.cutOff.get().year,
             TaxEnum.CASH_ADVANCE)

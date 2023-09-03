@@ -23,8 +23,9 @@ import java.time.LocalDate
 import java.time.Period
 import java.time.temporal.ChronoUnit
 import java.util.*
+import javax.inject.Inject
 
-class CreditFixImpl(override var dbConnect: SQLiteOpenHelper) :ICreditFix{
+class CreditFixImpl @Inject constructor(override var dbConnect: SQLiteOpenHelper) :ICreditFix{
     private val additionalSvc:IAdditionalCreditSvc = AdditionalCreditImpl(dbConnect)
     private val gracePeriodSvc:IGracePeriod = GracePeriodImpl(dbConnect)
     private val calcTaxSvc = KindOfTaxImpl()

@@ -24,19 +24,24 @@ import co.japl.android.myapplication.bussiness.DB.connections.ConnectDB
 import co.japl.android.myapplication.bussiness.interfaces.SaveSvc
 import co.japl.android.myapplication.finanzas.bussiness.DTO.InputDTO
 import co.japl.android.myapplication.finanzas.bussiness.impl.InputImpl
+import co.japl.android.myapplication.finanzas.bussiness.interfaces.IInputSvc
 import co.japl.android.myapplication.finanzas.holders.InputListHolder
 import co.japl.android.myapplication.finanzas.holders.interfaces.IListHolder
 import co.japl.android.myapplication.finanzas.putParams.AccountParams
 import co.japl.android.myapplication.finanzas.putParams.InputListParams
 import co.japl.android.myapplication.utils.NumbersUtil
 import com.google.android.material.button.MaterialButton
+import dagger.hilt.android.AndroidEntryPoint
 import java.math.BigDecimal
 import java.time.LocalDate
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class InputListFragment : Fragment(),OnClickListener,LoaderManager.LoaderCallbacks<List<InputDTO>> {
-    private lateinit var service: SaveSvc<InputDTO>
     private lateinit var holder:IListHolder<InputListHolder,InputDTO>
     private var accountCode:Int = 0
+
+    @Inject lateinit var service: IInputSvc
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
     }
@@ -48,7 +53,6 @@ class InputListFragment : Fragment(),OnClickListener,LoaderManager.LoaderCallbac
     ): View? {
         val root = inflater.inflate(R.layout.fragment_input_list, container, false)
         accountCode = arguments?.let{AccountParams.download(it)}?:0
-        service = InputImpl(root,ConnectDB(root.context))
         holder = InputListHolder(root)
         holder.setFields(this)
         loaderManager.initLoader(1,null,this)

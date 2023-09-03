@@ -28,17 +28,23 @@ import co.japl.android.myapplication.bussiness.DTO.CreditCardDTO
 import co.japl.android.myapplication.bussiness.DTO.TaxDTO
 import co.japl.android.myapplication.bussiness.impl.CreditCardImpl
 import co.japl.android.myapplication.bussiness.impl.TaxImpl
+import co.japl.android.myapplication.bussiness.interfaces.ITaxSvc
 import co.japl.android.myapplication.bussiness.interfaces.SaveSvc
 import co.japl.android.myapplication.finanzas.bussiness.impl.ScriptService
+import co.japl.android.myapplication.finanzas.bussiness.interfaces.ICreditCardSvc
 import co.japl.android.myapplication.holders.TaxHolder
 import com.google.android.material.progressindicator.CircularProgressIndicator
+import dagger.hilt.android.AndroidEntryPoint
 import java.util.stream.Collectors
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class ListTaxCreditCard : Fragment() ,LoaderManager.LoaderCallbacks<Pair<List<CreditCardDTO>,List<TaxDTO>>> {
 
     private lateinit var holder:TaxHolder
-    private lateinit var searchCCSvc: SaveSvc<CreditCardDTO>
-    private lateinit var searchTaxSvc: SaveSvc<TaxDTO>
+
+    @Inject lateinit var searchCCSvc: ICreditCardSvc
+    @Inject lateinit var searchTaxSvc: ITaxSvc
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,9 +57,6 @@ class ListTaxCreditCard : Fragment() ,LoaderManager.LoaderCallbacks<Pair<List<Cr
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_list_tax_credit_card, container, false)
-        val connect = ConnectDB(view.context)
-        searchCCSvc = CreditCardImpl(connect)
-        searchTaxSvc = TaxImpl(connect)
         holder = TaxHolder(view,parentFragmentManager,findNavController())
         holder.setFields(null)
         loaderManager.initLoader(1,null,this)

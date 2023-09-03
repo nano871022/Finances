@@ -14,8 +14,9 @@ import co.japl.android.myapplication.finanzas.bussiness.interfaces.IExtraValueAm
 import co.japl.android.myapplication.finanzas.bussiness.mapping.ExtraValueAmortizationQuoteCreditCardMap
 import java.time.LocalDate
 import java.util.Optional
+import javax.inject.Inject
 
-class ExtraValueAmortizationQuoteCreditCardImpl(override var dbConnect: SQLiteOpenHelper) : IExtraValueAmortizationQuoteCreditCardSvc {
+class ExtraValueAmortizationQuoteCreditCardImpl @Inject constructor(override var dbConnect: SQLiteOpenHelper) : IExtraValueAmortizationQuoteCreditCardSvc {
     val COLUMNS = arrayOf(
         BaseColumns._ID,
         AddAmortizationDB.Entry.COLUMN_CODE,

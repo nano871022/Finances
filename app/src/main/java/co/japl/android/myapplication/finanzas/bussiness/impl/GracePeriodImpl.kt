@@ -14,8 +14,9 @@ import co.japl.android.myapplication.utils.DatabaseConstants
 import co.japl.android.myapplication.utils.DateUtils
 import java.time.LocalDate
 import java.util.*
+import javax.inject.Inject
 
-class GracePeriodImpl(override var dbConnect: SQLiteOpenHelper) : IGracePeriod{
+class GracePeriodImpl @Inject constructor(override var dbConnect: SQLiteOpenHelper) : IGracePeriod{
     val COLUMNS = arrayOf(
         BaseColumns._ID,
         GracePeriodDB.Entry.COLUMN_DATE_CREATE,

@@ -20,8 +20,9 @@ import co.japl.android.myapplication.utils.NumbersUtil
 import java.math.BigDecimal
 import java.time.LocalDate
 import java.util.*
+import javax.inject.Inject
 
-class AdditionalCreditImpl(override var dbConnect: SQLiteOpenHelper) :  IAdditionalCreditSvc{
+class AdditionalCreditImpl @Inject constructor(override var dbConnect: SQLiteOpenHelper) :  IAdditionalCreditSvc{
     public  val COLUMNS = arrayOf(
         BaseColumns._ID,
         AdditionalCreditDB.Entry.COLUMN_NAME,

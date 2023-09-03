@@ -27,15 +27,20 @@ import co.japl.android.myapplication.bussiness.DB.connections.ConnectDB
 import co.japl.android.myapplication.bussiness.DTO.CreditCardDTO
 import co.japl.android.myapplication.bussiness.impl.CreditCardImpl
 import co.japl.android.myapplication.bussiness.interfaces.SaveSvc
+import co.japl.android.myapplication.finanzas.bussiness.interfaces.ICreditCardSvc
 import co.japl.android.myapplication.finanzas.bussiness.interfaces.ISaveSvc
 import co.japl.android.myapplication.finanzas.holders.ListCreditCardHolder
 import co.japl.android.myapplication.finanzas.holders.interfaces.IListHolder
 import co.japl.android.myapplication.putParams.CreditCardParams
+import dagger.hilt.android.AndroidEntryPoint
 import java.util.Arrays
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class ListCreditCard : Fragment() , View.OnClickListener, LoaderManager.LoaderCallbacks<List<CreditCardDTO>> {
-    private lateinit var saveSvc:SaveSvc<CreditCardDTO>
     private lateinit var holder:IListHolder<ListCreditCardHolder,CreditCardDTO>
+
+    @Inject lateinit var saveSvc:ICreditCardSvc
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,8 +53,6 @@ class ListCreditCard : Fragment() , View.OnClickListener, LoaderManager.LoaderCa
         savedInstanceState: Bundle?
     ): View? {
         val view =  inflater.inflate(R.layout.fragment_list_credit_card, container, false)
-        val connect = ConnectDB(view.context)
-        saveSvc = CreditCardImpl(connect)
         holder = ListCreditCardHolder(view,parentFragmentManager,findNavController())
         holder.setFields(this)
         loaderManager.initLoader(1,null,this)

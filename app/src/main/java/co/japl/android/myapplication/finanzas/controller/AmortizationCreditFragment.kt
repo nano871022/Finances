@@ -23,6 +23,8 @@ import co.japl.android.myapplication.finanzas.bussiness.DTO.GracePeriodDTO
 import co.japl.android.myapplication.finanzas.bussiness.impl.AdditionalCreditImpl
 import co.japl.android.myapplication.finanzas.bussiness.impl.CreditFixImpl
 import co.japl.android.myapplication.finanzas.bussiness.impl.GracePeriodImpl
+import co.japl.android.myapplication.finanzas.bussiness.interfaces.IAdditionalCreditSvc
+import co.japl.android.myapplication.finanzas.bussiness.interfaces.ICreditFix
 import co.japl.android.myapplication.finanzas.bussiness.interfaces.IGracePeriod
 import co.japl.android.myapplication.finanzas.bussiness.interfaces.ISaveSvc
 import co.japl.android.myapplication.finanzas.holders.interfaces.ITableHolder
@@ -30,18 +32,22 @@ import co.japl.android.myapplication.finanzas.holders.AmortizationCreditTableHol
 import co.japl.android.myapplication.finanzas.putParams.CreditFixParams
 import co.japl.android.myapplication.finanzas.enums.AmortizationCreditFixEnum
 import co.japl.android.myapplication.finanzas.putParams.ExtraValueListParam
+import dagger.hilt.android.AndroidEntryPoint
 import java.math.BigDecimal
 import java.time.LocalDate
 import java.time.temporal.ChronoUnit
 import java.util.Optional
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class AmortizationCreditFragment : Fragment() ,LoaderManager.LoaderCallbacks<Triple<Optional<CreditDTO>,List<AdditionalCreditDTO>,List<GracePeriodDTO>>>, OnClickListener{
     private lateinit var holder: ITableHolder<AmortizationCreditFix>
-    private lateinit var credit:SaveSvc<CreditDTO>
-    private lateinit var svc: ISaveSvc<AdditionalCreditDTO>
-    private lateinit var gracePeriodSvc: IGracePeriod
     private lateinit var creditDto: CreditDTO
     private lateinit var lastDate: LocalDate
+
+    @Inject lateinit var gracePeriodSvc: IGracePeriod
+    @Inject lateinit var credit: ICreditFix
+    @Inject  lateinit var svc: IAdditionalCreditSvc
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -56,9 +62,6 @@ class AmortizationCreditFragment : Fragment() ,LoaderManager.LoaderCallbacks<Tri
         savedInstanceState: Bundle?
     ): View? {
         val root = inflater.inflate(R.layout.fragment_amortization_credit, container, false)
-        credit = CreditFixImpl(ConnectDB(root.context))
-        svc = AdditionalCreditImpl(ConnectDB(root.context))
-        gracePeriodSvc = GracePeriodImpl(ConnectDB(root.context))
         holder = AmortizationCreditTableHolder(root)
         holder.setup(this)
         getData()

@@ -22,13 +22,17 @@ import co.japl.android.myapplication.finanzas.bussiness.interfaces.ICheckPayment
 import co.japl.android.myapplication.finanzas.bussiness.interfaces.ICheckQuoteSvc
 import co.japl.android.myapplication.finanzas.holders.PeriodCheckPaymentsHolder
 import co.japl.android.myapplication.finanzas.pojo.PeriodCheckPaymentsPOJO
+import dagger.hilt.android.AndroidEntryPoint
 import java.util.*
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class PeriodCheckPaymentsFragment : Fragment() , LoaderManager.LoaderCallbacks<List<PeriodCheckPaymentsPOJO>> {
-    private lateinit var svc:ICheckPaymentSvc
-    private lateinit var quoteSvc:ICheckQuoteSvc
-    private lateinit var creditSvc:ICheckCreditSvc
     private lateinit var holder:PeriodCheckPaymentsHolder
+
+    @Inject lateinit var svc:ICheckPaymentSvc
+    @Inject lateinit var quoteSvc:ICheckQuoteSvc
+    @Inject lateinit var creditSvc:ICheckCreditSvc
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,11 +43,6 @@ class PeriodCheckPaymentsFragment : Fragment() , LoaderManager.LoaderCallbacks<L
         savedInstanceState: Bundle?
     ): View? {
         val root = inflater.inflate(R.layout.fragment_period_check_payments, container, false)
-        val connect = ConnectDB(root.context)
-        svc = CheckPaymentImpl(connect)
-        quoteSvc = CheckQuoteImpl(connect)
-        creditSvc = CheckCreditImpl(connect)
-
         holder = PeriodCheckPaymentsHolder(root)
         holder.setFields(null)
         loaderManager.initLoader(1,null,this)

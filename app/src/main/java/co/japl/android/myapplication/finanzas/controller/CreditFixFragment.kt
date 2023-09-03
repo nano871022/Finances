@@ -16,15 +16,20 @@ import co.japl.android.myapplication.finanzas.holders.interfaces.IHolder
 import co.japl.android.myapplication.bussiness.interfaces.SaveSvc
 import co.japl.android.myapplication.finanzas.bussiness.DTO.CreditDTO
 import co.japl.android.myapplication.finanzas.bussiness.impl.CreditFixImpl
+import co.japl.android.myapplication.finanzas.bussiness.interfaces.ICreditFix
 import co.japl.android.myapplication.finanzas.holders.CreditFixHolder
 import co.japl.android.myapplication.finanzas.putParams.CreditFixParams
+import dagger.hilt.android.AndroidEntryPoint
 import java.math.BigDecimal
 import java.time.LocalDate
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class CreditFixFragment : Fragment() , OnClickListener{
     private lateinit var holder: IHolder<CreditDTO>
-    private lateinit var creditSvc:SaveSvc<CreditDTO>
     private  var creditCode = 0L
+
+    @Inject lateinit var creditSvc:ICreditFix
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,7 +41,6 @@ class CreditFixFragment : Fragment() , OnClickListener{
         savedInstanceState: Bundle?
     ): View? {
         val root =  inflater.inflate(R.layout.fragment_credit_fix, container, false)
-        creditSvc = CreditFixImpl(ConnectDB(root.context))
         activity?.supportFragmentManager?.let {holder = CreditFixHolder(root,it)}
         holder.setFields(this)
         holder.loadFields(getCredit())

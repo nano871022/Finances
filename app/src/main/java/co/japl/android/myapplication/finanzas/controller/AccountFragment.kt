@@ -17,13 +17,17 @@ import co.japl.android.myapplication.finanzas.holders.interfaces.IHolder
 import co.japl.android.myapplication.bussiness.interfaces.SaveSvc
 import co.japl.android.myapplication.finanzas.bussiness.DTO.AccountDTO
 import co.japl.android.myapplication.finanzas.bussiness.impl.AccountImpl
+import co.japl.android.myapplication.finanzas.bussiness.interfaces.IAccountSvc
 import co.japl.android.myapplication.finanzas.holders.AccountHolder
 import co.japl.android.myapplication.finanzas.putParams.AccountListParams
 import co.japl.android.myapplication.finanzas.putParams.AccountParams
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class AccountFragment : Fragment() , OnClickListener{
     private lateinit var holder: IHolder<AccountDTO>
-    private lateinit var accountSvc:SaveSvc<AccountDTO>
+    @Inject lateinit var accountSvc:IAccountSvc
     private var idAccount = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -36,7 +40,6 @@ class AccountFragment : Fragment() , OnClickListener{
         savedInstanceState: Bundle?
     ): View? {
         val root =  inflater.inflate(R.layout.fragment_account, container, false)
-        accountSvc = AccountImpl(ConnectDB(root.context))
         holder = AccountHolder(root)
         holder.setFields(this)
         holder.cleanField()
