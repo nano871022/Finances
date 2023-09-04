@@ -14,7 +14,7 @@ android {
         applicationId "co.japl.android.myapplication"
         minSdk 21
         targetSdk 33
-        versionCode 4_05_01_037
+        versionCode 4_05_02_038
         versionName "Fix error with dates in quote credit card and update values in background insted focus off"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
