@@ -31,7 +31,7 @@
             android:padding="@dimen/space_min">
 
             <com.google.android.material.textfield.TextInputLayout
-                style="@style/MaterialTextInputLayoutView"
+                style="@style/MaterialTextInputLayoutViewLight"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/space_min"
@@ -41,7 +41,7 @@
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/tv_saved_rec"
-                    style="@style/MaterialTextInputLayoutView"
+                    style="@style/MaterialTextInputLayoutViewLight"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:enabled="false"
@@ -50,7 +50,7 @@
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
-                style="@style/MaterialTextInputLayoutView"
+                style="@style/MaterialTextInputLayoutViewLight"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/space_min"
@@ -60,7 +60,7 @@
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/tv_quote_save_rec"
-                    style="@style/MaterialTextInputLayoutView"
+                    style="@style/MaterialTextInputLayoutViewLight"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:enabled="false"

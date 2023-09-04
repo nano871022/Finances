@@ -27,7 +27,7 @@
             android:orientation="horizontal">
 
             <com.google.android.material.textfield.TextInputLayout
-                style="@style/MaterialTextInputLayoutView"
+                style="@style/MaterialTextInputLayoutViewLight"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/space_min"
@@ -37,7 +37,7 @@
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/tv_total_paid_rec"
-                    style="@style/MaterialTextInputLayoutView"
+                    style="@style/MaterialTextInputLayoutViewLight"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:enabled="false"
@@ -46,7 +46,7 @@
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
-                style="@style/MaterialTextInputLayoutView"
+                style="@style/MaterialTextInputLayoutViewLight"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/space_min"
@@ -56,7 +56,7 @@
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/tv_total_credits_rec"
-                    style="@style/MaterialTextInputLayoutView"
+                    style="@style/MaterialTextInputLayoutViewLight"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:enabled="false"
@@ -71,7 +71,7 @@
             android:orientation="horizontal">
 
             <com.google.android.material.textfield.TextInputLayout
-                style="@style/MaterialTextInputLayoutView"
+                style="@style/MaterialTextInputLayoutViewLight"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_margin="@dimen/space_min"
@@ -81,7 +81,7 @@
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/tv_total_paids_credits_rec"
-                    style="@style/MaterialTextInputLayoutView"
+                    style="@style/MaterialTextInputLayoutViewLight"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:enabled="false"
@@ -91,7 +91,7 @@
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
-                style="@style/MaterialTextInputLayoutView"
+                style="@style/MaterialTextInputLayoutViewLight"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_margin="@dimen/space_min"
@@ -101,7 +101,7 @@
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/tv_total_inputs_fix"
-                    style="@style/MaterialTextInputLayoutView"
+                    style="@style/MaterialTextInputLayoutViewLight"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:enabled="false"

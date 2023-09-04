@@ -33,6 +33,13 @@
         <item name="boxStrokeColor">@color/green_background</item>
     </style>
 
+    <style name="MaterialTextInputLayoutViewLight" parent="MaterialTextInputLayoutView">
+        <item name="backgroundColor">@color/green_background_light</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:textColorHint">@color/black</item>
+        <item name="prefixTextColor">@color/black</item>
+    </style>
+
     <style name="MaterialTextView" parent="Widget.MaterialComponents.TextView">
         <item name="android:textColor">@color/green_background_dark</item>
         <item name="boxBackgroundColor">@color/green_dark_trans</item>
