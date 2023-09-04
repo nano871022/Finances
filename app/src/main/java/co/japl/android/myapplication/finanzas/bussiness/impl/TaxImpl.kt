@@ -20,8 +20,9 @@ import java.nio.charset.Charset
 import java.nio.file.Files
 import java.nio.file.Paths
 import java.util.*
+import javax.inject.Inject
 
-class TaxImpl(override var dbConnect: SQLiteOpenHelper) :  SaveSvc<TaxDTO>,ITaxSvc{
+class TaxImpl @Inject constructor(override var dbConnect: SQLiteOpenHelper) :  ITaxSvc{
     private val COLUMNS = arrayOf(BaseColumns._ID,
                                   TaxDB.TaxEntry.COLUMN_TAX,
                                   TaxDB.TaxEntry.COLUMN_MONTH,

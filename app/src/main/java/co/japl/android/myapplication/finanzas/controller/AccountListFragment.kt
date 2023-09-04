@@ -19,12 +19,16 @@ import co.japl.android.myapplication.bussiness.DB.connections.ConnectDB
 import co.japl.android.myapplication.bussiness.interfaces.SaveSvc
 import co.japl.android.myapplication.finanzas.bussiness.DTO.AccountDTO
 import co.japl.android.myapplication.finanzas.bussiness.impl.AccountImpl
+import co.japl.android.myapplication.finanzas.bussiness.interfaces.IAccountSvc
 import co.japl.android.myapplication.finanzas.holders.AccountListHolder
 import co.japl.android.myapplication.finanzas.putParams.AccountListParams
 import com.google.android.material.button.MaterialButton
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class AccountListFragment : Fragment() , OnClickListener,LoaderManager.LoaderCallbacks<List<AccountDTO>>{
-    private lateinit var service:SaveSvc<AccountDTO>
+    @Inject lateinit var service:IAccountSvc
     private lateinit var holder:AccountListHolder
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,7 +39,6 @@ class AccountListFragment : Fragment() , OnClickListener,LoaderManager.LoaderCal
         savedInstanceState: Bundle?
     ): View? {
         val root = inflater.inflate(R.layout.fragment_account_list, container, false)
-        service = AccountImpl(ConnectDB(root.context))
         holder = AccountListHolder(root)
         holder.setFields(this)
         loaderManager.initLoader(1,null,this)

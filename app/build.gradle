@@ -3,6 +3,8 @@ plugins {
     id 'org.jetbrains.kotlin.android'
     // Add the Google services Gradle plugin
     id 'com.google.gms.google-services'
+    id 'kotlin-kapt'
+    id 'dagger.hilt.android.plugin'
 }
 
 android {
@@ -12,7 +14,7 @@ android {
         applicationId "co.japl.android.myapplication"
         minSdk 21
         targetSdk 33
-        versionCode 4_04_12_036
+        versionCode 4_05_02_038
         versionName "Fix error with dates in quote credit card and update values in background insted focus off"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -59,9 +61,12 @@ dependencies {
     implementation 'com.google.gms.google-services:com.google.gms.google-services.gradle.plugin:4.3.15'
     implementation 'com.squareup.okio:okio:1.14.0'
     implementation 'com.google.apis:google-api-services-script:v1-rev20220323-2.0.0'
+    implementation 'com.google.android.material:material:1.9.0'
     implementation 'com.google.http-client:google-http-client-gson:1.42.3'
     implementation platform('com.google.firebase:firebase-bom:31.2.3')
     implementation 'androidx.loader:loader:1.1.0'
+    implementation 'com.google.dagger:hilt-android:2.44'
+    kapt 'com.google.dagger:hilt-android-compiler:2.44'
 
     //noinspection GradleCompatible
     testImplementation 'junit:junit:4.13.2'

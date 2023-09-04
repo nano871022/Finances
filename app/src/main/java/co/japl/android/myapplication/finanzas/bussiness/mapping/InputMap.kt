@@ -1,6 +1,7 @@
 package co.japl.android.myapplication.finanzas.bussiness.mapping
 
 import android.content.ContentValues
+import android.content.Context
 import android.database.Cursor
 import android.os.Build
 import android.view.View
@@ -9,9 +10,10 @@ import co.japl.android.myapplication.R
 import co.japl.android.myapplication.finanzas.bussiness.DTO.*
 import co.japl.android.myapplication.utils.DateUtils
 import java.time.LocalDate
+import javax.inject.Inject
 
-class InputMap(view:View) {
-    private val monthly = view.resources.getStringArray(R.array.kind_of_pay_list)[0]
+class InputMap @Inject constructor(context:Context) {
+    private val monthly = context.resources.getStringArray(R.array.kind_of_pay_list)[0]
 
     @RequiresApi(Build.VERSION_CODES.O)
     fun mapping(cursor: Cursor):InputDTO{

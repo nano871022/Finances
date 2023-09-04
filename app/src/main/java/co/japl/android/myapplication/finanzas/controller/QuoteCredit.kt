@@ -20,9 +20,11 @@ import co.japl.android.myapplication.finanzas.pojo.QuoteCreditCard
 import co.japl.android.myapplication.finanzas.putParams.AmortizationTableParams
 import co.japl.android.myapplication.finanzas.putParams.QuoteCreditParams
 import co.japl.android.myapplication.finanzas.enums.KindOfTaxEnum
+import dagger.hilt.android.AndroidEntryPoint
 import java.math.BigDecimal
 import java.util.*
 
+@AndroidEntryPoint
 class QuoteCredit : Fragment(), View.OnClickListener{
     private lateinit var navController:NavController
     private val calc: Calc = QuoteCredit()

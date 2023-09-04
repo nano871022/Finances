@@ -17,20 +17,23 @@ import co.japl.android.myapplication.bussiness.DB.connections.ConnectDB
 import co.japl.android.myapplication.bussiness.DTO.CalcDTO
 import co.japl.android.myapplication.bussiness.impl.SaveImpl
 import co.japl.android.myapplication.bussiness.interfaces.SaveSvc
+import co.japl.android.myapplication.finanzas.bussiness.interfaces.ICalcSvc
 import co.japl.android.myapplication.finanzas.holders.ListSaveHolder
 import co.japl.android.myapplication.finanzas.holders.interfaces.IListHolder
 import co.japl.android.myapplication.holders.view.ViewHolder
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class ListSave : Fragment(), LoaderManager.LoaderCallbacks<List<CalcDTO>> {
     lateinit var holder:ListSaveHolder
-    lateinit var saveSvc: SaveSvc<CalcDTO>
+    @Inject lateinit var saveSvc: ICalcSvc
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         val rootView = inflater.inflate(R.layout.fragment_list_save, container, false)
-        saveSvc = SaveImpl(ConnectDB(rootView.context))
         holder = ListSaveHolder(rootView)
         holder.setFields(null)
         loaderManager.initLoader(1, null, this)

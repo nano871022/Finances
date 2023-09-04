@@ -58,81 +58,24 @@
             </com.google.android.material.textfield.TextInputLayout>
         </LinearLayout>
 
-<LinearLayout
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="horizontal">
-            <com.google.android.material.textfield.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:hint="@string/tax"
-                style="@style/MaterialTextInputLayoutView"
-                app:suffixText="%">
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/tax_at"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:enabled="false"
-                    style="@style/MaterialTextInputLayoutView"
-                    android:text="@string/integer_hint"
-                    android:textAlignment="textEnd"/>
-            </com.google.android.material.textfield.TextInputLayout>
-            <com.google.android.material.textfield.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                style="@style/MaterialTextInputLayoutView"
-                android:hint="@string/periods">
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/periods_at"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:enabled="false"
-                    style="@style/MaterialTextInputLayoutView"
-                    android:text="@string/months_number_hint"
-                    android:textAlignment="textEnd"/>
-            </com.google.android.material.textfield.TextInputLayout>
-</LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/capitalValueLayout"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:hint="@string/capital_value"
-            app:prefixText="$"
-            style="@style/MaterialTextInputLayoutView">
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/capital_value_at"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/money_hint"
-                android:enabled="false"
-                style="@style/MaterialTextInputLayoutView"
-                android:textAlignment="textEnd"/>
-        </com.google.android.material.textfield.TextInputLayout>
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                app:prefixText="$"
-                android:layout_weight="1"
-                style="@style/MaterialTextInputLayoutView"
-                android:hint="@string/interest_to_pay_value">
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/interest_to_pay_at"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    style="@style/MaterialTextInputLayoutView"
-                    android:enabled="false"
-                    android:text="@string/money_hint"
-                    android:textAlignment="textEnd"/>
-            </com.google.android.material.textfield.TextInputLayout>
+        <Button
+            android:id="@+id/btn_see_more_at"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/padding_page"
+            android:text="@string/see_more"/>
+
+        <Button
+            android:id="@+id/btn_extra_values_list_at"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/padding_page"
+            android:text="@string/extra_value_list"/>
     </LinearLayout>
 
     <TableLayout

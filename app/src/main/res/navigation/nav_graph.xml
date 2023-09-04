@@ -80,6 +80,12 @@
         <action
             android:id="@+id/action_list_bought_to_buy_credit_card"
             app:destination="@id/buy_credit_card" />
+        <action
+            android:id="@+id/action_list_bought_to_cash_advance_fragment"
+            app:destination="@id/cash_advance_fragment" />
+        <action
+            android:id="@+id/action_list_bought_to_buy_credit_card2"
+            app:destination="@id/buy_credit_card" />
     </fragment>
 
     <fragment
@@ -205,7 +211,11 @@
         android:id="@+id/amortizationTableFragment"
         android:name="co.japl.android.myapplication.finanzas.controller.AmortizationTableFragment"
         android:label="@string/amortization_table"
-        tools:layout="@layout/fragment_amortization_table" />
+        tools:layout="@layout/fragment_amortization_table" >
+        <action
+            android:id="@+id/action_amortizationTableFragment_to_extraValueListController"
+            app:destination="@id/extraValueListController" />
+    </fragment>
     <fragment
         android:id="@+id/additionalCreditFragment"
         android:name="co.japl.android.myapplication.finanzas.controller.AdditionalCreditFragment"
@@ -240,6 +250,9 @@
         <action
             android:id="@+id/action_amortizationCreditFragment_to_additionalListFragment"
             app:destination="@id/additionalListFragment" />
+        <action
+            android:id="@+id/action_amortizationCreditFragment_to_extraValueListController"
+            app:destination="@id/extraValueListController" />
     </fragment>
     <fragment
         android:id="@+id/creditListFragment"
@@ -264,6 +277,9 @@
         <action
             android:id="@+id/action_monthlyCreditListFragment_to_amortizationCreditFragment"
             app:destination="@id/amortizationCreditFragment" />
+        <action
+            android:id="@+id/action_monthlyCreditListFragment_to_additionalListFragment"
+            app:destination="@id/additionalListFragment" />
     </fragment>
     <fragment
         android:id="@+id/periodCreditListFragment"
@@ -383,5 +399,9 @@
         android:name="co.japl.android.myapplication.finanzas.controller.PeriodCheckPaymentsFragment"
         android:label="@string/paids"
         tools:layout="@layout/fragment_period_check_payments" />
+    <fragment
+        android:id="@+id/extraValueListController"
+        android:name="co.japl.android.myapplication.finanzas.controller.ExtraValueListController"
+        android:label="ExtraValueListController" />
 
 </navigation>

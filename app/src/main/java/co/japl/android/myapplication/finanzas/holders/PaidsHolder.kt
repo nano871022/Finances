@@ -16,6 +16,7 @@ import co.japl.android.myapplication.finanzas.bussiness.DTO.PaidsPOJO
 import co.japl.android.myapplication.finanzas.bussiness.impl.AccountImpl
 import co.japl.android.myapplication.finanzas.bussiness.impl.InputImpl
 import co.japl.android.myapplication.finanzas.bussiness.impl.PaidImpl
+import co.japl.android.myapplication.finanzas.bussiness.mapping.InputMap
 import co.japl.android.myapplication.utils.NumbersUtil
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.textview.MaterialTextView
@@ -26,7 +27,7 @@ import java.util.Locale
 
 class PaidsHolder(val view:View): IHolder<PaidsPOJO> {
     private val service:SaveSvc<AccountDTO> = AccountImpl(ConnectDB(view.context))
-    private val inputSvc:SaveSvc<InputDTO> = InputImpl(view,ConnectDB(view.context))
+    private val inputSvc:SaveSvc<InputDTO> = InputImpl(ConnectDB(view.context), InputMap(view.context))
     private val paidSvc:SaveSvc<PaidDTO> = PaidImpl(ConnectDB(view.context))
         private lateinit var period:TextView
     private lateinit var paid:TextView

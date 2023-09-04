@@ -23,13 +23,17 @@ import co.japl.android.myapplication.finanzas.bussiness.DTO.PeriodCreditDTO
 import co.japl.android.myapplication.finanzas.bussiness.impl.CreditFixImpl
 import co.japl.android.myapplication.finanzas.bussiness.interfaces.ICreditFix
 import co.japl.android.myapplication.finanzas.holders.PeriodCreditListHolder
+import dagger.hilt.android.AndroidEntryPoint
 import java.math.BigDecimal
 import java.time.LocalDate
 import java.util.Date
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class PeriodCreditListFragment : Fragment() ,LoaderManager.LoaderCallbacks<List<PeriodCreditDTO>>{
     private lateinit var holder: PeriodCreditListHolder
-    private lateinit var creditSvc: ICreditFix
+
+    @Inject lateinit var creditSvc: ICreditFix
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,7 +45,6 @@ class PeriodCreditListFragment : Fragment() ,LoaderManager.LoaderCallbacks<List<
         savedInstanceState: Bundle?
     ): View? {
         val root = inflater.inflate(R.layout.fragment_period_credit_list, container, false)
-        creditSvc = CreditFixImpl(ConnectDB(root.context))
         holder = PeriodCreditListHolder(root,findNavController())
         holder.setFields(null)
         loaderManager.initLoader(1,null,this)

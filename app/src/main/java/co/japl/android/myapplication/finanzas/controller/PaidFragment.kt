@@ -14,12 +14,17 @@ import co.japl.android.myapplication.finanzas.holders.interfaces.IHolder
 import co.japl.android.myapplication.bussiness.interfaces.SaveSvc
 import co.japl.android.myapplication.finanzas.bussiness.DTO.PaidDTO
 import co.japl.android.myapplication.finanzas.bussiness.impl.PaidImpl
+import co.japl.android.myapplication.finanzas.bussiness.interfaces.IPaidSvc
 import co.japl.android.myapplication.finanzas.holders.PaidHolder
 import co.japl.android.myapplication.finanzas.putParams.PaidsParams
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class PaidFragment : Fragment() , OnClickListener{
     private lateinit var holder: IHolder<PaidDTO>
-    private lateinit var service:SaveSvc<PaidDTO>
+
+    @Inject lateinit var service:IPaidSvc
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,7 +36,6 @@ class PaidFragment : Fragment() , OnClickListener{
     ): View? {
         val root = inflater.inflate(R.layout.fragment_paid, container, false)
         holder = PaidHolder(root,parentFragmentManager)
-        service = PaidImpl(ConnectDB(root.context))
         holder.setFields(this)
         holder.cleanField()
         load()

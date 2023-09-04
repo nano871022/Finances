@@ -27,7 +27,7 @@ class ListProjectionAdapter(var data:MutableList<ProjectionDTO>,val navControlle
         val view =
             LayoutInflater.from(parent.context).inflate(R.layout.fragment_projection_item_list, parent, false)
         val viewHolder =  ProjectionItemHolder(view)
-        svc = ProjectionsImpl(ConnectDB(view.context),view)
+        svc = ProjectionsImpl(ConnectDB(view.context))
         viewHolder.loadFields()
         return viewHolder
     }

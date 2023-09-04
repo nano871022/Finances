@@ -16,16 +16,21 @@ import co.japl.android.myapplication.finanzas.holders.interfaces.IHolder
 import co.japl.android.myapplication.bussiness.interfaces.SaveSvc
 import co.japl.android.myapplication.finanzas.bussiness.DTO.InputDTO
 import co.japl.android.myapplication.finanzas.bussiness.impl.InputImpl
+import co.japl.android.myapplication.finanzas.bussiness.interfaces.IInputSvc
 import co.japl.android.myapplication.finanzas.holders.InputHolder
 import co.japl.android.myapplication.finanzas.putParams.InputListParams
+import dagger.hilt.android.AndroidEntryPoint
 import java.math.BigDecimal
 import java.time.LocalDate
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class InputFragment : Fragment(),OnClickListener {
 
     private lateinit var holder: IHolder<InputDTO>
-    private lateinit var service:SaveSvc<InputDTO>
     private var accountCode:Int = 0
+
+    @Inject lateinit var service:IInputSvc
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
     }
@@ -38,7 +43,6 @@ class InputFragment : Fragment(),OnClickListener {
         val root = inflater.inflate(R.layout.fragment_input, container, false)
         accountCode = arguments?.let { InputListParams.download(it) }?:0
         holder = InputHolder(root,parentFragmentManager)
-        service = InputImpl(root,ConnectDB( root.context))
         holder.setFields(this)
         holder.loadFields(getInput(root))
         holder.cleanField()

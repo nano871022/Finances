@@ -17,16 +17,21 @@ import co.japl.android.myapplication.bussiness.DB.connections.ConnectDB
 import co.japl.android.myapplication.bussiness.interfaces.SaveSvc
 import co.japl.android.myapplication.finanzas.bussiness.DTO.CreditDTO
 import co.japl.android.myapplication.finanzas.bussiness.impl.CreditFixImpl
+import co.japl.android.myapplication.finanzas.bussiness.interfaces.ICreditFix
 import co.japl.android.myapplication.finanzas.holders.CreditFixListHolder
 import co.japl.android.myapplication.finanzas.putParams.CreditFixListParams
+import dagger.hilt.android.AndroidEntryPoint
 import java.math.BigDecimal
 import java.time.LocalDate
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class CreditListFragment : Fragment(), OnClickListener,LoaderManager.LoaderCallbacks<Map<String,BigDecimal>>{
     private lateinit var holder: CreditFixListHolder
-    private lateinit var creditList:SaveSvc<CreditDTO>
     private lateinit var date:LocalDate
-        override fun onCreate(savedInstanceState: Bundle?) {
+
+    @Inject lateinit var creditList:ICreditFix
+    override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
     }
 
@@ -36,7 +41,6 @@ class CreditListFragment : Fragment(), OnClickListener,LoaderManager.LoaderCallb
         savedInstanceState: Bundle?
     ): View? {
         val root =  inflater.inflate(R.layout.fragment_credit_list, container, false)
-        creditList = CreditFixImpl(ConnectDB(root.context))
         holder = CreditFixListHolder(root)
         date = LocalDate.now()
         holder.loadField()

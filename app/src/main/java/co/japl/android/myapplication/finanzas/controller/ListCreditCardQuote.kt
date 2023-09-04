@@ -1,16 +1,13 @@
 package co.japl.android.myapplication.controller
 
 import android.app.AlertDialog
-import android.content.Context
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.annotation.RequiresApi
-import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.loader.app.LoaderManager
 import androidx.loader.content.AsyncTaskLoader
@@ -18,36 +15,34 @@ import androidx.loader.content.Loader
 import androidx.navigation.fragment.findNavController
 import co.japl.android.myapplication.R
 import co.japl.android.myapplication.bussiness.DB.connections.ConnectDB
-import co.japl.android.myapplication.bussiness.DTO.CreditCardBoughtDTO
 import co.japl.android.myapplication.bussiness.DTO.CreditCardDTO
 import co.japl.android.myapplication.bussiness.impl.Config
 import co.japl.android.myapplication.bussiness.impl.CreditCardImpl
-import co.japl.android.myapplication.bussiness.impl.SaveCreditCardBoughtImpl
-import co.japl.android.myapplication.bussiness.impl.TaxImpl
 import co.japl.android.myapplication.bussiness.interfaces.*
 import co.japl.android.myapplication.bussiness.mapping.CreditCardMap
+import co.japl.android.myapplication.finanzas.bussiness.interfaces.IQuoteCreditCardSvc
 import co.japl.android.myapplication.finanzas.holders.interfaces.IHolder
 import co.japl.android.myapplication.finanzas.holders.interfaces.ISpinnerHolder
 import co.japl.android.myapplication.holders.QuoteCCHolder
 import co.japl.android.myapplication.pojo.CreditCard
 import co.japl.android.myapplication.utils.DateUtils
-import com.google.gson.Gson
+import dagger.hilt.android.AndroidEntryPoint
 import java.math.BigDecimal
 import java.time.LocalDateTime
 import java.time.ZoneId
 import java.util.*
-import kotlin.NoSuchElementException
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class ListCreditCardQuote : Fragment(), LoaderManager.LoaderCallbacks<CreditCard>{
-    private lateinit var saveSvc: SaveSvc<CreditCardBoughtDTO>
-    private lateinit var searchSvc: SearchSvc<CreditCardBoughtDTO>
-    private lateinit var taxSvc: ITaxSvc
-    private lateinit var contexto: Context
     private lateinit var holder: IHolder<CreditCard>
     private lateinit var listCreditCard:List<CreditCardDTO>
-    private val configSvc:ConfigSvc = Config()
     private lateinit var creditCardDialog:AlertDialog
     private var pojo : CreditCard? = null
+
+    @Inject lateinit var configSvc:ConfigSvc
+    @Inject lateinit var quoteCreditCardSvc: IQuoteCreditCardSvc
+    @Inject lateinit var taxSvc: ITaxSvc
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreateView(
@@ -55,12 +50,6 @@ class ListCreditCardQuote : Fragment(), LoaderManager.LoaderCallbacks<CreditCard
         savedInstanceState: Bundle?
     ): View {
         val rootView = inflater.inflate(R.layout.list_credit_card_quote, container, false)
-        contexto = rootView.context
-        rootView?.context?.let { ConnectDB(it) }?.let {
-            taxSvc = TaxImpl(it)
-            saveSvc = SaveCreditCardBoughtImpl(it)
-            searchSvc = saveSvc as SearchSvc<CreditCardBoughtDTO>
-        }!!
         holder = QuoteCCHolder(rootView,parentFragmentManager,findNavController(),taxSvc)
         loadFields(rootView)
         return rootView
@@ -91,13 +80,13 @@ class ListCreditCardQuote : Fragment(), LoaderManager.LoaderCallbacks<CreditCard
              Log.d(javaClass.name,"${pojo.cutoffDay}")
              val endDate = pojo.cutOff.get()
              val startDate = DateUtils.startDateFromCutoff(pojo.cutoffDay.get(),endDate)
-             val capital = searchSvc.getCapital(pojo.codeCreditCard.get(), startDate,endDate)
-             val capitalQuotes = searchSvc.getCapitalPendingQuotes(pojo.codeCreditCard.get(), startDate,endDate)
-             val interest  = searchSvc.getInterest(pojo.codeCreditCard.get(), startDate,endDate)
-             val interestQuote = searchSvc.getInterestPendingQuotes(pojo.codeCreditCard.get(), startDate,endDate)
-             val quotes  = searchSvc.getBoughtQuotes(pojo.codeCreditCard.get(), startDate,endDate)
-             val quotesPending = searchSvc.getBoughtPendingQuotes(pojo.codeCreditCard.get(), startDate,endDate)
-             val oneQuote  = searchSvc.getBought(pojo.codeCreditCard.get(), startDate,endDate)
+             val capital = quoteCreditCardSvc.getCapital(pojo.codeCreditCard.get(), startDate,endDate)
+             val capitalQuotes = quoteCreditCardSvc.getCapitalPendingQuotes(pojo.codeCreditCard.get(), startDate,endDate)
+             val interest  = quoteCreditCardSvc.getInterest(pojo.codeCreditCard.get(), startDate,endDate)
+             val interestQuote = quoteCreditCardSvc.getInterestPendingQuotes(pojo.codeCreditCard.get(), startDate,endDate)
+             val quotes  = quoteCreditCardSvc.getBoughtQuotes(pojo.codeCreditCard.get(), startDate,endDate)
+             val quotesPending = quoteCreditCardSvc.getBoughtPendingQuotes(pojo.codeCreditCard.get(), startDate,endDate)
+             val oneQuote  = quoteCreditCardSvc.getBought(pojo.codeCreditCard.get(), startDate,endDate)
              pojo.capital = Optional.ofNullable(
                 capital.orElse(BigDecimal(0)).plus(capitalQuotes.orElse(BigDecimal(0))))
             pojo.interest = Optional.ofNullable(
@@ -114,13 +103,13 @@ class ListCreditCardQuote : Fragment(), LoaderManager.LoaderCallbacks<CreditCard
         val endDate = DateUtils.cutOffLastMonth(pojo.cutoffDay.get())
         val startDate = DateUtils.startDateFromCutoff(pojo.cutoffDay.get(),endDate)
         pojo.cutOffLast = Optional.ofNullable(endDate)
-        pojo.capitalQuote = searchSvc.getCapital(pojo.codeCreditCard.get(),startDate, endDate)
+        pojo.capitalQuote = quoteCreditCardSvc.getCapital(pojo.codeCreditCard.get(),startDate, endDate)
         pojo.capitalQuotes =
-                searchSvc.getCapitalPendingQuotes(pojo.codeCreditCard.get(), startDate,endDate)
+            quoteCreditCardSvc.getCapitalPendingQuotes(pojo.codeCreditCard.get(), startDate,endDate)
 
-        val interest = searchSvc.getInterest(pojo.codeCreditCard.get(), startDate ,endDate)
+        val interest = quoteCreditCardSvc.getInterest(pojo.codeCreditCard.get(), startDate ,endDate)
             val interestQuote =
-                searchSvc.getInterestPendingQuotes(pojo.codeCreditCard.get(), startDate,endDate)
+                quoteCreditCardSvc.getInterestPendingQuotes(pojo.codeCreditCard.get(), startDate,endDate)
             pojo.interestQuotes = Optional.ofNullable(
                 interest.orElse(BigDecimal(0)).plus(interestQuote.orElse(BigDecimal(0)))
             )
@@ -219,7 +208,6 @@ class ListCreditCardQuote : Fragment(), LoaderManager.LoaderCallbacks<CreditCard
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onLoadFinished(loader: Loader<CreditCard>, data: CreditCard?) {
         data?.let {
-            Log.d(javaClass.name, "OnLoadFinished $data")
             holder.loadFields(data!!)
         }
     }

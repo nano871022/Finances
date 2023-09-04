@@ -1,7 +1,9 @@
 package co.japl.android.myapplication.finanzas.enums
 
 enum class MoreOptionsItemsAdditional(val i: Int) {
-EDIT(0),
-    DELETE(1)
+    VIEW(0),
+    EDIT(1),
+    UPDATE_VALUE(2),
+    DELETE(3)
 
 }

@@ -5,6 +5,7 @@ import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.OnClickListener
 import android.view.ViewGroup
 import androidx.annotation.RequiresApi
 import androidx.loader.app.LoaderManager
@@ -22,44 +23,47 @@ import co.japl.android.myapplication.finanzas.bussiness.DTO.GracePeriodDTO
 import co.japl.android.myapplication.finanzas.bussiness.impl.AdditionalCreditImpl
 import co.japl.android.myapplication.finanzas.bussiness.impl.CreditFixImpl
 import co.japl.android.myapplication.finanzas.bussiness.impl.GracePeriodImpl
+import co.japl.android.myapplication.finanzas.bussiness.interfaces.IAdditionalCreditSvc
+import co.japl.android.myapplication.finanzas.bussiness.interfaces.ICreditFix
 import co.japl.android.myapplication.finanzas.bussiness.interfaces.IGracePeriod
 import co.japl.android.myapplication.finanzas.bussiness.interfaces.ISaveSvc
 import co.japl.android.myapplication.finanzas.holders.interfaces.ITableHolder
 import co.japl.android.myapplication.finanzas.holders.AmortizationCreditTableHolder
 import co.japl.android.myapplication.finanzas.putParams.CreditFixParams
 import co.japl.android.myapplication.finanzas.enums.AmortizationCreditFixEnum
+import co.japl.android.myapplication.finanzas.putParams.ExtraValueListParam
+import dagger.hilt.android.AndroidEntryPoint
 import java.math.BigDecimal
 import java.time.LocalDate
 import java.time.temporal.ChronoUnit
 import java.util.Optional
+import javax.inject.Inject
 
-class AmortizationCreditFragment : Fragment() ,LoaderManager.LoaderCallbacks<Triple<Optional<CreditDTO>,List<AdditionalCreditDTO>,List<GracePeriodDTO>>>{
+@AndroidEntryPoint
+class AmortizationCreditFragment : Fragment() ,LoaderManager.LoaderCallbacks<Triple<Optional<CreditDTO>,List<AdditionalCreditDTO>,List<GracePeriodDTO>>>, OnClickListener{
     private lateinit var holder: ITableHolder<AmortizationCreditFix>
-    private lateinit var credit:SaveSvc<CreditDTO>
-    private lateinit var svc: ISaveSvc<AdditionalCreditDTO>
-    private lateinit var gracePeriodSvc: IGracePeriod
     private lateinit var creditDto: CreditDTO
     private lateinit var lastDate: LocalDate
+
+    @Inject lateinit var gracePeriodSvc: IGracePeriod
+    @Inject lateinit var credit: ICreditFix
+    @Inject  lateinit var svc: IAdditionalCreditSvc
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
     }
-
+    override fun onResume() {
+        super.onResume()
+        loaderManager.restartLoader(1, null, this)
+    }
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         val root = inflater.inflate(R.layout.fragment_amortization_credit, container, false)
-        credit = CreditFixImpl(ConnectDB(root.context))
-        svc = AdditionalCreditImpl(ConnectDB(root.context))
-        gracePeriodSvc = GracePeriodImpl(ConnectDB(root.context))
         holder = AmortizationCreditTableHolder(root)
-        holder.setup{
-            when(it?.id){
-                R.id.btn_additional_acf->CreditFixParams.newInstanceAmortizationToAdditionalList(creditDto.id.toLong(),findNavController())
-            }
-        }
+        holder.setup(this)
         getData()
         loaderManager.initLoader(1,null,this)
         return root
@@ -82,7 +86,7 @@ class AmortizationCreditFragment : Fragment() ,LoaderManager.LoaderCallbacks<Tri
         val period = data.periods
         val quoteCredit = data.quoteValue
         val type = data.kindOf
-        val id = 0
+        val id = data.id
         val interestValue = BigDecimal.ZERO
         val capitalValue = BigDecimal.ZERO
         val kindOfTax = data.kindOfTax
@@ -142,6 +146,13 @@ class AmortizationCreditFragment : Fragment() ,LoaderManager.LoaderCallbacks<Tri
             holder.setData(getCalc(data.first.orElse(creditDto)))
             holder.create()
             holder.load()
+        }
+    }
+
+    override fun onClick(p0: View?) {
+        when(p0?.id){
+            R.id.btn_additional_acf->CreditFixParams.newInstanceAmortizationToAdditionalList(creditDto.id.toLong(),findNavController())
+            R.id.btn_extra_values_list_acf->ExtraValueListParam.newInstance(creditDto.id,findNavController())
         }
     }
 

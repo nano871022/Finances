@@ -48,12 +48,14 @@
 
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
+            style="@style/MaterialTextInputLayoutView"
             android:layout_margin="@dimen/space_min"
             android:hint="@string/start_date"
             app:endIconMode="clear_text"
             android:layout_height="wrap_content">
             <com.google.android.material.textfield.TextInputEditText
                 android:layout_width="match_parent"
+                style="@style/MaterialTextInputLayoutView"
                 android:id="@+id/start_date_ac"
                 android:focusable="false"
                 android:layout_height="wrap_content"/>
@@ -61,12 +63,14 @@
 
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
+            style="@style/MaterialTextInputLayoutView"
             android:layout_margin="@dimen/space_min"
             android:hint="@string/end_date"
             app:endIconMode="clear_text"
             android:layout_height="wrap_content">
             <com.google.android.material.textfield.TextInputEditText
                 android:layout_width="match_parent"
+                style="@style/MaterialTextInputLayoutView"
                 android:id="@+id/end_date_ac"
                 android:focusable="false"
                 android:layout_height="wrap_content"/>

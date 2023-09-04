@@ -10,7 +10,7 @@ import co.japl.android.myapplication.finanzas.bussiness.DTO.*
 import co.japl.android.myapplication.utils.DateUtils
 import java.time.LocalDate
 
-class ProjectionMap(view:View) {
+class ProjectionMap {
 
     @RequiresApi(Build.VERSION_CODES.O)
     fun mapping(cursor: Cursor):ProjectionDTO{

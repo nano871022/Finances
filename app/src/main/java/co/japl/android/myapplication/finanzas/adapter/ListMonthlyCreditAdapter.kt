@@ -29,6 +29,8 @@ import co.japl.android.myapplication.finanzas.bussiness.impl.GracePeriodImpl
 import co.japl.android.myapplication.finanzas.enums.MoreOptionalItemsCredit
 import co.japl.android.myapplication.finanzas.holders.validations.COPToBigDecimal
 import co.japl.android.myapplication.finanzas.holders.view.MonthlyCreditItemHolder
+import co.japl.android.myapplication.finanzas.putParams.AdditionalCreditParams
+import co.japl.android.myapplication.finanzas.putParams.CreditFixListParams
 import co.japl.android.myapplication.finanzas.putParams.CreditFixParams
 import co.japl.android.myapplication.utils.DateUtils
 import com.google.android.material.snackbar.Snackbar
@@ -55,6 +57,7 @@ class ListMonthlyCreditAdapter(val data:MutableList<CreditDTO>,val view:View,val
     override fun onBindViewHolder(holder: MonthlyCreditItemHolder, position: Int) {
         holder.setField(data[position]) {
             when (it) {
+                MoreOptionalItemsCredit.ADDITIONAL->additional(position)
                 MoreOptionalItemsCredit.DELETE -> delete(position)
                 MoreOptionalItemsCredit.AMORTIZATION -> amortization(position)
                 MoreOptionalItemsCredit.GRACE_PERIOD -> gracePeriod(position)
@@ -218,6 +221,11 @@ class ListMonthlyCreditAdapter(val data:MutableList<CreditDTO>,val view:View,val
                         .show()
                 }
             }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun additional(position:Int){
+        CreditFixListParams.newInstanceAdditionalList(data[position].id.toLong(),navController)
     }
 
     @RequiresApi(Build.VERSION_CODES.O)

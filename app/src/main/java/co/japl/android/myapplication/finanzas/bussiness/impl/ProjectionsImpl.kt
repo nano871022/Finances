@@ -20,8 +20,9 @@ import java.math.BigDecimal
 import java.time.LocalDate
 import java.time.Period
 import java.util.*
+import javax.inject.Inject
 
-class ProjectionsImpl(override var dbConnect: SQLiteOpenHelper,val view:View) : IProjectionsSvc {
+class ProjectionsImpl @Inject constructor(override var dbConnect: SQLiteOpenHelper) : IProjectionsSvc {
      val COLUMNS = arrayOf(
          BaseColumns._ID,
         ProjectionDB.Entry.COLUMN_NAME,
@@ -102,7 +103,7 @@ class ProjectionsImpl(override var dbConnect: SQLiteOpenHelper,val view:View) : 
         val cursor = db.query(ProjectionDB.Entry.TABLE_NAME,COLUMNS,"${ProjectionDB.Entry.COLUMN_ACTIVE}=1",
             null,null,null,"${ProjectionDB.Entry.COLUMN_DATE_END} ASC")
         val items = mutableListOf<ProjectionDTO>()
-        val mapper = ProjectionMap(view)
+        val mapper = ProjectionMap()
         with(cursor){
             while(moveToNext()){
                 items.add(mapper.mapping(cursor))
@@ -123,7 +124,7 @@ class ProjectionsImpl(override var dbConnect: SQLiteOpenHelper,val view:View) : 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun save(dto: ProjectionDTO): Long {
         val db = dbConnect.writableDatabase
-        val content: ContentValues? = ProjectionMap(view).mapping(dto)
+        val content: ContentValues? = ProjectionMap().mapping(dto)
         return if(dto.id > 0){
             db?.update(ProjectionDB.Entry.TABLE_NAME,content,"${BaseColumns._ID}=?", arrayOf(dto.id.toString()))?.toLong() ?: 0
         }else {
@@ -136,7 +137,7 @@ class ProjectionsImpl(override var dbConnect: SQLiteOpenHelper,val view:View) : 
         val db = dbConnect.readableDatabase
         val cursor = db.query(ProjectionDB.Entry.TABLE_NAME,COLUMNS,null,null,null,null,null)
         val items = mutableListOf<ProjectionDTO>()
-        val mapper = ProjectionMap(view)
+        val mapper = ProjectionMap()
         with(cursor){
             while(moveToNext()){
                 items.add(mapper.mapping(cursor))
@@ -159,7 +160,7 @@ class ProjectionsImpl(override var dbConnect: SQLiteOpenHelper,val view:View) : 
         val cursor = db.query(
             ProjectionDB.Entry.TABLE_NAME,COLUMNS,"${BaseColumns._ID} = ?",
             arrayOf(id.toString()),null,null,null)
-        val mapper = ProjectionMap(view)
+        val mapper = ProjectionMap()
         with(cursor){
             while(moveToNext()){
                 return Optional.ofNullable(mapper.mapping(cursor))
@@ -173,7 +174,7 @@ class ProjectionsImpl(override var dbConnect: SQLiteOpenHelper,val view:View) : 
         val db = dbConnect.readableDatabase
         val cursor = db.query(ProjectionDB.Entry.TABLE_NAME,COLUMNS,null,null,null,null,null)
         val items = mutableListOf<ProjectionDTO>()
-        val mapper = ProjectionMap(view)
+        val mapper = ProjectionMap()
         with(cursor){
             while(moveToNext()){
                 items.add(mapper.mapping(cursor))

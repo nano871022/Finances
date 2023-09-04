@@ -4,9 +4,25 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_margin="@dimen/margin_border_layout"
     tools:context=".controller.ListBought">
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/btn_quote_lbcc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end|bottom"
+        android:contentDescription="@string/quote_credit"
+        android:src="@android:drawable/ic_input_add"
+        android:layout_margin="16dp"/>
 
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/btn_cashadvc_lbcc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end|bottom"
+        android:contentDescription="@string/cash_advance"
+        android:src="@android:drawable/ic_menu_add"
+        android:layout_marginRight="16dp"
+        android:layout_marginBottom="82dp"/>
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -104,9 +120,10 @@
             </LinearLayout>
 
             <ScrollView
+                android:id="@+id/scroll_qccl"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginTop="20dp">
+                >
 
                 <LinearLayout
                     android:layout_width="match_parent"

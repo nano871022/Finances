@@ -19,15 +19,20 @@ import co.japl.android.myapplication.bussiness.interfaces.SaveSvc
 import co.japl.android.myapplication.finanzas.bussiness.DTO.PaidDTO
 import co.japl.android.myapplication.finanzas.bussiness.DTO.PaidsPOJO
 import co.japl.android.myapplication.finanzas.bussiness.impl.PaidImpl
+import co.japl.android.myapplication.finanzas.bussiness.interfaces.IPaidSvc
 import co.japl.android.myapplication.finanzas.holders.PaidsHolder
 import co.japl.android.myapplication.finanzas.putParams.PaidsParams
+import dagger.hilt.android.AndroidEntryPoint
 import java.time.LocalDate
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class PaidsFragment : Fragment(), OnClickListener ,LoaderManager.LoaderCallbacks<PaidsPOJO>{
     private lateinit var holder: IHolder<PaidsPOJO>
-    private lateinit var service:SaveSvc<PaidDTO>
     @RequiresApi(Build.VERSION_CODES.O)
     private val date = LocalDate.now().withDayOfMonth(1)
+
+    @Inject lateinit var service:IPaidSvc
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,7 +44,6 @@ class PaidsFragment : Fragment(), OnClickListener ,LoaderManager.LoaderCallbacks
         savedInstanceState: Bundle?
     ): View? {
         val root = inflater.inflate(R.layout.fragment_paids, container, false)
-        service = PaidImpl(ConnectDB(root.context))
         holder = PaidsHolder(root)
         holder.setFields(this)
         loaderManager.initLoader(0,null,this)

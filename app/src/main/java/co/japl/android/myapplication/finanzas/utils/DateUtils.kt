@@ -51,6 +51,9 @@ class DateUtils {
             if(date.size > 1) {
                 return LocalDate.of(date[0].toInt(), date[1].toInt(), date[2].toInt())
             }
+            if(value == "1"){
+                return LocalDate.now()
+            }
             throw Exception("Invalid date: $value");
         }
 
@@ -87,7 +90,7 @@ class DateUtils {
 
         @RequiresApi(Build.VERSION_CODES.O)
         fun localDateToStringDate(value: LocalDate): String {
-            return DateTimeFormatter.ofPattern("yyyy-MM-dd").format(value)
+            return DateTimeFormatter.ofPattern("yyyy-MM-dd").format(value).also { Log.d(javaClass.name,"<<<=== FINISH:localDateToStringDate Response: $it") }
         }
 
         @RequiresApi(Build.VERSION_CODES.O)

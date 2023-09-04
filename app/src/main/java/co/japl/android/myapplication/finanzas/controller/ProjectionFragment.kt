@@ -18,10 +18,14 @@ import co.japl.android.myapplication.finanzas.bussiness.interfaces.IProjectionsS
 import co.japl.android.myapplication.finanzas.holders.ProjectionHolder
 import co.japl.android.myapplication.finanzas.holders.interfaces.IHolder
 import co.japl.android.myapplication.finanzas.putParams.ProjectionsParams
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class ProjectionFragment : Fragment() , OnClickListener{
     private lateinit var holder:IHolder<ProjectionDTO>
-    private lateinit var svc:IProjectionsSvc
+
+    @Inject lateinit var svc:IProjectionsSvc
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,7 +37,6 @@ class ProjectionFragment : Fragment() , OnClickListener{
         savedInstanceState: Bundle?
     ): View? {
         val root = inflater.inflate(R.layout.fragment_projection, container, false)
-        svc = ProjectionsImpl(ConnectDB(root.context),root)
         activity?.let {
             holder = ProjectionHolder(root, it.supportFragmentManager)
             holder.setFields(this)

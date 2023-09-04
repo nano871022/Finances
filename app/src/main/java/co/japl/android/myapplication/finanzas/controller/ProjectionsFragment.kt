@@ -21,12 +21,16 @@ import co.japl.android.myapplication.finanzas.holders.interfaces.IRecapHolder
 import co.japl.android.myapplication.finanzas.putParams.ProjectionsParams
 import co.japl.android.myapplication.utils.DateUtils
 import co.japl.android.myapplication.utils.NumbersUtil
+import dagger.hilt.android.AndroidEntryPoint
 import java.math.BigDecimal
 import java.time.LocalDate
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class ProjectionsFragment : Fragment(),OnClickListener ,LoaderManager.LoaderCallbacks<Map<String, Any>>{
     private lateinit var holder:IRecapHolder<ProjectionsHolder>
-    private lateinit var svc: IProjectionsSvc
+
+    @Inject lateinit var svc: IProjectionsSvc
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,7 +41,6 @@ class ProjectionsFragment : Fragment(),OnClickListener ,LoaderManager.LoaderCall
         savedInstanceState: Bundle?
     ): View? {
         val root = inflater.inflate(R.layout.fragment_projections, container, false)
-        svc = ProjectionsImpl(ConnectDB(root.context),root)
         holder = ProjectionsHolder(root)
         holder.setFields(this)
         loaderManager.initLoader(0,null,this)

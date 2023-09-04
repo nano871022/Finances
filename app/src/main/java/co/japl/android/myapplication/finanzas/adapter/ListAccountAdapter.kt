@@ -17,6 +17,7 @@ import co.japl.android.myapplication.finanzas.bussiness.DTO.InputDTO
 import co.japl.android.myapplication.finanzas.bussiness.impl.AccountImpl
 import co.japl.android.myapplication.finanzas.bussiness.impl.InputImpl
 import co.japl.android.myapplication.finanzas.bussiness.interfaces.ISaveSvc
+import co.japl.android.myapplication.finanzas.bussiness.mapping.InputMap
 import co.japl.android.myapplication.finanzas.enums.MoreOptionsItemsAccount
 import co.japl.android.myapplication.finanzas.putParams.AccountListParams
 import co.japl.android.myapplication.holders.view.AccountItemHolder
@@ -34,7 +35,7 @@ class ListAccountAdapter(var data:MutableList<AccountDTO>) : RecyclerView.Adapte
         Log.d(this.javaClass.name,"on create view holder")
         saveSvc = AccountImpl(ConnectDB(parent.context))
         view = parent
-        inputSvc = InputImpl(view,ConnectDB(parent.context))
+        inputSvc = InputImpl(ConnectDB(parent.context), InputMap(view.context))
         val view =
             LayoutInflater.from(parent.context).inflate(R.layout.fragment_account_item_list, parent, false)
         val viewHolder =  AccountItemHolder(view)

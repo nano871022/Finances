@@ -11,14 +11,16 @@ import co.japl.android.myapplication.bussiness.interfaces.Calc
 import co.japl.android.myapplication.bussiness.interfaces.SaveSvc
 import co.japl.android.myapplication.bussiness.mapping.CalcMap
 import co.japl.android.myapplication.finanzas.bussiness.DTO.PeriodDTO
+import co.japl.android.myapplication.finanzas.bussiness.interfaces.ICalcSvc
 import co.japl.android.myapplication.utils.DatabaseConstants
 import com.google.gson.Gson
 import java.nio.charset.Charset
 import java.nio.file.Files
 import java.nio.file.Paths
 import java.util.*
+import javax.inject.Inject
 
-class SaveImpl(override var dbConnect: SQLiteOpenHelper) : SaveSvc<CalcDTO> {
+class SaveImpl @Inject constructor(override var dbConnect: SQLiteOpenHelper) : ICalcSvc {
     private val COLUMNS_CALC = arrayOf(BaseColumns._ID
         ,CalcDB.CalcEntry.COLUMN_ALIAS
         ,CalcDB.CalcEntry.COLUMN_TYPE

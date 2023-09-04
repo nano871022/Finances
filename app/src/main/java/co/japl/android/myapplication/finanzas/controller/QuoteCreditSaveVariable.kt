@@ -15,17 +15,21 @@ import co.japl.android.myapplication.bussiness.impl.SaveImpl
 import co.japl.android.myapplication.finanzas.holders.interfaces.IHolder
 import co.japl.android.myapplication.bussiness.interfaces.SaveSvc
 import co.japl.android.myapplication.bussiness.mapping.CalcMap
+import co.japl.android.myapplication.finanzas.bussiness.interfaces.ICalcSvc
 import co.japl.android.myapplication.finanzas.holders.QuoteCreditSaveVariableHolder
 import co.japl.android.myapplication.finanzas.pojo.QuoteCreditCard
 import co.japl.android.myapplication.finanzas.putParams.QuoteCreditVariablesParams
 import com.google.android.material.snackbar.Snackbar
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class QuoteCreditSaveVariable :  Fragment(), View.OnClickListener{
 
-    private lateinit var dbConnect: ConnectDB
-    private lateinit var saveSvc: SaveSvc<CalcDTO>
     private val mapping = CalcMap()
     private lateinit var holder: IHolder<QuoteCreditCard>
+
+    @Inject lateinit var saveSvc: ICalcSvc
 
     @RequiresApi(Build.VERSION_CODES.N)
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -33,13 +37,10 @@ class QuoteCreditSaveVariable :  Fragment(), View.OnClickListener{
         super.onCreate(savedInstanceState)
         val view = inflater.inflate(R.layout.quote_credit_save_variable,container,false)
         holder = QuoteCreditSaveVariableHolder(view)
-        dbConnect = ConnectDB(view.context)
-        saveSvc = SaveImpl(dbConnect)
         holder.setFields(this)
         loadValues()
         return view
     }
-
 
     @RequiresApi(Build.VERSION_CODES.N)
     private fun loadValues(){

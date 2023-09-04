@@ -16,15 +16,19 @@ import co.japl.android.myapplication.bussiness.DTO.CreditCardDTO
 import co.japl.android.myapplication.bussiness.impl.CreditCardImpl
 import co.japl.android.myapplication.finanzas.holders.interfaces.IHolder
 import co.japl.android.myapplication.bussiness.interfaces.SaveSvc
+import co.japl.android.myapplication.finanzas.bussiness.interfaces.ICreditCardSvc
 import co.japl.android.myapplication.holders.CreditCardHolder
 import co.japl.android.myapplication.putParams.CreditCardParams
 import co.japl.android.myapplication.putParams.ListCreditCardSettingParams
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 
+@AndroidEntryPoint
 class CreateCreditCard : Fragment(),View.OnClickListener {
     private lateinit var holder: IHolder<CreditCardDTO>
     private var param1: String? = null
-    private lateinit var service:SaveSvc<CreditCardDTO>
+    @Inject lateinit var service: ICreditCardSvc
     private var found = false
 
     @RequiresApi(Build.VERSION_CODES.N)
@@ -33,7 +37,6 @@ class CreateCreditCard : Fragment(),View.OnClickListener {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_create_credit_card, container, false)
-        service = CreditCardImpl(ConnectDB(view.context))
         holder = CreditCardHolder(view)
         holder.setFields(this)
         arguments?.let {
@@ -46,7 +49,6 @@ class CreateCreditCard : Fragment(),View.OnClickListener {
 
     @RequiresApi(Build.VERSION_CODES.N)
     private fun search(){
-        Log.d(this.javaClass.name,"Search code credit card: $param1")
         if(param1?.isNotBlank() == true){
             param1?.toInt()?.let {
                 service.get(it).ifPresent{ cc->

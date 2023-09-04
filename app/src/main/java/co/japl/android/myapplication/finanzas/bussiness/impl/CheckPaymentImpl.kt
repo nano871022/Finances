@@ -14,9 +14,10 @@ import co.japl.android.myapplication.finanzas.bussiness.mapping.CreditMap
 import co.japl.android.myapplication.finanzas.pojo.PeriodCheckPaymentsPOJO
 import co.japl.android.myapplication.utils.DatabaseConstants
 import java.util.*
+import javax.inject.Inject
 import kotlin.collections.ArrayList
 
-class CheckPaymentImpl(override var dbConnect: SQLiteOpenHelper) :ICheckPaymentSvc {
+class CheckPaymentImpl @Inject constructor(override var dbConnect: SQLiteOpenHelper) :ICheckPaymentSvc {
     private val mapper = CheckPaymentsMap()
     private val COLUMNS = arrayOf(
         BaseColumns._ID,

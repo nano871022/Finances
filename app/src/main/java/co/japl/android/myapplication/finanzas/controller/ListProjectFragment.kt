@@ -24,13 +24,17 @@ import co.japl.android.myapplication.finanzas.holders.ProjectionsHolder
 import co.japl.android.myapplication.finanzas.holders.interfaces.IListHolder
 import co.japl.android.myapplication.finanzas.holders.interfaces.IRecapHolder
 import co.japl.android.myapplication.utils.NumbersUtil
+import dagger.hilt.android.AndroidEntryPoint
 import java.time.LocalDate
 import java.time.Period
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class ListProjectFragment : Fragment(),LoaderManager.LoaderCallbacks<List<ProjectionDTO>>{
     private lateinit var holder: IListHolder<ListProjectionHolder,ProjectionDTO>
-    private lateinit var svc:IProjectionsSvc
     private lateinit var kindOfList:Array<String>
+
+    @Inject lateinit var svc:IProjectionsSvc
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
     }
@@ -41,7 +45,6 @@ class ListProjectFragment : Fragment(),LoaderManager.LoaderCallbacks<List<Projec
         savedInstanceState: Bundle?
     ): View? {
         val root = inflater.inflate(R.layout.fragment_list_projection, container, false)
-        svc = ProjectionsImpl(ConnectDB(root.context),root)
         kindOfList = root.resources.getStringArray(R.array.kind_of_projection_list)
         holder = ListProjectionHolder(root,findNavController())
         holder.setFields(null)

@@ -11,15 +11,17 @@ import co.japl.android.myapplication.finanzas.bussiness.DB.connections.CreditFix
 import co.japl.android.myapplication.finanzas.bussiness.DTO.*
 import co.japl.android.myapplication.finanzas.bussiness.interfaces.ICheckCreditSvc
 import co.japl.android.myapplication.finanzas.bussiness.interfaces.ICheckPaymentSvc
+import co.japl.android.myapplication.finanzas.bussiness.interfaces.ICreditFix
 import co.japl.android.myapplication.finanzas.bussiness.mapping.CheckCreditMap
 import co.japl.android.myapplication.finanzas.bussiness.mapping.CheckPaymentsMap
 import co.japl.android.myapplication.finanzas.bussiness.mapping.CreditMap
 import co.japl.android.myapplication.finanzas.pojo.PeriodCheckPaymentsPOJO
 import co.japl.android.myapplication.utils.DatabaseConstants
 import java.util.*
+import javax.inject.Inject
 import kotlin.collections.ArrayList
 
-class CheckCreditImpl(override var dbConnect: SQLiteOpenHelper) :ICheckCreditSvc {
+class CheckCreditImpl @Inject constructor(override var dbConnect: SQLiteOpenHelper) :ICheckCreditSvc {
     private val mapper = CheckCreditMap()
     private val COLUMNS = arrayOf(
         BaseColumns._ID,
@@ -55,9 +57,9 @@ class CheckCreditImpl(override var dbConnect: SQLiteOpenHelper) :ICheckCreditSvc
         val sql = """
             SELECT ${CheckCreditDB.Entry.COLUMN_PERIOD},
                    SUM((SELECT ${CreditDB.Entry.COLUMN_QUOTE} FROM ${CreditDB.Entry.TABLE_NAME} WHERE ${BaseColumns._ID} = ${CheckCreditDB.Entry.COLUMN_COD_CREDIT}) )AS value
+                   , SUM((SELECT ${AdditionalCreditDB.Entry.COLUMN_VALUE} FROM ${AdditionalCreditDB.Entry.TABLE_NAME} WHERE ${AdditionalCreditDB.Entry.COLUMN_CREDIT_CODE} = ${CheckCreditDB.Entry.COLUMN_COD_CREDIT} )) AS Additionals
                     , COUNT(1) AS CNT
             FROM ${CheckCreditDB.Entry.TABLE_NAME}  
-            
             GROUP BY ${CheckCreditDB.Entry.COLUMN_PERIOD}
             """
         val cursor = db.rawQuery(sql, arrayOf()
@@ -65,8 +67,9 @@ class CheckCreditImpl(override var dbConnect: SQLiteOpenHelper) :ICheckCreditSvc
         while(cursor.moveToNext()){
             val period = cursor.getString(0)
             val paid = cursor.getDouble(1)
-            val count = cursor.getLong(2)
-            list.add(PeriodCheckPaymentsPOJO(period,paid,0.0,count))
+            val additionals = cursor.getDouble(2)
+            val count = cursor.getLong(3)
+            list.add(PeriodCheckPaymentsPOJO(period,paid + additionals,0.0,count))
         }
         return list.also { Log.d(javaClass.name,"<<== Get Periods Payment $it ${it.size}") }
     }

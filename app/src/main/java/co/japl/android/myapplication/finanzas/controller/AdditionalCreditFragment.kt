@@ -16,14 +16,19 @@ import co.japl.android.myapplication.finanzas.holders.interfaces.IHolder
 import co.japl.android.myapplication.bussiness.interfaces.SaveSvc
 import co.japl.android.myapplication.finanzas.bussiness.DTO.AdditionalCreditDTO
 import co.japl.android.myapplication.finanzas.bussiness.impl.AdditionalCreditImpl
+import co.japl.android.myapplication.finanzas.bussiness.interfaces.IAdditionalCreditSvc
 import co.japl.android.myapplication.finanzas.holders.AdditionalCreditHolder
+import co.japl.android.myapplication.finanzas.holders.validations.isNull
 import co.japl.android.myapplication.finanzas.putParams.AdditionalCreditParams
+import dagger.hilt.android.AndroidEntryPoint
 import java.math.BigDecimal
 import java.time.LocalDate
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class AdditionalCreditFragment : Fragment(), OnClickListener {
     private lateinit var holder: IHolder<AdditionalCreditDTO>
-    private lateinit var additionalSvc:SaveSvc<AdditionalCreditDTO>
+    @Inject lateinit var additionalSvc: IAdditionalCreditSvc
     private var creditCode = 0L
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -36,18 +41,16 @@ class AdditionalCreditFragment : Fragment(), OnClickListener {
         savedInstanceState: Bundle?
     ): View? {
         val root =  inflater.inflate(R.layout.fragment_additional_credit, container, false)
-        additionalSvc = AdditionalCreditImpl(ConnectDB(root.context))
-        activity?.supportFragmentManager?.let {holder = AdditionalCreditHolder(root,it)}
+        val additional = arguments?.let {  AdditionalCreditParams.download(it) }
+        activity?.supportFragmentManager?.let {holder = AdditionalCreditHolder(root,it,additional?.second?:false)}
         holder.setFields(this)
-        holder.loadFields(getAdditionalCredit())
+        holder.loadFields(getAdditionalCredit(additional?.first))
         return root
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    private fun getAdditionalCredit():AdditionalCreditDTO{
-        val additional = arguments?.let {  AdditionalCreditParams.download(it) }
-        return if(additional != null){ additional }
-        else {
+    private fun getAdditionalCredit(additional:AdditionalCreditDTO?):AdditionalCreditDTO{
+        return if(additional != null) additional else {
             val id = 0
             val end = LocalDate.MAX
             val start = LocalDate.now()

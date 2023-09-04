@@ -19,23 +19,28 @@ import co.japl.android.myapplication.bussiness.DTO.CreditCardDTO
 import co.japl.android.myapplication.bussiness.impl.*
 import co.japl.android.myapplication.bussiness.interfaces.*
 import co.japl.android.myapplication.finanzas.bussiness.impl.BuyCreditCardSettingImpl
+import co.japl.android.myapplication.finanzas.bussiness.interfaces.IBuyCreditCardSettingSvc
+import co.japl.android.myapplication.finanzas.bussiness.interfaces.ICreditCardSvc
+import co.japl.android.myapplication.finanzas.bussiness.interfaces.IQuoteCreditCardSvc
 import co.japl.android.myapplication.finanzas.holders.QuoteBoughtHolder
 import co.japl.android.myapplication.finanzas.holders.interfaces.IHolder
 import co.japl.android.myapplication.finanzas.putParams.CreditCardQuotesParams
+import dagger.hilt.android.AndroidEntryPoint
 import java.math.BigDecimal
 import java.time.LocalDateTime
 import java.util.*
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class QuoteBought : Fragment(), View.OnClickListener{
 
-
-    private var config:ConfigSvc = Config()
-
-    private lateinit var taxSvc: ITaxSvc
-    private lateinit var creditCardSvc:SaveSvc<CreditCardDTO>
-    private lateinit var saveSvc: SaveSvc<CreditCardBoughtDTO>
-    private lateinit var buyCCSSvc: SaveSvc<BuyCreditCardSettingDTO>
     private lateinit var holder: IHolder<CreditCardBoughtDTO>
+
+    @Inject lateinit var config:ConfigSvc
+    @Inject lateinit var taxSvc: ITaxSvc
+    @Inject lateinit var creditCardSvc:ICreditCardSvc
+    @Inject lateinit var saveSvc: IQuoteCreditCardSvc
+    @Inject lateinit var buyCCSSvc: IBuyCreditCardSettingSvc
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreateView(
@@ -43,11 +48,6 @@ class QuoteBought : Fragment(), View.OnClickListener{
         savedInstanceState: Bundle?
     ): View? {
         val rootView = inflater.inflate(R.layout.buys_credit_card, container, false)
-        val connect: SQLiteOpenHelper = ConnectDB(rootView.context)
-        creditCardSvc = CreditCardImpl(connect)
-        buyCCSSvc = BuyCreditCardSettingImpl(connect)
-        taxSvc = TaxImpl(connect)
-        saveSvc = SaveCreditCardBoughtImpl(connect)
         holder = activity?.supportFragmentManager?.let { QuoteBoughtHolder(rootView, it) }!!
         holder.setFields(this)
         loadArguments()

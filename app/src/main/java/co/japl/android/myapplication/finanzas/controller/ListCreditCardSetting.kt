@@ -24,17 +24,22 @@ import co.japl.android.myapplication.bussiness.DTO.CreditCardSettingDTO
 import co.japl.android.myapplication.bussiness.impl.CreditCardImpl
 import co.japl.android.myapplication.bussiness.interfaces.SaveSvc
 import co.japl.android.myapplication.finanzas.bussiness.impl.CreditCardSettingImpl
+import co.japl.android.myapplication.finanzas.bussiness.interfaces.ICreditCardSettingSvc
 import co.japl.android.myapplication.finanzas.holders.ListCreditCardSettingHolder
 import co.japl.android.myapplication.finanzas.holders.interfaces.IListHolder
 import co.japl.android.myapplication.putParams.CreditCardParams
 import co.japl.android.myapplication.putParams.CreditCardSettingParams
 import co.japl.android.myapplication.putParams.ListCreditCardSettingParams
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 import kotlin.properties.Delegates
 
+@AndroidEntryPoint
 class ListCreditCardSetting : Fragment() , View.OnClickListener,LoaderManager.LoaderCallbacks<List<CreditCardSettingDTO>> {
     private lateinit var holder: IListHolder<ListCreditCardSettingHolder,CreditCardSettingDTO>
-    private lateinit var saveSvc: SaveSvc<CreditCardSettingDTO>
     private var codeCreditCard : Int = 0
+
+    @Inject lateinit var saveSvc: ICreditCardSettingSvc
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,8 +53,6 @@ class ListCreditCardSetting : Fragment() , View.OnClickListener,LoaderManager.Lo
     ): View? {
         val view =  inflater.inflate(R.layout.fragment_list_credit_card_setting, container, false)
         val map = ListCreditCardSettingParams.download(arguments)
-        val connect = ConnectDB(view.context)
-        saveSvc = CreditCardSettingImpl(connect)
         if(map.containsKey(ListCreditCardSettingParams.Params.ARG_CODE_CREDIT_CARD)) {
             codeCreditCard = map[ListCreditCardSettingParams.Params.ARG_CODE_CREDIT_CARD]!!
         }

@@ -5,9 +5,10 @@ import co.japl.android.myapplication.finanzas.bussiness.interfaces.IKindOfTaxSvc
 import co.japl.android.myapplication.finanzas.enums.KindOfTaxEnum
 import java.math.BigDecimal
 import java.math.RoundingMode
+import javax.inject.Inject
 import kotlin.math.pow
 
-class KindOfTaxImpl:IKindOfTaxSvc {
+class KindOfTaxImpl @Inject constructor():IKindOfTaxSvc {
     private val PERIODS_YEAR = 12
     override fun getNM(value: Double, kindOf: KindOfTaxEnum): Double {
         return when(kindOf){

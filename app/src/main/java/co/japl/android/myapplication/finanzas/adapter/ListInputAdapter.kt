@@ -13,6 +13,7 @@ import co.japl.android.myapplication.bussiness.DB.connections.ConnectDB
 import co.japl.android.myapplication.bussiness.interfaces.SaveSvc
 import co.japl.android.myapplication.finanzas.bussiness.DTO.InputDTO
 import co.japl.android.myapplication.finanzas.bussiness.impl.InputImpl
+import co.japl.android.myapplication.finanzas.bussiness.mapping.InputMap
 import co.japl.android.myapplication.finanzas.enums.MoreOptionsItemsInput
 import co.japl.android.myapplication.holders.view.InputItemHolder
 import com.google.android.material.snackbar.Snackbar
@@ -27,7 +28,7 @@ class ListInputAdapter(var data:MutableList<InputDTO>) : RecyclerView.Adapter<In
         view = parent
         val view =
             LayoutInflater.from(parent.context).inflate(R.layout.fragment_input_item_list, parent, false)
-        saveSvc = InputImpl(view,ConnectDB(parent.context))
+        saveSvc = InputImpl(ConnectDB(parent.context), InputMap(parent.context))
         val viewHolder =  InputItemHolder(view)
         viewHolder.loadFields()
         return viewHolder

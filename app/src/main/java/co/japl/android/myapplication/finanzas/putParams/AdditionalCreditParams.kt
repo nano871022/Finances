@@ -1,5 +1,6 @@
 package co.japl.android.myapplication.finanzas.putParams
 
+import android.R.bool
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -16,27 +17,27 @@ class AdditionalCreditParams {
         const val PARAMS_ADDITIONAL = "ADDITIONAL_CREDIT_PARAM"
         const val PARAMS_START_DATE = "START_DATE"
         const val PARAMS_END_DATE = "END_DATE"
+        const val PARAMS_VIEW = "VIEW"
     }
 
     companion object{
         @RequiresApi(Build.VERSION_CODES.O)
-        fun newInstance(additional:AdditionalCreditDTO, navController: NavController){
+        fun newInstance(additional:AdditionalCreditDTO,view:Boolean, navController: NavController){
             val parameters = bundleOf(Params.PARAMS_ADDITIONAL to Gson().toJson(additional)
                 ,Params.PARAMS_START_DATE to DateUtils.localDateToString(additional.startDate)
-                ,Params.PARAMS_END_DATE to DateUtils.localDateToString(additional.endDate))
+                ,Params.PARAMS_END_DATE to DateUtils.localDateToString(additional.endDate)
+                ,Params.PARAMS_VIEW to view)
             navController.navigate(R.id.action_additionalListFragment_to_additionalCreditFragment,parameters)
         }
 
         @RequiresApi(Build.VERSION_CODES.O)
-        fun download(argument:Bundle):AdditionalCreditDTO? {
+        fun download(argument:Bundle):Pair<AdditionalCreditDTO?,Boolean> {
             return argument.let {
-                val start = it.get(Params.PARAMS_START_DATE) as String
-                val end = it.get(Params.PARAMS_END_DATE) as String
-                Log.d(javaClass.name,"download $start $end")
-                val value = Gson().fromJson(it.get(Params.PARAMS_ADDITIONAL) as String,AdditionalCreditDTO::class.java)
-                value.startDate = DateUtils.toLocalDate(start)
-                value.endDate = DateUtils.toLocalDate(end)
-                return value
+                val value = Gson().fromJson(it.getString(Params.PARAMS_ADDITIONAL),AdditionalCreditDTO::class.java)
+                it.getString(Params.PARAMS_START_DATE)?.let{value.startDate = DateUtils.toLocalDate(it)}
+                it.getString(Params.PARAMS_END_DATE)?.let{value.endDate = DateUtils.toLocalDate(it)}
+                val view = it.getBoolean(Params.PARAMS_VIEW)
+                return Pair(value,view)
             }
         }
 

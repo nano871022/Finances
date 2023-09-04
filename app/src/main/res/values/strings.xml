@@ -51,6 +51,7 @@
     <string name="cancel">Cancelar</string>
     <string name="delete">Eliminar</string>
     <string name="ending">Finalizar</string>
+    <string name="updating">Actualizar</string>
     <string name="dont_able_to_save">No se logro guardar</string>
     <string name="success_save_quote_credit">Se almaceno correctamente</string>
     <string name="close">Cerrar</string>
@@ -276,6 +277,7 @@
     </array>
 
     <array name="credit_item_options">
+        <item >Adicional</item>
         <item >Amortizacion</item>
         <item >Periodo de Gracia</item>
         <item >Eliminar Periodo de Gracia</item>
@@ -326,13 +328,17 @@
     </array>
 
     <array name="additional_items_options">
+        <item >Ver</item>
         <item >Editar</item>
+        <item >Actualizar Valor</item>
         <item >Eliminar</item>
     </array>
 
     <string name="do_you_want_to_ending_recurrent_payment">¿Desea finalizar pago recurrente?</string>
     <string name="update_value_recurrent_paymner">Actualizar valor pago recurrente</string>
+    <string name="update_value_paymnet">Actualizar valor pago</string>
     <string name="dont_ending_recurrent_payment">No se logro finaliazr el pago recurrente</string>
+    <string name="dont_ending_payment">No se logro finaliazr el pago</string>
     <string name="ending_recurrent_payment_successfull">Se finalizo correctamente</string>
     <string name="theres_not_records_to_show_you">No hay registros para mostrar</string>
 
@@ -371,4 +377,11 @@
     <string name="quote_1_item"># Compras 1 Cuota </string>
     <string name="see_more">Ver más</string>
     <string name="recap_bought_cc">Resumen de Compras con Tarjeta de Crédito</string>
+    <string name="num_quote"># Quote</string>
+    <string name="add_extra">Agregar Extra</string>
+    <string name="add_value_amortization_success">Valor Extra Agregado a la Cuota</string>
+    <string name="add_value_amortization_error">Valor Extra No fue Agregado</string>
+    <string name="error_less_or_equal_than_0_value">Valor menor a 0</string>
+    <string name="credit_info">Información del Crédito</string>
+    <string name="extra_value_list">Valores Extra</string>
 </resources>

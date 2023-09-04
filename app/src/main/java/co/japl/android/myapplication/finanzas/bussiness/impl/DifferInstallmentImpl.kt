@@ -13,8 +13,9 @@ import co.japl.android.myapplication.utils.DatabaseConstants
 import co.japl.android.myapplication.utils.DateUtils
 import java.time.LocalDate
 import java.util.*
+import javax.inject.Inject
 
-class DifferInstallmentImpl( override var dbConnect: SQLiteOpenHelper) : IDifferInstallment{
+class DifferInstallmentImpl @Inject constructor( override var dbConnect: SQLiteOpenHelper) : IDifferInstallment{
     val COLUMNS = arrayOf(
         BaseColumns._ID,
         DifferInstallmentDB.Entry.COLUMN_DATE_CREATE,

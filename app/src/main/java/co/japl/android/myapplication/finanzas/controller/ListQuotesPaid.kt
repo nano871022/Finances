@@ -25,18 +25,23 @@ import co.japl.android.myapplication.bussiness.impl.SaveImpl
 import co.japl.android.myapplication.bussiness.interfaces.SaveSvc
 import co.japl.android.myapplication.finanzas.bussiness.DTO.PeriodDTO
 import co.japl.android.myapplication.finanzas.bussiness.interfaces.IGetPeriodsServices
+import co.japl.android.myapplication.finanzas.bussiness.interfaces.IQuoteCreditCardSvc
 import co.japl.android.myapplication.finanzas.holders.ListQuotePaidHolder
 import co.japl.android.myapplication.finanzas.holders.interfaces.IListHolder
 import co.japl.android.myapplication.finanzas.putParams.PeriodsParams
 import co.japl.android.myapplication.holders.view.PeriodItemHolder
 import co.japl.android.myapplication.holders.view.ViewHolder
+import dagger.hilt.android.AndroidEntryPoint
 import java.util.Collections
+import javax.inject.Inject
 import kotlin.properties.Delegates
 
+@AndroidEntryPoint
 class ListQuotesPaid : Fragment() ,LoaderManager.LoaderCallbacks<List<PeriodDTO>>{
     private lateinit var holder: IListHolder<ListQuotePaidHolder, PeriodDTO>
-    lateinit var getPeriodsSvc: IGetPeriodsServices
     var creditCardId by Delegates.notNull<Int>()
+
+    @Inject lateinit var getPeriodsSvc: IQuoteCreditCardSvc
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreateView(
@@ -47,7 +52,6 @@ class ListQuotesPaid : Fragment() ,LoaderManager.LoaderCallbacks<List<PeriodDTO>
         arguments?.let{
             creditCardId = PeriodsParams.Companion.Historical.download(it)
         }
-        getPeriodsSvc = SaveCreditCardBoughtImpl(ConnectDB(rootView.context))
         holder = ListQuotePaidHolder(rootView,findNavController())
         holder.setFields(null)
         loaderManager.initLoader(1, null, this)

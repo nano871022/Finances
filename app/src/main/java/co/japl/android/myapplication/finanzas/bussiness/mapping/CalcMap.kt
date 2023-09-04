@@ -75,7 +75,7 @@ class CalcMap {
         creditCardBought.month.toLong(),
         quoteValue,
         CalcEnum.VARIABLE.toString(),
-        0,
+        creditCardBought.id,
         interestValue,
         capitalValue,
         kindOfTax.name)

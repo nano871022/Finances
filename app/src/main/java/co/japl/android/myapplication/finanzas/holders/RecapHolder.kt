@@ -1,9 +1,22 @@
 package co.japl.android.myapplication.finanzas.holders
 
+import android.graphics.Color
+import android.os.Build
+import android.util.Log
+import android.view.MotionEvent
 import android.view.View
+import android.widget.HorizontalScrollView
+import android.widget.ScrollView
 import android.widget.TextView
+import androidx.annotation.RequiresApi
+import androidx.constraintlayout.helper.widget.Carousel
+import androidx.core.view.MotionEventCompat
+import androidx.recyclerview.widget.RecyclerView
 import co.japl.android.myapplication.R
 import co.japl.android.myapplication.finanzas.holders.interfaces.IRecapHolder
+import com.google.android.material.card.MaterialCardView
+import com.google.android.material.carousel.CarouselLayoutManager
+import com.google.android.material.carousel.CarouselStrategy
 
 class RecapHolder(val view:View):IRecapHolder<RecapHolder> {
     lateinit var inputs:TextView
@@ -18,6 +31,7 @@ class RecapHolder(val view:View):IRecapHolder<RecapHolder> {
     lateinit var totalInputsPaids:TextView
     lateinit var warning: TextView
     lateinit var limit:TextView
+    lateinit var scrollView: HorizontalScrollView
 
     override fun setFields(actions: View.OnClickListener?) {
         inputs = view.findViewById(R.id.tv_total_inputs_rec)
@@ -32,6 +46,8 @@ class RecapHolder(val view:View):IRecapHolder<RecapHolder> {
         totalInputsPaids = view.findViewById(R.id.tv_total_input_paids_rec)
         warning= view.findViewById(R.id.tv_warning_credit_card_rec)
         limit= view.findViewById(R.id.tv_limit_credit_card_rec)
+        scrollView = view.findViewById(R.id.scroll_rec)
+
     }
 
     override fun loadFields(fn: ((RecapHolder) -> Unit)?) {

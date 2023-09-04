@@ -7,6 +7,7 @@ import android.provider.BaseColumns
 import androidx.annotation.RequiresApi
 import co.japl.android.myapplication.bussiness.interfaces.SaveSvc
 import co.japl.android.myapplication.finanzas.bussiness.DTO.*
+import co.japl.android.myapplication.finanzas.bussiness.interfaces.IAccountSvc
 import co.japl.android.myapplication.finanzas.bussiness.interfaces.ISaveSvc
 import co.japl.android.myapplication.finanzas.bussiness.mapping.AccountMap
 import co.japl.android.myapplication.finanzas.bussiness.mapping.CreditMap
@@ -14,8 +15,9 @@ import co.japl.android.myapplication.finanzas.bussiness.mapping.InputMap
 import co.japl.android.myapplication.finanzas.bussiness.mapping.PaidMap
 import co.japl.android.myapplication.utils.DatabaseConstants
 import java.util.*
+import javax.inject.Inject
 
-class AccountImpl(override var dbConnect: SQLiteOpenHelper) : SaveSvc<AccountDTO>,ISaveSvc<AccountDTO> {
+class AccountImpl @Inject constructor(override var dbConnect: SQLiteOpenHelper) : IAccountSvc {
     val COLUMNS = arrayOf(
         BaseColumns._ID,
         AccountDB.Entry.COLUMN_DATE_CREATE,

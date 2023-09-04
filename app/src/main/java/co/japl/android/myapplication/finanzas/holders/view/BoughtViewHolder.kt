@@ -1,14 +1,18 @@
 package co.japl.android.myapplication.holders.view
 
+import android.animation.ObjectAnimator
 import android.app.AlertDialog
 import android.graphics.Color
 import android.os.Build
+import android.transition.Scene
 import android.util.Log
 import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.ImageButton
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.annotation.RequiresApi
+import androidx.core.view.children
 import androidx.recyclerview.widget.RecyclerView
 import co.japl.android.myapplication.R
 import co.japl.android.myapplication.bussiness.DTO.CreditCardBoughtDTO
@@ -38,6 +42,7 @@ class BoughtViewHolder(val itemView:View) : RecyclerView.ViewHolder(itemView) {
     lateinit var tvBoughtDate:TextView
     lateinit var tvPendingToPay:TextView
     lateinit var tvTaxBoughtICC:TextView
+    lateinit var llTitleBought:LinearLayout
 
     fun loadFields(view:View){
         tvBoughtName = view.findViewById(R.id.tvNameLCCS)
@@ -51,6 +56,21 @@ class BoughtViewHolder(val itemView:View) : RecyclerView.ViewHolder(itemView) {
         tvBoughtDate = view.findViewById(R.id.tvBoughtDate)
         tvPendingToPay = view.findViewById(R.id.tvPendingToPay)
         tvTaxBoughtICC = view.findViewById(R.id.tvTaxBoughtICC)
+        llTitleBought = view.findViewById(R.id.llTitleBought)
+
+        llTitleBought.setOnClickListener {
+            (llTitleBought.parent as LinearLayout).children.filter { it.id != R.id.llTitleBought }
+                .forEach {
+                    val state = if(it.visibility == View.GONE){
+                        View.VISIBLE
+                    }else{
+                        View.GONE
+                    }
+                    ObjectAnimator.ofInt(it, "visibility", state).setDuration(700).start()
+                    ObjectAnimator.ofInt(it, "height", if(state == View.GONE)0 else Int.MAX_VALUE ).setDuration(700).start()
+                }
+        }
+        llTitleBought.callOnClick()
     }
 
     @RequiresApi(Build.VERSION_CODES.O)

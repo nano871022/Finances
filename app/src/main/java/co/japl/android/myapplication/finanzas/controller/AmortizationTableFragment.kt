@@ -10,6 +10,7 @@ import androidx.annotation.RequiresApi
 import androidx.loader.app.LoaderManager
 import androidx.loader.content.AsyncTaskLoader
 import androidx.loader.content.Loader
+import androidx.navigation.fragment.findNavController
 import co.japl.android.myapplication.R
 import co.japl.android.myapplication.bussiness.DB.connections.ConnectDB
 import co.japl.android.myapplication.bussiness.DTO.CalcDTO
@@ -19,16 +20,21 @@ import co.japl.android.myapplication.finanzas.bussiness.DTO.Amortization
 import co.japl.android.myapplication.finanzas.bussiness.DTO.DifferInstallmentDTO
 import co.japl.android.myapplication.finanzas.bussiness.impl.DifferInstallmentImpl
 import co.japl.android.myapplication.finanzas.bussiness.interfaces.IDifferInstallment
+import co.japl.android.myapplication.finanzas.enums.AmortizationKindOfEnum
 import co.japl.android.myapplication.finanzas.holders.AmortizationTableHolder
 import co.japl.android.myapplication.finanzas.putParams.AmortizationTableParams
+import dagger.hilt.android.AndroidEntryPoint
 import java.util.Optional
+import javax.inject.Inject
 import kotlin.jvm.optionals.getOrNull
 
+@AndroidEntryPoint
 class AmortizationTableFragment : Fragment() , LoaderManager.LoaderCallbacks<Map<String,Any>> {
     lateinit var holder: AmortizationTableHolder
-    lateinit var differInstallmentSvc: IDifferInstallment
+    @Inject lateinit var differInstallmentSvc: IDifferInstallment
     @RequiresApi(Build.VERSION_CODES.N)
     var differQuote: Optional<DifferInstallmentDTO> =Optional.empty()
+    lateinit var originalValue:Map<String,Any>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,8 +45,9 @@ class AmortizationTableFragment : Fragment() , LoaderManager.LoaderCallbacks<Map
         savedInstanceState: Bundle?
     ): View? {
         val view =  inflater.inflate(R.layout.fragment_amortization_table, container, false)
-        differInstallmentSvc = DifferInstallmentImpl(ConnectDB(requireContext()))
-        holder = AmortizationTableHolder(view)
+        originalValue = AmortizationTableParams.download(requireArguments())
+        holder = AmortizationTableHolder(view,
+            originalValue[AmortizationTableParams.params.ARG_PARAM_KIND_OF_AMORTIZATION] as AmortizationKindOfEnum,layoutInflater,findNavController())
         holder.setup(null)
         loaderManager.initLoader(1, null, this)
         return view
@@ -64,7 +71,7 @@ class AmortizationTableFragment : Fragment() , LoaderManager.LoaderCallbacks<Map
             }
             @RequiresApi(Build.VERSION_CODES.N)
             override fun loadInBackground(): Map<String,Any>? {
-                data = AmortizationTableParams.download(requireArguments())
+                data = originalValue
                 data?.takeIf { it[AmortizationTableParams.params.ARG_PARAM_HAS_DIFFER_INSTALLMENT] as Boolean }
                     ?.let{
                         val idBought = it.get(AmortizationTableParams.params.ARG_PARAM_BOUGHT_ID) as Long

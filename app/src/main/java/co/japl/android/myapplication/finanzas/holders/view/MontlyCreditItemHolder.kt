@@ -51,9 +51,8 @@ class MonthlyCreditItemHolder(val view:View): ViewHolder(view) {
     fun setField(value:CreditDTO, callback:(MoreOptionalItemsCredit)->Unit){
         val gracePeriod = gracePeriodSvc.get(value.id, LocalDate.now())
         val additional = if(!gracePeriod.isPresent)additionalSvc
-            .get(getAdditional(value.id.toLong()))
-            .map { it.value }
-            .reduceOrNull { acc, bigDecimal -> acc + bigDecimal } ?: BigDecimal.ZERO
+            .get(value.id.toLong())
+            .sumOf { it.value }
         else BigDecimal.ZERO
         date.text = DateUtils.localDateToString(value.date)
         name.text = value.name

@@ -10,6 +10,7 @@ import co.japl.android.myapplication.bussiness.DTO.CreditCardBoughtDB
 import co.japl.android.myapplication.bussiness.impl.QuoteCredit
 import co.japl.android.myapplication.bussiness.interfaces.SaveSvc
 import co.japl.android.myapplication.finanzas.bussiness.DTO.*
+import co.japl.android.myapplication.finanzas.bussiness.interfaces.IAdditionalCreditSvc
 import co.japl.android.myapplication.finanzas.bussiness.interfaces.ICreditFix
 import co.japl.android.myapplication.finanzas.bussiness.interfaces.IGracePeriod
 import co.japl.android.myapplication.finanzas.bussiness.interfaces.ISaveSvc
@@ -22,9 +23,10 @@ import java.time.LocalDate
 import java.time.Period
 import java.time.temporal.ChronoUnit
 import java.util.*
+import javax.inject.Inject
 
-class CreditFixImpl(override var dbConnect: SQLiteOpenHelper) :ICreditFix{
-    private val additionalSvc:SaveSvc<AdditionalCreditDTO> = AdditionalCreditImpl(dbConnect)
+class CreditFixImpl @Inject constructor(override var dbConnect: SQLiteOpenHelper) :ICreditFix{
+    private val additionalSvc:IAdditionalCreditSvc = AdditionalCreditImpl(dbConnect)
     private val gracePeriodSvc:IGracePeriod = GracePeriodImpl(dbConnect)
     private val calcTaxSvc = KindOfTaxImpl()
     private val calc = QuoteCredit()
@@ -98,7 +100,9 @@ class CreditFixImpl(override var dbConnect: SQLiteOpenHelper) :ICreditFix{
                 if(gracePeriodSvc.get(value.id,values.date).isPresent){
                     value.quoteValue = BigDecimal.ZERO
                 }
-                list.add(value)
+                if(value.date.plusMonths(value.periods.toLong()).isAfter(values.date)) {
+                    list.add(value)
+                }
             }
         }
         return list
@@ -216,13 +220,11 @@ class CreditFixImpl(override var dbConnect: SQLiteOpenHelper) :ICreditFix{
             .filter { (it.date > date && it.date < date.plusMonths(1).minusDays(1)) || it.date < date }
             .filter{!gracePeriodSvc.get(it.id,date).isPresent}.toMutableList()
         val quote =  list
-            .map { it.quoteValue }
-            .reduceOrNull(){acc,value->acc + value} ?: BigDecimal.ZERO
-        val additional = list.map { additionalSvc.get(it.id) }
-            .filter { it.isPresent }
-            .map { it.get().value }
-            .reduceOrNull{acc,value->acc+value} ?: BigDecimal.ZERO
-        return Pair(list.size,quote + additional)
+            ?.sumOf { it.quoteValue }
+        val additional = list.map { additionalSvc.get(it.id.toLong()) }
+            ?.flatMap { it.toList() }
+            ?.sumOf { it.value }
+        return Pair(list.size,(quote  ?: BigDecimal.ZERO ) + (additional ?: BigDecimal.ZERO))
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -247,9 +249,13 @@ class CreditFixImpl(override var dbConnect: SQLiteOpenHelper) :ICreditFix{
     @RequiresApi(Build.VERSION_CODES.O)
     override fun getTotalQuote(date: LocalDate): BigDecimal {
         val list = getAll().filter { date < it.date.plusMonths(it.periods.toLong()) }
-        val additionals = getAdditionalAll(date)
+        val additionals = list.map {
+            additionalSvc.get(it.id.toLong())
+        }?.flatMap { it.toList() }
+            ?.sumOf { it.value }
+
         val quote =  list.sumOf { it.quoteValue }
-        return quote + additionals
+        return quote + (additionals ?: BigDecimal.ZERO)
     }
 
 

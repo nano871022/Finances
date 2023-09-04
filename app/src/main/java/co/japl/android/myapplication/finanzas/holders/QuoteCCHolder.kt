@@ -191,7 +191,6 @@ class QuoteCCHolder(var view:View,var parentFragmentManager:FragmentManager,var 
             }else{
                 llLastMonth.visibility = View.GONE
             }
-            Log.d(this.javaClass.name,"TCC:. $taxCreditCard")
             if(taxCreditCard.isPresent) {
                 btnAddBuy.visibility = View.VISIBLE
                 btnCutOffHistory.visibility = View.VISIBLE

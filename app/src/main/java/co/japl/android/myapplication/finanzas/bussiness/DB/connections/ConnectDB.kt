@@ -11,7 +11,7 @@ import co.japl.android.myapplication.finanzas.bussiness.queries.AddToCapitalQuer
 import co.japl.android.myapplication.utils.DatabaseConstants
 
 class ConnectDB(context: Context):SQLiteOpenHelper(context,
-        DatabaseConstants.DATA_BASE_NAME,null, 4_04_12_036) {
+        DatabaseConstants.DATA_BASE_NAME,null, 4_05_01_037) {
 
     override fun onCreate(p0: SQLiteDatabase?) {
         Log.i(this.javaClass.name,"<<<=== onCreate - Start $p0")
@@ -33,6 +33,9 @@ class ConnectDB(context: Context):SQLiteOpenHelper(context,
         CheckCreditConnectDB().onCreate(p0)
         DifferInstallmentConnectDB().onCreate(p0)
         GracePeriodConnectDB().onCreate(p0)
+        AddValueAmortizationConnectDB().onCreate(p0)
+        ExtraValueAmortizationCreditConnectDB().onCreate(p0)
+        ExtraValueAmortizationQuoteCreditCardConnectDB().onCreate(p0)
         Log.i(this.javaClass.name,"<<<=== onCreate - End")
     }
 
@@ -56,6 +59,9 @@ class ConnectDB(context: Context):SQLiteOpenHelper(context,
         CheckCreditConnectDB().onUpgrade(p0,p1,p2)
         DifferInstallmentConnectDB().onUpgrade(p0,p1,p2)
         GracePeriodConnectDB().onUpgrade(p0,p1,p2)
+        AddValueAmortizationConnectDB().onUpgrade(p0,p1,p2)
+        ExtraValueAmortizationCreditConnectDB().onUpgrade(p0,p1,p2)
+        ExtraValueAmortizationQuoteCreditCardConnectDB().onUpgrade(p0,p1,p2)
         Log.i(this.javaClass.name,"<<<=== onUpgrade - End")
     }
 
@@ -79,6 +85,9 @@ class ConnectDB(context: Context):SQLiteOpenHelper(context,
         CheckCreditConnectDB().onDowngrade(db,oldVersion,newVersion)
         DifferInstallmentConnectDB().onDowngrade(db,oldVersion,newVersion)
         GracePeriodConnectDB().onDowngrade(db,oldVersion,newVersion)
+        AddValueAmortizationConnectDB().onDowngrade(db,oldVersion,newVersion)
+        ExtraValueAmortizationCreditConnectDB().onDowngrade(db,oldVersion,newVersion)
+        ExtraValueAmortizationQuoteCreditCardConnectDB().onDowngrade(db,oldVersion,newVersion)
         Log.i(this.javaClass.name,"<<<=== onDowngrade - End")
     }
 

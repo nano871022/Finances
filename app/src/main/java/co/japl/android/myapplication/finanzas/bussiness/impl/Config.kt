@@ -6,8 +6,9 @@ import co.japl.android.myapplication.bussiness.interfaces.ConfigSvc
 import java.time.DayOfWeek
 import java.time.LocalDateTime
 import java.time.LocalTime
+import javax.inject.Inject
 
-class Config : ConfigSvc {
+class Config @Inject constructor() : ConfigSvc {
 
     override fun variableTaxCreditMonthly(): Double {
         var yearTax = 28.8

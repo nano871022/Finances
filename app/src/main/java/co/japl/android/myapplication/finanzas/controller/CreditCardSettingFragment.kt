@@ -19,19 +19,25 @@ import co.japl.android.myapplication.finanzas.holders.interfaces.IHolder
 import co.japl.android.myapplication.finanzas.holders.interfaces.ISpinnerHolder
 import co.japl.android.myapplication.bussiness.interfaces.SaveSvc
 import co.japl.android.myapplication.finanzas.bussiness.impl.CreditCardSettingImpl
+import co.japl.android.myapplication.finanzas.bussiness.interfaces.ICreditCardSettingSvc
+import co.japl.android.myapplication.finanzas.bussiness.interfaces.ICreditCardSvc
 import co.japl.android.myapplication.holders.CreditCardSettingHolder
 import co.japl.android.myapplication.putParams.CreditCardSettingParams
+import dagger.hilt.android.AndroidEntryPoint
 import java.time.LocalDateTime
 import java.util.Optional
 import java.util.stream.Collectors
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class CreditCardSettingFragment : Fragment() {
-    private lateinit var holder: IHolder<CreditCardSettingDTO>
-    private lateinit var creditCardSvc: SaveSvc<CreditCardDTO>
-    private lateinit var listCreditCard:List<CreditCardDTO>
     private lateinit var listCreditCardNames:MutableList<String>
     private lateinit var listTypeNames: MutableList<String>
-    private lateinit var creditCardSettingSvc:SaveSvc<CreditCardSettingDTO>
+    private lateinit var listCreditCard:List<CreditCardDTO>
+    private lateinit var holder: IHolder<CreditCardSettingDTO>
+
+    @Inject lateinit var creditCardSvc: ICreditCardSvc
+    @Inject lateinit var creditCardSettingSvc:ICreditCardSettingSvc
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreateView(
@@ -104,12 +110,9 @@ class CreditCardSettingFragment : Fragment() {
 
     @RequiresApi(Build.VERSION_CODES.N)
     private fun loadCreditCard(root:View){
-        creditCardSvc = CreditCardImpl( ConnectDB(root.context))
         listCreditCard  = creditCardSvc.getAll()
         listCreditCardNames = listCreditCard.stream().map { it.name }.collect(Collectors.toList())
         listCreditCardNames.add(0,"--- Seleccionar ---")
-
-        creditCardSettingSvc =CreditCardSettingImpl(co.japl.android.myapplication.bussiness.DB.connections.ConnectDB(root.context))
     }
 
 
