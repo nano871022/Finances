@@ -105,7 +105,7 @@ class QuoteCreditHolder(var container:View): IHolder<QuoteCreditCard> {
                 handler.postDelayed({
                     it.removeTextChangedListener(this)
                     if(it.text?.isNotBlank() == true){
-                        it.setText(NumbersUtil.toString(etValueCredit))
+                        it.setText(NumbersUtil.toString(it))
                     }
                     it.addTextChangedListener(this)
                 },1000)
