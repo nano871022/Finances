@@ -32,6 +32,7 @@
             android:layout_height="match_parent"
             android:layout_width="match_parent"
             android:layout_margin="@dimen/space_min"
+            android:layout_weight="1"
             app:prefixText="$"
             app:endIconMode="clear_text">
 
@@ -43,6 +44,23 @@
             android:hint="@string/credit_value"
             android:inputType="numberSigned" />
         </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_height="match_parent"
+                android:layout_width="match_parent"
+                app:endIconMode="clear_text"
+                android:layout_margin="@dimen/space_min"
+                android:layout_weight="3">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etMonths"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:ems="10"
+                    android:hint="@string/months"
+                    android:inputType="number|textPersonName" />
+            </com.google.android.material.textfield.TextInputLayout>
     </LinearLayout>
 
     <LinearLayout
@@ -90,21 +108,38 @@
                 />
         </com.google.android.material.textfield.TextInputLayout>
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:layout_height="match_parent"
-            android:layout_width="match_parent"
-            app:endIconMode="clear_text"
-            android:layout_margin="@dimen/space_min"
-            android:layout_weight="1">
 
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/etMonths"
+
+        <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:ems="10"
-            android:hint="@string/months"
-            android:inputType="number|textPersonName" />
+            app:endIconMode="clear_text">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/et_initial_quote_sqc"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/space_min"
+                android:ems="10"
+                android:hint="@string/initial_quote"
+                android:inputType="numberDecimal"
+                android:textAlignment="textEnd" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            app:endIconMode="clear_text">
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/et_kind_initial_quote_sqc"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:focusable="false"
+                android:hint="@string/kind_initial_quote"
+                android:textAlignment="textEnd"
+                />
         </com.google.android.material.textfield.TextInputLayout>
     </LinearLayout>
 
@@ -143,10 +178,47 @@
         tools:layout_editor_absoluteX="1dp">
 
         <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/MaterialTextInputLayoutView"
+            android:layout_weight="1"
+            app:prefixText="$"
+            android:hint="@string/initial_quote">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/tv_value_quote_initial_sqc"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAlignment="center"
+                android:enabled="false"
+                style="@style/MaterialTextInputLayoutView"
+                android:text="@string/quote_credit_hint"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            style="@style/MaterialTextInputLayoutView"
+            app:prefixText="$"
+            android:hint="@string/credit_value">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/tv_total_credit_sqc"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAlignment="center"
+                android:enabled="false"
+                style="@style/MaterialTextInputLayoutView"
+                android:text="@string/quote_credit_hint"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/textView8"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             style="@style/MaterialTextInputLayoutView"
+            android:layout_weight="1"
             app:prefixText="$"
             android:hint="@string/quote_value">
         <com.google.android.material.textfield.TextInputEditText
