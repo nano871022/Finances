@@ -704,6 +704,4 @@ class SaveCreditCardBoughtImpl @Inject constructor(override var dbConnect: SQLit
         return list
 
     }
-
-
 }

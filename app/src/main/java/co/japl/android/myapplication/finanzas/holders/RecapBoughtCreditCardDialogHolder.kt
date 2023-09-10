@@ -24,6 +24,10 @@ class RecapBoughtCreditCardDialogHolder(context:Context, private val inflater:La
     lateinit var totalQuote:TextInputEditText
     lateinit var pendingValue:TextInputEditText
     lateinit var btnClose:MaterialButton
+    lateinit var numQuoteEnd:TextInputEditText
+    lateinit var totalQuoteEnd:TextInputEditText
+    lateinit var numQuoteNextEnd:TextInputEditText
+    lateinit var totalQuoteNextEnd:TextInputEditText
 
     override fun onCreate(savedInstanceState: Bundle?){
         super.onCreate(savedInstanceState)
@@ -41,6 +45,10 @@ class RecapBoughtCreditCardDialogHolder(context:Context, private val inflater:La
         totalQuote = dialog.findViewById(R.id.tv_total_quote_dbccr)
         pendingValue = dialog.findViewById(R.id.tv_pending_dbccr)
         btnClose = dialog.findViewById(R.id.btn_close_dbccr)
+        numQuoteEnd = dialog.findViewById(R.id.tv_num_quote_end_dbccr)
+        totalQuoteEnd = dialog.findViewById(R.id.tv_total_quote_end_dbccr)
+        numQuoteNextEnd = dialog.findViewById(R.id.tv_num_quote_next_end_dbccr)
+        totalQuoteNextEnd = dialog.findViewById(R.id.tv_total_quote_next_end_dbccr)
         loadValues()
         setContentView(dialog)
     }
@@ -59,6 +67,10 @@ class RecapBoughtCreditCardDialogHolder(context:Context, private val inflater:La
         totalInterest.setText(values?.getString("totalInterest"))
         totalQuote.setText(values?.getString("totalQuote"))
         pendingValue.setText(values?.getString("pendingValue"))
+        numQuoteEnd.setText(values?.getString("numQuoteEnd"))
+        totalQuoteEnd.setText(values?.getString("totalQuoteEnd"))
+        numQuoteNextEnd.setText(values?.getString("numQuoteNextEnd"))
+        totalQuoteNextEnd.setText(values?.getString("totalQuoteNextEnd"))
     }
 
     override fun onClick(p0: View?) {

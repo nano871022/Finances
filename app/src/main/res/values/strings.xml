@@ -384,4 +384,9 @@
     <string name="error_less_or_equal_than_0_value">Valor menor a 0</string>
     <string name="credit_info">Información del Crédito</string>
     <string name="extra_value_list">Valores Extra</string>
+
+    <string name="num_quote_end"># Cuota Finalizan</string>
+    <string name="num_quote_next_end"># Cuota Siguiente Finalizar</string>
+    <string name="total_quote_end">Total Cuota Finalizan</string>
+    <string name="total_quote_next_end">Total Cuota Siguiente Finalizar</string>
 </resources>

@@ -23,4 +23,9 @@ class BoughtRecap {
     lateinit var quoteItem: Optional<Int>
     var codeCreditCard by Delegates.notNull<Int>()
     var cutOffDate by Delegates.notNull<LocalDateTime>()
+
+    var numQuoteEnd :Short? = null
+    var totalQuoteEnd :BigDecimal? = null
+    var numQuoteNextEnd :Short? = null
+    var totalQuoteNextEnd :BigDecimal?=null
 }

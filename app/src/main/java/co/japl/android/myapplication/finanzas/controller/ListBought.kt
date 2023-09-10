@@ -132,6 +132,19 @@ class ListBought : Fragment() , LoaderManager.LoaderCallbacks<Pair<List<CreditCa
         boughtRecap.recurrentItem = Optional.of(listRecurrent.size)
         boughtRecap.totalItem = Optional.of(joinList.size)
         boughtRecap.codeCreditCard = creditCard.codeCreditCard.orElse(0)
+
+        val quoteEnding = joinList.filter {
+            it.month.toLong() == DateUtils.getMonths(it.boughtDate,creditCard.cutOff.get()) + 1
+        }
+        val quoteNextEnding = joinList.filter {
+            it.month.toLong() == DateUtils.getMonths(it.boughtDate,creditCard.cutOff.get()) + 2
+        }
+
+        boughtRecap.numQuoteNextEnd = quoteNextEnding.size.toShort()
+        boughtRecap.numQuoteEnd = quoteEnding.size.toShort()
+        boughtRecap.totalQuoteNextEnd =  quoteNextEnding.sumOf { it.valueItem / it.month.toBigDecimal() }
+        boughtRecap.totalQuoteEnd =  quoteEnding.sumOf { it.valueItem / it.month.toBigDecimal() }
+
         creditCard.cutOff?.ifPresent { boughtRecap.cutOffDate = it }
 
         joinList = joinList.sortedByDescending { it.boughtDate }.toMutableList()

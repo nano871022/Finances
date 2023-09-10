@@ -152,6 +152,10 @@ class ListBoughtHolder(var view: View, private val inflater: LayoutInflater,val 
                         ),
                         "totalQuote" to NumbersUtil.toString(values.totalValue.orElse(BigDecimal.ZERO)),
                         "pendingValue" to NumbersUtil.toString(values.pendingToPay.orElse(BigDecimal.ZERO))
+                        ,"numQuoteEnd" to (values.numQuoteEnd?:0).toString(),
+                        "totalQuoteEnd" to NumbersUtil.toString(values.totalQuoteEnd?: BigDecimal.ZERO),
+                        "numQuoteNextEnd" to (values.numQuoteNextEnd?:0).toString(),
+                        "totalQuoteNextEnd" to NumbersUtil.toString(values.totalQuoteNextEnd?:BigDecimal.ZERO)
                     )
                     RecapBoughtCreditCardDialogHolder(view.context, inflater, values).show()
                 }
