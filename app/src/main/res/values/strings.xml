@@ -22,7 +22,9 @@
     <string name="list_periods">Lista de Periodos</string>
     <string name="tax">Tasa</string>
     <string name="kind_of_tax">Tipo de Tasa</string>
+    <string name="kind_initial_quote">Tipo</string>
     <string name="months">Meses</string>
+    <string name="initial_quote">Cuota Inicial</string>
     <string name="periods">Periodos</string>
     <string name="months_number_hint">000</string>
     <string name="credit_value">Valor del Credito</string>
