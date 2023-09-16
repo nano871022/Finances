@@ -14,14 +14,15 @@ import co.japl.android.myapplication.finanzas.pojo.PiecePie
 import co.japl.android.myapplication.utils.NumbersUtil
 
 class CustomDraw constructor (context:Context, attributeSet: AttributeSet):View(context,attributeSet) {
-    val posX = 10
-    val posY = 40
-    val withSize = 300
-    val heightSize = 300
-    val reduce = 20
-    var lastYTitle = 10f
+    val fontSize = 14
+    val posX = (resources.displayMetrics.density * fontSize).toInt()
+    val posY = (resources.displayMetrics.density * 40).toInt()
+    val withSize = (resources.displayMetrics.density * 300).toInt()
+    val heightSize = (resources.displayMetrics.density * 300).toInt()
+    val reduce = (resources.displayMetrics.density * 20)
+    var lastYTitle = ((resources.displayMetrics.density * fontSize )+ 20)
     val posXTitle = posX + withSize + 5f
-    val incrementYTitle = 25
+    val incrementYTitle = resources.displayMetrics.density * fontSize
 
     private val draws = mutableListOf<PiecePie>()
 
@@ -50,11 +51,12 @@ class CustomDraw constructor (context:Context, attributeSet: AttributeSet):View(
     }
 
     private fun getPaint(color:Int):Paint{
+        val density = resources.displayMetrics.density
         val paint = Paint()
         paint.strokeWidth = 1f
         paint.style = Paint.Style.FILL_AND_STROKE
         paint.color = color
-        paint.textSize = 14f
+        paint.textSize = density * fontSize
         return paint
     }
 
@@ -75,13 +77,13 @@ class CustomDraw constructor (context:Context, attributeSet: AttributeSet):View(
     }
 
     private fun drawTitle(title:String,value:Double,paint:Paint,canvas:Canvas){
-        canvas.drawText(title,posXTitle,lastYTitle,paint)
-        canvas.drawText(NumbersUtil.toString(value),posXTitle + incrementYTitle,lastYTitle+incrementYTitle,paint)
-        lastYTitle += (2*incrementYTitle)
+        canvas.drawText(title,posXTitle,lastYTitle+incrementYTitle,paint)
+        canvas.drawText(NumbersUtil.toString(value),posXTitle + incrementYTitle,lastYTitle+(2*incrementYTitle),paint)
+        lastYTitle += (3*incrementYTitle)
     }
 
     private fun drawTotal(title:String,value:Double,paint:Paint,canvas:Canvas){
-        canvas.drawText(title+NumbersUtil.toString(value),10f,10f,paint)
+        canvas.drawText(title+NumbersUtil.toString(value),(resources.displayMetrics.density * fontSize),(resources.displayMetrics.density * fontSize).toFloat(),paint)
     }
 
     private fun drawPieceOfPie(start:Float,end:Float,paint:Paint,canvas:Canvas){

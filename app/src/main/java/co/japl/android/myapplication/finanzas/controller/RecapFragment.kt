@@ -145,7 +145,7 @@ class RecapFragment @Inject constructor() : Fragment() , LoaderManager.LoaderCal
             it.graph?.let {draw->
                 totalQuoteTC.takeIf { it > BigDecimal.ZERO }?.let{draw.addPiece(view?.resources?.getString(R.string.total_quote_credit_card)!!,it.toDouble(),Color.RED)}
                 totalQuoteCredit.takeIf { it > BigDecimal.ZERO }?.let{draw.addPiece(view?.resources?.getString(R.string.total_credits)!!,it.toDouble(),Color.BLUE)}
-                totalPaid.takeIf { it > BigDecimal.ZERO }?.let{draw.addPiece(view?.resources?.getString(R.string.total_paids)!!,it.toDouble(),Color.GREEN)}
+                totalPaid.takeIf { it > BigDecimal.ZERO }?.let{draw.addPiece(view?.resources?.getString(R.string.total_paids)!!,it.toDouble(),Color.DKGRAY)}
                 draw.invalidate()
             }
         }
