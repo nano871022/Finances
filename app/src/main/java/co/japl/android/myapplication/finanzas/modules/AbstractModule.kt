@@ -7,6 +7,8 @@ import co.japl.android.myapplication.bussiness.impl.SaveCreditCardBoughtImpl
 import co.japl.android.myapplication.bussiness.impl.SaveImpl
 import co.japl.android.myapplication.bussiness.impl.TaxImpl
 import co.japl.android.myapplication.bussiness.interfaces.ConfigSvc
+import co.japl.android.myapplication.bussiness.interfaces.ITagQuoteCreditCardSvc
+import co.japl.android.myapplication.bussiness.interfaces.ITagSvc
 import co.japl.android.myapplication.bussiness.interfaces.ITaxSvc
 import co.japl.android.myapplication.finanzas.bussiness.impl.AccountImpl
 import co.japl.android.myapplication.finanzas.bussiness.impl.AddAmortizationImpl
@@ -25,6 +27,8 @@ import co.japl.android.myapplication.finanzas.bussiness.impl.InputImpl
 import co.japl.android.myapplication.finanzas.bussiness.impl.KindOfTaxImpl
 import co.japl.android.myapplication.finanzas.bussiness.impl.PaidImpl
 import co.japl.android.myapplication.finanzas.bussiness.impl.ProjectionsImpl
+import co.japl.android.myapplication.finanzas.bussiness.impl.TagQuoteCreditCardImpl
+import co.japl.android.myapplication.finanzas.bussiness.impl.TagsImpl
 import co.japl.android.myapplication.finanzas.bussiness.interfaces.IAccountSvc
 import co.japl.android.myapplication.finanzas.bussiness.interfaces.IAddAmortizationSvc
 import co.japl.android.myapplication.finanzas.bussiness.interfaces.IAdditionalCreditSvc
@@ -117,4 +121,10 @@ abstract class AbstractModule {
     abstract fun bindICalcSvc(implement: SaveImpl): ICalcSvc
     @Binds
     abstract fun bindIBuyCreditCardSettingSvc(implement: BuyCreditCardSettingImpl): IBuyCreditCardSettingSvc
+
+    @Binds
+    abstract fun bindITagQuoteCreditCardSvc(implement: TagQuoteCreditCardImpl): ITagQuoteCreditCardSvc
+
+    @Binds
+    abstract fun bindITagSvc(implement: TagsImpl):ITagSvc
 }

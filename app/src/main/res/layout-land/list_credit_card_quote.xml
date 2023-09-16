@@ -324,6 +324,12 @@
 
     </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
+
+        <co.japl.android.myapplication.finanzas.holders.CustomDraw
+            android:id="@+id/cv_canvas_lccq"
+            android:layout_width="match_parent"
+            android:layout_height="400dp"/>
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">

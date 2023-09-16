@@ -32,6 +32,7 @@ class RecapHolder(val view:View):IRecapHolder<RecapHolder> {
     lateinit var warning: TextView
     lateinit var limit:TextView
     lateinit var scrollView: HorizontalScrollView
+    var graph:CustomDraw? = null
 
     override fun setFields(actions: View.OnClickListener?) {
         inputs = view.findViewById(R.id.tv_total_inputs_rec)
@@ -47,6 +48,7 @@ class RecapHolder(val view:View):IRecapHolder<RecapHolder> {
         warning= view.findViewById(R.id.tv_warning_credit_card_rec)
         limit= view.findViewById(R.id.tv_limit_credit_card_rec)
         scrollView = view.findViewById(R.id.scroll_rec)
+        graph = view.findViewById(R.id.cv_canvas_rec)
 
     }
 

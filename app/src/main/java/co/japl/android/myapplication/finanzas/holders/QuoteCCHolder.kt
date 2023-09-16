@@ -1,11 +1,14 @@
 package co.japl.android.myapplication.holders
 
+import android.graphics.Canvas
 import android.graphics.Color
+import android.graphics.Paint
 import android.os.Build
 import android.util.Log
 import android.view.View
 import android.widget.*
 import androidx.annotation.RequiresApi
+import androidx.core.view.doOnPreDraw
 import androidx.fragment.app.FragmentManager
 import androidx.navigation.NavController
 import co.japl.android.myapplication.R
@@ -17,6 +20,7 @@ import co.japl.android.myapplication.finanzas.putParams.CashAdvanceParams
 import co.japl.android.myapplication.finanzas.putParams.CreditCardQuotesParams
 import co.japl.android.myapplication.finanzas.putParams.PeriodsParams
 import co.japl.android.myapplication.finanzas.enums.TaxEnum
+import co.japl.android.myapplication.finanzas.holders.CustomDraw
 import co.japl.android.myapplication.pojo.CreditCard
 import co.japl.android.myapplication.utils.DateUtils
 import co.japl.android.myapplication.utils.NumbersUtil
@@ -56,6 +60,7 @@ class QuoteCCHolder(var view:View,var parentFragmentManager:FragmentManager,var 
     lateinit var cutOff:Optional<LocalDateTime>
     lateinit var progresBar:ProgressBar
     private lateinit var cutOffDay:Optional<Short>
+    var canvas:CustomDraw? = null
 
     override fun setFields(actions: View.OnClickListener?) {
         view.let{
@@ -82,6 +87,12 @@ class QuoteCCHolder(var view:View,var parentFragmentManager:FragmentManager,var 
             btnBoughtHistory = it.findViewById(R.id.btnBoughtHistory)
             btnCutOffHistory = it.findViewById(R.id.btnCutOffHistory)
             progresBar = it.findViewById(R.id.pb_load_qcc)
+            canvas = it.findViewById<CustomDraw>(R.id.cv_canvas_lccq)
+            canvas?.let {
+                Log.d(javaClass.name,"Create canvas")
+            }?: Log.d(javaClass.name,"create wasnt canvas")
+
+
         }
 
         spCreditCard.isFocusable = false
@@ -206,9 +217,21 @@ class QuoteCCHolder(var view:View,var parentFragmentManager:FragmentManager,var 
         }
     }
 
+    fun cleanPiecePie(){
+        canvas?.let { it.clear() }
+    }
+    fun loadPiecePie(name:String,value:Double,color:Int){
+        canvas?.let{
+            with(it) {
+                addPiece(name,value,color)
+                postInvalidate()
+            }
+        }
+    }
+
     override fun downLoadFields(): CreditCard {
         return CreditCard()
-    }
+1    }
 
     override fun cleanField() {
         btnCutOffHistory.visibility = View.GONE

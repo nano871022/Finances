@@ -3,25 +3,36 @@ package co.japl.android.myapplication.holders.view
 import android.animation.ObjectAnimator
 import android.app.AlertDialog
 import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Build
+import android.provider.CalendarContract.Colors
 import android.transition.Scene
 import android.util.Log
 import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.ImageButton
+import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.annotation.ColorInt
 import androidx.annotation.RequiresApi
+import androidx.core.graphics.drawable.toDrawable
+import androidx.core.graphics.toColor
 import androidx.core.view.children
 import androidx.recyclerview.widget.RecyclerView
 import co.japl.android.myapplication.R
+import co.japl.android.myapplication.bussiness.DB.connections.ConnectDB
 import co.japl.android.myapplication.bussiness.DTO.CreditCardBoughtDTO
 import co.japl.android.myapplication.bussiness.DTO.CreditCardDTO
+import co.japl.android.myapplication.bussiness.interfaces.ITagQuoteCreditCardSvc
+import co.japl.android.myapplication.finanzas.bussiness.impl.TagQuoteCreditCardImpl
 import co.japl.android.myapplication.finanzas.enums.KindOfTaxEnum
 import co.japl.android.myapplication.finanzas.enums.MoreOptionsItemsCreditCard
 import co.japl.android.myapplication.finanzas.enums.TaxEnum
 import co.japl.android.myapplication.utils.DateUtils
 import co.japl.android.myapplication.utils.NumbersUtil
+import com.google.android.gms.common.SignInButton.ColorScheme
+import com.google.android.material.color.utilities.ColorUtils
 import com.google.common.primitives.Shorts
 import java.math.BigDecimal
 import java.math.RoundingMode
@@ -37,12 +48,14 @@ class BoughtViewHolder(val itemView:View) : RecyclerView.ViewHolder(itemView) {
     lateinit var tvMonthBought:TextView
     lateinit var tvCapitalBought:TextView
     lateinit var tvInterestBought:TextView
-    lateinit var btnMore:ImageButton
+    lateinit var btnMore:ImageView
     lateinit var tvTotalQuoteBought:TextView
     lateinit var tvBoughtDate:TextView
     lateinit var tvPendingToPay:TextView
     lateinit var tvTaxBoughtICC:TextView
     lateinit var llTitleBought:LinearLayout
+    var tag:ImageView? = null
+    var tagSvc : ITagQuoteCreditCardSvc = TagQuoteCreditCardImpl(ConnectDB(itemView.context))
 
     fun loadFields(view:View){
         tvBoughtName = view.findViewById(R.id.tvNameLCCS)
@@ -57,7 +70,8 @@ class BoughtViewHolder(val itemView:View) : RecyclerView.ViewHolder(itemView) {
         tvPendingToPay = view.findViewById(R.id.tvPendingToPay)
         tvTaxBoughtICC = view.findViewById(R.id.tvTaxBoughtICC)
         llTitleBought = view.findViewById(R.id.llTitleBought)
-
+        tag = view.findViewById(R.id.img_tag_bil)
+        tag?.visibility = View.GONE
         llTitleBought.setOnClickListener {
             (llTitleBought.parent as LinearLayout).children.filter { it.id != R.id.llTitleBought }
                 .forEach {
@@ -85,6 +99,10 @@ class BoughtViewHolder(val itemView:View) : RecyclerView.ViewHolder(itemView) {
         tvInterestBought.text = NumbersUtil.COPtoString(interest)
         tvPendingToPay.text = NumbersUtil.COPtoString(pendintToPay)
         tvTaxBoughtICC.text = "${(tax.first * 100).toBigDecimal().setScale(3,RoundingMode.CEILING)} % ${tax.second.name}"
+        tagSvc.getTags(values.id).takeIf { it.isNotEmpty() }?.let{
+            tag?.tooltipText = it.first().name
+            tag?.visibility = View.VISIBLE
+        }
         loadAlert(values,callback)
     }
     @RequiresApi(Build.VERSION_CODES.O)
@@ -126,5 +144,12 @@ class BoughtViewHolder(val itemView:View) : RecyclerView.ViewHolder(itemView) {
         btnMore.setOnClickListener {
             builder.create().show()
         }
+    }
+
+    fun changeColor(color:Int){
+        itemView?.findViewById<LinearLayout>(R.id.llTitleBought)?.parent?.let {
+            (it as LinearLayout).background = itemView.context.resources.getColor(color).toDrawable()
+        }
+
     }
 }

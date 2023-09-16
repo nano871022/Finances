@@ -1,12 +1,15 @@
 package co.japl.android.myapplication.bussiness.impl
 
+import android.content.Context
 import android.database.sqlite.SQLiteOpenHelper
 import android.os.Build
 import android.provider.BaseColumns
 import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.core.content.contentValuesOf
+import co.japl.android.myapplication.R
 import co.japl.android.myapplication.bussiness.DTO.*
+import co.japl.android.myapplication.bussiness.interfaces.ITagQuoteCreditCardSvc
 import co.japl.android.myapplication.bussiness.interfaces.SaveSvc
 import co.japl.android.myapplication.bussiness.mapping.CreditCardBoughtMap
 import co.japl.android.myapplication.bussiness.mapping.CreditCardMap
@@ -16,6 +19,7 @@ import co.japl.android.myapplication.finanzas.bussiness.impl.CreditCardSettingIm
 import co.japl.android.myapplication.finanzas.bussiness.impl.DifferInstallmentImpl
 import co.japl.android.myapplication.finanzas.bussiness.impl.GracePeriodImpl
 import co.japl.android.myapplication.finanzas.bussiness.impl.KindOfTaxImpl
+import co.japl.android.myapplication.finanzas.bussiness.impl.TagQuoteCreditCardImpl
 import co.japl.android.myapplication.finanzas.bussiness.interfaces.IQuoteCreditCardSvc
 import co.japl.android.myapplication.finanzas.bussiness.mapping.PeriodsMap
 import co.japl.android.myapplication.finanzas.enums.KindOfTaxEnum
@@ -38,7 +42,7 @@ import java.time.format.DateTimeFormatter
 import java.util.*
 import javax.inject.Inject
 
-class SaveCreditCardBoughtImpl @Inject constructor(override var dbConnect: SQLiteOpenHelper) :IQuoteCreditCardSvc{
+class SaveCreditCardBoughtImpl @Inject constructor(val context:Context, override var dbConnect: SQLiteOpenHelper) :IQuoteCreditCardSvc{
     private val kindOfTaxSvc = KindOfTaxImpl()
     private val COLUMNS_CALC = arrayOf(BaseColumns._ID
         ,CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_CODE_CREDIT_CARD
@@ -68,6 +72,7 @@ class SaveCreditCardBoughtImpl @Inject constructor(override var dbConnect: SQLit
     private val buyCCSettingSvc = BuyCreditCardSettingImpl(dbConnect)
     private val creditCardSettingSvc = CreditCardSettingImpl(dbConnect)
     private val differInstallmentSvc = DifferInstallmentImpl(dbConnect)
+    private val tagQuoteCreditSvc:ITagQuoteCreditCardSvc = TagQuoteCreditCardImpl(dbConnect)
     private val FORMAT_DATE_BOUGHT_WHERE = "substr(${CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_BOUGHT_DATE},7,4)||'-'||substr(${CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_BOUGHT_DATE},4,2)||'-'||substr(${CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_BOUGHT_DATE},1,2)"
     private val FORMAT_DATE_END_WHERE = "substr(${CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_END_DATE},7,4)||'-'||substr(${CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_END_DATE},4,2)||'-'||substr(${CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_END_DATE},1,2)"
     @RequiresApi(Build.VERSION_CODES.O)
@@ -423,12 +428,12 @@ class SaveCreditCardBoughtImpl @Inject constructor(override var dbConnect: SQLit
 
             val quote:BigDecimal = differ?.let{
                (it.pendingValuePayable / it.newInstallment).toBigDecimal()
-            }?:it.valueItem.divide(it.month.toBigDecimal(),8,RoundingMode.CEILING)
+            }?:(it.valueItem.toDouble() / it.month.toDouble()).toBigDecimal()
 
             val bought = quote.multiply(months.toBigDecimal())
             val capital:BigDecimal = differ?.let{
                 (it.pendingValuePayable.minus(bought.toLong())).toBigDecimal()
-            }?:it.valueItem.minus(bought)
+            }?:(it.valueItem.toDouble() - bought.toDouble()).toBigDecimal()
 
             if(capital > BigDecimal.ZERO){
                  quote
@@ -703,5 +708,53 @@ class SaveCreditCardBoughtImpl @Inject constructor(override var dbConnect: SQLit
         }
         return list
 
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    override fun getDataToGraphStats(
+        codCreditCard: Int,
+        cutOff: LocalDateTime
+    ): List<Pair<String, Double>> {
+        val tax = getTax(codCreditCard.toLong(),cutOff, TaxEnum.CREDIT_CARD)
+        val taxCashAdv = getTax(codCreditCard.toLong(),cutOff, TaxEnum.CASH_ADVANCE)
+        val taxWalletBuy = getTax(codCreditCard.toLong(),cutOff, TaxEnum.WALLET_BUY)
+        val creditCard = creditCardSvc.get(codCreditCard)
+        val startDate = DateUtils.startDateFromCutoff(creditCard.get().cutOffDay,cutOff)
+        val list = getToDate(codCreditCard,startDate,cutOff)
+        val listRecurrent = getRecurrentBuys(codCreditCard,cutOff)
+        listRecurrent.forEach { it.boughtDate = it.boughtDate.withYear(cutOff.year).withMonth(cutOff.monthValue) }
+        val listRecurrentPending = getRecurrentPendingQuotes(codCreditCard,cutOff)
+        val pending = getPendingQuotes(codCreditCard,startDate,cutOff)
+        val joinList = ArrayList<CreditCardBoughtDTO>().toMutableList()
+        joinList.addAll(list)
+        joinList.addAll(pending)
+        joinList.addAll(listRecurrent)
+        joinList.addAll(listRecurrentPending)
+        val withTags = joinList.filter { tagQuoteCreditSvc.getTags(it.id).isNotEmpty() }
+        val tags = withTags.map {
+            val tagName = tagQuoteCreditSvc.getTags(it.id).first().name
+            val value = getQuoteValue(creditCard,it,tax,taxCashAdv,taxWalletBuy,cutOff)
+            Pair(tagName,value.toDouble())
+        }
+        val withoutTags = joinList.filter { dto-> !withTags.any { it.id == dto.id } }
+        val tags2 = tags.groupBy{ it.first }.mapValues { it.value.sumOf { it.second } }.map {Pair(it.key,it.value)}
+        val oneMonth = withoutTags.filter { it.month == 1 && it.recurrent.toInt() == 0}.sumOf {getQuoteValue(creditCard,it,tax,taxCashAdv,taxWalletBuy,cutOff)}
+        val someMonth = withoutTags.filter { it.month > 1 && it.recurrent.toInt() == 0}.sumOf {getQuoteValue(creditCard,it,tax,taxCashAdv,taxWalletBuy,cutOff)}
+        val oneMonthRecurrent = withoutTags.filter { it.month == 1 && it.recurrent.toInt() == 1 }.sumOf { getQuoteValue(creditCard,it,tax,taxCashAdv,taxWalletBuy,cutOff) }
+        val someMonthRecurrent = withoutTags.filter { it.month > 1 && it.recurrent.toInt() == 1 }.sumOf { getQuoteValue(creditCard,it,tax,taxCashAdv,taxWalletBuy,cutOff) }
+        val join = mutableListOf<Pair<String,Double>>()
+        tags2.takeIf { it.isNotEmpty() }?.let{join.addAll(tags2)}
+        oneMonth.takeIf { it > BigDecimal.ZERO }?.let{join.add(Pair(context.resources.getString(R.string.str_graph_qcc_one_month),it.toDouble()))}
+        someMonth.takeIf { it > BigDecimal.ZERO }?.let{join.add(Pair(context.resources.getString(R.string.str_graph_qcc_some_month),it.toDouble()))}
+        oneMonthRecurrent.takeIf { it > BigDecimal.ZERO }?.let{join.add(Pair(context.resources.getString(R.string.str_graph_qcc_one_month_recurrent),it.toDouble()))}
+        someMonthRecurrent.takeIf { it > BigDecimal.ZERO }?.let{join.add(Pair(context.resources.getString(R.string.str_graph_qcc_some_month_recurrent),it.toDouble()))}
+        return join
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun getQuoteValue(creditCard:Optional<CreditCardDTO>, bought:CreditCardBoughtDTO, tax: Optional<Pair<Double, String>>, taxCashAdv: Optional<Pair<Double, String>>, taxWalletBuy: Optional<Pair<Double, String>>, cutOff:LocalDateTime):BigDecimal{
+        val interest = calculateInterest(creditCard,bought,tax,taxCashAdv,taxWalletBuy,cutOff)
+        val capital = bought.valueItem.toDouble() / bought.month.toDouble()
+        return (capital + (interest.toDouble())).toBigDecimal()
     }
 }

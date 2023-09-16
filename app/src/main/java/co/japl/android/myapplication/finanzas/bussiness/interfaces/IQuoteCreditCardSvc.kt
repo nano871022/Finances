@@ -15,4 +15,6 @@ interface IQuoteCreditCardSvc:  SaveSvc<CreditCardBoughtDTO>,
         fun endingRecurrentPayment(idBought: Int,cutOff:LocalDateTime):Boolean
 
         fun getLastAvailableQuotesTC():List<QuoteCreditCard>
+
+        fun getDataToGraphStats(codCreditCard:Int, cutOff: LocalDateTime):List<Pair<String,Double>>
 }

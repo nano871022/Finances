@@ -200,34 +200,56 @@
 
     </LinearLayout>
 
-        <com.google.android.material.textfield.TextInputLayout
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:orientation="horizontal">
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:id="@+id/llSetingTypeBCC"
             app:endIconMode="clear_text"
+            android:layout_weight="1"
             android:hint="@string/credit_card_setting_type_setting">
 
         <com.google.android.material.textfield.MaterialAutoCompleteTextView
             android:id="@+id/spTypeSettingBCC"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:textAlignment="center"/>
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/llSettingNameBCC"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             app:endIconMode="clear_text"
+            android:layout_weight="1"
             android:hint="@string/credit_card_setting_name_setting">
 
         <com.google.android.material.textfield.MaterialAutoCompleteTextView
             android:id="@+id/spNameSettingBCC"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:textAlignment="center"/>
         </com.google.android.material.textfield.TextInputLayout>
 
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            style="@style/MaterialTextInputLayoutView"
+            android:layout_weight="1"
+            android:hint="@string/tag">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/et_tag_bcc"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                style="@style/MaterialTextInputLayoutView"
+                android:focusable="false"
+                android:textAlignment="center"/>
+        </com.google.android.material.textfield.TextInputLayout>
+        </LinearLayout>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

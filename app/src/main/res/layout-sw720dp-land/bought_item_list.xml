@@ -22,6 +22,12 @@
         tools:layout_editor_absoluteX="1dp"
         tools:layout_editor_absoluteY="1dp">
 
+        <ImageView
+            android:id="@+id/img_tag_bil"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:src="@drawable/baseline_location_on_24"/>
+
         <TextView
             android:id="@+id/tvBoughtDate"
             android:layout_width="wrap_content"

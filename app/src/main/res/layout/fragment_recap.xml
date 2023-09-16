@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_margin="@dimen/space_min"
+    android:orientation="vertical"
     tools:context=".finanzas.controller.RecapFragment">
 
     <HorizontalScrollView
@@ -36,8 +37,15 @@
 
                 <include layout="@layout/quote_credit_card_recap_fragment"/>
 
+
         </LinearLayout>
 
+
     </HorizontalScrollView>
+
+    <co.japl.android.myapplication.finanzas.holders.CustomDraw
+        android:id="@+id/cv_canvas_rec"
+        android:layout_width="match_parent"
+        android:layout_height="400dp"/>
 
 </LinearLayout>

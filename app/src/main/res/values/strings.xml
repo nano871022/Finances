@@ -176,6 +176,7 @@
     <string name="toast_unsuccessful_insert">El registro no se agrego</string>
     <string name="toast_successful_update">El actualizo se agrego exitosamente</string>
     <string name="toast_invalid_option">Opción Invalida</string>
+    <string name="toast_record_didnt_save">No se guardo el registro</string>
     <string name="add_credit_card_setting">Agregar Configuración</string>
     <string name="title_toolbar_fragment_list_credit_card_setting">Configuraciones</string>
     <string name="title_toolbar_fragment_credit_card_setting">Configuración</string>
@@ -391,4 +392,13 @@
     <string name="num_quote_next_end"># Cuota Siguiente Finalizar</string>
     <string name="total_quote_end">Total Cuota Finalizan</string>
     <string name="total_quote_next_end">Total Cuota Siguiente Finalizar</string>
+    <string name="tag">Tag</string>
+
+    <string name="toast_tags_didnt_save">No se guardo el Tag</string>
+    <string name="toast_there_are_fields_isnt_fill_out">Hay campos que no estan llenos correctamente</string>
+
+    <string name="str_graph_qcc_one_month">1 Cuota</string>
+    <string name="str_graph_qcc_some_month">>1 Cuota </string>
+    <string name="str_graph_qcc_one_month_recurrent"> Recurrente 1 Cuota</string>
+    <string name="str_graph_qcc_some_month_recurrent">Recurrente >1 Cuota</string>
 </resources>

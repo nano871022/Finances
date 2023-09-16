@@ -73,7 +73,7 @@ class ListBoughtAdapter(private val data:MutableList<CreditCardBoughtDTO>,privat
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BoughtViewHolder {
         dbConnect = ConnectDB(parent.context)
-        saveSvc = SaveCreditCardBoughtImpl(dbConnect)
+        saveSvc = SaveCreditCardBoughtImpl(parent.context,dbConnect)
         searchSvc = saveSvc as SearchSvc<CreditCardBoughtDTO>
         creditCardSvc = CreditCardImpl(dbConnect)
         differInstallmentSvc = DifferInstallmentImpl(dbConnect)
@@ -231,6 +231,12 @@ class ListBoughtAdapter(private val data:MutableList<CreditCardBoughtDTO>,privat
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onBindViewHolder(holder: BoughtViewHolder, position: Int) {
+        data[position]?.takeIf { it.recurrent == (1).toShort() }?.let {
+            holder.changeColor(androidx.appcompat.R.color.material_blue_grey_800)
+        }
+        data[position]?.takeIf { it.month > 1 }?.let {
+            holder.changeColor(androidx.appcompat.R.color.material_grey_600)
+        }
         creditCard = creditCardSvc.get(data[position].codeCreditCard)
         val taxAdv = getTax(data[position].codeCreditCard.toLong(), TaxEnum.CASH_ADVANCE)
         val taxCC = getTax(data[position].codeCreditCard.toLong(), TaxEnum.CREDIT_CARD)

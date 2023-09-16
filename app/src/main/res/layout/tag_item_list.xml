@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/ll_click_til"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="@dimen/space_min"
+    android:orientation="horizontal">
+    <TextView
+        android:id="@+id/tv_name_til"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="@string/tag"/>
+    <ImageView
+        android:id="@+id/btn_delete_til"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="5"
+        android:src="@drawable/ic_baseline_delete_24"/>
+
+</LinearLayout>

@@ -1,6 +1,7 @@
 package co.japl.android.myapplication.controller
 
 import android.app.AlertDialog
+import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -34,7 +35,7 @@ import java.util.*
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class ListCreditCardQuote : Fragment(), LoaderManager.LoaderCallbacks<CreditCard>{
+class ListCreditCardQuote : Fragment(), LoaderManager.LoaderCallbacks<Pair<CreditCard,List<Pair<String,Double>>>>{
     private lateinit var holder: IHolder<CreditCard>
     private lateinit var listCreditCard:List<CreditCardDTO>
     private lateinit var creditCardDialog:AlertDialog
@@ -181,14 +182,16 @@ class ListCreditCardQuote : Fragment(), LoaderManager.LoaderCallbacks<CreditCard
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    override fun onCreateLoader(id: Int, args: Bundle?): Loader<CreditCard> {
+    override fun onCreateLoader(id: Int, args: Bundle?): Loader<Pair<CreditCard,List<Pair<String,Double>>>> {
         val value = pojo!!
 
-        return object: AsyncTaskLoader<CreditCard>(requireContext()){
-             var data : CreditCard? = null
+        return object: AsyncTaskLoader<Pair<CreditCard,List<Pair<String,Double>>>>(requireContext()){
+             var data : Pair<CreditCard,List<Pair<String,Double>>>? = null
             @RequiresApi(Build.VERSION_CODES.O)
-            override fun loadInBackground(): CreditCard? {
-                data = loadDataInfo(value)
+            override fun loadInBackground(): Pair<CreditCard,List<Pair<String,Double>>>? {
+                val dataInf = loadDataInfo(value)
+                val list = quoteCreditCardSvc.getDataToGraphStats(value.codeCreditCard.get(),value.cutOff.get())
+                data = Pair(dataInf!!,list)
                 return data
             }
             override fun onStartLoading() {
@@ -202,14 +205,35 @@ class ListCreditCardQuote : Fragment(), LoaderManager.LoaderCallbacks<CreditCard
         }.also { it.data = null }
     }
 
-    override fun onLoaderReset(loader: Loader<CreditCard>) {
+    override fun onLoaderReset(loader: Loader<Pair<CreditCard,List<Pair<String,Double>>>>) {
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    override fun onLoadFinished(loader: Loader<CreditCard>, data: CreditCard?) {
+    override fun onLoadFinished(loader: Loader<Pair<CreditCard,List<Pair<String,Double>>>>, data: Pair<CreditCard,List<Pair<String,Double>>>?) {
         data?.let {
-            holder.loadFields(data!!)
+            holder.loadFields(it.first)
+            (holder as QuoteCCHolder)?.let{holder2->
+            it.second?.takeIf { it.isNotEmpty() }?.let{
+                with(holder2) {
+                    cleanPiecePie()
+                }
+                it
+            }?.forEach{value->
+                val color = randomColor()
+                    with(holder2) {
+                        loadPiecePie(value.first, value.second, color)
+                    }
+                }
+            }
+
         }
     }
 
+    private fun randomColor():Int{
+        val random = Random()
+        val red = random.nextInt()
+        val green = random.nextInt()
+        val blue = random.nextInt()
+        return Color.argb(1,red,green,blue)
+    }
 }

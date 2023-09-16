@@ -8,13 +8,13 @@ plugins {
 }
 
 android {
-    compileSdk 33
+    compileSdk 34
 
     defaultConfig {
         applicationId "co.japl.android.myapplication"
         minSdk 21
         targetSdk 33
-        versionCode 4_05_02_038
+        versionCode 4_05_03_039
         versionName "Fix error with dates in quote credit card and update values in background insted focus off"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -67,6 +67,19 @@ dependencies {
     implementation 'androidx.loader:loader:1.1.0'
     implementation 'com.google.dagger:hilt-android:2.44'
     kapt 'com.google.dagger:hilt-android-compiler:2.44'
+
+/*
+    implementation("androidx.compose.material:material-icons-extended:1.5.1")
+    implementation("androidx.compose.material:material-icons-core:1.5.1")
+    implementation("androidx.compose.material3:material3-window-size-class:1.1.1")
+    implementation("androidx.activity:activity-compose:1.7.2")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.2")
+    implementation("androidx.compose.runtime:runtime-livedata:1.5.1")
+    implementation("androidx.compose.runtime:runtime-rxjava2:1.5.1")
+    implementation("androidx.compose.ui:ui-tooling:1.5.1")
+    implementation("androidx.compose.ui:ui-tooling-preview:1.5.1")
+    implementation("androidx.compose.ui:ui:1.5.1")
+*/
 
     //noinspection GradleCompatible
     testImplementation 'junit:junit:4.13.2'

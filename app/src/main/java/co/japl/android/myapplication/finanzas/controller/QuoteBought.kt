@@ -18,6 +18,7 @@ import co.japl.android.myapplication.bussiness.DTO.CreditCardBoughtDTO
 import co.japl.android.myapplication.bussiness.DTO.CreditCardDTO
 import co.japl.android.myapplication.bussiness.impl.*
 import co.japl.android.myapplication.bussiness.interfaces.*
+import co.japl.android.myapplication.finanzas.bussiness.DTO.TagsQuoteCreditCardDTO
 import co.japl.android.myapplication.finanzas.bussiness.impl.BuyCreditCardSettingImpl
 import co.japl.android.myapplication.finanzas.bussiness.interfaces.IBuyCreditCardSettingSvc
 import co.japl.android.myapplication.finanzas.bussiness.interfaces.ICreditCardSvc
@@ -27,6 +28,7 @@ import co.japl.android.myapplication.finanzas.holders.interfaces.IHolder
 import co.japl.android.myapplication.finanzas.putParams.CreditCardQuotesParams
 import dagger.hilt.android.AndroidEntryPoint
 import java.math.BigDecimal
+import java.time.LocalDate
 import java.time.LocalDateTime
 import java.util.*
 import javax.inject.Inject
@@ -41,6 +43,7 @@ class QuoteBought : Fragment(), View.OnClickListener{
     @Inject lateinit var creditCardSvc:ICreditCardSvc
     @Inject lateinit var saveSvc: IQuoteCreditCardSvc
     @Inject lateinit var buyCCSSvc: IBuyCreditCardSettingSvc
+    @Inject lateinit var tagQuoteSvc:ITagQuoteCreditCardSvc
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreateView(
@@ -54,7 +57,6 @@ class QuoteBought : Fragment(), View.OnClickListener{
         return rootView
 
     }
-
 
     @RequiresApi(Build.VERSION_CODES.O)
     private fun loadArguments() {
@@ -72,11 +74,7 @@ class QuoteBought : Fragment(), View.OnClickListener{
                 ,tax.get().kindOfTax!! )
                 holder.loadFields(dto)
             } else {
-                Toast.makeText(
-                    context,
-                    "Invalid Tax, Create One to ${now.month} ${now.year}",
-                    Toast.LENGTH_LONG
-                ).show().also {
+                Toast.makeText(context,"Invalid Tax, Create One to ${now.month} ${now.year}",Toast.LENGTH_LONG).show().also {
                     CreditCardQuotesParams.Companion.CreateQuote.toBack(findNavController())
                 }
             }
@@ -89,8 +87,6 @@ class QuoteBought : Fragment(), View.OnClickListener{
                 }
             }
         }
-
-
         }
 
         @RequiresApi(Build.VERSION_CODES.O)
@@ -112,14 +108,20 @@ class QuoteBought : Fragment(), View.OnClickListener{
                         buyCCS.codeBuyCreditCard = id.toInt()
                         buyCCSSvc.save(buyCCS)
                     }
-                    Toast.makeText(this.context, "Registro Guardado", Toast.LENGTH_LONG).show().also {
+                    (holder as QuoteBoughtHolder).tagDto?.takeIf { it.id > 0 }?.let{tagDto->
+                        TagsQuoteCreditCardDTO(0, LocalDate.now(),id.toInt(),tagDto.id,false)?.let {dto->
+                            tagQuoteSvc.save(dto).takeIf { it <= 0 }
+                                ?.let {Toast.makeText(this.context,R.string.toast_tags_didnt_save,Toast.LENGTH_LONG).show()}
+                        }
+                    }
+                    Toast.makeText(this.context, R.string.toast_successful_insert, Toast.LENGTH_LONG).show().also {
                         CreditCardQuotesParams.Companion.CreateQuote.toBack(findNavController())
                     }
                 }else{
-                    Toast.makeText(this.context,"Registro no Guardado",Toast.LENGTH_LONG).show()
+                    Toast.makeText(this.context,R.string.toast_record_didnt_save,Toast.LENGTH_LONG).show()
                 }
             }else{
-                Toast.makeText(this.context,"Hay campos que no estan llenos correctamente",Toast.LENGTH_SHORT).show()
+                Toast.makeText(this.context,R.string.toast_there_are_fields_isnt_fill_out,Toast.LENGTH_SHORT).show()
             }
         }
 
