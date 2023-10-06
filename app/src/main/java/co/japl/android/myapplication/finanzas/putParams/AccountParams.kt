@@ -18,6 +18,10 @@ class AccountParams {
             navController.navigate(R.id.action_accountFragment_to_inputListFragment,parameters)
         }
 
+        fun newInstance(navController: NavController){
+            navController.navigate(R.id.action_menu_item_paids_to_accountFragment)
+        }
+
         fun download(parameter:Bundle):Int= parameter.getInt(PARAMS.PARAM_ID_ACCOUNT)
 
         fun toBack(navController: NavController)= navController.popBackStack()

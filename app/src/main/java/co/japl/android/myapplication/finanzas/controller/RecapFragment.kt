@@ -64,7 +64,7 @@ class RecapFragment @Inject constructor() : Fragment() , LoaderManager.LoaderCal
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        loaderManager.initLoader(1,null,this)
+        LoaderManager.getInstance(this).initLoader(1,null,this)
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -143,9 +143,9 @@ class RecapFragment @Inject constructor() : Fragment() , LoaderManager.LoaderCal
             progressBar.visibility = View.GONE
 
             it.graph?.let {draw->
-                totalQuoteTC.takeIf { it > BigDecimal.ZERO }?.let{draw.addPiece(view?.resources?.getString(R.string.total_quote_credit_card)!!,it.toDouble(),Color.RED)}
-                totalQuoteCredit.takeIf { it > BigDecimal.ZERO }?.let{draw.addPiece(view?.resources?.getString(R.string.total_credits)!!,it.toDouble(),Color.BLUE)}
-                totalPaid.takeIf { it > BigDecimal.ZERO }?.let{draw.addPiece(view?.resources?.getString(R.string.total_paids)!!,it.toDouble(),Color.DKGRAY)}
+                totalQuoteTC.takeIf { it > BigDecimal.ZERO }?.let{draw.addPiece(view?.resources?.getString(R.string.total_quote_credit_card)!!,it.toDouble())}
+                totalQuoteCredit.takeIf { it > BigDecimal.ZERO }?.let{draw.addPiece(view?.resources?.getString(R.string.total_credits)!!,it.toDouble())}
+                totalPaid.takeIf { it > BigDecimal.ZERO }?.let{draw.addPiece(view?.resources?.getString(R.string.total_paids)!!,it.toDouble())}
                 draw.invalidate()
             }
         }

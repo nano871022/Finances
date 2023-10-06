@@ -401,4 +401,13 @@
     <string name="str_graph_qcc_some_month">>1 Cuota </string>
     <string name="str_graph_qcc_one_month_recurrent"> Recurrente 1 Cuota</string>
     <string name="str_graph_qcc_some_month_recurrent">Recurrente >1 Cuota</string>
+
+    <string name="title_creditcard_doesnt_create_yet">Tarjeta de Crédito no está creada</string>
+    <string name="message_creditcard_doesnt_create_yet">Para usar este modulo es necesario crear una tarjeta de crédito, desea crear una?</string>
+    <string name="title_tax_doesnt_create_yet">Tasa de interes no está creada para el periodo actual</string>
+    <string name="message_tax_doesnt_create_yet">Para este periodo es necesario agregar una tasa de interes para la tarjeta de crédito actual, desea crear una?</string>
+    <string name="title_account_doesnt_create_yet">No hay una Cuenta bancaria creada</string>
+    <string name="message_account_doesnt_create_yet">Para utilizar este modulo es necesario crear una cuenta bancaria de referencia, desea crear una?</string>
+
+    <string name="go">Ir</string>
 </resources>

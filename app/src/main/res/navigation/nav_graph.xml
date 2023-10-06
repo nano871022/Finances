@@ -36,6 +36,12 @@
             android:id="@+id/action_item_menu_side_boughtmade_to_boughWalletController"
             app:destination="@id/boughWalletController"
             app:popUpToInclusive="true"/>
+        <action
+            android:id="@+id/action_item_menu_side_boughtmade_to_createCreditCard"
+            app:destination="@id/createCreditCard" />
+        <action
+            android:id="@+id/action_item_menu_side_boughtmade_to_taxes"
+            app:destination="@id/taxes" />
     </fragment>
     <fragment
         android:id="@+id/item_menu_side_quoteCredit"
@@ -343,6 +349,9 @@
         <action
             android:id="@+id/action_menu_item_paids_to_periodsPaidFragment"
             app:destination="@id/periodsPaidFragment" />
+        <action
+            android:id="@+id/action_menu_item_paids_to_accountFragment"
+            app:destination="@id/accountFragment" />
     </fragment>
     <fragment
         android:id="@+id/paidListFragment"

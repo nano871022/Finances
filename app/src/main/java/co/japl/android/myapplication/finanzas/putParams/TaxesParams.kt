@@ -23,6 +23,9 @@ class TaxesParams() {
             navController.navigate(R.id.action_item_menu_setting_taxes_to_taxes,parameters)
         }
 
+        fun newInstanceFromQCC(navController:NavController) {
+            navController.navigate(R.id.action_item_menu_side_boughtmade_to_taxes)
+        }
         fun newInstance(navController:NavController) {
             navController.navigate(R.id.action_item_menu_setting_taxes_to_taxes)
         }

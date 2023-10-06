@@ -28,6 +28,10 @@ class CreditCardParams(var parentFragmentManagers: FragmentManager) {
             navController.navigate(R.id.action_listCreditCard_to_createCreditCard)
         }
 
+        fun newInstanceFromQuote(navController:NavController) {
+            navController.navigate(R.id.action_item_menu_side_boughtmade_to_createCreditCard)
+        }
+
         @RequiresApi(Build.VERSION_CODES.N)
         fun download(argument:Bundle):Optional<String>{
             argument.let {

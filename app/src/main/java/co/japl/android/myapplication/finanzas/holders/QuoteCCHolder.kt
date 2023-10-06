@@ -220,15 +220,18 @@ class QuoteCCHolder(var view:View,var parentFragmentManager:FragmentManager,var 
     fun cleanPiecePie(){
         canvas?.let { it.clear() }
     }
-    fun loadPiecePie(name:String,value:Double,color:Int){
+    fun loadPiecePie(name:String,value:Double){
+
+
         canvas?.let{
             with(it) {
-                addPiece(name,value,color)
+                addPiece(name,value)
                 postInvalidate()
             }
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.N)
     override fun downLoadFields(): CreditCard {
         return CreditCard()
 1    }

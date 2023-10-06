@@ -1,6 +1,7 @@
 package co.japl.android.myapplication.finanzas.holders
 
 import android.os.Build
+import android.util.Log
 import android.view.View
 import android.widget.ProgressBar
 import android.widget.TextView
@@ -22,6 +23,8 @@ import com.google.android.material.button.MaterialButton
 import com.google.android.material.textview.MaterialTextView
 import java.math.BigDecimal
 import java.time.LocalDate
+import java.time.YearMonth
+import java.time.format.DateTimeFormatter
 import java.time.format.TextStyle
 import java.util.Locale
 
@@ -72,10 +75,8 @@ class PaidsHolder(val view:View): IHolder<PaidsPOJO> {
             }
         }
 
-        val periodStr = values.period.toString()
-        val year = periodStr.substring(0,4).toString()
-        val month = periodStr.substring(5).toString()
-        val date = LocalDate.of(year.toInt(),month.toInt(),1)
+        val periods = YearMonth.parse(values.period.toString(), DateTimeFormatter.ofPattern("yyyyMM"))
+        val date =  LocalDate.of(periods.year,periods.month,1)
         period.text = "${date.getMonth().getDisplayName(TextStyle.FULL,Locale("es","CO"))} ${date.year}"
         paid.text = NumbersUtil.toString(values.paid)
         count.text = values.count.toString()
