@@ -12,6 +12,7 @@ import co.japl.android.myapplication.bussiness.DB.connections.ConnectDB
 import co.japl.android.myapplication.bussiness.interfaces.SaveSvc
 import co.japl.android.myapplication.finanzas.bussiness.DTO.CreditDTO
 import co.japl.android.myapplication.finanzas.bussiness.impl.CreditFixImpl
+import co.japl.android.myapplication.finanzas.holders.interfaces.ICallerHolder
 import co.japl.android.myapplication.utils.DateUtils
 import co.japl.android.myapplication.utils.NumbersUtil
 import com.google.android.material.button.MaterialButton
@@ -19,7 +20,7 @@ import com.google.android.material.textview.MaterialTextView
 import java.math.BigDecimal
 import java.time.LocalDate
 
-class CreditFixListHolder(val view:View){
+class CreditFixListHolder(val view:View) : ICallerHolder<CreditFixListHolder>{
     lateinit var creditSvc :SaveSvc<CreditDTO>
     lateinit var date:TextView
     lateinit var quote:TextView
@@ -31,6 +32,7 @@ class CreditFixListHolder(val view:View){
     lateinit var period:MaterialButton
     lateinit var add:MaterialButton
     lateinit var progressBar:ProgressBar
+    lateinit var canvas: CustomDraw
 
     fun loadField(){
         creditSvc = CreditFixImpl(ConnectDB(view.context))
@@ -44,6 +46,7 @@ class CreditFixListHolder(val view:View){
         period = view.findViewById(R.id.btn_periods_cfl)
         add = view.findViewById(R.id.btn_add_cfl)
         progressBar = view.findViewById(R.id.pb_load_cfl)
+        canvas = view.findViewById(R.id.cv_canvas_cfl)
 
         detail.visibility = View.GONE
         period.visibility = View.GONE
@@ -67,5 +70,9 @@ class CreditFixListHolder(val view:View){
             period.visibility = View.VISIBLE
         }
         progressBar.visibility = View.GONE
+    }
+
+    override fun execute(fn: ((CreditFixListHolder) -> Unit)?) {
+        fn?.invoke(this)
     }
 }

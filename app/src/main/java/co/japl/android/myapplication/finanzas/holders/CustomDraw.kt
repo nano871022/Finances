@@ -34,8 +34,8 @@ class CustomDraw constructor (context:Context, attributeSet: AttributeSet):View(
     val fontSize = 14
     val posX = (resources.displayMetrics.density * fontSize).toInt()
     val posY = (resources.displayMetrics.density * 40).toInt()
-    var withSize = (resources.displayMetrics.density * minSize / 2).toInt()
-    var heightSize = (resources.displayMetrics.density * minSize / 2).toInt()
+    var withSize = if(minSize < 1500 && resources.displayMetrics.density > 3.0){((minSize/1.8)).toInt()}else if(minSize > 1500 && resources.displayMetrics.density > 2.0){((minSize/resources.displayMetrics.density) ).toInt()}else if (minSize > 1000 && resources.displayMetrics.density <= 2.0){((minSize / resources.displayMetrics.density ) / 1.2).toInt()}else{((resources.displayMetrics.density * minSize) / 2).toInt()}
+    var heightSize = if(minSize < 1500 && resources.displayMetrics.density > 3.0){((minSize/1.8)).toInt()}else if(minSize > 1500 && resources.displayMetrics.density > 2.0){((minSize/resources.displayMetrics.density) ).toInt()}else if (minSize > 1000 && resources.displayMetrics.density <= 2.0){((minSize / resources.displayMetrics.density ) / 1.2).toInt()}else{((resources.displayMetrics.density * minSize) / 2).toInt()}
     val reduce = (resources.displayMetrics.density * 20)
     var lastYTitle = ((resources.displayMetrics.density * fontSize )+ 20)
     val posXTitle = posX + withSize + 5f
@@ -62,7 +62,7 @@ class CustomDraw constructor (context:Context, attributeSet: AttributeSet):View(
         contentDescription = "customdraw"
 
         ShapeDrawable(OvalShape()).apply {
-            Log.d(javaClass.name,"withSize: $withSize, heightSize: $heightSize")
+            Log.d(javaClass.name,"withSize: $withSize, heightSize: $heightSize Density ${resources.displayMetrics.density } W:${resources.displayMetrics.widthPixels } H:${resources.displayMetrics.heightPixels }")
             paint.color = context.resources.getColor(R.color.green_background)
             setBounds(posX,posY,posX +withSize, posY + heightSize)
         }
@@ -88,10 +88,8 @@ class CustomDraw constructor (context:Context, attributeSet: AttributeSet):View(
            if(lastTouchX > 0 && lastTouchX < 200 && lastTouchY > 0 && lastTouchY < 200){
                val paint = getPaint(Color.RED)
                val pix = bitMap.getColor(lastTouchX.toInt(),lastTouchY.toInt())
-               canvas.drawText("Touch $pix",lastTouchX,lastTouchY,paint)
-
+               //canvas.drawText("Touch $pix",lastTouchX,lastTouchY,paint)
            }
-
     }
 
     private fun getPaint(color:Int):Paint{
@@ -122,14 +120,37 @@ class CustomDraw constructor (context:Context, attributeSet: AttributeSet):View(
     fun addPiece(title:String, value:Double){
         val color = getColor()
         val piecePie = PiecePie(color,title,value)
-        draws.add(piecePie)
+        if(draws.filter { it.title == title }.isEmpty()){
+            draws.add(piecePie)
+        }
     }
 
     private fun drawTitle(title:String,value:Double,paint:Paint,canvas:Canvas,color:Int){
-        canvas.drawRect(posXTitle ,lastYTitle+incrementYTitle,posXTitle + 10,lastYTitle + 10,paint)
-        canvas.drawText("$title $ ${NumbersUtil.toString(value)}",posXTitle+15,lastYTitle+incrementYTitle,getPaint(color))
-        //canvas.drawText(NumbersUtil.toString(value),posXTitle + incrementYTitle,lastYTitle+(2*incrementYTitle),paint)
-        lastYTitle += (1*incrementYTitle)
+        canvas.drawRect(
+            posXTitle,
+            lastYTitle + incrementYTitle,
+            posXTitle + 30,
+            lastYTitle + 10,
+            paint
+        )
+        if(resources.displayMetrics.widthPixels < 3000 && resources.displayMetrics.density > 2.0){
+            canvas.drawText(
+                title,
+                posXTitle + 40,
+                lastYTitle + incrementYTitle,
+                getPaint(color)
+            )
+            canvas.drawText("$ ${NumbersUtil.toString(value)}",posXTitle + incrementYTitle,lastYTitle+(2*incrementYTitle),getPaint(color))
+            lastYTitle += (2 * incrementYTitle)
+        }else {
+            canvas.drawText(
+                "$title $ ${NumbersUtil.toString(value)}",
+                posXTitle + 40,
+                lastYTitle + incrementYTitle,
+                getPaint(color)
+            )
+            lastYTitle += (1 * incrementYTitle)
+        }
     }
 
     private fun drawTotal(title:String,value:Double,paint:Paint,canvas:Canvas){

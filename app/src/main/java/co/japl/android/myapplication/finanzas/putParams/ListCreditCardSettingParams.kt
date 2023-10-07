@@ -5,9 +5,7 @@ import android.util.Log
 import androidx.core.os.bundleOf
 import androidx.navigation.NavController
 import co.japl.android.myapplication.R
-import co.japl.android.myapplication.controller.Taxes
 import co.japl.android.myapplication.putParams.CreditCardSettingParams.Params.ARG_CODE_CREDIT_CARD
-import co.japl.android.myapplication.putParams.CreditCardSettingParams.Params.ARG_ID
 
 class ListCreditCardSettingParams() {
     object Params {

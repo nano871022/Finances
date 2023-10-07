@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_margin="@dimen/margin_border_layout"
-    tools:context="controller.ListQuotesPaid">
+    tools:context=".finanzas.controller.boughtcreditcard.ListQuotesPaid">
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"

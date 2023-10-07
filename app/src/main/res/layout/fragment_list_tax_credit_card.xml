@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_margin="@dimen/margin_border_layout"
-    tools:context=".controller.ListTaxCreditCard">
+    tools:context=".finanzas.controller.taxes.ListTaxCreditCard">
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">

@@ -14,8 +14,8 @@ android {
         applicationId "co.japl.android.myapplication"
         minSdk 21
         targetSdk 33
-        versionCode 4_05_03_039
-        versionName "Fix error with dates in quote credit card and update values in background insted focus off"
+        versionCode 4_05_03_040
+        versionName "Ajuste errores en pantalla de ingreso de creditos con la visualizacion de los campos, ademas se realiza ajuste del grafico para que se adapte un poco a la pantallas, agregago el grafico a creditos, arreglo error en pagos."
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }

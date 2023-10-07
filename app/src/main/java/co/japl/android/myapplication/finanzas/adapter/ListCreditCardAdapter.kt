@@ -3,14 +3,11 @@ package co.japl.android.myapplication.adapter
 import android.app.AlertDialog
 import android.content.DialogInterface
 import android.os.Build
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.RequiresApi
-import androidx.core.os.bundleOf
 import androidx.fragment.app.FragmentManager
-import androidx.fragment.app.FragmentTransaction
 import androidx.navigation.NavController
 import androidx.recyclerview.widget.RecyclerView
 import co.japl.android.myapplication.R
@@ -19,12 +16,10 @@ import co.japl.android.myapplication.bussiness.DTO.CreditCardDTO
 import co.japl.android.myapplication.bussiness.DTO.CreditCardSettingDTO
 import co.japl.android.myapplication.bussiness.impl.CreditCardImpl
 import co.japl.android.myapplication.bussiness.interfaces.SaveSvc
-import co.japl.android.myapplication.controller.CreateCreditCard
 import co.japl.android.myapplication.finanzas.bussiness.impl.CreditCardSettingImpl
 import co.japl.android.myapplication.finanzas.enums.MoreOptionsItemsListCreditCard
 import co.japl.android.myapplication.holders.ListCreditCardItemHolder
 import co.japl.android.myapplication.putParams.CreditCardParams
-import co.japl.android.myapplication.utils.NumbersUtil
 import com.google.android.material.snackbar.Snackbar
 
 class ListCreditCardAdapter(var data:MutableList<CreditCardDTO>,var parentFragmentManager:FragmentManager,var navController: NavController) : RecyclerView.Adapter<ListCreditCardItemHolder>() ,DialogInterface.OnClickListener{

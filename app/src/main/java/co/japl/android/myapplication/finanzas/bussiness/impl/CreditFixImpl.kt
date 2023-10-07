@@ -4,17 +4,16 @@ import android.content.ContentValues
 import android.database.sqlite.SQLiteOpenHelper
 import android.os.Build
 import android.provider.BaseColumns
-import android.util.Log
 import androidx.annotation.RequiresApi
-import co.japl.android.myapplication.bussiness.DTO.CreditCardBoughtDB
 import co.japl.android.myapplication.bussiness.impl.QuoteCredit
-import co.japl.android.myapplication.bussiness.interfaces.SaveSvc
 import co.japl.android.myapplication.finanzas.bussiness.DTO.*
 import co.japl.android.myapplication.finanzas.bussiness.interfaces.IAdditionalCreditSvc
 import co.japl.android.myapplication.finanzas.bussiness.interfaces.ICreditFix
 import co.japl.android.myapplication.finanzas.bussiness.interfaces.IGracePeriod
+import co.japl.android.myapplication.finanzas.bussiness.interfaces.IGraph
 import co.japl.android.myapplication.finanzas.bussiness.interfaces.ISaveSvc
 import co.japl.android.myapplication.finanzas.bussiness.mapping.CreditMap
+import co.japl.android.myapplication.finanzas.bussiness.response.GraphValuesResp
 import co.japl.android.myapplication.finanzas.enums.KindOfTaxEnum
 import co.japl.android.myapplication.utils.DatabaseConstants
 import co.japl.android.myapplication.utils.DateUtils
@@ -25,7 +24,7 @@ import java.time.temporal.ChronoUnit
 import java.util.*
 import javax.inject.Inject
 
-class CreditFixImpl @Inject constructor(override var dbConnect: SQLiteOpenHelper) :ICreditFix{
+class CreditFixImpl @Inject constructor(override var dbConnect: SQLiteOpenHelper) :ICreditFix, IGraph{
     private val additionalSvc:IAdditionalCreditSvc = AdditionalCreditImpl(dbConnect)
     private val gracePeriodSvc:IGracePeriod = GracePeriodImpl(dbConnect)
     private val calcTaxSvc = KindOfTaxImpl()
@@ -178,10 +177,13 @@ class CreditFixImpl @Inject constructor(override var dbConnect: SQLiteOpenHelper
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun getQuoteAll(date: LocalDate): BigDecimal {
-        return get(getCredit(date)).filter {
-            !gracePeriodSvc.get(it.id,LocalDate.now()).isPresent
-        }.map { it.quoteValue + getAdditional(it.id.toLong()) }
-            .reduceOrNull{ acc, bigDecimal->acc+bigDecimal} ?: BigDecimal.ZERO
+        val list = getAll()
+            .filter { date < it.date.plusMonths(it.periods.toLong()) }
+            .filter{!gracePeriodSvc.get(it.id,date).isPresent}.toMutableList()
+        val additionals = list.map { additionalSvc.get(it.id.toLong()) }.flatMap { it.toList() }
+        return list.sumOf{ map->
+            additionals.filter { it.creditCode == map.id.toLong()  }.sumOf { it.value } + map.quoteValue
+        }
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -256,6 +258,18 @@ class CreditFixImpl @Inject constructor(override var dbConnect: SQLiteOpenHelper
 
         val quote =  list.sumOf { it.quoteValue }
         return quote + (additionals ?: BigDecimal.ZERO)
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    override fun getValues(date:LocalDate): List<GraphValuesResp> {
+        val list = getAll()
+            .filter { date < it.date.plusMonths(it.periods.toLong()) }
+            .filter{!gracePeriodSvc.get(it.id,date).isPresent}.toMutableList()
+        val additionals = list.map { additionalSvc.get(it.id.toLong()) }.flatMap { it.toList() }
+        return list.map { map->
+           val value =  additionals.filter { it.creditCode == map.id.toLong()  }.sumOf { it.value } + map.quoteValue
+           GraphValuesResp(map.id.toLong(),map.name, value.toDouble())
+        }
     }
 
 

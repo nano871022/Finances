@@ -8,7 +8,7 @@
     android:elevation="@dimen/card_elevator"
     app:strokeWidth="@dimen/stroke_with"
     android:layout_margin="@dimen/space_min"
-    tools:context=".finanzas.controller.ProjectionFragment">
+    tools:context=".finanzas.controller.projections.ProjectionFragment">
 
     <ScrollView
         android:layout_width="match_parent"

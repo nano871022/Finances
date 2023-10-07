@@ -50,6 +50,10 @@ class TagQuoteCreditCardImpl @Inject constructor(override var dbConnect: SQLiteO
     override fun save(dto: TagsQuoteCreditCardDTO): Long {
         val values = TagQuoteCreditCardMap().mapping(dto)
         val db = dbConnect.writableDatabase
+        if(dto.id > 0){
+            return db.update(TagsQuoteCreditCardDB.Entry.TABLE_NAME,values,"${BaseColumns._ID}=?",
+                arrayOf(dto.id.toString())).toLong()
+        }
         return db.insert(TagsQuoteCreditCardDB.Entry.TABLE_NAME, null, values)
     }
 
@@ -88,7 +92,7 @@ class TagQuoteCreditCardImpl @Inject constructor(override var dbConnect: SQLiteO
         val cursor = db.query(
             TagsQuoteCreditCardDB.Entry.TABLE_NAME,
             COLUMNS,
-            "${BaseColumns._ID} = ?",
+            "${TagsQuoteCreditCardDB.Entry.COLUMN_CODE_QUOTE_CREDIT_CARD} = ?",
             arrayOf(id.toString()),
             null,
             null,

@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="@dimen/margin_border_layout"
-    tools:context=".controller.ListCreditCard">
+    tools:context=".finanzas.controller.creditcard.ListCreditCard">
 
     <ScrollView
         android:layout_width="match_parent"

@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
-    tools:context=".finanzas.controller.CreditListFragment">
+    tools:context=".finanzas.controller.creditfix.CreditListFragment">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -162,6 +162,10 @@
                     app:icon="@android:drawable/ic_menu_add"
                     android:text="@string/add"/>
 
+                <co.japl.android.myapplication.finanzas.holders.CustomDraw
+                    android:id="@+id/cv_canvas_cfl"
+                    android:layout_width="match_parent"
+                    android:layout_height="400dp"/>
 
             </LinearLayout>
 

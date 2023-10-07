@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_margin="@dimen/margin_border_layout"
-    tools:context="controller.ListSave">
+    tools:context=".finanzas.controller.simulators.ListSave">
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"

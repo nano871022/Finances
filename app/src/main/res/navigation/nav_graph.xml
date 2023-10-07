@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/item_menu_side_boughtmade"
-        android:name="co.japl.android.myapplication.controller.ListCreditCardQuote"
+        android:name="co.japl.android.myapplication.finanzas.controller.boughtcreditcard.ListCreditCardQuote"
         android:label="@string/bought_made"
         tools:layout="@layout/list_credit_card_quote">
 
@@ -45,7 +45,7 @@
     </fragment>
     <fragment
         android:id="@+id/item_menu_side_quoteCredit"
-        android:name="co.japl.android.myapplication.controller.QuoteCredit"
+        android:name="co.japl.android.myapplication.finanzas.controller.simulators.fix.QuoteCredit"
         android:label="@string/quote_credit"
         tools:layout="@layout/quote_credit">
         <action
@@ -59,7 +59,7 @@
 
     <fragment
         android:id="@+id/item_menu_side_quoteCreditVariable"
-        android:name="co.japl.android.myapplication.controller.QuoteCreditVariable"
+        android:name="co.japl.android.myapplication.finanzas.controller.simulators.variable.QuoteCreditVariable"
         android:label="@string/quote_credit_variable"
         tools:layout="@layout/quote_credit_variable">
 
@@ -77,7 +77,7 @@
 
     <fragment
         android:id="@+id/list_bought"
-        android:name="co.japl.android.myapplication.controller.ListBought"
+        android:name="co.japl.android.myapplication.finanzas.controller.boughtcreditcard.ListBought"
         android:label="@string/list_save"
         tools:layout="@layout/fragment_list_bought">
         <action
@@ -96,7 +96,7 @@
 
     <fragment
         android:id="@+id/list_periods"
-        android:name="co.japl.android.myapplication.controller.ListQuotesPaid"
+        android:name="co.japl.android.myapplication.finanzas.controller.boughtcreditcard.ListQuotesPaid"
         android:label="@string/list_periods"
         tools:layout="@layout/fragment_list_periods">
 
@@ -108,20 +108,20 @@
 
     <fragment
         android:id="@+id/quoteCreditSave"
-        android:name="co.japl.android.myapplication.controller.QuoteCreditSave"
+        android:name="co.japl.android.myapplication.finanzas.controller.simulators.fix.QuoteCreditSave"
         android:label="@string/quote_credit_save"
         tools:layout="@layout/quote_credit_save"/>
 
     <fragment
         android:id="@+id/quoteCreditSaveVariable"
-        android:name="co.japl.android.myapplication.controller.QuoteCreditSaveVariable"
+        android:name="co.japl.android.myapplication.finanzas.controller.simulators.variable.QuoteCreditSaveVariable"
         android:label="@string/quote_credit_save_variable"
         tools:layout="@layout/quote_credit_save_variable"/>
 
 
     <fragment
         android:id="@+id/item_menu_side_listsave"
-        android:name="co.japl.android.myapplication.controller.ListSave"
+        android:name="co.japl.android.myapplication.finanzas.controller.simulators.ListSave"
         android:label="@string/list_save"
         tools:layout="@layout/fragment_list_save" >
         <action
@@ -131,7 +131,7 @@
 
     <fragment
         android:id="@+id/buy_credit_card"
-        android:name="co.japl.android.myapplication.controller.QuoteBought"
+        android:name="co.japl.android.myapplication.finanzas.controller.boughtcreditcard.QuoteBought"
         android:label="@string/add_buy"
         tools:layout="@layout/buys_credit_card" />
 
@@ -142,7 +142,7 @@
         tools:layout="@layout/fragment_about_it" />
     <fragment
         android:id="@+id/item_menu_setting_credit_card"
-        android:name="co.japl.android.myapplication.controller.ListCreditCard"
+        android:name="co.japl.android.myapplication.finanzas.controller.creditcard.ListCreditCard"
         android:label="@string/credit_cards"
         tools:layout="@layout/fragment_list_credit_card" >
         <action
@@ -154,7 +154,7 @@
     </fragment>
     <fragment
         android:id="@+id/createCreditCard"
-        android:name="co.japl.android.myapplication.controller.CreateCreditCard"
+        android:name="co.japl.android.myapplication.finanzas.controller.creditcard.CreateCreditCard"
         android:label="@string/create_credit_card"
         tools:layout="@layout/fragment_create_credit_card" >
         <action
@@ -165,7 +165,7 @@
 
     <fragment
         android:id="@+id/item_menu_setting_taxes"
-        android:name="co.japl.android.myapplication.controller.ListTaxCreditCard"
+        android:name="co.japl.android.myapplication.finanzas.controller.taxes.ListTaxCreditCard"
         android:label="@string/taxs_credit_card"
         tools:layout="@layout/fragment_list_tax_credit_card" >
         <action
@@ -177,12 +177,12 @@
     </fragment>
     <fragment
         android:id="@+id/taxes"
-        android:name="co.japl.android.myapplication.controller.Taxes"
+        android:name="co.japl.android.myapplication.finanzas.controller.taxes.Taxes"
         android:label="@string/tax"
         tools:layout="@layout/fragment_taxes" />
     <fragment
         android:id="@+id/cash_advance_fragment"
-        android:name="co.japl.android.myapplication.finanzas.controller.CashAdvanceSave"
+        android:name="co.japl.android.myapplication.finanzas.controller.boughtcreditcard.CashAdvanceSave"
         android:label="@string/cash_advance"
         tools:layout="@layout/cash_advance_credit_card" />
 
@@ -194,13 +194,13 @@
         tools:layout="@layout/fragment_g_drive_connect" />
     <fragment
         android:id="@+id/creditCardSettingFragment"
-        android:name="co.japl.android.myapplication.finanzas.controller.CreditCardSettingFragment"
+        android:name="co.japl.android.myapplication.finanzas.controller.creditcard.CreditCardSettingFragment"
         android:label="@string/title_toolbar_fragment_credit_card_setting"
         tools:layout="@layout/fragment_credit_card_setting" />
 
     <fragment
         android:id="@+id/listCreditCardSetting"
-        android:name="co.japl.android.myapplication.controller.ListCreditCardSetting"
+        android:name="co.japl.android.myapplication.finanzas.controller.creditcard.ListCreditCardSetting"
         android:label="@string/title_toolbar_fragment_list_credit_card_setting"
         tools:layout="@layout/fragment_list_credit_card_setting" >
         <action
@@ -210,7 +210,7 @@
     </fragment>
     <fragment
         android:id="@+id/boughWalletController"
-        android:name="co.japl.android.myapplication.finanzas.controller.BoughWalletController"
+        android:name="co.japl.android.myapplication.finanzas.controller.boughtcreditcard.BoughWalletController"
         android:label="@string/bough_wallet"
         tools:layout="@layout/buy_wallet_credit_card"/>
     <fragment
@@ -224,12 +224,12 @@
     </fragment>
     <fragment
         android:id="@+id/additionalCreditFragment"
-        android:name="co.japl.android.myapplication.finanzas.controller.AdditionalCreditFragment"
+        android:name="co.japl.android.myapplication.finanzas.controller.creditfix.AdditionalCreditFragment"
         android:label="@string/aditional"
         tools:layout="@layout/fragment_additional_credit" />
     <fragment
         android:id="@+id/additionalListFragment"
-        android:name="co.japl.android.myapplication.finanzas.controller.AdditionalListFragment"
+        android:name="co.japl.android.myapplication.finanzas.controller.creditfix.AdditionalListFragment"
         android:label="@string/additional_list"
         tools:layout="@layout/fragment_additional_list" >
         <action
@@ -238,7 +238,7 @@
     </fragment>
     <fragment
         android:id="@+id/creditFixFragment"
-        android:name="co.japl.android.myapplication.finanzas.controller.CreditFixFragment"
+        android:name="co.japl.android.myapplication.finanzas.controller.creditfix.CreditFixFragment"
         android:label="@string/credit_fix"
         tools:layout="@layout/fragment_credit_fix" >
         <action
@@ -262,7 +262,7 @@
     </fragment>
     <fragment
         android:id="@+id/creditListFragment"
-        android:name="co.japl.android.myapplication.finanzas.controller.CreditListFragment"
+        android:name="co.japl.android.myapplication.finanzas.controller.creditfix.CreditListFragment"
         android:label="@string/credit_list"
         tools:layout="@layout/fragment_credit_list" >
         <action
@@ -277,7 +277,7 @@
     </fragment>
     <fragment
         android:id="@+id/monthlyCreditListFragment"
-        android:name="co.japl.android.myapplication.finanzas.controller.MonthlyCreditListFragment"
+        android:name="co.japl.android.myapplication.finanzas.controller.creditfix.MonthlyCreditListFragment"
         android:label="@string/credit_list"
         tools:layout="@layout/fragment_monthly_credit_list" >
         <action
@@ -289,7 +289,7 @@
     </fragment>
     <fragment
         android:id="@+id/periodCreditListFragment"
-        android:name="co.japl.android.myapplication.finanzas.controller.PeriodCreditListFragment"
+        android:name="co.japl.android.myapplication.finanzas.controller.creditfix.PeriodCreditListFragment"
         android:label="@string/list_periods"
         tools:layout="@layout/fragment_period_credit_list" >
         <action
@@ -298,7 +298,7 @@
     </fragment>
     <fragment
         android:id="@+id/item_menu_setting_account"
-        android:name="co.japl.android.myapplication.finanzas.controller.AccountListFragment"
+        android:name="co.japl.android.myapplication.finanzas.controller.account.AccountListFragment"
         android:label="@string/list_account"
         tools:layout="@layout/fragment_account_list" >
         <action
@@ -308,7 +308,7 @@
 
     <fragment
         android:id="@+id/inputListFragment"
-        android:name="co.japl.android.myapplication.finanzas.controller.InputListFragment"
+        android:name="co.japl.android.myapplication.finanzas.controller.account.InputListFragment"
         android:label="@string/list_inputs"
         tools:layout="@layout/fragment_account_list" >
         <action
@@ -318,7 +318,7 @@
 
     <fragment
         android:id="@+id/accountFragment"
-        android:name="co.japl.android.myapplication.finanzas.controller.AccountFragment"
+        android:name="co.japl.android.myapplication.finanzas.controller.account.AccountFragment"
         android:label="@string/account"
         tools:layout="@layout/fragment_account" >
         <action
@@ -327,17 +327,17 @@
     </fragment>
     <fragment
         android:id="@+id/inputFragment"
-        android:name="co.japl.android.myapplication.finanzas.controller.InputFragment"
+        android:name="co.japl.android.myapplication.finanzas.controller.account.InputFragment"
         android:label="@string/input"
         tools:layout="@layout/fragment_input" />
     <fragment
         android:id="@+id/paidFragment"
-        android:name="co.japl.android.myapplication.finanzas.controller.PaidFragment"
+        android:name="co.japl.android.myapplication.finanzas.controller.paids.PaidFragment"
         android:label="@string/paid"
         tools:layout="@layout/fragment_paid" />
     <fragment
         android:id="@+id/menu_item_paids"
-        android:name="co.japl.android.myapplication.finanzas.controller.PaidsFragment"
+        android:name="co.japl.android.myapplication.finanzas.controller.paids.PaidsFragment"
         android:label="@string/paids"
         tools:layout="@layout/fragment_paids" >
         <action
@@ -355,12 +355,12 @@
     </fragment>
     <fragment
         android:id="@+id/paidListFragment"
-        android:name="co.japl.android.myapplication.finanzas.controller.PaidListFragment"
+        android:name="co.japl.android.myapplication.finanzas.controller.paids.PaidListFragment"
         android:label="@string/list_paid"
         tools:layout="@layout/fragment_paid_list" />
     <fragment
         android:id="@+id/periodsPaidFragment"
-        android:name="co.japl.android.myapplication.finanzas.controller.PeriodsPaidFragment"
+        android:name="co.japl.android.myapplication.finanzas.controller.paids.PeriodsPaidFragment"
         android:label="@string/periods"
         tools:layout="@layout/fragment_periods_paid" >
         <action
@@ -369,7 +369,7 @@
     </fragment>
     <fragment
         android:id="@+id/menu_projections"
-        android:name="co.japl.android.myapplication.finanzas.controller.ProjectionsFragment"
+        android:name="co.japl.android.myapplication.finanzas.controller.projections.ProjectionsFragment"
         android:label="@string/projections"
         tools:layout="@layout/fragment_projections" >
         <action
@@ -381,7 +381,7 @@
     </fragment>
     <fragment
         android:id="@+id/listProjectFragment"
-        android:name="co.japl.android.myapplication.finanzas.controller.ListProjectFragment"
+        android:name="co.japl.android.myapplication.finanzas.controller.projections.ListProjectFragment"
         android:label="@string/projections"
         tools:layout="@layout/fragment_list_projection" >
         <action
@@ -390,7 +390,7 @@
     </fragment>
     <fragment
         android:id="@+id/projectionFragment"
-        android:name="co.japl.android.myapplication.finanzas.controller.ProjectionFragment"
+        android:name="co.japl.android.myapplication.finanzas.controller.projections.ProjectionFragment"
         android:label="@string/projection"
         tools:layout="@layout/fragment_projection" />
     <fragment
@@ -400,12 +400,12 @@
         tools:layout="@layout/fragment_recap" />
     <fragment
         android:id="@+id/item_menu_setting_check_payments"
-        android:name="co.japl.android.myapplication.finanzas.controller.CheckPaymentsFragment"
+        android:name="co.japl.android.myapplication.finanzas.controller.paids.CheckPaymentsFragment"
         android:label="@string/check_payments_title"
         tools:layout="@layout/fragment_check_payments" />
     <fragment
         android:id="@+id/item_menu_setting_check_paids"
-        android:name="co.japl.android.myapplication.finanzas.controller.PeriodCheckPaymentsFragment"
+        android:name="co.japl.android.myapplication.finanzas.controller.paids.PeriodCheckPaymentsFragment"
         android:label="@string/paids"
         tools:layout="@layout/fragment_period_check_payments" />
     <fragment

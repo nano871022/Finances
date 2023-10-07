@@ -77,6 +77,7 @@ class PaidHolder(val view:View,val supportManager: FragmentManager): IHolder<Pai
                     value.removeTextChangedListener(this)
                     value.setCOPtoField()
                     value.addTextChangedListener (this)
+                    validate()
                 },1000)
 
             }

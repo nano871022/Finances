@@ -8,7 +8,7 @@
     app:cardCornerRadius="@dimen/radius_corner"
     app:cardElevation="@dimen/card_elevator"
     app:strokeWidth="@dimen/stroke_with"
-    tools:context=".finanzas.controller.AccountFragment">
+    tools:context=".finanzas.controller.account.AccountFragment">
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content">

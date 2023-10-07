@@ -5,7 +5,7 @@
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_margin="@dimen/space_min"
-    tools:context=".finanzas.controller.AdditionalListFragment">
+    tools:context=".finanzas.controller.creditfix.AdditionalListFragment">
 
 
     <ScrollView
