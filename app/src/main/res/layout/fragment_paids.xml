@@ -145,6 +145,12 @@
                     app:icon="@android:drawable/ic_menu_add" />
 
             </LinearLayout>
+
+            <co.japl.android.myapplication.finanzas.holders.CustomDraw
+                android:id="@+id/cv_canvas_ps"
+                android:layout_width="match_parent"
+                android:layout_height="400dp"/>
+
         </LinearLayout>
 
     </ScrollView>

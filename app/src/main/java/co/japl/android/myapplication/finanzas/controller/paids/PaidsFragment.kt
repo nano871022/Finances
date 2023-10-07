@@ -18,8 +18,11 @@ import co.japl.android.myapplication.finanzas.holders.interfaces.IHolder
 import co.japl.android.myapplication.finanzas.bussiness.DTO.PaidsPOJO
 import co.japl.android.myapplication.finanzas.bussiness.impl.PaidImpl
 import co.japl.android.myapplication.finanzas.bussiness.interfaces.IAccountSvc
+import co.japl.android.myapplication.finanzas.bussiness.interfaces.IGraph
 import co.japl.android.myapplication.finanzas.bussiness.interfaces.IPaidSvc
+import co.japl.android.myapplication.finanzas.bussiness.response.GraphValuesResp
 import co.japl.android.myapplication.finanzas.holders.PaidsHolder
+import co.japl.android.myapplication.finanzas.holders.interfaces.ICallerHolder
 import co.japl.android.myapplication.finanzas.putParams.AccountParams
 import co.japl.android.myapplication.finanzas.putParams.PaidsParams
 import dagger.hilt.android.AndroidEntryPoint
@@ -27,7 +30,7 @@ import java.time.LocalDate
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class PaidsFragment : Fragment(), OnClickListener ,LoaderManager.LoaderCallbacks<PaidsPOJO>{
+class PaidsFragment : Fragment(), OnClickListener ,LoaderManager.LoaderCallbacks<Pair<PaidsPOJO,List<GraphValuesResp>>>{
     private lateinit var holder: IHolder<PaidsPOJO>
     private lateinit var dialog:AlertDialog
 
@@ -71,9 +74,9 @@ class PaidsFragment : Fragment(), OnClickListener ,LoaderManager.LoaderCallbacks
         LoaderManager.getInstance(this).restartLoader(0,null,this)
     }
 
-    override fun onCreateLoader(id: Int, args: Bundle?): Loader<PaidsPOJO> {
-    return object:AsyncTaskLoader<PaidsPOJO>(requireContext()){
-        private var data:PaidsPOJO? = null
+    override fun onCreateLoader(id: Int, args: Bundle?): Loader<Pair<PaidsPOJO,List<GraphValuesResp>>> {
+    return object:AsyncTaskLoader<Pair<PaidsPOJO,List<GraphValuesResp>>>(requireContext()){
+        private var data:Pair<PaidsPOJO,List<GraphValuesResp>>? = null
         override fun onStartLoading() {
             super.onStartLoading()
             if(data != null){
@@ -83,20 +86,29 @@ class PaidsFragment : Fragment(), OnClickListener ,LoaderManager.LoaderCallbacks
             }
         }
         @RequiresApi(Build.VERSION_CODES.O)
-        override fun loadInBackground(): PaidsPOJO? {
-            data = (service as PaidImpl).getPaids(date)
+        override fun loadInBackground(): Pair<PaidsPOJO,List<GraphValuesResp>>? {
+            val paids = (service as PaidImpl).getPaids(date)
+            val graph = (service as IGraph).getValues(date)
+            data = Pair(paids,graph)
             return data
         }
 
     }
     }
 
-    override fun onLoaderReset(loader: Loader<PaidsPOJO>) {
+    override fun onLoaderReset(loader: Loader<Pair<PaidsPOJO,List<GraphValuesResp>>>) {
     }
 
-    override fun onLoadFinished(loader: Loader<PaidsPOJO>, data: PaidsPOJO?) {
+    @RequiresApi(Build.VERSION_CODES.O)
+    override fun onLoadFinished(loader: Loader<Pair<PaidsPOJO,List<GraphValuesResp>>>, data: Pair<PaidsPOJO,List<GraphValuesResp>>?) {
         data?.let{
-            holder.loadFields(it)
+            holder.loadFields(it.first)
+            (holder as ICallerHolder<PaidsHolder>).execute{holder->
+                it.second?.forEach {
+                    holder.customDraw.addPiece(it.name,it.value)
+                }
+                holder.customDraw.invalidate()
+            }
         }
     }
 

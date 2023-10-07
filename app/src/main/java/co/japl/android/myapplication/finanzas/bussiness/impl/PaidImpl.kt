@@ -8,10 +8,12 @@ import android.util.Log
 import androidx.annotation.RequiresApi
 import co.japl.android.myapplication.bussiness.interfaces.SaveSvc
 import co.japl.android.myapplication.finanzas.bussiness.DTO.*
+import co.japl.android.myapplication.finanzas.bussiness.interfaces.IGraph
 import co.japl.android.myapplication.finanzas.bussiness.interfaces.IPaidSvc
 import co.japl.android.myapplication.finanzas.bussiness.interfaces.ISaveSvc
 import co.japl.android.myapplication.finanzas.bussiness.mapping.CreditMap
 import co.japl.android.myapplication.finanzas.bussiness.mapping.PaidMap
+import co.japl.android.myapplication.finanzas.bussiness.response.GraphValuesResp
 import co.japl.android.myapplication.utils.DatabaseConstants
 import co.japl.android.myapplication.utils.DateUtils
 import java.math.BigDecimal
@@ -20,7 +22,7 @@ import java.time.Period
 import java.util.*
 import javax.inject.Inject
 
-class PaidImpl @Inject constructor(override var dbConnect: SQLiteOpenHelper) : IPaidSvc{
+class PaidImpl @Inject constructor(override var dbConnect: SQLiteOpenHelper) : IPaidSvc, IGraph{
     val COLUMNS = arrayOf(
         BaseColumns._ID,
         PaidDB.Entry.COLUMN_DATE_PAID,
@@ -209,5 +211,16 @@ class PaidImpl @Inject constructor(override var dbConnect: SQLiteOpenHelper) : I
 
     override fun restoreBackup(path: String) {
         TODO("Not yet implemented")
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    override fun getValues(date: LocalDate): List<GraphValuesResp> {
+        val list = get(getPaid(date))
+        val recurrents = getRecurrent(date)
+        val response =list.map{
+            GraphValuesResp(it.id.toLong(),it.name,it.value.toDouble())
+        }.toMutableList()
+        response.add(GraphValuesResp(0,"Recurrent",recurrents.sumOf { it.value }.toDouble()))
+        return response
     }
 }

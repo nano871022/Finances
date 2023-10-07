@@ -6,5 +6,7 @@ import androidx.annotation.ColorInt
 data class PiecePie(
     val color:Int,
     val title:String,
-    val value:Double
+    val value:Double,
+    val start:Float?= null,
+    val end:Float?= null
 )
