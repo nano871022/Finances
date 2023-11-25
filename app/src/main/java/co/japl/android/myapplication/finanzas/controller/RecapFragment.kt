@@ -3,36 +3,27 @@ package co.japl.android.myapplication.finanzas.controller
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
-import android.provider.CalendarContract.Colors
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ProgressBar
 import androidx.annotation.RequiresApi
-import androidx.constraintlayout.helper.widget.Carousel
 import androidx.loader.app.LoaderManager
 import androidx.loader.content.AsyncTaskLoader
 import androidx.loader.content.Loader
 import co.japl.android.myapplication.R
-import co.japl.android.myapplication.bussiness.DB.connections.ConnectDB
-import co.japl.android.myapplication.bussiness.DTO.CreditCardDTO
-import co.japl.android.myapplication.bussiness.impl.CreditCardImpl
-import co.japl.android.myapplication.bussiness.impl.SaveCreditCardBoughtImpl
-import co.japl.android.myapplication.bussiness.interfaces.SaveSvc
-import co.japl.android.myapplication.finanzas.bussiness.impl.CreditFixImpl
-import co.japl.android.myapplication.finanzas.bussiness.impl.InputImpl
-import co.japl.android.myapplication.finanzas.bussiness.impl.PaidImpl
-import co.japl.android.myapplication.finanzas.bussiness.impl.ProjectionsImpl
 import co.japl.android.myapplication.finanzas.bussiness.interfaces.*
 import co.japl.android.myapplication.finanzas.holders.RecapHolder
 import co.japl.android.myapplication.finanzas.holders.interfaces.IRecapHolder
 import co.japl.android.myapplication.utils.NumbersUtil
-import com.google.android.material.card.MaterialCardView
+import co.japl.finances.core.adapters.inbound.interfaces.recap.ICreditCardPort
+import co.japl.finances.core.adapters.inbound.interfaces.recap.IPaidPort
+import co.japl.finances.core.adapters.inbound.interfaces.recap.ICreditFixPort
+import co.japl.finances.core.adapters.inbound.interfaces.recap.IInputPort
+import co.japl.finances.core.adapters.inbound.interfaces.recap.IProjectionsPort
+import co.japl.finances.core.adapters.inbound.interfaces.recap.IQuoteCreditCardPort
 import dagger.hilt.android.AndroidEntryPoint
-import dagger.hilt.android.HiltAndroidApp
-import org.apache.commons.codec.language.Nysiis
 import java.math.BigDecimal
 import java.time.LocalDate
 import javax.inject.Inject
@@ -40,13 +31,13 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class RecapFragment @Inject constructor() : Fragment() , LoaderManager.LoaderCallbacks<Map<String, Any>>{
     private lateinit var holder:IRecapHolder<RecapHolder>
-    @Inject lateinit var projectionSvc:IProjectionsSvc
-    @Inject  lateinit var creditSvc:ICreditFix
-    @Inject  lateinit var paidSvc:IPaidSvc
-    @Inject  lateinit var quoteCreditCardSvc:IQuoteCreditCardSvc
-    @Inject  lateinit var inputSvc:IInputSvc
+    @Inject lateinit var projectionSvc:IProjectionsPort
+    @Inject  lateinit var creditSvc:ICreditFixPort
+    @Inject  lateinit var paidSvc: IPaidPort
+    @Inject  lateinit var quoteCreditCardSvc:IQuoteCreditCardPort
+    @Inject  lateinit var inputSvc:IInputPort
+    @Inject lateinit var creditCardSvc:ICreditCardPort
     private lateinit var progressBar:ProgressBar
-    @Inject lateinit var creditCardSvc:ICreditCardSvc
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
     }
@@ -73,7 +64,7 @@ class RecapFragment @Inject constructor() : Fragment() , LoaderManager.LoaderCal
         val totalQuoteCredit = creditSvc.getTotalQuote(LocalDate.now())
         val totalPaid = paidSvc.getTotalPaid()
         val totalQuoteTC = quoteCreditCardSvc.getTotalQuoteTC()
-        val totalInputs = inputSvc.getTotalInputs()
+        val totalInputs = inputSvc.getTotalInputs() ?: BigDecimal.ZERO
         val warning = creditCardSvc.getAll().sumOf { it.warningValue }
         val map = HashMap<String, Any>()
         map["projection"] = projection

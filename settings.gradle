@@ -14,3 +14,6 @@ dependencyResolutionManagement {
 }
 rootProject.name = "Finanzas"
 include ':app'
+include ':japl-android-finances-core'
+include ':japl-android-finances-services'
+include ':japl-android-graphs'

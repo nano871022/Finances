@@ -50,6 +50,12 @@ import co.japl.android.myapplication.finanzas.bussiness.interfaces.IKindOfTaxSvc
 import co.japl.android.myapplication.finanzas.bussiness.interfaces.IPaidSvc
 import co.japl.android.myapplication.finanzas.bussiness.interfaces.IProjectionsSvc
 import co.japl.android.myapplication.finanzas.bussiness.interfaces.IQuoteCreditCardSvc
+import co.japl.finances.core.adapters.inbound.interfaces.recap.ICreditCardPort
+import co.japl.finances.core.adapters.inbound.interfaces.recap.ICreditFixPort
+import co.japl.finances.core.adapters.inbound.interfaces.recap.IInputPort
+import co.japl.finances.core.adapters.inbound.interfaces.recap.IPaidPort
+import co.japl.finances.core.adapters.inbound.interfaces.recap.IProjectionsPort
+import co.japl.finances.core.adapters.inbound.interfaces.recap.IQuoteCreditCardPort
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -127,4 +133,114 @@ abstract class AbstractModule {
 
     @Binds
     abstract fun bindITagSvc(implement: TagsImpl):ITagSvc
+
+    @Binds
+    abstract fun bindInboudIndCreditFixPort(implement: co.japl.finances.core.adapters.inbound.implement.recap.CreditFixImpl): ICreditFixPort
+
+    @Binds
+    abstract fun bindUserCaseCreditFix(implement: co.japl.finances.core.usercases.implement.recap.CreditFixImpl): co.japl.finances.core.usercases.interfaces.recap.ICreditFix
+
+    @Binds
+    abstract fun bindOutboundCreditFixPort(implement: co.japl.android.finances.services.core.CreditFixImpl): co.japl.finances.core.adapters.outbound.interfaces.ICreditFixRecapPort
+
+    @Binds
+    abstract fun bindOutboundAdditionalCreditPort(implement: co.japl.android.finances.services.core.AdditionalCreditImpl): co.japl.finances.core.adapters.outbound.interfaces.IAdditionalRecapPort
+
+    @Binds
+    abstract fun bindServiceCreditFix(implement: co.japl.android.finances.services.implement.CreditFixImpl): co.japl.android.finances.services.interfaces.ICreditFix
+
+    @Binds
+    abstract fun bindServiceAdditionalCredit(implement: co.japl.android.finances.services.implement.AdditionalCreditImpl): co.japl.android.finances.services.interfaces.IAdditionalCreditSvc
+
+    @Binds
+    abstract fun bindInboundProjections(implement: co.japl.finances.core.adapters.inbound.implement.recap.ProjectionsImpl): IProjectionsPort
+
+    @Binds
+    abstract fun bindServiceProjections(implement: co.japl.android.finances.services.implement.ProjectionsImpl): co.japl.android.finances.services.interfaces.IProjectionsSvc
+
+    @Binds
+    abstract fun bindOutboundProjections(implement: co.japl.android.finances.services.core.ProjectionsImpl): co.japl.finances.core.adapters.outbound.interfaces.IProjectionsRecapPort
+
+    @Binds
+    abstract fun bindUserCaseProjections(implement: co.japl.finances.core.usercases.implement.recap.ProjectionsImpl): co.japl.finances.core.usercases.interfaces.recap.IProjections
+
+    @Binds
+    abstract fun bindInboundPaid(implement: co.japl.finances.core.adapters.inbound.implement.recap.PaidImpl): IPaidPort
+
+    @Binds
+    abstract fun bindUserCasePaid(implement: co.japl.finances.core.usercases.implement.recap.PaidImp): co.japl.finances.core.usercases.interfaces.recap.IPaid
+
+    @Binds
+    abstract fun bindOutboundPaid(implement: co.japl.android.finances.services.core.PaidImpl): co.japl.finances.core.adapters.outbound.interfaces.IPaidRecapPort
+
+    @Binds
+    abstract fun bindServicePaid(implement: co.japl.android.finances.services.implement.PaidImpl): co.japl.android.finances.services.interfaces.IPaidSvc
+
+    @Binds
+    abstract fun bindInboundQuoteCreditCard(implement: co.japl.finances.core.adapters.inbound.implement.recap.QuoteCreditCardImpl): IQuoteCreditCardPort
+
+    @Binds
+    abstract fun bindUserCaseQuoteCreditCard(implement: co.japl.finances.core.usercases.implement.recap.QuoteCreditCardImpl): co.japl.finances.core.usercases.interfaces.recap.IQuoteCreditCard
+
+    @Binds
+    abstract fun bindOutboundCreditCard(implement: co.japl.android.finances.services.core.CreditCardImpl): co.japl.finances.core.adapters.outbound.interfaces.ICreditCardPort
+
+    @Binds
+    abstract fun bindServiceCreditCard(implement: co.japl.android.finances.services.implement.CreditCardImpl): co.japl.android.finances.services.interfaces.ICreditCardSvc
+
+    @Binds
+    abstract fun bindOutboundQuoteCreditCard(implement: co.japl.android.finances.services.core.QuoteCreditCardImpl): co.japl.finances.core.adapters.outbound.interfaces.IQuoteCreditCardPort
+
+    @Binds
+    abstract fun bindServiceQuoteCreditCard(implement: co.japl.android.finances.services.implement.SaveCreditCardBoughtImpl): co.japl.android.finances.services.interfaces.IQuoteCreditCardSvc
+
+    @Binds
+    abstract fun bindOutboundDifferInstallment(implement: co.japl.android.finances.services.core.DifferInstallmentImpl): co.japl.finances.core.adapters.outbound.interfaces.IDifferInstallmentRecapPort
+
+    @Binds
+    abstract fun bindServiceDifferInstallment(implement: co.japl.android.finances.services.implement.DifferInstallmentImpl): co.japl.android.finances.services.interfaces.IDifferInstallment
+
+    @Binds
+    abstract fun bindOutboundTax(implement: co.japl.android.finances.services.core.TaxImpl): co.japl.finances.core.adapters.outbound.interfaces.ITaxPort
+
+    @Binds
+    abstract fun bindServiceTax(implement: co.japl.android.finances.services.implement.TaxImpl): co.japl.android.finances.services.interfaces.ITaxSvc
+
+    @Binds
+    abstract fun bindOutboundBuyCreditCardSetting(implement: co.japl.android.finances.services.core.BuyCreditCardSettingImpl): co.japl.finances.core.adapters.outbound.interfaces.IBuyCreditCardSettingPort
+
+    @Binds
+    abstract fun bindServiceBuyCreditCardSetting(implement: co.japl.android.finances.services.implement.BuyCreditCardSettingImpl): co.japl.android.finances.services.interfaces.IBuyCreditCardSettingSvc
+
+    @Binds
+    abstract fun bindOutboundCreditCardSetting(implement: co.japl.android.finances.services.core.CreditCardSettingImpl): co.japl.finances.core.adapters.outbound.interfaces.ICreditCardSettingPort
+
+    @Binds
+    abstract fun bindServiceCreditCardSetting(implement: co.japl.android.finances.services.implement.CreditCardSettingImpl): co.japl.android.finances.services.interfaces.ICreditCardSettingSvc
+
+    @Binds
+    abstract fun bindInboundInputs(implement: co.japl.finances.core.adapters.inbound.implement.recap.InputImp): IInputPort
+
+    @Binds
+    abstract fun bindUserCaseInput(implement: co.japl.finances.core.usercases.implement.recap.InputImpl): co.japl.finances.core.usercases.interfaces.recap.IInput
+
+    @Binds
+    abstract fun bindServiceInput(implement: co.japl.android.finances.services.implement.InputImpl): co.japl.android.finances.services.interfaces.IInputSvc
+
+    @Binds
+    abstract fun bindOutboundInput(implement: co.japl.android.finances.services.core.InputImpl): co.japl.finances.core.adapters.outbound.interfaces.IInputPort
+
+    @Binds
+    abstract fun bindInboundCreditCard(implement: co.japl.finances.core.adapters.inbound.implement.recap.CreditCardImpl): ICreditCardPort
+
+    @Binds
+    abstract fun binUserCaseCreditCard(implement: co.japl.finances.core.usercases.implement.recap.CreditCardImpl): co.japl.finances.core.usercases.interfaces.recap.ICreditCard
+
+    @Binds
+    abstract fun binOutboundTags(implement: co.japl.android.finances.services.core.TagQuoteCreditCardImpl): co.japl.finances.core.adapters.outbound.interfaces.ITagQuoteCreditCardPort
+
+    @Binds
+    abstract fun bindServiceTags(implement: co.japl.android.finances.services.implement.TagQuoteCreditCardImpl): co.japl.android.finances.services.interfaces.ITagQuoteCreditCardSvc
+
+
 }

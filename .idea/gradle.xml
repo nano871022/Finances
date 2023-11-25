@@ -12,6 +12,9 @@
           <set>
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/app" />
+            <option value="$PROJECT_DIR$/japl-android-finances-core" />
+            <option value="$PROJECT_DIR$/japl-android-finances-services" />
+            <option value="$PROJECT_DIR$/japl-android-graphs" />
           </set>
         </option>
       </GradleProjectSettings>

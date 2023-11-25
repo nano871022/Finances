@@ -1,11 +1,11 @@
 package co.japl.android.myapplication.finanzas.holders
 
 import android.os.Build
-import android.util.Log
 import android.view.View
 import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.annotation.RequiresApi
+import co.japl.android.graphs.drawer.CustomDraw
 import co.japl.android.myapplication.R
 import co.japl.android.myapplication.bussiness.DB.connections.ConnectDB
 import co.japl.android.myapplication.finanzas.holders.interfaces.IHolder
@@ -21,7 +21,6 @@ import co.japl.android.myapplication.finanzas.bussiness.mapping.InputMap
 import co.japl.android.myapplication.finanzas.holders.interfaces.ICallerHolder
 import co.japl.android.myapplication.utils.NumbersUtil
 import com.google.android.material.button.MaterialButton
-import com.google.android.material.textview.MaterialTextView
 import java.math.BigDecimal
 import java.time.LocalDate
 import java.time.YearMonth

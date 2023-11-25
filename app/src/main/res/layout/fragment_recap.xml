@@ -51,7 +51,7 @@
 
     </HorizontalScrollView>
 
-    <co.japl.android.myapplication.finanzas.holders.CustomDraw
+    <co.japl.android.graphs.drawer.CustomDraw
         android:id="@+id/cv_canvas_rec"
         android:layout_width="match_parent"
         android:layout_height="400dp"/>

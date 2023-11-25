@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="str_graph_qcc_one_month">1 Cuota</string>
+    <string name="str_graph_qcc_some_month">>1 Cuota </string>
+    <string name="str_graph_qcc_one_month_recurrent"> Recurrente 1 Cuota</string>
+    <string name="str_graph_qcc_some_month_recurrent">Recurrente >1 Cuota</string>
+
+</resources>
