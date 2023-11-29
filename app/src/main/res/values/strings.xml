@@ -270,14 +270,12 @@
     <string name="no">No</string>
 
     <string name="pick_option">Seleccionar Opción</string>
-    <array name="credit_card_item_options">
-        <item >Amortizacion</item>
-        <item >Finalizar</item>
-        <item >Actualizar Valor</item>
-        <item >Diferir Cuotas</item>
-        <item >Editar</item>
-        <item >Eliminar</item>
-    </array>
+    <string name="ccio_amortization">Amortización</string>
+    <string name="ccio_ending">Finalizar</string>
+    <string name="ccio_update_value">Actualzar Valor</string>
+    <string name="ccio_differ_quotes">Diferir Cuotas</string>
+    <string name="ccio_edit">Editar</string>
+    <string name="ccio_delete">Eliminar</string>
 
     <array name="credit_item_options">
         <item >Adicional</item>

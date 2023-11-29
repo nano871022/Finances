@@ -11,10 +11,13 @@
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$" />
+            <option value="$PROJECT_DIR$/about-module" />
             <option value="$PROJECT_DIR$/app" />
             <option value="$PROJECT_DIR$/japl-android-finances-core" />
             <option value="$PROJECT_DIR$/japl-android-finances-services" />
             <option value="$PROJECT_DIR$/japl-android-graphs" />
+            <option value="$PROJECT_DIR$/japl-finances-iports" />
+            <option value="$PROJECT_DIR$/ui" />
           </set>
         </option>
       </GradleProjectSettings>

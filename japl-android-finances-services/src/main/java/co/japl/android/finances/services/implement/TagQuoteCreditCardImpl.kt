@@ -3,6 +3,7 @@ package co.japl.android.finances.services.implement
 import android.database.sqlite.SQLiteOpenHelper
 import android.os.Build
 import android.provider.BaseColumns
+import android.util.Log
 import androidx.annotation.RequiresApi
 import co.japl.android.finances.services.interfaces.ITagQuoteCreditCardSvc
 import co.japl.android.finances.services.interfaces.ITagSvc
@@ -42,7 +43,9 @@ class TagQuoteCreditCardImpl @Inject constructor(override var dbConnect: SQLiteO
                 }
             }
         }
-        return list
+        return list.also {
+            Log.d(this.javaClass.name,"<<<=== getTags - Size: ${it.size}")
+        }
     }
 
     @RequiresApi(Build.VERSION_CODES.O)

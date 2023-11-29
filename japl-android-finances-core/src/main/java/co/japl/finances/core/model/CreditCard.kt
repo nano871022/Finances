@@ -6,23 +6,25 @@ import java.math.BigDecimal
 import java.time.LocalDateTime
 import java.util.*
 @RequiresApi(Build.VERSION_CODES.N)
-class CreditCard {
-    var nameCreditCard:Optional<String> = Optional.empty()
-    var codeCreditCard:Optional<Int> = Optional.empty()
-    var maxQuotes:Optional<Short> = Optional.empty()
-    var cutOff: Optional<LocalDateTime> = Optional.empty()
-    var cutOffLast: Optional<LocalDateTime> = Optional.empty()
-    var capital: Optional<BigDecimal> = Optional.empty()
-    var capitalQuotes: Optional<BigDecimal> = Optional.empty()
-    var capitalQuote: Optional<BigDecimal> = Optional.empty()
+data class CreditCard (
+    val nameCreditCard:String,
+    val codeCreditCard:Int,
+    val maxQuotes:Short ,
+    val cutOff: LocalDateTime,
+    val cutOffLast: LocalDateTime,
+    val capital: Double ,
+    val capitalQuotes: Double,
+    val capitalQuote: Double,
 
-    var interest: Optional<BigDecimal> = Optional.empty()
-    var interestQuote: Optional<BigDecimal> = Optional.empty()
-    var interestQuotes: Optional<BigDecimal> = Optional.empty()
-    var quotes: Optional<Long> = Optional.empty()
-    var oneQuote:Optional<Long> = Optional.empty()
-    var quotesPending:Optional<Long> = Optional.empty()
-    var lastTax:Optional<Double> = Optional.empty()
-    var cutoffDay:Optional<Short> = Optional.empty()
-    var warningValue:Optional<BigDecimal> = Optional.empty()
-}
+    val interest: Double,
+    val interestQuote: Double,
+    val interestQuotes: Double,
+    val interest1NotQuote:Boolean,
+    val quotes: Long ,
+    val oneQuote:Long ,
+    val quotesPending:Long,
+    val lastTax:Double ,
+    val cutoffDay:Short,
+    val warningValue:Double,
+    val interest1Quote:Boolean
+)

@@ -4,8 +4,8 @@ import co.japl.android.finances.services.dto.CreditDTO
 
 object CreditMapper {
 
-    fun mapper(creditDTO: CreditDTO):co.japl.finances.core.dto.CreditDTO{
-        return co.japl.finances.core.dto.CreditDTO(
+    fun mapper(creditDTO: CreditDTO):co.com.japl.finances.iports.dtos.CreditDTO{
+        return co.com.japl.finances.iports.dtos.CreditDTO(
             creditDTO.id,
             creditDTO.name,
             creditDTO.date,

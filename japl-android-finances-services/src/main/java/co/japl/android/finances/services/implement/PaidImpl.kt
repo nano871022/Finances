@@ -29,6 +29,8 @@ class PaidImpl @Inject constructor(override var dbConnect: SQLiteOpenHelper) : I
         PaidDB.Entry.COLUMN_END_DATE
     )
 
+    private val FORMAT_DATE_PAID = "substr(${PaidDB.Entry.COLUMN_DATE_PAID},7,4)||'-'||substr(${PaidDB.Entry.COLUMN_DATE_PAID},4,2)||'-'||substr(${PaidDB.Entry.COLUMN_DATE_PAID},1,2)"
+
     @RequiresApi(Build.VERSION_CODES.O)
     override fun get(values: PaidDTO): List<PaidDTO> {
         val db = dbConnect.readableDatabase
@@ -63,13 +65,29 @@ class PaidImpl @Inject constructor(override var dbConnect: SQLiteOpenHelper) : I
 
     override fun getTotalPaid(): BigDecimal {
         val db = dbConnect.readableDatabase
-        val cursor = db.rawQuery("SELECT SUM(${PaidDB.Entry.COLUMN_VALUE}) AS value FROM ${PaidDB.Entry.TABLE_NAME} WHERE ${PaidDB.Entry.COLUMN_DATE_PAID} >= date('now') OR ${PaidDB.Entry.COLUMN_RECURRENT} = 1", arrayOf())
+        val listValues = mutableListOf<Double>()
+        val cursor = db.rawQuery("""
+                SELECT 
+                      ${PaidDB.Entry.COLUMN_VALUE} AS value
+                    , ${PaidDB.Entry.COLUMN_RECURRENT} AS recurrent
+                    , ${PaidDB.Entry.COLUMN_DATE_PAID} AS date_paid
+                     , ${PaidDB.Entry.COLUMN_END_DATE} AS end_paid
+                FROM ${PaidDB.Entry.TABLE_NAME} 
+                """, arrayOf())
         with(cursor){
             while (moveToNext()){
-                return cursor.getDouble(0).toBigDecimal()
+                val recurrent = cursor.getInt(1)
+                val datePaid = cursor.getString(2).let { DateUtils.toLocalDate(it) }
+                val endDate = cursor.getString(3).let { DateUtils.toLocalDate(it) }
+                val value = cursor.getDouble(0)
+                //Log.d(javaClass.name,"=== GetTotalPaid Recurrent: $recurrent Date: $datePaid Value: $value End: $endDate")
+                if((recurrent == 1 || datePaid >= LocalDate.now()) && endDate >= LocalDate.now()) {
+                    listValues.add(value)
+                }
+
             }
         }
-        return BigDecimal.ZERO
+        return listValues.sum().toBigDecimal().also{ Log.d(javaClass.name,"<<<=== GetTotalPaid Total $it") }
     }
 
     @RequiresApi(Build.VERSION_CODES.O)

@@ -4,8 +4,8 @@ import co.japl.android.finances.services.dto.TaxDTO
 
 object TaxMapper {
 
-    fun mapper(taxDTO: TaxDTO):co.japl.finances.core.dto.TaxDTO {
-        return co.japl.finances.core.dto.TaxDTO(
+    fun mapper(taxDTO: TaxDTO):co.com.japl.finances.iports.dtos.TaxDTO {
+        return co.com.japl.finances.iports.dtos.TaxDTO(
             taxDTO.id,
             taxDTO.month,
             taxDTO.year,

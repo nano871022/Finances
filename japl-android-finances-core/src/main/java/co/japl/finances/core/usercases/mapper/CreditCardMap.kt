@@ -3,26 +3,37 @@ package co.japl.finances.core.usercases.mapper
 import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
-import co.japl.finances.core.dto.CreditCardDTO
+import co.com.japl.finances.iports.dtos.CreditCardDTO
 import co.japl.finances.core.model.CreditCard
 import co.japl.finances.core.utils.Config
+import java.time.LocalDateTime
 import java.util.*
 
-class CreditCardMap {
+object CreditCardMap {
 
     @RequiresApi(Build.VERSION_CODES.O)
     fun mapper(creditCard:CreditCardDTO): CreditCard {
-        val pojo = CreditCard()
-        pojo.codeCreditCard = Optional.ofNullable(creditCard.id)
-        pojo.nameCreditCard = Optional.ofNullable(creditCard.name)
-        Log.d(this.javaClass.name,"CutOffDay: ${creditCard.cutOffDay}")
-        pojo.cutoffDay = Optional.ofNullable(creditCard.cutOffDay)
-        pojo.cutOff =
-            Optional.ofNullable(creditCard.cutOffDay.toInt()
-                ?.let { it1 -> Config.nextCutOff( it1) })
-        pojo.warningValue = Optional.ofNullable(creditCard.warningValue)
-        pojo.maxQuotes = Optional.ofNullable(creditCard.maxQuotes)
-        return pojo
+        return CreditCard(
+            codeCreditCard = creditCard.id,
+            nameCreditCard = creditCard.name,
+            cutoffDay = creditCard.cutOffDay,
+            cutOff = Config.nextCutOff( creditCard.cutOffDay.toInt() ),
+            warningValue = creditCard.warningValue.toDouble(),
+            maxQuotes = creditCard.maxQuotes,
+            capital = 0.0,
+            capitalQuote = 0.0,
+            capitalQuotes = 0.0,
+            interest = 0.0,
+            interestQuote = 0.0,
+            interestQuotes = 0.0,
+            quotes = 0,
+            oneQuote = 0,
+            quotesPending = 0,
+            lastTax = 0.0,
+            cutOffLast = LocalDateTime.now(),
+            interest1NotQuote = creditCard.interest1NotQuote,
+            interest1Quote = creditCard.interest1Quote
+        )
     }
 
 }

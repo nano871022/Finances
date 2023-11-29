@@ -1,7 +1,7 @@
 package co.japl.android.finances.services.core
 
 import co.japl.android.finances.services.interfaces.IInputSvc
-import co.japl.finances.core.adapters.outbound.interfaces.IInputPort
+import co.com.japl.finances.iports.outbounds.IInputPort
 import java.math.BigDecimal
 import javax.inject.Inject
 

@@ -4,8 +4,8 @@ import co.japl.android.finances.services.dto.BuyCreditCardSettingDTO
 
 object BuyCreditCardSettingMapper {
 
-    fun mapper(buyCreditCardSetting:BuyCreditCardSettingDTO):co.japl.finances.core.dto.BuyCreditCardSettingDTO {
-        return co.japl.finances.core.dto.BuyCreditCardSettingDTO(
+    fun mapper(buyCreditCardSetting:BuyCreditCardSettingDTO):co.com.japl.finances.iports.dtos.BuyCreditCardSettingDTO {
+        return co.com.japl.finances.iports.dtos.BuyCreditCardSettingDTO(
             buyCreditCardSetting.id,
             buyCreditCardSetting.codeBuyCreditCard,
             buyCreditCardSetting.codeCreditCardSetting,

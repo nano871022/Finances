@@ -4,8 +4,8 @@ import co.japl.android.finances.services.dto.CreditCardDTO
 
 object CreditCardMap {
 
-    fun mapper(creditCard:CreditCardDTO):co.japl.finances.core.dto.CreditCardDTO{
-        return co.japl.finances.core.dto.CreditCardDTO(
+    fun mapper(creditCard:CreditCardDTO):co.com.japl.finances.iports.dtos.CreditCardDTO{
+        return co.com.japl.finances.iports.dtos.CreditCardDTO(
             id = creditCard.id,
             name = creditCard.name,
             maxQuotes = creditCard.maxQuotes,

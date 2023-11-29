@@ -76,5 +76,20 @@ class NumbersUtil {
             }
 
         }
+
+        fun toDouble(value:String):Double{
+            return if(value?.isNotBlank() == true){
+                value.replace(",","").replace("%","").trim().toDouble()
+            }else{
+                0.0
+            }
+        }
+        fun toLong(value:String):Long{
+            return if(value?.isNotBlank() == true){
+                value.replace(",","").replace("%","").trim().toLong()
+            }else{
+                0
+            }
+        }
     }
 }

@@ -2,8 +2,8 @@ package co.japl.android.finances.services.core
 
 import co.japl.android.finances.services.core.mapper.BuyCreditCardSettingMapper
 import co.japl.android.finances.services.interfaces.IBuyCreditCardSettingSvc
-import co.japl.finances.core.adapters.outbound.interfaces.IBuyCreditCardSettingPort
-import co.japl.finances.core.dto.BuyCreditCardSettingDTO
+import co.com.japl.finances.iports.outbounds.IBuyCreditCardSettingPort
+import co.com.japl.finances.iports.dtos.BuyCreditCardSettingDTO
 import javax.inject.Inject
 
 class BuyCreditCardSettingImpl @Inject constructor(private val buyCCSettingSvc:IBuyCreditCardSettingSvc) : IBuyCreditCardSettingPort {

@@ -379,21 +379,22 @@ class SaveCreditCardBoughtImpl @Inject constructor(val context:Context, override
         var setting = false
         buyCCSettingSvc.getAll().forEach { Log.d(javaClass.name,"=== $it") }
         buyCCSettingSvc.get(dto.id).ifPresent {
-            Log.d(javaClass.name,"=== Get Buy Setting: $it")
+            Log.d(javaClass.name,"=== calculateInterest id: ${dto.id} Get Buy Setting: $it")
             creditCardSettingSvc.get(it.codeCreditCardSetting).ifPresent{
-                Log.d(javaClass.name,"=== Get CC Setting: $it")
+                Log.d(javaClass.name,"=== calculateInterest id: ${dto.id}  Get CC Setting: $it")
                  setting = true
             }
         }
 
         return if(setting){
-            (dto.valueItem / dto.month.toBigDecimal()) * dto.interest.toBigDecimal().also { Log.d(javaClass.name," calculateInterest: setting ${dto.valueItem} Interest: $interestWalletBuy Reponse: $it") }
+            (dto.valueItem / dto.month.toBigDecimal()) * dto.interest.toBigDecimal().also { Log.d(javaClass.name,"=== calculateInterest: id: ${dto.id} toPay: ${dto.valueItem} tax: $interestWalletBuy interest: $it SETTING") }
         }else if(dto.month == 1 && creditCard.get().interest1Quote && TaxEnum.findByOrdinal(dto.kind) == TaxEnum.CREDIT_CARD && !differQuote.isPresent){
-            BigDecimal.ZERO.also { Log.d(javaClass.name," calculateInterest: 1 quote 0") }
+            BigDecimal.ZERO.also { Log.d(javaClass.name,"=== calculateInterest: id: ${dto.id}  1 quote 0") }
         }else if(dto.month > 1 && month == 0L && creditCard.get().interest1NotQuote && TaxEnum.findByOrdinal(dto.kind) == TaxEnum.CREDIT_CARD && !differQuote.isPresent){
-            BigDecimal.ZERO.also { Log.d(javaClass.name," calculateInterest: 1 not quote") }
+            BigDecimal.ZERO.also { Log.d(javaClass.name,"=== calculateInterest: id: ${dto.id}  1 not quote") }
         }else if(dto.month > 1 && month == 1L && creditCard.get().interest1NotQuote && TaxEnum.findByOrdinal(dto.kind) == TaxEnum.CREDIT_CARD){
-            (dto.valueItem.multiply(interest.toBigDecimal()) + ((dto.valueItem - ((dto.valueItem/dto.month.toBigDecimal()) * month.toBigDecimal())) * interest.toBigDecimal())).also { Log.d(javaClass.name," calculateInterest: 1L ${dto.valueItem} Interest: $interest Response: $it") }
+            (dto.valueItem.multiply(interest.toBigDecimal()) + ((dto.valueItem - ((dto.valueItem/dto.month.toBigDecimal()) * month.toBigDecimal())) * interest.toBigDecimal())).also {
+                Log.d(javaClass.name,"=== calculateInterest: id: ${dto.id}  toPay: ${dto.valueItem} Tax: $interest interest: $it 1L") }
         }else if(dto.month > 1 && month > 1 && TaxEnum.findByOrdinal(dto.kind) == TaxEnum.CREDIT_CARD || differQuote.isPresent){
             val capital:Double = differQuote.takeIf { it.isPresent }?.let{
                 it.get().pendingValuePayable / it.get().newInstallment
@@ -402,13 +403,27 @@ class SaveCreditCardBoughtImpl @Inject constructor(val context:Context, override
             val  lack:Double = differQuote.takeIf { it.isPresent }?.let{
                 it.get().pendingValuePayable - paid
             } ?:(dto.valueItem.toDouble() - paid)
-            (lack* interest).toBigDecimal().also { Log.d(javaClass.name," calculateInterest: month > 1 ${dto.valueItem} Month: ${dto.month} Diff: $month Capital: $capital Paid: $paid lack: $lack Interest: $interest Response: $it") }
+            (lack* interest).toBigDecimal().also { Log.d(javaClass.name,"=== calculateInterest: id: ${dto.id}  toPay: $lack Tax: $interest Interest: $it MONTHS month > 1 ${dto.valueItem} Month: ${dto.month} Diff: $month Capital: $capital Paid: $paid ") }
         }else if(TaxEnum.findByOrdinal(dto.kind) == TaxEnum.CASH_ADVANCE){
-            dto.valueItem.multiply(interestCashAdv.toBigDecimal()).also { Log.d(javaClass.name," calculateInterest: cash ${dto.valueItem} Interest: $interestCashAdv Response: $it") }
+            val capital:Double = differQuote.takeIf { it.isPresent }?.let{
+                it.get().pendingValuePayable / it.get().newInstallment
+            }?: (dto.valueItem.toDouble() / dto.month)
+            val paid = capital * month
+            val  lack:Double = differQuote.takeIf { it.isPresent }?.let{
+                it.get().pendingValuePayable - paid
+            } ?:(dto.valueItem.toDouble() - paid)
+            lack.toBigDecimal().multiply(interestCashAdv.toBigDecimal()).also { Log.d(javaClass.name,"=== calculateInterest:  id: ${dto.id} toPay $lack Tax: $interestCashAdv Interes: $it CASH") }
         }else if(TaxEnum.findByOrdinal(dto.kind) == TaxEnum.WALLET_BUY){
-            dto.valueItem.multiply(interestWalletBuy.toBigDecimal()).also { Log.d(javaClass.name," calculateInterest: wallet ${dto.valueItem} Interest: $interestWalletBuy Reponse: $it") }
+            val capital:Double = differQuote.takeIf { it.isPresent }?.let{
+                it.get().pendingValuePayable / it.get().newInstallment
+            }?: (dto.valueItem.toDouble() / dto.month)
+            val paid = capital * month
+            val  lack:Double = differQuote.takeIf { it.isPresent }?.let{
+                it.get().pendingValuePayable - paid
+            } ?:(dto.valueItem.toDouble() - paid)
+            lack.toBigDecimal().multiply(interestWalletBuy.toBigDecimal()).also { Log.d(javaClass.name,"=== calculateInterest: id: ${dto.id} toPay: $lack Tax: $interestWalletBuy interes: $it WALLET") }
         }else{
-            dto.valueItem.multiply(interest.toBigDecimal()).also { Log.d(javaClass.name," calculateInterest: else $dto Interest: $interest Response: $it") }
+            dto.valueItem.multiply(interest.toBigDecimal()).also { Log.d(javaClass.name,"=== calculateInterest:  id: ${dto.id} toPay: ${dto.valueItem} Tax: ${interest} interest: $it DEFAULT") }
         }
     }
 

@@ -23,4 +23,5 @@
     <color name="text">#447046</color>
     <color name="background">#AC5DBC61</color>
     <color name="green_dark_trans">#44829F75</color>
+    <color name="green_dark_trans_s">#AA829F75</color>
 </resources>

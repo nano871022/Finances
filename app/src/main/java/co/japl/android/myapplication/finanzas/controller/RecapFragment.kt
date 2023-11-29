@@ -1,6 +1,5 @@
 package co.japl.android.myapplication.finanzas.controller
 
-import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -9,35 +8,35 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ProgressBar
 import androidx.annotation.RequiresApi
+import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.loader.app.LoaderManager
 import androidx.loader.content.AsyncTaskLoader
 import androidx.loader.content.Loader
+import co.com.japl.finances.iports.dtos.RecapDTO
 import co.japl.android.myapplication.R
+import co.japl.android.myapplication.databinding.FragmentRecapBinding
 import co.japl.android.myapplication.finanzas.bussiness.interfaces.*
 import co.japl.android.myapplication.finanzas.holders.RecapHolder
 import co.japl.android.myapplication.finanzas.holders.interfaces.IRecapHolder
-import co.japl.android.myapplication.utils.NumbersUtil
-import co.japl.finances.core.adapters.inbound.interfaces.recap.ICreditCardPort
-import co.japl.finances.core.adapters.inbound.interfaces.recap.IPaidPort
-import co.japl.finances.core.adapters.inbound.interfaces.recap.ICreditFixPort
-import co.japl.finances.core.adapters.inbound.interfaces.recap.IInputPort
-import co.japl.finances.core.adapters.inbound.interfaces.recap.IProjectionsPort
-import co.japl.finances.core.adapters.inbound.interfaces.recap.IQuoteCreditCardPort
+import co.japl.android.myapplication.finanzas.view.recap.Recap
+import co.com.japl.finances.iports.inbounds.recap.IRecapPort
 import dagger.hilt.android.AndroidEntryPoint
-import java.math.BigDecimal
-import java.time.LocalDate
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class RecapFragment @Inject constructor() : Fragment() , LoaderManager.LoaderCallbacks<Map<String, Any>>{
+class RecapFragment @Inject constructor() : Fragment() , LoaderManager.LoaderCallbacks<RecapDTO>{
     private lateinit var holder:IRecapHolder<RecapHolder>
-    @Inject lateinit var projectionSvc:IProjectionsPort
-    @Inject  lateinit var creditSvc:ICreditFixPort
-    @Inject  lateinit var paidSvc: IPaidPort
-    @Inject  lateinit var quoteCreditCardSvc:IQuoteCreditCardPort
-    @Inject  lateinit var inputSvc:IInputPort
-    @Inject lateinit var creditCardSvc:ICreditCardPort
+    @Inject lateinit var recapSvc:IRecapPort
     private lateinit var progressBar:ProgressBar
+
+    private var _binding: FragmentRecapBinding? = null
+    private val binding get() = _binding!!
+
+    private val recapViewModel by lazy {
+        RecapViewModel()
+    }
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
     }
@@ -46,10 +45,14 @@ class RecapFragment @Inject constructor() : Fragment() , LoaderManager.LoaderCal
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val root = inflater.inflate(R.layout.fragment_recap, container, false)
+        _binding = FragmentRecapBinding.inflate(inflater, container, false)
+        val root = binding.root
         progressBar = root.findViewById(R.id.pb_load_rec)
         holder = RecapHolder(root)
         holder.setFields(null)
+
+
+
         return root
     }
 
@@ -58,37 +61,19 @@ class RecapFragment @Inject constructor() : Fragment() , LoaderManager.LoaderCal
         LoaderManager.getInstance(this).initLoader(1,null,this)
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
-    fun loadData():Map<String, Any>{
-        val projection = projectionSvc.getTotalSavedAndQuote()
-        val totalQuoteCredit = creditSvc.getTotalQuote(LocalDate.now())
-        val totalPaid = paidSvc.getTotalPaid()
-        val totalQuoteTC = quoteCreditCardSvc.getTotalQuoteTC()
-        val totalInputs = inputSvc.getTotalInputs() ?: BigDecimal.ZERO
-        val warning = creditCardSvc.getAll().sumOf { it.warningValue }
-        val map = HashMap<String, Any>()
-        map["projection"] = projection
-        map["totalQuoteCredit"] = totalQuoteCredit
-        map["totalPaid"] = totalPaid
-        map["totalQuoteTC"] = totalQuoteTC
-        map["totalInputs"] = totalInputs
-        map["warning"] = warning
-        return map
-    }
-
-    override fun onCreateLoader(id: Int, args: Bundle?): Loader<Map<String, Any>> {
+    override fun onCreateLoader(id: Int, args: Bundle?): Loader<RecapDTO> {
         progressBar.visibility = View.VISIBLE
-        return object: AsyncTaskLoader<Map<String,Any>>(requireContext()){
-            private var data : Map<String,Any> = HashMap<String,Any>()
+        return object: AsyncTaskLoader<RecapDTO>(requireContext()){
+            private var data : RecapDTO? = null
             @RequiresApi(Build.VERSION_CODES.O)
-            override fun loadInBackground(): Map<String, Any>? {
-                data =  loadData()
+            override fun loadInBackground(): RecapDTO? {
+                data =  recapSvc.getTotalValues()
                 return data
             }
 
             override fun onStartLoading() {
                 super.onStartLoading()
-                if(data.isNotEmpty()){
+                if(data != null){
                     deliverResult(data)
                 }else{
                     forceLoad()
@@ -97,51 +82,38 @@ class RecapFragment @Inject constructor() : Fragment() , LoaderManager.LoaderCal
         }
     }
 
-    override fun onLoadFinished(loader: Loader<Map<String, Any>>, data: Map<String, Any>?) {
-        val projection = data?.get("projection") as Pair<BigDecimal,BigDecimal>
-        val totalQuoteCredit = data?.get("totalQuoteCredit") as BigDecimal
-        val totalPaid = data?.get("totalPaid") as BigDecimal
-        val totalQuoteTC = data?.get("totalQuoteTC") as BigDecimal
-        val totalInputs = data?.get("totalInputs") as BigDecimal
-        val warning = data?.get("warning") as BigDecimal
+    override fun onLoadFinished(loader: Loader<RecapDTO>, data: RecapDTO?) {
+
+        binding.firstCardCompose.apply {
+            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+            setContent {
+                co.com.japl.ui.theme.MaterialThemeComposeUI {
+                    Recap(recapViewModel)
+                }
+            }
+        }
+        recapViewModel.setProjectionsValue(data?.projectionNext?:0.0)
+        recapViewModel.setTotalInbound(data?.totalInputs?:0.0)
+        recapViewModel.setTotalPayment(((data?.totalPaid?:0.0) + (data?.totalQuoteCredit?:0.0) + (data?.totalQuoteCreditCard?:0.0)))
+        recapViewModel.setTotalPayed(data?.totalPaid?:0.0)
+        recapViewModel.setTotalSaved(data?.projectionSaved?:0.0)
+        recapViewModel.setTotalCredits(data?.totalQuoteCredit?:0.0)
+        recapViewModel.setTotalCreditCard(data?.totalQuoteCreditCard?:0.0)
+        recapViewModel.setWarningValue(data?.warningValueCreditCard?:0.0)
+
 
         holder.loadFields{
-            it.inputs.text = NumbersUtil.toString(totalInputs)
-            it.quoteTC.text = NumbersUtil.toString(totalQuoteTC)
-            it.totalCredits.text = NumbersUtil.toString(totalQuoteCredit)
-            it.saved.text = NumbersUtil.toString(projection.first)
-            it.quoteSaved.text = NumbersUtil.toString(projection.second)
-            it.totalPaid.text = NumbersUtil.toString(totalPaid)
-
-            it.totalFix.text = NumbersUtil.toString(totalPaid + totalQuoteCredit)
-            val inputFix = totalInputs - (totalPaid + totalQuoteCredit)
-            it.totalInputFix.text = NumbersUtil.toString(inputFix)
-            if(inputFix < BigDecimal.ZERO){
-                it.totalInputFix.setTextColor(Color.RED)
-            }
-            it.totalPaids.text = NumbersUtil.toString(totalPaid + totalQuoteCredit + totalQuoteTC)
-            val totalPaids= totalInputs - (totalPaid + totalQuoteCredit + totalQuoteTC)
-            it.totalInputsPaids.text = NumbersUtil.toString( totalPaids)
-            if(totalPaids < BigDecimal.ZERO){
-                it.totalInputsPaids.setTextColor(Color.RED)
-            }
-            it.warning.text = NumbersUtil.toString(warning)
-            val limit = warning - totalQuoteTC
-            it.limit.text = NumbersUtil.toString(limit)
-            if(limit < BigDecimal.ZERO){
-                it.limit.setTextColor(Color.RED)
-            }
             progressBar.visibility = View.GONE
 
             it.graph?.let {draw->
-                totalQuoteTC.takeIf { it > BigDecimal.ZERO }?.let{draw.addPiece(view?.resources?.getString(R.string.total_quote_credit_card)!!,it.toDouble())}
-                totalQuoteCredit.takeIf { it > BigDecimal.ZERO }?.let{draw.addPiece(view?.resources?.getString(R.string.total_credits)!!,it.toDouble())}
-                totalPaid.takeIf { it > BigDecimal.ZERO }?.let{draw.addPiece(view?.resources?.getString(R.string.total_paids)!!,it.toDouble())}
+                data?.totalQuoteCreditCard?.takeIf { it > 0.0 }?.let{draw.addPiece(view?.resources?.getString(R.string.total_quote_credit_card)!!,it)}
+                data?.totalQuoteCredit?.takeIf { it > 0.0 }?.let{draw.addPiece(view?.resources?.getString(R.string.total_credits)!!,it)}
+                data?.totalPaid?.takeIf { it > 0.0 }?.let{draw.addPiece(view?.resources?.getString(R.string.total_paids)!!,it)}
                 draw.invalidate()
             }
         }
     }
 
-    override fun onLoaderReset(loader: Loader<Map<String, Any>>) {
+    override fun onLoaderReset(loader: Loader<RecapDTO>) {
     }
 }

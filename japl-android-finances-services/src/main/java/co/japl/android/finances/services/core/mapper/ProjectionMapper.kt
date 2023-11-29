@@ -4,8 +4,8 @@ import co.japl.android.finances.services.dto.ProjectionDTO
 
 object ProjectionMapper {
 
-    fun mapper(projectionDTO: ProjectionDTO):co.japl.finances.core.dto.ProjectionDTO{
-        return co.japl.finances.core.dto.ProjectionDTO(
+    fun mapper(projectionDTO: ProjectionDTO):co.com.japl.finances.iports.dtos.ProjectionDTO{
+        return co.com.japl.finances.iports.dtos.ProjectionDTO(
             id = projectionDTO.id,
             name = projectionDTO.name,
             value = projectionDTO.value,

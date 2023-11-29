@@ -10,12 +10,14 @@ import android.graphics.drawable.shapes.OvalShape
 import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
+import androidx.core.graphics.alpha
 import co.japl.android.graphs.R
 import co.japl.android.graphs.colors.Colors
 import co.japl.android.graphs.interfaces.IGraph
 import co.japl.android.graphs.pieceofpie.calculations.Calculate
 import co.japl.android.graphs.pojo.PiecePie
 import co.japl.android.graphs.utils.NumbersUtil
+import java.math.BigDecimal
 import java.math.MathContext
 import java.text.DecimalFormat
 import kotlin.math.atan2
@@ -143,8 +145,8 @@ class PieceOfPie constructor(val context:Context):IGraph{
 
     @RequiresApi(Build.VERSION_CODES.O)
     private fun drawSelected(selected:PiecePie?,canvas: Canvas,total:Double){
-        if(selected != null){
-            Log.d(javaClass.name,"selected: $selected")
+        if(selected != null) {
+            Log.d(javaClass.name, "selected: $selected")
             val paint = getPaint(Color.YELLOW)
             val paint2 = getPaint(Color.BLACK)
             val color = colors.getColor(R.color.green_dark_trans)
@@ -154,17 +156,68 @@ class PieceOfPie constructor(val context:Context):IGraph{
             paint4.strokeWidth = 0.5f
             paint2.style = Paint.Style.STROKE
             paint2.strokeWidth = 4f
-            canvas.drawCircle((posX+(withSize/2)).toFloat(),(posY+(withSize/2)).toFloat(),(withSize/2).toFloat(),paint3)
-            drawPieceOfPie(selected?.start!!,selected?.end!!,paint,canvas)
-            drawPieceOfPie(selected?.start!!,selected?.end!!,paint2,canvas)
-            val percent = calculations.calculatePercent(selected?.value!!,total).toBigDecimal().round(
-                MathContext(5)
+            canvas.drawCircle(
+                (posX + (withSize / 2)).toFloat(),
+                (posY + (withSize / 2)).toFloat(),
+                (withSize / 2).toFloat(),
+                paint3
             )
-            val value= DecimalFormat("#,###.###").format(selected?.value).toString()
-            canvas.drawText(" ${selected?.title} ", posX.toFloat(), posY.toFloat(), paint4)
-            canvas.drawText(" $ $value ", posX.toFloat(), (posY + incrementYTitle).toFloat(), paint4)
-            canvas.drawText("  $percent %", posX.toFloat(), (posY + (2*incrementYTitle)).toFloat (), paint4)
+            drawPieceOfPie(selected?.start!!, selected?.end!!, paint, canvas)
+            drawPieceOfPie(selected?.start!!, selected?.end!!, paint2, canvas)
+
+            descriptionPieceOfPie(
+                selected?.title!!,
+                selected?.value!!,
+                total,
+                canvas,
+                paint4
+            )
         }
+    }
+
+    private fun descriptionPieceOfPie(title:String,value:Double,total:Double,canvas: Canvas,paint4:Paint){
+        val percent = calculations.calculatePercent(value!!,total).toBigDecimal().round(
+            MathContext(5)
+        )
+        val value= DecimalFormat("#,###.###").format(value).toString()
+        val longText = getLongText(title,value,percent)
+        val longHigh = Paint().fontSpacing
+
+        val color = colors.getColor(R.color.green_dark_trans_s)
+        val paint = getPaint(color)
+        Log.w(javaClass.name,"=== descriptionPieceOfPie longText: $longText longHigh: $longHigh posX: $posX posY: $posY incrementYTitle: $incrementYTitle withSize: $withSize Density: ${context.resources.displayMetrics.density}")
+        canvas.drawRoundRect(posX.toFloat()
+            , posY.toFloat() - (context.resources.displayMetrics.density*longHigh)
+            ,posX + (context.resources.displayMetrics.density * longText * 1.25).toFloat()
+            , posY.toFloat() + (2* incrementYTitle) +(context.resources.displayMetrics.density *longHigh)
+            ,10f
+            ,10f
+            ,paint)
+
+        canvas.drawText(" $title ", posX.toFloat(), posY.toFloat(), paint4)
+        canvas.drawText(" $ $value ", posX.toFloat(), (posY + incrementYTitle).toFloat(), paint4)
+        canvas.drawText("  $percent %", posX.toFloat(), (posY + (2*incrementYTitle)).toFloat (), paint4)
+    }
+
+    private fun getLongText(title:String,value:String,percent:BigDecimal):Float{
+        val paint = Paint()
+        val value1 = paint.measureText(title)
+        val value2 = paint.measureText("$ $value ")
+        val value3 = paint.measureText("$percent % ")
+        if(value1 > value2 && value1 > value3){
+            return value1
+        }else if(value2 > value1 && value2 > value3){
+            return value2
+        }else if(value3 > value1 && value3 > value2){
+            return value3
+        }else if(value1 > value2 && value1 == value3){
+            return value1
+        }else if(value2 > value1 && value2 == value3){
+            return value2
+        }else if(value1 > value3 && value1 == value2){
+            return value1
+        }
+        return 0f
     }
 
     private fun isSelectedPiece():Boolean{

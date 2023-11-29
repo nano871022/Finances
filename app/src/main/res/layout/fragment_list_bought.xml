@@ -25,115 +25,21 @@
         android:layout_marginRight="16dp"
         android:layout_marginBottom="82dp"/>
 
-    <androidx.core.widget.NestedScrollView
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:fillViewport="true">
-
-        <LinearLayout
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <ProgressBar
+            android:id="@+id/pb_load_lbcc"
+            style="?android:attr/progressBarStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <ProgressBar
-                android:id="@+id/pb_load_lbcc"
-                style="?android:attr/progressBarStyle"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:elevation="@dimen/card_elevator_5"
-                android:progressBackgroundTint="?attr/colorPrimaryVariant"/>
-
-            <LinearLayout
-                android:id="@+id/llSplitDownCurrent"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/lbCapitalList"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    app:prefixText="$"
-                    style="@style/MaterialTextInputLayoutView"
-                    android:hint="@string/capital_value_short" >
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/tvCapitalList"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="@string/money_hint"
-                        android:enabled="false"
-                        style="@style/MaterialTextInputLayoutView"
-                        android:textAlignment="textEnd" />
-                </com.google.android.material.textfield.TextInputLayout>
-
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/lbInterestList"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    app:prefixText="$"
-                    style="@style/MaterialTextInputLayoutView"
-                    android:hint="@string/interest_value_short" >
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/tvInterestList"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="@string/money_hint"
-                        android:enabled="false"
-                        style="@style/MaterialTextInputLayoutView"
-                        android:textAlignment="textEnd" />
-                </com.google.android.material.textfield.TextInputLayout>
-
-
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/lbTotalQuoteList"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    app:prefixText="$"
-                    android:hint="@string/total_quote"
-                    style="@style/MaterialTextInputLayoutView"
-                    android:text="@string/total_quote_value_short" >
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/tvTotalQuoteList"
-                    android:layout_width="match_parent"
-                    android:enabled="false"
-                    style="@style/MaterialTextInputLayoutView"
-                    android:layout_height="wrap_content"
-                    android:text="@string/money_hint"
-                    android:textAlignment="textEnd" />
-                </com.google.android.material.textfield.TextInputLayout>
-            </LinearLayout>
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btn_see_more_qccl"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/see_more"
-                />
-
-            <ScrollView
-                android:id="@+id/scroll_qccl"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical">
-
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/list_bought"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent" />
-                </LinearLayout>
-            </ScrollView>
-
-        </LinearLayout>
-    </androidx.core.widget.NestedScrollView>
+            android:elevation="@dimen/card_elevator_5"
+            android:progressBackgroundTint="?attr/colorPrimaryVariant"/>
+        <androidx.compose.ui.platform.ComposeView
+            android:id="@+id/bought_list_compose"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+    </LinearLayout>
 
 </FrameLayout>

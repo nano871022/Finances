@@ -1,56 +1,72 @@
 package co.japl.android.myapplication.finanzas.controller.boughtcreditcard
 
+import android.animation.ObjectAnimator
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
+import android.widget.ProgressBar
 import androidx.annotation.RequiresApi
+import androidx.compose.ui.platform.ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed
 import androidx.fragment.app.Fragment
 import androidx.loader.app.LoaderManager
 import androidx.loader.content.AsyncTaskLoader
 import androidx.loader.content.Loader
 import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
+import co.com.japl.finances.iports.inbounds.common.ICreditCardPort
+import co.com.japl.finances.iports.inbounds.common.IDifferQuotesPort
+import co.com.japl.finances.iports.inbounds.creditcard.bought.lists.IBoughtListPort
+import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.japl.android.myapplication.R
-import co.japl.android.myapplication.adapter.ListBoughtAdapter
-import co.japl.android.myapplication.bussiness.DTO.CreditCardBoughtDTO
 import co.japl.android.myapplication.bussiness.DTO.TaxDTO
 import co.japl.android.myapplication.bussiness.interfaces.ITaxSvc
+import co.japl.android.myapplication.databinding.FragmentListBoughtBinding
 import co.japl.android.myapplication.finanzas.bussiness.interfaces.IQuoteCreditCardSvc
 import co.japl.android.myapplication.finanzas.enums.TaxEnum
-import co.japl.android.myapplication.finanzas.holders.ListBoughtHolder
-import co.japl.android.myapplication.finanzas.pojo.BoughtRecap
+import co.japl.android.myapplication.finanzas.pojo.BoughtCreditCard
+import co.japl.android.myapplication.finanzas.putParams.CashAdvanceParams
 import co.japl.android.myapplication.finanzas.putParams.CreditCardQuotesParams
-import co.japl.android.myapplication.holders.view.BoughtViewHolder
+import co.japl.android.myapplication.finanzas.view.creditcard.bought.BoughtList
 import co.japl.android.myapplication.pojo.CreditCard
-import co.japl.android.myapplication.utils.DateUtils
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import dagger.hilt.android.AndroidEntryPoint
-import java.math.BigDecimal
+import java.time.YearMonth
 import java.util.*
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class ListBought : Fragment() , LoaderManager.LoaderCallbacks<Pair<List<CreditCardBoughtDTO>,BoughtRecap>>{
-
-    lateinit var holder:ListBoughtHolder
-    lateinit var adapter:RecyclerView.Adapter<BoughtViewHolder>
+class ListBought : Fragment() , LoaderManager.LoaderCallbacks<BoughtCreditCard>{
 
     lateinit var creditCard:CreditCard
-    lateinit var taxAdvance:Optional<TaxDTO>
-    lateinit var taxQuote:Optional<TaxDTO>
 
     @Inject lateinit var saveSvc: IQuoteCreditCardSvc
     @Inject lateinit var taxSvc:ITaxSvc
+    @Inject lateinit var boughtListSvc:IBoughtListPort
+    @Inject lateinit var creditCardSvc:ICreditCardPort
+    @Inject lateinit var differInstallmentSvc:IDifferQuotesPort
 
-    @RequiresApi(Build.VERSION_CODES.O)
+    private lateinit var btnAddAdvanceBought: FloatingActionButton
+    private lateinit var btnAddQuoteBought: FloatingActionButton
+
+    private var _binding:FragmentListBoughtBinding? = null
+    private val binding get() = _binding!!
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        val rootView = inflater.inflate(R.layout.fragment_list_bought, container, false)
+    ): View {
+        _binding = FragmentListBoughtBinding.inflate(inflater, container, false)
+        val rootView = binding.root
+
+        btnAddAdvanceBought = rootView.findViewById(R.id.btn_cashadvc_lbcc)
+        btnAddQuoteBought = rootView.findViewById(R.id.btn_quote_lbcc)
+
+        btnAddQuoteBought.visibility = View.GONE
+        btnAddAdvanceBought.visibility = View.GONE
+
         arguments?.let {
             val params = CreditCardQuotesParams.Companion.Historical.download(it)
             creditCard = CreditCard()
@@ -58,15 +74,44 @@ class ListBought : Fragment() , LoaderManager.LoaderCallbacks<Pair<List<CreditCa
             creditCard.cutOff = Optional.ofNullable(params.second)
             creditCard.cutoffDay = Optional.ofNullable(params.third)
         }
-        taxAdvance = taxSvc.get(creditCard.codeCreditCard.get().toLong(),creditCard.cutOff.get().monthValue,creditCard.cutOff.get().year,
-            TaxEnum.CASH_ADVANCE)
-        taxQuote = taxSvc.get(creditCard.codeCreditCard.get().toLong(),creditCard.cutOff.get().monthValue,creditCard.cutOff.get().year,
-            TaxEnum.CREDIT_CARD)
 
-        holder = ListBoughtHolder(rootView,inflater,findNavController())
-        holder.setFields(null)
+        taxSvc.get(creditCard.codeCreditCard.get().toLong(),creditCard.cutOff.get().monthValue,creditCard.cutOff.get().year,
+            TaxEnum.CASH_ADVANCE).takeIf { it.isPresent }?.get()?.let {
+            showButtonsCashAdvance()
+        }
+
+        taxSvc.get(creditCard.codeCreditCard.get().toLong(),creditCard.cutOff.get().monthValue,creditCard.cutOff.get().year,
+            TaxEnum.CREDIT_CARD).takeIf { it.isPresent }?.get()?.let {
+            showButtonsQuote()
+        }
+
+        btnAddQuoteBought.setOnClickListener {
+            CreditCardQuotesParams.Companion.ListBought.newInstanceFloat(0,creditCard.codeCreditCard.get(),findNavController())
+        }
+        btnAddAdvanceBought.setOnClickListener{
+            CashAdvanceParams.newInstanceFloat(creditCard.codeCreditCard.get(),findNavController())
+        }
+
         loaderManager.initLoader(1,null,this)
+
         return rootView
+    }
+
+    private fun showButtonsCashAdvance(){
+        btnAddAdvanceBought.visibility = View.VISIBLE
+        Handler(Looper.getMainLooper()).postDelayed({
+            val animator = ObjectAnimator.ofFloat(btnAddAdvanceBought, "alpha", 1.0F, 0.2F)
+            animator.duration = 2000L
+            animator.start()
+        },5000)
+    }
+    private fun showButtonsQuote(){
+        btnAddQuoteBought.visibility = View.VISIBLE
+        Handler(Looper.getMainLooper()).postDelayed({
+            val animator = ObjectAnimator.ofFloat(btnAddQuoteBought, "alpha", 1.0F, 0.2F)
+            animator.duration = 2000L
+            animator.start()
+        },5000)
     }
 
     override fun onResume() {
@@ -74,84 +119,16 @@ class ListBought : Fragment() , LoaderManager.LoaderCallbacks<Pair<List<CreditCa
         loaderManager.restartLoader(1,null,this)
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
-    private fun loadRecyclerView(list:List<CreditCardBoughtDTO>){
-        if( list.isEmpty()){
-            Toast.makeText(requireContext(),R.string.theres_not_records_to_show_you, Toast.LENGTH_LONG).show()
-            CreditCardQuotesParams.Companion.Historical.toBack(findNavController())
-        }
-        list.let {
-            holder.lists {
-                it.recyclerView.layoutManager =
-                    LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
-                adapter = ListBoughtAdapter(list.toMutableList(), creditCard.cutOff.get(),layoutInflater,findNavController())
-                it.recyclerView.adapter = adapter
-
-                taxAdvance?.ifPresent{ tax-> it.showButtonsCashAdvance() }
-                taxQuote?.ifPresent{ tax-> it.showButtonsQuote() }
-            }
-        }
-    }
-    @RequiresApi(Build.VERSION_CODES.O)
-    private fun getAllData():Pair<List<CreditCardBoughtDTO>,BoughtRecap>{
-        val startDate = DateUtils.startDateFromCutoff(creditCard.cutoffDay.get(),creditCard.cutOff.get())
-        val list = saveSvc.getToDate(creditCard.codeCreditCard.get(),startDate,creditCard.cutOff.get())
-        val listRecurrent = saveSvc.getRecurrentBuys(creditCard.codeCreditCard.get(),creditCard.cutOff.get())
-        listRecurrent.forEach { it.boughtDate = it.boughtDate.withYear(creditCard.cutOff.get().year).withMonth(creditCard.cutOff.get().monthValue) }
-        val listRecurrentPending = (saveSvc as IQuoteCreditCardSvc).getRecurrentPendingQuotes(creditCard.codeCreditCard.get(),creditCard.cutOff.get())
-        val pending = saveSvc.getPendingQuotes(creditCard.codeCreditCard.get(),startDate,creditCard.cutOff.get())
-        var joinList = ArrayList<CreditCardBoughtDTO>().toMutableList()
-        joinList.addAll(list)
-        joinList.addAll(pending)
-        joinList.addAll(listRecurrent)
-        joinList.addAll(listRecurrentPending)
-
-        val capital = saveSvc.getCapital(creditCard.codeCreditCard.get(),startDate,creditCard.cutOff.get())
-        val capitalQuotes = saveSvc.getCapitalPendingQuotes(creditCard.codeCreditCard.get(),startDate,creditCard.cutOff.get())
-        val interest = saveSvc.getInterest(creditCard.codeCreditCard.get(),startDate,creditCard.cutOff.get())
-        val interestQuotes = saveSvc.getInterestPendingQuotes(creditCard.codeCreditCard.get(),startDate,creditCard.cutOff.get())
-        val pendingToPay = saveSvc.getPendingToPay(creditCard.codeCreditCard.get(),startDate,creditCard.cutOff.get())
-        val pendingToPayQuotes = saveSvc.getPendingToPayQuotes(creditCard.codeCreditCard.get(),startDate,creditCard.cutOff.get())
-        val boughtRecap = BoughtRecap()
-        boughtRecap.capitalValue = Optional.ofNullable(capital.orElse(BigDecimal(0)).plus(capitalQuotes.orElse(BigDecimal(0))))
-        boughtRecap.interestValue = Optional.ofNullable(interest.orElse(BigDecimal(0)).plus(interestQuotes.orElse(BigDecimal(0))))
-        boughtRecap.pendingToPay = Optional.ofNullable(pendingToPay.orElse(BigDecimal(0)).plus(pendingToPayQuotes.orElse(BigDecimal(0))))
-        boughtRecap.totalValue = Optional.ofNullable(boughtRecap.capitalValue.orElse(BigDecimal.ZERO).plus(boughtRecap.interestValue.orElse(BigDecimal.ZERO)))
-        boughtRecap.currentValueCapital = capital
-        boughtRecap.quotesValueCapital = capitalQuotes
-        boughtRecap.currentValueInterest = interest
-        boughtRecap.quotesValueInterest = interestQuotes
-
-        boughtRecap.quoteItem = Optional.of(list.count { it.month == 1 })
-        boughtRecap.quotesItem =  Optional.of(listRecurrentPending.size + pending.size + list.count { it.month > 1 } )
-        boughtRecap.recurrentItem = Optional.of(listRecurrent.size)
-        boughtRecap.totalItem = Optional.of(joinList.size)
-        boughtRecap.codeCreditCard = creditCard.codeCreditCard.orElse(0)
-
-        val quoteEnding = joinList.filter {
-            it.month.toLong() == DateUtils.getMonths(it.boughtDate,creditCard.cutOff.get()) + 1
-        }
-        val quoteNextEnding = joinList.filter {
-            it.month.toLong() == DateUtils.getMonths(it.boughtDate,creditCard.cutOff.get()) + 2
-        }
-
-        boughtRecap.numQuoteNextEnd = quoteNextEnding.size.toShort()
-        boughtRecap.numQuoteEnd = quoteEnding.size.toShort()
-        boughtRecap.totalQuoteNextEnd =  quoteNextEnding.sumOf { it.valueItem / it.month.toBigDecimal() }
-        boughtRecap.totalQuoteEnd =  quoteEnding.sumOf { it.valueItem / it.month.toBigDecimal() }
-
-        creditCard.cutOff?.ifPresent { boughtRecap.cutOffDate = it }
-
-        joinList = joinList.sortedByDescending { it.boughtDate }.toMutableList()
-        return Pair(joinList,boughtRecap)
-    }
-
-    override fun onCreateLoader(id: Int, args: Bundle?): Loader<Pair<List<CreditCardBoughtDTO>,BoughtRecap>> {
-        return object: AsyncTaskLoader<Pair<List<CreditCardBoughtDTO>,BoughtRecap>>(requireContext()){
-            private var data:Pair<List<CreditCardBoughtDTO>,BoughtRecap>? = null
+    override fun onCreateLoader(id: Int, args: Bundle?): Loader<BoughtCreditCard> {
+        return object: AsyncTaskLoader<BoughtCreditCard>(requireContext()){
+            private var data:BoughtCreditCard? = null
             @RequiresApi(Build.VERSION_CODES.O)
-            override fun loadInBackground(): Pair<List<CreditCardBoughtDTO>,BoughtRecap>? {
-                data = getAllData()
+            override fun loadInBackground(): BoughtCreditCard? {
+                val creditCardDto = creditCardSvc.getCreditCard(creditCard.codeCreditCard.get())
+                val differ = differInstallmentSvc.getDifferQuote(creditCard.cutOff.get().toLocalDate())
+                val boughts = boughtListSvc.getBoughtList(creditCardDto!!,creditCard.cutOff.get())
+                val group = boughts.list?.sortedByDescending { it.boughtDate!! }?.groupBy { YearMonth.of(it.boughtDate.year,it.boughtDate.monthValue)!! }!!
+                data = BoughtCreditCard(boughts.recap,group,creditCardDto,differ, cutOff = creditCard.cutOff.get())
                 return data
             }
 
@@ -166,14 +143,22 @@ class ListBought : Fragment() , LoaderManager.LoaderCallbacks<Pair<List<CreditCa
         }
     }
 
-    override fun onLoaderReset(loader: Loader<Pair<List<CreditCardBoughtDTO>,BoughtRecap>>) {
+    override fun onLoaderReset(loader: Loader<BoughtCreditCard>) {
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    override fun onLoadFinished(loader: Loader<Pair<List<CreditCardBoughtDTO>,BoughtRecap>>, data: Pair<List<CreditCardBoughtDTO>,BoughtRecap>?) {
+    override fun onLoadFinished(loader: Loader<BoughtCreditCard>, data: BoughtCreditCard?) {
         data?.let {
-            loadRecyclerView(it.first)
-            holder.loadFields(it.second)
+
+            view?.findViewById<ProgressBar>(R.id.pb_load_lbcc)?.let {it.visibility = View.GONE}
+            binding.boughtListCompose?.apply {
+                setViewCompositionStrategy(DisposeOnViewTreeLifecycleDestroyed)
+                setContent {
+                    MaterialThemeComposeUI {
+                        BoughtList(data)
+                    }
+                }
+            }
         }
     }
 }
