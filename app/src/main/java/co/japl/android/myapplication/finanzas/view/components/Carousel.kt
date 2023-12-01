@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.PageSize
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
@@ -25,7 +26,7 @@ import kotlinx.coroutines.delay
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun Carousel(size:Int,delayMills:Long=10_000,modifier:Modifier=Modifier,components:@Composable() (Int)->Unit){
+fun Carousel(size:Int,delayMills:Long=20_000,modifier:Modifier=Modifier,pagerSize: PageSize=PageSize.Fill,components:@Composable() (Int)->Unit){
     val state = rememberPagerState(pageCount = {size})
     val isDragged by state.interactionSource.collectIsDraggedAsState()
     if(isDragged.not()){
@@ -42,6 +43,7 @@ fun Carousel(size:Int,delayMills:Long=10_000,modifier:Modifier=Modifier,componen
 
     Box {
         HorizontalPager(state = state
+            , pageSize = pagerSize
             ,modifier = modifier) {
 
             components.invoke(it)

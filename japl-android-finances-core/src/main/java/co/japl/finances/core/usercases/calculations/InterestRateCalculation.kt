@@ -1,9 +1,10 @@
-package co.japl.finances.core.usercases.implement.common
+package co.japl.finances.core.usercases.calculations
 
+import android.util.Log
 import co.com.japl.finances.iports.enums.KindOfTaxEnum
 import kotlin.math.pow
 
-object KindOfTaxImpl  {
+object InterestRateCalculation  {
     private val PERIODS_YEAR = 12
     fun getNM(value: Double, kindOf: KindOfTaxEnum): Double {
         return when(kindOf){
@@ -19,6 +20,8 @@ object KindOfTaxImpl  {
             KindOfTaxEnum.MONTLY_NOMINAL->{
                 value/100
             }
+        }.also {
+            Log.w(javaClass.name,"<<<=== FINISH:GetNM Value $value Kind: $kindOf Response: $it NM")
         }
     }
 

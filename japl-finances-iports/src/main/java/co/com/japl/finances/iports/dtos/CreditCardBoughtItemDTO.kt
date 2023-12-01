@@ -1,9 +1,7 @@
 package co.com.japl.finances.iports.dtos
 
-import android.provider.BaseColumns
 import co.com.japl.finances.iports.enums.KindOfTaxEnum
-import co.com.japl.finances.iports.enums.TaxEnum
-import java.math.BigDecimal
+import co.com.japl.finances.iports.enums.KindInterestRateEnum
 import java.time.LocalDateTime
 
 data class CreditCardBoughtItemDTO (
@@ -19,7 +17,7 @@ data class CreditCardBoughtItemDTO (
     var endDate: LocalDateTime,
     var id:Int,
     var recurrent:Boolean,
-    var kind:TaxEnum,
+    var kind:KindInterestRateEnum,
     var kindOfTax:KindOfTaxEnum,
 
     var monthPaid:Long,

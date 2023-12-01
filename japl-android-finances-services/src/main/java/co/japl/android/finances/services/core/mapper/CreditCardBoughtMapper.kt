@@ -1,5 +1,7 @@
 package co.japl.android.finances.services.core.mapper
 
+import co.com.japl.finances.iports.enums.KindOfTaxEnum
+import co.com.japl.finances.iports.enums.KindInterestRateEnum
 import co.japl.android.finances.services.dto.CreditCardBoughtDTO
 
 object CreditCardBoughtMapper {
@@ -17,8 +19,8 @@ object CreditCardBoughtMapper {
             createDate = creditCardBoughtDTO.createDate,
             endDate = creditCardBoughtDTO.endDate,
             recurrent = creditCardBoughtDTO.recurrent,
-            kind = creditCardBoughtDTO.kind,
-            kindOfTax = creditCardBoughtDTO.kindOfTax,
+            kind = KindInterestRateEnum.findByOrdinal(creditCardBoughtDTO.kind),
+            kindOfTax = KindOfTaxEnum.findByValue( creditCardBoughtDTO.kindOfTax),
             codeCreditCard = creditCardBoughtDTO.codeCreditCard
         )
     }
@@ -36,8 +38,8 @@ object CreditCardBoughtMapper {
             createDate = creditCardBoughtDTO.createDate,
             endDate = creditCardBoughtDTO.endDate,
             recurrent = creditCardBoughtDTO.recurrent,
-            kind = creditCardBoughtDTO.kind,
-            kindOfTax = creditCardBoughtDTO.kindOfTax,
+            kind = creditCardBoughtDTO.kind.ordinal.toShort(),
+            kindOfTax = creditCardBoughtDTO.kindOfTax.getName(),
             codeCreditCard = creditCardBoughtDTO.codeCreditCard
         )
     }

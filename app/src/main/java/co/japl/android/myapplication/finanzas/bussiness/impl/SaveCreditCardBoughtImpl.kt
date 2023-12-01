@@ -375,7 +375,8 @@ class SaveCreditCardBoughtImpl @Inject constructor(val context:Context, override
 
         val interest = kindOfTaxSvc.getNM(tax.orElse (defaultTax).first,KindOfTaxEnum.valueOf(tax.orElse(defaultTax).second)?:KindOfTaxEnum.EM)
         val interestCashAdv = kindOfTaxSvc.getNM(taxCashAdv.orElse(defaultTax).first,KindOfTaxEnum.valueOf(taxCashAdv.orElse(defaultTax).second)?:KindOfTaxEnum.EM)
-        val interestWalletBuy = kindOfTaxSvc.getNM(taxWalletBuy.orElse(defaultTax).first,KindOfTaxEnum.valueOf(taxCashAdv.orElse(defaultTax).second)?:KindOfTaxEnum.EM)
+        val interestWalletBuy = kindOfTaxSvc.getNM(defaultTax.first,KindOfTaxEnum.valueOf(defaultTax.second)?:KindOfTaxEnum.EM)
+        Log.d(javaClass.name,"=== calculateInterest: Id: ${dto.id} Name: ${dto.nameItem} BoughtDate ${dto.boughtDate}  Month $month Tax: ${dto.interest} KindTax ${dto.kindOfTax}  Kind ${dto.kind} CC $interest CA $interestCashAdv WB $interestWalletBuy TCC $tax TCA $taxCashAdv TWB $taxWalletBuy DEF $defaultTax")
         var setting = false
         buyCCSettingSvc.getAll().forEach { Log.d(javaClass.name,"=== $it") }
         buyCCSettingSvc.get(dto.id).ifPresent {

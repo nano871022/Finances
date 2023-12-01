@@ -100,7 +100,6 @@ class TaxImpl @Inject constructor(override var dbConnect: SQLiteOpenHelper) :  I
 
     @RequiresApi(Build.VERSION_CODES.N)
     override fun get(codCreditCard:Long,month:Int, year:Int,kind: TaxEnum):Optional<TaxDTO>{
-        Log.d(this.javaClass.name,"<<<=== Start get - $month , $year")
             val db = dbConnect.writableDatabase
             val cursor = db.query(
                 TaxDB.TaxEntry.TABLE_NAME,
@@ -115,14 +114,14 @@ class TaxImpl @Inject constructor(override var dbConnect: SQLiteOpenHelper) :  I
                 with(cursor) {
                     while (moveToNext()) {
                         return Optional.ofNullable(mapper.mapping(this)).also {
-                            Log.d(this.javaClass.name, "response $it")
+                            Log.d(this.javaClass.name, "=== FINISH:GetTax Month: $month Year $year $kind Response $it")
                         }
                     }
                 }
 
             return Optional.empty()
         }finally{
-            Log.d(this.javaClass.name,"<<<=== End - get $month , $year")
+            Log.d(this.javaClass.name,"<<<=== FINISH:GetTax - get $month , $year $kind EMPTY")
         }
     }
     @RequiresApi(Build.VERSION_CODES.O)

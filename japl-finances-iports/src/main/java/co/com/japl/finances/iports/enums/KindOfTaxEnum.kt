@@ -11,8 +11,8 @@ enum class KindOfTaxEnum (val value:String){
     }
 
     companion object{
-        fun findByValue(value:String): KindOfTaxEnum {
-            return KindOfTaxEnum.values().first { it.value == value }
+        fun findByValue(value:String?): KindOfTaxEnum {
+            return KindOfTaxEnum.values().firstOrNull{ it.value == value }?: KindOfTaxEnum.MONTHLY_EFFECTIVE
         }
     }
 }

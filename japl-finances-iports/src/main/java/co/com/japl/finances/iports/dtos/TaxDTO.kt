@@ -1,5 +1,7 @@
 package co.com.japl.finances.iports.dtos
 
+import co.com.japl.finances.iports.enums.KindOfTaxEnum
+import co.com.japl.finances.iports.enums.KindInterestRateEnum
 import java.time.LocalDateTime
 
 data class TaxDTO (
@@ -10,7 +12,7 @@ data class TaxDTO (
     var codCreditCard:Int,
     var create: LocalDateTime,
     var value: Double,
-    var kind: Short,
+    var kind: KindInterestRateEnum,
     var period: Short,
-    var kindOfTax: String?
+    var kindOfTax: KindOfTaxEnum?
     )

@@ -1,6 +1,7 @@
 package co.japl.android.myapplication.finanzas.view.components
 
 import androidx.annotation.StringRes
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -32,6 +33,7 @@ fun Popup(@StringRes title:Int, state: MutableState<Boolean>, content:@Composabl
                 .padding(5.dp)
                 .fillMaxWidth()
             , colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primary)
+            , border = BorderStroke(1.dp, MaterialTheme.colorScheme.onPrimaryContainer)
             , elevation = CardDefaults.cardElevation(10.dp)
         ) {
             Title(stringResource(id = title),state)

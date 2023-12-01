@@ -1,0 +1,326 @@
+package co.japl.android.myapplication.finanzas.view.creditcard.bought.list
+
+import android.app.Application
+import android.util.Log
+import androidx.annotation.StringRes
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Card
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.PlainTooltipBox
+import androidx.compose.material3.PlainTooltipState
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalView
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
+import androidx.navigation.Navigation
+import co.com.japl.finances.iports.dtos.CreditCardBoughtItemDTO
+import co.com.japl.finances.iports.dtos.CreditCardDTO
+import co.com.japl.finances.iports.dtos.DifferInstallmentDTO
+import co.com.japl.finances.iports.enums.KindOfTaxEnum
+import co.com.japl.finances.iports.enums.KindInterestRateEnum
+import co.com.japl.ui.theme.MaterialThemeComposeUI
+import co.japl.android.myapplication.R
+import co.japl.android.myapplication.finanzas.utils.WindowWidthSize
+import co.japl.android.myapplication.utils.NumbersUtil
+import kotlinx.coroutines.launch
+import java.math.RoundingMode
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+internal fun RecordBoughtCreditCard(bought: CreditCardBoughtItemDTO, creditCard: CreditCardDTO, differQuotes:List<DifferInstallmentDTO>, cutOff: LocalDateTime) {
+    val context = LocalContext.current
+    val application = context.applicationContext
+    val view = LocalView.current
+    val navController = Navigation.findNavController(view)
+
+    val state = remember { mutableStateOf(false) }
+    val model = remember {
+        BoughtViewModel (application = application as Application)
+            .setBought(bought)
+            .setCreditCard(creditCard)
+            .setDifferQuotes(differQuotes)
+            .setNavController(navController)
+            .setView(view)
+            .setCutOff(cutOff)
+    }
+
+
+    Card(
+        onClick = { state.value = !state.value }
+        , modifier = Modifier
+            .padding(top = 1.dp, start = 2.dp, end = 2.dp, bottom = 2.dp)
+            .fillMaxWidth()
+        , border = BorderStroke(2.dp, getColor(model))
+    ) {
+        Column(
+            modifier = Modifier
+                .padding(start=5.dp,end=5.dp, bottom=3.dp)
+        ) {
+            MainRow(model = model)
+            if (state.value) {
+                Content(model)
+            }
+        }
+    }
+}
+
+@Composable
+private fun Content(model:BoughtViewModel){
+    BoxWithConstraints {
+        if(WindowWidthSize.MEDIUM.isEqualTo(maxWidth)){
+            ContentCompact(model )
+        }else{
+            ContentLarge(model)
+        }
+    }
+}
+
+@Composable
+private fun ContentLarge(model: BoughtViewModel,paddingEnd:Dp=10.dp){
+    Row (verticalAlignment = Alignment.CenterVertically) {
+        LabelValue(
+            label = R.string.product_value_short,
+            value = NumbersUtil.COPtoString(model.bought.valueItem),
+            modifier = Modifier
+                .weight(1f)
+                .padding(end = paddingEnd)
+        )
+
+        LabelValue(
+            label = R.string.pending_to_pay_short,
+            value = NumbersUtil.COPtoString(model.bought.pendingToPay),
+            modifier = Modifier
+                .weight(1f)
+                .padding(end = paddingEnd)
+        )
+
+        LabelValue(
+            label = R.string.capital_value_short,
+            value = NumbersUtil.COPtoString(model.bought.capitalValue),
+            modifier = Modifier
+                .weight(1f)
+                .padding(end = paddingEnd)
+        )
+
+        LabelValue(
+            label = R.string.interest_value_short,
+            value = NumbersUtil.COPtoString(model.bought.interestValue),
+            modifier = Modifier
+                .weight(1f)
+                .padding(end = paddingEnd)
+        )
+    }
+}
+
+
+@Composable
+private fun ContentCompact(model:BoughtViewModel,paddingEnd:Dp=10.dp){
+    Column {
+        Row(
+            modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically
+        ) {
+            LabelValue(
+                label = R.string.product_value,
+                value = NumbersUtil.COPtoString(model.bought.valueItem),
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(end = paddingEnd)
+            )
+
+            LabelValue(
+                label = R.string.pending_to_pay,
+                value = NumbersUtil.COPtoString(model.bought.pendingToPay),
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(end = paddingEnd)
+            )
+        }
+        Row(
+            modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically
+        ) {
+            LabelValue(
+                label = R.string.tax,
+                value = "${
+                    (model.bought.interest * 100).toBigDecimal()
+                        .setScale(2, RoundingMode.CEILING)
+                }% ${model.bought.kindOfTax.getName()}",
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(end = paddingEnd)
+            )
+
+            LabelValue(
+                label = R.string.capital_value,
+                value = NumbersUtil.COPtoString(model.bought.capitalValue),
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(end = paddingEnd)
+            )
+        }
+        Row(
+            modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically
+        ) {
+            LabelValue(
+                label = R.string.interest_value,
+                value = NumbersUtil.COPtoString(model.bought.interestValue),
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(end = paddingEnd)
+            )
+
+            LabelValue(
+                label = R.string.quote_value,
+                value = NumbersUtil.COPtoString(model.bought.quoteValue),
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(end = paddingEnd)
+            )
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun MainRow(model:BoughtViewModel){
+    val stateTooltip = remember { PlainTooltipState() }
+    val scope = rememberCoroutineScope()
+    val stateDialogOptionsMore = remember { mutableStateOf(false) }
+    when{
+        stateDialogOptionsMore.value -> {
+            MoreOptionsDialog(model.bought.pendingToPay,model.getMoreOptionsList(),onDismiss = { stateDialogOptionsMore.value = false }, onClick = model::moreOption)
+        }
+    }
+    Row(modifier = Modifier.fillMaxWidth()
+        , verticalAlignment = Alignment.CenterVertically) {
+        if(model.bought.tagName.isNotBlank()) {
+            PlainTooltipBox(tooltip = {
+                Text(text = model.bought.tagName)
+            }, tooltipState = stateTooltip) {
+                IconButton(onClick={scope.launch{stateTooltip.show()}}
+                ) {
+                    Icon(   painter = painterResource(id = R.drawable.baseline_location_on_24),
+                        contentDescription = model.bought.tagName)
+                }
+            }
+        }
+        Text(
+            text = model.bought.boughtDate.format(DateTimeFormatter.ofPattern("dd")),
+            modifier = Modifier.padding(end = 5.dp)
+        )
+        Text(text = model.bought.nameItem, modifier = Modifier.weight(2f))
+
+        BoxWithConstraints {
+            val maxWidth = maxWidth
+            Row {
+                when(WindowWidthSize.fromDp(maxWidth)){
+                    WindowWidthSize.COMPACT->MainRowCompact(model = model)
+                    WindowWidthSize.MEDIUM->MainRowMedium(model = model)
+                    else->MainRowLarge(model  )
+                }
+            }
+        }
+
+        IconButton(onClick = {
+            stateDialogOptionsMore.value = true
+        }) {
+            Icon(painter = painterResource(id = R.drawable.more_vertical)
+                , contentDescription = stringResource(id = R.string.see_more)
+            )
+        }
+
+    }
+}
+
+@Composable
+private fun RowScope.MainRowCompact(model:BoughtViewModel){
+    Text(text = "${model.bought.monthPaid}/${model.bought.month}")
+}
+
+@Composable
+private fun RowScope.MainRowMedium(model:BoughtViewModel){
+    Log.w(javaClass.name,"=== MainRowMedium ")
+    Text(text = "${model.bought.monthPaid}/${model.bought.month}")
+
+    Text(text = NumbersUtil.COPtoString(model.bought.quoteValue),modifier=Modifier.padding(start=5.dp))
+}
+
+@Composable
+private fun RowScope.MainRowLarge(model:BoughtViewModel){
+
+    Text(text = "${(model.bought.interest * 100).toBigDecimal().setScale(2, RoundingMode.CEILING)}% ${model.bought.kindOfTax.getName()}",modifier=Modifier.padding(end=10.dp))
+
+    Text(text = "${model.bought.monthPaid}/${model.bought.month}")
+
+    Text(text = stringResource(id = R.string.quote_value),modifier=Modifier.padding(start=10.dp,end=3.dp))
+
+    Text(text = NumbersUtil.COPtoString(model.bought.quoteValue))
+}
+
+@Composable
+private fun LabelValue(@StringRes label:Int, value:String, modifier:Modifier){
+    Text(text = stringResource(id = label), modifier = modifier)
+    Text(text = value, modifier = modifier, textAlign = TextAlign.End)
+}
+
+@Preview
+@Composable
+fun Preview(){
+    MaterialThemeComposeUI {
+        RecordBoughtCreditCard(CreditCardBoughtItemDTO(
+            id = 0,
+            nameItem = "Credito 1",
+            valueItem = 10000.0,
+            interest = 3.0,
+            month = 1,
+            interestValue = 3000.0,
+            quoteValue = 13000.0,
+            capitalValue = 10000.0,
+            settings = 0.0,
+            monthPaid = 0,
+            pendingToPay = 0.0,
+            tagName = "Casa",
+            settingCode = 1,
+            boughtDate = LocalDateTime.now(),
+            cutOutDate = LocalDateTime.now(),
+            createDate = LocalDateTime.now(),
+            endDate = LocalDateTime.now(),
+            codeCreditCard = 1,
+            nameCreditCard = "Visa",
+            recurrent = true,
+            kind = KindInterestRateEnum.CREDIT_CARD,
+            kindOfTax = KindOfTaxEnum.MONTHLY_EFFECTIVE,
+
+        ),CreditCardDTO(
+            cutOffDay = 1,
+            id = 1,
+            name = "Visa",
+            create = LocalDateTime.now(),
+            interest1Quote = true,
+            interest1NotQuote = false,
+            maxQuotes = 0,
+            warningValue = 0.toBigDecimal(),
+            status = true
+        ), listOf(), LocalDateTime.now())
+    }
+}

@@ -76,6 +76,7 @@
     <string name="bought_made">Compra Realizada</string>
     <string name="product_name">Nombre Producto</string>
     <string name="product_value">Valor Producto</string>
+    <string name="product_value_short">Valor</string>
     <string name="bought_date_time">Fecha Compra</string>
     <string name="total_quotes">Cuotas Totales</string>
     <string name="bought_quotes">Cuotas Pagadas</string>
@@ -115,6 +116,7 @@
     <string name="pending_to_pay_short">Pendiente</string>
     <string name="total_quote_value_short">Cuota</string>
     <string name="total_quote">Cuota Total</string>
+    <string name="total">Total</string>
     <string name="total_debt">Deuda Total</string>
     <array name="num_credits">Número de Créditos</array>
 

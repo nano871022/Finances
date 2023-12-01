@@ -21,25 +21,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"/>
 
-
-            <ProgressBar
-                android:id="@+id/pb_load_rec"
-                style="?android:attr/progressBarStyle"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:elevation="@dimen/card_elevator_5"
-                android:progressBackgroundTint="@color/green_background"
-                android:rotationX="-2" />
-
-
-    <co.japl.android.graphs.drawer.CustomDraw
-        android:id="@+id/cv_canvas_rec"
-        android:layout_width="match_parent"
-        android:layout_height="400dp"/>
-
-
-
-
         </LinearLayout>
 </ScrollView>
 </LinearLayout>

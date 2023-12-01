@@ -16,7 +16,7 @@ import co.japl.android.myapplication.utils.NumbersUtil
 fun CardRecap(title:String,totalInbound:Double,totalPayment:Double){
     CardValues(title = title) {
 
-        FieldView(name = stringResource(id = R.string.total_inputs_fix)
+        FieldView(name = stringResource(id = R.string.input_total)
             , value = NumbersUtil.toString(totalInbound)
             , modifier= Modifier.fillMaxWidth())
 

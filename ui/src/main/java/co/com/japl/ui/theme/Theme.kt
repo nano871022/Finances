@@ -19,19 +19,19 @@ import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
 
 private val LighColorSchema = lightColorScheme(
-    onPrimaryContainer = color_theme_light_on_primary_container,
     primaryContainer = color_theme_light_primary_container,
-    surfaceVariant = color_theme_light_surface_variant,
+    onPrimaryContainer = color_theme_light_on_primary_container,
     primary = color_theme_light_primary,
-    onPrimary = color_theme_light_on_primary
+    onPrimary = color_theme_light_on_primary,
+    surfaceVariant = color_theme_light_surface_variant
 )
 
 private val DarkColorSchema = darkColorScheme(
     primaryContainer = color_theme_dark_primary_container,
     onPrimaryContainer = color_theme_dark_on_primary_container,
-    surfaceVariant = color_theme_dark_surface_variant,
     primary = color_theme_dark_primary,
-    onPrimary = color_theme_dark_on_primary
+    onPrimary = color_theme_dark_on_primary,
+    surfaceVariant = color_theme_dark_surface_variant
 )
 @Composable
 fun MaterialThemeComposeUI(

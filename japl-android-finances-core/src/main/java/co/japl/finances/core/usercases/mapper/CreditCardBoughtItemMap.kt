@@ -2,8 +2,6 @@ package co.japl.finances.core.usercases.mapper
 
 import co.com.japl.finances.iports.dtos.CreditCardBoughtDTO
 import co.com.japl.finances.iports.dtos.CreditCardBoughtItemDTO
-import co.com.japl.finances.iports.enums.KindOfTaxEnum
-import co.com.japl.finances.iports.enums.TaxEnum
 
 object CreditCardBoughtItemMapper {
 
@@ -20,8 +18,8 @@ object CreditCardBoughtItemMapper {
             createDate = creditCardBought.createDate,
             endDate = creditCardBought.endDate,
             recurrent = creditCardBought.recurrent == 1.toShort(),
-            kind = TaxEnum.findByOrdinal(creditCardBought.kind),
-            kindOfTax = KindOfTaxEnum.findByValue(creditCardBought.kindOfTax),
+            kind = creditCardBought.kind,
+            kindOfTax = creditCardBought.kindOfTax,
             codeCreditCard = creditCardBought.codeCreditCard,
             capitalValue = 0.0,
             interestValue = 0.0,

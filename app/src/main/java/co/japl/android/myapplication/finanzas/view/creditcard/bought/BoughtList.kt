@@ -1,14 +1,12 @@
 package co.japl.android.myapplication.finanzas.view.creditcard.bought
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.Button
-import androidx.compose.material.ButtonColors
 import androidx.compose.material.Text
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.runtime.Composable
@@ -20,14 +18,14 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import co.com.japl.finances.iports.dtos.CreditCardBoughtItemDTO
-import co.com.japl.finances.iports.dtos.CreditCardBoughtListDTO
 import co.com.japl.finances.iports.dtos.CreditCardDTO
 import co.com.japl.finances.iports.dtos.RecapCreditCardBoughtListDTO
 import co.com.japl.finances.iports.enums.KindOfTaxEnum
-import co.com.japl.finances.iports.enums.TaxEnum
+import co.com.japl.finances.iports.enums.KindInterestRateEnum
 import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.japl.android.myapplication.R
 import co.japl.android.myapplication.finanzas.pojo.BoughtCreditCard
+import co.japl.android.myapplication.finanzas.utils.WindowWidthSize
 import co.japl.android.myapplication.finanzas.view.components.FieldView
 import co.japl.android.myapplication.finanzas.view.creditcard.bought.list.BoughList
 import co.japl.android.myapplication.utils.NumbersUtil
@@ -39,12 +37,16 @@ fun BoughtList(data:BoughtCreditCard){
     val popupState = remember { mutableStateOf(false) }
 
     Column(modifier=Modifier.fillMaxWidth()) {
-        Header(data.recap.totalCapital,data.recap.totalInterest,data.recap.quoteValue)
-
-        OutlinedButton(onClick = { popupState.value = !popupState.value }
-            , border = BorderStroke(1.dp, MaterialTheme.colorScheme.onPrimaryContainer)
-        ,modifier = Modifier.padding(top=5.dp,start=10.dp, end=10.dp, bottom = 5.dp)) {
-            Text(text = stringResource(id = R.string.see_more),color=MaterialTheme.colorScheme.onPrimaryContainer)
+        BoxWithConstraints {
+            if(WindowWidthSize.MEDIUM.isEqualTo(maxWidth)){
+                Column {
+                    MainCompact(data, popupState)
+                }
+            }else{
+                Row {
+                    MainCompact(data, popupState,modifier=Modifier.weight(1f), modifierHeader = Modifier.weight(2f))
+                }
+            }
         }
 
         BoughList(data = data)
@@ -54,53 +56,23 @@ fun BoughtList(data:BoughtCreditCard){
 }
 
 @Composable
-private fun Popup(recap: RecapCreditCardBoughtListDTO,popupState: MutableState<Boolean>){
+private fun MainCompact(data:BoughtCreditCard,popupState: MutableState<Boolean>,modifier:Modifier=Modifier,modifierHeader:Modifier=Modifier){
+        Header(data.recap.totalCapital, data.recap.totalInterest, data.recap.quoteValue,modifierHeader)
 
-    co.japl.android.myapplication.finanzas.view.components.Popup(R.string.recap_bought_cc,popupState) {
-
-        Row{
-            FieldView(name = R.string.total_bougth_item, value = "${recap.numBought}", modifier = Modifier.weight(1f), isMoney = false)
-            FieldView(name = R.string.recurrent_item, value = "${recap.numRecurrentBought}", modifier = Modifier.weight(1f), isMoney = false)
+        OutlinedButton(onClick = { popupState.value = !popupState.value },
+            border = BorderStroke(1.dp, MaterialTheme.colorScheme.onPrimaryContainer),
+            modifier = modifier.padding(top = 5.dp, start = 10.dp, end = 10.dp, bottom = 5.dp)) {
+            Text(
+                text = stringResource(id = R.string.see_more),
+                color = MaterialTheme.colorScheme.onPrimaryContainer
+            )
         }
-
-        Row{
-            FieldView(name = R.string.quote_item, value = "${recap.numQuoteBought}", modifier = Modifier.weight(1f), isMoney = false)
-            FieldView(name = R.string.quote_1_item, value = "${recap.num1QuoteBought}", modifier = Modifier.weight(1f), isMoney = false)
-        }
-
-        Row{
-            FieldView(name = R.string.pending_to_pay, value = NumbersUtil.toString(recap.pendingToPay), modifier = Modifier.weight(1f))
-        }
-        Row{
-            FieldView(name = R.string.current_capital_value_short, value = NumbersUtil.toString(recap.currentCapital), modifier = Modifier.weight(1f))
-            FieldView(name = R.string.current_interest_value_short, value = NumbersUtil.toString(recap.currentInterest), modifier = Modifier.weight(1f))
-        }
-        Row{
-            FieldView(name = R.string.quote_capital_value_short, value = NumbersUtil.toString(recap.quoteCapital), modifier = Modifier.weight(1f))
-            FieldView(name = R.string.quote_interest_value_short, value = NumbersUtil.toString(recap.quoteInterest), modifier = Modifier.weight(1f))
-        }
-        Row{
-            FieldView(name = R.string.capital_value_short, value = NumbersUtil.toString(recap.totalCapital), modifier = Modifier.weight(1f))
-            FieldView(name = R.string.interest_value_short, value = NumbersUtil.toString(recap.totalInterest), modifier = Modifier.weight(1f))
-        }
-        Row{
-            FieldView(name = R.string.quote_value, value = NumbersUtil.toString(recap.quoteValue), modifier = Modifier.weight(1f))
-        }
-        Row{
-            FieldView(name = R.string.num_quote_end, value = "${recap.numQuoteEnd}", modifier = Modifier.weight(1f), isMoney = false)
-            FieldView(name = R.string.total_quote_end, value = NumbersUtil.toString(recap.totalQuoteEnd), modifier = Modifier.weight(1f))
-        }
-        Row{
-            FieldView(name = R.string.num_quote_next_end, value = "${recap.numNextQuoteEnd}", modifier = Modifier.weight(1f), isMoney = false)
-            FieldView(name = R.string.total_quote_next_end, value = NumbersUtil.toString(recap.totalNextQuoteEnd), modifier = Modifier.weight(1f))
-        }
-        
-    }
 }
 
+
 @Composable
-private fun Header(capital:Double, interest:Double, quote:Double){
-    Row(modifier=Modifier.fillMaxWidth()) {
+private fun Header(capital:Double, interest:Double, quote:Double,modifier:Modifier=Modifier.fillMaxWidth()){
+    Row(modifier=modifier) {
 
         FieldView(name = stringResource(id = R.string.capital_value_short)
             , value = NumbersUtil.toString(capital)
@@ -139,7 +111,7 @@ fun PreviewBoughList(){
                 endDate = LocalDateTime.now(),
                 createDate = LocalDateTime.now(),
                 month = 1,
-                kind = TaxEnum.CREDIT_CARD,
+                kind = KindInterestRateEnum.CREDIT_CARD,
                 kindOfTax = KindOfTaxEnum.MONTHLY_EFFECTIVE,
                 boughtDate = LocalDateTime.now(),
                 tagName = "Casa",
@@ -163,7 +135,7 @@ fun PreviewBoughList(){
                 endDate = LocalDateTime.now(),
                 createDate = LocalDateTime.now(),
                 month = 1,
-                kind = TaxEnum.CREDIT_CARD,
+                kind = KindInterestRateEnum.CREDIT_CARD,
                 kindOfTax = KindOfTaxEnum.MONTHLY_EFFECTIVE,
                 boughtDate = LocalDateTime.now().minusMonths(1),
                 tagName = "Casa",

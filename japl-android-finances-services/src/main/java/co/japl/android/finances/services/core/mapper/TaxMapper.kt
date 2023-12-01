@@ -1,5 +1,7 @@
 package co.japl.android.finances.services.core.mapper
 
+import co.com.japl.finances.iports.enums.KindOfTaxEnum
+import co.com.japl.finances.iports.enums.KindInterestRateEnum
 import co.japl.android.finances.services.dto.TaxDTO
 
 object TaxMapper {
@@ -13,9 +15,9 @@ object TaxMapper {
             taxDTO.codCreditCard,
             taxDTO.create,
             taxDTO.value,
-            taxDTO.kind,
+            KindInterestRateEnum.findByOrdinal(taxDTO.kind),
             taxDTO.period,
-            taxDTO.kindOfTax
+            KindOfTaxEnum.findByValue(taxDTO.kindOfTax)
         )
     }
 }
