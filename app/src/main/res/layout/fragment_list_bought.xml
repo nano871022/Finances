@@ -6,36 +6,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".finanzas.controller.boughtcreditcard.ListBought">
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/btn_quote_lbcc"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="end|bottom"
-        android:layout_margin="16dp"
-        android:contentDescription="@string/quote_credit"
-        android:src="@android:drawable/ic_input_add" />
-
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/btn_cashadvc_lbcc"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="end|bottom"
-        android:contentDescription="@string/cash_advance"
-        android:src="@android:drawable/ic_menu_add"
-        android:layout_marginRight="16dp"
-        android:layout_marginBottom="82dp"/>
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
-        <ProgressBar
-            android:id="@+id/pb_load_lbcc"
-            style="?android:attr/progressBarStyle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:elevation="@dimen/card_elevator_5"
-            android:progressBackgroundTint="?attr/colorPrimaryVariant"/>
+
         <androidx.compose.ui.platform.ComposeView
             android:id="@+id/bought_list_compose"
             android:layout_width="match_parent"

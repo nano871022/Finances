@@ -1,5 +1,6 @@
 package co.japl.finances.core.usercases.implement.creditcard.bought.lists
 
+import android.util.Log
 import co.com.japl.finances.iports.dtos.CreditCardBoughtListDTO
 import co.com.japl.finances.iports.dtos.RecapCreditCardBoughtListDTO
 import co.com.japl.finances.iports.dtos.TagDTO
@@ -32,7 +33,7 @@ class BoughtList @Inject constructor(
     override fun getBoughtList(creditCard:CreditCard,cutoff:LocalDateTime): CreditCardBoughtListDTO {
         val recap = RecapCreditCardBoughtListDTO()
         val period = YearMonth.of(cutoff.year,cutoff.month)
-        val list = listBoughts.getList(creditCard,creditCard.cutOff)
+        val list = listBoughts.getList(creditCard,cutoff)
         val taxQuote = interestCalculation.getTax(creditCard.codeCreditCard,KindInterestRateEnum.CREDIT_CARD,period)
         val taxAdvance = interestCalculation.getTax(creditCard.codeCreditCard,KindInterestRateEnum.CASH_ADVANCE,period)
         val differQuotes = differQuotesSvc.get(cutoff.toLocalDate())
@@ -43,7 +44,9 @@ class BoughtList @Inject constructor(
             tag(dto.id)?.let { dto.tagName = it.name }
             recapCalculation.getRecap(recap,dto)
         }
-        return CreditCardBoughtListDTO(list,recap)
+        return CreditCardBoughtListDTO(list,recap).also {
+            Log.d(javaClass.name,"<<<=== GetBoughtList CreditCard Id: ${creditCard.codeCreditCard} Cutoff: ${creditCard.cutOff} Size: ${it.list?.size}")
+        }
     }
 
     override fun delete(codeBought: Int): Boolean {

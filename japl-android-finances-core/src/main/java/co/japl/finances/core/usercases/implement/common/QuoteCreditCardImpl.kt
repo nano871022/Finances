@@ -37,9 +37,7 @@ class QuoteCreditCardImpl @Inject constructor(private val creditCardSvc:ICreditC
 ): IQuoteCreditCard {
 
     override fun getTotalQuote(): BigDecimal {
-        val creditCards = creditCardSvc.getAll().filter { it.status }
-        var quote = BigDecimal.ZERO
-        for ( creditCard in creditCards) {
+        return creditCardSvc.getAll().filter { it.status }.sumOf {creditCard->
             val creditCardPojo = CreditCardMap.mapper(creditCard)
             val endDate = DateUtils.cutOffLastMonth(creditCardPojo.cutoffDay)
             val startDate = DateUtils.startDateFromCutoff(creditCardPojo.cutoffDay,endDate)
@@ -49,9 +47,10 @@ class QuoteCreditCardImpl @Inject constructor(private val creditCardSvc:ICreditC
             val interest = getInterest(creditCard.id, startDate, endDate)?:BigDecimal.ZERO
             val interestQuote =
                 getInterestPendingQuotes(creditCard.id, startDate, endDate)?:BigDecimal.ZERO
-            quote += capital + capitalQuotes+ interest + interestQuote
+            capital + capitalQuotes+ interest + interestQuote.also{
+                Log.d(javaClass.name,"<<<=== getTotalQuote - Capital $capital Capital Quotes $capitalQuotes Interest $interest Interest Quote $interestQuote Response $it")
+            }
         }
-        return quote
     }
 
 
@@ -80,9 +79,7 @@ class QuoteCreditCardImpl @Inject constructor(private val creditCardSvc:ICreditC
         val list = quoteCCImpl.getPendingQuotes(key,startDate,cutOff).toMutableList()
         quoteCCImpl.getRecurrentPendingQuotes(key, cutOff)?.let{list.addAll(it)}
         val value = list.sumOf {
-            val capitalQuote = valuesCalculation.getCapital(it.id,it.valueItem.toDouble(),it.month.toShort(),differQuotes)
-            val monthPaid = valuesCalculation.getQuotesPaid(it.id,it.month.toShort(),it.boughtDate,cutOff,differQuotes  )
-            valuesCalculation.getPendingToPay(it.id,it.month.toShort(),monthPaid,it.valueItem.toDouble(),capitalQuote,differQuotes)
+             valuesCalculation.getCapital(it.id,it.valueItem.toDouble(),it.month.toShort(),differQuotes)
         }
         return value.toBigDecimal().also { Log.v(this.javaClass.name,"<<<=== ENDING::getCapitalPendingQuotes $it") }
     }

@@ -1,5 +1,6 @@
 package co.japl.finances.core.adapters.inbound.implement.creditcard.bought.lists
 
+import android.util.Log
 import co.com.japl.finances.iports.dtos.CreditCardBoughtItemDTO
 import co.com.japl.finances.iports.dtos.CreditCardBoughtListDTO
 import co.com.japl.finances.iports.dtos.CreditCardDTO
@@ -11,7 +12,9 @@ import javax.inject.Inject
 
 class ListImpl @Inject constructor(private val service: IBoughtList): IBoughtListPort {
     override fun getBoughtList(creditCardDTO: CreditCardDTO, cutOff:LocalDateTime): CreditCardBoughtListDTO {
-        return service.getBoughtList(CreditCardMap.mapper(creditCardDTO),cutOff)
+        return service.getBoughtList(CreditCardMap.mapper(creditCardDTO),cutOff).also {
+            Log.d(javaClass.name,"<<<=== GetBoughtList CreditCard Id: ${creditCardDTO.id} Cutoff: ${cutOff} Size: ${it.list?.size}")
+        }
     }
 
     override fun delete(codeBought: Int): Boolean {

@@ -1,18 +1,29 @@
 package co.japl.android.myapplication.finanzas.view.creditcard.bought
 
+import android.util.Log
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.FloatingActionButton
 import androidx.compose.material.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.AddBox
+import androidx.compose.material3.Button
+import androidx.compose.material3.Icon
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -24,35 +35,105 @@ import co.com.japl.finances.iports.enums.KindOfTaxEnum
 import co.com.japl.finances.iports.enums.KindInterestRateEnum
 import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.japl.android.myapplication.R
+import co.japl.android.myapplication.finanzas.controller.boughtcreditcard.ListBoughtViewModel
 import co.japl.android.myapplication.finanzas.pojo.BoughtCreditCard
+import co.japl.android.myapplication.finanzas.putParams.CreditCardQuotesParams
 import co.japl.android.myapplication.finanzas.utils.WindowWidthSize
 import co.japl.android.myapplication.finanzas.view.components.FieldView
 import co.japl.android.myapplication.finanzas.view.creditcard.bought.list.BoughList
 import co.japl.android.myapplication.utils.NumbersUtil
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.time.LocalDateTime
 import java.time.YearMonth
 
 @Composable
-fun BoughtList(data:BoughtCreditCard){
-    val popupState = remember { mutableStateOf(false) }
+fun BoughtList(listBoughtViewModel:ListBoughtViewModel){
 
-    Column(modifier=Modifier.fillMaxWidth()) {
-        BoxWithConstraints {
-            if(WindowWidthSize.MEDIUM.isEqualTo(maxWidth)){
-                Column {
-                    MainCompact(data, popupState)
+
+    val isLoad = remember {  listBoughtViewModel.isLoad }
+    val progress = remember { listBoughtViewModel.progress }
+
+    CoroutineScope(Dispatchers.Default).launch {
+        listBoughtViewModel.main()
+    }
+
+        if (isLoad.value.not()) {
+            LinearProgressIndicator(
+                progress = progress.floatValue,
+                modifier = Modifier.fillMaxWidth()
+            )
+        }else {
+            ListBought(listBoughtViewModel)
+        }
+}
+
+@Composable
+private fun ListBought(listBoughtViewModel:ListBoughtViewModel){
+    val cashAdvanceState = remember { listBoughtViewModel.cashAdvance }
+    val creditCardState = remember { listBoughtViewModel.creditCard }
+    val popupState = remember { mutableStateOf(false) }
+    Scaffold(
+        floatingActionButton ={
+
+            if(cashAdvanceState.value) {
+                FloatingActionButton(
+                    onClick = {
+                        Log.d("FloatingButton", "cash advance button")
+                        listBoughtViewModel.goToCashAdvance()
+                    },
+                    modifier = Modifier
+                ) {
+                    Icon(Icons.Filled.Add, stringResource(id = R.string.cash_advance))
+
                 }
-            }else{
-                Row {
-                    MainCompact(data, popupState,modifier=Modifier.weight(1f), modifierHeader = Modifier.weight(2f))
+            }
+
+            if(creditCardState.value) {
+                FloatingActionButton(
+                    onClick = {
+                        Log.d("FloatingButton", "credit card button")
+                        listBoughtViewModel.goToCreditCard()
+                    },
+                    modifier = Modifier
+                ) {
+                    Icon(Icons.Filled.AddBox, stringResource(id = R.string.credit_card))
+
                 }
             }
         }
+    ) {
 
-        BoughList(data = data)
+
+        Column(modifier = Modifier
+            .fillMaxWidth()
+            .padding(it)) {
+            BoxWithConstraints {
+                if (WindowWidthSize.MEDIUM.isEqualTo(maxWidth)) {
+                    Column {
+                        MainCompact(listBoughtViewModel.boughtCreditCard, popupState)
+                    }
+                } else {
+                    Row {
+                        MainCompact(
+                            listBoughtViewModel.boughtCreditCard,
+                            popupState,
+                            modifier = Modifier.weight(1f),
+                            modifierHeader = Modifier.weight(2f)
+                        )
+                    }
+                }
+            }
+
+            BoughList(data = listBoughtViewModel.boughtCreditCard)
+
+
+        }
+        Popup(listBoughtViewModel.boughtCreditCard.recap, popupState = popupState)
+
+
     }
-    Popup(data.recap,popupState = popupState)
-
 }
 
 @Composable
@@ -85,101 +166,5 @@ private fun Header(capital:Double, interest:Double, quote:Double,modifier:Modifi
         FieldView(name = stringResource(id = R.string.total_quote)
             , value = NumbersUtil.toString(quote)
             , modifier = Modifier.weight(1f))
-    }
-}
-
-@Composable
-@Preview(showSystemUi = true, showBackground = true)
-fun PreviewBoughList(){
-    val map = mapOf<YearMonth,List<CreditCardBoughtItemDTO>>(
-        YearMonth.now() to listOf(
-            CreditCardBoughtItemDTO(
-                id = 1,
-                valueItem = 1_000.00,
-                interest = 1.00,
-                pendingToPay = 1_000.00,
-                capitalValue = 1_000.00,
-                interestValue = 100.00,
-                quoteValue = 1_100.00,
-                settings = 1_000.00,
-                monthPaid = 1,
-                recurrent = true,
-                codeCreditCard = 1,
-                nameCreditCard = "Visa",
-                nameItem = "Compra 1",
-                cutOutDate = LocalDateTime.now(),
-                endDate = LocalDateTime.now(),
-                createDate = LocalDateTime.now(),
-                month = 1,
-                kind = KindInterestRateEnum.CREDIT_CARD,
-                kindOfTax = KindOfTaxEnum.MONTHLY_EFFECTIVE,
-                boughtDate = LocalDateTime.now(),
-                tagName = "Casa",
-                settingCode = 1
-            )),
-        YearMonth.now().minusMonths(1) to listOf(CreditCardBoughtItemDTO(
-                id = 1,
-                valueItem = 1_000.00,
-                interest = 1.00,
-                pendingToPay = 1_000.00,
-                capitalValue = 1_000.00,
-                interestValue = 200.00,
-                quoteValue = 1_100.00,
-                settings = 1_000.00,
-                monthPaid = 1,
-                recurrent = true,
-                codeCreditCard = 1,
-                nameCreditCard = "Visa",
-                nameItem = "Compra 1",
-                cutOutDate = LocalDateTime.now(),
-                endDate = LocalDateTime.now(),
-                createDate = LocalDateTime.now(),
-                month = 1,
-                kind = KindInterestRateEnum.CREDIT_CARD,
-                kindOfTax = KindOfTaxEnum.MONTHLY_EFFECTIVE,
-                boughtDate = LocalDateTime.now().minusMonths(1),
-                tagName = "Casa",
-            settingCode = 1
-            )
-        )
-    )
-    val recap = RecapCreditCardBoughtListDTO(
-        currentCapital = 1_000.00,
-        currentInterest = 1_000.00,
-        totalCapital = 1_000.00,
-        totalInterest = 1_000.00,
-        quoteCapital = 1_000.00,
-        quoteInterest = 1_000.00,
-        quoteValue = 1_000.00,
-        numQuoteEnd = 1,
-        totalQuoteEnd = 1_000.00,
-        numNextQuoteEnd = 1,
-        totalNextQuoteEnd = 1_000.00,
-        num1QuoteBought = 1,
-        numBought =  1,
-        numQuoteBought = 1,
-        numRecurrentBought = 1,
-        pendingToPay = 1_000.00
-    )
-
-    val data = BoughtCreditCard(
-        recap,
-        map,
-        CreditCardDTO(
-            id=0,
-        name="test",
-    maxQuotes=24,
-    cutOffDay=28,
-    warningValue=1_000.toBigDecimal(),
-    create= LocalDateTime.now(),
-     status=true,
-     interest1Quote=true,
-    interest1NotQuote=true
-    )
-        ,listOf()
-        ,LocalDateTime.now()
-    )
-    MaterialThemeComposeUI {
-        BoughtList(data)
     }
 }
