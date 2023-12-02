@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.FloatingActionButton
+import androidx.compose.material.FloatingActionButtonDefaults
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -83,6 +84,7 @@ private fun ListBought(listBoughtViewModel:ListBoughtViewModel){
                         Log.d("FloatingButton", "cash advance button")
                         listBoughtViewModel.goToCashAdvance()
                     },
+                    elevation = FloatingActionButtonDefaults.elevation(10.dp),
                     modifier = Modifier
                 ) {
                     Icon(Icons.Filled.Add, stringResource(id = R.string.cash_advance))
@@ -96,6 +98,7 @@ private fun ListBought(listBoughtViewModel:ListBoughtViewModel){
                         Log.d("FloatingButton", "credit card button")
                         listBoughtViewModel.goToCreditCard()
                     },
+                    elevation = FloatingActionButtonDefaults.elevation(10.dp),
                     modifier = Modifier
                 ) {
                     Icon(Icons.Filled.AddBox, stringResource(id = R.string.credit_card))

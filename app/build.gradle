@@ -14,7 +14,7 @@ android {
         applicationId "co.japl.android.myapplication"
         minSdk 26
         targetSdk 33
-        versionCode 4_05_03_048
+        versionCode 4_05_03_049
         versionName "Migracion de lista de compras a compose y se mejora la lista de informacion para contraerla mas para mejor analisis"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
