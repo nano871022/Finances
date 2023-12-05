@@ -81,7 +81,7 @@ class PaidImpl @Inject constructor(override var dbConnect: SQLiteOpenHelper) : I
                 val endDate = cursor.getString(3).let { DateUtils.toLocalDate(it) }
                 val value = cursor.getDouble(0)
                 //Log.d(javaClass.name,"=== GetTotalPaid Recurrent: $recurrent Date: $datePaid Value: $value End: $endDate")
-                if((recurrent == 1 || datePaid >= LocalDate.now()) && endDate >= LocalDate.now()) {
+                if((recurrent == 1 || datePaid <= LocalDate.now()) && endDate >= LocalDate.now()) {
                     listValues.add(value)
                 }
 

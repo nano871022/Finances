@@ -13,7 +13,8 @@ class BoughtMonthlyViewModel @Inject constructor(
     private var _key:YearMonth,
     private var _list:List<CreditCardBoughtItemDTO>,
     private var _totalBought:String,
-    private var _totalQuote:String
+    private var _totalQuote:String,
+    private var _totalInterest:String
 ): ViewModel() {
 
     val key:YearMonth get() = _key
@@ -22,6 +23,8 @@ class BoughtMonthlyViewModel @Inject constructor(
     val totalBought:String get() = _totalBought
 
     val totalQuote:String get() = _totalQuote
+
+    val totalInterest:String get() = _totalInterest
 
     var state: MutableState<Boolean> = mutableStateOf(false)
 

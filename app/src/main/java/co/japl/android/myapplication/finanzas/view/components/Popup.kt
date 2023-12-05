@@ -22,23 +22,28 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
 import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.japl.android.myapplication.R
 
 @Composable
 fun Popup(@StringRes title:Int, state: MutableState<Boolean>, content:@Composable() ()->Unit){
     if(state.value) {
-        Card(
-            modifier = Modifier
-                .padding(5.dp)
-                .fillMaxWidth()
-            , colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primary)
-            , border = BorderStroke(1.dp, MaterialTheme.colorScheme.onPrimaryContainer)
-            , elevation = CardDefaults.cardElevation(10.dp)
-        ) {
-            Title(stringResource(id = title),state)
+        Dialog(onDismissRequest = { state.value = false }) {
 
-            content.invoke()
+
+            Card(
+                modifier = Modifier
+                    .padding(5.dp)
+                    .fillMaxWidth(),
+                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primary),
+                border = BorderStroke(1.dp, MaterialTheme.colorScheme.onPrimaryContainer),
+                elevation = CardDefaults.cardElevation(10.dp)
+            ) {
+                Title(stringResource(id = title), state)
+
+                content.invoke()
+            }
         }
     }
 }

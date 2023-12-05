@@ -281,13 +281,13 @@ class SaveCreditCardBoughtImpl @Inject constructor(val context:Context, override
         val differQuotes = differInstallmentSvc.get(cutOff.toLocalDate())
             val list = getToDate(key,startDate, cutOff)
             val capitalRecurrent = getRecurrentBuys(key,cutOff).map { it.valueItem / it.month.toBigDecimal() }.reduceOrNull{ val1,val2 -> val1.add(val2)}?:BigDecimal.ZERO
-            val capital = list.filter{it.month == 1}.map{it.valueItem}.reduceOrNull{val1,val2->val1.plus(val2)}?:BigDecimal.ZERO
-            val capitalQuotes = list.filter{it.month > 1}.map{
+            val capital = list.filter{it.month == 1}.sumOf{ it.valueItem }
+            val capitalQuotes = list.filter{it.month > 1}.sumOf{
                 differQuotes.firstOrNull { differ->differ.cdBoughtCreditCard.toInt() == it.id }?.let {
                     return Optional.of((it.pendingValuePayable / it.newInstallment).toBigDecimal())
                 }?:(it.valueItem / it.month.toBigDecimal())
-            }.reduceOrNull{ val1, val2->val1.plus(val2)}?:BigDecimal.ZERO
-            return Optional.ofNullable(capital.add(capitalQuotes).add(capitalRecurrent)).also { Log.v(this.javaClass.name,"<<<=== getCapital - End $it") }
+            }
+            return Optional.ofNullable(capital.add(capitalQuotes).add(capitalRecurrent)).also { Log.v(this.javaClass.name,"<<<=== getCapital - End capital $capital capitalQuotes $capitalQuotes capitalRecurrent $capitalRecurrent Response $it") }
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -435,7 +435,7 @@ class SaveCreditCardBoughtImpl @Inject constructor(val context:Context, override
 
         val list = getPendingQuotes(key,startDate,cutOff).toMutableList()
         getRecurrentPendingQuotes(key, cutOff)?.let{list.addAll(it)}
-        val value = list.stream().map {
+        val value = list.sumOf {
             val differ = differQuotes.firstOrNull{differ->differ.cdBoughtCreditCard.toInt() == it.id}
             val months:Long = differ?.let{
                DateUtils.getMonths(LocalDateTime.of(it.create,LocalTime.MAX),cutOff)
@@ -456,7 +456,7 @@ class SaveCreditCardBoughtImpl @Inject constructor(val context:Context, override
             }else {
                 BigDecimal.ZERO
             }
-        }.reduce{val1,val2->val1.plus(val2)}.orElse(BigDecimal.ZERO)
+        }
         return Optional.of(value).also { Log.v(this.javaClass.name,"<<<=== ENDING::getCapitalPendingQuotes $it") }
     }
 

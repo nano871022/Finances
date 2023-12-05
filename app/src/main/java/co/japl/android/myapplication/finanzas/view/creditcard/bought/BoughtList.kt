@@ -2,7 +2,8 @@ package co.japl.android.myapplication.finanzas.view.creditcard.bought
 
 import android.util.Log
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -14,7 +15,6 @@ import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.AddBox
-import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
@@ -24,21 +24,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import co.com.japl.finances.iports.dtos.CreditCardBoughtItemDTO
-import co.com.japl.finances.iports.dtos.CreditCardDTO
-import co.com.japl.finances.iports.dtos.RecapCreditCardBoughtListDTO
-import co.com.japl.finances.iports.enums.KindOfTaxEnum
-import co.com.japl.finances.iports.enums.KindInterestRateEnum
-import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.japl.android.myapplication.R
 import co.japl.android.myapplication.finanzas.controller.boughtcreditcard.ListBoughtViewModel
 import co.japl.android.myapplication.finanzas.pojo.BoughtCreditCard
-import co.japl.android.myapplication.finanzas.putParams.CreditCardQuotesParams
 import co.japl.android.myapplication.finanzas.utils.WindowWidthSize
 import co.japl.android.myapplication.finanzas.view.components.FieldView
 import co.japl.android.myapplication.finanzas.view.creditcard.bought.list.BoughList
@@ -46,8 +37,6 @@ import co.japl.android.myapplication.utils.NumbersUtil
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import java.time.LocalDateTime
-import java.time.YearMonth
 
 @Composable
 fun BoughtList(listBoughtViewModel:ListBoughtViewModel){
@@ -70,39 +59,44 @@ fun BoughtList(listBoughtViewModel:ListBoughtViewModel){
         }
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun ListBought(listBoughtViewModel:ListBoughtViewModel){
     val cashAdvanceState = remember { listBoughtViewModel.cashAdvance }
     val creditCardState = remember { listBoughtViewModel.creditCard }
     val popupState = remember { mutableStateOf(false) }
     Scaffold(
-        floatingActionButton ={
+        floatingActionButton = {
+            Column {
+                if (cashAdvanceState.value) {
 
-            if(cashAdvanceState.value) {
-                FloatingActionButton(
-                    onClick = {
-                        Log.d("FloatingButton", "cash advance button")
-                        listBoughtViewModel.goToCashAdvance()
-                    },
-                    elevation = FloatingActionButtonDefaults.elevation(10.dp),
-                    modifier = Modifier
-                ) {
-                    Icon(Icons.Filled.Add, stringResource(id = R.string.cash_advance))
+                    FloatingActionButton(
+                        onClick = {
+                            Log.d("FloatingButton", "cash advance button")
+                            listBoughtViewModel.goToCashAdvance()
+                        },
+                        elevation = FloatingActionButtonDefaults.elevation(10.dp),
+                        backgroundColor=MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.5f),
+                        modifier = Modifier
+                    ) {
+                        Icon(Icons.Filled.Add, stringResource(id = R.string.cash_advance))
 
+                    }
                 }
-            }
 
-            if(creditCardState.value) {
-                FloatingActionButton(
-                    onClick = {
-                        Log.d("FloatingButton", "credit card button")
-                        listBoughtViewModel.goToCreditCard()
-                    },
-                    elevation = FloatingActionButtonDefaults.elevation(10.dp),
-                    modifier = Modifier
-                ) {
-                    Icon(Icons.Filled.AddBox, stringResource(id = R.string.credit_card))
+                if (creditCardState.value) {
+                    FloatingActionButton(
+                        onClick = {
+                            Log.d("FloatingButton", "credit card button")
+                            listBoughtViewModel.goToCreditCard()
+                        },
+                        elevation = FloatingActionButtonDefaults.elevation(10.dp),
+                        backgroundColor=MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.5f),
+                        modifier = Modifier
+                    ) {
+                        Icon(Icons.Filled.AddBox, stringResource(id = R.string.credit_card))
 
+                    }
                 }
             }
         }

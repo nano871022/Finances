@@ -15,7 +15,9 @@ import co.japl.finances.core.usercases.calculations.RecapCalculation
 import co.japl.finances.core.usercases.implement.common.ListBoughts
 import co.japl.finances.core.usercases.interfaces.creditcard.bought.lists.IBoughtList
 import co.japl.finances.core.utils.DateUtils
+import java.time.LocalDate
 import java.time.LocalDateTime
+import java.time.LocalTime
 import java.time.YearMonth
 import javax.inject.Inject
 
@@ -61,15 +63,13 @@ class BoughtList @Inject constructor(
     override fun updateRecurrentValue(codeBought: Int, value: Double, cutOff: LocalDateTime): Boolean {
         quoteCCSvc.get(codeBought)?.let {
             val newRecurrent = it.copy(
-                endDate = LocalDateTime.of(9999, 12, 31, 0, 0)
-                , createDate = LocalDateTime.now()
+                endDate = LocalDateTime.of(LocalDate.MAX, LocalTime.MAX)
+                , createDate = cutOff
                 , id = 0
                 , valueItem = value.toBigDecimal()
                 )
                 newRecurrent.boughtDate = it.boughtDate.withYear(newRecurrent.createDate.year).withMonth(newRecurrent.createDate.monthValue)
-            val origin = it.copy(
-                    endDate = cutOff.minusMonths(1).plusDays(1)
-                    ,createDate = LocalDateTime.now())
+            val origin = it.copy(endDate = cutOff.minusMonths(1).plusDays(1))
             return quoteCCSvc.create(newRecurrent).takeIf { response->response > 0}?.let{id->
                 if(quoteCCSvc.update(origin)){
                     return true

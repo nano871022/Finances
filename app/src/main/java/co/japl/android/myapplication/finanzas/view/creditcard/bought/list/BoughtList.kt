@@ -43,7 +43,11 @@ fun BoughList(data:BoughtCreditCard){
 @Composable
 private fun MonthlyBoughtCreditCard(key:YearMonth,list:List<CreditCardBoughtItemDTO>,creditCard:CreditCardDTO,differQuotes:List<DifferInstallmentDTO>,cutOff:LocalDateTime) {
     val monthlyState = remember {
-        BoughtMonthlyViewModel(key,list,NumbersUtil.COPtoString(list.sumOf{it.pendingToPay}),NumbersUtil.COPtoString(list.sumOf{it.quoteValue}))
+        BoughtMonthlyViewModel(key
+            ,list
+            ,NumbersUtil.COPtoString(list.sumOf{it.pendingToPay})
+            ,NumbersUtil.COPtoString(list.sumOf{it.quoteValue})
+            ,NumbersUtil.COPtoString(list.sumOf{it.interestValue}))
     }
 
     Surface(onClick={

@@ -23,7 +23,7 @@ class InputImpl @Inject constructor(override var dbConnect: SQLiteOpenHelper,pub
         InputDB.Entry.COLUMN_NAME,
         InputDB.Entry.COLUMN_VALUE,
     )
-
+    private val FORMAT_DATE_INPUT_WHERE = "date(substr(${InputDB.Entry.COLUMN_DATE_INPUT},7,4)||'-'||substr(${InputDB.Entry.COLUMN_DATE_INPUT},4,2)||'-'||substr(${InputDB.Entry.COLUMN_DATE_INPUT},1,2))"
 
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -42,20 +42,53 @@ class InputImpl @Inject constructor(override var dbConnect: SQLiteOpenHelper,pub
     @RequiresApi(Build.VERSION_CODES.O)
     override fun getTotalInputs(): BigDecimal {
         val db = dbConnect.readableDatabase
-        val cursor = db.rawQuery("SELECT SUM(${InputDB.Entry.COLUMN_VALUE}) AS value , COUNT(1) as cnt FROM ${InputDB.Entry.TABLE_NAME} WHERE ${InputDB.Entry.COLUMN_END_DATE} >= date('now') and ${InputDB.Entry.COLUMN_ACCOUNT_CODE} > 0 and ${InputDB.Entry.COLUMN_KIND_OF} = 'Mensual'",
+        val cursor = db.rawQuery("""
+            SELECT 
+                SUM(${InputDB.Entry.COLUMN_VALUE}) AS value 
+                , COUNT(1) as cnt 
+            FROM ${InputDB.Entry.TABLE_NAME} 
+            WHERE 
+                 ${InputDB.Entry.COLUMN_END_DATE} >= date('now') and 
+                 ${InputDB.Entry.COLUMN_ACCOUNT_CODE} > 0 and 
+                 ${InputDB.Entry.COLUMN_KIND_OF} = 'Mensual'
+        """.trimMargin(),
             arrayOf()
         )
         with(cursor){
             while(moveToNext()){
                 val input = cursor.getDouble(0).toBigDecimal()
                 val cnt = cursor.getInt(1)
-                Log.d(javaClass.name,"$cnt. $input")
+                Log.d(javaClass.name,"=== GetTotalInput $cnt. $input")
                 return input
             }
         }
         return BigDecimal.ZERO
     }
 
+
+    override fun getTotalInputsSemestral(): BigDecimal {
+        val db = dbConnect.readableDatabase
+        val cursor = db.rawQuery("""
+            SELECT
+                SUM(${InputDB.Entry.COLUMN_VALUE}) AS value
+                , COUNT(1) as cnt
+            FROM ${InputDB.Entry.TABLE_NAME}
+            WHERE
+                ${InputDB.Entry.COLUMN_END_DATE} >= date('now')
+                AND $FORMAT_DATE_INPUT_WHERE BETWEEN date('now','start of month') and date('now','start of month','+1 month') 
+                AND ${InputDB.Entry.COLUMN_ACCOUNT_CODE} > 0
+                AND ${InputDB.Entry.COLUMN_KIND_OF} = 'semestral'
+              """.trimMargin(), arrayOf())
+        with(cursor) {
+            while (moveToNext()) {
+                val input = cursor.getDouble(0).toBigDecimal()
+                val cnt = cursor.getInt(1)
+                Log.d(javaClass.name, "=== GetTotalInputSemestral $cnt. $input")
+                return input
+            }
+        }
+        return BigDecimal.ZERO
+    }
     @RequiresApi(Build.VERSION_CODES.O)
     override fun save(dto: InputDTO): Long {
         val db = dbConnect.writableDatabase

@@ -7,6 +7,6 @@ import javax.inject.Inject
 
 class InputImpl @Inject constructor(private val inputImpl:IInputSvc) : IInputPort {
     override fun getTotalInputs(): BigDecimal? {
-        return inputImpl.getTotalInputs()
+        return inputImpl.getTotalInputs() + inputImpl.getTotalInputsSemestral()
     }
 }

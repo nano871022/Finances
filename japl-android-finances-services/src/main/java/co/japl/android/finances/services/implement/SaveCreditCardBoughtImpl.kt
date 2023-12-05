@@ -72,7 +72,7 @@ class SaveCreditCardBoughtImpl @Inject constructor(val context:Context, override
                     CreditCardBoughtDB.CreditCardBoughtEntry.TABLE_NAME,
                     null,
                     values
-                )!!).also { Log.v(this.javaClass.name, "<<<=== END:Save  $it") }
+                )!!).also { Log.v(this.javaClass.name, "<<<=== END:Save $values $it") }
             }
     }
 
@@ -196,8 +196,8 @@ class SaveCreditCardBoughtImpl @Inject constructor(val context:Context, override
                 COLUMNS_CALC,
                 """ 
                      ${CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_CODE_CREDIT_CARD} = ?
-                    AND ($FORMAT_DATE_BOUGHT_WHERE between ? and ? OR ${CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_BOUGHT_DATE} between ? and ?)
-                    AND ($FORMAT_DATE_END_WHERE > ? OR ${CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_END_DATE} > ?)
+                    AND (date($FORMAT_DATE_BOUGHT_WHERE) between ? and ? OR ${CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_BOUGHT_DATE} between ? and ?)
+                    AND (date($FORMAT_DATE_END_WHERE) > ? OR ${CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_END_DATE} > ?)
                     AND ${CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_RECURRENT} = 0
                 """.trimMargin(),
                 arrayOf(key.toString(),startDateStr, endDateStr,startDateStr, endDateStr,startDateStr,startDateStr),

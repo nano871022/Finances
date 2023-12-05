@@ -67,7 +67,7 @@ private fun RowScope.HeaderMedium(key: YearMonth, list:List<CreditCardBoughtItem
         .weight(1f)
         .padding(2.dp))
 
-    Text(text = stringResource(id = R.string.total_quote),modifier= Modifier
+    Text(text = stringResource(id = R.string.total_quote_value_short),modifier= Modifier
         .weight(1f)
         .padding(2.dp))
     Text(text = monthlyState.totalQuote,modifier= Modifier
@@ -88,6 +88,13 @@ fun RowScope.HeaderLarge(key: YearMonth, list:List<CreditCardBoughtItemDTO>, mon
         .weight(1f)
         .padding(2.dp))
     Text(text = monthlyState.totalBought,modifier= Modifier
+        .weight(1f)
+        .padding(2.dp))
+
+    Text(text = stringResource(id = R.string.interest_value_short),modifier= Modifier
+        .weight(1f)
+        .padding(2.dp))
+    Text(text = monthlyState.totalInterest,modifier= Modifier
         .weight(1f)
         .padding(2.dp))
 

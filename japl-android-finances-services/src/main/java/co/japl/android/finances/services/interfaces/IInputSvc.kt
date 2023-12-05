@@ -6,4 +6,6 @@ import java.math.BigDecimal
 interface IInputSvc: SaveSvc<InputDTO>,ISaveSvc<InputDTO>  {
 
     public fun getTotalInputs():BigDecimal
+
+    public fun getTotalInputsSemestral(): BigDecimal
 }
