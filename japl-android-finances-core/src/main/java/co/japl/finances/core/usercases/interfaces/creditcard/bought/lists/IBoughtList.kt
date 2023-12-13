@@ -1,5 +1,6 @@
 package co.japl.finances.core.usercases.interfaces.creditcard.bought.lists
 
+import co.com.japl.finances.iports.dtos.BoughtCreditCardPeriodDTO
 import co.com.japl.finances.iports.dtos.CreditCardBoughtItemDTO
 import co.com.japl.finances.iports.dtos.CreditCardBoughtListDTO
 import co.com.japl.finances.iports.dtos.RecapCreditCardBoughtListDTO

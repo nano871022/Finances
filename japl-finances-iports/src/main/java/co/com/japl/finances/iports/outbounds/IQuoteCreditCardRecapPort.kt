@@ -1,5 +1,6 @@
 package co.com.japl.finances.iports.outbounds
 
+import co.com.japl.finances.iports.dtos.BoughtCreditCardPeriodDTO
 import co.com.japl.finances.iports.dtos.CreditCardBoughtDTO
 import java.math.BigDecimal
 import java.time.LocalDateTime
@@ -27,5 +28,7 @@ interface IQuoteCreditCardPort {
     fun create(bought:CreditCardBoughtDTO):Int
 
     fun update(bought:CreditCardBoughtDTO):Boolean
+
+    fun getBoughtPeriodList(idCreditCard: Int): List<LocalDateTime>?
 
 }

@@ -14,8 +14,8 @@ android {
         applicationId "co.japl.android.myapplication"
         minSdk 26
         targetSdk 33
-        versionCode 4_05_03_051
-        versionName "Migracion de lista de compras a compose y se mejora la lista de informacion para contraerla mas para mejor analisis"
+        versionCode 4_05_03_053
+        versionName "Migracion del historico de compras con tarjeta de credito, ahora los valores concuerdan correctamente"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }

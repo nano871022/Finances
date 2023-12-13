@@ -10,7 +10,9 @@ import co.japl.android.finances.services.dto.*
 import co.japl.android.finances.services.interfaces.IInputSvc
 import co.japl.android.finances.services.mapping.InputMap
 import co.japl.android.finances.services.utils.DatabaseConstants
+import co.japl.android.finances.services.utils.DateUtils
 import java.math.BigDecimal
+import java.time.LocalDate
 import java.util.*
 import javax.inject.Inject
 
@@ -22,9 +24,11 @@ class InputImpl @Inject constructor(override var dbConnect: SQLiteOpenHelper,pub
         InputDB.Entry.COLUMN_KIND_OF,
         InputDB.Entry.COLUMN_NAME,
         InputDB.Entry.COLUMN_VALUE,
+        InputDB.Entry.COLUMN_START_DATE,
+        InputDB.Entry.COLUMN_END_DATE
     )
     private val FORMAT_DATE_INPUT_WHERE = "date(substr(${InputDB.Entry.COLUMN_DATE_INPUT},7,4)||'-'||substr(${InputDB.Entry.COLUMN_DATE_INPUT},4,2)||'-'||substr(${InputDB.Entry.COLUMN_DATE_INPUT},1,2))"
-
+    private val FORMAT_DATE_END_WHERE = "substr(${InputDB.Entry.COLUMN_END_DATE},7,4)||'-'||substr(${InputDB.Entry.COLUMN_END_DATE},4,2)||'-'||substr(${InputDB.Entry.COLUMN_END_DATE},1,2)"
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun get(values: InputDTO): List<InputDTO> {
@@ -48,7 +52,7 @@ class InputImpl @Inject constructor(override var dbConnect: SQLiteOpenHelper,pub
                 , COUNT(1) as cnt 
             FROM ${InputDB.Entry.TABLE_NAME} 
             WHERE 
-                 ${InputDB.Entry.COLUMN_END_DATE} >= date('now') and 
+                 date($FORMAT_DATE_END_WHERE) >= date('now') and 
                  ${InputDB.Entry.COLUMN_ACCOUNT_CODE} > 0 and 
                  ${InputDB.Entry.COLUMN_KIND_OF} = 'Mensual'
         """.trimMargin(),
@@ -89,6 +93,24 @@ class InputImpl @Inject constructor(override var dbConnect: SQLiteOpenHelper,pub
         }
         return BigDecimal.ZERO
     }
+
+    override fun getAllValid(date: LocalDate): List<InputDTO> {
+        val db = dbConnect.readableDatabase
+        val cursor = db.query(InputDB.Entry.TABLE_NAME,COLUMNS,"""
+                ${InputDB.Entry.COLUMN_ACCOUNT_CODE} > 0
+            """, null,null,null,null)
+        Log.d(javaClass.name,"=== GetAllValid ${FORMAT_DATE_END_WHERE} Date ${DateUtils.localDateToStringDate(date)}")
+        val items = mutableListOf<InputDTO>()
+        with(cursor){
+            while(moveToNext()){
+                mapper.mapping(cursor).takeIf { it.dateEnd > date }?.let {
+                    Log.d(javaClass.name,"=== GetAllValid ${it.dateEnd} Date ${date} ${it}")
+                    items.add(it)
+                }}
+        }
+        return items
+    }
+
     @RequiresApi(Build.VERSION_CODES.O)
     override fun save(dto: InputDTO): Long {
         val db = dbConnect.writableDatabase

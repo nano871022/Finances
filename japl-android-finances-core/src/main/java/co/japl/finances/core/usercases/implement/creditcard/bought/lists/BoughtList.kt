@@ -1,20 +1,29 @@
 package co.japl.finances.core.usercases.implement.creditcard.bought.lists
 
 import android.util.Log
+import co.com.japl.finances.iports.dtos.BoughtCreditCardPeriodDTO
+import co.com.japl.finances.iports.dtos.CreditCardBoughtDTO
 import co.com.japl.finances.iports.dtos.CreditCardBoughtListDTO
+import co.com.japl.finances.iports.dtos.CreditCardDTO
+import co.com.japl.finances.iports.dtos.CreditCardSettingDTO
+import co.com.japl.finances.iports.dtos.DifferInstallmentDTO
 import co.com.japl.finances.iports.dtos.RecapCreditCardBoughtListDTO
 import co.com.japl.finances.iports.dtos.TagDTO
 import co.com.japl.finances.iports.enums.KindInterestRateEnum
+import co.com.japl.finances.iports.outbounds.IBuyCreditCardSettingPort
 import co.com.japl.finances.iports.outbounds.ICreditCardPort
+import co.com.japl.finances.iports.outbounds.ICreditCardSettingPort
 import co.com.japl.finances.iports.outbounds.IDifferInstallmentRecapPort
 import co.com.japl.finances.iports.outbounds.IQuoteCreditCardPort
 import co.com.japl.finances.iports.outbounds.ITagQuoteCreditCardPort
 import co.japl.finances.core.model.CreditCard
 import co.japl.finances.core.usercases.calculations.InterestCalculations
 import co.japl.finances.core.usercases.calculations.RecapCalculation
+import co.japl.finances.core.usercases.calculations.ValuesCalculation
 import co.japl.finances.core.usercases.implement.common.ListBoughts
 import co.japl.finances.core.usercases.interfaces.creditcard.bought.lists.IBoughtList
 import co.japl.finances.core.utils.DateUtils
+import java.math.BigDecimal
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
@@ -23,13 +32,13 @@ import javax.inject.Inject
 
 class BoughtList @Inject constructor(
     private val quoteCCSvc:IQuoteCreditCardPort
-
     ,private val recapCalculation: RecapCalculation
     ,private val differQuotesSvc:IDifferInstallmentRecapPort
     ,private val tagsSvc:ITagQuoteCreditCardPort
     , private val creditCardSvc:ICreditCardPort
     , private val interestCalculation: InterestCalculations
     , private val listBoughts: ListBoughts
+
 ): IBoughtList {
 
     override fun getBoughtList(creditCard:CreditCard,cutoff:LocalDateTime): CreditCardBoughtListDTO {
@@ -104,6 +113,8 @@ class BoughtList @Inject constructor(
         }
         return false
     }
+
+
 
     private fun tag(codeBought:Int):TagDTO?{
         return tagsSvc.getTags(codeBought).firstOrNull()

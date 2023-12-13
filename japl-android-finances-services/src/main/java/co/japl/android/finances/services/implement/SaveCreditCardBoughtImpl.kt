@@ -6,6 +6,7 @@ import android.os.Build
 import android.provider.BaseColumns
 import android.util.Log
 import androidx.annotation.RequiresApi
+import androidx.core.database.getStringOrNull
 import co.japl.android.finances.services.dto.*
 import co.japl.android.finances.services.interfaces.IQuoteCreditCardSvc
 import co.japl.android.finances.services.interfaces.ITagQuoteCreditCardSvc
@@ -21,8 +22,10 @@ import java.math.RoundingMode
 import java.nio.charset.Charset
 import java.nio.file.Files
 import java.nio.file.Paths
+import java.sql.Date
 import java.time.LocalDateTime
 import java.time.LocalTime
+import java.time.YearMonth
 import java.util.*
 import javax.inject.Inject
 
@@ -41,23 +44,11 @@ class SaveCreditCardBoughtImpl @Inject constructor(val context:Context, override
         ,CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_KIND_OF_TAX
     ,CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_END_DATE)
 
-    private val COLUMNS_PERIOD = arrayOf(BaseColumns._ID,
-        CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_VALUE_ITEM
-        ,CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_INTEREST
-        ,CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_CUT_OUT_DATE
-        ,CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_BOUGHT_DATE
-        ,CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_CODE_CREDIT_CARD
-        ,CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_VALUE_ITEM
-        ,CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_MONTH
-    )
     private val creditCardSvc:SaveSvc<CreditCardDTO> = CreditCardImpl(dbConnect)
-    private val taxSvc = TaxImpl(dbConnect)
-    private val buyCCSettingSvc = BuyCreditCardSettingImpl(dbConnect)
-    private val creditCardSettingSvc = CreditCardSettingImpl(dbConnect)
     private val differInstallmentSvc = DifferInstallmentImpl(dbConnect)
-    private val tagQuoteCreditSvc:ITagQuoteCreditCardSvc = TagQuoteCreditCardImpl(dbConnect)
     private val FORMAT_DATE_BOUGHT_WHERE = "substr(${CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_BOUGHT_DATE},7,4)||'-'||substr(${CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_BOUGHT_DATE},4,2)||'-'||substr(${CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_BOUGHT_DATE},1,2)"
     private val FORMAT_DATE_END_WHERE = "substr(${CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_END_DATE},7,4)||'-'||substr(${CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_END_DATE},4,2)||'-'||substr(${CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_END_DATE},1,2)"
+    private val FORMAT_DATE_BOUGHT_WHERE_YYYYMM = "substr(${CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_BOUGHT_DATE},7,4)||'-'||substr(${CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_BOUGHT_DATE},4,2)"
     @RequiresApi(Build.VERSION_CODES.O)
     override fun save(dto: CreditCardBoughtDTO): Long {
         Log.v(this.javaClass.name,"<<<=== save - Start")
@@ -78,45 +69,8 @@ class SaveCreditCardBoughtImpl @Inject constructor(val context:Context, override
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun getPeriods(creditCardId:Int):List<PeriodDTO>{
-        Log.i(this.javaClass.name,"<<<=== START Get Periods")
-        val db = dbConnect.readableDatabase
-        val cursor = db.query(CreditCardBoughtDB.CreditCardBoughtEntry.TABLE_NAME,COLUMNS_PERIOD
-            ,"${CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_CODE_CREDIT_CARD} = ?",
-            arrayOf(creditCardId.toString()),null,null,null)
-        val creditCardDto = creditCardSvc.get(creditCardId)
-        val items = mutableListOf<PeriodDTO>()
-        with(cursor){
-            while(moveToNext()) {
-                val map = PeriodsMap(taxSvc,buyCCSettingSvc,creditCardSettingSvc,creditCardSvc as CreditCardImpl).maping(this,creditCardDto.get().cutOffDay.toInt())
-                if(map.isPresent) {
-                    Log.d(
-                        this.javaClass.name,
-                        "ID $creditCardId Capital: ${map.get().capital} Interest: ${map.get().interest} Total: ${map.get().total} CutOff: ${map.get().periodEnd}"
-                    )
-                    items.add(map.get())
-                }
-            }
-        }
-            val responseList = items.groupBy { it.periodStart }.map { (startPeriod,items) -> PeriodDTO(creditCardId,startPeriod,
-                items[0].periodEnd,items.sumOf{it.interest},items.sumOf{it.capital},items.sumOf{it.total})}
-                .sortedByDescending { it.periodStart }
-
-            responseList.forEach { map ->
-                    val capital = getCapital(creditCardId,map.periodStart,map.periodEnd)
-                    val interest = getInterest(creditCardId,map.periodStart,map.periodEnd)
-                    map.capital = capital.orElse(BigDecimal.ZERO)
-                    map.interest = interest.orElse(BigDecimal.ZERO)
-                    map.total = map.capital.add(map.interest)
-                val interestPending =
-                    getInterestPendingQuotes(creditCardId, map.periodStart, map.periodEnd)
-                val capitalPending =
-                    getCapitalPendingQuotes(creditCardId, map.periodStart, map.periodEnd)
-                map.interest = map.interest.add(interestPending.orElse(BigDecimal.ZERO))
-                map.capital = map.capital.add(capitalPending.orElse(BigDecimal.ZERO))
-                    map.total = map.capital.add(map.interest)
-            }
-
-        return responseList.also { Log.i(this.javaClass.name,"<<<=== FINISH Get Periods Count ${it.size}") }
+        Log.d(this.javaClass.name,"<<<=== getPeriods - Start")
+        return arrayListOf()
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -524,6 +478,30 @@ class SaveCreditCardBoughtImpl @Inject constructor(val context:Context, override
         }
         return list
 
+    }
+
+    override fun getPeriod(creditCardId: Int): List<YearMonth> {
+        Log.i(this.javaClass.name,"<<<=== START Get Periods")
+        val db = dbConnect.readableDatabase
+        val cursor = db.rawQuery("""
+            SELECT DISTINCT $FORMAT_DATE_BOUGHT_WHERE_YYYYMM
+            FROM ${CreditCardBoughtDB.CreditCardBoughtEntry.TABLE_NAME}
+            WHERE ${CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_CODE_CREDIT_CARD} = ?
+        """
+            ,
+            arrayOf(creditCardId.toString()))
+        val items = mutableListOf<YearMonth>()
+        with(cursor){
+            while(moveToNext()) {
+                 getStringOrNull(0)?.let {
+                     it.split("-").let {
+                         items.add(YearMonth.of(it[0].toInt(),it[1].toInt()))
+                     }
+                 }
+            }
+        }
+
+        return items.also { Log.i(this.javaClass.name,"<<<=== FINISH Get all records Count ${it.size}") }
     }
 
 }

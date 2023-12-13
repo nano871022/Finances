@@ -1,5 +1,6 @@
 package co.com.japl.finances.iports.inbounds.creditcard.bought.lists
 
+import co.com.japl.finances.iports.dtos.BoughtCreditCardPeriodDTO
 import co.com.japl.finances.iports.dtos.CreditCardBoughtItemDTO
 import co.com.japl.finances.iports.dtos.CreditCardBoughtListDTO
 import co.com.japl.finances.iports.dtos.CreditCardDTO
@@ -8,6 +9,8 @@ import java.time.LocalDateTime
 interface IBoughtListPort {
 
     fun getBoughtList(creditCardDTO: CreditCardDTO, cutOff:LocalDateTime):CreditCardBoughtListDTO
+
+    fun getBoughtPeriodList(idCreditCard:Int):List<BoughtCreditCardPeriodDTO>
 
     fun delete(codeBought:Int):Boolean
 

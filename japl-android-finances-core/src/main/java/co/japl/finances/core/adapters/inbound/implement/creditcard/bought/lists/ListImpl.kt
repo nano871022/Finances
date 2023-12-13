@@ -1,20 +1,26 @@
 package co.japl.finances.core.adapters.inbound.implement.creditcard.bought.lists
 
 import android.util.Log
+import co.com.japl.finances.iports.dtos.BoughtCreditCardPeriodDTO
 import co.com.japl.finances.iports.dtos.CreditCardBoughtItemDTO
 import co.com.japl.finances.iports.dtos.CreditCardBoughtListDTO
 import co.com.japl.finances.iports.dtos.CreditCardDTO
 import co.com.japl.finances.iports.inbounds.creditcard.bought.lists.IBoughtListPort
 import co.japl.finances.core.usercases.interfaces.creditcard.bought.lists.IBoughtList
+import co.japl.finances.core.usercases.interfaces.creditcard.paid.lists.IPaidList
 import co.japl.finances.core.usercases.mapper.CreditCardMap
 import java.time.LocalDateTime
 import javax.inject.Inject
 
-class ListImpl @Inject constructor(private val service: IBoughtList): IBoughtListPort {
+class ListImpl @Inject constructor(private val service: IBoughtList,private val paidList:IPaidList): IBoughtListPort {
     override fun getBoughtList(creditCardDTO: CreditCardDTO, cutOff:LocalDateTime): CreditCardBoughtListDTO {
         return service.getBoughtList(CreditCardMap.mapper(creditCardDTO),cutOff).also {
             Log.d(javaClass.name,"<<<=== GetBoughtList CreditCard Id: ${creditCardDTO.id} Cutoff: ${cutOff} Size: ${it.list?.size}")
         }
+    }
+
+    override fun getBoughtPeriodList(idCreditCard: Int): List<BoughtCreditCardPeriodDTO> {
+        return paidList?.getBoughtPeriodList(idCreditCard)?.sortedByDescending { it.periodStart }?: arrayListOf()
     }
 
     override fun delete(codeBought: Int): Boolean {

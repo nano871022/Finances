@@ -43,6 +43,7 @@ class DateUtils {
 
         @RequiresApi(Build.VERSION_CODES.O)
         fun toLocalDate(value: String): LocalDate {
+            Log.d(javaClass.name,"<<<=== START:toLocalDate value: $value")
             var date = value.split("/")
             if(date.size > 1) {
                 return LocalDate.of(date[2].toInt(), date[1].toInt(), date[0].toInt())

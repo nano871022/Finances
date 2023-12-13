@@ -2,36 +2,30 @@ package co.japl.android.myapplication.finanzas.controller.account
 
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
-import android.view.View.OnClickListener
 import android.view.ViewGroup
 import androidx.annotation.RequiresApi
-import androidx.loader.app.LoaderManager
-import androidx.loader.content.AsyncTaskLoader
-import androidx.loader.content.Loader
+import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.navigation.fragment.findNavController
-import co.japl.android.myapplication.R
-import co.japl.android.myapplication.finanzas.bussiness.DTO.InputDTO
-import co.japl.android.myapplication.finanzas.bussiness.impl.InputImpl
-import co.japl.android.myapplication.finanzas.bussiness.interfaces.IInputSvc
-import co.japl.android.myapplication.finanzas.holders.InputListHolder
-import co.japl.android.myapplication.finanzas.holders.interfaces.IListHolder
+import co.com.japl.finances.iports.inbounds.inputs.IInputPort
+import co.com.japl.ui.theme.MaterialThemeComposeUI
+import co.japl.android.myapplication.databinding.FragmentInputListBinding
 import co.japl.android.myapplication.finanzas.putParams.AccountParams
-import co.japl.android.myapplication.finanzas.putParams.InputListParams
+import co.japl.android.myapplication.finanzas.view.accounts.inputs.lists.InputList
+import co.japl.android.myapplication.finanzas.view.accounts.inputs.lists.InputListModelView
 import dagger.hilt.android.AndroidEntryPoint
-import java.math.BigDecimal
-import java.time.LocalDate
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class InputListFragment : Fragment(),OnClickListener,LoaderManager.LoaderCallbacks<List<InputDTO>> {
-    private lateinit var holder:IListHolder<InputListHolder,InputDTO>
+class InputListFragment : Fragment(){
     private var accountCode:Int = 0
 
-    @Inject lateinit var service: IInputSvc
+    @Inject lateinit var portSvc:IInputPort
+
+    private var _binding: FragmentInputListBinding? = null
+    private val binding get() = _binding!!
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
     }
@@ -41,60 +35,17 @@ class InputListFragment : Fragment(),OnClickListener,LoaderManager.LoaderCallbac
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val root = inflater.inflate(R.layout.fragment_input_list, container, false)
+        _binding = FragmentInputListBinding.inflate(inflater,container,false)
+        val root = binding.root
         accountCode = arguments?.let{AccountParams.download(it)}?:0
-        holder = InputListHolder(root)
-        holder.setFields(this)
-        loaderManager.initLoader(1,null,this)
-        return root
-    }
-
-    @RequiresApi(Build.VERSION_CODES.O)
-    private fun getData():MutableList<InputDTO>{
-        val input = InputDTO(0, LocalDate.now(),accountCode,"","", BigDecimal.ZERO, LocalDate.now(),
-            LocalDate.now())
-        return (service as InputImpl).get(input).toMutableList()
-    }
-
-    override fun onClick(p0: View?) {
-        when(p0?.id){
-            R.id.btn_add_il->InputListParams.newInstance(accountCode,findNavController())
-        }
-    }
-
-    override fun onResume() {
-        super.onResume()
-        loaderManager.restartLoader(1,null,this)
-    }
-
-    override fun onCreateLoader(id: Int, args: Bundle?): Loader<List<InputDTO>> {
-        return object:AsyncTaskLoader<List<InputDTO>>(requireContext()){
-             var data:List<InputDTO> ?= null
-            override fun onStartLoading() {
-                super.onStartLoading()
-                Log.d(javaClass.name,"onStartLoading $data")
-                if(data != null){
-                    deliverResult(data)
-                }else{
-                    forceLoad()
+        binding.listViewComposableIl.apply {
+            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+            setContent {
+                MaterialThemeComposeUI {
+                    InputList(modelView = InputListModelView(requireContext(),accountCode,findNavController() ,portSvc))
                 }
             }
-            @RequiresApi(Build.VERSION_CODES.O)
-            override fun loadInBackground(): List<InputDTO>? {
-                Log.d(javaClass.name,"loadInBackground $data")
-                data = getData()
-                return data
-            }
-        }.also { it.data = null }
-    }
-
-    override fun onLoaderReset(loader: Loader<List<InputDTO>>) {
-    }
-
-    override fun onLoadFinished(loader: Loader<List<InputDTO>>, data: List<InputDTO>?) {
-        data?.let {
-            holder.loadRecycler(it.toMutableList())
         }
+        return root
     }
-
 }

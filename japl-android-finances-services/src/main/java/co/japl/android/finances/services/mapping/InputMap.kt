@@ -22,8 +22,10 @@ class InputMap @Inject constructor(context:Context) {
         val kindof = cursor.getString(3) ?: monthly
         val name = cursor.getString(4)
         val value = cursor.getString(5).toBigDecimal()
-        val start = LocalDate.now()
-        val end  = LocalDate.of(9999,12,31)
+        val startCol = cursor.getString(6)
+        val endCol = cursor.getString(7)
+        val start = if(startCol == "NOW") LocalDate.now() else DateUtils.toLocalDate(startCol)
+        val end  = if(endCol == "9999/12/31") LocalDate.MAX  else DateUtils.toLocalDate(endCol)
         return InputDTO(id,date,accountCode,kindof,name,value,start,end)
     }
 
@@ -35,6 +37,7 @@ class InputMap @Inject constructor(context:Context) {
             put(InputDB.Entry.COLUMN_KIND_OF,dto.kindOf)
             put(InputDB.Entry.COLUMN_VALUE,dto.value.toDouble())
             put(InputDB.Entry.COLUMN_DATE_INPUT, DateUtils.localDateToString(dto.date))
+            put(InputDB.Entry.COLUMN_END_DATE, DateUtils.localDateToString(dto.dateEnd))
         }
     }
 }

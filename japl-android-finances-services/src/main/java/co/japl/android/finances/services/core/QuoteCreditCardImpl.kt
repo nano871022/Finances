@@ -1,15 +1,25 @@
 package co.japl.android.finances.services.core
 
+import android.database.CursorWindowAllocationException
+import android.os.Build
+import android.util.Log
+import androidx.annotation.RequiresApi
+import co.com.japl.finances.iports.dtos.BoughtCreditCardPeriodDTO
 import co.japl.android.finances.services.core.mapper.CreditCardBoughtMapper
 import co.japl.android.finances.services.interfaces.IQuoteCreditCardSvc
 import co.com.japl.finances.iports.outbounds.IQuoteCreditCardPort
 import co.com.japl.finances.iports.dtos.CreditCardBoughtDTO
+import co.japl.android.finances.services.core.mapper.BoughtCreditCardPeriodMapper
+import co.japl.android.finances.services.interfaces.ICreditCardSvc
+import co.japl.android.finances.services.utils.DateUtils
 import java.math.BigDecimal
+import java.time.LocalDate
 import java.time.LocalDateTime
+import java.time.LocalTime
 import java.util.Optional
 import javax.inject.Inject
 
-class QuoteCreditCardImpl @Inject constructor(private val quoteCCSvc: IQuoteCreditCardSvc): IQuoteCreditCardPort {
+class QuoteCreditCardImpl @Inject constructor(private val quoteCCSvc: IQuoteCreditCardSvc, private val creditcardSvc:ICreditCardSvc): IQuoteCreditCardPort {
     override fun getRecurrentBuys(key: Int, cutOff: LocalDateTime): List<CreditCardBoughtDTO> {
         return quoteCCSvc.getRecurrentBuys(key,cutOff).map (CreditCardBoughtMapper::mapper)
     }
@@ -73,6 +83,18 @@ class QuoteCreditCardImpl @Inject constructor(private val quoteCCSvc: IQuoteCred
     override fun update(bought: CreditCardBoughtDTO): Boolean {
         require(bought.id > 0)
         return quoteCCSvc.save(CreditCardBoughtMapper.mapper(bought)).toInt() > 0
+    }
+
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
+    override fun getBoughtPeriodList(idCreditCard: Int): List<LocalDateTime>? {
+        try {
+            val list = quoteCCSvc.getPeriod(idCreditCard)
+            val cutOffDay = creditcardSvc.get(idCreditCard).get().cutOffDay
+            return list?.map { DateUtils.startDateFromCutoff(cutOffDay, LocalDateTime.of(LocalDate.of(it.year, it.month,1),LocalTime.MIN)) }
+        }catch(e: CursorWindowAllocationException){
+            Log.d(javaClass.name,"Error: ${e.message}")
+        }
+        return null
     }
 
 }

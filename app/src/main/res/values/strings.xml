@@ -158,6 +158,22 @@
         <item>Diciembre</item>
     </string-array>
 
+    <string-array name="months_short">
+        <item>--- Seleccionar --- </item>
+        <item>Ene</item>
+        <item>Feb</item>
+        <item>Mar</item>
+        <item>Abr</item>
+        <item>May</item>
+        <item>Jun</item>
+        <item>Jul</item>
+        <item>Ago</item>
+        <item>Sep</item>
+        <item>Oct</item>
+        <item>Nov</item>
+        <item>Dic</item>
+    </string-array>
+
     <string name="item_select">--- Seleccionar --- </string>
     <string name="type_setting_does_not_record">No encontró registros con esta opción</string>
     <string-array name="CreditCardSettingType">
@@ -176,7 +192,8 @@
 
     <string name="toast_successful_insert">El registro se agrego exitosamente</string>
     <string name="toast_unsuccessful_insert">El registro no se agrego</string>
-    <string name="toast_successful_update">El actualizo se agrego exitosamente</string>
+    <string name="toast_successful_update">Se actualizo exitosamente</string>
+    <string name="toast_dont_successful_update">No see actualizo</string>
     <string name="toast_invalid_option">Opción Invalida</string>
     <string name="toast_record_didnt_save">No se guardo el registro</string>
     <string name="add_credit_card_setting">Agregar Configuración</string>
@@ -230,6 +247,9 @@
     <string name="input_minus_output">Ingresos -  Pagos</string>
     <string name="input_list">Lista de Ingreso</string>
     <string name="date_input">Fecha de Ingreso</string>
+    <string name="update_input_value">Actualizar Valor</string>
+    <string name="delete_input">Eliminar Ingreso</string>
+
 
     <string name="num_items">Número Productos</string>
     <string name="num_month_close">Número de Meses Cercano</string>
@@ -247,6 +267,7 @@
     <string name="date">Fecha</string>
     <string name="projection">Proyección</string>
     <string name="num_saved">Valor Guardado</string>
+    <string name="look_at">Ver</string>
     <array name="kind_of_projection_list">
         <item>Trimestral</item>
         <item>Cuatrimestral</item>

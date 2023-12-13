@@ -4,6 +4,7 @@ import android.content.Context
 import co.com.japl.finances.iports.inbounds.common.ICreditCardPort
 import co.com.japl.finances.iports.inbounds.common.IDifferQuotesPort
 import co.com.japl.finances.iports.inbounds.creditcard.bought.lists.IBoughtListPort
+import co.com.japl.finances.iports.inbounds.inputs.IInputPort
 import co.japl.android.myapplication.bussiness.impl.Config
 import co.japl.android.myapplication.bussiness.impl.CreditCardImpl
 import co.japl.android.myapplication.bussiness.impl.SaveCreditCardBoughtImpl
@@ -59,6 +60,8 @@ import co.japl.finances.core.usercases.implement.common.DifferQuoteImpl
 import co.japl.finances.core.usercases.implement.common.PaidImp
 import co.japl.finances.core.usercases.implement.common.QuoteCreditCardImpl
 import co.japl.finances.core.usercases.implement.creditcard.bought.lists.BoughtList
+import co.japl.finances.core.usercases.implement.creditcard.paid.lists.PaidListImpl
+import co.japl.finances.core.usercases.implement.inputs.InputsImpl
 import co.japl.finances.core.usercases.implement.recap.RecapImpl
 import co.japl.finances.core.usercases.interfaces.common.ICreditCard
 import co.japl.finances.core.usercases.interfaces.common.IDifferQuotes
@@ -67,6 +70,7 @@ import co.japl.finances.core.usercases.interfaces.common.IPaid
 import co.japl.finances.core.usercases.interfaces.common.IProjections
 import co.japl.finances.core.usercases.interfaces.common.IQuoteCreditCard
 import co.japl.finances.core.usercases.interfaces.creditcard.bought.lists.IBoughtList
+import co.japl.finances.core.usercases.interfaces.creditcard.paid.lists.IPaidList
 import co.japl.finances.core.usercases.interfaces.recap.IRecap
 import dagger.Binds
 import dagger.Module
@@ -262,5 +266,13 @@ abstract class AbstractModule {
     @Binds
     abstract fun bindUserCaseDifferInstallment(implement:DifferQuoteImpl):IDifferQuotes
 
+    @Binds
+    abstract fun bindInputListPort(implement:co.japl.finances.core.adapters.inbound.implement.inputs.InputImpl):IInputPort
+
+    @Binds
+    abstract fun bindUserCaseInputList(implement:InputsImpl):co.japl.finances.core.usercases.interfaces.inputs.IInput
+
+    @Binds
+    abstract fun bindUserCasePaidList(implement:PaidListImpl):IPaidList
 
 }

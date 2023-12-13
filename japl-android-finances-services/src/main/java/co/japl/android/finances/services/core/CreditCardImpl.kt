@@ -1,5 +1,9 @@
 package co.japl.android.finances.services.core
 
+import android.database.CursorWindowAllocationException
+import android.os.Build
+import android.util.Log
+import androidx.annotation.RequiresApi
 import co.japl.android.finances.services.core.mapper.CreditCardMap
 import co.japl.android.finances.services.interfaces.ICreditCardSvc
 import co.com.japl.finances.iports.outbounds.ICreditCardPort
@@ -11,10 +15,15 @@ class CreditCardImpl @Inject constructor(private val credirCardSvc:ICreditCardSv
         return credirCardSvc.getAll().map(CreditCardMap::mapper)
     }
 
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun get(id: Int): CreditCardDTO? {
-        val creditCard = credirCardSvc.get(id)
-        if(creditCard.isPresent) {
-            return CreditCardMap.mapper(creditCard.get())
+        try {
+            val creditCard = credirCardSvc.get(id)
+            if (creditCard.isPresent) {
+                return CreditCardMap.mapper(creditCard.get())
+            }
+        }catch (e: CursorWindowAllocationException){
+            Log.e(javaClass.name,e.message,e)
         }
         return null
 

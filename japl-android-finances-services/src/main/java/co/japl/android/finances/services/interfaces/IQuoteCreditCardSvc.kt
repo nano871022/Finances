@@ -4,6 +4,7 @@ import co.japl.android.finances.services.dto.CreditCardBoughtDTO
 import co.japl.android.finances.services.dto.QuoteCreditCard
 import java.math.BigDecimal
 import java.time.LocalDateTime
+import java.time.YearMonth
 
 interface IQuoteCreditCardSvc:  SaveSvc<CreditCardBoughtDTO>,
     SearchSvc<CreditCardBoughtDTO>, IGetPeriodsServices  {
@@ -12,5 +13,7 @@ interface IQuoteCreditCardSvc:  SaveSvc<CreditCardBoughtDTO>,
         fun endingRecurrentPayment(idBought: Int,cutOff:LocalDateTime):Boolean
 
         fun getLastAvailableQuotesTC():List<QuoteCreditCard>
+
+        fun getPeriod(id:Int):List<YearMonth>
 
 }
