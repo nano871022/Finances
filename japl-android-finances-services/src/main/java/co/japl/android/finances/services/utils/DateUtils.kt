@@ -4,6 +4,7 @@ import android.os.Build
 import android.util.Log
 import android.widget.EditText
 import androidx.annotation.RequiresApi
+import java.time.DateTimeException
 import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -132,31 +133,43 @@ class DateUtils {
 
         @RequiresApi(Build.VERSION_CODES.O)
         fun startDateFromCutoff(cutOffDay:Short,cutOff:LocalDateTime):LocalDateTime{
-            var day = cutOff.dayOfMonth
             val month = cutOff.month
-
-            if(month == Month.FEBRUARY && cutOffDay > 28 && cutOffDay < 31){
-                day = cutOffDay.toInt()
-            }else if(cutOffDay.toInt() == 31){
-                day = cutOffDay - 1
-            }
-            if(month == Month.MARCH && day.toInt() == 30){
-                day = 28
-            }
+            val day = dayOfMonthByRangeDaysAndMonth(cutOff.year,month.value,cutOffDay)
 
             val start = LocalDateTime.of(cutOff.minusMonths(1).year,cutOff.minusMonths(1).monthValue,1,0,0)
-            var date =  if(start.plusMonths(1).minusDays(1).dayOfMonth < cutOffDay){
+            val date =  if(start.plusMonths(1).minusDays(1).dayOfMonth < cutOffDay){
                  start.plusMonths(1)
             }else{
                  cutOff.minusMonths(1)
             }
 
-            date = when(date.dayOfWeek ){
+            val dateEnd = checkWeekendDay(date.toLocalDate()).let { LocalDateTime.of(it,date.toLocalTime()) }
+
+            return dateEnd.plusDays(1).also { Log.d(this::class.java.name,"<<<=== FINISH:startDateFromCutoff Response: $it Month: $month Cutoff Day: $cutOffDay Day: $day CutOff: $cutOff") }
+        }
+
+        private fun checkWeekendDay(date:LocalDate):LocalDate{
+            return when(date.dayOfWeek ){
                 DayOfWeek.SATURDAY-> date.minusDays(1)
                 DayOfWeek.SUNDAY-> date.plusDays(1)
                 else -> date
             }
-            return date.plusDays(1).also { Log.d(this::class.java.name,"<<<=== FINISH:startDateFromCutoff Response: $it Month: $month Cutoff Day: $cutOffDay Day: $day CutOff: $cutOff") }
+        }
+
+        private fun dayOfMonthByRangeDaysAndMonth(year:Int,month:Int,cutOffDay:Short):Short{
+
+            val date = LocalDate.of(year,month,1)
+            try{
+                return date.withDayOfMonth(cutOffDay.toInt()).dayOfMonth.toShort()
+            }catch(e:DateTimeException){
+                return dayOfMonthByRangeDaysAndMonth(year,month,(cutOffDay -1).toShort())
+            }
+        }
+
+        fun cutoffDate(cutoffDay:Short,month:Short,year:Int):LocalDateTime{
+            val day = dayOfMonthByRangeDaysAndMonth(year,month.toInt(),cutoffDay)
+            val date =  LocalDate.of(year,month.toInt(),day.toInt())
+            return checkWeekendDay(date).let { LocalDateTime.of(it, LocalTime.MAX) }
         }
 
         @RequiresApi(Build.VERSION_CODES.O)

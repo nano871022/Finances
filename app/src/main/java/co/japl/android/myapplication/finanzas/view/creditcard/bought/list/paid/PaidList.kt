@@ -53,18 +53,21 @@ fun PaidList(viewModel: BoughtCreditCardViewModel){
 
 @Composable
 private fun Yearly(viewModel:BoughtCreditCardViewModel){
+    val drowdownState = remember { mutableStateOf(false) }
     LazyColumn(modifier = Modifier.fillMaxWidth()){
         items(viewModel.periodList.size){item->
             val key = viewModel.periodList.keys.toList()[item]
             val list = viewModel.periodList[key]!!
-            Surface {
+            Surface(onClick = { drowdownState.value = !drowdownState.value }) {
                 Column {
 
                     YearlyHeader(year = key, list = list)
 
-                    Monthly(list = list, goto = { cutoffDay, cutoff ->
-                        viewModel.goToListDetail(cutoffDay, cutoff)
-                    })
+                    if (drowdownState.value) {
+                        Monthly(list = list, goto = { cutoffDay, cutoff ->
+                            viewModel.goToListDetail(cutoffDay, cutoff)
+                        })
+                    }
                 }
             }
         }

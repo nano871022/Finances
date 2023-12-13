@@ -90,7 +90,8 @@ class QuoteCreditCardImpl @Inject constructor(private val quoteCCSvc: IQuoteCred
         try {
             val list = quoteCCSvc.getPeriod(idCreditCard)
             val cutOffDay = creditcardSvc.get(idCreditCard).get().cutOffDay
-            return list?.map { DateUtils.startDateFromCutoff(cutOffDay, LocalDateTime.of(LocalDate.of(it.year, it.month,1),LocalTime.MIN)) }
+            Log.d(javaClass.name,"=== GetBoughtPeriodList: CutOffDay: $cutOffDay")
+            return list?.map { DateUtils.cutoffDate(cutOffDay, it.month.value.toShort(),it.year ) }
         }catch(e: CursorWindowAllocationException){
             Log.d(javaClass.name,"Error: ${e.message}")
         }
