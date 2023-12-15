@@ -18,6 +18,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -78,10 +79,11 @@ private fun Yearly(viewModel:BoughtCreditCardViewModel){
 
 @Composable
 private fun Monthly(list:List<BoughtCreditCardPeriodDTO>,goto:(Short,LocalDateTime)->Unit){
+    val months = stringArrayResource(id = R.array.months_short)
     Column(modifier = Modifier.fillMaxWidth()) {
         for(record in list) {
-            Record(dateStart = DateUtils.localDateTimeToStringDate(record.periodStart)
-                , dateEnd = DateUtils.localDateTimeToStringDate(record.periodEnd)
+            Record(dateStart = "${months[record.periodStart.monthValue]} ${record.periodStart.dayOfMonth}"
+                , dateEnd = "${months[record.periodEnd.monthValue]} ${record.periodEnd.dayOfMonth}"
                 , capital = record.capital.toDouble()
                 , interest = record.interest.toDouble()
                 , goto = {

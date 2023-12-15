@@ -7,8 +7,8 @@ import java.time.LocalDate
 import javax.inject.Inject
 
 class InputsImpl @Inject constructor(private val inputSvc:IInputPort) : IInput {
-    override fun getInputs(): List<InputDTO> {
-        return inputSvc.getInputs()
+    override fun getInputs(accountCode:Int): List<InputDTO> {
+        return inputSvc.getInputs(accountCode)
     }
 
     override fun deleteRecord(id: Int): Boolean {

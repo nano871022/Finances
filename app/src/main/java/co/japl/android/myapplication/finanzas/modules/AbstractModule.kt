@@ -230,7 +230,7 @@ abstract class AbstractModule {
     abstract fun bindUserCaseInput(implement: co.japl.finances.core.usercases.implement.common.InputImpl): IInput
 
     @Binds
-    abstract fun bindServiceInput(implement: co.japl.android.finances.services.implement.InputImpl): co.japl.android.finances.services.interfaces.IInputSvc
+    abstract fun bindServiceInput(implement: co.japl.android.finances.services.dao.implement.InputImpl): co.japl.android.finances.services.dao.interfaces.IInputSvc
 
     @Binds
     abstract fun bindOutboundInput(implement: co.japl.android.finances.services.core.InputImpl): co.com.japl.finances.iports.outbounds.IInputPort

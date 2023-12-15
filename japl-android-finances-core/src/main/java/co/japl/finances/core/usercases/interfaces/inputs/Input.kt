@@ -4,7 +4,7 @@ import co.com.japl.finances.iports.dtos.InputDTO
 
 interface IInput {
 
-    fun getInputs(): List<InputDTO>
+    fun getInputs(accountCode:Int): List<InputDTO>
 
     fun deleteRecord(id: Int): Boolean
 

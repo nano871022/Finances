@@ -14,8 +14,8 @@ android {
         applicationId "co.japl.android.myapplication"
         minSdk 26
         targetSdk 33
-        versionCode 4_05_03_054
-        versionName "Migracion del historico de compras con tarjeta de credito, ahora los valores concuerdan correctamente"
+        versionCode 4_05_03_056
+        versionName "Migracion del historico de compras con tarjeta de credito, ahora los valores concuerdan correctamente, ajuste valores de resumen "
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }

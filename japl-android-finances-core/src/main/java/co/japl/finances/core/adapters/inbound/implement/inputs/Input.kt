@@ -6,8 +6,8 @@ import co.japl.finances.core.usercases.interfaces.inputs.IInput
 import javax.inject.Inject
 
 class InputImpl @Inject constructor(private val inputSvc:IInput): IInputPort {
-    override fun getInputs(): List<InputDTO> {
-        return inputSvc.getInputs()
+    override fun getInputs(accountCode:Int): List<InputDTO> {
+        return inputSvc.getInputs(accountCode)
     }
 
     override fun deleteRecord(id: Int): Boolean {

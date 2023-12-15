@@ -1,7 +1,7 @@
 package co.japl.android.finances.services.core
 
 import co.com.japl.finances.iports.dtos.InputDTO
-import co.japl.android.finances.services.interfaces.IInputSvc
+import co.japl.android.finances.services.dao.interfaces.IInputSvc
 import co.com.japl.finances.iports.outbounds.IInputPort
 import co.japl.android.finances.services.core.mapper.InputMapper
 import java.math.BigDecimal
@@ -14,8 +14,8 @@ class InputImpl @Inject constructor(private val inputImpl:IInputSvc) : IInputPor
         return inputImpl.getTotalInputs() + inputImpl.getTotalInputsSemestral()
     }
 
-    override fun getInputs(): List<InputDTO> {
-        return inputImpl.getAllValid(LocalDate.now().withDayOfMonth(1).minusDays(1)).map ( InputMapper::mapper )
+    override fun getInputs(accountCode:Int): List<InputDTO> {
+        return inputImpl.getAllValid(accountCode,LocalDate.now().withDayOfMonth(1).minusDays(1)).map ( InputMapper::mapper )
     }
 
     override fun deleteRecord(id: Int): Boolean {

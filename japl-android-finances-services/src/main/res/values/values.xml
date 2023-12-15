@@ -13,4 +13,11 @@
         <item>Cuatrimestral</item>
         <item>semestral</item>
     </array>
+
+    <string name="kind_of_pay_monthly">Mensual</string>
+    <string name="kind_of_pay_bi_monthly">Bi-Mensual</string>
+    <string name="kind_of_pay_quarterly">Trimestral</string>
+    <string name="kind_of_pay_four_monthly">Cuatrimestral</string>
+    <string name="kind_of_pay_semi_annual">semestral</string>
+    <string name="kind_of_pay_annual">Anual</string>
 </resources>

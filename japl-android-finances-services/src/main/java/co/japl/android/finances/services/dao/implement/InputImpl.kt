@@ -1,4 +1,4 @@
-package co.japl.android.finances.services.implement
+package co.japl.android.finances.services.dao.implement
 
 import android.content.ContentValues
 import android.database.sqlite.SQLiteOpenHelper
@@ -7,7 +7,7 @@ import android.provider.BaseColumns
 import android.util.Log
 import androidx.annotation.RequiresApi
 import co.japl.android.finances.services.dto.*
-import co.japl.android.finances.services.interfaces.IInputSvc
+import co.japl.android.finances.services.dao.interfaces.IInputSvc
 import co.japl.android.finances.services.mapping.InputMap
 import co.japl.android.finances.services.utils.DatabaseConstants
 import co.japl.android.finances.services.utils.DateUtils
@@ -29,6 +29,7 @@ class InputImpl @Inject constructor(override var dbConnect: SQLiteOpenHelper,pub
     )
     private val FORMAT_DATE_INPUT_WHERE = "date(substr(${InputDB.Entry.COLUMN_DATE_INPUT},7,4)||'-'||substr(${InputDB.Entry.COLUMN_DATE_INPUT},4,2)||'-'||substr(${InputDB.Entry.COLUMN_DATE_INPUT},1,2))"
     private val FORMAT_DATE_END_WHERE = "substr(${InputDB.Entry.COLUMN_END_DATE},7,4)||'-'||substr(${InputDB.Entry.COLUMN_END_DATE},4,2)||'-'||substr(${InputDB.Entry.COLUMN_END_DATE},1,2)"
+    private val FORMAT_DATE_END_WHERE2 = "substr(${InputDB.Entry.COLUMN_END_DATE},1,4)||'-'||substr(${InputDB.Entry.COLUMN_END_DATE},6,2)||'-'||substr(${InputDB.Entry.COLUMN_END_DATE},9,2)"
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun get(values: InputDTO): List<InputDTO> {
@@ -47,23 +48,34 @@ class InputImpl @Inject constructor(override var dbConnect: SQLiteOpenHelper,pub
     override fun getTotalInputs(): BigDecimal {
         val db = dbConnect.readableDatabase
         val cursor = db.rawQuery("""
+            SELECT SUM(value), count(1)
+            FROM(
+            SELECT
+              CASE WHEN instr(endDate3,'/') == 0 then endDate3
+                   WHEN instr(endDate,'/') == 0 then endDate
+                   else endDate2
+              END as endDate,
+              value
+                        FROM (
             SELECT 
-                SUM(${InputDB.Entry.COLUMN_VALUE}) AS value 
-                , COUNT(1) as cnt 
+                $FORMAT_DATE_END_WHERE as endDate,
+                $FORMAT_DATE_END_WHERE2 as endDate3,
+                ${InputDB.Entry.COLUMN_END_DATE} as endDate2,
+                ${InputDB.Entry.COLUMN_VALUE} AS value 
             FROM ${InputDB.Entry.TABLE_NAME} 
             WHERE 
-                 date($FORMAT_DATE_END_WHERE) >= date('now') and 
-                 ${InputDB.Entry.COLUMN_ACCOUNT_CODE} > 0 and 
                  ${InputDB.Entry.COLUMN_KIND_OF} = 'Mensual'
+                 )) WHERE endDate >= date('now')
         """.trimMargin(),
             arrayOf()
         )
         with(cursor){
             while(moveToNext()){
+
                 val input = cursor.getDouble(0).toBigDecimal()
                 val cnt = cursor.getInt(1)
-                Log.d(javaClass.name,"=== GetTotalInput $cnt. $input")
-                return input
+
+                return input.also { Log.d(javaClass.name,"=== GetTotalInput Montlhy $cnt. $input.") }
             }
         }
         return BigDecimal.ZERO
@@ -80,7 +92,6 @@ class InputImpl @Inject constructor(override var dbConnect: SQLiteOpenHelper,pub
             WHERE
                 ${InputDB.Entry.COLUMN_END_DATE} >= date('now')
                 AND $FORMAT_DATE_INPUT_WHERE BETWEEN date('now','start of month') and date('now','start of month','+1 month') 
-                AND ${InputDB.Entry.COLUMN_ACCOUNT_CODE} > 0
                 AND ${InputDB.Entry.COLUMN_KIND_OF} = 'semestral'
               """.trimMargin(), arrayOf())
         with(cursor) {
@@ -94,12 +105,12 @@ class InputImpl @Inject constructor(override var dbConnect: SQLiteOpenHelper,pub
         return BigDecimal.ZERO
     }
 
-    override fun getAllValid(date: LocalDate): List<InputDTO> {
+    override fun getAllValid(accountCode:Int,date: LocalDate): List<InputDTO> {
         val db = dbConnect.readableDatabase
         val cursor = db.query(InputDB.Entry.TABLE_NAME,COLUMNS,"""
-                ${InputDB.Entry.COLUMN_ACCOUNT_CODE} > 0
-            """, null,null,null,null)
-        Log.d(javaClass.name,"=== GetAllValid ${FORMAT_DATE_END_WHERE} Date ${DateUtils.localDateToStringDate(date)}")
+                ${InputDB.Entry.COLUMN_ACCOUNT_CODE} = ?
+            """, arrayOf(accountCode.toString()),null,null,null)
+        Log.d(javaClass.name,"=== GetAllValid $FORMAT_DATE_END_WHERE Date ${DateUtils.localDateToStringDate(date)}")
         val items = mutableListOf<InputDTO>()
         with(cursor){
             while(moveToNext()){

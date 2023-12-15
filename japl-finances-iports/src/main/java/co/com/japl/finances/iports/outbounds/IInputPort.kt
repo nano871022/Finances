@@ -7,7 +7,7 @@ interface IInputPort {
 
     fun getTotalInputs():BigDecimal?
 
-    fun getInputs(): List<InputDTO>
+    fun getInputs(accountCode:Int): List<InputDTO>
 
     fun deleteRecord(id: Int): Boolean
 

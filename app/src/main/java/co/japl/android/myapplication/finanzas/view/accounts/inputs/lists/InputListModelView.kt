@@ -53,7 +53,7 @@ class InputListModelView (private val context:Context, val accountCode:Int,priva
     }
 
     suspend fun getItems() {
-        inputSvc?.let{_items = it.getInputs()}
+        inputSvc?.let{_items = it.getInputs(accountCode)}
         stateLoader.value = true
     }
 
