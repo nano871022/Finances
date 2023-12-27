@@ -46,6 +46,10 @@ class DateUtils {
         fun toLocalDate(value: String): LocalDate {
             Log.d(javaClass.name,"<<<=== START:toLocalDate value: $value")
             var date = value.split("/")
+            if(date[0].length == 4){
+                return LocalDate.of(date[0].toInt(), date[1].toInt(), date[2].toInt())
+            }
+
             if(date.size > 1) {
                 return LocalDate.of(date[2].toInt(), date[1].toInt(), date[0].toInt())
             }

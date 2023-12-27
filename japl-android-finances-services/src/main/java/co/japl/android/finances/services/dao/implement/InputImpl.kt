@@ -93,6 +93,7 @@ class InputImpl @Inject constructor(override var dbConnect: SQLiteOpenHelper,pub
                 ${InputDB.Entry.COLUMN_END_DATE} >= date('now')
                 AND $FORMAT_DATE_INPUT_WHERE BETWEEN date('now','start of month') and date('now','start of month','+1 month') 
                 AND ${InputDB.Entry.COLUMN_KIND_OF} = 'semestral'
+                AND exists (SELECT 1 FROM ${AccountDB.Entry.TABLE_NAME} WHERE ${BaseColumns._ID} = ${InputDB.Entry.COLUMN_ACCOUNT_CODE})
               """.trimMargin(), arrayOf())
         with(cursor) {
             while (moveToNext()) {
