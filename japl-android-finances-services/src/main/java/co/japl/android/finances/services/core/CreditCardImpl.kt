@@ -28,4 +28,8 @@ class CreditCardImpl @Inject constructor(private val credirCardSvc:ICreditCardSv
         return null
 
     }
+
+    override fun delete(codeCreditCard: Int): Boolean {
+        return credirCardSvc.delete(codeCreditCard)
+    }
 }

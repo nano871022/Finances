@@ -8,4 +8,6 @@ interface ICreditCard {
 
     fun get(codCreditCard:Int):CreditCardDTO?
 
+    fun delete(codeCreditCard:Int):Boolean
+
 }

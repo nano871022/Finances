@@ -9,4 +9,12 @@ class CreditCardImpl @Inject constructor(private val creditCardSvc:ICreditCard):
     override fun getCreditCard(codeCreditCard: Int): CreditCardDTO? {
         return creditCardSvc.get(codeCreditCard)
     }
+
+    override fun getAll(): List<CreditCardDTO> {
+        return creditCardSvc.getAll()
+    }
+
+    override fun delete(id: Int): Boolean {
+        return creditCardSvc.delete(id)
+    }
 }
