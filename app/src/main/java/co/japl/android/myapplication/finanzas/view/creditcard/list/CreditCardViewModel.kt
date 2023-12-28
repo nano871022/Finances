@@ -6,7 +6,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.navigation.NavController
 import co.com.japl.finances.iports.dtos.CreditCardDTO
-import co.com.japl.finances.iports.inbounds.common.ICreditCardPort
+import co.com.japl.finances.iports.inbounds.creditcard.ICreditCardPort
 import co.japl.android.myapplication.R
 import co.japl.android.myapplication.putParams.CreditCardParams
 import kotlinx.coroutines.runBlocking

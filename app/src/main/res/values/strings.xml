@@ -333,16 +333,6 @@
         <item >Eliminar</item>
     </array>
 
-    <array name="list_credit_card_items_options">
-        <item >Editar</item>
-        <item >Eliminar</item>
-    </array>
-
-    <array name="setting_credit_card_items_options">
-        <item >Editar</item>
-        <item >Eliminar</item>
-    </array>
-
     <array name="tax_items_options">
         <item >Eliminar</item>
     </array>

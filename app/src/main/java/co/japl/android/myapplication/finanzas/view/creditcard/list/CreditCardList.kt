@@ -69,8 +69,8 @@ private fun Body(creditCardViewModel:CreditCardViewModel){
             )
         }
     },modifier = Modifier.padding(5.dp)) {
+        Column(modifier = Modifier.padding(it)) {
         for(item in creditCardViewModel.list) {
-            Column(modifier = Modifier.padding(it)) {
                 Item(item,{creditCardViewModel.edit(it)},{creditCardViewModel.delete(it)})
             }
         }
@@ -82,7 +82,7 @@ private fun Item(dto:CreditCardDTO,edit:(Int)->Unit,delete:(Int)->Unit){
     val state = remember{ mutableStateOf(false) }
     val stateOptions = remember{ mutableStateOf(false) }
 
-    Card(modifier=Modifier.padding(start=5.dp,end=5.dp)) {
+    Card(modifier=Modifier.padding(start=5.dp,end=5.dp,top=5.dp)) {
         BoxWithConstraints {
             when(WindowWidthSize.fromDp(maxWidth)){
                 WindowWidthSize.MEDIUM ->
@@ -90,9 +90,7 @@ private fun Item(dto:CreditCardDTO,edit:(Int)->Unit,delete:(Int)->Unit){
             else ->
                 ItemCompact(dto = dto, state = state, edit = edit, delete = delete)
             }
-
         }
-
     }
 
     if(state.value){

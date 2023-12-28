@@ -1,7 +1,7 @@
-package co.japl.finances.core.adapters.inbound.implement.common
+package co.japl.finances.core.adapters.inbound.implement.creditCard
 
 import co.com.japl.finances.iports.dtos.CreditCardDTO
-import co.com.japl.finances.iports.inbounds.common.ICreditCardPort
+import co.com.japl.finances.iports.inbounds.creditcard.ICreditCardPort
 import co.japl.finances.core.usercases.interfaces.common.ICreditCard
 import javax.inject.Inject
 

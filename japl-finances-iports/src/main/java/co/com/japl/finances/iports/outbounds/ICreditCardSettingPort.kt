@@ -7,4 +7,12 @@ interface ICreditCardSettingPort {
 
     fun get(id:Int):CreditCardSettingDTO?
 
+    fun getAll(codeCreditCard:Int):List<CreditCardSettingDTO>
+
+    fun delete(codeCreditCard: Int,codeCreditCardSetting: Int):Boolean
+
+    fun update(dto:CreditCardSettingDTO):Boolean
+
+    fun create(dto:CreditCardSettingDTO):Int
+
 }

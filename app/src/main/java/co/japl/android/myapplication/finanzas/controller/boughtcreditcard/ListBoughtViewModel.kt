@@ -5,9 +5,7 @@ import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.navigation.NavController
-import androidx.navigation.fragment.findNavController
-import co.com.japl.finances.iports.dtos.CreditCardDTO
-import co.com.japl.finances.iports.inbounds.common.ICreditCardPort
+import co.com.japl.finances.iports.inbounds.creditcard.ICreditCardPort
 import co.com.japl.finances.iports.inbounds.common.IDifferQuotesPort
 import co.com.japl.finances.iports.inbounds.creditcard.bought.lists.IBoughtListPort
 import co.japl.android.myapplication.bussiness.interfaces.ITaxSvc

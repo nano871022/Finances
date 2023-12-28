@@ -20,7 +20,7 @@ import javax.inject.Inject
 import kotlin.io.path.isReadable
 import kotlin.io.path.isWritable
 
-class  CreditCardImpl @Inject constructor(override var dbConnect: SQLiteOpenHelper) : ICreditCardSvc {
+class   CreditCardImpl @Inject constructor(override var dbConnect: SQLiteOpenHelper) : ICreditCardSvc {
     private val COLUMNS = arrayOf(BaseColumns._ID,
                                   CreditCardDB.CreditCardEntry.COLUMN_NAME,
                                   CreditCardDB.CreditCardEntry.COLUMN_MAX_QUOTES,
@@ -61,12 +61,10 @@ class  CreditCardImpl @Inject constructor(override var dbConnect: SQLiteOpenHelp
                     list.add(mapper.mapping(this))
                 }
             }
-            return list
+            return list.also{Log.d(this.javaClass.name, "<<<=== getAll - End Size: ${it.size}")}
         }catch(e:SQLiteException){
             Log.e(this.javaClass.name,e.message,e)
             return list
-        }finally {
-            Log.d(this.javaClass.name, "<<<=== getAll - End")
         }
     }
 

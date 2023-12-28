@@ -66,7 +66,7 @@ class CreditCardSettingImpl @Inject constructor(override var dbConnect: SQLiteOp
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun getAll(codeCC:Int): List<CreditCardSettingDTO> {
-        Log.d(this.javaClass.name,"<<<=== getAll - Start")
+        Log.d(this.javaClass.name,"<<<=== getAll - Start CodeCreditCard $codeCC ")
         val list = mutableListOf<CreditCardSettingDTO>()
         try {
             val db = dbConnect.writableDatabase
@@ -84,7 +84,7 @@ class CreditCardSettingImpl @Inject constructor(override var dbConnect: SQLiteOp
                     mapper.mapping(this).ifPresent(list::add)
                 }
             }
-            return list.also { Log.d(this.javaClass.name, "<<<=== getAll - End") }
+            return list.also { Log.d(this.javaClass.name, "<<<=== getAll - End CodeCreditCard $codeCC Size: ${it.size}") }
         }catch(e: SQLiteException){
             Log.e(this.javaClass.name,e.message,e)
             return list

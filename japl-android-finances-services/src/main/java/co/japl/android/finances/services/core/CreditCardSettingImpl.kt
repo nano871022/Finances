@@ -15,4 +15,34 @@ class CreditCardSettingImpl  @Inject constructor(private val creditCardSettingSv
         }
         return null
     }
+
+    override fun getAll(codeCreditCard: Int): List<CreditCardSettingDTO> {
+        return creditCardSettingSvc.getAll(codeCreditCard).map { CreditCardSettingMapper.mapper(it) }
+    }
+
+    override fun delete(codeCreditCard: Int, codeCreditCardSetting: Int): Boolean {
+        require(codeCreditCard > 0)
+        require(codeCreditCardSetting > 0)
+        if(get(codeCreditCard) == null){
+            return false
+        }
+
+        return creditCardSettingSvc.delete(codeCreditCardSetting)
+    }
+
+    override fun update(dto: CreditCardSettingDTO): Boolean {
+        require(dto.id > 0)
+        if(get(dto.id) == null){
+            return false
+        }
+        return creditCardSettingSvc.save(CreditCardSettingMapper.mapper(dto)) > 0
+    }
+
+    override fun create(dto: CreditCardSettingDTO): Int {
+        require(dto.id == 0)
+        if(get(dto.id) != null){
+            return -1
+        }
+        return creditCardSettingSvc.save(CreditCardSettingMapper.mapper(dto)).toInt()
+    }
 }

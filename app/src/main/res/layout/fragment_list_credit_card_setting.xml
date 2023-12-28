@@ -1,55 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_margin="@dimen/margin_border_layout"
+    android:orientation="vertical"
     tools:context=".finanzas.controller.creditcard.ListCreditCardSetting">
 
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:padding="@dimen/space_min"
-        android:orientation="vertical">
-        <ProgressBar
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/pb_load_lccs"/>
+  <androidx.compose.ui.platform.ComposeView
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:id="@+id/cv_compose_lccs"/>
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rvCreditCardSettingCCS"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnCancelLCCS"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_margin="@dimen/space_min"
-            android:layout_weight="1"
-            app:icon="@android:drawable/ic_menu_close_clear_cancel"
-            android:text="@string/cancel" />
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnAddNewCCS"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_margin="@dimen/space_min"
-            app:icon="@android:drawable/ic_menu_save"
-            android:layout_weight="1"
-            android:text="@string/add_credit_card_setting" />
-        </LinearLayout>
-
-    </LinearLayout>
-    </ScrollView>
-
-</com.google.android.material.card.MaterialCardView>
+</LinearLayout>

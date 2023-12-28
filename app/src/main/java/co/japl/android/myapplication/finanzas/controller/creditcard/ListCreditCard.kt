@@ -9,7 +9,7 @@ import androidx.annotation.RequiresApi
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
-import co.com.japl.finances.iports.inbounds.common.ICreditCardPort
+import co.com.japl.finances.iports.inbounds.creditcard.ICreditCardPort
 import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.japl.android.myapplication.databinding.FragmentListCreditCardBinding
 import co.japl.android.myapplication.finanzas.view.creditcard.list.CreditCardList

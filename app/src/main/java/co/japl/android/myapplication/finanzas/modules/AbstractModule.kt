@@ -1,8 +1,9 @@
 package co.japl.android.myapplication.finanzas.modules
 
 import android.content.Context
-import co.com.japl.finances.iports.inbounds.common.ICreditCardPort
+import co.com.japl.finances.iports.inbounds.creditcard.ICreditCardPort
 import co.com.japl.finances.iports.inbounds.common.IDifferQuotesPort
+import co.com.japl.finances.iports.inbounds.creditcard.ICreditCardSettingPort
 import co.com.japl.finances.iports.inbounds.creditcard.bought.lists.IBoughtListPort
 import co.com.japl.finances.iports.inbounds.inputs.IInputPort
 import co.japl.android.myapplication.bussiness.impl.Config
@@ -69,6 +70,7 @@ import co.japl.finances.core.usercases.interfaces.common.IInput
 import co.japl.finances.core.usercases.interfaces.common.IPaid
 import co.japl.finances.core.usercases.interfaces.common.IProjections
 import co.japl.finances.core.usercases.interfaces.common.IQuoteCreditCard
+import co.japl.finances.core.usercases.interfaces.creditcard.ICreditCardSetting
 import co.japl.finances.core.usercases.interfaces.creditcard.bought.lists.IBoughtList
 import co.japl.finances.core.usercases.interfaces.creditcard.paid.lists.IPaidList
 import co.japl.finances.core.usercases.interfaces.recap.IRecap
@@ -258,7 +260,7 @@ abstract class AbstractModule {
     abstract fun bindUserCaseBoughtList(implement:BoughtList):IBoughtList
 
     @Binds
-    abstract fun bindCreditCardPort(implement:co.japl.finances.core.adapters.inbound.implement.common.CreditCardImpl):ICreditCardPort
+    abstract fun bindCreditCardPort(implement:co.japl.finances.core.adapters.inbound.implement.creditCard.CreditCardImpl):ICreditCardPort
 
     @Binds
     abstract fun bindDifferInstallmentPort(implement:co.japl.finances.core.adapters.inbound.implement.common.DifferQuotesImpl):IDifferQuotesPort
@@ -275,4 +277,9 @@ abstract class AbstractModule {
     @Binds
     abstract fun bindUserCasePaidList(implement:PaidListImpl):IPaidList
 
+    @Binds
+    abstract fun bindInputCreditCardSetting(implement:co.japl.finances.core.adapters.inbound.implement.creditCard.CreditCardSettingImpl):ICreditCardSettingPort
+
+    @Binds
+    abstract fun bindUserCaseCreditCardSetting(implement:co.japl.finances.core.usercases.implement.creditcard.CreditCardSettingImpl):ICreditCardSetting
 }

@@ -16,4 +16,16 @@ object CreditCardSettingMapper {
         )
     }
 
+    fun mapper(creditCardSetting:co.com.japl.finances.iports.dtos.CreditCardSettingDTO):CreditCardSettingDTO {
+        return CreditCardSettingDTO(
+            creditCardSetting.id,
+            creditCardSetting.codeCreditCard,
+            creditCardSetting.name,
+            creditCardSetting.value,
+            creditCardSetting.type,
+            creditCardSetting.create,
+            creditCardSetting.active
+        )
+    }
+
 }

@@ -1,4 +1,4 @@
-package co.com.japl.finances.iports.inbounds.common
+package co.com.japl.finances.iports.inbounds.creditcard
 
 import co.com.japl.finances.iports.dtos.CreditCardDTO
 

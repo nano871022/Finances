@@ -1,7 +1,13 @@
 package co.japl.android.myapplication.finanzas.enums
 
-enum class MoreOptionsItemsSettingsCreditCard(val i: Int) {
+import androidx.annotation.StringRes
+import co.japl.android.myapplication.R
 
-    EDIT(0),DELETE(1)
+enum class MoreOptionsItemsSettingsCreditCard(@StringRes  val value: Int):IMoreOptions {
+
+    EDIT(R.string.ccio_edit),DELETE(R.string.delete);
+
+    override fun getName()=value
+
 
 }
