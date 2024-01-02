@@ -18,4 +18,18 @@ object CreditCardMap {
         )
     }
 
+    fun mapper(creditCard:co.com.japl.finances.iports.dtos.CreditCardDTO):CreditCardDTO{
+        return CreditCardDTO(
+            id = creditCard.id,
+            name = creditCard.name,
+            maxQuotes = creditCard.maxQuotes,
+            cutOffDay = creditCard.cutOffDay,
+            warningValue = creditCard.warningValue,
+            create = creditCard.create,
+            status = creditCard.status,
+            interest1Quote = creditCard.interest1Quote,
+            interest1NotQuote = creditCard.interest1NotQuote
+        )
+    }
+
 }

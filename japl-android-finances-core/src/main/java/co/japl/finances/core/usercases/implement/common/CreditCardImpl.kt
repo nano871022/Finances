@@ -17,4 +17,12 @@ class CreditCardImpl  @Inject constructor(private val creditCardSvc:ICreditCardP
     override fun delete(codeCreditCard: Int): Boolean {
         return creditCardSvc.delete(codeCreditCard)
     }
+
+    override fun create(dto: CreditCardDTO): Int {
+        return creditCardSvc.create(dto)
+    }
+
+    override fun update(dto: CreditCardDTO): Boolean {
+        return creditCardSvc.update(dto)
+    }
 }

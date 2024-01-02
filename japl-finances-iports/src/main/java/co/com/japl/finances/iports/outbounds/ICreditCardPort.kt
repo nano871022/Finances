@@ -9,4 +9,8 @@ interface ICreditCardPort {
     fun get(id:Int):CreditCardDTO?
 
     fun delete(codeCreditCard:Int):Boolean
+
+    fun create(dto:CreditCardDTO):Int
+
+    fun update(dto:CreditCardDTO):Boolean
 }

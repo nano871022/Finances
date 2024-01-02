@@ -30,6 +30,17 @@ class CreditCardImpl @Inject constructor(private val credirCardSvc:ICreditCardSv
     }
 
     override fun delete(codeCreditCard: Int): Boolean {
+        require(codeCreditCard > 0 , {"the code credit card must be more than 0"})
         return credirCardSvc.delete(codeCreditCard)
+    }
+
+    override fun create(dto: CreditCardDTO): Int {
+        require(dto.id <= 0, { "The id must be 0" })
+        return credirCardSvc.save(CreditCardMap.mapper(dto)).toInt()
+    }
+
+    override fun update(dto: CreditCardDTO): Boolean {
+        require(dto.id > 0, { "The id must be more than 0" })
+        return credirCardSvc.save(CreditCardMap.mapper(dto)) > 0
     }
 }

@@ -10,4 +10,8 @@ interface ICreditCard {
 
     fun delete(codeCreditCard:Int):Boolean
 
+    fun create(dto:CreditCardDTO):Int
+
+    fun update(dto:CreditCardDTO):Boolean
+
 }
