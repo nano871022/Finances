@@ -13,6 +13,7 @@ import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
@@ -24,15 +25,14 @@ private val LighColorSchema = lightColorScheme(
     primary = color_theme_light_primary,
     onPrimary = color_theme_light_on_primary,
     surfaceVariant = color_theme_light_surface_variant
+    , background = color_theme_light_background
+    , onBackground = color_theme_light_on_background
+    , onSurfaceVariant = color_theme_light_on_surface_variant
+    , onSurface = color_theme_light_on_surface
+    , error = color_theme_light_error
 )
 
-private val DarkColorSchema = darkColorScheme(
-    primaryContainer = color_theme_dark_primary_container,
-    onPrimaryContainer = color_theme_dark_on_primary_container,
-    primary = color_theme_dark_primary,
-    onPrimary = color_theme_dark_on_primary,
-    surfaceVariant = color_theme_dark_surface_variant
-)
+@RequiresApi(Build.VERSION_CODES.S)
 @Composable
 fun MaterialThemeComposeUI(
     darkTheme: Boolean = isSystemInDarkTheme(),
@@ -45,6 +45,18 @@ fun MaterialThemeComposeUI(
 
     applyMaterialTheme(colorScheme = colorSchema, content = content)
 }
+private val DarkColorSchema = darkColorScheme(
+    primaryContainer = color_theme_dark_primary_container,
+    onPrimaryContainer = color_theme_dark_on_primary_container,
+    primary = color_theme_dark_primary,
+    onPrimary = color_theme_dark_on_primary,
+    surfaceVariant = color_theme_dark_surface_variant
+    , background = color_theme_dark_background
+    , onBackground = color_theme_dark_on_background
+    , onSurfaceVariant = color_theme_dark_on_surface_variant
+    , onSurface = color_theme_dark_on_surface
+    , error = color_theme_dark_error
+)
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
@@ -67,7 +79,8 @@ private fun settingView(colorScheme: ColorScheme, darkTheme: Boolean){
     }
 }
 
-private fun getColorSchema(darkTheme: Boolean , dynamicColor: Boolean=false ,context: Context):ColorScheme{
+@RequiresApi(Build.VERSION_CODES.S)
+private fun getColorSchema(darkTheme: Boolean, dynamicColor: Boolean=false, context: Context):ColorScheme{
     return when{
         dynamicColor  -> {
             if(darkTheme){

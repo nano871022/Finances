@@ -1,5 +1,6 @@
 package co.japl.android.myapplication.finanzas.view.creditcard.list
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -14,6 +15,7 @@ import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.AddCircleOutline
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
@@ -63,9 +65,14 @@ private fun Body(viewModel: CreditCardSettingViewModel){
             )
         }
     },modifier=Modifier.padding(5.dp)) {
-        Column(modifier = Modifier.padding(it)){
-            for(item in viewModel.list){
-                Item(item = item, edit = {id -> viewModel.edit(id)},delete={id -> viewModel.delete(id)})
+        MaterialThemeComposeUI {
+            Column(modifier = Modifier.padding(it)) {
+                for (item in viewModel.list) {
+                    Item(
+                        item = item,
+                        edit = { id -> viewModel.edit(id) },
+                        delete = { id -> viewModel.delete(id) })
+                }
             }
         }
     }
@@ -105,19 +112,33 @@ private fun Item(item:CreditCardSettingDTO,edit:(Int)->Unit,delete:(Int)->Unit){
 private fun ItemMedium(item:CreditCardSettingDTO, statusShowOptions: MutableState<Boolean>){
         Column {
             Row(modifier = Modifier.padding(8.dp)) {
-                Text(text = item.name, modifier = Modifier.weight(1f).align(alignment = Alignment.CenterVertically))
+                Text(text = item.name, modifier = Modifier
+                    .weight(1f)
+                    .align(alignment = Alignment.CenterVertically))
 
-                Text(text = stringResource(id = R.string.value), modifier = Modifier.weight(1f).align(alignment = Alignment.CenterVertically))
-                Text(text = item.value, modifier = Modifier.weight(1f).align(alignment = Alignment.CenterVertically))
+                Text(text = stringResource(id = R.string.value), modifier = Modifier
+                    .weight(1f)
+                    .align(alignment = Alignment.CenterVertically))
+                Text(text = item.value, modifier = Modifier
+                    .weight(1f)
+                    .align(alignment = Alignment.CenterVertically))
 
-                Text(text = stringResource(id = R.string.status), modifier = Modifier.weight(1f).align(alignment = Alignment.CenterVertically))
-                Text(text = (item.active > 0).toString(), modifier = Modifier.weight(1f).align(alignment = Alignment.CenterVertically))
+                Text(text = stringResource(id = R.string.status), modifier = Modifier
+                    .weight(1f)
+                    .align(alignment = Alignment.CenterVertically))
+                Text(text = (item.active > 0).toString(), modifier = Modifier
+                    .weight(1f)
+                    .align(alignment = Alignment.CenterVertically))
 
                 Text(
                     text = stringResource(id = R.string.credit_card_setting_type),
-                    modifier = Modifier.weight(1f).align(alignment = Alignment.CenterVertically)
+                    modifier = Modifier
+                        .weight(1f)
+                        .align(alignment = Alignment.CenterVertically)
                 )
-                Text(text = item.type, modifier = Modifier.weight(1f).align(alignment = Alignment.CenterVertically))
+                Text(text = item.type, modifier = Modifier
+                    .weight(1f)
+                    .align(alignment = Alignment.CenterVertically))
 
                 IconButton(onClick = { statusShowOptions.value = true }) {
                     Icon(
@@ -133,7 +154,9 @@ private fun ItemMedium(item:CreditCardSettingDTO, statusShowOptions: MutableStat
 private fun ItemCompact(item:CreditCardSettingDTO,statusShowOptions:MutableState<Boolean>){
         Column (modifier = Modifier.padding(5.dp)){
             Row {
-                Text(text = item.name, modifier = Modifier.weight(1f).align(alignment = Alignment.CenterVertically))
+                Text(text = item.name, modifier = Modifier
+                    .weight(1f)
+                    .align(alignment = Alignment.CenterVertically))
 
                 IconButton(onClick = { statusShowOptions.value = true }) {
                     Icon(

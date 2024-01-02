@@ -10,6 +10,14 @@ class CreditCardSettingImpl @Inject constructor(private val creditCardSettingSvc
         return creditCardSettingSvc.getAll(codeCreditCard)
     }
 
+    override fun get(codeCreditCard: Int, codeCreditCardSetting: Int): CreditCardSettingDTO? {
+        try {
+            return creditCardSettingSvc.get(codeCreditCard, codeCreditCardSetting)
+        }catch(e:Exception){
+            return null
+        }
+    }
+
     override fun delete(codeCreditCard: Int, codeCreditCardSetting: Int): Boolean {
         return creditCardSettingSvc.delete(codeCreditCard,codeCreditCardSetting)
     }

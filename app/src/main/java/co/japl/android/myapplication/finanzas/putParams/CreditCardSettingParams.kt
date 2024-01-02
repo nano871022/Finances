@@ -46,7 +46,7 @@ class CreditCardSettingParams() {
                 if(it.containsKey(ARG_ID)){
                     map[ARG_ID] = it.get(ARG_ID).toString().toInt()
                 }
-                return map
+                return map.also { Log.d(javaClass.name,"download $it") }
             }
             return HashMap<String,Int>()
         }

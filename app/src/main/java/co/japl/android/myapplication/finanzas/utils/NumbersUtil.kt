@@ -91,5 +91,14 @@ class NumbersUtil {
                 0
             }
         }
+
+        fun isNumber(value:String):Boolean{
+            try{
+                value.toDouble()
+                return true
+            }catch(e:NumberFormatException){
+                return false
+            }
+        }
     }
 }

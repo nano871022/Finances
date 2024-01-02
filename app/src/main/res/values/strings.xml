@@ -181,6 +181,8 @@
         <item>1. Rediferir</item>
         <item>2. Tasas Especiales</item>
     </string-array>
+    <string name="item_select_setting_redifer">1. Rediferir</string>
+    <string name="item_select_setting_special_tax">2. Tasas Especiales</string>
 
     <string name="_true">Si</string>
     <string name="_false">No</string>
@@ -299,6 +301,8 @@
     <string name="ccio_differ_quotes">Diferir Cuotas</string>
     <string name="ccio_edit">Editar</string>
     <string name="ccio_delete">Eliminar</string>
+    <string name="update">Actualizar</string>
+    <string name="create">Crear</string>
 
     <array name="credit_item_options">
         <item >Adicional</item>

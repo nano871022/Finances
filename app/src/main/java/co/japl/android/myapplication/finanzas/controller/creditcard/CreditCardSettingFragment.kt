@@ -2,115 +2,56 @@ package co.japl.android.myapplication.finanzas.controller.creditcard
 
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ArrayAdapter
 import androidx.annotation.RequiresApi
+import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.navigation.fragment.findNavController
-import co.japl.android.myapplication.R
-import co.japl.android.myapplication.bussiness.DTO.CreditCardDTO
-import co.japl.android.myapplication.bussiness.DTO.CreditCardSettingDTO
-import co.japl.android.myapplication.finanzas.holders.interfaces.IHolder
-import co.japl.android.myapplication.finanzas.holders.interfaces.ISpinnerHolder
-import co.japl.android.myapplication.finanzas.bussiness.interfaces.ICreditCardSettingSvc
-import co.japl.android.myapplication.finanzas.bussiness.interfaces.ICreditCardSvc
-import co.japl.android.myapplication.holders.CreditCardSettingHolder
+import co.com.japl.finances.iports.inbounds.creditcard.ICreditCardPort
+import co.com.japl.finances.iports.inbounds.creditcard.ICreditCardSettingPort
+import co.com.japl.ui.theme.MaterialThemeComposeUI
+import co.japl.android.myapplication.databinding.FragmentCreditCardSettingBinding
+import co.japl.android.myapplication.finanzas.view.creditcard.CreditCardSetting
+import co.japl.android.myapplication.finanzas.view.creditcard.CreditCardSettingViewModel
 import co.japl.android.myapplication.putParams.CreditCardSettingParams
 import dagger.hilt.android.AndroidEntryPoint
-import java.time.LocalDateTime
-import java.util.Optional
-import java.util.stream.Collectors
 import javax.inject.Inject
 
 @AndroidEntryPoint
 class CreditCardSettingFragment : Fragment() {
-    private lateinit var listCreditCardNames:MutableList<String>
-    private lateinit var listTypeNames: MutableList<String>
-    private lateinit var listCreditCard:List<CreditCardDTO>
-    private lateinit var holder: IHolder<CreditCardSettingDTO>
 
-    @Inject lateinit var creditCardSvc: ICreditCardSvc
-    @Inject lateinit var creditCardSettingSvc:ICreditCardSettingSvc
+    @Inject lateinit var creditCardSvc: ICreditCardPort
+    @Inject lateinit var creditCardSettingSvc:ICreditCardSettingPort
+
+    private var _binding:FragmentCreditCardSettingBinding? = null
+    val binding get() = _binding
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val root = inflater.inflate(R.layout.fragment_credit_card_setting, container, false)
-        loadCreditCard(root)
-        loadHolder(root)
-        return root
-    }
+        _binding = FragmentCreditCardSettingBinding.inflate(inflater)
 
-    @RequiresApi(Build.VERSION_CODES.O)
-    private fun loadHolder(root: View){
-        holder = CreditCardSettingHolder(root,listCreditCard, parentFragmentManager, findNavController())
-        holder.setFields(null)
         val map = CreditCardSettingParams.download(arguments)
+        val codeCreditCard = map[CreditCardSettingParams.Params.ARG_CODE_CREDIT_CARD]
+        val codeCreditCardSetting = map[CreditCardSettingParams.Params.ARG_ID]
 
-        var creditCardSettingDto:Optional<CreditCardSettingDTO> = Optional.empty()
-
-        val id: Int = if(map.containsKey(CreditCardSettingParams.Params.ARG_ID.toString())){
-            map[CreditCardSettingParams.Params.ARG_ID]?.or(0)!!
-        }else{
-            0
-        }
-        if(id > 0){
-            creditCardSettingDto = creditCardSettingSvc.get(id)
-        }
-
-        val codeCreditCard : Int = if(map.containsKey(CreditCardSettingParams.Params.ARG_CODE_CREDIT_CARD)){
-             map[CreditCardSettingParams.Params.ARG_CODE_CREDIT_CARD]!!
-        }else{
-            0
-        }
-        Log.v(this.javaClass.name,"LoadHolder code credit card: $codeCreditCard Id: $id")
-        val dto = if(creditCardSettingDto.isPresent){ creditCardSettingDto.get()}else{ CreditCardSettingDTO(id, codeCreditCard, "", "", "", LocalDateTime.now(), 1)}
-
-
-        (holder as ISpinnerHolder<CreditCardSettingHolder>).lists {
-            ArrayAdapter(
-                this.requireContext(),
-                R.layout.spinner_simple,
-                R.id.tvValueBigSp,
-                listCreditCardNames.toTypedArray()
-            ).let{ adapter->
-                it.creditCard.setAdapter(adapter)
-            }
-            ArrayAdapter.createFromResource(
-                this.requireContext(),
-                R.array.CreditCardSettingType,
-                R.layout.spinner1
-            ).let { adapter ->
-                adapter.setDropDownViewResource(R.layout.spinner1)
-                it.type.setAdapter(adapter)
-            }
-            if (listCreditCardNames.isNotEmpty() && listCreditCardNames.size == 2) {
-                it.creditCard.setText(listCreditCardNames[1])
-            }
-            if(it.creditCard.text.isBlank()){
-                val args = CreditCardSettingParams.download(arguments)
-                val codeCreditCard = args.get(CreditCardSettingParams.Params.ARG_CODE_CREDIT_CARD)
-                val nameCreditCard = listCreditCard.firstOrNull { it.id == codeCreditCard }?.name ?: ""
-                it.creditCard.setText(nameCreditCard)
+        val viewModel = CreditCardSettingViewModel(codeCreditCard=codeCreditCard
+            , codeCreditCardSetting=codeCreditCardSetting
+            , creditCardSvc=creditCardSvc
+            , creditCardSettingSvc=creditCardSettingSvc
+            , navController = findNavController())
+        binding?.cvComposeCcs?.apply {
+            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+            setContent {
+                MaterialThemeComposeUI {
+                    CreditCardSetting(viewModel = viewModel)
+                }
             }
         }
-
-        holder.loadFields(dto)
+        return binding?.root?.rootView
     }
-
-
-    @RequiresApi(Build.VERSION_CODES.N)
-    private fun loadCreditCard(root:View){
-        listCreditCard  = creditCardSvc.getAll()
-        listCreditCardNames = listCreditCard.stream().map { it.name }.collect(Collectors.toList())
-        listCreditCardNames.add(0,"--- Seleccionar ---")
-    }
-
-
-
 }

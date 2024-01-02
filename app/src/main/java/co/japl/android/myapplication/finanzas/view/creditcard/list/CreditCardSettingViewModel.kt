@@ -27,6 +27,7 @@ class CreditCardSettingViewModel constructor(private val codCreditCard:Int,priva
 
     fun delete(id:Int){
         if(creditCardSettingSvc?.let{it.delete(codCreditCard,id)} == true){
+            navController?.navigateUp()
             navController?.let { Toast.makeText(it.context, R.string.delete_successfull,Toast.LENGTH_LONG).show() }
         }else{
             navController?.let { Toast.makeText(it.context,R.string.dont_deleted,Toast.LENGTH_LONG).show() }
