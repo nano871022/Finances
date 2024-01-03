@@ -31,7 +31,7 @@ import co.japl.android.myapplication.R
 import co.japl.android.myapplication.finanzas.controller.boughtcreditcard.ListBoughtViewModel
 import co.japl.android.myapplication.finanzas.pojo.BoughtCreditCard
 import co.japl.android.myapplication.finanzas.utils.WindowWidthSize
-import co.japl.android.myapplication.finanzas.view.components.FieldView
+import co.com.japl.ui.components.FieldView
 import co.japl.android.myapplication.finanzas.view.creditcard.bought.list.BoughList
 import co.japl.android.myapplication.utils.NumbersUtil
 import kotlinx.coroutines.CoroutineScope
