@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.OutlinedButton
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Cancel
 import androidx.compose.material.icons.rounded.Create
@@ -15,6 +14,7 @@ import androidx.compose.material.icons.rounded.Update
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LinearProgressIndicator
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
@@ -50,13 +50,19 @@ internal fun CreditCardSetting(viewModel:CreditCardSettingViewModel){
     if(stateProgres.value){
         LinearProgressIndicator(progress=progress.value )
     }else{
-        Body(viewModel = viewModel)
+        Scaffold (
+            floatingActionButton = {
+                Buttons(viewModel = viewModel)
+            }   
+        ){
+            Body(viewModel = viewModel,modifier = Modifier.padding(it))
+        }
     }
         
 }
 
 @Composable
-private fun Body(viewModel:CreditCardSettingViewModel) {
+private fun Body(viewModel:CreditCardSettingViewModel,modifier:Modifier) {
     val stateType = remember { mutableStateOf(false) }
     val nameState = remember { viewModel.name }
     val valueState = remember { viewModel.value }
@@ -72,7 +78,9 @@ private fun Body(viewModel:CreditCardSettingViewModel) {
 
         FieldView(title = stringResource(id = R.string.credit_card)
             , value = viewModel.creditCard?.name?:""
-            , modifier = Modifier.fillMaxWidth().padding(5.dp))
+            , modifier = Modifier
+                .fillMaxWidth()
+                .padding(5.dp))
 
         FieldSelect(title = stringResource(id = R.string.credit_card_setting_type),
             value = typeState.value,
@@ -120,7 +128,6 @@ private fun Body(viewModel:CreditCardSettingViewModel) {
                 .fillMaxWidth()
                 .padding(5.dp))
 
-        Buttons(viewModel)
 
         if (stateType.value) {
             MoreOptionsDialog(listOptions = OptionsTypeSettings.values().toList(),
@@ -137,49 +144,31 @@ private fun Body(viewModel:CreditCardSettingViewModel) {
 private fun Buttons(viewModel:CreditCardSettingViewModel) {
     val state = remember {viewModel.showButtons}
     val newOneState = remember {viewModel.newOne}
-    if(state.value){
-    Row {
         if (!newOneState.value) {
             Button(
                 onClick = { viewModel.update() }, modifier = Modifier
-                    .weight(1f)
                     .padding(2.dp)
             ) {
-                Row {
                     Icon(
                         imageVector = Icons.Rounded.Update, contentDescription = stringResource(
                             id = R.string.save
                         )
                     )
-                    Text(
-                        text = stringResource(id = R.string.update),
-                        modifier = Modifier.align(Alignment.CenterVertically)
-                    )
-                }
             }
         } else {
             Button(
                 onClick = {
                     viewModel.create()
                 }, modifier = Modifier
-                    .weight(1f)
                     .padding(2.dp)
             ) {
-                Row {
                     Icon(
                         imageVector = Icons.Rounded.Create, contentDescription = stringResource(
                             id = R.string.save
                         )
                     )
-                    Text(
-                        text = stringResource(id = R.string.create),
-                        modifier = Modifier.align(Alignment.CenterVertically)
-                    )
-                }
             }
         }
-    }
-    }
 }
 
 @RequiresApi(Build.VERSION_CODES.S)

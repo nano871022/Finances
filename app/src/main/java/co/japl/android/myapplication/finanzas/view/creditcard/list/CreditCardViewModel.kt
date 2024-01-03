@@ -9,6 +9,7 @@ import co.com.japl.finances.iports.dtos.CreditCardDTO
 import co.com.japl.finances.iports.inbounds.creditcard.ICreditCardPort
 import co.japl.android.myapplication.R
 import co.japl.android.myapplication.putParams.CreditCardParams
+import co.japl.android.myapplication.putParams.ListCreditCardSettingParams
 import kotlinx.coroutines.runBlocking
 
 class CreditCardViewModel constructor(private val creditCardSvc:ICreditCardPort?,private val navController:NavController?) : ViewModel(){
@@ -21,6 +22,10 @@ class CreditCardViewModel constructor(private val creditCardSvc:ICreditCardPort?
 
     fun onClick(){
         navController?.let{CreditCardParams.newInstance(it)}
+    }
+
+    fun goToSettings(id:Int){
+        navController?.let { ListCreditCardSettingParams.goToSettings(id,it) }
     }
 
     fun edit(id:Int){

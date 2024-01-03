@@ -19,9 +19,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import co.com.japl.ui.theme.MaterialThemeComposeUI
+import co.com.japl.ui.utils.CurrencyVisualTransformation
 import co.japl.android.myapplication.R
 
 @Composable
@@ -58,6 +60,51 @@ fun FieldText( title:String
             }
         }
     }, modifier = modifier
+        , keyboardOptions = keyboardType
+    )
+}
+
+
+@Composable
+fun FieldText( title:String
+               ,value:String=""
+               ,icon:ImageVector? = null
+               ,keyboardType: KeyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text)
+               , currency:Boolean = false
+               ,modifier:Modifier=Modifier
+               ,validation:()->Unit = {}
+               ,hasErrorState:MutableState<Boolean> = mutableStateOf(false)
+               ,callback:(String)->Unit={}){
+    val valueState = remember { mutableStateOf("") }
+    value?.takeIf { value.isNotEmpty() }?.let{valueState.value = it}
+
+    TextField(value = valueState.value , onValueChange = {
+        valueState.value = it
+        validation.invoke()
+        callback.invoke(it)
+    }, isError = hasErrorState.value, label = {
+        Text(text = title)
+    }, trailingIcon = {
+        valueState.value.takeIf { it.isNotEmpty() }?.let {
+            IconButton(onClick = {
+                valueState.value= ""
+                callback.invoke(valueState.value)
+            }) {
+                icon?.let {
+                    Icon(
+                        imageVector = icon, contentDescription = stringResource(
+                            id = R.string.clear
+                        )
+                    )
+                }
+            }
+        }
+    }, modifier = modifier
+        , visualTransformation = CurrencyVisualTransformation(valueState.value)
+        , prefix = {
+            if (valueState.value.isNotEmpty() && currency)
+                Text(text = "$")
+        }
         , keyboardOptions = keyboardType
     )
 }

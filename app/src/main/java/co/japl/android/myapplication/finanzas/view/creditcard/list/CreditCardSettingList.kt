@@ -1,21 +1,21 @@
 package co.japl.android.myapplication.finanzas.view.creditcard.list
 
-import androidx.compose.foundation.background
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.Card
-import androidx.compose.material.Divider
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.LinearProgressIndicator
-import androidx.compose.material.Scaffold
-import androidx.compose.material.Text
+import androidx.compose.material3.Card
+import androidx.compose.material3.Divider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.LinearProgressIndicator
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.AddCircleOutline
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
@@ -28,6 +28,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import co.com.japl.finances.iports.dtos.CreditCardSettingDTO
 import co.com.japl.ui.theme.MaterialThemeComposeUI
+import co.com.japl.ui.theme.values.Dimensions
+import co.com.japl.ui.theme.values.ModifiersCustom
+import co.com.japl.ui.theme.values.ModifiersCustom.Weight1f
+import co.com.japl.ui.theme.values.ModifiersCustom.Weight1fAndAlightCenterVertical
 import co.japl.android.myapplication.R
 import co.japl.android.myapplication.finanzas.enums.MoreOptionsItemsSettingsCreditCard
 import co.japl.android.myapplication.finanzas.utils.WindowWidthSize
@@ -112,33 +116,20 @@ private fun Item(item:CreditCardSettingDTO,edit:(Int)->Unit,delete:(Int)->Unit){
 private fun ItemMedium(item:CreditCardSettingDTO, statusShowOptions: MutableState<Boolean>){
         Column {
             Row(modifier = Modifier.padding(8.dp)) {
-                Text(text = item.name, modifier = Modifier
-                    .weight(1f)
-                    .align(alignment = Alignment.CenterVertically))
+                Text(text = item.name, modifier = Weight1fAndAlightCenterVertical())
 
-                Text(text = stringResource(id = R.string.value), modifier = Modifier
-                    .weight(1f)
-                    .align(alignment = Alignment.CenterVertically))
-                Text(text = item.value, modifier = Modifier
-                    .weight(1f)
-                    .align(alignment = Alignment.CenterVertically))
+                Text(text = stringResource(id = R.string.value), modifier = Weight1fAndAlightCenterVertical())
+                Text(text = item.value, modifier = Weight1fAndAlightCenterVertical())
 
-                Text(text = stringResource(id = R.string.status), modifier = Modifier
-                    .weight(1f)
-                    .align(alignment = Alignment.CenterVertically))
-                Text(text = (item.active > 0).toString(), modifier = Modifier
-                    .weight(1f)
-                    .align(alignment = Alignment.CenterVertically))
+                Text(text = stringResource(id = R.string.status), modifier = Weight1fAndAlightCenterVertical())
+
+                Text(text = (item.active > 0).toString(), modifier = Weight1fAndAlightCenterVertical())
 
                 Text(
                     text = stringResource(id = R.string.credit_card_setting_type),
-                    modifier = Modifier
-                        .weight(1f)
-                        .align(alignment = Alignment.CenterVertically)
+                    modifier = Weight1fAndAlightCenterVertical()
                 )
-                Text(text = item.type, modifier = Modifier
-                    .weight(1f)
-                    .align(alignment = Alignment.CenterVertically))
+                Text(text = item.type, modifier = Weight1fAndAlightCenterVertical())
 
                 IconButton(onClick = { statusShowOptions.value = true }) {
                     Icon(
@@ -166,12 +157,12 @@ private fun ItemCompact(item:CreditCardSettingDTO,statusShowOptions:MutableState
                 }
             }
             Divider()
-            Row {
-                Text(text = stringResource(id = R.string.value), modifier = Modifier.weight(1f))
-                Text(text = item.value, modifier = Modifier.weight(1f))
+            Row (modifier=Modifier.padding(top=Dimensions.PADDING_TOP)) {
+                Text(text = stringResource(id = R.string.value), modifier = Weight1f())
+                Text(text = item.value, modifier = Weight1f())
 
-                Text(text = stringResource(id = R.string.status), modifier = Modifier.weight(1f))
-                Text(text = (item.active > 0).toString(), modifier = Modifier.weight(1f))
+                Text(text = stringResource(id = R.string.status), modifier = Weight1f())
+                Text(text = (item.active > 0).toString(), modifier = Weight1f())
 
             }
 
@@ -180,11 +171,12 @@ private fun ItemCompact(item:CreditCardSettingDTO,statusShowOptions:MutableState
                     text = stringResource(id = R.string.credit_card_setting_type),
                     modifier = Modifier.weight(1f)
                 )
-                Text(text = item.type, modifier = Modifier.weight(1f))
+                Text(text = item.type, modifier = Weight1f())
             }
         }
 }
 
+@RequiresApi(Build.VERSION_CODES.S)
 @Composable
 @Preview(showBackground = true, showSystemUi = true)
 fun CreditCardSettingListPreview(){

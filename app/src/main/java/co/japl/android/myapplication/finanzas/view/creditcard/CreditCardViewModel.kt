@@ -1,6 +1,5 @@
 package co.japl.android.myapplication.finanzas.view.creditcard
 
-import android.util.Log
 import android.widget.Toast
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -11,8 +10,6 @@ import co.com.japl.finances.iports.inbounds.creditcard.ICreditCardPort
 import co.japl.android.myapplication.R
 import co.japl.android.myapplication.putParams.ListCreditCardSettingParams
 import co.japl.android.myapplication.utils.NumbersUtil
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.runBlocking
 import java.math.BigDecimal
 import java.time.LocalDateTime
@@ -43,12 +40,9 @@ class CreditCardViewModel constructor(private val codeCreditCard:Int?,private va
         hasErrorName.value = name.value.isEmpty()
         hasErrorQuoteMax.value = maxQuotes.value.isEmpty() || maxQuotes.value.toInt() <= 0
         hasErrorCutOfDay.value = cutOffDay.value.isEmpty() || (cutOffDay.value.toInt() <= 0 && cutOffDay.value.toInt() > 30)
-        hasErrorWarning.value = warningValue.value.isEmpty() || NumbersUtil.toBigDecimal(warningValue.value) <= BigDecimal.ZERO
-        if(!hasErrorWarning.value){
-            warningValue.value = NumbersUtil.toString(NumbersUtil.toBigDecimal(warningValue.value))
-        }
+        hasErrorWarning.value = warningValue.value.isEmpty() || NumbersUtil.isNumber(warningValue.value).not() || NumbersUtil.toBigDecimal(warningValue.value) <= BigDecimal.ZERO
 
-        showButtons.value = !(hasErrorName.value || hasErrorQuoteMax.value || hasErrorCutOfDay.value || hasErrorWarning.value)
+        showButtons.value = (hasErrorName.value || hasErrorQuoteMax.value || hasErrorCutOfDay.value || hasErrorWarning.value).not()
 
         if(showButtons.value) {
             _creditCardDto?.let {
@@ -64,14 +58,26 @@ class CreditCardViewModel constructor(private val codeCreditCard:Int?,private va
     }
 
     fun create(){
-        _creditCardDto?.let{
-            val id = creditCardSvc.create(it)
-            if(id > 0){
-                Toast.makeText(navController.context, R.string.toast_successful_insert,Toast.LENGTH_LONG).show()
-                navController.navigateUp()
-            }else{
-                Toast.makeText(navController.context, R.string.toast_unsuccessful_insert,Toast.LENGTH_LONG).show()
+        if(showButtons.value) {
+            _creditCardDto?.let {
+                val id = creditCardSvc.create(it)
+                if (id > 0) {
+                    Toast.makeText(
+                        navController.context,
+                        R.string.toast_successful_insert,
+                        Toast.LENGTH_LONG
+                    ).show()
+                    navController.navigateUp()
+                } else {
+                    Toast.makeText(
+                        navController.context,
+                        R.string.toast_unsuccessful_insert,
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
             }
+        }else{
+            validate()
         }
     }
 

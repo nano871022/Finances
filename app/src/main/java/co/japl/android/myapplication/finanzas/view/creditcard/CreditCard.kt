@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.IconButton
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material.LinearProgressIndicator
@@ -14,6 +15,7 @@ import androidx.compose.material.icons.rounded.Cancel
 import androidx.compose.material.icons.rounded.Create
 import androidx.compose.material.icons.rounded.Settings
 import androidx.compose.material.icons.rounded.Update
+import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -33,6 +35,9 @@ fun CreditCard(viewModel:CreditCardViewModel){
     val progression = remember{viewModel.progress}
     val showProgress = remember{viewModel.showProgress}
 
+    val buttonsState = remember { viewModel.showButtons }
+    val buttonUpdateState = remember { viewModel.showButtonUpdate}
+
     CoroutineScope(Dispatchers.IO).launch {
         viewModel.main()
     }
@@ -40,12 +45,41 @@ fun CreditCard(viewModel:CreditCardViewModel){
     if(showProgress.value){
         LinearProgressIndicator(progress = progression.floatValue)
     }else{
-        Body(viewModel = viewModel)
+        Scaffold(
+            floatingActionButton = {
+                Column {
+                        if(buttonUpdateState.value) {
+                            IconButton(onClick = { viewModel.goSettings() }) {
+                                Icon(
+                                    imageVector = Icons.Rounded.Settings,
+                                    contentDescription = stringResource(id = R.string.setting_redirect)
+                                )
+                            }
+
+                            IconButton(onClick = { viewModel.update() }) {
+                                Icon(
+                                    imageVector = Icons.Rounded.Update,
+                                    contentDescription = stringResource(id = R.string.update)
+                                )
+                            }
+                        }else {
+                            IconButton(onClick = { viewModel.create() }) {
+                                Icon(
+                                    imageVector = Icons.Rounded.Create,
+                                    contentDescription = stringResource(id = R.string.create)
+                                )
+                            }
+                        }
+                    }
+            }
+        ) {
+            Body(viewModel = viewModel, modifier = Modifier.padding(it))
+        }
     }
 }
 
 @Composable
-private fun Body(viewModel: CreditCardViewModel){
+private fun Body(viewModel: CreditCardViewModel,modifier:Modifier=Modifier){
     val nameState = remember { viewModel.name }
     val maxQuotesState = remember { viewModel.maxQuotes }
     val cutOffDayState = remember { viewModel.cutOffDay }
@@ -98,6 +132,7 @@ private fun Body(viewModel: CreditCardViewModel){
             value = warningValueState.value,
             keyboardType = KeyboardOptions(keyboardType = KeyboardType.Decimal),
             icon=Icons.Rounded.Cancel,
+            currency = true,
             hasErrorState = hasErrorWarningState,
             callback = {warningValueState.value = it},
             validation = { viewModel.validate() },
@@ -134,44 +169,5 @@ private fun Body(viewModel: CreditCardViewModel){
             },modifier= Modifier
                 .fillMaxWidth()
                 .padding(5.dp))
-
-        ButtonSave(viewModel = viewModel)
-    }
-}
-
-@Composable
-private fun ButtonSave(viewModel:CreditCardViewModel){
-    val buttonsState = remember { viewModel.showButtons }
-    val buttonUpdateState = remember { viewModel.showButtonUpdate}
-    if(buttonsState.value) {
-        Row {
-            if (!buttonUpdateState.value) {
-                Button(onClick = { viewModel.create() }, modifier=Modifier.weight(1f)) {
-                    Icon(
-                        imageVector = Icons.Rounded.Create,
-                        contentDescription = stringResource(id = R.string.create)
-                    )
-
-                    Text(text = stringResource(id = R.string.create))
-                }
-            } else {
-                
-                Button(onClick = { viewModel.goSettings() }, modifier=Modifier.weight(1f)) {
-                    Icon(imageVector = Icons.Rounded.Settings, contentDescription = stringResource(
-                        id = R.string.setting_redirect
-                    ))
-                    Text(text = stringResource(id = R.string.setting_redirect))
-                }
-                
-                Button(onClick = { viewModel.update() }, modifier=Modifier.weight(1f)) {
-                    Icon(
-                        imageVector = Icons.Rounded.Update,
-                        contentDescription = stringResource(id = R.string.update)
-                    )
-
-                    Text(text = stringResource(id = R.string.update))
-                }
-            }
-        }
     }
 }

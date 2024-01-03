@@ -14,11 +14,15 @@ class ListCreditCardSettingParams() {
     companion object {
         @JvmStatic
         fun newInstance(codeCreditCard: Int, navController:NavController) {
-            Log.v(this.javaClass.name,"new Instance code credit card: $codeCreditCard")
         val parameters = bundleOf(
                 ARG_CODE_CREDIT_CARD to codeCreditCard,
                 )
             navController.navigate(R.id.action_createCreditCard_to_listCreditCardSetting,parameters)
+        }
+
+        fun goToSettings(codeCreditCard:Int, navController: NavController){
+            val parameters = bundleOf( ARG_CODE_CREDIT_CARD to codeCreditCard)
+            navController.navigate(R.id.action_item_menu_setting_credit_card_to_listCreditCardSetting,parameters)
         }
 
         fun download(argument: Bundle?):Map<String,Int>{

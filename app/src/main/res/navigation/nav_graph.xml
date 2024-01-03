@@ -151,6 +151,9 @@
             app:exitAnim="@android:anim/fade_out"
             app:destination="@id/createCreditCard"
             app:popUpToInclusive="true"/>
+        <action
+            android:id="@+id/action_item_menu_setting_credit_card_to_listCreditCardSetting"
+            app:destination="@id/listCreditCardSetting" />
     </fragment>
     <fragment
         android:id="@+id/createCreditCard"

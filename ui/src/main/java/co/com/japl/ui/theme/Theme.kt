@@ -30,6 +30,7 @@ private val LighColorSchema = lightColorScheme(
     , onSurfaceVariant = color_theme_light_on_surface_variant
     , onSurface = color_theme_light_on_surface
     , error = color_theme_light_error
+    , outlineVariant = color_theme_light_outline_variant
 )
 
 @RequiresApi(Build.VERSION_CODES.S)
@@ -56,6 +57,7 @@ private val DarkColorSchema = darkColorScheme(
     , onSurfaceVariant = color_theme_dark_on_surface_variant
     , onSurface = color_theme_dark_on_surface
     , error = color_theme_dark_error
+    , outlineVariant = color_theme_dark_outline_variant
 )
 
 @RequiresApi(Build.VERSION_CODES.O)
