@@ -7,8 +7,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import co.japl.android.myapplication.R
-import co.japl.android.myapplication.finanzas.view.components.CardValues
-import co.japl.android.myapplication.finanzas.view.components.FieldView
+import co.com.japl.ui.components.CardValues
+import co.com.japl.ui.components.FieldView
 import co.japl.android.myapplication.utils.NumbersUtil
 
 @Composable

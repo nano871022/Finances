@@ -1,4 +1,4 @@
-package co.japl.android.myapplication.finanzas.view.components
+package co.com.japl.ui.components
 
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Row

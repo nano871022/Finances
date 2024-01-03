@@ -25,7 +25,7 @@ import androidx.compose.ui.unit.dp
 import co.com.japl.finances.iports.dtos.BoughtCreditCardPeriodDTO
 import co.japl.android.myapplication.R
 import co.japl.android.myapplication.finanzas.enums.MoreOptionsItemPaidPeriodEnum
-import co.japl.android.myapplication.finanzas.view.components.MoreOptionsDialog
+import co.com.japl.ui.components.MoreOptionsDialog
 import co.japl.android.myapplication.utils.DateUtils
 import co.japl.android.myapplication.utils.NumbersUtil
 import kotlinx.coroutines.Dispatchers

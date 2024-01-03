@@ -38,8 +38,8 @@ import co.com.japl.ui.theme.values.ModifiersCustom.Weight1fAndPaddintRightSpace
 import co.japl.android.myapplication.R
 import co.japl.android.myapplication.finanzas.enums.MoreOptionsItemsCreditCardList
 import co.japl.android.myapplication.finanzas.utils.WindowWidthSize
-import co.japl.android.myapplication.finanzas.view.components.AlertDialogOkCancel
-import co.japl.android.myapplication.finanzas.view.components.MoreOptionsDialog
+import co.com.japl.ui.components.AlertDialogOkCancel
+import co.com.japl.ui.components.MoreOptionsDialog
 import co.japl.android.myapplication.utils.NumbersUtil
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

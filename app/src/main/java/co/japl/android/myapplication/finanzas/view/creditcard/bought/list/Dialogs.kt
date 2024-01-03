@@ -32,8 +32,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import co.japl.android.myapplication.R
 import co.japl.android.myapplication.finanzas.enums.MoreOptionsItemsCreditCard
-import co.japl.android.myapplication.finanzas.view.components.AlertDialogOkCancel
-import co.japl.android.myapplication.finanzas.view.components.FieldView
+import co.com.japl.ui.components.AlertDialogOkCancel
+import co.com.japl.ui.components.FieldView
 import co.japl.android.myapplication.utils.NumbersUtil
 
 @OptIn(ExperimentalMaterial3Api::class)

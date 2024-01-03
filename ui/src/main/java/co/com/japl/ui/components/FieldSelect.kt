@@ -1,7 +1,5 @@
-package co.japl.android.myapplication.finanzas.view.components
+package co.com.japl.ui.components
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -26,17 +24,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import co.com.japl.ui.theme.MaterialThemeComposeUI
-import co.japl.android.myapplication.R
-import co.japl.android.myapplication.finanzas.enums.IMoreOptions
-import co.japl.android.myapplication.finanzas.enums.OptionsTypeSettings
+import co.com.japl.ui.R
+import co.com.japl.ui.enums.IMoreOptions
 
 @Composable
-internal fun FieldSelect(title:String,value:String?,list:List<IMoreOptions>,isError:MutableState<Boolean> = mutableStateOf(false),modifier: Modifier,callable:(IMoreOptions?)->Unit){
+fun FieldSelect(title:String,value:String?,list:List<IMoreOptions>,isError:MutableState<Boolean> = mutableStateOf(false),modifier: Modifier,callable:(IMoreOptions?)->Unit){
     val context = LocalContext.current
     val state = remember { mutableStateOf(false) }
     val stateValue = remember { mutableStateOf("") }
@@ -99,17 +94,5 @@ internal fun FieldSelect(title:String,value:String?,list:List<IMoreOptions>,isEr
             callable.invoke(it)
             stateClean.value = true
             state.value = false }
-    }
-}
-
-@RequiresApi(Build.VERSION_CODES.S)
-@Composable
-@Preview(showSystemUi = true, showBackground = true)
-fun FieldSelectPreview(){
-    MaterialThemeComposeUI {
-        val isErrorState = remember {
-            mutableStateOf(false)
-        }
-        FieldSelect("Title","value",OptionsTypeSettings.values().toList(), isError = isErrorState,callable = {},modifier=Modifier.fillMaxWidth().padding(5.dp))
     }
 }

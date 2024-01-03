@@ -1,4 +1,4 @@
-package co.japl.android.myapplication.finanzas.view.components
+package co.com.japl.ui.components
 
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Column
@@ -17,8 +17,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import co.japl.android.myapplication.R
-import co.japl.android.myapplication.finanzas.enums.IMoreOptions
+import co.com.japl.ui.R
+import co.com.japl.ui.enums.IMoreOptions
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

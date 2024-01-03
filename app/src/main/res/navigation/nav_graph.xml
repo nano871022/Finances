@@ -161,6 +161,7 @@
         android:label="@string/create_credit_card"
         tools:layout="@layout/fragment_create_credit_card" >
         <action
+
             android:id="@+id/action_createCreditCard_to_listCreditCardSetting"
             app:destination="@id/listCreditCardSetting" />
     </fragment>
@@ -210,6 +211,8 @@
             android:id="@+id/action_listCreditCardSetting_to_creditCardSettingFragment"
             app:destination="@id/creditCardSettingFragment"
             app:popUpToInclusive="true"/>
+        <deepLink app:uri="android-app://co.com.japl.finanzas.module.app/list_credit_card_setting"/>
+
     </fragment>
     <fragment
         android:id="@+id/boughWalletController"

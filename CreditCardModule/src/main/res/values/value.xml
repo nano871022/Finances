@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="create">Crear</string>
+    <string name="update">Actualizar</string>
+    <string name="credit_card">Tarjeta de crédito</string>
+    <string name="max_quotes">Maximas cuotas</string>
+    <string name="cut_off_day">Día de corte</string>
+    <string name="warning_quote_value">Alerta valor de cuota</string>
+    <string name="status">Estado</string>
+    <string name="interest_1_quote">No intereses a 1 cuota</string>
+    <string name="interest_1not_quote">No intereses Primera cuota de varias</string>
+    <string name="setting_redirect">Ir a configuraciones</string>
+
+    <string name="toast_successful_update">Se actualizo el registros satisfactoriamente</string>
+    <string name="toast_dont_successful_update">No se actualizo el registro</string>
+    <string name="toast_unsuccessful_insert">No se inserto el registro</string>
+    <string name="toast_successful_insert">Se inserto el registro satisfactoriamente</string>
+
+    <string name="navigate_list_credit_card_setting">android-app://co.com.japl.finanzas.module.app/list_credit_card_setting?codeCreditCard=%d</string>
+</resources>

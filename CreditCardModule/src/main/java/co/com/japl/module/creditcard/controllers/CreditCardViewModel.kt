@@ -1,14 +1,17 @@
-package co.japl.android.myapplication.finanzas.view.creditcard
+package co.com.japl.module.creditcard.controllers
 
 import android.widget.Toast
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.core.net.toUri
+import androidx.core.os.bundleOf
 import androidx.lifecycle.ViewModel
 import androidx.navigation.NavController
+import androidx.navigation.NavDeepLinkRequest
 import co.com.japl.finances.iports.dtos.CreditCardDTO
 import co.com.japl.finances.iports.inbounds.creditcard.ICreditCardPort
-import co.japl.android.myapplication.R
-import co.japl.android.myapplication.putParams.ListCreditCardSettingParams
+import co.com.japl.module.creditcard.R
+import co.com.japl.module.creditcard.navigations.ListCreditCardSettings
 import co.japl.android.myapplication.utils.NumbersUtil
 import kotlinx.coroutines.runBlocking
 import java.math.BigDecimal
@@ -94,7 +97,7 @@ class CreditCardViewModel constructor(private val codeCreditCard:Int?,private va
     fun goSettings(){
         navController?.let {
             codeCreditCard?.let {id->
-                ListCreditCardSettingParams.newInstance(id, it)
+                ListCreditCardSettings.navigate(codeCreditCard,navController)
             }
         }
     }

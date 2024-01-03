@@ -1,23 +1,19 @@
-package co.japl.android.myapplication.finanzas.view.components
+package co.com.japl.ui.components
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextFieldDefaults
-import androidx.compose.material3.TextFieldDefaults.indicatorLine
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.tooling.preview.UiMode
 import co.com.japl.ui.theme.MaterialThemeComposeUI
-import co.japl.android.graphs.colors.Colors
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -38,6 +34,7 @@ fun CheckBoxField(title:String, value:Boolean,callback:(Boolean)->Unit, modifier
 }
 
 
+@RequiresApi(Build.VERSION_CODES.S)
 @Composable
 @Preview(showBackground = true, showSystemUi = true)
 fun CheckBoxPreview(){

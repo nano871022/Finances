@@ -14,7 +14,7 @@ android {
         applicationId "co.japl.android.myapplication"
         minSdk 26
         targetSdk 33
-        versionCode 4_05_03_056
+        versionCode 4_05_03_059
         versionName "Migracion del historico de compras con tarjeta de credito, ahora los valores concuerdan correctamente, ajuste valores de resumen "
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -40,6 +40,10 @@ android {
     composeOptions {
         kotlinCompilerExtensionVersion = "1.4.3"
     }
+    buildFeatures {
+        compose = true
+    }
+
     packagingOptions {
         resources {
             excludes += ['META-INF/DEPENDENCIES']
@@ -58,6 +62,7 @@ dependencies {
     implementation(project(':ui'))
     implementation(project(':about-module'))
     implementation(project(":japl-finances-iports"))
+    implementation(project(":CreditCardModule"))
 
 
     implementation 'androidx.core:core-ktx:1.12.0'

@@ -35,8 +35,8 @@ import co.com.japl.ui.theme.values.ModifiersCustom.Weight1fAndAlightCenterVertic
 import co.japl.android.myapplication.R
 import co.japl.android.myapplication.finanzas.enums.MoreOptionsItemsSettingsCreditCard
 import co.japl.android.myapplication.finanzas.utils.WindowWidthSize
-import co.japl.android.myapplication.finanzas.view.components.AlertDialogOkCancel
-import co.japl.android.myapplication.finanzas.view.components.MoreOptionsDialog
+import co.com.japl.ui.components.AlertDialogOkCancel
+import co.com.japl.ui.components.MoreOptionsDialog
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

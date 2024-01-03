@@ -11,22 +11,22 @@ import androidx.compose.ui.unit.dp
 import co.com.japl.finances.iports.dtos.RecapCreditCardBoughtListDTO
 import co.japl.android.myapplication.R
 import co.japl.android.myapplication.finanzas.utils.WindowWidthSize
-import co.japl.android.myapplication.finanzas.view.components.FieldView
+import co.com.japl.ui.components.FieldView
 import co.japl.android.myapplication.utils.NumbersUtil
 
 @Composable
 internal fun Popup(recap: RecapCreditCardBoughtListDTO, popupState: MutableState<Boolean>){
 
-    co.japl.android.myapplication.finanzas.view.components.Popup(R.string.recap_bought_cc,popupState) {
+    co.com.japl.ui.components.Popup(R.string.recap_bought_cc, popupState) {
 
         BoxWithConstraints {
             val maxWidth = maxWidth
-            Column{
-            if(WindowWidthSize.MEDIUM.isEqualTo(maxWidth)){
-                ContentCompact(recap )
-            }else{
-                ContentLarge(recap , modifier=Modifier.padding(top=10.dp))
-            }
+            Column {
+                if (WindowWidthSize.MEDIUM.isEqualTo(maxWidth)) {
+                    ContentCompact(recap)
+                } else {
+                    ContentLarge(recap, modifier = Modifier.padding(top = 10.dp))
+                }
             }
         }
     }

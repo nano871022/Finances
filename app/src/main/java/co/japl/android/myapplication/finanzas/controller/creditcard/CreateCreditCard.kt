@@ -12,8 +12,7 @@ import androidx.navigation.fragment.findNavController
 import co.com.japl.finances.iports.inbounds.creditcard.ICreditCardPort
 import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.japl.android.myapplication.databinding.FragmentCreateCreditCardBinding
-import co.japl.android.myapplication.finanzas.view.creditcard.CreditCard
-import co.japl.android.myapplication.finanzas.view.creditcard.CreditCardViewModel
+import co.com.japl.module.creditcard.controllers.CreditCardViewModel
 import co.japl.android.myapplication.putParams.CreditCardParams
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -42,7 +41,7 @@ class CreateCreditCard : Fragment() {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
                 MaterialThemeComposeUI {
-                    CreditCard(creditCardViewModel)
+                    co.com.japl.module.creditcard.views.CreditCard(creditCardViewModel)
                 }
             }
         }

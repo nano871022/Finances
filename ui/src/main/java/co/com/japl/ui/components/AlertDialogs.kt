@@ -1,4 +1,4 @@
-package co.japl.android.myapplication.finanzas.view.components
+package co.com.japl.ui.components
 
 import androidx.annotation.StringRes
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -7,7 +7,8 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
-import co.japl.android.myapplication.R
+import co.com.japl.ui.R
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

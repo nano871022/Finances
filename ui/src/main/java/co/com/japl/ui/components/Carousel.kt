@@ -1,4 +1,4 @@
-package co.japl.android.myapplication.finanzas.view.components
+package co.com.japl.ui.components
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background

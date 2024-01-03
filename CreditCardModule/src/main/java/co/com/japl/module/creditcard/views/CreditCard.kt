@@ -1,15 +1,12 @@
-package co.japl.android.myapplication.finanzas.view.creditcard
+package co.com.japl.module.creditcard.views
 
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.IconButton
-import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material.LinearProgressIndicator
-import androidx.compose.material3.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Cancel
 import androidx.compose.material.icons.rounded.Create
@@ -22,9 +19,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import co.japl.android.myapplication.R
-import co.japl.android.myapplication.finanzas.view.components.CheckBoxField
-import co.japl.android.myapplication.finanzas.view.components.FieldText
+import co.com.japl.module.creditcard.R
+import co.com.japl.module.creditcard.controllers.CreditCardViewModel
+import co.com.japl.ui.components.CheckBoxField
+import co.com.japl.ui.components.FieldText
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

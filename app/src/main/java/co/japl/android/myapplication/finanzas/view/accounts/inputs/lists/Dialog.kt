@@ -24,10 +24,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import co.japl.android.myapplication.R
-import co.japl.android.myapplication.finanzas.enums.IMoreOptions
+import co.com.japl.ui.enums.IMoreOptions
 import co.japl.android.myapplication.finanzas.enums.MoreOptionsItemsInput
-import co.japl.android.myapplication.finanzas.view.components.AlertDialogOkCancel
-import co.japl.android.myapplication.finanzas.view.components.MoreOptionsDialog
+import co.com.japl.ui.components.AlertDialogOkCancel
+import co.com.japl.ui.components.MoreOptionsDialog
 import co.japl.android.myapplication.utils.NumbersUtil
 
 @Composable

@@ -1,8 +1,7 @@
-package co.japl.android.myapplication.finanzas.view.components
+package co.com.japl.ui.components
 
 import androidx.annotation.StringRes
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -19,12 +18,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import co.com.japl.ui.theme.MaterialThemeComposeUI
-import co.japl.android.myapplication.R
 
 @Composable
 fun Popup(@StringRes title:Int, state: MutableState<Boolean>, content:@Composable() ()->Unit){
@@ -70,12 +66,3 @@ private fun Title(title:String,state: MutableState<Boolean>){
     Divider()
 }
 
-@Composable
-@Preview
-fun Preview(){
-    MaterialThemeComposeUI {
-        Popup(R.string.recap_bought_cc, remember { mutableStateOf(true) }) {
-            Text(text = "hola")
-        }
-    }
-}

@@ -1,4 +1,4 @@
-package co.japl.android.myapplication.finanzas.view.components
+package co.com.japl.ui.components
 
 import android.os.Build
 import androidx.annotation.RequiresApi

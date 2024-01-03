@@ -15,7 +15,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import co.com.japl.finances.iports.dtos.RecapDTO
 import co.japl.android.myapplication.R
 import co.japl.android.myapplication.finanzas.controller.RecapViewModel
-import co.japl.android.myapplication.finanzas.view.components.Carousel
+import co.com.japl.ui.components.Carousel
 import co.japl.android.myapplication.finanzas.view.components.PieceOfPieDraw
 
 @OptIn(ExperimentalFoundationApi::class)

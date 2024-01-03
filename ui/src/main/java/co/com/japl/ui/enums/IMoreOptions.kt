@@ -1,4 +1,4 @@
-package co.japl.android.myapplication.finanzas.enums
+package co.com.japl.ui.enums
 
 import androidx.annotation.StringRes
 

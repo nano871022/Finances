@@ -1,4 +1,4 @@
-package co.japl.android.myapplication.finanzas.view.components
+package co.com.japl.ui.components
 
 import android.os.Build
 import androidx.annotation.RequiresApi
@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Cancel
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
@@ -19,13 +20,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import co.com.japl.ui.R
 import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.com.japl.ui.utils.CurrencyVisualTransformation
-import co.japl.android.myapplication.R
 
+
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FieldText( title:String
               ,value:String=""
@@ -64,7 +66,7 @@ fun FieldText( title:String
     )
 }
 
-
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FieldText( title:String
                ,value:String=""

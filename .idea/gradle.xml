@@ -9,6 +9,7 @@
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$" />
+            <option value="$PROJECT_DIR$/CreditCardModule" />
             <option value="$PROJECT_DIR$/about-module" />
             <option value="$PROJECT_DIR$/app" />
             <option value="$PROJECT_DIR$/japl-android-finances-core" />

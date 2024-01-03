@@ -29,11 +29,11 @@ import androidx.compose.ui.unit.dp
 import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.japl.android.myapplication.R
 import co.japl.android.myapplication.finanzas.enums.OptionsTypeSettings
-import co.japl.android.myapplication.finanzas.view.components.CheckBoxField
-import co.japl.android.myapplication.finanzas.view.components.FieldSelect
-import co.japl.android.myapplication.finanzas.view.components.FieldText
-import co.japl.android.myapplication.finanzas.view.components.FieldView
-import co.japl.android.myapplication.finanzas.view.components.MoreOptionsDialog
+import co.com.japl.ui.components.CheckBoxField
+import co.com.japl.ui.components.FieldSelect
+import co.com.japl.ui.components.FieldText
+import co.com.japl.ui.components.FieldView
+import co.com.japl.ui.components.MoreOptionsDialog
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
