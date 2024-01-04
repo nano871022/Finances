@@ -1,9 +1,8 @@
-package co.japl.android.myapplication.finanzas.view.creditcard
+package co.com.japl.module.creditcard.views.setting.forms
 
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
@@ -15,20 +14,19 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import co.com.japl.module.creditcard.R
+import co.com.japl.module.creditcard.controllers.setting.CreditCardSettingViewModel
 import co.com.japl.ui.theme.MaterialThemeComposeUI
-import co.japl.android.myapplication.R
-import co.japl.android.myapplication.finanzas.enums.OptionsTypeSettings
+import co.com.japl.module.creditcard.enums.MoreOptionsItemsTypeSettings
 import co.com.japl.ui.components.CheckBoxField
 import co.com.japl.ui.components.FieldSelect
 import co.com.japl.ui.components.FieldText
@@ -39,7 +37,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 @Composable
-internal fun CreditCardSetting(viewModel:CreditCardSettingViewModel){
+fun CreditCardSetting(viewModel: CreditCardSettingViewModel){
     val stateProgres = remember {viewModel.showProgress}
     val progress = remember {viewModel.progress}
     
@@ -62,7 +60,7 @@ internal fun CreditCardSetting(viewModel:CreditCardSettingViewModel){
 }
 
 @Composable
-private fun Body(viewModel:CreditCardSettingViewModel,modifier:Modifier) {
+private fun Body(viewModel: CreditCardSettingViewModel, modifier:Modifier) {
     val stateType = remember { mutableStateOf(false) }
     val nameState = remember { viewModel.name }
     val valueState = remember { viewModel.value }
@@ -84,7 +82,7 @@ private fun Body(viewModel:CreditCardSettingViewModel,modifier:Modifier) {
 
         FieldSelect(title = stringResource(id = R.string.credit_card_setting_type),
             value = typeState.value,
-            list = OptionsTypeSettings.values().toList(),
+            list = MoreOptionsItemsTypeSettings.values().toList(),
             isError = typeIsErrorState,
             modifier = Modifier
                 .fillMaxWidth()
@@ -118,7 +116,7 @@ private fun Body(viewModel:CreditCardSettingViewModel,modifier:Modifier) {
                 .padding(5.dp))
 
 
-        CheckBoxField(title = stringResource(id = R.string.Active),
+        CheckBoxField(title = stringResource(id = R.string.active),
             value = activeState.value,
             callback = {
                 activeState.value = it
@@ -130,7 +128,7 @@ private fun Body(viewModel:CreditCardSettingViewModel,modifier:Modifier) {
 
 
         if (stateType.value) {
-            MoreOptionsDialog(listOptions = OptionsTypeSettings.values().toList(),
+            MoreOptionsDialog(listOptions = MoreOptionsItemsTypeSettings.values().toList(),
                 onDismiss = { stateType.value = false },
                 onClick = {
                     viewModel.dto?.type = context.getString(it.getName())
@@ -141,7 +139,7 @@ private fun Body(viewModel:CreditCardSettingViewModel,modifier:Modifier) {
 }
 
 @Composable
-private fun Buttons(viewModel:CreditCardSettingViewModel) {
+private fun Buttons(viewModel: CreditCardSettingViewModel) {
     val state = remember {viewModel.showButtons}
     val newOneState = remember {viewModel.newOne}
         if (!newOneState.value) {

@@ -10,7 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import co.com.japl.finances.iports.dtos.RecapCreditCardBoughtListDTO
 import co.japl.android.myapplication.R
-import co.japl.android.myapplication.finanzas.utils.WindowWidthSize
+import co.com.japl.ui.utils.WindowWidthSize
 import co.com.japl.ui.components.FieldView
 import co.japl.android.myapplication.utils.NumbersUtil
 

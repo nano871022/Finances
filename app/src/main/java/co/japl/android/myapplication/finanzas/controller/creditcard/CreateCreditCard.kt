@@ -12,7 +12,8 @@ import androidx.navigation.fragment.findNavController
 import co.com.japl.finances.iports.inbounds.creditcard.ICreditCardPort
 import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.japl.android.myapplication.databinding.FragmentCreateCreditCardBinding
-import co.com.japl.module.creditcard.controllers.CreditCardViewModel
+import co.com.japl.module.creditcard.controllers.account.CreditCardViewModel
+import co.com.japl.module.creditcard.views.account.forms.CreditCard
 import co.japl.android.myapplication.putParams.CreditCardParams
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -26,7 +27,7 @@ class CreateCreditCard : Fragment() {
     private var _binding:FragmentCreateCreditCardBinding? = null
     private val binding get() = _binding!!
 
-    @RequiresApi(Build.VERSION_CODES.O)
+    @RequiresApi(Build.VERSION_CODES.S)
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -41,7 +42,7 @@ class CreateCreditCard : Fragment() {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
                 MaterialThemeComposeUI {
-                    co.com.japl.module.creditcard.views.CreditCard(creditCardViewModel)
+                    CreditCard(creditCardViewModel)
                 }
             }
         }

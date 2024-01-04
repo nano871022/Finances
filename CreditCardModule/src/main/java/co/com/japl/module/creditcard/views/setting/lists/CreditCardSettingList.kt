@@ -1,4 +1,4 @@
-package co.japl.android.myapplication.finanzas.view.creditcard.list
+package co.com.japl.module.creditcard.views.setting.lists
 
 import android.os.Build
 import androidx.annotation.RequiresApi
@@ -27,14 +27,14 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import co.com.japl.finances.iports.dtos.CreditCardSettingDTO
+import co.com.japl.module.creditcard.R
+import co.com.japl.module.creditcard.controllers.setting.CreditCardSettingListViewModel
 import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.com.japl.ui.theme.values.Dimensions
-import co.com.japl.ui.theme.values.ModifiersCustom
 import co.com.japl.ui.theme.values.ModifiersCustom.Weight1f
 import co.com.japl.ui.theme.values.ModifiersCustom.Weight1fAndAlightCenterVertical
-import co.japl.android.myapplication.R
-import co.japl.android.myapplication.finanzas.enums.MoreOptionsItemsSettingsCreditCard
-import co.japl.android.myapplication.finanzas.utils.WindowWidthSize
+import co.com.japl.module.creditcard.enums.MoreOptionsItemsSettingsCreditCard
+import co.com.japl.ui.utils.WindowWidthSize
 import co.com.japl.ui.components.AlertDialogOkCancel
 import co.com.japl.ui.components.MoreOptionsDialog
 import kotlinx.coroutines.CoroutineScope
@@ -42,7 +42,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 @Composable
-internal fun CreditCardSettingList(viewModel: CreditCardSettingViewModel){
+ fun CreditCardSettingList(viewModel: CreditCardSettingListViewModel){
     val stateShow = remember {viewModel.showProgress}
     val stateProgress = remember {viewModel.progress}
 
@@ -58,7 +58,7 @@ internal fun CreditCardSettingList(viewModel: CreditCardSettingViewModel){
 }
 
 @Composable
-private fun Body(viewModel: CreditCardSettingViewModel){
+private fun Body(viewModel: CreditCardSettingListViewModel){
     Scaffold( floatingActionButton = {
         IconButton(onClick = {
             viewModel.onClick()
@@ -69,7 +69,6 @@ private fun Body(viewModel: CreditCardSettingViewModel){
             )
         }
     },modifier=Modifier.padding(5.dp)) {
-        MaterialThemeComposeUI {
             Column(modifier = Modifier.padding(it)) {
                 for (item in viewModel.list) {
                     Item(
@@ -77,7 +76,6 @@ private fun Body(viewModel: CreditCardSettingViewModel){
                         edit = { id -> viewModel.edit(id) },
                         delete = { id -> viewModel.delete(id) })
                 }
-            }
         }
     }
 
@@ -180,7 +178,7 @@ private fun ItemCompact(item:CreditCardSettingDTO,statusShowOptions:MutableState
 @Composable
 @Preview(showBackground = true, showSystemUi = true)
 fun CreditCardSettingListPreview(){
-    val viewModel = CreditCardSettingViewModel(0, null,null)
+    val viewModel = CreditCardSettingListViewModel(0, null,null)
     MaterialThemeComposeUI {
         CreditCardSettingList(viewModel)
     }

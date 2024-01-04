@@ -164,6 +164,7 @@
 
             android:id="@+id/action_createCreditCard_to_listCreditCardSetting"
             app:destination="@id/listCreditCardSetting" />
+        <deepLink app:uri="android-app://co.com.japl.finanzas.module.app/credit_card"/>
     </fragment>
 
 
@@ -200,7 +201,9 @@
         android:id="@+id/creditCardSettingFragment"
         android:name="co.japl.android.myapplication.finanzas.controller.creditcard.CreditCardSettingFragment"
         android:label="@string/title_toolbar_fragment_credit_card_setting"
-        tools:layout="@layout/fragment_credit_card_setting" />
+        tools:layout="@layout/fragment_credit_card_setting" >
+        <deepLink app:uri="android-app://co.com.japl.finanzas.module.app/credit_card_setting"/>
+    </fragment>
 
     <fragment
         android:id="@+id/listCreditCardSetting"

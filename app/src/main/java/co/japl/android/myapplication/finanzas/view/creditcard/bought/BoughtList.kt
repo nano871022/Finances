@@ -3,7 +3,6 @@ package co.japl.android.myapplication.finanzas.view.creditcard.bought
 import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -30,7 +29,7 @@ import androidx.compose.ui.unit.dp
 import co.japl.android.myapplication.R
 import co.japl.android.myapplication.finanzas.controller.boughtcreditcard.ListBoughtViewModel
 import co.japl.android.myapplication.finanzas.pojo.BoughtCreditCard
-import co.japl.android.myapplication.finanzas.utils.WindowWidthSize
+import co.com.japl.ui.utils.WindowWidthSize
 import co.com.japl.ui.components.FieldView
 import co.japl.android.myapplication.finanzas.view.creditcard.bought.list.BoughList
 import co.japl.android.myapplication.utils.NumbersUtil

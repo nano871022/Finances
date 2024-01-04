@@ -13,7 +13,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import co.com.japl.finances.iports.dtos.CreditCardBoughtItemDTO
 import co.japl.android.myapplication.R
-import co.japl.android.myapplication.finanzas.utils.WindowWidthSize
+import co.com.japl.ui.utils.WindowWidthSize
 import java.time.YearMonth
 import java.time.format.DateTimeFormatter
 

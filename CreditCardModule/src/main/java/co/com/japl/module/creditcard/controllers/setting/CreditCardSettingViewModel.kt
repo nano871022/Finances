@@ -1,4 +1,4 @@
-package co.japl.android.myapplication.finanzas.view.creditcard
+package co.com.japl.module.creditcard.controllers.setting
 
 import android.util.Log
 import android.widget.Toast
@@ -10,7 +10,7 @@ import co.com.japl.finances.iports.dtos.CreditCardDTO
 import co.com.japl.finances.iports.dtos.CreditCardSettingDTO
 import co.com.japl.finances.iports.inbounds.creditcard.ICreditCardPort
 import co.com.japl.finances.iports.inbounds.creditcard.ICreditCardSettingPort
-import co.japl.android.myapplication.R
+import co.com.japl.module.creditcard.R
 import co.japl.android.myapplication.utils.NumbersUtil
 import kotlinx.coroutines.runBlocking
 import java.time.LocalDateTime
@@ -53,7 +53,7 @@ class CreditCardSettingViewModel constructor(private val codeCreditCard:Int?,pri
         }
         if(creditCardSettingSvc?.update(dto!!) == true){
             navController?.navigateUp()
-            Toast.makeText(navController?.context,R.string.toast_successful_update,Toast.LENGTH_LONG).show()
+            Toast.makeText(navController?.context, R.string.toast_successful_update,Toast.LENGTH_LONG).show()
         }else{
             Toast.makeText(navController?.context,R.string.toast_dont_successful_update,Toast.LENGTH_LONG).show()
         }

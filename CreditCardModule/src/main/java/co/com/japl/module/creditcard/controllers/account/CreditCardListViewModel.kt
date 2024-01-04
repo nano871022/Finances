@@ -1,4 +1,4 @@
-package co.japl.android.myapplication.finanzas.view.creditcard.list
+package co.com.japl.module.creditcard.controllers.account
 
 import android.widget.Toast
 import androidx.compose.runtime.mutableFloatStateOf
@@ -7,12 +7,12 @@ import androidx.lifecycle.ViewModel
 import androidx.navigation.NavController
 import co.com.japl.finances.iports.dtos.CreditCardDTO
 import co.com.japl.finances.iports.inbounds.creditcard.ICreditCardPort
-import co.japl.android.myapplication.R
-import co.japl.android.myapplication.putParams.CreditCardParams
-import co.japl.android.myapplication.putParams.ListCreditCardSettingParams
+import co.com.japl.module.creditcard.R
+import co.com.japl.module.creditcard.navigations.CreditCard
+import co.com.japl.module.creditcard.navigations.ListCreditCardSettings
 import kotlinx.coroutines.runBlocking
 
-class CreditCardViewModel constructor(private val creditCardSvc:ICreditCardPort?,private val navController:NavController?) : ViewModel(){
+class CreditCardListViewModel constructor(private val creditCardSvc:ICreditCardPort?, private val navController:NavController?) : ViewModel(){
 
     private var _list = listOf<CreditCardDTO>()
     val list get() = _list
@@ -21,23 +21,23 @@ class CreditCardViewModel constructor(private val creditCardSvc:ICreditCardPort?
     var showProgress = mutableStateOf(true)
 
     fun onClick(){
-        navController?.let{CreditCardParams.newInstance(it)}
+        navController?.let{CreditCard.navigate(it)}
     }
 
     fun goToSettings(id:Int){
-        navController?.let { ListCreditCardSettingParams.goToSettings(id,it) }
+        navController?.let { ListCreditCardSettings.navigate(id,it) }
     }
 
     fun edit(id:Int){
-        navController?.let { CreditCardParams.newInstance(id.toString(),it) }
+        navController?.let { CreditCard.navigate(id,it) }
     }
 
     fun delete(id:Int){
         creditCardSvc?.let{
             if(it.delete(id)){
-                Toast.makeText(navController?.context, R.string.delete_successfull,Toast.LENGTH_LONG).show()
+                Toast.makeText(navController?.context, R.string.toast_successful_deleted,Toast.LENGTH_LONG).show()
             }else{
-                Toast.makeText(navController?.context, R.string.dont_deleted,Toast.LENGTH_LONG).show()
+                Toast.makeText(navController?.context, R.string.toast_dont_successful_deleted,Toast.LENGTH_LONG).show()
             }
         }
     }

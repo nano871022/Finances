@@ -12,8 +12,8 @@ import androidx.navigation.fragment.findNavController
 import co.com.japl.finances.iports.inbounds.creditcard.ICreditCardSettingPort
 import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.japl.android.myapplication.databinding.FragmentListCreditCardSettingBinding
-import co.japl.android.myapplication.finanzas.view.creditcard.list.CreditCardSettingList
-import co.japl.android.myapplication.finanzas.view.creditcard.list.CreditCardSettingViewModel
+import co.com.japl.module.creditcard.views.setting.lists.CreditCardSettingList
+import co.com.japl.module.creditcard.controllers.setting.CreditCardSettingListViewModel
 import co.japl.android.myapplication.putParams.ListCreditCardSettingParams
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -42,7 +42,7 @@ class ListCreditCardSetting : Fragment() {
         if(map.containsKey(ListCreditCardSettingParams.Params.ARG_CODE_CREDIT_CARD)) {
             codeCreditCard = map[ListCreditCardSettingParams.Params.ARG_CODE_CREDIT_CARD]!!
         }
-        val viewModel = CreditCardSettingViewModel(codeCreditCard,saveSvc,findNavController())
+        val viewModel = CreditCardSettingListViewModel(codeCreditCard,saveSvc,findNavController())
         binding?.cvComposeLccs?.apply {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {

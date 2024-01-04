@@ -12,8 +12,8 @@ import androidx.navigation.fragment.findNavController
 import co.com.japl.finances.iports.inbounds.creditcard.ICreditCardPort
 import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.japl.android.myapplication.databinding.FragmentListCreditCardBinding
-import co.japl.android.myapplication.finanzas.view.creditcard.list.CreditCardList
-import co.japl.android.myapplication.finanzas.view.creditcard.list.CreditCardViewModel
+import co.com.japl.module.creditcard.views.account.lists.CreditCardList
+import co.com.japl.module.creditcard.controllers.account.CreditCardListViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -35,7 +35,7 @@ class ListCreditCard : Fragment()  {
         savedInstanceState: Bundle?
     ): View? {
         _binding = FragmentListCreditCardBinding.inflate(inflater)
-        val viewModel = CreditCardViewModel(creditCardSvc,findNavController())
+        val viewModel = CreditCardListViewModel(creditCardSvc,findNavController())
         binding?.listComposeLcc?.apply {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {

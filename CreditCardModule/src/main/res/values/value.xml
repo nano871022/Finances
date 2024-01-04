@@ -10,11 +10,30 @@
     <string name="interest_1_quote">No intereses a 1 cuota</string>
     <string name="interest_1not_quote">No intereses Primera cuota de varias</string>
     <string name="setting_redirect">Ir a configuraciones</string>
+    <string name="name">Nombre</string>
+    <string name="value">Valor</string>
+    <string name="credit_card_setting_type">Tipo</string>
+    <string name="save">Guardar</string>
+    <string name="active">Activo</string>
+    <string name="see_more">Ver más</string>
+    <string name="edit">Editar</string>
+    <string name="delete">Eliminar</string>
+    <string name="do_you_want_to_delete_this_record">¿Desea eliminar este registro?</string>
+    <string name="add_credit_card">Agregar tarjeta de crédito</string>
+    <string name="item_select_setting_redifer">1. Rediferir</string>
+    <string name="item_select_setting_special_tax">2. Tasas Especiales</string>
+    <string name="add_credit_card_setting">Agregar</string>
 
     <string name="toast_successful_update">Se actualizo el registros satisfactoriamente</string>
     <string name="toast_dont_successful_update">No se actualizo el registro</string>
     <string name="toast_unsuccessful_insert">No se inserto el registro</string>
     <string name="toast_successful_insert">Se inserto el registro satisfactoriamente</string>
+    <string name="toast_dont_successful_deleted">No se elimino el registro</string>
+    <string name="toast_successful_deleted">Se elimino el registro</string>
 
     <string name="navigate_list_credit_card_setting">android-app://co.com.japl.finanzas.module.app/list_credit_card_setting?codeCreditCard=%d</string>
+    <string name="navigate_credit_card">android-app://co.com.japl.finanzas.module.app/credit_card?codeCreditCard=%d</string>
+    <string name="navigate_credit_card_create">android-app://co.com.japl.finanzas.module.app/credit_card</string>
+    <string name="navigate_credit_card_setting_create">android-app://co.com.japl.finanzas.module.app/credit_card_setting?codeCreditCard=%d</string>
+    <string name="navigate_credit_card_setting">android-app://co.com.japl.finanzas.module.app/credit_card_setting?codeCreditCard=%d&amp;idSetting=%d</string>
 </resources>

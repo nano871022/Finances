@@ -1,4 +1,4 @@
-package co.japl.android.myapplication.finanzas.utils
+package co.com.japl.ui.utils
 
 import android.util.Log
 import androidx.compose.ui.unit.Dp

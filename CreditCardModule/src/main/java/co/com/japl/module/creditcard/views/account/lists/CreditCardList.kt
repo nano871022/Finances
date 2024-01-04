@@ -1,4 +1,4 @@
-package co.japl.android.myapplication.finanzas.view.creditcard.list
+package co.com.japl.module.creditcard.views.account.lists
 
 import android.os.Build
 import androidx.annotation.RequiresApi
@@ -20,7 +20,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -28,6 +27,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import co.com.japl.finances.iports.dtos.CreditCardDTO
+import co.com.japl.module.creditcard.R
+import co.com.japl.module.creditcard.controllers.account.CreditCardListViewModel
+import co.com.japl.module.creditcard.controllers.account.CreditCardViewModel
 import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.com.japl.ui.theme.values.Dimensions
 import co.com.japl.ui.theme.values.ModifiersCustom.AlignCenterVerticalAndPaddingRightSpace
@@ -35,9 +37,8 @@ import co.com.japl.ui.theme.values.ModifiersCustom.Weight1f
 import co.com.japl.ui.theme.values.ModifiersCustom.Weight1fAndAlightCenterVertical
 import co.com.japl.ui.theme.values.ModifiersCustom.Weight1fAndAlightCenterVerticalAndPaddingRightSpace
 import co.com.japl.ui.theme.values.ModifiersCustom.Weight1fAndPaddintRightSpace
-import co.japl.android.myapplication.R
-import co.japl.android.myapplication.finanzas.enums.MoreOptionsItemsCreditCardList
-import co.japl.android.myapplication.finanzas.utils.WindowWidthSize
+import co.com.japl.module.creditcard.enums.MoreOptionsItemsCreditCardList
+import co.com.japl.ui.utils.WindowWidthSize
 import co.com.japl.ui.components.AlertDialogOkCancel
 import co.com.japl.ui.components.MoreOptionsDialog
 import co.japl.android.myapplication.utils.NumbersUtil
@@ -47,7 +48,7 @@ import kotlinx.coroutines.launch
 
 
 @Composable
-internal fun CreditCardList(creditCardViewModel:CreditCardViewModel){
+fun CreditCardList(creditCardViewModel:CreditCardListViewModel){
     val progress = remember {
         creditCardViewModel.progress
     }
@@ -67,7 +68,7 @@ internal fun CreditCardList(creditCardViewModel:CreditCardViewModel){
 }
 
 @Composable
-private fun Body(creditCardViewModel:CreditCardViewModel){
+private fun Body(creditCardViewModel:CreditCardListViewModel){
     Scaffold(floatingActionButton = {
         IconButton(onClick = { creditCardViewModel.onClick() }) {
             Icon(
@@ -194,7 +195,7 @@ private fun ItemLarge(dto:CreditCardDTO,state:MutableState<Boolean>,edit:(Int)->
 @Preview(showSystemUi = true, showBackground = true)
 fun CreditCardListPreview(){
 
-    val creditCardViewModel = CreditCardViewModel(creditCardSvc = null,navController = null)
+    val creditCardViewModel = CreditCardListViewModel(creditCardSvc = null,navController = null)
     MaterialThemeComposeUI {
         CreditCardList(creditCardViewModel)
     }

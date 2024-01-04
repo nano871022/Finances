@@ -39,7 +39,7 @@ import co.com.japl.finances.iports.enums.KindOfTaxEnum
 import co.com.japl.finances.iports.enums.KindInterestRateEnum
 import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.japl.android.myapplication.R
-import co.japl.android.myapplication.finanzas.utils.WindowWidthSize
+import co.com.japl.ui.utils.WindowWidthSize
 import co.japl.android.myapplication.utils.NumbersUtil
 import kotlinx.coroutines.launch
 import java.math.RoundingMode

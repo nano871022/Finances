@@ -13,8 +13,8 @@ import co.com.japl.finances.iports.inbounds.creditcard.ICreditCardPort
 import co.com.japl.finances.iports.inbounds.creditcard.ICreditCardSettingPort
 import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.japl.android.myapplication.databinding.FragmentCreditCardSettingBinding
-import co.japl.android.myapplication.finanzas.view.creditcard.CreditCardSetting
-import co.japl.android.myapplication.finanzas.view.creditcard.CreditCardSettingViewModel
+import co.com.japl.module.creditcard.views.setting.forms.CreditCardSetting
+import co.com.japl.module.creditcard.controllers.setting.CreditCardSettingViewModel
 import co.japl.android.myapplication.putParams.CreditCardSettingParams
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject

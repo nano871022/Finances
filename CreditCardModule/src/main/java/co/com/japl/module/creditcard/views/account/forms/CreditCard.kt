@@ -1,4 +1,4 @@
-package co.com.japl.module.creditcard.views
+package co.com.japl.module.creditcard.views.account.forms
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -20,7 +20,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import co.com.japl.module.creditcard.R
-import co.com.japl.module.creditcard.controllers.CreditCardViewModel
+import co.com.japl.module.creditcard.controllers.account.CreditCardViewModel
 import co.com.japl.ui.components.CheckBoxField
 import co.com.japl.ui.components.FieldText
 import kotlinx.coroutines.CoroutineScope
@@ -28,7 +28,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 @Composable
-fun CreditCard(viewModel:CreditCardViewModel){
+fun CreditCard(viewModel: CreditCardViewModel){
 
     val progression = remember{viewModel.progress}
     val showProgress = remember{viewModel.showProgress}
@@ -77,7 +77,7 @@ fun CreditCard(viewModel:CreditCardViewModel){
 }
 
 @Composable
-private fun Body(viewModel: CreditCardViewModel,modifier:Modifier=Modifier){
+private fun Body(viewModel: CreditCardViewModel, modifier:Modifier=Modifier){
     val nameState = remember { viewModel.name }
     val maxQuotesState = remember { viewModel.maxQuotes }
     val cutOffDayState = remember { viewModel.cutOffDay }

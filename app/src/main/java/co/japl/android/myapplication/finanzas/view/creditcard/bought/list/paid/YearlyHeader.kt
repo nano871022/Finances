@@ -13,7 +13,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import co.com.japl.finances.iports.dtos.BoughtCreditCardPeriodDTO
 import co.japl.android.myapplication.R
-import co.japl.android.myapplication.finanzas.utils.WindowWidthSize
+import co.com.japl.ui.utils.WindowWidthSize
 import co.japl.android.myapplication.utils.NumbersUtil
 
 
