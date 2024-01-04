@@ -19,7 +19,7 @@ import co.japl.android.myapplication.finanzas.putParams.PeriodsParams
 import co.japl.android.myapplication.finanzas.enums.TaxEnum
 import co.japl.android.graphs.drawer.CustomDraw
 import co.japl.android.myapplication.pojo.CreditCard
-import co.japl.android.myapplication.utils.DateUtils
+import co.com.japl.ui.utils.DateUtils
 import co.japl.android.myapplication.utils.NumbersUtil
 import com.google.android.material.textfield.MaterialAutoCompleteTextView
 import java.math.BigDecimal

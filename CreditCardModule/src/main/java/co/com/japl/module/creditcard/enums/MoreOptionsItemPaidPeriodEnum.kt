@@ -1,8 +1,8 @@
-package co.japl.android.myapplication.finanzas.enums
+package co.com.japl.module.creditcard.enums
 
 import androidx.annotation.StringRes
+import co.com.japl.module.creditcard.R
 import co.com.japl.ui.enums.IMoreOptions
-import co.japl.android.myapplication.R
 
 enum class MoreOptionsItemPaidPeriodEnum (@StringRes val i: Int) : IMoreOptions {
     SEE(R.string.look_at);

@@ -17,7 +17,7 @@ import co.japl.android.myapplication.finanzas.bussiness.interfaces.IProjectionsS
 import co.japl.android.myapplication.finanzas.holders.ProjectionsHolder
 import co.japl.android.myapplication.finanzas.holders.interfaces.IRecapHolder
 import co.japl.android.myapplication.finanzas.putParams.ProjectionsParams
-import co.japl.android.myapplication.utils.DateUtils
+import co.com.japl.ui.utils.DateUtils
 import co.japl.android.myapplication.utils.NumbersUtil
 import dagger.hilt.android.AndroidEntryPoint
 import java.math.BigDecimal

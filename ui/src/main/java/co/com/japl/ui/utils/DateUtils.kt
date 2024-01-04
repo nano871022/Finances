@@ -1,4 +1,4 @@
-package co.japl.android.myapplication.utils
+package co.com.japl.ui.utils
 
 import android.os.Build
 import android.util.Log

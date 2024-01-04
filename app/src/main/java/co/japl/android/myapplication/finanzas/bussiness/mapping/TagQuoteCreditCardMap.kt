@@ -6,9 +6,8 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import co.japl.android.myapplication.bussiness.interfaces.IMapper
 import co.japl.android.myapplication.finanzas.bussiness.DTO.TagsQuoteCreditCardDB
-import co.japl.android.myapplication.finanzas.bussiness.DTO.TagDTO
 import co.japl.android.myapplication.finanzas.bussiness.DTO.TagsQuoteCreditCardDTO
-import co.japl.android.myapplication.utils.DateUtils
+import co.com.japl.ui.utils.DateUtils
 
 class TagQuoteCreditCardMap : IMapper<TagsQuoteCreditCardDTO>{
     @RequiresApi(Build.VERSION_CODES.O)
@@ -16,7 +15,7 @@ class TagQuoteCreditCardMap : IMapper<TagsQuoteCreditCardDTO>{
         return ContentValues().apply {
             put(TagsQuoteCreditCardDB.Entry.COLUMN_CODE_QUOTE_CREDIT_CARD,dto.codQuote)
             put(TagsQuoteCreditCardDB.Entry.COLUMN_CODE_TAG,dto.codTag)
-            put(TagsQuoteCreditCardDB.Entry.COLUMN_DATE_CREATE,DateUtils.localDateToStringDate(dto.create))
+            put(TagsQuoteCreditCardDB.Entry.COLUMN_DATE_CREATE, DateUtils.localDateToStringDate(dto.create))
             put(TagsQuoteCreditCardDB.Entry.COLUMN_ACTIVE,if(dto.active) 1 else 0)
 
         }

@@ -3,11 +3,10 @@ package co.japl.android.myapplication.finanzas.bussiness.mapping
 import android.content.ContentValues
 import android.database.Cursor
 import android.os.Build
-import android.util.Log
 import androidx.annotation.RequiresApi
 import co.japl.android.myapplication.finanzas.bussiness.DTO.AdditionalCreditDB
 import co.japl.android.myapplication.finanzas.bussiness.DTO.AdditionalCreditDTO
-import co.japl.android.myapplication.utils.DateUtils
+import co.com.japl.ui.utils.DateUtils
 
 class AdditionalMap {
 
@@ -28,8 +27,8 @@ class AdditionalMap {
             put(AdditionalCreditDB.Entry.COLUMN_NAME,dto.name)
             put(AdditionalCreditDB.Entry.COLUMN_VALUE,dto.value.toDouble())
             put(AdditionalCreditDB.Entry.COLUMN_CREDIT_CODE,dto.creditCode)
-            put(AdditionalCreditDB.Entry.COLUMN_START_DATE,DateUtils.localDateToString(dto.startDate))
-            put(AdditionalCreditDB.Entry.COLUMN_END_DATE,DateUtils.localDateToString(dto.endDate))
+            put(AdditionalCreditDB.Entry.COLUMN_START_DATE, DateUtils.localDateToString(dto.startDate))
+            put(AdditionalCreditDB.Entry.COLUMN_END_DATE, DateUtils.localDateToString(dto.endDate))
         }
     }
 }

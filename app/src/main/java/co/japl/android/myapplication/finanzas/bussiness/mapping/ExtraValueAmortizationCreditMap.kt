@@ -6,7 +6,7 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import co.japl.android.myapplication.finanzas.bussiness.DTO.ExtraValueAmortizationCreditDB
 import co.japl.android.myapplication.finanzas.bussiness.DTO.ExtraValueAmortizationCreditDTO
-import co.japl.android.myapplication.utils.DateUtils
+import co.com.japl.ui.utils.DateUtils
 
 class ExtraValueAmortizationCreditMap {
      @RequiresApi(Build.VERSION_CODES.O)

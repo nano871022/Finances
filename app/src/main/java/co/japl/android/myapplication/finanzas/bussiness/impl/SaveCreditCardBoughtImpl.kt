@@ -6,7 +6,6 @@ import android.os.Build
 import android.provider.BaseColumns
 import android.util.Log
 import androidx.annotation.RequiresApi
-import androidx.core.content.contentValuesOf
 import co.japl.android.myapplication.R
 import co.japl.android.myapplication.bussiness.DTO.*
 import co.japl.android.myapplication.bussiness.interfaces.ITagQuoteCreditCardSvc
@@ -17,7 +16,6 @@ import co.japl.android.myapplication.finanzas.bussiness.DTO.PeriodDTO
 import co.japl.android.myapplication.finanzas.bussiness.impl.BuyCreditCardSettingImpl
 import co.japl.android.myapplication.finanzas.bussiness.impl.CreditCardSettingImpl
 import co.japl.android.myapplication.finanzas.bussiness.impl.DifferInstallmentImpl
-import co.japl.android.myapplication.finanzas.bussiness.impl.GracePeriodImpl
 import co.japl.android.myapplication.finanzas.bussiness.impl.KindOfTaxImpl
 import co.japl.android.myapplication.finanzas.bussiness.impl.TagQuoteCreditCardImpl
 import co.japl.android.myapplication.finanzas.bussiness.interfaces.IQuoteCreditCardSvc
@@ -25,10 +23,8 @@ import co.japl.android.myapplication.finanzas.bussiness.mapping.PeriodsMap
 import co.japl.android.myapplication.finanzas.enums.KindOfTaxEnum
 import co.japl.android.myapplication.finanzas.enums.TaxEnum
 import co.japl.android.myapplication.finanzas.pojo.QuoteCreditCard
-import co.japl.android.myapplication.pojo.CreditCard
 import co.japl.android.myapplication.utils.DatabaseConstants
-import co.japl.android.myapplication.utils.DateUtils
-import com.google.android.gms.common.util.DataUtils
+import co.com.japl.ui.utils.DateUtils
 import com.google.gson.Gson
 import java.math.BigDecimal
 import java.math.RoundingMode
@@ -38,7 +34,6 @@ import java.nio.file.Paths
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
-import java.time.format.DateTimeFormatter
 import java.util.*
 import javax.inject.Inject
 
@@ -439,7 +434,7 @@ class SaveCreditCardBoughtImpl @Inject constructor(val context:Context, override
             val differ = differQuotes.firstOrNull{differ->differ.cdBoughtCreditCard.toInt() == it.id}
             val months:Long = differ?.let{
                DateUtils.getMonths(LocalDateTime.of(it.create,LocalTime.MAX),cutOff)
-            }?:DateUtils.getMonths(it.boughtDate,cutOff)
+            }?: DateUtils.getMonths(it.boughtDate,cutOff)
 
 
             val quote:BigDecimal = differ?.let{
@@ -521,7 +516,7 @@ class SaveCreditCardBoughtImpl @Inject constructor(val context:Context, override
             val list = getToDate(key,startDate,cutOff)
             val value = list.stream().map {
                 val differ = differQuotes.firstOrNull{differ->differ.cdBoughtCreditCard.toInt() == it.id}
-                val months = differ?.let{DateUtils.getMonths(it.create,cutOff)}?:DateUtils.getMonths(it.boughtDate,cutOff)
+                val months = differ?.let{ DateUtils.getMonths(it.create,cutOff)}?: DateUtils.getMonths(it.boughtDate,cutOff)
                 val quote = differ?.let{(it.pendingValuePayable / it.newInstallment).toBigDecimal()}?:it.valueItem.divide(it.month.toBigDecimal(),8,RoundingMode.CEILING)
                 val bought = quote.multiply(months.toBigDecimal())
                 val capital = differ?.let{it.pendingValuePayable.toBigDecimal().minus(bought)}?:it.valueItem.minus(bought)
@@ -541,7 +536,7 @@ class SaveCreditCardBoughtImpl @Inject constructor(val context:Context, override
             val list = getPendingQuotes(key,startDate,cutOff)
             val value = list.stream().map {
                 val differ = differQuotes.firstOrNull{differ->differ.cdBoughtCreditCard.toInt() == it.id}
-                val months =  differ?.let{DateUtils.getMonths(it.create,cutOff)}?:DateUtils.getMonths(it.boughtDate,cutOff)
+                val months =  differ?.let{ DateUtils.getMonths(it.create,cutOff)}?: DateUtils.getMonths(it.boughtDate,cutOff)
                 val quote = differ?.let{(it.pendingValuePayable / it.newInstallment).toBigDecimal()}?: it.valueItem.divide(it.month.toBigDecimal(),8,RoundingMode.CEILING)
                 val bought = quote.multiply(months.toBigDecimal())
                 val capital = differ?.let{it.pendingValuePayable.toBigDecimal().minus(bought)}?: it.valueItem.minus(bought)

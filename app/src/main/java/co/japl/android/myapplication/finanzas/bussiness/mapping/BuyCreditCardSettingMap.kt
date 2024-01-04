@@ -5,7 +5,7 @@ import android.database.Cursor
 import android.os.Build
 import androidx.annotation.RequiresApi
 import co.japl.android.myapplication.bussiness.DTO.*
-import co.japl.android.myapplication.utils.DateUtils
+import co.com.japl.ui.utils.DateUtils
 
 class BuyCreditCardSettingMap {
     @RequiresApi(Build.VERSION_CODES.O)
@@ -14,7 +14,7 @@ class BuyCreditCardSettingMap {
             put(BuyCreditCardSettingDB.Entry.COLUMN_COD_BUY_CREDIT_CARD,dto.codeBuyCreditCard)
             put(BuyCreditCardSettingDB.Entry.COLUMN_COD_CREDIT_CARD_SETTING,dto.codeCreditCardSetting)
             put(BuyCreditCardSettingDB.Entry.COLUMN_ACTIVE,dto.active)
-            put(BuyCreditCardSettingDB.Entry.COLUMN_CREATE_DATE,DateUtils.localDateTimeToString(dto.create))
+            put(BuyCreditCardSettingDB.Entry.COLUMN_CREATE_DATE, DateUtils.localDateTimeToString(dto.create))
         }
     }
 

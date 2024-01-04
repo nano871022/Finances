@@ -1,15 +1,13 @@
 package co.japl.android.myapplication.finanzas.putParams
 
-import android.R.bool
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.core.os.bundleOf
 import androidx.navigation.NavController
 import co.japl.android.myapplication.R
 import co.japl.android.myapplication.finanzas.bussiness.DTO.AdditionalCreditDTO
-import co.japl.android.myapplication.utils.DateUtils
+import co.com.japl.ui.utils.DateUtils
 import com.google.gson.Gson
 
 class AdditionalCreditParams {

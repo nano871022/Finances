@@ -1,7 +1,6 @@
 package co.japl.android.myapplication.finanzas.holders
 
 import android.os.Build
-import android.util.Log
 import android.view.View
 import android.widget.ProgressBar
 import android.widget.TableLayout
@@ -14,19 +13,16 @@ import co.japl.android.myapplication.R
 import co.japl.android.myapplication.bussiness.DB.connections.ConnectDB
 import co.japl.android.myapplication.bussiness.DTO.CalcDTO
 import co.japl.android.myapplication.bussiness.impl.QuoteCredit
-import co.japl.android.myapplication.finanzas.bussiness.DTO.AddAmortizationDTO
 import co.japl.android.myapplication.finanzas.bussiness.DTO.AmortizationCreditFix
 import co.japl.android.myapplication.finanzas.bussiness.DTO.ExtraValueAmortizationCreditDTO
-import co.japl.android.myapplication.finanzas.bussiness.impl.AddAmortizationImpl
 import co.japl.android.myapplication.finanzas.bussiness.impl.ExtraValueAmortizationCreditImpl
 import co.japl.android.myapplication.finanzas.bussiness.impl.KindOfTaxImpl
-import co.japl.android.myapplication.finanzas.bussiness.interfaces.IAddAmortizationSvc
 import co.japl.android.myapplication.finanzas.bussiness.interfaces.IExtraValueAmortizationCreditSvc
 import co.japl.android.myapplication.finanzas.bussiness.interfaces.IKindOfTaxSvc
 import co.japl.android.myapplication.finanzas.holders.interfaces.ITableHolder
 import co.japl.android.myapplication.finanzas.enums.AmortizationCreditFixEnum
 import co.japl.android.myapplication.finanzas.enums.KindOfTaxEnum
-import co.japl.android.myapplication.utils.DateUtils
+import co.com.japl.ui.utils.DateUtils
 import co.japl.android.myapplication.utils.NumbersUtil
 import com.google.android.material.textview.MaterialTextView
 import java.math.BigDecimal

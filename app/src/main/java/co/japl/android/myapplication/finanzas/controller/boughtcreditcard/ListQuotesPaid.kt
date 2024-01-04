@@ -14,8 +14,8 @@ import co.com.japl.finances.iports.inbounds.creditcard.bought.lists.IBoughtListP
 import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.japl.android.myapplication.databinding.FragmentListPeriodsBinding
 import co.japl.android.myapplication.finanzas.putParams.PeriodsParams
-import co.japl.android.myapplication.finanzas.view.creditcard.bought.list.paid.BoughtCreditCardViewModel
-import co.japl.android.myapplication.finanzas.view.creditcard.bought.list.paid.PaidList
+import co.com.japl.module.creditcard.controllers.paid.BoughtCreditCardViewModel
+import co.com.japl.module.creditcard.views.paid.PaidList
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 import kotlin.properties.Delegates

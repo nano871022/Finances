@@ -1,31 +1,20 @@
 package co.japl.android.myapplication.adapter
 
-import android.app.AlertDialog
-import android.graphics.Color
 import android.os.Build
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.RecyclerView
 import co.japl.android.myapplication.R
-import co.japl.android.myapplication.bussiness.DB.connections.ConnectDB
-import co.japl.android.myapplication.bussiness.interfaces.SaveSvc
 import co.japl.android.myapplication.finanzas.bussiness.DTO.CheckCreditDTO
 import co.japl.android.myapplication.finanzas.bussiness.DTO.CheckPaymentsDTO
 import co.japl.android.myapplication.finanzas.bussiness.DTO.CheckQuoteDTO
 import co.japl.android.myapplication.finanzas.bussiness.DTO.ICheck
-import co.japl.android.myapplication.finanzas.bussiness.DTO.PaidDTO
-import co.japl.android.myapplication.finanzas.bussiness.impl.PaidImpl
 import co.japl.android.myapplication.finanzas.enums.CheckPaymentsEnum
-import co.japl.android.myapplication.finanzas.holders.CheckPaymentsHolder
 import co.japl.android.myapplication.finanzas.holders.validations.COPToBigDecimal
 import co.japl.android.myapplication.finanzas.pojo.CheckPaymentsPOJO
-import co.japl.android.myapplication.holders.view.PaidItemHolder
 import co.japl.android.myapplication.holders.view.PaymentsItemHolder
-import co.japl.android.myapplication.utils.DateUtils
-import com.google.android.material.snackbar.Snackbar
 import java.math.BigDecimal
 import java.time.LocalDateTime
 

@@ -21,12 +21,11 @@ import co.japl.android.myapplication.finanzas.holders.validations.COPtoBigDecima
 import co.japl.android.myapplication.finanzas.holders.validations.toLocalDate
 import co.japl.android.myapplication.finanzas.holders.validations.*
 import co.japl.android.myapplication.finanzas.enums.KindOfTaxEnum
-import co.japl.android.myapplication.utils.DateUtils
+import co.com.japl.ui.utils.DateUtils
 import co.japl.android.myapplication.utils.NumbersUtil
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.textfield.TextInputEditText
-import com.google.android.material.textview.MaterialTextView
 import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalDateTime

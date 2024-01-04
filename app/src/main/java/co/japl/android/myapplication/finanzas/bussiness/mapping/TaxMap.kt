@@ -3,12 +3,11 @@ package co.japl.android.myapplication.bussiness.mapping
 import android.content.ContentValues
 import android.database.Cursor
 import android.os.Build
-import android.util.Log
 import androidx.annotation.RequiresApi
 import co.japl.android.myapplication.bussiness.DTO.TaxDB
 import co.japl.android.myapplication.bussiness.DTO.TaxDTO
 import co.japl.android.myapplication.bussiness.interfaces.IMapper
-import co.japl.android.myapplication.utils.DateUtils
+import co.com.japl.ui.utils.DateUtils
 
 class TaxMap : IMapper<TaxDTO>{
     @RequiresApi(Build.VERSION_CODES.O)
@@ -19,7 +18,7 @@ class TaxMap : IMapper<TaxDTO>{
             put(TaxDB.TaxEntry.COLUMN_YEAR,dto.year.toString())
             put(TaxDB.TaxEntry.COLUMN_COD_CREDIT_CARD,dto.codCreditCard.toString())
             put(TaxDB.TaxEntry.COLUMN_status,dto.status)
-            put(TaxDB.TaxEntry.COLUMN_CREATE_DATE,DateUtils.localDateTimeToString(dto.create))
+            put(TaxDB.TaxEntry.COLUMN_CREATE_DATE, DateUtils.localDateTimeToString(dto.create))
             put(TaxDB.TaxEntry.COLUMN_KIND,dto.kind)
             put(TaxDB.TaxEntry.COLUMN_PERIOD,dto.period)
             put(TaxDB.TaxEntry.COLUMN_KIND_OF_TAX,dto.kindOfTax)

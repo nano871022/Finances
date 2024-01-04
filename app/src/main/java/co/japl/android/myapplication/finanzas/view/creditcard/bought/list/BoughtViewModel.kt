@@ -15,7 +15,7 @@ import co.japl.android.myapplication.finanzas.enums.MoreOptionsItemsCreditCard
 import co.japl.android.myapplication.finanzas.modules.EntryPoint
 import co.japl.android.myapplication.finanzas.putParams.AmortizationTableParams
 import co.japl.android.myapplication.finanzas.putParams.CreditCardQuotesParams
-import co.japl.android.myapplication.utils.DateUtils
+import co.com.japl.ui.utils.DateUtils
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.EntryPoints
 import dagger.hilt.android.lifecycle.HiltViewModel

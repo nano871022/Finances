@@ -10,7 +10,7 @@ import co.japl.android.myapplication.finanzas.bussiness.DTO.*
 import co.japl.android.myapplication.finanzas.bussiness.interfaces.IDifferInstallment
 import co.japl.android.myapplication.finanzas.bussiness.mapping.DifferInstallmentMap
 import co.japl.android.myapplication.utils.DatabaseConstants
-import co.japl.android.myapplication.utils.DateUtils
+import co.com.japl.ui.utils.DateUtils
 import java.time.LocalDate
 import java.util.*
 import javax.inject.Inject

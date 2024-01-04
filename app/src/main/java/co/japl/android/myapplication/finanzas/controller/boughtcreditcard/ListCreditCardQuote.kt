@@ -29,7 +29,7 @@ import co.japl.android.myapplication.holders.QuoteCCHolder
 import co.japl.android.myapplication.pojo.CreditCard
 import co.japl.android.myapplication.putParams.CreditCardParams
 import co.japl.android.myapplication.putParams.TaxesParams
-import co.japl.android.myapplication.utils.DateUtils
+import co.com.japl.ui.utils.DateUtils
 import dagger.hilt.android.AndroidEntryPoint
 import java.math.BigDecimal
 import java.time.LocalDateTime

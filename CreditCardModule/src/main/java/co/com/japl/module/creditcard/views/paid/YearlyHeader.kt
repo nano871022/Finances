@@ -1,4 +1,4 @@
-package co.japl.android.myapplication.finanzas.view.creditcard.bought.list.paid
+package co.com.japl.module.creditcard.views.paid
 
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
@@ -12,7 +12,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import co.com.japl.finances.iports.dtos.BoughtCreditCardPeriodDTO
-import co.japl.android.myapplication.R
+import co.com.japl.module.creditcard.R
 import co.com.japl.ui.utils.WindowWidthSize
 import co.japl.android.myapplication.utils.NumbersUtil
 

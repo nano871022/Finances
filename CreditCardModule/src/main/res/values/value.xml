@@ -12,9 +12,19 @@
     <string name="setting_redirect">Ir a configuraciones</string>
     <string name="name">Nombre</string>
     <string name="value">Valor</string>
+
+    <string name="total_quote_value_short">Tot Cuota</string>
+    <string name="interest_value_short">Interes</string>
+    <string name="capital_value_short">Capital</string>
+    <string name="capital_value">Valor a capital</string>
+    <string name="interest_value">Valor a intereses</string>
+    <string name="total_value">Valor total</string>
+    <string name="total_quote">Total cuota</string>
+
     <string name="credit_card_setting_type">Tipo</string>
     <string name="save">Guardar</string>
     <string name="active">Activo</string>
+    <string name="look_at">Ver</string>
     <string name="see_more">Ver más</string>
     <string name="edit">Editar</string>
     <string name="delete">Eliminar</string>
@@ -36,4 +46,37 @@
     <string name="navigate_credit_card_create">android-app://co.com.japl.finanzas.module.app/credit_card</string>
     <string name="navigate_credit_card_setting_create">android-app://co.com.japl.finanzas.module.app/credit_card_setting?codeCreditCard=%d</string>
     <string name="navigate_credit_card_setting">android-app://co.com.japl.finanzas.module.app/credit_card_setting?codeCreditCard=%d&amp;idSetting=%d</string>
+    <string name="navigate_list_bought">android-app://co.com.japl.finanzas.module.app/listBought?codeCreditCard=%d&amp;cutOffDay=%d&amp;cutOff=%s</string>
+
+    <string-array name="Months">
+        <item>--- Seleccionar --- </item>
+        <item>Enero</item>
+        <item>Febrero</item>
+        <item>Marzo</item>
+        <item>Abril</item>
+        <item>Mayo</item>
+        <item>Junio</item>
+        <item>Julio</item>
+        <item>Agosto</item>
+        <item>Septiembre</item>
+        <item>Octubre</item>
+        <item>Noviembre</item>
+        <item>Diciembre</item>
+    </string-array>
+
+    <string-array name="months_short">
+        <item>--- Seleccionar --- </item>
+        <item>Ene</item>
+        <item>Feb</item>
+        <item>Mar</item>
+        <item>Abr</item>
+        <item>May</item>
+        <item>Jun</item>
+        <item>Jul</item>
+        <item>Ago</item>
+        <item>Sep</item>
+        <item>Oct</item>
+        <item>Nov</item>
+        <item>Dic</item>
+    </string-array>
 </resources>

@@ -1,15 +1,12 @@
-package co.japl.android.myapplication.finanzas.view.creditcard.bought.list.paid
+package co.com.japl.module.creditcard.controllers.paid
 
-import android.content.Context
-import android.util.Log
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.navigation.NavController
 import co.com.japl.finances.iports.dtos.BoughtCreditCardPeriodDTO
-import co.com.japl.finances.iports.inbounds.creditcard.ICreditCardPort
 import co.com.japl.finances.iports.inbounds.creditcard.bought.lists.IBoughtListPort
-import co.japl.android.myapplication.finanzas.putParams.PeriodsQuotesParams
+import co.com.japl.module.creditcard.navigations.ListBought
 import kotlinx.coroutines.runBlocking
 import java.time.LocalDateTime
 
@@ -21,7 +18,6 @@ class BoughtCreditCardViewModel constructor(private val service:IBoughtListPort?
     val periodList get() = _list
 
     fun main() = runBlocking {
-        Log.d(javaClass.name,"=== Main BoughtCCVM")
         progress.floatValue = 0.2f
         execute()
     }
@@ -36,7 +32,7 @@ class BoughtCreditCardViewModel constructor(private val service:IBoughtListPort?
     }
 
     fun goToListDetail(cutOffDay:Short,cutOff:LocalDateTime){
-        PeriodsQuotesParams.Companion.Historical.newInstance(idCreditCard,cutOffDay,cutOff, navController)
+        ListBought.navigate(idCreditCard,cutOffDay,cutOff, navController)
     }
 
 

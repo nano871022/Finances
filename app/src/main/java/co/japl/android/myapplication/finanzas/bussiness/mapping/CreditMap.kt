@@ -4,11 +4,9 @@ import android.content.ContentValues
 import android.database.Cursor
 import android.os.Build
 import androidx.annotation.RequiresApi
-import co.japl.android.myapplication.finanzas.bussiness.DTO.AdditionalCreditDB
-import co.japl.android.myapplication.finanzas.bussiness.DTO.AdditionalCreditDTO
 import co.japl.android.myapplication.finanzas.bussiness.DTO.CreditDB
 import co.japl.android.myapplication.finanzas.bussiness.DTO.CreditDTO
-import co.japl.android.myapplication.utils.DateUtils
+import co.com.japl.ui.utils.DateUtils
 
 class CreditMap {
 
@@ -32,7 +30,7 @@ class CreditMap {
             put(CreditDB.Entry.COLUMN_NAME,dto.name)
             put(CreditDB.Entry.COLUMN_VALUE,dto.value.toDouble())
             put(CreditDB.Entry.COLUMN_KIND_OF,dto.kindOf)
-            put(CreditDB.Entry.COLUMN_DATE,DateUtils.localDateToString(dto.date))
+            put(CreditDB.Entry.COLUMN_DATE, DateUtils.localDateToString(dto.date))
             put(CreditDB.Entry.COLUMN_QUOTE,dto.quoteValue.toDouble())
             put(CreditDB.Entry.COLUMN_PERIODS,dto.periods)
             put(CreditDB.Entry.COLUMN_TAX,dto.tax)
