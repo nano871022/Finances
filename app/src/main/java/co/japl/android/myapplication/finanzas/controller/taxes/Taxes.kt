@@ -7,12 +7,18 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.annotation.RequiresApi
+import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import co.com.japl.finances.iports.inbounds.creditcard.ICreditCardPort
+import co.com.japl.finances.iports.inbounds.creditcard.ITaxPort
+import co.com.japl.module.creditcard.controllers.creditrate.lists.CreditRateListViewModel
+import co.com.japl.module.creditcard.views.creditrate.lists.CreditRateList
 import co.japl.android.myapplication.R
 import co.japl.android.myapplication.bussiness.DTO.CreditCardDTO
 import co.japl.android.myapplication.bussiness.DTO.TaxDTO
 import co.japl.android.myapplication.bussiness.interfaces.ITaxSvc
+import co.japl.android.myapplication.databinding.FragmentListTaxCreditCardBinding
 import co.japl.android.myapplication.finanzas.holders.interfaces.IHolder
 import co.japl.android.myapplication.finanzas.bussiness.interfaces.ICreditCardSvc
 import co.japl.android.myapplication.finanzas.enums.KindOfTaxEnum
@@ -71,11 +77,14 @@ class Taxes : Fragment() , View.OnClickListener{
     @RequiresApi(Build.VERSION_CODES.O)
     private fun getTaxDTO():TaxDTO{
         val today = LocalDate.now()
+        val codeCreditCard = param1?.let{
+            it.takeIf { it != "" }?.let{ it.toInt() }
+        } ?: 0
         return TaxDTO(0,
             today.month.value.toShort()
             ,today.year
             ,0
-            ,0
+            , codeCreditCard
             , LocalDateTime.now()
             ,2.0
             , TaxEnum.CREDIT_CARD.ordinal.toShort()

@@ -4,6 +4,8 @@ import android.os.Bundle
 import androidx.core.os.bundleOf
 import androidx.navigation.NavController
 import co.japl.android.myapplication.R
+import co.japl.android.myapplication.putParams.TaxesParams.Params.ARG_CODE_CREDIT_CARD
+import co.japl.android.myapplication.putParams.TaxesParams.Params.ARG_CODE_CREDIT_RATE
 import co.japl.android.myapplication.putParams.TaxesParams.Params.ARG_PARAM1
 import co.japl.android.myapplication.putParams.TaxesParams.Params.ARG_PARAM2
 
@@ -11,6 +13,8 @@ class TaxesParams() {
     object Params {
         val ARG_PARAM1 = "param1"
         val ARG_PARAM2 = "param2"
+        val ARG_CODE_CREDIT_CARD = "codeCreditCard"
+        val ARG_CODE_CREDIT_RATE = "codeCreditRate"
     }
     companion object {
         @JvmStatic
@@ -30,7 +34,9 @@ class TaxesParams() {
         }
         fun download(argument: Bundle):Pair<String,String>{
             argument.let {
-                return Pair(it.get(ARG_PARAM1).toString(),it.get(ARG_PARAM2).toString())
+                val param1 = it.getString(ARG_PARAM1) ?: it.getString(ARG_CODE_CREDIT_CARD) ?: ""
+                val param2 = it.getString(ARG_PARAM2) ?: it.getString(ARG_CODE_CREDIT_RATE) ?: ""
+                return Pair(param1,param2)
             }
         }
         fun toBack(navController: NavController){

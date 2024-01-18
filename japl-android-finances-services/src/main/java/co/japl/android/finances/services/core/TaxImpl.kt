@@ -5,13 +5,13 @@ import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
 import co.japl.android.finances.services.core.mapper.TaxMapper
-import co.japl.android.finances.services.interfaces.ITaxSvc
+import co.japl.android.finances.services.dao.interfaces.ITaxSvc
 import co.com.japl.finances.iports.outbounds.ITaxPort
 import co.com.japl.finances.iports.dtos.TaxDTO
 import co.com.japl.finances.iports.enums.KindInterestRateEnum
 import javax.inject.Inject
 
-class TaxImpl @Inject constructor(private val  taxSvc:ITaxSvc): ITaxPort {
+class TaxImpl @Inject constructor(private val  taxSvc: ITaxSvc): ITaxPort {
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun get(codCreditCard: Int, month: Int, year: Int, kind: KindInterestRateEnum): TaxDTO? {
         try {
@@ -29,5 +29,31 @@ class TaxImpl @Inject constructor(private val  taxSvc:ITaxSvc): ITaxPort {
         }
         return null
 
+    }
+
+    override fun getByCreditCard(codCreditCard: Int): List<TaxDTO>? {
+        return taxSvc.getAll().filter { it.codCreditCard == codCreditCard }.map { TaxMapper.mapper(it) }
+    }
+
+    override fun delete(code: Int): Boolean {
+        return taxSvc.delete(code)
+    }
+
+    override fun enable(code: Int): Boolean {
+        val rate = taxSvc.get(code)
+        if(rate.isPresent && rate.get().status == 0.toShort()) {
+            rate.get().status = 1
+            return taxSvc.save(rate.get()) > 0
+        }
+        return false
+    }
+
+    override fun disable(code: Int): Boolean {
+        val rate = taxSvc.get(code)
+        if(rate.isPresent && rate.get().status == 1.toShort()) {
+            rate.get().status = 0
+            return taxSvc.save(rate.get()) > 0
+        }
+        return false
     }
 }

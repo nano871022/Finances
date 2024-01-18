@@ -187,7 +187,10 @@
         android:id="@+id/taxes"
         android:name="co.japl.android.myapplication.finanzas.controller.taxes.Taxes"
         android:label="@string/tax"
-        tools:layout="@layout/fragment_taxes" />
+        tools:layout="@layout/fragment_taxes" >
+        <deepLink app:uri="android-app://co.com.japl.finanzas.modulo.app/credit_rate"/>
+    </fragment>
+
     <fragment
         android:id="@+id/cash_advance_fragment"
         android:name="co.japl.android.myapplication.finanzas.controller.boughtcreditcard.CashAdvanceSave"

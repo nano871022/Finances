@@ -4,6 +4,7 @@ import android.content.Context
 import co.com.japl.finances.iports.inbounds.creditcard.ICreditCardPort
 import co.com.japl.finances.iports.inbounds.common.IDifferQuotesPort
 import co.com.japl.finances.iports.inbounds.creditcard.ICreditCardSettingPort
+import co.com.japl.finances.iports.inbounds.creditcard.ITaxPort
 import co.com.japl.finances.iports.inbounds.creditcard.bought.lists.IBoughtListPort
 import co.com.japl.finances.iports.inbounds.inputs.IInputPort
 import co.japl.android.myapplication.bussiness.impl.Config
@@ -71,6 +72,7 @@ import co.japl.finances.core.usercases.interfaces.common.IPaid
 import co.japl.finances.core.usercases.interfaces.common.IProjections
 import co.japl.finances.core.usercases.interfaces.common.IQuoteCreditCard
 import co.japl.finances.core.usercases.interfaces.creditcard.ICreditCardSetting
+import co.japl.finances.core.usercases.interfaces.creditcard.ITax
 import co.japl.finances.core.usercases.interfaces.creditcard.bought.lists.IBoughtList
 import co.japl.finances.core.usercases.interfaces.creditcard.paid.lists.IPaidList
 import co.japl.finances.core.usercases.interfaces.recap.IRecap
@@ -213,7 +215,14 @@ abstract class AbstractModule {
     abstract fun bindOutboundTax(implement: co.japl.android.finances.services.core.TaxImpl): co.com.japl.finances.iports.outbounds.ITaxPort
 
     @Binds
-    abstract fun bindServiceTax(implement: co.japl.android.finances.services.implement.TaxImpl): co.japl.android.finances.services.interfaces.ITaxSvc
+    abstract fun bindServiceRate(implement: co.japl.finances.core.adapters.inbound.implement.creditCard.TaxImpl): ITaxPort
+
+
+    @Binds
+    abstract fun bindOutboundRate(implement: co.japl.finances.core.usercases.implement.creditcard.TaxImpl): ITax
+
+    @Binds
+    abstract fun bindServiceTax(implement: co.japl.android.finances.services.dao.implement.TaxImpl): co.japl.android.finances.services.dao.interfaces.ITaxSvc
 
     @Binds
     abstract fun bindOutboundBuyCreditCardSetting(implement: co.japl.android.finances.services.core.BuyCreditCardSettingImpl): co.com.japl.finances.iports.outbounds.IBuyCreditCardSettingPort

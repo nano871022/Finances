@@ -1,4 +1,4 @@
-package co.japl.android.finances.services.implement
+package co.japl.android.finances.services.dao.implement
 
 import android.database.sqlite.SQLiteException
 import android.database.sqlite.SQLiteOpenHelper
@@ -9,7 +9,8 @@ import androidx.annotation.RequiresApi
 import co.japl.android.finances.services.dto.TaxDB
 import co.japl.android.finances.services.dto.TaxDTO
 import co.japl.android.finances.services.interfaces.IMapper
-import co.japl.android.finances.services.interfaces.ITaxSvc
+import co.japl.android.finances.services.dao.interfaces.ITaxSvc
+import co.japl.android.finances.services.dto.InputDB
 import co.japl.android.finances.services.mapping.TaxMap
 import co.japl.android.finances.services.enums.TaxEnum
 import co.japl.android.finances.services.utils.DatabaseConstants
@@ -20,7 +21,7 @@ import java.nio.file.Paths
 import java.util.*
 import javax.inject.Inject
 
-class TaxImpl @Inject constructor(override var dbConnect: SQLiteOpenHelper) :  ITaxSvc{
+class TaxImpl @Inject constructor(override var dbConnect: SQLiteOpenHelper) : ITaxSvc {
     private val COLUMNS = arrayOf(BaseColumns._ID,
                                   TaxDB.TaxEntry.COLUMN_TAX,
                                   TaxDB.TaxEntry.COLUMN_MONTH,
@@ -37,6 +38,9 @@ class TaxImpl @Inject constructor(override var dbConnect: SQLiteOpenHelper) :  I
         Log.d(this.javaClass.name,"<<<== save - Start")
         val db = dbConnect.writableDatabase
         val columns = mapper.mapping(dto)
+        if(dto.id > 0) {
+            return db?.update(TaxDB.TaxEntry.TABLE_NAME,columns,"${BaseColumns._ID}=?", arrayOf(dto.id.toString()))?.toLong() ?: 0
+        }
         return db.insert(TaxDB.TaxEntry.TABLE_NAME,null,columns).also {
             Log.d(this.javaClass.name,"<<<=== save - resposnse $it $columns End ")
         }
@@ -84,7 +88,7 @@ class TaxImpl @Inject constructor(override var dbConnect: SQLiteOpenHelper) :  I
         val cursor = db.query(
             TaxDB.TaxEntry.TABLE_NAME,
             COLUMNS,
-            " id = ?",
+            " ${BaseColumns._ID} = ?",
             arrayOf(id.toString()),
             null,
             null,
