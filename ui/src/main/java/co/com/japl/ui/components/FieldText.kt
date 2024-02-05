@@ -117,6 +117,6 @@ fun FieldText( title:String
 fun FieldTextPreview(){
     val hasError = remember {mutableStateOf(true)}
     MaterialThemeComposeUI {
-        FieldText("Title Test", value="valor",hasErrorState=hasError, validation = { hasError.value = true},modifier=Modifier.fillMaxWidth().padding(5.dp),icon= Icons.Rounded.Cancel)
+        FieldText("Title Test", value="1000000",hasErrorState=hasError, currency = true,validation = { hasError.value = true},modifier=Modifier.fillMaxWidth().padding(5.dp),icon= Icons.Rounded.Cancel)
     }
 }

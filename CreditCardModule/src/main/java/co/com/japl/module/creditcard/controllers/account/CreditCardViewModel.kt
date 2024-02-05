@@ -1,5 +1,6 @@
 package co.com.japl.module.creditcard.controllers.account
 
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -40,8 +41,8 @@ class CreditCardViewModel constructor(private val codeCreditCard:Int?,private va
         hasErrorName.value = name.value.isEmpty()
         hasErrorQuoteMax.value = maxQuotes.value.isEmpty() || maxQuotes.value.toInt() <= 0
         hasErrorCutOfDay.value = cutOffDay.value.isEmpty() || (cutOffDay.value.toInt() <= 0 && cutOffDay.value.toInt() > 30)
-        hasErrorWarning.value = warningValue.value.isEmpty() || NumbersUtil.isNumber(warningValue.value).not() || NumbersUtil.toBigDecimal(warningValue.value) <= BigDecimal.ZERO
-
+        hasErrorWarning.value = warningValue.value.isEmpty() || NumbersUtil.isNumber(warningValue.value).not() || (NumbersUtil.toBigDecimal(warningValue.value) <= BigDecimal.ZERO)
+        Log.d(this.javaClass.name,"hasErrorWarning: ${hasErrorWarning.value} warningValue: ${warningValue.value} toBigDecimal: ${NumbersUtil.toBigDecimal(warningValue.value)} IsNumber ${NumbersUtil.isNumber(warningValue.value).not()}")
         showButtons.value = (hasErrorName.value || hasErrorQuoteMax.value || hasErrorCutOfDay.value || hasErrorWarning.value).not()
 
         if(showButtons.value) {
@@ -117,7 +118,11 @@ class CreditCardViewModel constructor(private val codeCreditCard:Int?,private va
                 name.value = it.name
                 maxQuotes.value = it.maxQuotes.toString()
                 cutOffDay.value = it.cutOffDay.toString()
-                warningValue.value = it.warningValue.toString()
+                warningValue.value = if(it.warningValue > BigDecimal.ZERO) {
+                    NumbersUtil.toString(it.warningValue.toDouble())
+                }else{
+                    ""
+                }
                 state.value = it.status
                 interest1Quote.value = it.interest1Quote
                 interest1NotQuote.value = it.interest1NotQuote

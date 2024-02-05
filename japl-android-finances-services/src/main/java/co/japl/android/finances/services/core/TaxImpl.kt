@@ -56,4 +56,22 @@ class TaxImpl @Inject constructor(private val  taxSvc: ITaxSvc): ITaxPort {
         }
         return false
     }
+
+    override fun create(dto: TaxDTO): Boolean {
+        require(dto.id == 0, {"The id must be 0 to create new record"})
+        return taxSvc.save(TaxMapper.mapper(dto)) > 0
+    }
+
+    override fun update(dto: TaxDTO): Boolean {
+        require(dto.id != 0, {"The id must not be 0 to update record"})
+        return taxSvc.save(TaxMapper.mapper(dto)) > 0
+    }
+
+    override fun getById(codeCreditRate: Int): TaxDTO? {
+        val response = taxSvc.get(codeCreditRate)
+        if(response.isPresent){
+            return TaxMapper.mapper(response.get())
+        }
+        return null
+    }
 }

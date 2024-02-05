@@ -76,7 +76,8 @@ fun CreditRateList(viewModel: CreditRateListViewModel){
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun Body(viewModel: CreditRateListViewModel,modifier:Modifier=Modifier){
-    viewModel.creditCard?.let {list->
+    val mapState = remember {viewModel.creditCard}
+    mapState?.let {list->
         Carousel(size = list.size) {
             val value = list.entries.toList()[it]
             CreditCard(value = value, viewModel = viewModel)
@@ -110,14 +111,15 @@ private fun CreditCard(value:Map.Entry<CreditCardDTO?,List<TaxDTO>>,viewModel: C
                     rate = rate,
                     { viewModel.delete(it) },
                     { viewModel.enable(it) },
-                    { viewModel.disable(it) })
+                    { viewModel.disable(it) },
+                    { codeCreditCard,codeCreditRate-> viewModel.edit(codeCreditCard,codeCreditRate)})
             }
         }
     }
 }
 
 @Composable
-private fun Rate(rate:TaxDTO,delete:(Int)->Unit, enable:(Int)->Unit, disable:(Int)->Unit){
+private fun Rate(rate:TaxDTO,delete:(Int)->Unit, enable:(Int)->Unit, disable:(Int)->Unit,edit:(Int,Int)->Unit){
     val context = LocalContext.current
     val state = remember {
         mutableStateOf(false)
@@ -180,6 +182,7 @@ private fun Rate(rate:TaxDTO,delete:(Int)->Unit, enable:(Int)->Unit, disable:(In
                     MoreOptionsItemCreditRate.DISABLED->disable.invoke(rate.id)
                     MoreOptionsItemCreditRate.ENABLED->enable.invoke(rate.id)
                     MoreOptionsItemCreditRate.DELETE->stateOptions.value = true
+                    MoreOptionsItemCreditRate.EDIT->edit.invoke(rate.codCreditCard,rate.id)
                 }
                 state.value = false
             })

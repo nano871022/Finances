@@ -160,7 +160,7 @@ private fun ItemCompact(item:CreditCardSettingDTO,statusShowOptions:MutableState
                 Text(text = item.value, modifier = Weight1f())
 
                 Text(text = stringResource(id = R.string.status), modifier = Weight1f())
-                Text(text = (item.active > 0).toString(), modifier = Weight1f())
+                Text(text = if(item.active > 0){ stringResource(id = R.string.active_status)} else{ stringResource(id = R.string.disabled_status)}, modifier = Weight1f())
 
             }
 
@@ -169,7 +169,7 @@ private fun ItemCompact(item:CreditCardSettingDTO,statusShowOptions:MutableState
                     text = stringResource(id = R.string.credit_card_setting_type),
                     modifier = Modifier.weight(1f)
                 )
-                Text(text = item.type, modifier = Weight1f())
+                Text(text = item.type, modifier = Modifier.weight(3f))
             }
         }
 }

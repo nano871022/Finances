@@ -93,8 +93,9 @@ class NumbersUtil {
         }
 
         fun isNumber(value:String):Boolean{
+            if(value.isEmpty()) return false
             try{
-                value.toDouble()
+                toBigDecimal(value).toDouble()
                 return true
             }catch(e:NumberFormatException){
                 return false

@@ -35,6 +35,14 @@ class CreditRateListViewModel constructor(private val context:Context,private va
 
     fun delete(code:Int){
         if(creditRateSvc.delete(code)){
+            val found = creditCard?.entries?.first { entry->entry.value.first{ it.id == code} != null }
+            creditCard?.get(found?.key)?.let{
+                val list = it.filter{ it.id != code }
+                val map = creditCard?.toMutableMap()
+                    map?.set(found?.key,list)
+                creditCard = map
+            }
+
             Toast.makeText(context, R.string.toast_successful_deleted, Toast.LENGTH_SHORT).show()
         }else{
             Toast.makeText(context, R.string.toast_dont_successful_deleted, Toast.LENGTH_SHORT).show()
@@ -55,6 +63,10 @@ class CreditRateListViewModel constructor(private val context:Context,private va
         }else{
             Toast.makeText(context, R.string.toast_dont_successful_disabled, Toast.LENGTH_SHORT).show()
         }
+    }
+
+    fun edit(codeCreditCard:Int, codeCreditRate:Int){
+        ListCreditRate.navigate(codeCreditCard,codeCreditRate,navigate = navController)
     }
 
     fun main() = runBlocking {

@@ -1,6 +1,9 @@
 package co.japl.android.myapplication.putParams
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import androidx.core.os.bundleOf
 import androidx.navigation.NavController
 import co.japl.android.myapplication.R
@@ -15,11 +18,12 @@ class TaxesParams() {
         val ARG_PARAM2 = "param2"
         val ARG_CODE_CREDIT_CARD = "codeCreditCard"
         val ARG_CODE_CREDIT_RATE = "codeCreditRate"
+        const val ARG_DEEPLINK = "android-support-nav:controller:deepLinkIntent"
     }
     companion object {
         @JvmStatic
         fun newInstance(param1: String, param2: String,navController:NavController) {
-        val parameters = bundleOf(
+            val parameters = bundleOf(
                     ARG_PARAM1 to param1,
                     ARG_PARAM2 to param2
                 )
@@ -34,8 +38,19 @@ class TaxesParams() {
         }
         fun download(argument: Bundle):Pair<String,String>{
             argument.let {
-                val param1 = it.getString(ARG_PARAM1) ?: it.getString(ARG_CODE_CREDIT_CARD) ?: ""
-                val param2 = it.getString(ARG_PARAM2) ?: it.getString(ARG_CODE_CREDIT_RATE) ?: ""
+                var param1 = it.getString(ARG_PARAM1) ?: ""
+                var param2 = it.getString(ARG_PARAM2) ?: ""
+
+                if(it.containsKey(Params.ARG_DEEPLINK)){
+                    val intent = it.get(Params.ARG_DEEPLINK) as Intent
+                    if(Uri.parse(intent.dataString).getQueryParameter(Params.ARG_CODE_CREDIT_CARD) != null){
+                        param1 = Uri.parse(intent.dataString).getQueryParameter(Params.ARG_CODE_CREDIT_CARD)!!
+                    }
+                    if(Uri.parse(intent.dataString).getQueryParameter(Params.ARG_CODE_CREDIT_RATE) != null){
+                        param2 = Uri.parse(intent.dataString).getQueryParameter(Params.ARG_CODE_CREDIT_RATE)!!
+                    }
+                }
+
                 return Pair(param1,param2)
             }
         }

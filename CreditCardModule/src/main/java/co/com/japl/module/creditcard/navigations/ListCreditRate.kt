@@ -15,4 +15,9 @@ object ListCreditRate {
         val request = NavDeepLinkRequest.Builder.fromUri(navigate.context.getString(R.string.navigate_list_credit_rate_with_code_credit_card,codeCreditCard).toUri()).build()
         navigate.navigate(request)
     }
+
+    fun navigate(codeCreditCard:Int,codeCreditRate:Int,navigate:NavController){
+        val request = NavDeepLinkRequest.Builder.fromUri(navigate.context.getString(R.string.navigate_list_credit_rate_with_code_credit_card_and_cod_credit_rate,codeCreditCard,codeCreditRate).toUri()).build()
+        navigate.navigate(request)
+    }
 }

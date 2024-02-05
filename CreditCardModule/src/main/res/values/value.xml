@@ -10,6 +10,8 @@
     <string name="cut_off_day">Día de corte</string>
     <string name="warning_quote_value">Alerta valor de cuota</string>
     <string name="status">Estado</string>
+    <string name="active_status">Activo</string>
+    <string name="disabled_status">Inactivo</string>
     <string name="interest_1_quote">No intereses a 1 cuota</string>
     <string name="interest_1not_quote">No intereses Primera cuota de varias</string>
     <string name="setting_redirect">Ir a configuraciones</string>
@@ -19,6 +21,10 @@
     <string name="months">meses</string>
     <string name="disabled">Desabilitar</string>
     <string name="enabled">Habilitar</string>
+    <string name="year">Año</string>
+    <string name="month">Mes</string>
+    <string name="credit_rate">Tasa</string>
+    <string name="period">Cuotas</string>
 
     <string name="total_quote_value_short">Tot Cuota</string>
     <string name="interest_value_short">Interes</string>
@@ -42,6 +48,10 @@
     <string name="add_credit_card_setting">Agregar</string>
     <string name="add_credit_rate">Agregar tasa de credito</string>
 
+    <string name="CREDIT_CARD">Tarjeta Crédito</string>
+    <string name="CASH_ADVANCE">Avance</string>
+    <string name="WALLET_BUY">Compra Cartera</string>
+
     <string name="toast_successful_update">Se actualizo el registros satisfactoriamente</string>
     <string name="toast_dont_successful_update">No se actualizo el registro</string>
     <string name="toast_unsuccessful_insert">No se inserto el registro</string>
@@ -61,6 +71,7 @@
     <string name="navigate_list_bought">android-app://co.com.japl.finanzas.module.app/listBought?codeCreditCard=%d&amp;cutOffDay=%d&amp;cutOff=%s</string>
     <string name="navigate_list_credit_rate">android-app://co.com.japl.finanzas.modulo.app/credit_rate</string>
     <string name="navigate_list_credit_rate_with_code_credit_card">android-app://co.com.japl.finanzas.modulo.app/credit_rate?codeCreditCard=%d</string>
+    <string name="navigate_list_credit_rate_with_code_credit_card_and_cod_credit_rate">android-app://co.com.japl.finanzas.modulo.app/credit_rate?codeCreditCard=%d&amp;codeCreditRate=%d</string>
 
     <string-array name="Months">
         <item>--- Seleccionar --- </item>

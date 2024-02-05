@@ -20,4 +20,19 @@ object TaxMapper {
             KindOfTaxEnum.findByValue(taxDTO.kindOfTax)
         )
     }
+
+    fun mapper(taxDTO: co.com.japl.finances.iports.dtos.TaxDTO):TaxDTO {
+        return TaxDTO(
+            taxDTO.id,
+            taxDTO.month,
+            taxDTO.year,
+            taxDTO.status,
+            taxDTO.codCreditCard,
+            taxDTO.create,
+            taxDTO.value,
+            taxDTO.kind.getCode(),
+            taxDTO.period,
+            taxDTO.kindOfTax?.getName()
+        )
+    }
 }

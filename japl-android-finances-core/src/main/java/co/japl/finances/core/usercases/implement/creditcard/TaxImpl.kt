@@ -16,6 +16,18 @@ class TaxImpl @Inject constructor(private val service:ITaxPort): ITax {
         return service.get(codCreditCard,month,year,kind)
     }
 
+    override fun getById(codeCreditRate: Int): TaxDTO? {
+        return service.getById(codeCreditRate)
+    }
+
+    override fun create(dto: TaxDTO): Boolean {
+        return service.create(dto)
+    }
+
+    override fun update(dto: TaxDTO): Boolean {
+        return service.update(dto)
+    }
+
     override fun getByCreditCard(codCreditCard: Int): List<TaxDTO>? {
         return service.getByCreditCard(codCreditCard)
     }

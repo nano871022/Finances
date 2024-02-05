@@ -15,4 +15,10 @@ interface ITaxPort {
 
     fun disable(code:Int):Boolean
 
+    fun create(dto:TaxDTO):Boolean
+
+    fun update(dto:TaxDTO):Boolean
+
+    fun getById(codeCreditRate:Int):TaxDTO?
+
 }
