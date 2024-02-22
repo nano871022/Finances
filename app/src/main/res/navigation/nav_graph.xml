@@ -319,6 +319,7 @@
         <action
             android:id="@+id/action_accountListFragment_to_accountFragment"
             app:destination="@id/accountFragment" />
+        <deepLink app:uri="android-app://co.com.japl.finanzas.module.app/accounts/list"/>
     </fragment>
 
     <fragment
@@ -339,12 +340,15 @@
         <action
             android:id="@+id/action_accountFragment_to_inputListFragment"
             app:destination="@id/inputListFragment" />
+        <deepLink app:uri="android-app://co.com.japl.finanzas.module.app/accounts/inputs"/>
     </fragment>
     <fragment
         android:id="@+id/inputFragment"
         android:name="co.japl.android.myapplication.finanzas.controller.account.InputFragment"
         android:label="@string/input"
-        tools:layout="@layout/fragment_input" />
+        tools:layout="@layout/fragment_input" >
+        <deepLink app:uri="android-app://co.com.japl.finanzas.module.app/accounts/input"/>
+    </fragment>
     <fragment
         android:id="@+id/paidFragment"
         android:name="co.japl.android.myapplication.finanzas.controller.paids.PaidFragment"

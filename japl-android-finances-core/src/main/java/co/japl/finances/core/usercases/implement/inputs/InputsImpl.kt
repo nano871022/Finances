@@ -30,4 +30,16 @@ class InputsImpl @Inject constructor(private val inputSvc:IInputPort) : IInput {
             }
         }?:false
     }
+
+    override fun getById(id: Int): InputDTO? {
+        return inputSvc.getInput(id)
+    }
+
+    override fun create(input: InputDTO): Boolean {
+        return inputSvc.create(input) > 0
+    }
+
+    override fun update(input: InputDTO): Boolean {
+        return inputSvc.update(input)
+    }
 }

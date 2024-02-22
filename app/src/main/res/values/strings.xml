@@ -52,6 +52,7 @@
     <string name="max_quotes">Cuotas Maximas</string>
     <string name="cancel">Cancelar</string>
     <string name="delete">Eliminar</string>
+    <string name="edit">Editar</string>
     <string name="ending">Finalizar</string>
     <string name="updating">Actualizar</string>
     <string name="dont_able_to_save">No se logro guardar</string>
@@ -234,6 +235,13 @@
         <item>Cuatrimestral</item>
         <item>semestral</item>
     </array>
+        <string name="monthly">Mensual</string>
+        <string name="bi_monthly">Bi-Mensual</string>
+        <string name="trimesterly">Trimestral</string>
+        <string name="quarterly">Cuatrimestral</string>
+        <string name="semesterly">semestral</string>
+    <string name="yearly">Anual</string>
+
     <string name="account">Cuenta</string>
     <string name="list_inputs">Lista Ingresos</string>
     <string name="list_account">Lista Cuentas</string>

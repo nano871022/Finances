@@ -195,7 +195,7 @@ class BoughtViewModel @Inject constructor(
             items = items.filter { it != MoreOptionsItemsCreditCard.AMORTIZATION}.toTypedArray()
             items = items.filter { it != MoreOptionsItemsCreditCard.DIFFER_INSTALLMENT}.toTypedArray()
         }
-        if(bought.createDate.toLocalDate() !in dateFirst..dateLast){
+        if( (bought.createDate.toLocalDate() !in dateFirst.minusMonths(1)..dateLast)){
             items = items.filter{ it != MoreOptionsItemsCreditCard.EDIT}.toTypedArray()
         }
         if(!bought.recurrent  || (bought.recurrent && bought.createDate.toLocalDate() in dateFirst..dateLast)){

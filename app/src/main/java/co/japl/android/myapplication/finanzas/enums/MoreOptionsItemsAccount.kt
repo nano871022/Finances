@@ -1,7 +1,13 @@
 package co.japl.android.myapplication.finanzas.enums
 
-enum class MoreOptionsItemsAccount(val i: Int) {
+import androidx.annotation.StringRes
+import co.com.japl.ui.enums.IMoreOptions
+import co.japl.android.myapplication.R
 
-    VIEW(0),DELETE(1)
+enum class MoreOptionsItemsAccount(val i: Int, @StringRes val title: Int) : IMoreOptions{
+
+    EDIT(2,R.string.edit),DELETE(1, R.string.delete);
+
+    override fun getName(): Int = title
 
 }

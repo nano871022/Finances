@@ -14,8 +14,8 @@ android {
         applicationId "co.japl.android.myapplication"
         minSdk 26
         targetSdk 33
-        versionCode 4_05_03_059
-        versionName "Migracion del historico de compras con tarjeta de credito, ahora los valores concuerdan correctamente, ajuste valores de resumen "
+        versionCode 4_05_03_060
+        versionName "Migracion tasas mensuales de credito y cuentas bancarias a nuevo diseño ademas de aumentar en 1 mes los creditos que se pueden actualizar"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }

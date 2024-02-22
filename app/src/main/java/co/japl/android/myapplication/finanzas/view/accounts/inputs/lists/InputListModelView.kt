@@ -2,7 +2,9 @@ package co.japl.android.myapplication.finanzas.view.accounts.inputs.lists
 
 import android.content.Context
 import android.widget.Toast
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.lifecycle.ViewModel
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
@@ -15,11 +17,11 @@ import kotlinx.coroutines.runBlocking
 
 class InputListModelView (private val context:Context, val accountCode:Int,private val navController: NavController,private val inputSvc:IInputPort?) : ViewModel() {
 
-    private lateinit var _items:List<InputDTO>
-    val items get()  = _items
+    var _items = mutableListOf<InputDTO>()
 
     val stateDialogOptionsMore = mutableStateOf(false)
-    var stateLoader = mutableStateOf(false)
+    var stateLoader = mutableStateOf(true)
+    var progress = mutableFloatStateOf( 0f)
 
     fun optionSelected(id:Int,value:Double = 0.0, option:MoreOptionsItemsInput){
         when(option){
@@ -45,16 +47,24 @@ class InputListModelView (private val context:Context, val accountCode:Int,priva
     }
 
     fun goToInputForm(){
-        InputListParams.newInstance(accountCode,navController)
+        InputListParams.newInstanceDeeplink(accountCode,navController)
     }
 
     fun main()= runBlocking  {
+        progress.value = 0.1f
         getItems()
+        progress.value = 1f
     }
 
     suspend fun getItems() {
-        inputSvc?.let{_items = it.getInputs(accountCode)}
-        stateLoader.value = true
+        progress.value = 0.2f
+        inputSvc?.let{
+            _items.clear()
+            _items.addAll(it.getInputs(accountCode)?: emptyList())
+            progress.value = 0.7f
+            stateLoader.value = false
+        }
+        progress.value = 0.8f
     }
 
 }

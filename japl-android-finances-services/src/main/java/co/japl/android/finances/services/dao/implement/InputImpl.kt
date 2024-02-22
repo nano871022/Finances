@@ -136,6 +136,7 @@ class InputImpl @Inject constructor(override var dbConnect: SQLiteOpenHelper,pub
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun getAll(): List<InputDTO> {
+
         val db = dbConnect.readableDatabase
         val cursor = db.query(InputDB.Entry.TABLE_NAME,COLUMNS,"${InputDB.Entry.COLUMN_ACCOUNT_CODE} > 0",null,null,null,null)
         val items = mutableListOf<InputDTO>()
@@ -144,7 +145,7 @@ class InputImpl @Inject constructor(override var dbConnect: SQLiteOpenHelper,pub
                 items.add(mapper.mapping(cursor))
             }
         }
-        return items
+        return items.also { Log.d(javaClass.name,"<<<=== FINISH::GetAll Size: ${items.size}") }
     }
 
     override fun delete(id: Int): Boolean {

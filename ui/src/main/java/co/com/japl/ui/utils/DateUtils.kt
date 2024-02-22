@@ -5,12 +5,15 @@ import android.util.Log
 import android.widget.EditText
 import androidx.annotation.RequiresApi
 import java.time.DayOfWeek
+import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.Month
 import java.time.Period
+import java.time.ZoneId
 import java.time.format.DateTimeFormatter
+import java.time.temporal.TemporalAccessor
 
 class DateUtils {
     companion object {
@@ -19,6 +22,9 @@ class DateUtils {
             val date = value.split("/")
             return LocalDateTime.of(date[2].toInt(), date[1].toInt(), date[0].toInt(), 0, 0, 0)
         }
+
+        fun toLocalDate(milles: Long): LocalDate =
+            Instant.ofEpochMilli(milles).atZone(ZoneId.systemDefault()).toLocalDate()
 
         @RequiresApi(Build.VERSION_CODES.O)
         fun toLocalDateTime(value: String,default:LocalDateTime): LocalDateTime {
