@@ -45,6 +45,7 @@
     <string name="total_value">Valor total</string>
     <string name="save">Guardar</string>
     <string name="add">Agregar</string>
+    <string name="save_new">Guardar y Crear Nuevo</string>
     <string name="setting_redirect">Ir a Configuraciones</string>
     <string name="quote_credit_save">Guardar - Cuota Credito Fija</string>
     <string name="quote_credit_save_variable">Guardar - Cuota Credito Variable</string>
@@ -363,9 +364,11 @@
     <string name="do_you_want_to_ending_recurrent_payment">¿Desea finalizar pago recurrente?</string>
     <string name="update_value_recurrent_paymner">Actualizar valor pago recurrente</string>
     <string name="update_value_paymnet">Actualizar valor pago</string>
-    <string name="dont_ending_recurrent_payment">No se logro finaliazr el pago recurrente</string>
+    <string name="dont_ending_recurrent_payment">No se logro finalizar el pago recurrente</string>
+    <string name="dont_copy_payment_successfull">No se logro realizar la copia</string>
     <string name="dont_ending_payment">No se logro finaliazr el pago</string>
     <string name="ending_recurrent_payment_successfull">Se finalizo correctamente</string>
+    <string name="ending_recurrent_copy_payment_successfull">Se finalizo la copia correctamente</string>
     <string name="theres_not_records_to_show_you">No hay registros para mostrar</string>
 
     <string name="pending_payable">Valor Pendiente</string>
@@ -378,6 +381,7 @@
     <string  name="delete_grace_period_saved">Periodo de gracia eliminado sadisfactoriamente</string>
     <string  name="delete_grace_period_unsave">Periodo de gracia no fue eliminado</string>
     <string name="differ_installment">Diferir el Capital Restante</string>
+    <string name="ccio_clone">Copiar</string>
     <string name="not_save_differ_installment">No se logro diferir la cuota</string>
     <string name="not_save_new_quote_differ_installment">No se logro crear el nuevo registro de la cuota diferida</string>
     <string name="not_update_old_quote_differ_installment">No se logro actualizar el registro a diferir cuota</string>

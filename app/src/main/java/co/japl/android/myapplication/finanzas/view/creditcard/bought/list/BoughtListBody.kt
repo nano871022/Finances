@@ -208,7 +208,11 @@ private fun MainRow(model:BoughtViewModel){
     val stateDialogOptionsMore = remember { mutableStateOf(false) }
     when{
         stateDialogOptionsMore.value -> {
-            MoreOptionsDialog(model.bought.pendingToPay,model.getMoreOptionsList(),onDismiss = { stateDialogOptionsMore.value = false }, onClick = model::moreOption)
+            var rediferirValue = model.bought.pendingToPay + model.bought.capitalValue
+            if(rediferirValue > model.bought.valueItem){
+               rediferirValue =model.bought.valueItem
+            }
+            MoreOptionsDialog(rediferirValue,model.getMoreOptionsList(),onDismiss = { stateDialogOptionsMore.value = false }, onClick = model::moreOption)
         }
     }
     Row(modifier = Modifier.fillMaxWidth()

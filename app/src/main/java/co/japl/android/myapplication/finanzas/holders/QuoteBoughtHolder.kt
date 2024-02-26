@@ -63,6 +63,7 @@ class QuoteBoughtHolder(var root:View, val supportManager:FragmentManager) : IHo
     lateinit var btnClear: Button
     lateinit var llTax : LinearLayout
     private lateinit var btnSave: MaterialButton
+    private lateinit var _btnSaveNewOne: MaterialButton
     lateinit var chRecurrent: CheckBox
     private lateinit var creditCardBought: CreditCardBoughtDTO
     lateinit var spTypeSetting: MaterialAutoCompleteTextView
@@ -110,6 +111,7 @@ class QuoteBoughtHolder(var root:View, val supportManager:FragmentManager) : IHo
             btnClear  = it.findViewById(R.id.btnClearBought)
             btnSave = it.findViewById(R.id.btnSaveBought)
             tag = it.findViewById(R.id.et_tag_bcc)
+            _btnSaveNewOne = it.findViewById(R.id.btn_save_new_one)
             onFocus()
             onClick(actions)
             visibility()
@@ -168,6 +170,7 @@ class QuoteBoughtHolder(var root:View, val supportManager:FragmentManager) : IHo
         spNameSetting.setOnClickListener { spNameSetting.showDropDown() }
         btnSave.setOnClickListener(actions)
         btnClear.setOnClickListener(actions)
+        _btnSaveNewOne.setOnClickListener(actions)
         createTagDialog()
         tag?.setOnClickListener {
             Log.d(javaClass.name,"OnClikc")
@@ -177,19 +180,22 @@ class QuoteBoughtHolder(var root:View, val supportManager:FragmentManager) : IHo
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    private fun visibility(){
-        val dataPicker = MaterialDatePicker.Builder.datePicker().setInputMode(MaterialDatePicker.INPUT_MODE_CALENDAR).setTitleText(root.resources.getString(R.string.bought_date_time)).setSelection(MaterialDatePicker.todayInUtcMilliseconds()).build()
+    private fun visibility() {
+        val dataPicker = MaterialDatePicker.Builder.datePicker()
+            .setInputMode(MaterialDatePicker.INPUT_MODE_CALENDAR)
+            .setTitleText(root.resources.getString(R.string.bought_date_time))
+            .setSelection(MaterialDatePicker.todayInUtcMilliseconds()).build()
         llTypeSetting.visibility = View.INVISIBLE
         llNameSetting.visibility = View.INVISIBLE
-        dtBought.setOnClickListener{ clicked->
-            dataPicker.show(supportManager,"DT_BOUGHT")
+        dtBought.setOnClickListener { clicked ->
+            dataPicker.show(supportManager, "DT_BOUGHT")
             dataPicker.addOnPositiveButtonClickListener {
                 var date = LocalDateTime.ofInstant(Instant.ofEpochMilli(it), ZoneId.systemDefault())
                 date = date.plusDays(1)
                 dtBought.setText(date.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")))
             }
         }
-
+        _btnSaveNewOne.visibility = View.INVISIBLE
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -223,6 +229,11 @@ class QuoteBoughtHolder(var root:View, val supportManager:FragmentManager) : IHo
         tagsSvc.getTags(values.id)?.takeIf { it.isNotEmpty() }?.let {
             tagDto = it.first()
             tag?.setText(tagDto?.name)
+        }
+        if(values.id > 0){
+            _btnSaveNewOne.visibility = View.INVISIBLE
+        }else{
+            _btnSaveNewOne.visibility = View.VISIBLE
         }
     }
 

@@ -89,11 +89,12 @@ class QuoteBought : Fragment(), View.OnClickListener{
             when (view.id) {
                 R.id.btnClearBought -> holder.cleanField()
                 R.id.btnSaveBought -> save()
+                R.id.btn_save_new_one -> save(true)
             }
         }
 
         @RequiresApi(Build.VERSION_CODES.O)
-        private fun save() {
+        private fun save(back:Boolean = false) {
             if(holder.validate()){
                 val dto = holder.downLoadFields()
                 val id = saveSvc.save(dto)
@@ -106,7 +107,11 @@ class QuoteBought : Fragment(), View.OnClickListener{
                     }
                     tagProcess(dto)
                     Toast.makeText(this.context, R.string.toast_successful_insert, Toast.LENGTH_LONG).show().also {
-                        CreditCardQuotesParams.Companion.CreateQuote.toBack(findNavController())
+                        if(!back) {
+                            CreditCardQuotesParams.Companion.CreateQuote.toBack(findNavController())
+                        }else{
+                            holder.cleanField()
+                        }
                     }
                 }else{
                     Toast.makeText(this.context,R.string.toast_record_didnt_save,Toast.LENGTH_LONG).show()
