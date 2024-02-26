@@ -11,9 +11,7 @@ import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import co.japl.android.myapplication.R
 import co.japl.android.myapplication.finanzas.bussiness.DTO.PeriodCreditDTO
 import co.japl.android.myapplication.finanzas.putParams.PeriodCreditListParams
-import co.japl.android.myapplication.utils.DateUtils
 import co.japl.android.myapplication.utils.NumbersUtil
-import com.google.android.material.textview.MaterialTextView
 
 class PeriodCreditItemHolder(val view:View,val navController: NavController):ViewHolder(view) {
     lateinit var date:TextView

@@ -1,30 +1,23 @@
 package co.japl.android.myapplication.holders.view
 
-import android.graphics.Color
 import android.graphics.Paint
 import android.os.Build
 import android.util.Log
 import android.view.View
 import android.view.View.OnClickListener
-import android.widget.Button
 import android.widget.CheckBox
-import android.widget.ImageButton
-import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.RecyclerView
 import co.japl.android.myapplication.R
-import co.japl.android.myapplication.bussiness.DTO.TaxDTO
 import co.japl.android.myapplication.finanzas.bussiness.DTO.CheckCreditDTO
 import co.japl.android.myapplication.finanzas.bussiness.DTO.CheckPaymentsDTO
 import co.japl.android.myapplication.finanzas.bussiness.DTO.CheckQuoteDTO
 import co.japl.android.myapplication.finanzas.bussiness.DTO.ICheck
 import co.japl.android.myapplication.finanzas.enums.CheckPaymentsEnum
-import co.japl.android.myapplication.finanzas.enums.TaxEnum
 import co.japl.android.myapplication.finanzas.pojo.CheckPaymentsPOJO
-import co.japl.android.myapplication.utils.DateUtils
+import co.com.japl.ui.utils.DateUtils
 import co.japl.android.myapplication.utils.NumbersUtil
-import java.time.LocalDate
 import java.time.LocalDateTime
 
 class PaymentsItemHolder(var view:View,val checkPaymentList:MutableList<ICheck>,val checkEnable:Boolean) : RecyclerView.ViewHolder(view){

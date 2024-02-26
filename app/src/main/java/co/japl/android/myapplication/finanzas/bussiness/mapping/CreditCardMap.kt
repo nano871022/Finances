@@ -9,7 +9,7 @@ import co.japl.android.myapplication.bussiness.DTO.CreditCardDB
 import co.japl.android.myapplication.bussiness.DTO.CreditCardDTO
 import co.japl.android.myapplication.bussiness.impl.Config
 import co.japl.android.myapplication.pojo.CreditCard
-import co.japl.android.myapplication.utils.DateUtils
+import co.com.japl.ui.utils.DateUtils
 import java.util.*
 
 class CreditCardMap {
@@ -23,7 +23,7 @@ class CreditCardMap {
             put(CreditCardDB.CreditCardEntry.COLUMN_STATUS,if(dto.status) 1 else 0)
             put(CreditCardDB.CreditCardEntry.COLUMN_INTEREST_1Q,if(dto.interest1Quote) 1 else 0)
             put(CreditCardDB.CreditCardEntry.COLUMN_INTEREST_1NOTQ,if(dto.interest1NotQuote)1 else 0)
-            put(CreditCardDB.CreditCardEntry.COLUMN_CREATE_DATE,DateUtils.localDateTimeToString(dto.create))
+            put(CreditCardDB.CreditCardEntry.COLUMN_CREATE_DATE, DateUtils.localDateTimeToString(dto.create))
         }
     }
 

@@ -9,14 +9,12 @@ import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.RecyclerView
 import co.japl.android.myapplication.R
-import co.japl.android.myapplication.finanzas.bussiness.DTO.AccountDTO
 import co.japl.android.myapplication.finanzas.bussiness.DTO.ProjectionDTO
 import co.japl.android.myapplication.finanzas.enums.KindofProjectionEnum
 import co.japl.android.myapplication.finanzas.enums.MoreOptionalItemsProjection
 import co.japl.android.myapplication.finanzas.holders.interfaces.IItemHolder
-import co.japl.android.myapplication.utils.DateUtils
+import co.com.japl.ui.utils.DateUtils
 import co.japl.android.myapplication.utils.NumbersUtil
-import com.google.android.material.button.MaterialButton
 import java.time.LocalDate
 import java.time.Period
 

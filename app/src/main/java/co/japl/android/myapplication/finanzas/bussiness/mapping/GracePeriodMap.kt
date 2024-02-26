@@ -3,12 +3,9 @@ package co.japl.android.myapplication.finanzas.bussiness.mapping
 import android.content.ContentValues
 import android.database.Cursor
 import android.os.Build
-import android.view.View
 import androidx.annotation.RequiresApi
-import co.japl.android.myapplication.R
 import co.japl.android.myapplication.finanzas.bussiness.DTO.*
-import co.japl.android.myapplication.utils.DateUtils
-import java.time.LocalDate
+import co.com.japl.ui.utils.DateUtils
 
 class GracePeriodMap() {
 
@@ -25,8 +22,8 @@ class GracePeriodMap() {
     @RequiresApi(Build.VERSION_CODES.O)
     fun mapping(dto: GracePeriodDTO): ContentValues {
         return ContentValues().apply {
-            put(GracePeriodDB.Entry.COLUMN_DATE_CREATE,DateUtils.localDateToStringDate(dto.create))
-            put(GracePeriodDB.Entry.COLUMN_DATE_END,DateUtils.localDateToStringDate(dto.end))
+            put(GracePeriodDB.Entry.COLUMN_DATE_CREATE, DateUtils.localDateToStringDate(dto.create))
+            put(GracePeriodDB.Entry.COLUMN_DATE_END, DateUtils.localDateToStringDate(dto.end))
             put(GracePeriodDB.Entry.COLUMN_CODE_CREDIT,dto.codeCredit)
             put(GracePeriodDB.Entry.COLUMN_PERIODS,dto.periods)
         }

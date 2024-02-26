@@ -9,6 +9,7 @@ import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
+import android.view.LayoutInflater
 import android.view.View
 import android.widget.*
 import androidx.annotation.RequiresApi
@@ -22,24 +23,28 @@ import co.japl.android.myapplication.bussiness.DTO.CreditCardSettingDTO
 import co.japl.android.myapplication.bussiness.impl.QuoteCreditVariable
 import co.japl.android.myapplication.bussiness.impl.QuoteCreditVariableInterest
 import co.japl.android.myapplication.bussiness.interfaces.Calc
+import co.japl.android.myapplication.bussiness.interfaces.ITagQuoteCreditCardSvc
 import co.japl.android.myapplication.finanzas.holders.interfaces.IHolder
 import co.japl.android.myapplication.finanzas.holders.interfaces.ISpinnerHolder
 import co.japl.android.myapplication.bussiness.interfaces.SaveSvc
+import co.japl.android.myapplication.finanzas.bussiness.DTO.TagDTO
 import co.japl.android.myapplication.finanzas.bussiness.impl.BuyCreditCardSettingImpl
 import co.japl.android.myapplication.finanzas.bussiness.impl.CreditCardSettingImpl
+import co.japl.android.myapplication.finanzas.bussiness.impl.TagQuoteCreditCardImpl
 import co.japl.android.myapplication.finanzas.bussiness.interfaces.ICreditCardSettingSvc
+import co.japl.android.myapplication.finanzas.controller.TagsDialog
 import co.japl.android.myapplication.finanzas.enums.KindBoughtEnum
 import co.japl.android.myapplication.finanzas.enums.KindOfTaxEnum
-import co.japl.android.myapplication.utils.DateUtils
+import co.com.japl.ui.utils.DateUtils
 import co.japl.android.myapplication.utils.NumbersUtil
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.textfield.MaterialAutoCompleteTextView
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
-import com.google.android.material.textview.MaterialTextView
 import java.math.RoundingMode
 import java.time.Instant
+import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
@@ -66,6 +71,7 @@ class QuoteBoughtHolder(var root:View, val supportManager:FragmentManager) : IHo
     lateinit var llNameSetting: TextInputLayout
     private lateinit var  nameSettingDialog:AlertDialog
     private lateinit var  typeSettingDialog:AlertDialog
+    private var tag:TextInputEditText? = null
     //services
     private var calcTax: Calc = QuoteCreditVariableInterest()
     private var calc: Calc = QuoteCreditVariable()
@@ -76,11 +82,13 @@ class QuoteBoughtHolder(var root:View, val supportManager:FragmentManager) : IHo
     private lateinit var cutOffDate:LocalDateTime
     private val buyCCSsvc:SaveSvc<BuyCreditCardSettingDTO> = BuyCreditCardSettingImpl(ConnectDB(root.context))
     private val cCSettingsvc:ICreditCardSettingSvc = CreditCardSettingImpl(ConnectDB(root.context))
+    private val tagsSvc:ITagQuoteCreditCardSvc = TagQuoteCreditCardImpl(ConnectDB(root.context))
     private lateinit var buyCCSDTO:Optional<BuyCreditCardSettingDTO>
     private lateinit var cCSettingList:List<CreditCardSettingDTO>
     private val itemDefaultSelected = root.resources?.getString(R.string.item_select)
     private val delayed = 800L
     private val delayedEdit = 1500L
+    var tagDto: TagDTO?  = null
 
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -101,6 +109,7 @@ class QuoteBoughtHolder(var root:View, val supportManager:FragmentManager) : IHo
             spTypeSetting = it.findViewById(R.id.spTypeSettingBCC)
             btnClear  = it.findViewById(R.id.btnClearBought)
             btnSave = it.findViewById(R.id.btnSaveBought)
+            tag = it.findViewById(R.id.et_tag_bcc)
             onFocus()
             onClick(actions)
             visibility()
@@ -159,6 +168,11 @@ class QuoteBoughtHolder(var root:View, val supportManager:FragmentManager) : IHo
         spNameSetting.setOnClickListener { spNameSetting.showDropDown() }
         btnSave.setOnClickListener(actions)
         btnClear.setOnClickListener(actions)
+        createTagDialog()
+        tag?.setOnClickListener {
+            Log.d(javaClass.name,"OnClikc")
+            createTagDialog()?.show()
+        }
 
     }
 
@@ -206,6 +220,10 @@ class QuoteBoughtHolder(var root:View, val supportManager:FragmentManager) : IHo
             chRecurrent.isChecked = values.recurrent.toInt() == 1
         }
 
+        tagsSvc.getTags(values.id)?.takeIf { it.isNotEmpty() }?.let {
+            tagDto = it.first()
+            tag?.setText(tagDto?.name)
+        }
     }
 
     private fun createTypeSettingDialog(kindOfTax:String){
@@ -247,7 +265,15 @@ class QuoteBoughtHolder(var root:View, val supportManager:FragmentManager) : IHo
             }
         }
        nameSettingDialog = builder.create()
+    }
 
+    private fun createTagDialog():TagsDialog{
+        val tags:TagDTO = TagDTO(0, LocalDate.now(),"",false)
+        val inflater = LayoutInflater.from(root.context)
+        return TagsDialog(root.context,tags, inflater){
+            tagDto = it
+            tag?.setText(it.name)
+        }
     }
 
     @RequiresApi(Build.VERSION_CODES.O)

@@ -11,6 +11,8 @@
         <!-- Primary brand color. -->
         <item name="colorPrimary">@color/green_background_dark_variant</item>
         <item name="colorPrimaryVariant">@color/green_background_dark</item>
+        <item name="colorOnPrimaryContainer">@color/green_background_dark</item>
+        <item name="colorPrimaryContainer">@color/green_background_dark_variant</item>
         <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
         <item name="materialButtonStyle">@style/ButtonStyle</item>
         <item name="toolbarStyle">@style/MaterialToolBar</item>

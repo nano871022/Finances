@@ -3,12 +3,11 @@ package co.japl.android.myapplication.bussiness.mapping
 import android.content.ContentValues
 import android.database.Cursor
 import android.os.Build
-import android.util.Log
 import androidx.annotation.RequiresApi
 import co.japl.android.myapplication.bussiness.DTO.CreditCardBought
 import co.japl.android.myapplication.bussiness.DTO.CreditCardBoughtDB
 import co.japl.android.myapplication.bussiness.DTO.CreditCardBoughtDTO
-import co.japl.android.myapplication.utils.DateUtils
+import co.com.japl.ui.utils.DateUtils
 import java.time.LocalDateTime
 
 class CreditCardBoughtMap {
@@ -36,17 +35,17 @@ class CreditCardBoughtMap {
     fun mapping(dto:CreditCardBoughtDTO ):ContentValues{
         return ContentValues().apply {
             put(CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_CODE_CREDIT_CARD,dto.codeCreditCard)
-            put(CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_BOUGHT_DATE,DateUtils.localDateTimeToString(dto.boughtDate))
+            put(CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_BOUGHT_DATE, DateUtils.localDateTimeToString(dto.boughtDate))
             put(CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_INTEREST,dto.interest)
             put(CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_MONTH,dto.month)
-            put(CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_CREATE_DATE,DateUtils.localDateTimeToStringDate(dto.createDate))
+            put(CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_CREATE_DATE, DateUtils.localDateTimeToStringDate(dto.createDate))
             put(CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_NAME_ITEM,dto.nameItem)
             put(CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_VALUE_ITEM,dto.valueItem.toDouble())
-            put(CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_CUT_OUT_DATE,DateUtils.localDateTimeToStringDate(dto.cutOutDate))
+            put(CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_CUT_OUT_DATE, DateUtils.localDateTimeToStringDate(dto.cutOutDate))
             put(CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_RECURRENT,dto.recurrent)
             put(CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_KIND,dto.kind)
             put(CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_KIND_OF_TAX,dto.kindOfTax)
-            put(CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_END_DATE,DateUtils.localDateTimeToStringDate(dto.endDate))
+            put(CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_END_DATE, DateUtils.localDateTimeToStringDate(dto.endDate))
         }
     }
 

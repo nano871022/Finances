@@ -17,6 +17,7 @@ class QuoteCreditCard {
     lateinit var capitalValue:Optional<BigDecimal>
     lateinit var kindOfTax:Optional<String>
     lateinit var creditCardId:Optional<Int>
+    var initialValue:BigDecimal? = null
 
     @RequiresApi(Build.VERSION_CODES.N)
     @JvmName("getInterestValue1")

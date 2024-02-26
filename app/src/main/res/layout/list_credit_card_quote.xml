@@ -368,6 +368,12 @@
 
     </LinearLayout>
 </com.google.android.material.card.MaterialCardView>
+
+        <co.japl.android.graphs.drawer.CustomDraw
+            android:id="@+id/cv_canvas_lccq"
+            android:layout_width="match_parent"
+            android:layout_height="400dp"/>
+
        <LinearLayout
             android:id="@+id/llBtnQuotes"
             android:layout_width="match_parent"
@@ -436,9 +442,7 @@
             app:icon="@android:drawable/ic_menu_add"
             android:text="@string/add_buy_wallet" />
 
-
-
-
     </LinearLayout>
+
     </ScrollView>
 </androidx.constraintlayout.widget.ConstraintLayout>

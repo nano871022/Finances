@@ -193,6 +193,22 @@
             android:textAlignment="center"/>
         </com.google.android.material.textfield.TextInputLayout>
 
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                style="@style/MaterialTextInputLayoutView"
+                android:layout_margin="@dimen/space_min"
+                android:hint="@string/tag">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/et_tag_bcc"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    style="@style/MaterialTextInputLayoutView"
+                    android:focusable="false"
+                    android:textAlignment="center"/>
+            </com.google.android.material.textfield.TextInputLayout>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

@@ -2,28 +2,21 @@ package co.japl.android.myapplication.finanzas.holders.view
 
 import android.app.AlertDialog
 import android.os.Build
-import android.util.Log
 import android.view.View
-import android.view.View.OnClickListener
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import co.japl.android.myapplication.R
 import co.japl.android.myapplication.bussiness.DB.connections.ConnectDB
-import co.japl.android.myapplication.bussiness.interfaces.SaveSvc
 import co.japl.android.myapplication.finanzas.bussiness.DTO.AdditionalCreditDTO
 import co.japl.android.myapplication.finanzas.bussiness.DTO.CreditDTO
-import co.japl.android.myapplication.finanzas.bussiness.DTO.GracePeriodDTO
 import co.japl.android.myapplication.finanzas.bussiness.impl.AdditionalCreditImpl
 import co.japl.android.myapplication.finanzas.bussiness.impl.GracePeriodImpl
 import co.japl.android.myapplication.finanzas.enums.MoreOptionalItemsCredit
-import co.japl.android.myapplication.finanzas.enums.MoreOptionsItemsCreditCard
-import co.japl.android.myapplication.utils.DateUtils
+import co.com.japl.ui.utils.DateUtils
 import co.japl.android.myapplication.utils.NumbersUtil
 
-import com.google.android.material.button.MaterialButton
-import com.google.android.material.textview.MaterialTextView
 import java.math.BigDecimal
 import java.time.LocalDate
 

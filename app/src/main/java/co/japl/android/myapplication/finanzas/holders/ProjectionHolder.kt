@@ -10,18 +10,16 @@ import android.view.View
 import android.widget.Button
 import android.widget.TextView
 import androidx.annotation.RequiresApi
-import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.FragmentManager
 import co.japl.android.myapplication.R
 import co.japl.android.myapplication.finanzas.bussiness.DTO.ProjectionDTO
 import co.japl.android.myapplication.finanzas.enums.KindofProjectionEnum
 import co.japl.android.myapplication.finanzas.holders.interfaces.IHolder
 import co.japl.android.myapplication.finanzas.holders.validations.*
-import co.japl.android.myapplication.utils.DateUtils
+import co.com.japl.ui.utils.DateUtils
 import co.japl.android.myapplication.utils.NumbersUtil
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.datepicker.MaterialDatePicker
-import com.google.android.material.materialswitch.MaterialSwitch
 import com.google.android.material.switchmaterial.SwitchMaterial
 import com.google.android.material.textfield.TextInputEditText
 import java.math.BigDecimal
@@ -30,7 +28,6 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
-import java.util.Date
 
 class ProjectionHolder(val view:View,val supportManager:FragmentManager): IHolder<ProjectionDTO> {
     private lateinit var date:TextInputEditText

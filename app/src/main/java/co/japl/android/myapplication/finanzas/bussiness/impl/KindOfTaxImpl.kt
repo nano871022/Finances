@@ -24,6 +24,8 @@ class KindOfTaxImpl @Inject constructor():IKindOfTaxSvc {
             KindOfTaxEnum.NM->{
                 value/100
             }
+        }.also {
+            Log.w(javaClass.name,"<<<=== FINISH:GetNM Value $value Kind: $kindOf Response: $it NM")
         }
     }
 

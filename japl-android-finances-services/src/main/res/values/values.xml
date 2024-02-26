@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="str_graph_qcc_one_month">A 1 mes</string>
+    <string name="str_graph_qcc_some_month">A meses</string>
+    <string name="str_graph_qcc_one_month_recurrent">A 1 Mes recurrente</string>
+    <string name="str_graph_qcc_some_month_recurrent">A meses recurrente</string>
+
+    <array name="kind_of_pay_list">
+        <item>Mensual</item>
+        <item>Bi-Mensual</item>
+        <item>Trimestral</item>
+        <item>Cuatrimestral</item>
+        <item>semestral</item>
+    </array>
+
+    <string name="kind_of_pay_monthly">Mensual</string>
+    <string name="kind_of_pay_bi_monthly">Bi-Mensual</string>
+    <string name="kind_of_pay_quarterly">Trimestral</string>
+    <string name="kind_of_pay_four_monthly">Cuatrimestral</string>
+    <string name="kind_of_pay_semi_annual">semestral</string>
+    <string name="kind_of_pay_annual">Anual</string>
+</resources>

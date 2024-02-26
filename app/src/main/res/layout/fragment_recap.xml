@@ -5,39 +5,22 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_margin="@dimen/space_min"
+    android:elevation="@dimen/card_elevator"
     tools:context=".finanzas.controller.RecapFragment">
 
-    <HorizontalScrollView
-        android:id="@+id/scroll_rec"
+    <ScrollView
         android:layout_width="match_parent"
-
         android:layout_height="wrap_content">
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:padding="@dimen/space_min">
+            android:orientation="vertical">
 
-            <ProgressBar
-                android:id="@+id/pb_load_rec"
-                style="?android:attr/progressBarStyle"
+            <androidx.compose.ui.platform.ComposeView
+                android:id="@+id/first_card_compose"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:elevation="@dimen/card_elevator_5"
-                android:progressBackgroundTint="@color/green_background"
-                android:rotationX="-2" />
-
-                <include layout="@layout/recap_card_recap_frament"/>
-
-                <include layout="@layout/projection_recap_fragment"/>
-
-                <include layout="@layout/paids_recap_fragment"/>
-
-                <include layout="@layout/quote_credit_card_recap_fragment"/>
+                android:layout_height="match_parent"/>
 
         </LinearLayout>
-
-    </HorizontalScrollView>
-
+</ScrollView>
 </LinearLayout>

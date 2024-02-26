@@ -1,18 +1,21 @@
 package co.japl.android.myapplication.putParams
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import androidx.core.os.bundleOf
 import androidx.navigation.NavController
 import co.japl.android.myapplication.R
-import co.japl.android.myapplication.controller.Taxes
 import co.japl.android.myapplication.putParams.CreditCardSettingParams.Params.ARG_CODE_CREDIT_CARD
 import co.japl.android.myapplication.putParams.CreditCardSettingParams.Params.ARG_ID
 
 class CreditCardSettingParams() {
     object Params {
         const val ARG_CODE_CREDIT_CARD = "codeCreditCard"
+        const val ARG_CODE_CREDIT_CARD_SETTING = "codeSetting"
         const val ARG_ID = "ID"
+        const val ARG_DEEPLINK = "android-support-nav:controller:deepLinkIntent"
 
     }
 
@@ -47,7 +50,16 @@ class CreditCardSettingParams() {
                 if(it.containsKey(ARG_ID)){
                     map[ARG_ID] = it.get(ARG_ID).toString().toInt()
                 }
-                return map
+                if(it.containsKey(Params.ARG_DEEPLINK)){
+                    val intent = it.get(Params.ARG_DEEPLINK) as Intent
+                    if(Uri.parse(intent.dataString).getQueryParameter(Params.ARG_CODE_CREDIT_CARD) != null){
+                        map[Params.ARG_CODE_CREDIT_CARD] = Uri.parse(intent.dataString).getQueryParameter(Params.ARG_CODE_CREDIT_CARD)!!.toInt()
+                    }
+                    if(Uri.parse(intent.dataString).getQueryParameter(Params.ARG_CODE_CREDIT_CARD_SETTING) != null){
+                        map[Params.ARG_ID] = Uri.parse(intent.dataString).getQueryParameter(Params.ARG_CODE_CREDIT_CARD_SETTING)!!.toInt()
+                    }
+                }
+                return map.also { Log.d(javaClass.name,"download $it") }
             }
             return HashMap<String,Int>()
         }

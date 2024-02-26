@@ -6,7 +6,7 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import co.japl.android.myapplication.finanzas.bussiness.DTO.AddAmortizationDB
 import co.japl.android.myapplication.finanzas.bussiness.DTO.AddAmortizationDTO
-import co.japl.android.myapplication.utils.DateUtils
+import co.com.japl.ui.utils.DateUtils
 
 class AddAmortizationMap {
      @RequiresApi(Build.VERSION_CODES.O)

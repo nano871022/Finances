@@ -14,6 +14,9 @@
         app:cardCornerRadius="@dimen/radius_corner"
         app:strokeWidth="@dimen/stroke_with"
         app:cardElevation="@dimen/card_elevator">
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -120,6 +123,43 @@
         </com.google.android.material.textfield.TextInputLayout>
     </LinearLayout>
 
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                app:endIconMode="clear_text">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/et_initial_quote_sqc"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/space_min"
+                    android:ems="10"
+                    android:hint="@string/initial_quote"
+                    android:inputType="numberDecimal"
+                    android:textAlignment="textEnd" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="2"
+                    app:endIconMode="clear_text">
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/et_kind_initial_quote_sqc"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:focusable="false"
+                        android:hint="@string/kind_initial_quote"
+                        android:textAlignment="textEnd"
+                        />
+                </com.google.android.material.textfield.TextInputLayout>
+            </LinearLayout>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -151,9 +191,44 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/space_top"
-        android:orientation="horizontal"
+        android:orientation="vertical"
         app:layout_constraintTop_toBottomOf="@+id/linearLayout4"
         tools:layout_editor_absoluteX="1dp">
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/MaterialTextInputLayoutView"
+            app:prefixText="$"
+            android:hint="@string/initial_quote">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/tv_value_quote_initial_sqc"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAlignment="center"
+                android:enabled="false"
+                style="@style/MaterialTextInputLayoutView"
+                android:text="@string/quote_credit_hint"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/MaterialTextInputLayoutView"
+            app:prefixText="$"
+            android:hint="@string/credit_value">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/tv_total_credit_sqc"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAlignment="center"
+                android:enabled="false"
+                style="@style/MaterialTextInputLayoutView"
+                android:text="@string/quote_credit_hint"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/textView8"
@@ -203,6 +278,7 @@
 
     </LinearLayout>
         </LinearLayout>
+        </ScrollView>
     </com.google.android.material.card.MaterialCardView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

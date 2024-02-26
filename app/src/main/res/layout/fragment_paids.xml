@@ -8,7 +8,7 @@
     app:cardElevation="@dimen/card_elevator"
     app:cardCornerRadius="@dimen/radius_corner"
     android:layout_height="match_parent"
-    tools:context=".finanzas.controller.PaidsFragment">
+    tools:context=".finanzas.controller.paids.PaidsFragment">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -145,6 +145,12 @@
                     app:icon="@android:drawable/ic_menu_add" />
 
             </LinearLayout>
+
+            <co.japl.android.graphs.drawer.CustomDraw
+                android:id="@+id/cv_canvas_ps"
+                android:layout_width="match_parent"
+                android:layout_height="400dp"/>
+
         </LinearLayout>
 
     </ScrollView>

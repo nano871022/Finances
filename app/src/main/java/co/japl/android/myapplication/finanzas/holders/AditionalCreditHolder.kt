@@ -7,21 +7,15 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
 import androidx.annotation.RequiresApi
-import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.FragmentManager
 import co.japl.android.myapplication.R
 import co.japl.android.myapplication.finanzas.holders.interfaces.IHolder
 import co.japl.android.myapplication.finanzas.bussiness.DTO.AdditionalCreditDTO
 import co.japl.android.myapplication.finanzas.holders.validations.*
-import co.japl.android.myapplication.utils.DateUtils
+import co.com.japl.ui.utils.DateUtils
 import co.japl.android.myapplication.utils.NumbersUtil
 import com.google.android.material.button.MaterialButton
-import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.textfield.TextInputEditText
-import java.time.Instant
-import java.time.LocalDateTime
-import java.time.ZoneId
-import java.time.format.DateTimeFormatter
 
 class AdditionalCreditHolder(val view:View,val supportManager: FragmentManager,val isView:Boolean):
     IHolder<AdditionalCreditDTO> {

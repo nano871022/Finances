@@ -3,12 +3,9 @@ package co.japl.android.myapplication.finanzas.bussiness.mapping
 import android.content.ContentValues
 import android.database.Cursor
 import android.os.Build
-import android.view.View
 import androidx.annotation.RequiresApi
-import co.japl.android.myapplication.R
 import co.japl.android.myapplication.finanzas.bussiness.DTO.*
-import co.japl.android.myapplication.utils.DateUtils
-import java.time.LocalDate
+import co.com.japl.ui.utils.DateUtils
 
 class DifferInstallmentMap {
 

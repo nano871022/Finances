@@ -5,78 +5,9 @@
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_margin="@dimen/space_min"
-    tools:context=".finanzas.controller.InputListFragment">
-    <ScrollView
+    tools:context=".finanzas.controller.account.InputListFragment">
+    <androidx.compose.ui.platform.ComposeView
+        android:id="@+id/list_view_composable_il"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="@dimen/space_min"
-            android:orientation="vertical">
-
-            <ProgressBar
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/pb_load_il"/>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-            <com.google.android.material.textfield.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="2"
-                android:hint="@string/num_inputs"
-                style="@style/MaterialTextInputLayoutView">
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/tv_num_inputs_il"
-                    android:layout_width="match_parent"
-                    android:enabled="false"
-                    style="@style/MaterialTextInputLayoutView"
-                    android:layout_height="wrap_content"
-                    android:text="@string/months_number_hint"
-                    android:textAlignment="center"
-                    />
-
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:hint="@string/input_total"
-                app:prefixText="$"
-                style="@style/MaterialTextInputLayoutView">
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/tv_tot_inputs_il"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:enabled="false"
-                    android:text="@string/money_hint"
-                    android:textAlignment="center"
-                    />
-
-            </com.google.android.material.textfield.TextInputLayout>
-            </LinearLayout>
-            <androidx.recyclerview.widget.RecyclerView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="@dimen/space_min"
-                android:padding="@dimen/space_min"
-                android:id="@+id/rv_input_list"/>
-
-            <com.google.android.material.button.MaterialButton
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/btn_add_il"
-                android:layout_margin="@dimen/space_min"
-                app:icon="@android:drawable/ic_menu_add"
-                android:text="@string/add"/>
-        </LinearLayout>
-
-    </ScrollView>
-
-
+        android:layout_height="wrap_content"/>
 </com.google.android.material.card.MaterialCardView>

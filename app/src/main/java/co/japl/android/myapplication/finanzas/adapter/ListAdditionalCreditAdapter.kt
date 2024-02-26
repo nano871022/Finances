@@ -16,11 +16,9 @@ import co.japl.android.myapplication.finanzas.bussiness.DTO.AdditionalCreditDTO
 import co.japl.android.myapplication.finanzas.bussiness.impl.AdditionalCreditImpl
 import co.japl.android.myapplication.finanzas.bussiness.interfaces.IAdditionalCreditSvc
 import co.japl.android.myapplication.finanzas.enums.MoreOptionsItemsAdditional
-import co.japl.android.myapplication.finanzas.holders.AdditionalCreditHolder
 import co.japl.android.myapplication.finanzas.holders.view.AdditionalCreditItemHolder
 import co.japl.android.myapplication.finanzas.putParams.AdditionalCreditParams
 import co.japl.android.myapplication.finanzas.putParams.CreditCardQuotesParams
-import co.japl.android.myapplication.holders.view.BoughtViewHolder
 import co.japl.android.myapplication.utils.NumbersUtil
 import com.google.android.material.snackbar.Snackbar
 import java.time.LocalDate

@@ -4,28 +4,11 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_margin="@dimen/margin_border_layout"
-    tools:context="controller.ListQuotesPaid">
+    tools:context=".finanzas.controller.boughtcreditcard.ListQuotesPaid">
 
-    <androidx.core.widget.NestedScrollView
+    <androidx.compose.ui.platform.ComposeView
+        android:id="@+id/compose_view_lp"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:fillViewport="true">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <ProgressBar
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/pb_load_lp"/>
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/list_period"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent" />
-        </LinearLayout>
-    </androidx.core.widget.NestedScrollView>
+        android:layout_height="wrap_content"/>
 
 </FrameLayout>

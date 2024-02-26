@@ -4,14 +4,12 @@ import android.content.ContentValues
 import android.database.sqlite.SQLiteOpenHelper
 import android.os.Build
 import android.provider.BaseColumns
-import android.view.View
 import androidx.annotation.RequiresApi
-import co.japl.android.myapplication.bussiness.interfaces.SaveSvc
 import co.japl.android.myapplication.finanzas.bussiness.DTO.*
 import co.japl.android.myapplication.finanzas.bussiness.interfaces.IGracePeriod
 import co.japl.android.myapplication.finanzas.bussiness.mapping.GracePeriodMap
 import co.japl.android.myapplication.utils.DatabaseConstants
-import co.japl.android.myapplication.utils.DateUtils
+import co.com.japl.ui.utils.DateUtils
 import java.time.LocalDate
 import java.util.*
 import javax.inject.Inject
@@ -102,7 +100,7 @@ class GracePeriodImpl @Inject constructor(override var dbConnect: SQLiteOpenHelp
                 AND ${GracePeriodDB.Entry.COLUMN_DATE_CREATE} <= ?
                 AND ${GracePeriodDB.Entry.COLUMN_DATE_END} >= ?
             """.trimMargin(),
-            arrayOf(id.toString(),DateUtils.localDateToStringDate(date),DateUtils.localDateToStringDate(date)),null,null,null)
+            arrayOf(id.toString(), DateUtils.localDateToStringDate(date), DateUtils.localDateToStringDate(date)),null,null,null)
         val mapper = GracePeriodMap()
         with(cursor){
             while(moveToNext()){

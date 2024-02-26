@@ -5,6 +5,7 @@ import android.view.View
 import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.annotation.RequiresApi
+import co.japl.android.graphs.drawer.CustomDraw
 import co.japl.android.myapplication.R
 import co.japl.android.myapplication.bussiness.DB.connections.ConnectDB
 import co.japl.android.myapplication.finanzas.holders.interfaces.IHolder
@@ -17,15 +18,17 @@ import co.japl.android.myapplication.finanzas.bussiness.impl.AccountImpl
 import co.japl.android.myapplication.finanzas.bussiness.impl.InputImpl
 import co.japl.android.myapplication.finanzas.bussiness.impl.PaidImpl
 import co.japl.android.myapplication.finanzas.bussiness.mapping.InputMap
+import co.japl.android.myapplication.finanzas.holders.interfaces.ICallerHolder
 import co.japl.android.myapplication.utils.NumbersUtil
 import com.google.android.material.button.MaterialButton
-import com.google.android.material.textview.MaterialTextView
 import java.math.BigDecimal
 import java.time.LocalDate
+import java.time.YearMonth
+import java.time.format.DateTimeFormatter
 import java.time.format.TextStyle
 import java.util.Locale
 
-class PaidsHolder(val view:View): IHolder<PaidsPOJO> {
+class PaidsHolder(val view:View): IHolder<PaidsPOJO>, ICallerHolder<PaidsHolder> {
     private val service:SaveSvc<AccountDTO> = AccountImpl(ConnectDB(view.context))
     private val inputSvc:SaveSvc<InputDTO> = InputImpl(ConnectDB(view.context), InputMap(view.context))
     private val paidSvc:SaveSvc<PaidDTO> = PaidImpl(ConnectDB(view.context))
@@ -38,6 +41,7 @@ class PaidsHolder(val view:View): IHolder<PaidsPOJO> {
     private lateinit var btnPeriods:MaterialButton
     private lateinit var btnAdd:MaterialButton
     private lateinit var progressBar:ProgressBar
+    lateinit var customDraw: CustomDraw
 
     override fun setFields(actions: View.OnClickListener?) {
         period = view.findViewById(R.id.period_ps)
@@ -49,6 +53,7 @@ class PaidsHolder(val view:View): IHolder<PaidsPOJO> {
         btnDetail = view.findViewById(R.id.btn_detail_ps)
         btnPeriods = view.findViewById(R.id.btn_periods_ps)
         progressBar = view.findViewById(R.id.pb_load_ps)
+        customDraw = view.findViewById(R.id.cv_canvas_ps)
         btnAdd.setOnClickListener(actions)
         btnPeriods.setOnClickListener(actions)
         btnDetail.setOnClickListener(actions)
@@ -72,10 +77,8 @@ class PaidsHolder(val view:View): IHolder<PaidsPOJO> {
             }
         }
 
-        val periodStr = values.period.toString()
-        val year = periodStr.substring(0,4).toString()
-        val month = periodStr.substring(5).toString()
-        val date = LocalDate.of(year.toInt(),month.toInt(),1)
+        val periods = YearMonth.parse(values.period.toString(), DateTimeFormatter.ofPattern("yyyyMM"))
+        val date =  LocalDate.of(periods.year,periods.month,1)
         period.text = "${date.getMonth().getDisplayName(TextStyle.FULL,Locale("es","CO"))} ${date.year}"
         paid.text = NumbersUtil.toString(values.paid)
         count.text = values.count.toString()
@@ -101,5 +104,9 @@ class PaidsHolder(val view:View): IHolder<PaidsPOJO> {
 
     override fun validate(): Boolean {
         TODO("Not yet implemented")
+    }
+
+    override fun execute(fn: ((PaidsHolder) -> Unit)?) {
+        fn?.invoke(this)
     }
 }

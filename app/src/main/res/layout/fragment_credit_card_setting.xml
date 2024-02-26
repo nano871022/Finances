@@ -1,121 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".finanzas.controller.CreditCardSettingFragment">
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-    <com.google.android.material.card.MaterialCardView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_margin="@dimen/space_min">
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:padding="@dimen/space_min"
-            android:orientation="vertical">
-    <!-- TODO: Update blank fragment layout -->
-
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:endIconMode="clear_text"
-                android:hint="@string/credit_card" >
-
-            <com.google.android.material.textfield.MaterialAutoCompleteTextView
-                android:id="@+id/spCreditCardCCSF"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textAlignment="center"/>
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/credit_card_setting_type"
-                app:endIconMode="clear_text">
-
-            <com.google.android.material.textfield.MaterialAutoCompleteTextView
-                android:id="@+id/spTypeCCS"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textAlignment="center"/>
-            </com.google.android.material.textfield.TextInputLayout>
-
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:endIconMode="clear_text"
-                android:hint="@string/name" >
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/etNameCCS"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="textPersonName" />
-
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:endIconMode="clear_text"
-                android:hint="@string/value" >
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/etValueCCS"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="textPersonName" />
-
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/Active">
-            <com.google.android.material.checkbox.MaterialCheckBox
-                android:id="@+id/cbActiveCCS"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:checked="true"
-                android:text="@string/Active" />
-            </com.google.android.material.textfield.TextInputLayout>
-
-
-    <LinearLayout
+    android:orientation="vertical"
+    tools:context=".finanzas.controller.creditcard.CreditCardSettingFragment">
+    <androidx.compose.ui.platform.ComposeView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="1dp"
-        android:orientation="horizontal"
-        app:layout_constraintBottom_toBottomOf="parent">
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnCancelCCS"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/space_min"
-            android:layout_weight="1"
-            app:icon="@android:drawable/ic_menu_close_clear_cancel"
-            android:text="@string/cancel" />
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnAddCCS"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/space_min"
-            app:icon="@android:drawable/ic_menu_save"
-            android:layout_weight="1"
-            android:text="@string/add" />
-
-
-    </LinearLayout>
-        </LinearLayout>
-    </com.google.android.material.card.MaterialCardView>
-    </ScrollView>
-</androidx.constraintlayout.widget.ConstraintLayout>
+        android:id="@+id/cv_compose_ccs"
+        />
+</LinearLayout>

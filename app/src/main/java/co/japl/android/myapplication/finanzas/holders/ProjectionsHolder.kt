@@ -6,17 +6,8 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.annotation.RequiresApi
 import co.japl.android.myapplication.R
-import co.japl.android.myapplication.bussiness.DB.connections.ConnectDB
-import co.japl.android.myapplication.finanzas.holders.interfaces.IHolder
-import co.japl.android.myapplication.finanzas.bussiness.DTO.ProjectionDTO
-import co.japl.android.myapplication.finanzas.bussiness.impl.ProjectionsImpl
-import co.japl.android.myapplication.finanzas.bussiness.interfaces.IProjectionsSvc
 import co.japl.android.myapplication.finanzas.holders.interfaces.IRecapHolder
-import co.japl.android.myapplication.utils.DateUtils
-import co.japl.android.myapplication.utils.NumbersUtil
 import com.google.android.material.button.MaterialButton
-import java.math.BigDecimal
-import java.time.LocalDate
 
 class ProjectionsHolder(val view:View) : IRecapHolder<ProjectionsHolder> {
      lateinit var items:TextView

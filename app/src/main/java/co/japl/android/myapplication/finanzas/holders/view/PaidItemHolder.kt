@@ -1,9 +1,7 @@
 package co.japl.android.myapplication.holders.view
 
 import android.app.AlertDialog
-import android.graphics.Color
 import android.os.Build
-import android.util.Log
 import android.view.View
 import android.widget.TextView
 import androidx.annotation.RequiresApi
@@ -11,9 +9,8 @@ import androidx.appcompat.widget.AppCompatImageView
 import androidx.recyclerview.widget.RecyclerView
 import co.japl.android.myapplication.R
 import co.japl.android.myapplication.finanzas.bussiness.DTO.PaidDTO
-import co.japl.android.myapplication.finanzas.enums.MoreOptionalItemsCredit
 import co.japl.android.myapplication.finanzas.enums.MoreOptionsItemsPayments
-import co.japl.android.myapplication.utils.DateUtils
+import co.com.japl.ui.utils.DateUtils
 import co.japl.android.myapplication.utils.NumbersUtil
 
 class PaidItemHolder(var view:View) : RecyclerView.ViewHolder(view) {

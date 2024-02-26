@@ -5,12 +5,15 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="@dimen/padding_page">
-
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 <LinearLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="@dimen/space_min"
     android:orientation="vertical">
+
 
     <ProgressBar
         android:id="@+id/pb_load_qcc"
@@ -335,15 +338,49 @@
 
     </LinearLayout>
     </com.google.android.material.card.MaterialCardView>
-</LinearLayout>
+    <co.japl.android.graphs.drawer.CustomDraw
+        android:id="@+id/cv_canvas_lccq"
+        android:layout_width="match_parent"
+        android:layout_height="400dp"/>
+
+    <LinearLayout
+        android:id="@+id/llHistory"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        >
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnBought"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="10dp"
+            android:layout_weight="1"
+            android:text="@string/bought" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnBoughtHistory"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:icon="@android:drawable/ic_menu_view"
+            android:layout_marginRight="10dp"
+            android:layout_weight="1"
+            android:text="@string/bought_history" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnCutOffHistory"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:icon="@android:drawable/ic_menu_agenda"
+            android:layout_weight="1"
+            android:text="@string/cut_off_history" />
+
+    </LinearLayout>
 
     <LinearLayout
         android:id="@+id/llButonsQuotes"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintBottom_toBottomOf="parent"
-        tools:layout_editor_absoluteX="1dp">
+        android:orientation="horizontal">
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnAddItem"
@@ -373,37 +410,7 @@
             android:text="@string/add_buy_wallet" />
 
     </LinearLayout>
+</LinearLayout>
+    </ScrollView>
 
-    <LinearLayout
-        android:id="@+id/llHistory"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintBottom_toTopOf="@+id/llButonsQuotes">
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnBought"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="10dp"
-            android:layout_weight="1"
-            android:text="@string/bought" />
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnBoughtHistory"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:icon="@android:drawable/ic_menu_view"
-            android:layout_marginRight="10dp"
-            android:layout_weight="1"
-            android:text="@string/bought_history" />
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnCutOffHistory"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:icon="@android:drawable/ic_menu_agenda"
-            android:layout_weight="1"
-            android:text="@string/cut_off_history" />
-
-    </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

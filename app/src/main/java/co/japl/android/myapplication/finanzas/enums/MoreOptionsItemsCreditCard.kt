@@ -1,22 +1,14 @@
 package co.japl.android.myapplication.finanzas.enums
 
-import android.util.Log
+import androidx.annotation.StringRes
+import co.japl.android.myapplication.R
 
-enum class MoreOptionsItemsCreditCard(val i: Int) {
+enum class MoreOptionsItemsCreditCard(@StringRes val title: Int) {
 
-    EDIT(4),AMORTIZATION(0),DELETE(5),ENDING(1),UPDATE_VALUE(2),DIFFER_INSTALLMENT(3);
-
-    companion object{
-        fun findByOrdinal(i: Int): MoreOptionsItemsCreditCard {
-            return when(i){
-                0-> AMORTIZATION
-                1-> ENDING
-                2-> UPDATE_VALUE
-                3-> DIFFER_INSTALLMENT
-                4-> EDIT
-                5-> DELETE
-                else -> throw IllegalArgumentException("Invalid Option $i")
-            }
-    }
-        }
+    EDIT(R.string.ccio_edit),
+    AMORTIZATION(R.string.ccio_amortization),
+    DELETE(R.string.ccio_delete),
+    ENDING(R.string.ccio_ending),
+    UPDATE_VALUE(R.string.ccio_update_value),
+    DIFFER_INSTALLMENT(R.string.differ_installment);
 }

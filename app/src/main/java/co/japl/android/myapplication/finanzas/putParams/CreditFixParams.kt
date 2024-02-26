@@ -8,7 +8,7 @@ import androidx.core.os.bundleOf
 import androidx.navigation.NavController
 import co.japl.android.myapplication.R
 import co.japl.android.myapplication.finanzas.bussiness.DTO.CreditDTO
-import co.japl.android.myapplication.utils.DateUtils
+import co.com.japl.ui.utils.DateUtils
 import com.google.gson.Gson
 import java.time.LocalDate
 

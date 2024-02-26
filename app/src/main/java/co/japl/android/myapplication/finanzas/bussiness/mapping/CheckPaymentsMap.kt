@@ -6,7 +6,7 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import co.japl.android.myapplication.finanzas.bussiness.DTO.*
 import co.japl.android.myapplication.finanzas.pojo.CheckPaymentsPOJO
-import co.japl.android.myapplication.utils.DateUtils
+import co.com.japl.ui.utils.DateUtils
 import java.time.LocalDateTime
 
 class CheckPaymentsMap {

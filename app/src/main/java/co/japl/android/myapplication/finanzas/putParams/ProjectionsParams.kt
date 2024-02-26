@@ -6,8 +6,7 @@ import androidx.annotation.RequiresApi
 import androidx.core.os.bundleOf
 import androidx.navigation.NavController
 import co.japl.android.myapplication.R
-import co.japl.android.myapplication.finanzas.bussiness.DTO.PaidDTO
-import co.japl.android.myapplication.utils.DateUtils
+import co.com.japl.ui.utils.DateUtils
 import java.time.LocalDate
 
 class ProjectionsParams {

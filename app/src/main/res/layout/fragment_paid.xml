@@ -8,7 +8,7 @@
     app:strokeWidth="@dimen/stroke_with"
     app:cardElevation="@dimen/card_elevator"
     android:layout_margin="@dimen/space_min"
-    tools:context=".finanzas.controller.PaidFragment">
+    tools:context=".finanzas.controller.paids.PaidFragment">
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
