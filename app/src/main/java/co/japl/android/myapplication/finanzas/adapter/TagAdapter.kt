@@ -12,7 +12,6 @@ import co.japl.android.myapplication.finanzas.bussiness.DTO.TagDTO
 import co.japl.android.myapplication.finanzas.bussiness.impl.TagsImpl
 import co.japl.android.myapplication.finanzas.enums.TagItemEnum
 import co.japl.android.myapplication.finanzas.holders.view.TagItemHolder
-import co.japl.android.myapplication.holders.view.BoughtViewHolder
 import com.google.android.material.snackbar.Snackbar
 
 class TagAdapter(val data:MutableList<TagDTO>,val action:(TagDTO)->Unit): RecyclerView.Adapter<TagItemHolder>() {

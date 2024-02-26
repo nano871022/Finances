@@ -1,150 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     android:padding="@dimen/padding_page"
     tools:context=".finanzas.controller.creditcard.CreateCreditCard">
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-    <com.google.android.material.card.MaterialCardView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:cardCornerRadius="@dimen/radius_corner"
-        app:strokeWidth="@dimen/stroke_with"
-        app:cardElevation="@dimen/card_elevator">
-    <!-- TODO: Update blank fragment layout -->
-<LinearLayout
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:padding="@dimen/space_min"
-    android:orientation="vertical">
 
-    <com.google.android.material.textfield.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="textPersonName"
-                app:endIconMode="clear_text"
-                android:layout_margin="@dimen/space_min"
-                android:hint="@string/name">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/etNameCCC"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="textPersonName" />
-            </com.google.android.material.textfield.TextInputLayout>
-
-    <com.google.android.material.textfield.TextInputLayout
+    <androidx.compose.ui.platform.ComposeView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:inputType="textPersonName"
-        app:endIconMode="clear_text"
-        android:layout_margin="@dimen/space_min"
-        android:hint="@string/max_quotes">
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/et_max_quotes_ccc"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:inputType="textPersonName" />
-    </com.google.android.material.textfield.TextInputLayout>
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:endIconMode="clear_text"
-                android:layout_margin="@dimen/space_min"
-                android:hint="@string/cut_off_day">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/edCutOffDayCCC"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="number" />
-            </com.google.android.material.textfield.TextInputLayout>
-
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:endIconMode="clear_text"
-                android:layout_margin="@dimen/space_min"
-                app:prefixText="$"
-                android:hint="@string/warning_quote_value">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/edWarningQuoteCCC"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="number|numberDecimal"
-                android:textAlignment="textStart" />
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <com.google.android.material.switchmaterial.SwitchMaterial
-                android:id="@+id/tb_status_ccc"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="@dimen/space_min"
-                android:padding="@dimen/space_min"
-                android:hint="@string/status" />
-
-    <com.google.android.material.switchmaterial.SwitchMaterial
-        android:id="@+id/tb_interest_1quote_ccc"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/space_min"
-        android:padding="@dimen/space_min"
-        android:hint="@string/interest_1_quote" />
-
-    <com.google.android.material.switchmaterial.SwitchMaterial
-        android:id="@+id/tb_interest_1not_quote_ccc"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/space_min"
-        android:padding="@dimen/space_min"
-        android:hint="@string/interest_1not_quote" />
-
-
-    <Button
-            android:id="@+id/btnSettingsCCC"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:icon="@android:drawable/ic_menu_preferences"
-            android:text="@string/setting_redirect" />
-
-    <LinearLayout
-        android:id="@+id/llButtonCCC"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintBottom_toBottomOf="parent">
-
-
-        <Button
-            android:id="@+id/btnCleanCCC"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/space_min"
-            android:layout_weight="1"
-            app:icon="@drawable/ic_baseline_cleaning_services_24"
-            android:text="@string/clear" />
-
-        <Button
-            android:id="@+id/btnSaveCCC"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/space_min"
-            app:icon="@android:drawable/ic_menu_save"
-            android:layout_weight="1"
-            android:text="@string/save" />
-
-
-    </LinearLayout>
+        android:id="@+id/cv_compose_ccc"
+        />
 </LinearLayout>
-    </com.google.android.material.card.MaterialCardView>
-    </ScrollView>1
-</androidx.constraintlayout.widget.ConstraintLayout>

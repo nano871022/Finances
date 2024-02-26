@@ -4,6 +4,7 @@ import android.content.ContentValues
 import android.database.Cursor
 import android.os.Build
 import androidx.annotation.RequiresApi
+import co.com.japl.finances.iports.dtos.CreditCardBoughtItemDTO
 import co.japl.android.myapplication.bussiness.DTO.CalcDB
 import co.japl.android.myapplication.bussiness.DTO.CalcDTO
 import co.japl.android.myapplication.bussiness.DTO.CreditCardBoughtDTO
@@ -68,9 +69,9 @@ class CalcMap {
         )
     }
 
-    fun mapping(creditCardBought:CreditCardBoughtDTO,quoteValue:BigDecimal,interestValue:BigDecimal,capitalValue:BigDecimal,kindOfTax: KindOfTaxEnum):CalcDTO{
+    fun mapping(creditCardBought:CreditCardBoughtItemDTO,quoteValue:BigDecimal,interestValue:BigDecimal,capitalValue:BigDecimal,kindOfTax: KindOfTaxEnum):CalcDTO{
         return CalcDTO(creditCardBought.nameItem,
-        creditCardBought.valueItem,
+        creditCardBought.valueItem.toBigDecimal(),
         creditCardBought.interest,
         creditCardBought.month.toLong(),
         quoteValue,

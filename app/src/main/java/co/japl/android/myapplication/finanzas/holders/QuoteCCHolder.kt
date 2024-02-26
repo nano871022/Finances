@@ -1,14 +1,11 @@
 package co.japl.android.myapplication.holders
 
-import android.graphics.Canvas
 import android.graphics.Color
-import android.graphics.Paint
 import android.os.Build
 import android.util.Log
 import android.view.View
 import android.widget.*
 import androidx.annotation.RequiresApi
-import androidx.core.view.doOnPreDraw
 import androidx.fragment.app.FragmentManager
 import androidx.navigation.NavController
 import co.japl.android.myapplication.R
@@ -20,12 +17,11 @@ import co.japl.android.myapplication.finanzas.putParams.CashAdvanceParams
 import co.japl.android.myapplication.finanzas.putParams.CreditCardQuotesParams
 import co.japl.android.myapplication.finanzas.putParams.PeriodsParams
 import co.japl.android.myapplication.finanzas.enums.TaxEnum
-import co.japl.android.myapplication.finanzas.holders.CustomDraw
+import co.japl.android.graphs.drawer.CustomDraw
 import co.japl.android.myapplication.pojo.CreditCard
-import co.japl.android.myapplication.utils.DateUtils
+import co.com.japl.ui.utils.DateUtils
 import co.japl.android.myapplication.utils.NumbersUtil
 import com.google.android.material.textfield.MaterialAutoCompleteTextView
-import org.w3c.dom.Text
 import java.math.BigDecimal
 import java.time.LocalDateTime
 import java.time.Period
@@ -60,7 +56,7 @@ class QuoteCCHolder(var view:View,var parentFragmentManager:FragmentManager,var 
     lateinit var cutOff:Optional<LocalDateTime>
     lateinit var progresBar:ProgressBar
     private lateinit var cutOffDay:Optional<Short>
-    var canvas:CustomDraw? = null
+    var canvas: CustomDraw? = null
 
     override fun setFields(actions: View.OnClickListener?) {
         view.let{

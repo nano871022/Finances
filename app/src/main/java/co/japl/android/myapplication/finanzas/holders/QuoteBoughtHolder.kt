@@ -35,14 +35,13 @@ import co.japl.android.myapplication.finanzas.bussiness.interfaces.ICreditCardSe
 import co.japl.android.myapplication.finanzas.controller.TagsDialog
 import co.japl.android.myapplication.finanzas.enums.KindBoughtEnum
 import co.japl.android.myapplication.finanzas.enums.KindOfTaxEnum
-import co.japl.android.myapplication.utils.DateUtils
+import co.com.japl.ui.utils.DateUtils
 import co.japl.android.myapplication.utils.NumbersUtil
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.textfield.MaterialAutoCompleteTextView
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
-import com.google.android.material.textview.MaterialTextView
 import java.math.RoundingMode
 import java.time.Instant
 import java.time.LocalDate

@@ -14,3 +14,10 @@ dependencyResolutionManagement {
 }
 rootProject.name = "Finanzas"
 include ':app'
+include ':japl-android-finances-core'
+include ':japl-android-finances-services'
+include ':japl-android-graphs'
+include ':ui'
+include ':about-module'
+include ':japl-finances-iports'
+include ':CreditCardModule'

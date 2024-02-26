@@ -92,6 +92,7 @@
         <action
             android:id="@+id/action_list_bought_to_buy_credit_card2"
             app:destination="@id/buy_credit_card" />
+        <deepLink app:uri="android-app://co.com.japl.finanzas.module.app/listBought"/>
     </fragment>
 
     <fragment
@@ -104,6 +105,8 @@
             android:id="@+id/action_list_periods_to_list_bought"
             app:destination="@id/list_bought"
             app:popUpToInclusive="true"/>
+
+
     </fragment>
 
     <fragment
@@ -151,6 +154,9 @@
             app:exitAnim="@android:anim/fade_out"
             app:destination="@id/createCreditCard"
             app:popUpToInclusive="true"/>
+        <action
+            android:id="@+id/action_item_menu_setting_credit_card_to_listCreditCardSetting"
+            app:destination="@id/listCreditCardSetting" />
     </fragment>
     <fragment
         android:id="@+id/createCreditCard"
@@ -158,8 +164,10 @@
         android:label="@string/create_credit_card"
         tools:layout="@layout/fragment_create_credit_card" >
         <action
+
             android:id="@+id/action_createCreditCard_to_listCreditCardSetting"
             app:destination="@id/listCreditCardSetting" />
+        <deepLink app:uri="android-app://co.com.japl.finanzas.module.app/credit_card"/>
     </fragment>
 
 
@@ -179,7 +187,10 @@
         android:id="@+id/taxes"
         android:name="co.japl.android.myapplication.finanzas.controller.taxes.Taxes"
         android:label="@string/tax"
-        tools:layout="@layout/fragment_taxes" />
+        tools:layout="@layout/fragment_taxes" >
+        <deepLink app:uri="android-app://co.com.japl.finanzas.modulo.app/credit_rate"/>
+    </fragment>
+
     <fragment
         android:id="@+id/cash_advance_fragment"
         android:name="co.japl.android.myapplication.finanzas.controller.boughtcreditcard.CashAdvanceSave"
@@ -196,7 +207,9 @@
         android:id="@+id/creditCardSettingFragment"
         android:name="co.japl.android.myapplication.finanzas.controller.creditcard.CreditCardSettingFragment"
         android:label="@string/title_toolbar_fragment_credit_card_setting"
-        tools:layout="@layout/fragment_credit_card_setting" />
+        tools:layout="@layout/fragment_credit_card_setting" >
+        <deepLink app:uri="android-app://co.com.japl.finanzas.module.app/credit_card_setting"/>
+    </fragment>
 
     <fragment
         android:id="@+id/listCreditCardSetting"
@@ -207,6 +220,8 @@
             android:id="@+id/action_listCreditCardSetting_to_creditCardSettingFragment"
             app:destination="@id/creditCardSettingFragment"
             app:popUpToInclusive="true"/>
+        <deepLink app:uri="android-app://co.com.japl.finanzas.module.app/list_credit_card_setting"/>
+
     </fragment>
     <fragment
         android:id="@+id/boughWalletController"
@@ -304,6 +319,7 @@
         <action
             android:id="@+id/action_accountListFragment_to_accountFragment"
             app:destination="@id/accountFragment" />
+        <deepLink app:uri="android-app://co.com.japl.finanzas.module.app/accounts/list"/>
     </fragment>
 
     <fragment
@@ -324,12 +340,15 @@
         <action
             android:id="@+id/action_accountFragment_to_inputListFragment"
             app:destination="@id/inputListFragment" />
+        <deepLink app:uri="android-app://co.com.japl.finanzas.module.app/accounts/inputs"/>
     </fragment>
     <fragment
         android:id="@+id/inputFragment"
         android:name="co.japl.android.myapplication.finanzas.controller.account.InputFragment"
         android:label="@string/input"
-        tools:layout="@layout/fragment_input" />
+        tools:layout="@layout/fragment_input" >
+        <deepLink app:uri="android-app://co.com.japl.finanzas.module.app/accounts/input"/>
+    </fragment>
     <fragment
         android:id="@+id/paidFragment"
         android:name="co.japl.android.myapplication.finanzas.controller.paids.PaidFragment"

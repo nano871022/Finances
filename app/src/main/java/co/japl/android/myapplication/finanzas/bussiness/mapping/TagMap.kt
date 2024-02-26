@@ -7,14 +7,14 @@ import androidx.annotation.RequiresApi
 import co.japl.android.myapplication.bussiness.interfaces.IMapper
 import co.japl.android.myapplication.finanzas.bussiness.DTO.TagDB
 import co.japl.android.myapplication.finanzas.bussiness.DTO.TagDTO
-import co.japl.android.myapplication.utils.DateUtils
+import co.com.japl.ui.utils.DateUtils
 
 class TagMap : IMapper<TagDTO>{
     @RequiresApi(Build.VERSION_CODES.O)
    override fun mapping(dto:TagDTO ):ContentValues{
         return ContentValues().apply {
             put(TagDB.Entry.COLUMN_NAME,dto.name)
-            put(TagDB.Entry.COLUMN_DATE_CREATE,DateUtils.localDateToStringDate(dto.create))
+            put(TagDB.Entry.COLUMN_DATE_CREATE, DateUtils.localDateToStringDate(dto.create))
             put(TagDB.Entry.COLUMN_ACTIVE,if(dto.active) 1 else 0)
 
         }

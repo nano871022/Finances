@@ -52,6 +52,7 @@
     <string name="max_quotes">Cuotas Maximas</string>
     <string name="cancel">Cancelar</string>
     <string name="delete">Eliminar</string>
+    <string name="edit">Editar</string>
     <string name="ending">Finalizar</string>
     <string name="updating">Actualizar</string>
     <string name="dont_able_to_save">No se logro guardar</string>
@@ -76,6 +77,7 @@
     <string name="bought_made">Compra Realizada</string>
     <string name="product_name">Nombre Producto</string>
     <string name="product_value">Valor Producto</string>
+    <string name="product_value_short">Valor</string>
     <string name="bought_date_time">Fecha Compra</string>
     <string name="total_quotes">Cuotas Totales</string>
     <string name="bought_quotes">Cuotas Pagadas</string>
@@ -115,6 +117,7 @@
     <string name="pending_to_pay_short">Pendiente</string>
     <string name="total_quote_value_short">Cuota</string>
     <string name="total_quote">Cuota Total</string>
+    <string name="total">Total</string>
     <string name="total_debt">Deuda Total</string>
     <array name="num_credits">Número de Créditos</array>
 
@@ -156,6 +159,22 @@
         <item>Diciembre</item>
     </string-array>
 
+    <string-array name="months_short">
+        <item>--- Seleccionar --- </item>
+        <item>Ene</item>
+        <item>Feb</item>
+        <item>Mar</item>
+        <item>Abr</item>
+        <item>May</item>
+        <item>Jun</item>
+        <item>Jul</item>
+        <item>Ago</item>
+        <item>Sep</item>
+        <item>Oct</item>
+        <item>Nov</item>
+        <item>Dic</item>
+    </string-array>
+
     <string name="item_select">--- Seleccionar --- </string>
     <string name="type_setting_does_not_record">No encontró registros con esta opción</string>
     <string-array name="CreditCardSettingType">
@@ -163,6 +182,8 @@
         <item>1. Rediferir</item>
         <item>2. Tasas Especiales</item>
     </string-array>
+    <string name="item_select_setting_redifer">1. Rediferir</string>
+    <string name="item_select_setting_special_tax">2. Tasas Especiales</string>
 
     <string name="_true">Si</string>
     <string name="_false">No</string>
@@ -174,7 +195,8 @@
 
     <string name="toast_successful_insert">El registro se agrego exitosamente</string>
     <string name="toast_unsuccessful_insert">El registro no se agrego</string>
-    <string name="toast_successful_update">El actualizo se agrego exitosamente</string>
+    <string name="toast_successful_update">Se actualizo exitosamente</string>
+    <string name="toast_dont_successful_update">No see actualizo</string>
     <string name="toast_invalid_option">Opción Invalida</string>
     <string name="toast_record_didnt_save">No se guardo el registro</string>
     <string name="add_credit_card_setting">Agregar Configuración</string>
@@ -213,6 +235,13 @@
         <item>Cuatrimestral</item>
         <item>semestral</item>
     </array>
+        <string name="monthly">Mensual</string>
+        <string name="bi_monthly">Bi-Mensual</string>
+        <string name="trimesterly">Trimestral</string>
+        <string name="quarterly">Cuatrimestral</string>
+        <string name="semesterly">semestral</string>
+    <string name="yearly">Anual</string>
+
     <string name="account">Cuenta</string>
     <string name="list_inputs">Lista Ingresos</string>
     <string name="list_account">Lista Cuentas</string>
@@ -228,6 +257,9 @@
     <string name="input_minus_output">Ingresos -  Pagos</string>
     <string name="input_list">Lista de Ingreso</string>
     <string name="date_input">Fecha de Ingreso</string>
+    <string name="update_input_value">Actualizar Valor</string>
+    <string name="delete_input">Eliminar Ingreso</string>
+
 
     <string name="num_items">Número Productos</string>
     <string name="num_month_close">Número de Meses Cercano</string>
@@ -245,6 +277,7 @@
     <string name="date">Fecha</string>
     <string name="projection">Proyección</string>
     <string name="num_saved">Valor Guardado</string>
+    <string name="look_at">Ver</string>
     <array name="kind_of_projection_list">
         <item>Trimestral</item>
         <item>Cuatrimestral</item>
@@ -270,14 +303,14 @@
     <string name="no">No</string>
 
     <string name="pick_option">Seleccionar Opción</string>
-    <array name="credit_card_item_options">
-        <item >Amortizacion</item>
-        <item >Finalizar</item>
-        <item >Actualizar Valor</item>
-        <item >Diferir Cuotas</item>
-        <item >Editar</item>
-        <item >Eliminar</item>
-    </array>
+    <string name="ccio_amortization">Amortización</string>
+    <string name="ccio_ending">Finalizar</string>
+    <string name="ccio_update_value">Actualzar Valor</string>
+    <string name="ccio_differ_quotes">Diferir Cuotas</string>
+    <string name="ccio_edit">Editar</string>
+    <string name="ccio_delete">Eliminar</string>
+    <string name="update">Actualizar</string>
+    <string name="create">Crear</string>
 
     <array name="credit_item_options">
         <item >Adicional</item>
@@ -309,16 +342,6 @@
 
     <array name="account_items_options">
         <item >Ver</item>
-        <item >Eliminar</item>
-    </array>
-
-    <array name="list_credit_card_items_options">
-        <item >Editar</item>
-        <item >Eliminar</item>
-    </array>
-
-    <array name="setting_credit_card_items_options">
-        <item >Editar</item>
         <item >Eliminar</item>
     </array>
 

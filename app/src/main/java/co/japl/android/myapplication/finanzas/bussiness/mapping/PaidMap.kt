@@ -4,11 +4,9 @@ import android.content.ContentValues
 import android.database.Cursor
 import android.os.Build
 import androidx.annotation.RequiresApi
-import co.japl.android.myapplication.finanzas.bussiness.DTO.CreditDB
-import co.japl.android.myapplication.finanzas.bussiness.DTO.CreditDTO
 import co.japl.android.myapplication.finanzas.bussiness.DTO.PaidDB
 import co.japl.android.myapplication.finanzas.bussiness.DTO.PaidDTO
-import co.japl.android.myapplication.utils.DateUtils
+import co.com.japl.ui.utils.DateUtils
 import java.time.LocalDate
 
 class PaidMap {

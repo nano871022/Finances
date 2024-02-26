@@ -162,7 +162,7 @@
                     app:icon="@android:drawable/ic_menu_add"
                     android:text="@string/add"/>
 
-                <co.japl.android.myapplication.finanzas.holders.CustomDraw
+                <co.japl.android.graphs.drawer.CustomDraw
                     android:id="@+id/cv_canvas_cfl"
                     android:layout_width="match_parent"
                     android:layout_height="400dp"/>

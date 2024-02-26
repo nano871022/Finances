@@ -5,11 +5,9 @@ import android.database.Cursor
 import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
-import co.japl.android.myapplication.bussiness.DTO.CreditCardDB
-import co.japl.android.myapplication.bussiness.DTO.CreditCardDTO
 import co.japl.android.myapplication.bussiness.DTO.CreditCardSettingDB
 import co.japl.android.myapplication.bussiness.DTO.CreditCardSettingDTO
-import co.japl.android.myapplication.utils.DateUtils
+import co.com.japl.ui.utils.DateUtils
 import java.util.Optional
 
 class CreditCardSettingMap {
@@ -21,7 +19,7 @@ class CreditCardSettingMap {
             put(CreditCardSettingDB.CreditCardEntry.COLUMN_TYPE,dto.type)
             put(CreditCardSettingDB.CreditCardEntry.COLUMN_ACTIVE,dto.active)
             put(CreditCardSettingDB.CreditCardEntry.COLUMN_COD_CREDIT_CARD,dto.codeCreditCard)
-            put(CreditCardSettingDB.CreditCardEntry.COLUMN_CREATE_DATE,DateUtils.localDateTimeToString(dto.create))
+            put(CreditCardSettingDB.CreditCardEntry.COLUMN_CREATE_DATE, DateUtils.localDateTimeToString(dto.create))
 
         }
     }

@@ -2,78 +2,51 @@ package co.japl.android.myapplication.finanzas.controller.boughtcreditcard
 
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.RequiresApi
+import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.Fragment
-import androidx.loader.app.LoaderManager
-import androidx.loader.content.AsyncTaskLoader
-import androidx.loader.content.Loader
 import androidx.navigation.fragment.findNavController
-import co.japl.android.myapplication.R
-import co.japl.android.myapplication.finanzas.bussiness.DTO.PeriodDTO
-import co.japl.android.myapplication.finanzas.bussiness.interfaces.IQuoteCreditCardSvc
-import co.japl.android.myapplication.finanzas.holders.ListQuotePaidHolder
-import co.japl.android.myapplication.finanzas.holders.interfaces.IListHolder
+import co.com.japl.finances.iports.inbounds.creditcard.bought.lists.IBoughtListPort
+import co.com.japl.ui.theme.MaterialThemeComposeUI
+import co.japl.android.myapplication.databinding.FragmentListPeriodsBinding
 import co.japl.android.myapplication.finanzas.putParams.PeriodsParams
+import co.com.japl.module.creditcard.controllers.paid.BoughtCreditCardViewModel
+import co.com.japl.module.creditcard.views.paid.PaidList
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 import kotlin.properties.Delegates
 
 @AndroidEntryPoint
-class ListQuotesPaid : Fragment() ,LoaderManager.LoaderCallbacks<List<PeriodDTO>>{
-    private lateinit var holder: IListHolder<ListQuotePaidHolder, PeriodDTO>
+class ListQuotesPaid : Fragment() {
     var creditCardId by Delegates.notNull<Int>()
 
-    @Inject lateinit var getPeriodsSvc: IQuoteCreditCardSvc
+    @Inject lateinit var port: IBoughtListPort
+    private lateinit var _binding : FragmentListPeriodsBinding
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val rootView = inflater.inflate(R.layout.fragment_list_periods, container, false)
+        _binding = FragmentListPeriodsBinding.inflate(inflater, container, false)
+        val rootView = _binding.root
         arguments?.let{
             creditCardId = PeriodsParams.Companion.Historical.download(it)
         }
-        holder = ListQuotePaidHolder(rootView,findNavController())
-        holder.setFields(null)
-        loaderManager.initLoader(1, null, this)
-        return rootView
-    }
+        Log.d(javaClass.name,"=== ListQuotesPaid start")
+        _binding.composeViewLp.apply {
+                setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+                setContent {
+                    MaterialThemeComposeUI {
+                        PaidList(viewModel = BoughtCreditCardViewModel(port,creditCardId,findNavController()))
 
-    override fun onResume() {
-        super.onResume()
-        loaderManager.restartLoader(1, null, this)
-    }
-
-    override fun onCreateLoader(id: Int, args: Bundle?): Loader<List<PeriodDTO>> {
-        return object:AsyncTaskLoader<List<PeriodDTO>>(requireContext()){
-            private var data: List<PeriodDTO>? = null
-            override fun onStartLoading() {
-                super.onStartLoading()
-                if(data != null){
-                    deliverResult(data)
-                }else{
-                    forceLoad()
                 }
             }
-            override fun loadInBackground(): List<PeriodDTO>? {
-                data = getPeriodsSvc.getPeriods(creditCardId)
-                return data
-            }
         }
+        return rootView
     }
-
-    override fun onLoaderReset(loader: Loader<List<PeriodDTO>>) {
-    }
-
-    override fun onLoadFinished(loader: Loader<List<PeriodDTO>>, data: List<PeriodDTO>?) {
-        data?.let {
-            holder.loadRecycler(it.toMutableList())
-        }
-    }
-
-
 }

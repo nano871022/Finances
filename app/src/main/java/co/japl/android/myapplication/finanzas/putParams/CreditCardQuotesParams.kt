@@ -1,14 +1,15 @@
 package co.japl.android.myapplication.finanzas.putParams
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import androidx.annotation.RequiresApi
 import androidx.core.os.bundleOf
 import androidx.navigation.NavController
 import co.japl.android.myapplication.R
-import co.japl.android.myapplication.utils.DateUtils
+import co.com.japl.ui.utils.DateUtils
 import java.time.LocalDateTime
-import kotlin.experimental.or
 
 class CreditCardQuotesParams {
     object Params{
@@ -17,6 +18,10 @@ class CreditCardQuotesParams {
         val PARAM_CREDIT_CARD_CUTOFF = "CreditCardCutoff"
         val PARAM_CREDIT_CARD_CUTOFF_DAY = "CreditCardCutOffDay"
         val PARAM_BOUGHT_ID = "bought_id_credit_card"
+        val PARAM_CODE_CREDIT_CARD = "codeCreditCard"
+        val PARAM_CUTOFF_DAY = "cutOffDay"
+        val PARAM_CUTOFF = "cutOff"
+        val PARAM_DEEPLINK = "android-support-nav:controller:deepLinkIntent"
     }
     companion object {
         object ListBought{
@@ -49,11 +54,32 @@ class CreditCardQuotesParams {
             @RequiresApi(Build.VERSION_CODES.O)
             fun download(argument: Bundle): Triple<Int, LocalDateTime,Short> {
                 argument.let {
-                    val code = it.get(Params.PARAM_CREDIT_CARD_CODE).toString().toInt()
-                    val cutOff = DateUtils.toLocalDateTime(
-                        it.get(Params.PARAM_CREDIT_CARD_CUTOFF).toString()
-                    )
-                    val cutoffDay:Short = it.get(Params.PARAM_CREDIT_CARD_CUTOFF_DAY).toString().toShort()
+                    var code = 0
+                    var cutOff = LocalDateTime.now()
+                    var cutoffDay: Short = 0
+                    if(it.containsKey(Params.PARAM_CREDIT_CARD_CODE)){
+                        code = it.get(Params.PARAM_CREDIT_CARD_CODE).toString().toInt()
+                    }
+                    if(it.containsKey(Params.PARAM_CREDIT_CARD_CUTOFF)) {
+                         cutOff = DateUtils.toLocalDateTime(it.get(Params.PARAM_CREDIT_CARD_CUTOFF).toString())
+                    }
+                    if(it.containsKey(Params.PARAM_CREDIT_CARD_CUTOFF_DAY)) {
+                         cutoffDay = it.get(Params.PARAM_CREDIT_CARD_CUTOFF_DAY).toString().toShort()
+                    }
+
+                    if(it.containsKey(PeriodsParams.Params.PARAM_DEEPLINK)) {
+                        val intent = it.get(PeriodsParams.Params.PARAM_DEEPLINK) as Intent
+                        val uri = Uri.parse(intent.dataString)
+                            uri.getQueryParameters(Params.PARAM_CODE_CREDIT_CARD).let {
+                            code = it[0]!!.toInt()
+                            }
+                        uri.getQueryParameters(Params.PARAM_CUTOFF).let {
+                            cutOff = DateUtils.toLocalDateTime(it[0]!!)
+                        }
+                        uri.getQueryParameters(Params.PARAM_CUTOFF_DAY).let {
+                            cutoffDay = it[0]!!.toShort()
+                        }
+                    }
                     return Triple(code, cutOff,cutoffDay)
                 }
             }
