@@ -20,4 +20,6 @@ interface IBoughtListPort {
 
     fun differntInstallment(codeBought:Int, value:Long, cutOff:LocalDateTime):Boolean
 
+    fun clone(codeBought:Int):Boolean
+
 }

@@ -97,9 +97,12 @@ class BoughtList @Inject constructor(
             val dayOfMonth:Short = creditCard?.cutOffDay ?:it.cutOutDate.dayOfMonth.toShort()
             val months = DateUtils.getMonths(it.boughtDate,cutOff)
 
-            val differBought =  it.copy(month = (months + value).toInt()
+            val differBought =  it.copy(month = (value).toInt()
                 , createDate = LocalDateTime.now()
                 , endDate =  DateUtils.cutOffAddMonth(dayOfMonth, cutOff, value)
+                , boughtDate =  LocalDateTime.now()
+                , valueItem = (it.valueItem.toDouble() - ((it.valueItem.toDouble() / it.month) * months)).toBigDecimal()
+                , nameItem = it.nameItem.plus(" (${it.id}. ${it.valueItem.toDouble()})")
                 , id = 0)
             val origin = it.copy(endDate = DateUtils.cutOffLastMonth(dayOfMonth,cutOff))
             return quoteCCSvc.create(differBought).takeIf { response->response > 0}?.let{id->
@@ -114,6 +117,15 @@ class BoughtList @Inject constructor(
         return false
     }
 
+    override fun clone(codeBought: Int): Boolean {
+        require(codeBought > 0)
+        return quoteCCSvc.get(codeBought)?.let {
+             return quoteCCSvc.create(it.copy(id=0,
+                 nameItem = it.nameItem + "*",
+                 createDate = LocalDateTime.now(),
+                 boughtDate = LocalDateTime.now())) > 0
+        }?:false
+    }
 
 
     private fun tag(codeBought:Int):TagDTO?{
