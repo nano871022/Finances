@@ -75,6 +75,26 @@ class BoughtViewModel @Inject constructor(
             MoreOptionsItemsCreditCard.DIFFER_INSTALLMENT ->{differntInstallmentDialog(value.toLong())}
             MoreOptionsItemsCreditCard.AMORTIZATION ->{goToAmortization()}
             MoreOptionsItemsCreditCard.DELETE ->{deleteDialog()}
+            MoreOptionsItemsCreditCard.CLONE ->{clone()}
+        }
+    }
+
+    private fun clone(){
+        if(bought.id > 0 && boughtCreditCardSvc.clone(bought.id)){
+            Snackbar.make(
+                view,
+                R.string.ending_recurrent_copy_payment_successfull,
+                Snackbar.LENGTH_LONG
+            )
+                .setAction(R.string.close) {}
+                .show().also { navController.popBackStack() }
+        }else{
+            Snackbar.make(
+                view,
+                R.string.dont_copy_payment_successfull,
+                Snackbar.LENGTH_LONG
+            )
+                .setAction(R.string.close, null).show()
         }
     }
 

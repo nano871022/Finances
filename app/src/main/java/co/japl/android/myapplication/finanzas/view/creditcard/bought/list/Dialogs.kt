@@ -9,9 +9,14 @@ import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Cancel
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -28,6 +33,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import co.japl.android.myapplication.R
@@ -150,7 +156,7 @@ private fun UpdateValueDialog(onDismiss: () -> Unit, onClick: (Double) -> Unit) 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun DifferInstallmentDialog(value:Double,onDismiss: () -> Unit, onClick: (Long) -> Unit) {
-    val stateInstallment = remember { mutableLongStateOf(0) }
+    val stateInstallment = remember { mutableStateOf("") }
     val newValueInstallment = remember { mutableDoubleStateOf(0.0) }
     androidx.compose.material3.AlertDialog(
         onDismissRequest = onDismiss) {
@@ -174,12 +180,23 @@ private fun DifferInstallmentDialog(value:Double,onDismiss: () -> Unit, onClick:
                     )
                 )
 
-                TextField(value = stateInstallment.longValue.toString(),
+                TextField(value = stateInstallment.value.toString(),
                     onValueChange = {
-                        stateInstallment.longValue = NumbersUtil.toLong(it)
+                        stateInstallment.value = it
                         newValueInstallment.doubleValue = value / NumbersUtil.toDouble(it)
                     },
-                    label = { Text(text = stringResource(id = R.string.periods)) }
+                    placeholder = { Text(text = "0")},
+                    label = { Text(text = stringResource(id = R.string.periods)) },
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                    trailingIcon = {
+                        IconButton(onClick = {
+                            stateInstallment.value = ""
+                        }){
+                            Icon(imageVector = Icons.Rounded.Cancel,
+                                contentDescription = stringResource(id = R.string.cancel))
+                        }
+                    }
+
                 )
 
                 FieldView(
@@ -196,7 +213,7 @@ private fun DifferInstallmentDialog(value:Double,onDismiss: () -> Unit, onClick:
                         Text(text = stringResource(id = R.string.cancel), color = MaterialTheme.colorScheme.onSurface)
                     }
 
-                    TextButton(onClick = { onClick.invoke(stateInstallment.longValue) }) {
+                    TextButton(onClick = { onClick.invoke(stateInstallment.value?.toLong()?:0) }) {
                         Text(text = stringResource(id = R.string.ccio_differ_quotes), color = MaterialTheme.colorScheme.onSurface)
 
                     }

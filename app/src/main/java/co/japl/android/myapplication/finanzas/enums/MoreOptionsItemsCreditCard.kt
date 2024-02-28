@@ -10,5 +10,6 @@ enum class MoreOptionsItemsCreditCard(@StringRes val title: Int) {
     DELETE(R.string.ccio_delete),
     ENDING(R.string.ccio_ending),
     UPDATE_VALUE(R.string.ccio_update_value),
-    DIFFER_INSTALLMENT(R.string.differ_installment);
+    DIFFER_INSTALLMENT(R.string.differ_installment),
+    CLONE(R.string.ccio_clone);
 }

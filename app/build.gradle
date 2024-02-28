@@ -14,8 +14,8 @@ android {
         applicationId "co.japl.android.myapplication"
         minSdk 26
         targetSdk 33
-        versionCode 4_05_03_060
-        versionName "Migracion tasas mensuales de credito y cuentas bancarias a nuevo diseño ademas de aumentar en 1 mes los creditos que se pueden actualizar"
+        versionCode 4_05_03_061
+        versionName "Added save and create new button on bought with credit card, and copy option in bought list and fix issue with differer quote due the value to differ was right"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }

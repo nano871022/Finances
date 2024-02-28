@@ -38,4 +38,8 @@ class ListImpl @Inject constructor(private val service: IBoughtList,private val 
     override fun differntInstallment(codeBought: Int, value: Long, cutOff:LocalDateTime): Boolean {
         return service.differntInstallment(codeBought,value,cutOff)
     }
+
+    override fun clone(codeBought: Int): Boolean {
+        return service.clone(codeBought)
+    }
 }
