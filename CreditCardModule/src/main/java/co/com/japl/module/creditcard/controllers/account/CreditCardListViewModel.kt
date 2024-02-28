@@ -52,7 +52,8 @@ class CreditCardListViewModel constructor(private val creditCardSvc:ICreditCardP
     suspend fun execute(){
         progress.floatValue = 0.4f
         creditCardSvc?.let{
-            list.addAll( it.getAll())
+            list.clear()
+            it.getAll()?.let(list::addAll)
             showProgress.value = false
         }
         progress.floatValue = 0.8f

@@ -26,6 +26,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -62,7 +63,6 @@ import java.time.LocalDate
 
 @Composable
 fun BoughtMonthly(viewModel:BoughtMonthlyViewModel?=null) {
-    var creditCardState by remember{ viewModel!!.creditCard }
     var loaderStatus by remember {viewModel!!.loader}
     var progressStatus by remember {viewModel!!.progress}
 
@@ -75,11 +75,11 @@ fun BoughtMonthly(viewModel:BoughtMonthlyViewModel?=null) {
            .fillMaxHeight()
            ) {
 
-            Header(creditCard = creditCardState,
+            Header(creditCard = viewModel!!.creditCard,
                 list = viewModel!!.creditCardList,
                 changeSelect = {
                     it?.let{
-                        creditCardState = it.second
+                        viewModel.creditCard.value = it.second
                         viewModel.creditCardCode.value = it.first
                         CoroutineScope(Dispatchers.IO).launch{
                             viewModel?.main()
@@ -193,8 +193,8 @@ private fun FloatButtons(viewModel:BoughtMonthlyViewModel){
 }
 
 @Composable
-private fun Header(creditCard:String,list:List<Pair<Int,String>>?, changeSelect: (Pair<Int, String>?) -> Unit) {
-    var valueState by remember { mutableStateOf(creditCard) }
+private fun Header(creditCard:MutableState<String>,list:List<Pair<Int,String>>?, changeSelect: (Pair<Int, String>?) -> Unit) {
+    var valueState by remember { creditCard }
     FieldSelect(title = stringResource(id = R.string.credit_card),
         value = valueState,
         list = list,

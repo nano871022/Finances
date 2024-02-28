@@ -102,7 +102,7 @@ class BoughtMonthlyViewModel constructor(private val creditRate:ITaxPort?,privat
             listCreditCard = it
             creditCardList.clear()
             creditCardList.addAll(it.map { Pair<Int, String>(it.id, it.name) })
-            if(it.size == 1){
+            if(it.size == 1 && creditCard.value.isBlank()){
                 creditCardCode.intValue = it.first().id
                 creditCard.value = it.first().name
                 main()

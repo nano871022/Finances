@@ -51,7 +51,9 @@ class Bought @Inject constructor(private val service:IBoughtList):IBought{
     private fun getGraphList(creditCard:CreditCard,cutOffDate:LocalDateTime):List<Pair<String,Double>>?{
         return service.getBoughtList(creditCard,cutOffDate)?.let{
             val list = arrayListOf<Pair<String,Double>>()
-            it.list?.filter { it.tagName.isNotBlank() && it.recurrent.not() }?.map { Pair(it.tagName,it.quoteValue) }?.let(list::addAll)
+            it.list?.filter { it.tagName.isNotBlank() && it.recurrent.not() }?.map { Pair(it.tagName,it.quoteValue) }?.groupBy { it.first }?.map{
+                Pair(it.key,it.value.sumOf { it.second })
+            }?.let(list::addAll)
             it.list?.filter { it.tagName.isBlank() && it.recurrent.not() && it.month == 1 }?.sumOf{it.quoteValue}?.takeIf { it > 0 }?.let { list.add(Pair("1 Cuota",it)) }
             it.list?.filter { it.tagName.isBlank()  && it.recurrent.not() && it.month > 1 }?.sumOf{it.quoteValue}?.takeIf { it > 0 }?.let { list.add(Pair(">1 Cuota",it)) }
             it.list?.filter { it.tagName.isBlank() && it.recurrent && it.month == 1 }?.sumOf{it.quoteValue}?.takeIf { it > 0 }?.let { list.add(Pair("Recurrente 1 Cuota",it)) }

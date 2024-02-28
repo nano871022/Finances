@@ -2,6 +2,7 @@ package co.japl.android.myapplication.finanzas.controller.boughtcreditcard
 
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -31,16 +32,22 @@ class ListCreditCardQuote : Fragment(){
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = ListCreditCardQuoteBinding.inflate(inflater)
-        val viewModel = BoughtMonthlyViewModel(creditRateSvc,creditCardPort,boughtSvc, navController = findNavController())
-        _binding.cvComposeLccq?.apply {
-            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
-            setContent {
-                MaterialThemeComposeUI {
-                    BoughtMonthly(viewModel = viewModel)
+            _binding = ListCreditCardQuoteBinding.inflate(inflater)
+            val viewModel = BoughtMonthlyViewModel(
+                creditRateSvc,
+                creditCardPort,
+                boughtSvc,
+                navController = findNavController()
+            )
+            _binding.cvComposeLccq?.apply {
+                setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+                setContent {
+                    MaterialThemeComposeUI {
+                        BoughtMonthly(viewModel = viewModel)
+                    }
                 }
             }
-        }
-        return _binding.root.rootView
+            return _binding.root.rootView
+
     }
 }
