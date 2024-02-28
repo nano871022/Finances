@@ -1,5 +1,6 @@
 package co.com.japl.module.creditcard.views.account.lists
 
+import android.content.res.Configuration
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -69,6 +70,7 @@ fun CreditCardList(creditCardViewModel:CreditCardListViewModel){
 
 @Composable
 private fun Body(creditCardViewModel:CreditCardListViewModel){
+    val listState = remember {creditCardViewModel.list}
     Scaffold(floatingActionButton = {
         IconButton(onClick = { creditCardViewModel.onClick() }) {
             Icon(
@@ -78,8 +80,8 @@ private fun Body(creditCardViewModel:CreditCardListViewModel){
         }
     },modifier = Modifier.padding(Dimensions.PADDING_SHORT)) {
         Column(modifier = Modifier.padding(it)) {
-        for(item in creditCardViewModel.list) {
-                Item(item,{creditCardViewModel.edit(it)},{creditCardViewModel.delete(it)},{creditCardViewModel.goToSettings(it)})
+        listState.forEach {item->
+                Item(item!!,{creditCardViewModel.edit(it)},{creditCardViewModel.delete(it)},{creditCardViewModel.goToSettings(it)})
             }
         }
     }
@@ -192,11 +194,18 @@ private fun ItemLarge(dto:CreditCardDTO,state:MutableState<Boolean>,edit:(Int)->
 
 @RequiresApi(Build.VERSION_CODES.S)
 @Composable
-@Preview(showSystemUi = true, showBackground = true)
+@Preview(showSystemUi = true, showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
 fun CreditCardListPreview(){
 
-    val creditCardViewModel = CreditCardListViewModel(creditCardSvc = null,navController = null)
+    val creditCardViewModel = getViewModel()
     MaterialThemeComposeUI {
         CreditCardList(creditCardViewModel)
     }
+}
+
+@Composable
+fun getViewModel():CreditCardListViewModel{
+ val viewModel = CreditCardListViewModel(creditCardSvc = null,navController = null)
+    viewModel.showProgress.value = false
+    return viewModel
 }

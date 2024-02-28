@@ -6,7 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.navigation.NavController
 import co.com.japl.finances.iports.dtos.BoughtCreditCardPeriodDTO
 import co.com.japl.finances.iports.inbounds.creditcard.bought.lists.IBoughtListPort
-import co.com.japl.module.creditcard.navigations.ListBought
+import co.com.japl.module.creditcard.navigations.Bought
 import kotlinx.coroutines.runBlocking
 import java.time.LocalDateTime
 
@@ -32,7 +32,7 @@ class BoughtCreditCardViewModel constructor(private val service:IBoughtListPort?
     }
 
     fun goToListDetail(cutOffDay:Short,cutOff:LocalDateTime){
-        ListBought.navigate(idCreditCard,cutOffDay,cutOff, navController)
+        Bought.navigate(idCreditCard,cutOffDay,cutOff, navController)
     }
 
 

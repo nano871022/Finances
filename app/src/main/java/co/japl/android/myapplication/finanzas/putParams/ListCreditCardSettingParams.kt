@@ -34,9 +34,9 @@ class ListCreditCardSettingParams() {
                 val map = HashMap<String,Int>()
                 if(it.get(ARG_CODE_CREDIT_CARD) != null){
                     map[ARG_CODE_CREDIT_CARD.toString()] = it.get(ARG_CODE_CREDIT_CARD).toString().toInt()
-                }else if(it[Params.ARG_DEEPLINK] != null){
-                    Uri.parse((it[Params.ARG_DEEPLINK] as Intent).dataString).getQueryParameters(ARG_CODE_CREDIT_CARD)?.let {
-                        map[ARG_CODE_CREDIT_CARD.toString()] = it[0].toString().toInt()
+                }else if(it.containsKey(Params.ARG_DEEPLINK)){
+                    Uri.parse((it.get(Params.ARG_DEEPLINK) as Intent).dataString).getQueryParameters(ARG_CODE_CREDIT_CARD)?.let {
+                        map[ARG_CODE_CREDIT_CARD] = it[0].toString().toInt()
                     }
                 }
                return map

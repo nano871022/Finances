@@ -102,10 +102,20 @@ class CreditCardQuotesParams {
             @RequiresApi(Build.VERSION_CODES.O)
             fun download(argument: Bundle): Triple<Int, String,Int> {
                 argument.let {
-                    val code = it.get(Params.PARAM_CREDIT_CARD_CODE).toString().toInt()
-                    val name = it.get(Params.PARAM_CREDIT_CARD_NAME).toString()
-                    val id = it.getInt(Params.PARAM_BOUGHT_ID,0)
-                    return Triple(code, name,id)
+                    if(it.containsKey(Params.PARAM_DEEPLINK)) {
+                        val intent = it.get(Params.PARAM_DEEPLINK) as Intent
+                        val code = if(Uri.parse(intent.dataString).getQueryParameter(Params.PARAM_CREDIT_CARD_CODE) != null){
+                             Uri.parse(intent.dataString).getQueryParameter(Params.PARAM_CREDIT_CARD_CODE)!!.toInt()
+                        }else{
+                            0
+                        }
+                        return Triple(code, "",0)
+                    }else {
+                        val code = it.get(Params.PARAM_CREDIT_CARD_CODE).toString().toInt()
+                        val name = it.get(Params.PARAM_CREDIT_CARD_NAME).toString()
+                        val id = it.getInt(Params.PARAM_BOUGHT_ID, 0)
+                        return Triple(code, name, id)
+                    }
                 }
             }
 

@@ -106,6 +106,7 @@
             app:destination="@id/list_bought"
             app:popUpToInclusive="true"/>
 
+        <deepLink app:uri="android-app://co.com.japl.finanzas.module.app/BoughtPeriodList"/>
 
     </fragment>
 
@@ -136,7 +137,9 @@
         android:id="@+id/buy_credit_card"
         android:name="co.japl.android.myapplication.finanzas.controller.boughtcreditcard.QuoteBought"
         android:label="@string/add_buy"
-        tools:layout="@layout/buys_credit_card" />
+        tools:layout="@layout/buys_credit_card" >
+        <deepLink app:uri="android-app://co.com.japl.finanzas.module.app/bought"/>
+    </fragment>
 
     <fragment
         android:id="@+id/item_menu_setting_about_it"
@@ -195,7 +198,9 @@
         android:id="@+id/cash_advance_fragment"
         android:name="co.japl.android.myapplication.finanzas.controller.boughtcreditcard.CashAdvanceSave"
         android:label="@string/cash_advance"
-        tools:layout="@layout/cash_advance_credit_card" />
+        tools:layout="@layout/cash_advance_credit_card" >
+        <deepLink app:uri="android-app://co.com.japl.finanzas.module.app/cashAdvanceBought"/>
+    </fragment>
 
 
     <fragment
@@ -227,7 +232,9 @@
         android:id="@+id/boughWalletController"
         android:name="co.japl.android.myapplication.finanzas.controller.boughtcreditcard.BoughWalletController"
         android:label="@string/bough_wallet"
-        tools:layout="@layout/buy_wallet_credit_card"/>
+        tools:layout="@layout/buy_wallet_credit_card">
+        <deepLink app:uri="android-app://co.com.japl.finanzas.module.app/boughtWalletBought"/>
+    </fragment>
     <fragment
         android:id="@+id/amortizationTableFragment"
         android:name="co.japl.android.myapplication.finanzas.controller.AmortizationTableFragment"

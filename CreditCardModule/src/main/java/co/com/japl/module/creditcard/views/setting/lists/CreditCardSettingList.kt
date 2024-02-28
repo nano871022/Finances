@@ -179,6 +179,7 @@ private fun ItemCompact(item:CreditCardSettingDTO,statusShowOptions:MutableState
 @Preview(showBackground = true, showSystemUi = true)
 fun CreditCardSettingListPreview(){
     val viewModel = CreditCardSettingListViewModel(0, null,null)
+    viewModel.showProgress.value = false
     MaterialThemeComposeUI {
         CreditCardSettingList(viewModel)
     }

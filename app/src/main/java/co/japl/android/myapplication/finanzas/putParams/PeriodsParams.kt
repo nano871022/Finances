@@ -37,8 +37,8 @@ class PeriodsParams {
                     }
                     if(it.containsKey(Params.PARAM_DEEPLINK)) {
                         val intent = it.get(Params.PARAM_DEEPLINK) as Intent
-                        Uri.parse(intent.dataString).getQueryParameters(Params.PARAM_CODE_CREDIT_CARD).let {
-                            return it[0]!!.toInt()
+                        Uri.parse(intent.dataString).getQueryParameter(Params.PARAM_CODE_CREDIT_CARD)?.let {
+                            return it.toInt()
                         }
                     }
                 }

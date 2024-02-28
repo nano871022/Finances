@@ -30,4 +30,5 @@ object ModifiersCustom {
     fun RowScope.AlignCenterVerticalAndPaddingRightSpace():Modifier{
         return Modifier.align(alignment = Alignment.CenterVertically).padding(end=Dimensions.PADDING_SPACE_BETWEEN_FIELD_RIGHT)
     }
+
 }

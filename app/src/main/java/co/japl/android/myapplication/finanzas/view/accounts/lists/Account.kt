@@ -1,11 +1,15 @@
 package co.japl.android.myapplication.finanzas.view.accounts.lists
 
+import android.content.res.Configuration
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material3.Card
@@ -89,7 +93,9 @@ private fun Body(viewModel: AccountViewModel,modifier:Modifier) {
              FieldView(
                  title = stringResource(id = R.string.name),
                  value = item.name,
-                 modifier = Modifier.weight(1f).align(Alignment.CenterVertically)
+                 modifier = Modifier
+                     .weight(1f)
+                     .align(Alignment.CenterVertically)
              )
              IconButton(onClick = { state.value = true }) {
                  Icon(
@@ -99,14 +105,16 @@ private fun Body(viewModel: AccountViewModel,modifier:Modifier) {
              }
          }
 
-         InputList(
-             modelView = InputListModelView(
-                 LocalContext.current,
-                 item.id,
-                 viewModel.navController!!,
-                 viewModel.inputSvc
+         Column(modifier=Modifier.verticalScroll(rememberScrollState())) {
+             InputList(
+                 modelView = InputListModelView(
+                     LocalContext.current,
+                     item.id,
+                     viewModel.navController!!,
+                     viewModel.inputSvc
+                 )
              )
-         )
+         }
          if (stateDelete.value) {
              AlertDialogOkCancel(
                  title = R.string.do_you_want_to_delete_this_record,
@@ -132,3 +140,18 @@ private fun Body(viewModel: AccountViewModel,modifier:Modifier) {
  }
 }
 
+@RequiresApi(Build.VERSION_CODES.S)
+@Composable
+@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_NO, showSystemUi = true)
+fun AccountListPreview() {
+    val viewModel = getViewModel()
+    MaterialThemeComposeUI {
+        AccountList(viewModel = viewModel)
+    }
+}
+
+fun getViewModel():AccountViewModel{
+    val viewModel = AccountViewModel(accountSvc = null, inputSvc = null,navController = null)
+    viewModel.loading.value = false
+    return viewModel
+}

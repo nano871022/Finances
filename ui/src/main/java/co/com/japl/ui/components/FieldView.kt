@@ -1,13 +1,14 @@
 package co.com.japl.ui.components
 
+import android.content.res.Configuration
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.annotation.StringRes
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.Colors
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -17,6 +18,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import co.com.japl.ui.R
 import co.com.japl.ui.theme.MaterialThemeComposeUI
 
 @Composable
@@ -61,3 +63,62 @@ fun FieldView(name:String, value:String, modifier: Modifier, color: Color = Mate
 
 }
 
+@RequiresApi(Build.VERSION_CODES.S)
+@Composable
+@Preview(showBackground = true)
+fun FieldView1Preview() {
+    MaterialThemeComposeUI {
+        FieldView(
+            name = "Name",
+            value = "value",
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(5.dp)
+        )
+    }
+}
+
+@RequiresApi(Build.VERSION_CODES.S)
+@Composable
+@Preview( uiMode = Configuration.UI_MODE_NIGHT_YES)
+fun FieldView11Preview() {
+    MaterialThemeComposeUI {
+        FieldView(
+            name = "Name",
+            value = "value",
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(5.dp)
+        )
+    }
+}
+
+@RequiresApi(Build.VERSION_CODES.S)
+@Composable
+@Preview(showBackground = true)
+fun FieldView2Preview() {
+    MaterialThemeComposeUI {
+        FieldView(
+            name = R.string.see_more,
+            value = "value",
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(5.dp)
+        )
+    }
+}
+
+@RequiresApi(Build.VERSION_CODES.S)
+@Composable
+@Preview(uiMode=Configuration.UI_MODE_NIGHT_YES)
+fun FieldView21Preview() {
+    MaterialThemeComposeUI {
+        FieldView(
+            name = R.string.see_more,
+            value = "value",
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(5.dp)
+        )
+    }
+}

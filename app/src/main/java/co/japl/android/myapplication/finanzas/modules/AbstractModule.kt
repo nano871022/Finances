@@ -5,6 +5,7 @@ import co.com.japl.finances.iports.inbounds.creditcard.ICreditCardPort
 import co.com.japl.finances.iports.inbounds.common.IDifferQuotesPort
 import co.com.japl.finances.iports.inbounds.creditcard.ICreditCardSettingPort
 import co.com.japl.finances.iports.inbounds.creditcard.ITaxPort
+import co.com.japl.finances.iports.inbounds.creditcard.bought.IBoughtPort
 import co.com.japl.finances.iports.inbounds.creditcard.bought.lists.IBoughtListPort
 import co.com.japl.finances.iports.inbounds.inputs.IAccountPort
 import co.com.japl.finances.iports.inbounds.inputs.IInputPort
@@ -75,6 +76,7 @@ import co.japl.finances.core.usercases.interfaces.common.IProjections
 import co.japl.finances.core.usercases.interfaces.common.IQuoteCreditCard
 import co.japl.finances.core.usercases.interfaces.creditcard.ICreditCardSetting
 import co.japl.finances.core.usercases.interfaces.creditcard.ITax
+import co.japl.finances.core.usercases.interfaces.creditcard.bought.lists.IBought
 import co.japl.finances.core.usercases.interfaces.creditcard.bought.lists.IBoughtList
 import co.japl.finances.core.usercases.interfaces.creditcard.paid.lists.IPaidList
 import co.japl.finances.core.usercases.interfaces.recap.IRecap
@@ -305,4 +307,10 @@ abstract class AbstractModule {
 
     @Binds
     abstract fun bindDAOAccount(implement:co.japl.android.finances.services.dao.implement.AccountImpl):co.japl.android.finances.services.dao.interfaces.IAccountSvc
+
+    @Binds
+    abstract fun bindInputBought(implement:co.japl.finances.core.adapters.inbound.implement.creditcard.bought.BoughtImpl):IBoughtPort
+
+    @Binds
+    abstract fun bindUserCaseBought(implement:co.japl.finances.core.usercases.implement.creditcard.bought.Bought):IBought
 }

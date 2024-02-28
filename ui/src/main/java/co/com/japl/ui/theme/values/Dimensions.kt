@@ -7,4 +7,5 @@ object  Dimensions {
      val PADDING_BOTTOM_SPACE_FLOATING_BUTTON = 20.dp
      val PADDING_SHORT = 5.dp
      val PADDING_SPACE_BETWEEN_FIELD_RIGHT = 5.dp
+     val PADDING_BOTTOM_CAROUSEL_SPACE = 13.dp
 }

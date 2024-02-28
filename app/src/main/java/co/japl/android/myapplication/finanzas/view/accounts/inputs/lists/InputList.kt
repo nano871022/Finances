@@ -74,7 +74,7 @@ private fun Content(modelView: InputListModelView,modifier:Modifier) {
             modelView._items.size.toLong(),
             modelView._items.sumOf { it.value.toDouble() })
 
-        for (item in stateList) {
+        stateList.forEach{item->
             InputItem(
                 date = item.date,
                 nameInput = item.name,

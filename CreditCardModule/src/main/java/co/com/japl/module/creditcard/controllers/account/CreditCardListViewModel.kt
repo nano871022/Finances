@@ -2,6 +2,7 @@ package co.com.japl.module.creditcard.controllers.account
 
 import android.widget.Toast
 import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.navigation.NavController
@@ -14,8 +15,8 @@ import kotlinx.coroutines.runBlocking
 
 class CreditCardListViewModel constructor(private val creditCardSvc:ICreditCardPort?, private val navController:NavController?) : ViewModel(){
 
-    private var _list = listOf<CreditCardDTO>()
-    val list get() = _list
+
+    val list = mutableStateListOf<CreditCardDTO?>()
 
     var progress = mutableFloatStateOf(0f)
     var showProgress = mutableStateOf(true)
@@ -51,7 +52,7 @@ class CreditCardListViewModel constructor(private val creditCardSvc:ICreditCardP
     suspend fun execute(){
         progress.floatValue = 0.4f
         creditCardSvc?.let{
-            _list = it.getAll()
+            list.addAll( it.getAll())
             showProgress.value = false
         }
         progress.floatValue = 0.8f

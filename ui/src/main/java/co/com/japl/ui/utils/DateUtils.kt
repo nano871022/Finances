@@ -4,6 +4,7 @@ import android.os.Build
 import android.util.Log
 import android.widget.EditText
 import androidx.annotation.RequiresApi
+import java.time.DateTimeException
 import java.time.DayOfWeek
 import java.time.Instant
 import java.time.LocalDate
@@ -135,19 +136,20 @@ class DateUtils {
             return LocalDateTime.now()
         }
 
+        private fun getDayOfMonthValid(day:Int, date:LocalDateTime):Int{
+            try {
+                return date.withDayOfMonth(day).dayOfMonth
+            }catch(e:DateTimeException){
+                return getDayOfMonthValid(day- 1,date)
+            }
+        }
+
         @RequiresApi(Build.VERSION_CODES.O)
         fun startDateFromCutoff(cutOffDay:Short,cutOff:LocalDateTime):LocalDateTime{
             var day = cutOff.dayOfMonth
             val month = cutOff.month
 
-            if(month == Month.FEBRUARY && cutOffDay > 28 && cutOffDay < 31){
-                day = cutOffDay.toInt()
-            }else if(cutOffDay.toInt() == 31){
-                day = cutOffDay - 1
-            }
-            if(month == Month.MARCH && day.toInt() == 30){
-                day = 28
-            }
+            day = getDayOfMonthValid(cutOffDay.toInt(), cutOff)
 
             val start = LocalDateTime.of(cutOff.minusMonths(1).year,cutOff.minusMonths(1).monthValue,1,0,0)
             var date =  if(start.plusMonths(1).minusDays(1).dayOfMonth < cutOffDay){
@@ -162,6 +164,37 @@ class DateUtils {
                 else -> date
             }
             return date.plusDays(1).also { Log.d(this::class.java.name,"<<<=== FINISH:startDateFromCutoff Response: $it Month: $month Cutoff Day: $cutOffDay Day: $day CutOff: $cutOff") }
+        }
+
+        fun cutOff(cutOffDay: Short,date:LocalDate):LocalDateTime{
+            var dateTime = LocalDateTime.of(date, LocalTime.MAX)
+            try {
+                if(date.dayOfMonth <= cutOffDay) {
+                    dateTime = LocalDateTime.of(
+                        LocalDate.of(
+                            date.year,
+                            date.monthValue,
+                            cutOffDay.toInt()
+                        ), LocalTime.MAX
+                    )
+
+                }else{
+                    dateTime = LocalDateTime.of(
+                        LocalDate.of(
+                            date.year,
+                            date.monthValue,
+                            cutOffDay.toInt()
+                        ), LocalTime.MAX
+                    ).plusMonths(1)
+                }
+            }catch(e:DateTimeException){
+                return cutOff((cutOffDay.toInt() - 1).toShort(),date)
+            }
+            return when(date.dayOfWeek){
+                DayOfWeek.SATURDAY->dateTime.minusDays(1)
+                DayOfWeek.SUNDAY->dateTime.plusDays(1)
+                else -> dateTime
+            }
         }
 
         @RequiresApi(Build.VERSION_CODES.O)

@@ -1,5 +1,7 @@
 package co.japl.android.myapplication.finanzas.putParams
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
@@ -11,6 +13,7 @@ class BoughWalletParams {
 
     object params{
         val ARG_PARAM_CODE_CREDIT_CARD = "cod_credit_card"
+        val PARAM_DEEPLINK = "android-support-nav:controller:deepLinkIntent"
     }
 
     companion object{
@@ -20,6 +23,12 @@ class BoughWalletParams {
         }
         fun download(argument:Bundle):String{
             argument.let {
+                if(it.containsKey(params.PARAM_DEEPLINK)) {
+                    val intent = it.get(params.PARAM_DEEPLINK) as Intent
+                    Uri.parse(intent.dataString).getQueryParameter(params.ARG_PARAM_CODE_CREDIT_CARD)?.let {
+                        return it
+                    }
+                }
                 return it.get(params.ARG_PARAM_CODE_CREDIT_CARD).toString()
             }
         }
