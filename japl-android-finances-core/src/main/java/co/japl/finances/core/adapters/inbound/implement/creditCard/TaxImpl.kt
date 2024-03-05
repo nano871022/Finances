@@ -4,6 +4,7 @@ import co.com.japl.finances.iports.dtos.TaxDTO
 import co.com.japl.finances.iports.enums.KindInterestRateEnum
 import co.com.japl.finances.iports.inbounds.creditcard.ITaxPort
 import co.japl.finances.core.usercases.interfaces.creditcard.ITax
+import java.time.LocalDate
 import javax.inject.Inject
 
 class TaxImpl  @Inject constructor(val taxSvc:ITax): ITaxPort {
@@ -22,6 +23,10 @@ class TaxImpl  @Inject constructor(val taxSvc:ITax): ITaxPort {
 
     override fun getByCreditCard(codCreditCard: Int): List<TaxDTO>? {
         return taxSvc.getByCreditCard(codCreditCard)
+    }
+
+    override fun getByCreditCard(codeCreditCard: Int, cutOff: LocalDate): List<TaxDTO> {
+        return taxSvc.getByCreditCard(codeCreditCard,cutOff)?: emptyList()
     }
 
     override fun delete(code: Int): Boolean {

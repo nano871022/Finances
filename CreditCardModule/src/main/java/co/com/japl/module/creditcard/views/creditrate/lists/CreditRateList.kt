@@ -17,6 +17,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.AddCircleOutline
 import androidx.compose.material3.Card
 import androidx.compose.material3.Divider
+import androidx.compose.material.FloatingActionButton
+import androidx.compose.material.FloatingActionButtonDefaults
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.Text
@@ -71,9 +73,10 @@ fun CreditRateList(viewModel: CreditRateListViewModel){
     }else{
         Scaffold(
             floatingActionButton = {
-                IconButton(onClick = {
+                FloatingActionButton(onClick = {
                     viewModel.add()
-                }) {
+                },elevation=FloatingActionButtonDefaults.elevation(10.dp),
+                    backgroundColor= MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.5f)) {
                     Icon(imageVector = Icons.Rounded.AddCircleOutline, contentDescription = stringResource(id = R.string.add_credit_rate))
                 }
             }

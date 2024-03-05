@@ -1,5 +1,6 @@
 package co.com.japl.module.creditcard.views.setting.lists
 
+import android.content.res.Configuration
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -7,6 +8,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.FloatingActionButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
@@ -16,6 +18,9 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.AddCircleOutline
+import androidx.compose.material.FloatingActionButton
+import androidx.compose.material.icons.rounded.Add
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
@@ -40,6 +45,7 @@ import co.com.japl.ui.components.MoreOptionsDialog
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.time.LocalDateTime
 
 @Composable
  fun CreditCardSettingList(viewModel: CreditCardSettingListViewModel){
@@ -59,18 +65,20 @@ import kotlinx.coroutines.launch
 
 @Composable
 private fun Body(viewModel: CreditCardSettingListViewModel){
+    val listState = remember { viewModel.list }
     Scaffold( floatingActionButton = {
-        IconButton(onClick = {
+        FloatingActionButton(onClick = {
             viewModel.onClick()
-        }){
+        }, elevation = FloatingActionButtonDefaults.elevation(10.dp),
+            backgroundColor = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.5f)) {
             Icon(
-                imageVector = Icons.Rounded.AddCircleOutline,
+                imageVector = Icons.Rounded.Add,
                 contentDescription = stringResource(id = R.string.add_credit_card_setting)
             )
         }
     },modifier=Modifier.padding(5.dp)) {
             Column(modifier = Modifier.padding(it)) {
-                for (item in viewModel.list) {
+                listState.forEach{item->
                     Item(
                         item = item,
                         edit = { id -> viewModel.edit(id) },
@@ -176,11 +184,34 @@ private fun ItemCompact(item:CreditCardSettingDTO,statusShowOptions:MutableState
 
 @RequiresApi(Build.VERSION_CODES.S)
 @Composable
-@Preview(showBackground = true, showSystemUi = true)
+@Preview(showBackground = true, showSystemUi = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
 fun CreditCardSettingListPreview(){
-    val viewModel = CreditCardSettingListViewModel(0, null,null)
-    viewModel.showProgress.value = false
+    val viewModel = getViewModel()
     MaterialThemeComposeUI {
         CreditCardSettingList(viewModel)
     }
+}
+
+@RequiresApi(Build.VERSION_CODES.S)
+@Composable
+@Preview(showBackground = true, showSystemUi = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
+fun CreditCardSettingListPreviewDARK(){
+    val viewModel = getViewModel()
+    MaterialThemeComposeUI {
+        CreditCardSettingList(viewModel)
+    }
+}
+
+fun getViewModel():CreditCardSettingListViewModel{
+    val viewModel = CreditCardSettingListViewModel(0, null,null)
+    viewModel.showProgress.value = false
+    viewModel.progress.floatValue = 0.7f
+    viewModel.list.add(CreditCardSettingDTO(1,2,"test","test","", LocalDateTime.now(),Short.MIN_VALUE))
+    viewModel.list.add(CreditCardSettingDTO(1,2,"test","test","", LocalDateTime.now(),Short.MIN_VALUE))
+    viewModel.list.add(CreditCardSettingDTO(1,2,"test","test","", LocalDateTime.now(),Short.MIN_VALUE))
+    viewModel.list.add(CreditCardSettingDTO(1,2,"test","test","", LocalDateTime.now(),Short.MIN_VALUE))
+    viewModel.list.add(CreditCardSettingDTO(1,2,"test","test","", LocalDateTime.now(),Short.MIN_VALUE))
+    viewModel.list.add(CreditCardSettingDTO(1,2,"test","test","", LocalDateTime.now(),Short.MIN_VALUE))
+    viewModel.list.add(CreditCardSettingDTO(1,2,"test","test","", LocalDateTime.now(),Short.MIN_VALUE))
+    return viewModel
 }

@@ -10,12 +10,15 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.FloatingActionButtonDefaults
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material3.Card
+import androidx.compose.material.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
@@ -29,6 +32,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import co.com.japl.finances.iports.dtos.AccountDTO
 import co.com.japl.ui.components.AlertDialogOkCancel
 import co.com.japl.ui.components.Carousel
 import co.com.japl.ui.components.FieldView
@@ -42,6 +47,8 @@ import co.japl.android.myapplication.finanzas.view.accounts.inputs.lists.InputLi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.time.LocalDate
+import java.time.LocalDateTime
 
 @Composable
 fun AccountList(viewModel: AccountViewModel) {
@@ -64,7 +71,11 @@ fun AccountList(viewModel: AccountViewModel) {
 
         Scaffold(
             floatingActionButton = {
-                IconButton(onClick = { viewModel.add() }) {
+                FloatingActionButton(onClick = { viewModel.add() },
+                    elevation =  FloatingActionButtonDefaults.elevation(
+                        defaultElevation = 10.dp
+                    ),
+                    backgroundColor =  MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.5f)) {
                     Icon(
                         imageVector = Icons.Rounded.Add,
                         contentDescription = stringResource(id = R.string.create)
@@ -105,7 +116,7 @@ private fun Body(viewModel: AccountViewModel,modifier:Modifier) {
              }
          }
 
-         Column(modifier=Modifier.verticalScroll(rememberScrollState())) {
+         Column {
              InputList(
                  modelView = InputListModelView(
                      LocalContext.current,
@@ -153,5 +164,6 @@ fun AccountListPreview() {
 fun getViewModel():AccountViewModel{
     val viewModel = AccountViewModel(accountSvc = null, inputSvc = null,navController = null)
     viewModel.loading.value = false
+    viewModel.list.add(AccountDTO(1, LocalDate.now(),"",true))
     return viewModel
 }

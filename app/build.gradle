@@ -14,8 +14,8 @@ android {
         applicationId "co.japl.android.myapplication"
         minSdk 26
         targetSdk 33
-        versionCode 4_05_03_063
-        versionName "Migrate Montly Bought Credit Card interface and fix issues in credit card setting (edit) it can not update a setting , credit rate (list) it can not scroll down  and account (list) it can not load records inmediately"
+        versionCode 4_05_03_066
+        versionName "Migrate Montly Bought Credit Card interface and fix issues in credit card setting (edit) it can not update a setting , credit rate (list) it can not scroll down  and account (list) it can not load records inmediately, floating button addes and fix issue in sum inputs"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }

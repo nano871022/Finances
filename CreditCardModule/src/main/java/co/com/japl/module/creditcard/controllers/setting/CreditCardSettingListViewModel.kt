@@ -4,6 +4,7 @@ import android.widget.Toast
 import androidx.compose.runtime.MutableFloatState
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.navigation.NavController
@@ -18,8 +19,7 @@ class CreditCardSettingListViewModel constructor(private val codCreditCard:Int, 
     var showProgress : MutableState<Boolean> = mutableStateOf(true)
     var progress : MutableFloatState = mutableFloatStateOf(0f)
 
-    private var _list = listOf<CreditCardSettingDTO>()
-    val list get() = _list
+    var list = mutableStateListOf<CreditCardSettingDTO>()
 
     fun onClick(){
         navController?.let { CreditCardSetting.navigate(codCreditCard,it) }
@@ -48,7 +48,7 @@ class CreditCardSettingListViewModel constructor(private val codCreditCard:Int, 
     suspend fun execute(){
         progress.floatValue = 0.4f
         creditCardSettingSvc?.let{it.getAll(codCreditCard)?.let {
-            _list = it
+            list.addAll( it)
             showProgress.value = false
         }}
         progress.floatValue = 0.8f

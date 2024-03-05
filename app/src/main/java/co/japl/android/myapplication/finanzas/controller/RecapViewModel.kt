@@ -8,6 +8,7 @@ import co.com.japl.finances.iports.inbounds.recap.IRecapPort
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import java.time.LocalDate
 import javax.inject.Inject
 
 //@AndroidEntryPoint
@@ -43,7 +44,7 @@ class RecapViewModel @Inject constructor(private var recapSvc:IRecapPort?) : Vie
     suspend fun getRecap() = coroutineScope {
         launch {
             _currentProgress.value = 0.3f
-            _recap = recapSvc?.getTotalValues()
+            _recap = recapSvc?.getTotalValues(LocalDate.now())
             _currentProgress.value = 0.8f
         }
     }

@@ -17,18 +17,20 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.TextUnit
+import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
 import co.com.japl.ui.R
 import co.com.japl.ui.theme.MaterialThemeComposeUI
 
 @Composable
-fun FieldView(@StringRes name:Int, value:String, modifier: Modifier, color: Color = MaterialTheme.colorScheme.onPrimaryContainer,isMoney:Boolean = true){
-    FieldView(name = stringResource(id = name  ), value = value , modifier = modifier, color = color,isMoney)
+fun FieldView(@StringRes name:Int, value:String, modifier: Modifier, color: Color = MaterialTheme.colorScheme.onPrimaryContainer,isMoney:Boolean = true,alignment:Alignment = Alignment.BottomEnd,fontSize:TextUnit = TextUnit.Unspecified){
+    FieldView(name = stringResource(id = name  ), value = value , modifier = modifier, color = color,isMoney,alignment,fontSize)
 }
 
 
 @Composable
-fun FieldView(name:String, value:String, modifier: Modifier, color: Color = MaterialTheme.colorScheme.onPrimaryContainer,isMoney:Boolean = true) {
+fun FieldView(name:String, value:String, modifier: Modifier, color: Color = MaterialTheme.colorScheme.onPrimaryContainer,isMoney:Boolean = true,alignment:Alignment = Alignment.BottomEnd,fontSize:TextUnit = TextUnit.Unspecified) {
     Box(
         modifier = modifier
             .padding(top = 2.dp, start = 3.dp, end = 3.dp, bottom = 2.dp)
@@ -48,14 +50,17 @@ fun FieldView(name:String, value:String, modifier: Modifier, color: Color = Mate
 
         if (isMoney) {
             Text(
-                text = "$", color = color, modifier = Modifier
+                text = "$", color = color,
+                fontSize = fontSize,
+                modifier = Modifier
                     .padding(top = 22.dp, start = 1.dp, end = 5.dp, bottom = 2.dp)
             )
         }
 
         Text(
-            text = "$value", color = color, modifier = Modifier
-                .align(alignment = Alignment.BottomEnd)
+            text = "$value", color = color,
+            fontSize = fontSize,modifier = Modifier
+                .align(alignment = alignment)
                 .padding(top = 22.dp, start = 10.dp, end = 1.dp, bottom = 2.dp)
         )
 
@@ -115,7 +120,9 @@ fun FieldView21Preview() {
     MaterialThemeComposeUI {
         FieldView(
             name = R.string.see_more,
-            value = "value",
+            value = "0,000.00",
+            alignment = Alignment.Center,
+            fontSize = TextUnit(48f, TextUnitType.Sp),
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(5.dp)

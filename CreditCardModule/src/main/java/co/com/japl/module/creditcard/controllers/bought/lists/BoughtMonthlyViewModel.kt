@@ -17,6 +17,7 @@ import co.com.japl.ui.utils.DateUtils
 import kotlinx.coroutines.runBlocking
 import java.time.LocalDate
 import java.time.LocalDateTime
+import java.time.Period
 
 class BoughtMonthlyViewModel constructor(private val creditRate:ITaxPort?,private val creditCardSvc: ICreditCardPort?,private val boughtCreditCardSvc: IBoughtPort?,private val navController: NavController?) : ViewModel(){
 
@@ -91,6 +92,11 @@ class BoughtMonthlyViewModel constructor(private val creditRate:ITaxPort?,privat
         cutOff.value = LocalDateTime.now()
         lastMonthPaid.value = LocalDateTime.now().minusMonths(1)
         graphList.clear()
+        showBought.value = false
+        showPeriodList.value = true
+        showList.value = false
+        showAdvance.value = false
+        showWallet.value = false
     }
 
     fun mainCreditCard()= runBlocking {
@@ -128,6 +134,7 @@ class BoughtMonthlyViewModel constructor(private val creditRate:ITaxPort?,privat
                 DateUtils.cutOff(creditCard.cutOffDay, LocalDate.now())?.let {
                     cutOff.value = it
                 }
+                daysLeftCutOff.value = Period.between(LocalDate.now(),cutOff.value.toLocalDate()).days
                 progress.floatValue = 0.4f
                 DateUtils.cutOffLastMonth(creditCard.cutOffDay, cutOff.value)?.let {
                     lastMonthPaid.value = it
@@ -144,7 +151,7 @@ class BoughtMonthlyViewModel constructor(private val creditRate:ITaxPort?,privat
                         toOneQuote.value = it.numOneQuote
                         totalValue.value = it.totalQuote
                     }
-                    limitvalue.value += totalValue.value - warningValue.value
+                    limitvalue.value += warningValue.value - totalValue.value
 
                     it.graph?.let(graphList::addAll)
 
@@ -159,7 +166,7 @@ class BoughtMonthlyViewModel constructor(private val creditRate:ITaxPort?,privat
 
                 creditRate?.let {
                     progress.floatValue = 0.9f
-                    it.getByCreditCard(creditCard.id)?.let{
+                    it.getByCreditCard(creditCard.id,cutOff.value.toLocalDate())?.let{
                         it.forEach {
                             when(it.kind){
                                 KindInterestRateEnum.CASH_ADVANCE->showAdvance.value = true
