@@ -5,9 +5,9 @@ import android.database.sqlite.SQLiteOpenHelper
 import android.os.Build
 import android.provider.BaseColumns
 import androidx.annotation.RequiresApi
-import co.japl.android.finances.services.dao.interfaces.IInputSvc
+import co.japl.android.finances.services.dao.interfaces.IInputDAO
 import co.japl.android.finances.services.dto.*
-import co.japl.android.finances.services.dao.interfaces.IAccountSvc
+import co.japl.android.finances.services.dao.interfaces.IAccountDAO
 import co.japl.android.finances.services.mapping.AccountMap
 import co.japl.android.finances.services.utils.DatabaseConstants
 import java.math.BigDecimal
@@ -15,8 +15,8 @@ import java.time.LocalDate
 import java.util.*
 import javax.inject.Inject
 
-class AccountImpl @Inject constructor(override var dbConnect: SQLiteOpenHelper,val inputImpl:IInputSvc) :
-    IAccountSvc {
+class AccountImpl @Inject constructor(override var dbConnect: SQLiteOpenHelper,val inputImpl:IInputDAO) :
+    IAccountDAO {
     val COLUMNS = arrayOf(
         BaseColumns._ID,
         AccountDB.Entry.COLUMN_DATE_CREATE,

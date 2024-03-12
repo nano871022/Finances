@@ -13,14 +13,15 @@ import co.com.japl.finances.iports.inbounds.creditcard.ITaxPort
 import co.com.japl.finances.iports.inbounds.creditcard.bought.IBoughtPort
 import co.com.japl.finances.iports.inbounds.creditcard.bought.lists.IBoughtListPort
 import co.com.japl.module.creditcard.navigations.Bought
+import co.com.japl.ui.Prefs
 import co.com.japl.ui.utils.DateUtils
 import kotlinx.coroutines.runBlocking
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.Period
 
-class BoughtMonthlyViewModel constructor(private val creditRate:ITaxPort?,private val creditCardSvc: ICreditCardPort?,private val boughtCreditCardSvc: IBoughtPort?,private val navController: NavController?) : ViewModel(){
-
+class BoughtMonthlyViewModel constructor(private val creditRate:ITaxPort?,private val creditCardSvc: ICreditCardPort?,private val boughtCreditCardSvc: IBoughtPort?,private val navController: NavController?,private val prefs:Prefs) : ViewModel(){
+    val cache = mutableStateOf(prefs.simulator)
     var progress = mutableFloatStateOf(0f)
     var loader = mutableStateOf(false)
 
@@ -28,6 +29,7 @@ class BoughtMonthlyViewModel constructor(private val creditRate:ITaxPort?,privat
     var creditCardSelected :CreditCardDTO ? = null
     val creditCardList = mutableListOf<Pair<Int,String>>()
     val graphList = mutableListOf<Pair<String,Double>>()
+    val graphListPeriod = mutableListOf<Pair<String,Double>>()
     val creditCard= mutableStateOf("")
     val creditCardCode = mutableIntStateOf(0)
 
@@ -129,22 +131,22 @@ class BoughtMonthlyViewModel constructor(private val creditRate:ITaxPort?,privat
         if (creditCardCode.intValue != 0) {
             clear()
             listCreditCard?.first { it.id == creditCardCode.intValue }?.let {creditCard->
-                progress.floatValue = 0.3f
+                progress.floatValue = 0.2f
                 creditCardSelected = creditCard
                 DateUtils.cutOff(creditCard.cutOffDay, LocalDate.now())?.let {
                     cutOff.value = it
                 }
                 daysLeftCutOff.value = Period.between(LocalDate.now(),cutOff.value.toLocalDate()).days
-                progress.floatValue = 0.4f
+                progress.floatValue = 0.3f
                 DateUtils.cutOffLastMonth(creditCard.cutOffDay, cutOff.value)?.let {
                     lastMonthPaid.value = it
                 }
-                progress.floatValue = 0.5f
+                progress.floatValue = 0.4f
                 warningValue.value = creditCard.warningValue.toDouble()
-                progress.floatValue = 0.6f
-                boughtCreditCardSvc?.getRecap(creditCard, cutOff.value)?.let {
+                progress.floatValue = 0.5f
+                boughtCreditCardSvc?.getRecap(creditCard, cutOff.value,cache.value)?.let {
                     it.current?.let {
-                        progress.floatValue = 0.7f
+                        progress.floatValue = 0.6f
                         capitalValue.value = it.capitalValue
                         interestValue.value = it.interestValue
                         toQuotes.value = it.numQuotes
@@ -156,12 +158,17 @@ class BoughtMonthlyViewModel constructor(private val creditRate:ITaxPort?,privat
                     it.graph?.let(graphList::addAll)
 
                     it.last?.let {
-                        progress.floatValue = 0.8f
+                        progress.floatValue = 0.7f
                         capitalWithoutQuotesLastMonth.value += it.capitalOneQuote
                         capitalQuotesLastMonth.value += it.capitalQuotes
                         interestValueLastMonth.value += it.interestValue
                         totalValueLastMonth.value += it.totalQuote
                     }
+                }
+
+                boughtCreditCardSvc?.getBoughtCurrentPeriodList(creditCard,cutOff.value,cache.value)?.let{
+                    graphListPeriod.addAll(it)
+                    progress.floatValue = 0.8f
                 }
 
                 creditRate?.let {

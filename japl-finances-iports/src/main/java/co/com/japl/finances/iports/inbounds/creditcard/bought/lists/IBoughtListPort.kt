@@ -8,18 +8,18 @@ import java.time.LocalDateTime
 
 interface IBoughtListPort {
 
-    fun getBoughtList(creditCardDTO: CreditCardDTO, cutOff:LocalDateTime):CreditCardBoughtListDTO
+    fun getBoughtList(creditCardDTO: CreditCardDTO, cutOff:LocalDateTime,cache:Boolean):CreditCardBoughtListDTO
 
-    fun getBoughtPeriodList(idCreditCard:Int):List<BoughtCreditCardPeriodDTO>
+    fun getBoughtPeriodList(idCreditCard:Int,cache:Boolean):List<BoughtCreditCardPeriodDTO>
 
-    fun delete(codeBought:Int):Boolean
+    fun delete(codeBought:Int,cache:Boolean):Boolean
 
     fun endingRecurrentPayment(codeBought: Int, cutOff:LocalDateTime):Boolean
 
-    fun updateRecurrentValue(codeBought:Int, value:Double, cutOff:LocalDateTime):Boolean
+    fun updateRecurrentValue(codeBought:Int, value:Double, cutOff:LocalDateTime, cache:Boolean):Boolean
 
-    fun differntInstallment(codeBought:Int, value:Long, cutOff:LocalDateTime):Boolean
+    fun differntInstallment(codeBought:Int, value:Long, cutOff:LocalDateTime, cache:Boolean):Boolean
 
-    fun clone(codeBought:Int):Boolean
+    fun clone(codeBought:Int,cache: Boolean):Boolean
 
 }

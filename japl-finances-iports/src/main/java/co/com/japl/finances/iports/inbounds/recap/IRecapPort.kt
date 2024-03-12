@@ -5,5 +5,5 @@ import java.time.LocalDate
 
 interface IRecapPort {
 
-    fun getTotalValues(cutOff:LocalDate):RecapDTO
+    fun getTotalValues(cutOff:LocalDate,cache:Boolean):RecapDTO
 }

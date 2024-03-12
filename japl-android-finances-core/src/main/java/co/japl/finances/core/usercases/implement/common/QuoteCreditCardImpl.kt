@@ -36,17 +36,17 @@ class QuoteCreditCardImpl @Inject constructor(private val creditCardSvc:ICreditC
     , private val listBoughts: ListBoughts
 ): IQuoteCreditCard {
 
-    override fun getTotalQuote(): BigDecimal {
+    override fun getTotalQuote(cache:Boolean): BigDecimal {
         return creditCardSvc.getAll().filter { it.status }.sumOf {creditCard->
             val creditCardPojo = CreditCardMap.mapper(creditCard)
             val endDate = DateUtils.cutOffLastMonth(creditCardPojo.cutoffDay)
             val startDate = DateUtils.startDateFromCutoff(creditCardPojo.cutoffDay,endDate)
-            val capital = getCapital(creditCard.id, startDate, endDate)?:BigDecimal.ZERO
+            val capital = getCapital(creditCard.id, startDate, endDate,cache)?:BigDecimal.ZERO
             val capitalQuotes =
-                getCapitalPendingQuotes(creditCard.id, startDate, endDate)?:BigDecimal.ZERO
-            val interest = getInterest(creditCard.id, startDate, endDate)?:BigDecimal.ZERO
+                getCapitalPendingQuotes(creditCard.id, startDate, endDate,cache)?:BigDecimal.ZERO
+            val interest = getInterest(creditCard.id, startDate, endDate,cache)?:BigDecimal.ZERO
             val interestQuote =
-                getInterestPendingQuotes(creditCard.id, startDate, endDate)?:BigDecimal.ZERO
+                getInterestPendingQuotes(creditCard.id, startDate, endDate,cache)?:BigDecimal.ZERO
             capital + capitalQuotes+ interest + interestQuote.also{
                 Log.d(javaClass.name,"<<<=== getTotalQuote - Capital $capital Capital Quotes $capitalQuotes Interest $interest Interest Quote $interestQuote Response $it")
             }
@@ -58,11 +58,11 @@ class QuoteCreditCardImpl @Inject constructor(private val creditCardSvc:ICreditC
         return valuesCalculation.getCapital(it.id,it.valueItem.toDouble(),it.month.toShort(),differQuotes)
     }
 
-    override fun getCapital(key: Int, startDate: LocalDateTime, cutOff: LocalDateTime): BigDecimal {
+    override fun getCapital(key: Int, startDate: LocalDateTime, cutOff: LocalDateTime,cache:Boolean): BigDecimal {
         Log.v(this.javaClass.name,"<<<=== getCapital - Start")
         val differQuotes = differInstallmentSvc.get(cutOff.toLocalDate())
 
-        val list = quoteCCImpl.getToDate(key,startDate, cutOff)
+        val list = quoteCCImpl.getToDate(key,startDate, cutOff,cache)
 
         val capitalRecurrent = quoteCCImpl.getRecurrentBuys(key, cutOff).sumOf {sumCapitalValue(it,differQuotes)}
         val capital = list.filter{it.month == 1}.sumOf{sumCapitalValue(it,differQuotes)}
@@ -72,12 +72,12 @@ class QuoteCreditCardImpl @Inject constructor(private val creditCardSvc:ICreditC
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    override fun getCapitalPendingQuotes(key: Int,startDate: LocalDateTime, cutOff: LocalDateTime): BigDecimal {
+    override fun getCapitalPendingQuotes(key: Int,startDate: LocalDateTime, cutOff: LocalDateTime,cache:Boolean): BigDecimal {
         Log.v(this.javaClass.name,"<<<=== STARTING::getCapitalPendingQuotes ")
         val differQuotes = differInstallmentSvc.get(cutOff.toLocalDate())
 
-        val list = quoteCCImpl.getPendingQuotes(key,startDate,cutOff).toMutableList()
-        quoteCCImpl.getRecurrentPendingQuotes(key, cutOff)?.let{list.addAll(it)}
+        val list = quoteCCImpl.getPendingQuotes(key,startDate,cutOff,cache).toMutableList()
+        quoteCCImpl.getRecurrentPendingQuotes(key, cutOff,cache)?.let{list.addAll(it)}
         val value = list.sumOf {
              valuesCalculation.getCapital(it.id,it.valueItem.toDouble(),it.month.toShort(),differQuotes)
         }
@@ -85,7 +85,7 @@ class QuoteCreditCardImpl @Inject constructor(private val creditCardSvc:ICreditC
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    override fun getInterest(codCreditCard: Int, startDate:LocalDateTime,cutOff: LocalDateTime): BigDecimal {
+    override fun getInterest(codCreditCard: Int, startDate:LocalDateTime,cutOff: LocalDateTime,cache:Boolean): BigDecimal {
         Log.d(this.javaClass.name,"<<<=== START: getInterest ")
         val period = YearMonth.from(cutOff)
         val tax = interestCalculation.getTax(codCreditCard, KindInterestRateEnum.CREDIT_CARD,period)
@@ -102,7 +102,7 @@ class QuoteCreditCardImpl @Inject constructor(private val creditCardSvc:ICreditC
         val interestRecurrent = listRecurrent.filter{ it.month > firstQuote}
             .sumOf {calculateInterest(creditCard,it,tax,taxCashAdv,cutOff)}
 
-        val list = quoteCCImpl.getToDate(codCreditCard,startDate,cutOff)
+        val list = quoteCCImpl.getToDate(codCreditCard,startDate,cutOff,cache)
 
         val interestSomeMonths = list.filter{ it.month > firstQuote}
             .sumOf{calculateInterest(creditCard,it,tax,taxCashAdv,cutOff)}
@@ -111,15 +111,15 @@ class QuoteCreditCardImpl @Inject constructor(private val creditCardSvc:ICreditC
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    override fun getInterestPendingQuotes(codCreditCard: Int,startDate: LocalDateTime, cutOff: LocalDateTime): BigDecimal? {
+    override fun getInterestPendingQuotes(codCreditCard: Int,startDate: LocalDateTime, cutOff: LocalDateTime,cache:Boolean): BigDecimal? {
         Log.d(this.javaClass.name,"<<<=== STARTING::getInterestPendingQuotes Cod Credit Card: $codCreditCard Start: $startDate CutOff: $cutOff")
         val creditCard = creditCardSvc.get(codCreditCard)
         val period = YearMonth.from(cutOff)
         val tax = interestCalculation.getTax(codCreditCard, KindInterestRateEnum.CREDIT_CARD,period)
         val taxCashAdv = interestCalculation.getTax(codCreditCard, KindInterestRateEnum.CASH_ADVANCE,period)
 
-        val list = quoteCCImpl.getPendingQuotes(codCreditCard,startDate,cutOff)
-        val listRecurrent = quoteCCImpl.getRecurrentPendingQuotes(codCreditCard,cutOff)
+        val list = quoteCCImpl.getPendingQuotes(codCreditCard,startDate,cutOff,cache)
+        val listRecurrent = quoteCCImpl.getRecurrentPendingQuotes(codCreditCard,cutOff,cache)
         val value = list.sumOf {calculateInterest(creditCard,it,tax,taxCashAdv,cutOff)}
         val valueRecurrent = listRecurrent.sumOf { calculateInterest(creditCard,it,tax,taxCashAdv,cutOff)}
         return (value + valueRecurrent).also { Log.d(this.javaClass.name,"<<<=== ENDING::getInterestPendingQuotes  $it") }
@@ -143,6 +143,7 @@ class QuoteCreditCardImpl @Inject constructor(private val creditCardSvc:ICreditC
     override fun getDataToGraphStats(
         codCreditCard: Int,
         cutOff: LocalDateTime
+        ,cache:Boolean
     ): List<Pair<String, Double>> {
         val period = YearMonth.from(cutOff)
         val tax = interestCalculation.getTax(codCreditCard, KindInterestRateEnum.CREDIT_CARD,period)
@@ -151,7 +152,7 @@ class QuoteCreditCardImpl @Inject constructor(private val creditCardSvc:ICreditC
         val creditCard = CreditCardMap.mapper(creditCardDto!!)
         val differQuotes = differInstallmentSvc.get(cutOff.toLocalDate())
 
-        val joinList = listBoughts.getList(creditCard,cutOff)
+        val joinList = listBoughts.getList(creditCard,cutOff,cache)
 
         val withTags = joinList.filter { tagQuoteCreditSvc.getTags(it.id).isNotEmpty() }
         val tags = withTags.map {

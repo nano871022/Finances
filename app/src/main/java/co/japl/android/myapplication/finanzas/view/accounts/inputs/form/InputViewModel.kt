@@ -73,7 +73,7 @@ class InputViewModel constructor(private val codeAccount:Int,private val codeInp
                 name.value,
                 value.value.toBigDecimal(),
                 LocalDate.now(),
-                LocalDate.now())
+                LocalDate.MAX)
             _input = input
         }
     }

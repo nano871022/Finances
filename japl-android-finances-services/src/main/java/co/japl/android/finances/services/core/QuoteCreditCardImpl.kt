@@ -4,22 +4,20 @@ import android.database.CursorWindowAllocationException
 import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
-import co.com.japl.finances.iports.dtos.BoughtCreditCardPeriodDTO
 import co.japl.android.finances.services.core.mapper.CreditCardBoughtMapper
-import co.japl.android.finances.services.interfaces.IQuoteCreditCardSvc
+import co.japl.android.finances.services.dao.interfaces.IQuoteCreditCardDAO
 import co.com.japl.finances.iports.outbounds.IQuoteCreditCardPort
 import co.com.japl.finances.iports.dtos.CreditCardBoughtDTO
-import co.japl.android.finances.services.core.mapper.BoughtCreditCardPeriodMapper
+import co.japl.android.finances.services.cache.interfaces.IQuoteCreditCardCache
 import co.japl.android.finances.services.interfaces.ICreditCardSvc
 import co.japl.android.finances.services.utils.DateUtils
 import java.math.BigDecimal
-import java.time.LocalDate
 import java.time.LocalDateTime
-import java.time.LocalTime
-import java.util.Optional
 import javax.inject.Inject
 
-class QuoteCreditCardImpl @Inject constructor(private val quoteCCSvc: IQuoteCreditCardSvc, private val creditcardSvc:ICreditCardSvc): IQuoteCreditCardPort {
+class QuoteCreditCardImpl @Inject constructor(private val quoteCCSvc: IQuoteCreditCardDAO,
+                                              private val creditcardSvc:ICreditCardSvc,
+                                              private val quoteCreditCardCache:IQuoteCreditCardCache): IQuoteCreditCardPort {
     override fun getRecurrentBuys(key: Int, cutOff: LocalDateTime): List<CreditCardBoughtDTO> {
         return quoteCCSvc.getRecurrentBuys(key,cutOff).map (CreditCardBoughtMapper::mapper)
     }
@@ -27,9 +25,11 @@ class QuoteCreditCardImpl @Inject constructor(private val quoteCCSvc: IQuoteCred
     override fun getToDate(
         key: Int,
         startDate: LocalDateTime,
-        cutOffDate: LocalDateTime
+        cutOffDate: LocalDateTime,
+        cache: Boolean
     ): List<CreditCardBoughtDTO> {
-        return quoteCCSvc.getToDate(key,startDate,cutOffDate).map (CreditCardBoughtMapper::mapper)
+        return if(cache.not()){quoteCCSvc.getToDate(key,startDate,cutOffDate).map (CreditCardBoughtMapper::mapper)}
+        else{quoteCreditCardCache.getToDate(key,startDate,cutOffDate).map (CreditCardBoughtMapper::mapper)}
     }
 
     override fun getCapitalPendingQuotes(
@@ -43,31 +43,38 @@ class QuoteCreditCardImpl @Inject constructor(private val quoteCCSvc: IQuoteCred
     override fun getInterestPendingQuotes(
         idCreditCard: Int,
         startDate: LocalDateTime,
-        endDate: LocalDateTime
+        endDate: LocalDateTime,
+        cache: Boolean
     ): BigDecimal? {
-        return quoteCCSvc.getInterestPendingQuotes(idCreditCard,startDate,endDate).orElse(BigDecimal.ZERO)
+        return if(cache.not()){quoteCCSvc.getInterestPendingQuotes(idCreditCard,startDate,endDate).orElse(BigDecimal.ZERO)}
+        else{quoteCreditCardCache.getInterestPendingQuotes(idCreditCard,startDate,endDate)?:BigDecimal.ZERO}
     }
 
     override fun getPendingQuotes(
         key: Int,
         startDate: LocalDateTime,
         cutoffCurrent: LocalDateTime
+        ,cache:Boolean
     ): List<CreditCardBoughtDTO> {
-        return quoteCCSvc.getPendingQuotes(key,startDate,cutoffCurrent).map (CreditCardBoughtMapper::mapper)
+        return if(cache.not()){quoteCCSvc.getPendingQuotes(key,startDate,cutoffCurrent).map (CreditCardBoughtMapper::mapper)}
+        else{quoteCreditCardCache.getPendingQuotes(key,startDate,cutoffCurrent).map (CreditCardBoughtMapper::mapper)}
     }
 
     override fun getRecurrentPendingQuotes(
         key: Int,
         cutOff: LocalDateTime
+        ,cache:Boolean
     ): List<CreditCardBoughtDTO> {
-        return quoteCCSvc.getRecurrentPendingQuotes(key, cutOff).map(CreditCardBoughtMapper::mapper)
+        return if(cache.not()){quoteCCSvc.getRecurrentPendingQuotes(key, cutOff).map(CreditCardBoughtMapper::mapper)}
+        else{quoteCreditCardCache.getRecurrentPendingQuotes(key, cutOff).map(CreditCardBoughtMapper::mapper)}
     }
 
-    override fun get(codeBought: Int): CreditCardBoughtDTO? {
-        return quoteCCSvc.get(codeBought).takeIf { it.isPresent }?.map(CreditCardBoughtMapper::mapper)?.get()
+    override fun get(codeBought: Int,cache:Boolean): CreditCardBoughtDTO? {
+        return if(cache.not()){quoteCCSvc.get(codeBought).takeIf { it.isPresent }?.map(CreditCardBoughtMapper::mapper)?.get()}
+        else{quoteCreditCardCache.get(codeBought)?.let(CreditCardBoughtMapper::mapper)}
     }
 
-    override fun delete(key: Int): Boolean {
+    override fun delete(key: Int,cache:Boolean): Boolean {
         return quoteCCSvc.delete(key)
     }
 
@@ -75,14 +82,16 @@ class QuoteCreditCardImpl @Inject constructor(private val quoteCCSvc: IQuoteCred
         return quoteCCSvc.endingRecurrentPayment(key,cutOff)
     }
 
-    override fun create(bought: CreditCardBoughtDTO): Int {
+    override fun create(bought: CreditCardBoughtDTO,cache:Boolean): Int {
         require(bought.id == 0)
-        return quoteCCSvc.save(CreditCardBoughtMapper.mapper(bought)).toInt()
+        return if(cache.not()){quoteCCSvc.save(CreditCardBoughtMapper.mapper(bought)).toInt()}
+        else{quoteCreditCardCache.create(CreditCardBoughtMapper.mapper(bought))}
     }
 
-    override fun update(bought: CreditCardBoughtDTO): Boolean {
+    override fun update(bought: CreditCardBoughtDTO,cache:Boolean): Boolean {
         require(bought.id > 0)
-        return quoteCCSvc.save(CreditCardBoughtMapper.mapper(bought)).toInt() > 0
+        return if(cache.not()){quoteCCSvc.save(CreditCardBoughtMapper.mapper(bought)).toInt() > 0}
+        else{quoteCreditCardCache.update(CreditCardBoughtMapper.mapper(bought))}
     }
 
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)

@@ -31,7 +31,7 @@ class PaidListImpl @Inject constructor(
                                        , private val listBoughts: ListBoughts
 ) :IPaidList{
 
-    override fun getBoughtPeriodList(idCreditCard: Int): List<BoughtCreditCardPeriodDTO>? {
+    override fun getBoughtPeriodList(idCreditCard: Int,cache:Boolean): List<BoughtCreditCardPeriodDTO>? {
         val creditCard = creditCardSvc.get(idCreditCard)?.let{CreditCardMap.mapper(it)}
         val list =  quoteCCSvc.getBoughtPeriodList(idCreditCard)
 
@@ -40,7 +40,7 @@ class PaidListImpl @Inject constructor(
             val periodStart = DateUtils.startDateFromCutoff(creditCard?.cutoffDay!!,cutoff)
 
             val period = YearMonth.of(cutoff.year,cutoff.month)
-            val list = listBoughts.getList(creditCard!!,cutoff)
+            val list = listBoughts.getList(creditCard!!,cutoff,cache)
             val taxQuote = interestCalculation.getTax(creditCard.codeCreditCard,KindInterestRateEnum.CREDIT_CARD,period)
             val taxAdvance = interestCalculation.getTax(creditCard.codeCreditCard,KindInterestRateEnum.CASH_ADVANCE,period)
             val differQuotes = differQuotesSvc.get(cutoff.toLocalDate())

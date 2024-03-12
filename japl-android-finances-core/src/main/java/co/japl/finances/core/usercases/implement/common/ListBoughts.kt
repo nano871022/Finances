@@ -20,12 +20,12 @@ class ListBoughts @Inject constructor(
     , private val interestCalculation: InterestCalculations
 ){
 
-    internal fun getList(creditCard: CreditCard,cutOff:LocalDateTime): List<CreditCardBoughtItemDTO> {
+    internal fun getList(creditCard: CreditCard,cutOff:LocalDateTime,cache:Boolean): List<CreditCardBoughtItemDTO> {
         val startDate = DateUtils.startDateFromCutoff(creditCard.cutoffDay,cutOff)
-        val mainList = getMainList(creditCard,startDate,cutOff)
+        val mainList = getMainList(creditCard,startDate,cutOff,cache)
         val recurrentList = getRecurrentList(creditCard,cutOff)
-        val recurrentPendingList = getRecurrentListPending(creditCard,cutOff)
-        val pendingList = getPendingList(creditCard,startDate,cutOff)
+        val recurrentPendingList = getRecurrentListPending(creditCard,cutOff,cache)
+        val pendingList = getPendingList(creditCard,startDate,cutOff,cache)
 
         val list = ArrayList<CreditCardBoughtDTO>()
         list.addAll(mainList)
@@ -68,12 +68,12 @@ class ListBoughts @Inject constructor(
         return dto
     }
 
-    private fun getPendingList(creditCard:CreditCard,startDate: LocalDateTime,cutOff:LocalDateTime): List<CreditCardBoughtDTO> {
-        return quoteCCSvc.getPendingQuotes(creditCard.codeCreditCard,startDate,cutOff)
+    private fun getPendingList(creditCard:CreditCard,startDate: LocalDateTime,cutOff:LocalDateTime,cache: Boolean): List<CreditCardBoughtDTO> {
+        return quoteCCSvc.getPendingQuotes(creditCard.codeCreditCard,startDate,cutOff,cache)
     }
 
-    private fun getRecurrentListPending(creditCard: CreditCard,cutOff:LocalDateTime): List<CreditCardBoughtDTO> {
-        return quoteCCSvc.getRecurrentPendingQuotes(creditCard.codeCreditCard,cutOff).also{
+    private fun getRecurrentListPending(creditCard: CreditCard,cutOff:LocalDateTime,cache: Boolean): List<CreditCardBoughtDTO> {
+        return quoteCCSvc.getRecurrentPendingQuotes(creditCard.codeCreditCard,cutOff,cache).also{
             Log.d(javaClass.name,"=== PendingRecurrentList: ${it.size} $it")
         }
     }
@@ -90,8 +90,8 @@ class ListBoughts @Inject constructor(
         }
     }
 
-    private fun getMainList(creditCard:CreditCard,startDate: LocalDateTime,cutOff:LocalDateTime): List<CreditCardBoughtDTO> {
-        return quoteCCSvc.getToDate(creditCard.codeCreditCard,startDate,cutOff).also {
+    private fun getMainList(creditCard:CreditCard,startDate: LocalDateTime,cutOff:LocalDateTime,cache:Boolean): List<CreditCardBoughtDTO> {
+        return quoteCCSvc.getToDate(creditCard.codeCreditCard,startDate,cutOff,cache).also {
             Log.d(javaClass.name,"=== MainList: ${it.size} $it")
         }
     }

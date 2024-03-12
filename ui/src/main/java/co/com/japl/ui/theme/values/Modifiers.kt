@@ -31,4 +31,8 @@ object ModifiersCustom {
         return Modifier.align(alignment = Alignment.CenterVertically).padding(end=Dimensions.PADDING_SPACE_BETWEEN_FIELD_RIGHT)
     }
 
+    fun FieldFillMAxWidhtAndPaddingShort():Modifier{
+        return Modifier.fillMaxWidth().padding(bottom=Dimensions.PADDING_SHORT)
+    }
+
 }

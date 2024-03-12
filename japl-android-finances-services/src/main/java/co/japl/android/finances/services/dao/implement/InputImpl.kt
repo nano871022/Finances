@@ -7,7 +7,7 @@ import android.provider.BaseColumns
 import android.util.Log
 import androidx.annotation.RequiresApi
 import co.japl.android.finances.services.dto.*
-import co.japl.android.finances.services.dao.interfaces.IInputSvc
+import co.japl.android.finances.services.dao.interfaces.IInputDAO
 import co.japl.android.finances.services.mapping.InputMap
 import co.japl.android.finances.services.utils.DatabaseConstants
 import co.japl.android.finances.services.utils.DateUtils
@@ -16,7 +16,7 @@ import java.time.LocalDate
 import java.util.*
 import javax.inject.Inject
 
-class InputImpl @Inject constructor(override var dbConnect: SQLiteOpenHelper,public var mapper : InputMap) : IInputSvc{
+class InputImpl @Inject constructor(override var dbConnect: SQLiteOpenHelper,public var mapper : InputMap) : IInputDAO{
     val COLUMNS = arrayOf(
         BaseColumns._ID,
         InputDB.Entry.COLUMN_DATE_INPUT,

@@ -1,18 +1,15 @@
 package co.japl.android.finances.services.core
 
 import co.com.japl.finances.iports.dtos.InputDTO
-import co.japl.android.finances.services.dao.interfaces.IInputSvc
+import co.japl.android.finances.services.dao.interfaces.IInputDAO
 import co.com.japl.finances.iports.outbounds.IInputPort
 import co.japl.android.finances.services.core.mapper.InputMapper
-import co.japl.finances.core.utils.DateUtils
 import java.math.BigDecimal
 import java.time.LocalDate
-import java.time.LocalDateTime
-import java.time.LocalTime
 import javax.inject.Inject
 import kotlin.jvm.optionals.getOrNull
 
-class InputImpl @Inject constructor(private val inputImpl:IInputSvc) : IInputPort {
+class InputImpl @Inject constructor(private val inputImpl:IInputDAO) : IInputPort {
     override fun getTotalInputs(cutOff:LocalDate): BigDecimal? {
         val records = inputImpl.getAll().filter{ it.dateEnd.isAfter(cutOff) }
         val monthly = records.filter {

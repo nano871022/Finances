@@ -207,7 +207,7 @@ abstract class AbstractModule {
     abstract fun bindOutboundQuoteCreditCard(implement: co.japl.android.finances.services.core.QuoteCreditCardImpl): co.com.japl.finances.iports.outbounds.IQuoteCreditCardPort
 
     @Binds
-    abstract fun bindServiceQuoteCreditCard(implement: co.japl.android.finances.services.implement.SaveCreditCardBoughtImpl): co.japl.android.finances.services.interfaces.IQuoteCreditCardSvc
+    abstract fun bindServiceQuoteCreditCard(implement: co.japl.android.finances.services.dao.implement.SaveCreditCardBoughtImpl): co.japl.android.finances.services.dao.interfaces.IQuoteCreditCardDAO
 
     @Binds
     abstract fun bindOutboundDifferInstallment(implement: co.japl.android.finances.services.core.DifferInstallmentImpl): co.com.japl.finances.iports.outbounds.IDifferInstallmentRecapPort
@@ -226,7 +226,7 @@ abstract class AbstractModule {
     abstract fun bindOutboundRate(implement: co.japl.finances.core.usercases.implement.creditcard.TaxImpl): ITax
 
     @Binds
-    abstract fun bindServiceTax(implement: co.japl.android.finances.services.dao.implement.TaxImpl): co.japl.android.finances.services.dao.interfaces.ITaxSvc
+    abstract fun bindServiceTax(implement: co.japl.android.finances.services.dao.implement.TaxImpl): co.japl.android.finances.services.dao.interfaces.ITaxDAO
 
     @Binds
     abstract fun bindOutboundBuyCreditCardSetting(implement: co.japl.android.finances.services.core.BuyCreditCardSettingImpl): co.com.japl.finances.iports.outbounds.IBuyCreditCardSettingPort
@@ -245,7 +245,7 @@ abstract class AbstractModule {
     abstract fun bindUserCaseInput(implement: co.japl.finances.core.usercases.implement.common.InputImpl): IInput
 
     @Binds
-    abstract fun bindServiceInput(implement: co.japl.android.finances.services.dao.implement.InputImpl): co.japl.android.finances.services.dao.interfaces.IInputSvc
+    abstract fun bindServiceInput(implement: co.japl.android.finances.services.dao.implement.InputImpl): co.japl.android.finances.services.dao.interfaces.IInputDAO
 
     @Binds
     abstract fun bindOutboundInput(implement: co.japl.android.finances.services.core.InputImpl): co.com.japl.finances.iports.outbounds.IInputPort
@@ -306,11 +306,13 @@ abstract class AbstractModule {
     abstract fun bindOutputCaseAccount(implement:co.japl.android.finances.services.core.AccountImpl):co.com.japl.finances.iports.outbounds.IAccountPort
 
     @Binds
-    abstract fun bindDAOAccount(implement:co.japl.android.finances.services.dao.implement.AccountImpl):co.japl.android.finances.services.dao.interfaces.IAccountSvc
+    abstract fun bindDAOAccount(implement:co.japl.android.finances.services.dao.implement.AccountImpl):co.japl.android.finances.services.dao.interfaces.IAccountDAO
 
     @Binds
     abstract fun bindInputBought(implement:co.japl.finances.core.adapters.inbound.implement.creditcard.bought.BoughtImpl):IBoughtPort
 
     @Binds
     abstract fun bindUserCaseBought(implement:co.japl.finances.core.usercases.implement.creditcard.bought.Bought):IBought
+
+
 }

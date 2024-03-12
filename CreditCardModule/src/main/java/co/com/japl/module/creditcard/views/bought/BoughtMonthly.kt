@@ -1,5 +1,7 @@
 package co.com.japl.module.creditcard.views.bought
 
+import android.app.Application
+import android.content.Context
 import android.content.res.Configuration
 import android.os.Build
 import android.util.Log
@@ -55,6 +57,7 @@ import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
 import co.com.japl.module.creditcard.R
 import co.com.japl.module.creditcard.controllers.bought.lists.BoughtMonthlyViewModel
+import co.com.japl.ui.Prefs
 import co.com.japl.ui.components.Carousel
 import co.com.japl.ui.components.FieldSelect
 import co.com.japl.ui.components.FieldView
@@ -168,7 +171,7 @@ private fun Loaded(viewModel:BoughtMonthlyViewModel){
                 }
 
 
-            Graphs(list = viewModel.graphList)
+            Graphs(list = viewModel.graphList,listPeriod = viewModel.graphListPeriod)
         }
     }
 }
@@ -360,36 +363,80 @@ private fun BodyLarge(cutOffDay:LocalDate,daysLeftCutoff:Int,totalValue: Double)
 
 @OptIn(ExperimentalComposeUiApi::class, ExperimentalFoundationApi::class)
 @Composable
-private fun Graphs(list:List<Pair<String,Double>>) {
+private fun Graphs(list:List<Pair<String,Double>>,listPeriod:List<Pair<String,Double>>) {
+
+    Carousel(size = 2) {
+
+        if(it == 0) {
+            GraphList(list = list)
+        }else {
+            GraphMonth(list = listPeriod)
+        }
+    }
+}
+
+@OptIn(ExperimentalComposeUiApi::class)
+@Composable
+private fun GraphList(list:List<Pair<String,Double>>){
     val context = LocalContext.current
     val piecePie : IGraph = PieceOfPie(context)
     piecePie.clear()
     var invalidations by remember { mutableIntStateOf(0) }
-    Carousel(size = 1) {
-
-        Canvas(modifier = Modifier
-            .fillMaxWidth()
-            .height(500.dp)
-            .pointerInteropFilter {
-                when (it.actionMasked) {
-                    MotionEvent.ACTION_DOWN -> {
-                        piecePie.validateTouch(it.x, it.y)
-                        invalidations++
-                        true
-                    }
-
-                    else -> false
-                }
-            }) {
-            invalidations.let {
-                piecePie.drawBackground()
-
-                for(values in list) {
-                    piecePie.addPiece(title = values.first, value = values.second)
+    Canvas(modifier = Modifier
+        .fillMaxWidth()
+        .height(500.dp)
+        .pointerInteropFilter {
+            when (it.actionMasked) {
+                MotionEvent.ACTION_DOWN -> {
+                    piecePie.validateTouch(it.x, it.y)
+                    invalidations++
+                    true
                 }
 
-                piecePie.drawing(this.drawContext.canvas.nativeCanvas)
+                else -> false
             }
+        }) {
+        invalidations.let {
+            piecePie.drawBackground()
+
+            for (values in list) {
+                piecePie.addPiece(title = values.first, value = values.second)
+            }
+
+            piecePie.drawing(this.drawContext.canvas.nativeCanvas)
+        }
+    }
+}
+
+@OptIn(ExperimentalComposeUiApi::class)
+@Composable
+private fun GraphMonth(list:List<Pair<String,Double>>){
+    val context = LocalContext.current
+    val piecePie : IGraph = PieceOfPie(context)
+    piecePie.clear()
+    var invalidations by remember { mutableIntStateOf(0) }
+    Canvas(modifier = Modifier
+        .fillMaxWidth()
+        .height(500.dp)
+        .pointerInteropFilter {
+            when (it.actionMasked) {
+                MotionEvent.ACTION_DOWN -> {
+                    piecePie.validateTouch(it.x, it.y)
+                    invalidations++
+                    true
+                }
+
+                else -> false
+            }
+        }) {
+        invalidations.let {
+            piecePie.drawBackground()
+
+            for (values in list) {
+                piecePie.addPiece(title = values.first, value = values.second)
+            }
+
+            piecePie.drawing(this.drawContext.canvas.nativeCanvas)
         }
     }
 }
@@ -698,7 +745,7 @@ private fun RecapLastMonthMedium(lastMonthPaid:LocalDate,
 @Composable
 @Preview(showSystemUi = true, showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
 fun BoughtMonthlyPreviewNight(){
-    val viewModel = getViewMoel()
+    val viewModel = getViewMoel(LocalContext.current)
     MaterialThemeComposeUI {
 
         BoughtMonthly(viewModel)
@@ -709,7 +756,7 @@ fun BoughtMonthlyPreviewNight(){
 @Composable
 @Preview(showSystemUi = true, showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
 fun BoughtMonthlyPreview(){
-    val viewModel = getViewMoel()
+    val viewModel = getViewMoel(LocalContext.current)
     MaterialThemeComposeUI {
 
         BoughtMonthly(viewModel)
@@ -722,7 +769,7 @@ fun BoughtMonthlyPreview(){
     device = Devices.AUTOMOTIVE_1024p
 )
 fun BoughtMonthlyPreviewLandScape(){
-    val viewModel = getViewMoel()
+    val viewModel = getViewMoel(LocalContext.current)
     MaterialThemeComposeUI {
 
         BoughtMonthly(viewModel)
@@ -735,17 +782,19 @@ fun BoughtMonthlyPreviewLandScape(){
     device = Devices.FOLDABLE
 )
 fun BoughtMonthlyPreviewFold(){
-    val viewModel = getViewMoel()
+    val viewModel = getViewMoel(LocalContext.current)
     MaterialThemeComposeUI {
 
         BoughtMonthly(viewModel)
     }
 }
 
-private fun getViewMoel():BoughtMonthlyViewModel{
-    val viewModel = BoughtMonthlyViewModel(null,null,null,null)
+private fun getViewMoel(context:Context):BoughtMonthlyViewModel{
+    val prefs = Prefs(context)
+    val viewModel = BoughtMonthlyViewModel(null,null,null,null,prefs)
     viewModel.loader.value = true
     viewModel.graphList.addAll(arrayListOf(Pair("Issue 1",1000.0),Pair("Issue 2",2000.0)))
+    viewModel.graphListPeriod.addAll(arrayListOf(Pair("Issue 3",500.0),Pair("Issue 4",300.0)))
     viewModel.totalValue.value = 3000.0
     viewModel.totalValueLastMonth.value = 2000.0
     viewModel.showList.value = true

@@ -1,7 +1,10 @@
 package co.japl.android.myapplication.finanzas.view.creditcard.bought.list
 
 import android.app.Application
+import android.os.Build
 import android.util.Log
+import android.view.View
+import androidx.annotation.RequiresApi
 import androidx.annotation.StringRes
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -31,12 +34,14 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import co.com.japl.finances.iports.dtos.CreditCardBoughtItemDTO
 import co.com.japl.finances.iports.dtos.CreditCardDTO
 import co.com.japl.finances.iports.dtos.DifferInstallmentDTO
 import co.com.japl.finances.iports.enums.KindOfTaxEnum
 import co.com.japl.finances.iports.enums.KindInterestRateEnum
+import co.com.japl.ui.Prefs
 import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.japl.android.myapplication.R
 import co.com.japl.ui.utils.WindowWidthSize
@@ -48,15 +53,13 @@ import java.time.format.DateTimeFormatter
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-internal fun RecordBoughtCreditCard(bought: CreditCardBoughtItemDTO, creditCard: CreditCardDTO, differQuotes:List<DifferInstallmentDTO>, cutOff: LocalDateTime) {
+internal fun RecordBoughtCreditCard(bought: CreditCardBoughtItemDTO, creditCard: CreditCardDTO, differQuotes:List<DifferInstallmentDTO>, cutOff: LocalDateTime, view:View= LocalView.current, navController: NavController = Navigation.findNavController(view),prefs:Prefs) {
     val context = LocalContext.current
     val application = context.applicationContext
-    val view = LocalView.current
-    val navController = Navigation.findNavController(view)
 
     val state = remember { mutableStateOf(false) }
     val model = remember {
-        BoughtViewModel (application = application as Application)
+        BoughtViewModel (application = application as Application,prefs)
             .setBought(bought)
             .setCreditCard(creditCard)
             .setDifferQuotes(differQuotes)
@@ -287,9 +290,12 @@ private fun LabelValue(@StringRes label:Int, value:String, modifier:Modifier){
     Text(text = value, modifier = modifier, textAlign = TextAlign.End)
 }
 
-@Preview
+@RequiresApi(Build.VERSION_CODES.S)
+@Preview(showSystemUi = true, showBackground = true)
 @Composable
 fun Preview(){
+    val navControlle:NavController = Navigation.findNavController(LocalView.current)
+    val prefs = Prefs(LocalContext.current)
     MaterialThemeComposeUI {
         RecordBoughtCreditCard(CreditCardBoughtItemDTO(
             id = 0,
@@ -325,6 +331,6 @@ fun Preview(){
             maxQuotes = 0,
             warningValue = 0.toBigDecimal(),
             status = true
-        ), listOf(), LocalDateTime.now())
+        ), listOf(), LocalDateTime.now(), LocalView.current,navControlle,prefs)
     }
 }

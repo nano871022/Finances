@@ -1,4 +1,4 @@
-package co.japl.android.finances.services.implement
+package co.japl.android.finances.services.dao.implement
 
 import android.content.Context
 import android.database.sqlite.SQLiteOpenHelper
@@ -8,12 +8,12 @@ import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.core.database.getStringOrNull
 import co.japl.android.finances.services.dto.*
-import co.japl.android.finances.services.interfaces.IQuoteCreditCardSvc
-import co.japl.android.finances.services.interfaces.ITagQuoteCreditCardSvc
+import co.japl.android.finances.services.implement.CreditCardImpl
+import co.japl.android.finances.services.implement.DifferInstallmentImpl
+import co.japl.android.finances.services.dao.interfaces.IQuoteCreditCardDAO
 import co.japl.android.finances.services.interfaces.SaveSvc
 import co.japl.android.finances.services.mapping.CreditCardBoughtMap
 import co.japl.android.finances.services.mapping.CreditCardMap
-import co.japl.android.finances.services.mapping.PeriodsMap
 import co.japl.android.finances.services.utils.DatabaseConstants
 import co.japl.android.finances.services.utils.DateUtils
 import com.google.gson.Gson
@@ -22,14 +22,14 @@ import java.math.RoundingMode
 import java.nio.charset.Charset
 import java.nio.file.Files
 import java.nio.file.Paths
-import java.sql.Date
 import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.YearMonth
 import java.util.*
 import javax.inject.Inject
 
-class SaveCreditCardBoughtImpl @Inject constructor(val context:Context, override var dbConnect: SQLiteOpenHelper) :IQuoteCreditCardSvc{
+class SaveCreditCardBoughtImpl @Inject constructor(val context:Context, override var dbConnect: SQLiteOpenHelper) :
+    IQuoteCreditCardDAO {
     private val COLUMNS_CALC = arrayOf(BaseColumns._ID
         ,CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_CODE_CREDIT_CARD
         ,CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_NAME_ITEM

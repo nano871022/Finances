@@ -406,6 +406,9 @@
     <string name="recurrent_item"># Compras Recurrentes </string>
     <string name="quote_1_item"># Compras 1 Cuota </string>
     <string name="see_more">Ver más</string>
+    <string name="settings_credit_card_boughts">Configuracion Compras TC</string>
+    <string name="simulator">Simulación</string>
+    <string name="description_simulator">Cuando se activa esta opción todas los nuevos registro y actualiación seran guardadas en un cache temporal que se elimina cuando se cierre la aplicación esta solo es una opción para simular cambios grandes en las valores sin guardarlos.</string>
     <string name="recap_bought_cc">Resumen de Compras con Tarjeta de Crédito</string>
     <string name="num_quote"># Quote</string>
     <string name="add_extra">Agregar Extra</string>

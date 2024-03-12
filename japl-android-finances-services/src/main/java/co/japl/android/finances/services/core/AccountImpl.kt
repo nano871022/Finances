@@ -3,11 +3,10 @@ package co.japl.android.finances.services.core
 import co.com.japl.finances.iports.dtos.AccountDTO
 import co.com.japl.finances.iports.outbounds.IAccountPort
 import co.japl.android.finances.services.core.mapper.AccountMapper
-import co.japl.android.finances.services.dao.interfaces.IAccountSvc
-import java.util.Optional
+import co.japl.android.finances.services.dao.interfaces.IAccountDAO
 import javax.inject.Inject
 
-class AccountImpl @Inject constructor(private val service:IAccountSvc) : IAccountPort {
+class AccountImpl @Inject constructor(private val service:IAccountDAO) : IAccountPort {
     override fun getById(codeAccount: Int): AccountDTO? {
         require(codeAccount > 0) { "Code Account must be greater than zero" }
         return service.get(codeAccount)?.takeIf { it.isPresent }?.

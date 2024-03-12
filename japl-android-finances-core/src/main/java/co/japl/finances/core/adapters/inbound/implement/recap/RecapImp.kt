@@ -7,8 +7,8 @@ import java.time.LocalDate
 import javax.inject.Inject
 
 class RecapImp @Inject constructor(private val recapSvc:IRecap):IRecapPort{
-    override fun getTotalValues(cutOff:LocalDate): RecapDTO {
-        return recapSvc.getTotalValues(cutOff)
+    override fun getTotalValues(cutOff:LocalDate,cache:Boolean): RecapDTO {
+        return recapSvc.getTotalValues(cutOff,cache)
     }
 
 }

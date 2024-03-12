@@ -7,11 +7,12 @@ import androidx.navigation.NavController
 import co.com.japl.finances.iports.dtos.BoughtCreditCardPeriodDTO
 import co.com.japl.finances.iports.inbounds.creditcard.bought.lists.IBoughtListPort
 import co.com.japl.module.creditcard.navigations.Bought
+import co.com.japl.ui.Prefs
 import kotlinx.coroutines.runBlocking
 import java.time.LocalDateTime
 
-class BoughtCreditCardViewModel constructor(private val service:IBoughtListPort?,private val idCreditCard:Int,private val navController: NavController):ViewModel() {
-
+class BoughtCreditCardViewModel constructor(private val service:IBoughtListPort?,private val idCreditCard:Int,private val navController: NavController,private val prefs:Prefs):ViewModel() {
+    val cache = mutableStateOf(prefs.simulator)
     val progress = mutableFloatStateOf(0f)
     val loader = mutableStateOf(false)
     private var _list:Map<Long,List<BoughtCreditCardPeriodDTO>> = mapOf()
@@ -23,7 +24,7 @@ class BoughtCreditCardViewModel constructor(private val service:IBoughtListPort?
     }
 
     suspend fun execute(){
-        service?.getBoughtPeriodList(idCreditCard)?.takeIf { it.isNotEmpty() }?.let{
+        service?.getBoughtPeriodList(idCreditCard,cache.value)?.takeIf { it.isNotEmpty() }?.let{
             progress.floatValue = 0.7f
             _list = it.groupBy { it.periodEnd.year.toLong() }
         }

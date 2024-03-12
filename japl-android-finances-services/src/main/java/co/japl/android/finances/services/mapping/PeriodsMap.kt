@@ -7,7 +7,7 @@ import androidx.annotation.RequiresApi
 import co.japl.android.finances.services.dto.CreditCardSettingDTO
 import co.japl.android.finances.services.dto.TaxDTO
 import co.japl.android.finances.services.implement.CreditCardImpl
-import co.japl.android.finances.services.dao.interfaces.ITaxSvc
+import co.japl.android.finances.services.dao.interfaces.ITaxDAO
 import co.japl.android.finances.services.dto.PeriodDTO
 import co.japl.android.finances.services.implement.BuyCreditCardSettingImpl
 import co.japl.android.finances.services.implement.CreditCardSettingImpl
@@ -19,7 +19,7 @@ import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.Optional
 
-class PeriodsMap (private val taxSvc: ITaxSvc, private val buyCCSettingSvc:BuyCreditCardSettingImpl, private val creditCardSettingSvc:CreditCardSettingImpl, private val creditcardSvc:CreditCardImpl){
+class PeriodsMap (private val taxSvc: ITaxDAO, private val buyCCSettingSvc:BuyCreditCardSettingImpl, private val creditCardSettingSvc:CreditCardSettingImpl, private val creditcardSvc:CreditCardImpl){
 
 
     @RequiresApi(Build.VERSION_CODES.O)

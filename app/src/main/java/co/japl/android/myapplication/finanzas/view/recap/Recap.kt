@@ -1,5 +1,7 @@
 package co.japl.android.myapplication.finanzas.view.recap
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -8,11 +10,13 @@ import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import co.com.japl.finances.iports.dtos.RecapDTO
+import co.com.japl.ui.Prefs
 import co.japl.android.myapplication.R
 import co.japl.android.myapplication.finanzas.controller.RecapViewModel
 import co.com.japl.ui.components.Carousel
@@ -75,10 +79,12 @@ private fun CarouselView(model:RecapViewModel){
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.S)
 @Composable
 @Preview(showBackground = true, showSystemUi = true)
 fun PreviewRecap() {
-    val model = RecapViewModel(null)
+    val prefs = Prefs(LocalContext.current)
+    val model = RecapViewModel(null,prefs)
     val recap = RecapDTO(
       projectionSaved = 20000.0,
      projectionNext = 30000.0,

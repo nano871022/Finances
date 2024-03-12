@@ -2,8 +2,8 @@ package co.com.japl.finances.iports.enums
 
 enum class KindInterestRateEnum(private val code:Short) {
     CREDIT_CARD(0),
-    CASH_ADVANCE(2),
-    WALLET_BUY(1);
+    WALLET_BUY(1),
+    CASH_ADVANCE(2);
 
 
     fun getCode()=code

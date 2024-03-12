@@ -280,6 +280,15 @@
             android:text="@string/save"
             app:icon="@android:drawable/ic_menu_save" />
 
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_save_new_one"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/space_min"
+            android:layout_weight="1"
+            app:icon="@android:drawable/ic_menu_save"
+            android:text="@string/save_new"/>
+
     </LinearLayout>
         </LinearLayout>
 </com.google.android.material.card.MaterialCardView>

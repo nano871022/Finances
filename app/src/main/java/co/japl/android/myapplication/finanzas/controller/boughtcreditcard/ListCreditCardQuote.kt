@@ -17,6 +17,7 @@ import co.com.japl.module.creditcard.controllers.bought.lists.BoughtMonthlyViewM
 import co.com.japl.module.creditcard.views.bought.BoughtMonthly
 import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.japl.android.myapplication.databinding.ListCreditCardQuoteBinding
+import co.japl.android.myapplication.finanzas.ApplicationInitial
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -37,7 +38,8 @@ class ListCreditCardQuote : Fragment(){
                 creditRateSvc,
                 creditCardPort,
                 boughtSvc,
-                navController = findNavController()
+                navController = findNavController(),
+                ApplicationInitial.prefs
             )
             _binding.cvComposeLccq?.apply {
                 setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
