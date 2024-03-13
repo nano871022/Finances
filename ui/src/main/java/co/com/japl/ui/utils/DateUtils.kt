@@ -32,7 +32,7 @@ class DateUtils {
                 return LocalDateTime.of(
                     date[0].toInt(),
                     date[1].toInt(),
-                    date[1].toInt(),
+                    date[2].toInt(),
                     23,
                     59,
                     59,
@@ -42,7 +42,7 @@ class DateUtils {
         }
 
         fun toLocalDate(milles: Long): LocalDate =
-            Instant.ofEpochMilli(milles).atZone(ZoneId.systemDefault()).toLocalDate()
+            LocalDateTime.ofInstant(Instant.ofEpochMilli(milles),ZoneId.of("UTC")).toLocalDate()
 
         @RequiresApi(Build.VERSION_CODES.O)
         fun toLocalDateTime(value: String, default: LocalDateTime): LocalDateTime {
@@ -63,7 +63,7 @@ class DateUtils {
                 return LocalDateTime.of(
                     date[0].toInt(),
                     date[1].toInt(),
-                    date[1].toInt(),
+                    date[2].toInt(),
                     23,
                     59,
                     59,
@@ -295,17 +295,17 @@ class DateUtils {
                 if (value.contains("/")) {
                     val date = value.split("/")
                     if (date.size > 1) {
-                        true
+                        return true
                     }
                 } else {
                     val date = value.split("-")
                     if (date.size > 1) {
-                        true
+                        return true
                     }
                 }
-                false
+                return false
             } catch (e: DateTimeParseException) {
-                false
+                return false
             }
         }
     }

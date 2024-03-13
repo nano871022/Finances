@@ -72,8 +72,8 @@ class Bought @Inject constructor(private val boughtSvc:IQuoteCreditCardPort,priv
         }
     }
 
-    override fun create(creditCardBoughtDTO: CreditCardBoughtDTO,cache: Boolean): Boolean {
-        return boughtSvc.create(creditCardBoughtDTO,cache) > 0
+    override fun create(creditCardBoughtDTO: CreditCardBoughtDTO,cache: Boolean): Int {
+        return boughtSvc.create(creditCardBoughtDTO,cache)
     }
 
     override fun update(creditCardBoughtDTO: CreditCardBoughtDTO,cache: Boolean): Boolean {

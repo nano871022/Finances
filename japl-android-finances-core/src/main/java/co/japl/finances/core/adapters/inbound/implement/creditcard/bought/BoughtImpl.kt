@@ -24,7 +24,7 @@ class BoughtImpl @Inject constructor(private val service:IBought) : IBoughtPort{
         return service.getBoughtCurrentPeriodList(creditCardDTO,cutOff,cache)
     }
 
-    override fun create(creditCardBoughtDTO: CreditCardBoughtDTO,cache:Boolean): Boolean {
+    override fun create(creditCardBoughtDTO: CreditCardBoughtDTO,cache:Boolean): Int {
         require(creditCardBoughtDTO.id == 0) { "CreditCardBought Id should be 0" }
         return service.create(creditCardBoughtDTO,cache)
     }

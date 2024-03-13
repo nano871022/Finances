@@ -53,7 +53,7 @@ import java.time.format.DateTimeFormatter
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-internal fun RecordBoughtCreditCard(bought: CreditCardBoughtItemDTO, creditCard: CreditCardDTO, differQuotes:List<DifferInstallmentDTO>, cutOff: LocalDateTime, view:View= LocalView.current, navController: NavController = Navigation.findNavController(view),prefs:Prefs) {
+internal fun RecordBoughtCreditCard(bought: CreditCardBoughtItemDTO, creditCard: CreditCardDTO, differQuotes:List<DifferInstallmentDTO>, cutOff: LocalDateTime, view:View= LocalView.current, navController: NavController? = Navigation.findNavController(view),prefs:Prefs) {
     val context = LocalContext.current
     val application = context.applicationContext
 
@@ -63,7 +63,7 @@ internal fun RecordBoughtCreditCard(bought: CreditCardBoughtItemDTO, creditCard:
             .setBought(bought)
             .setCreditCard(creditCard)
             .setDifferQuotes(differQuotes)
-            .setNavController(navController)
+            .setNavController(navController!!)
             .setView(view)
             .setCutOff(cutOff)
     }
@@ -294,7 +294,7 @@ private fun LabelValue(@StringRes label:Int, value:String, modifier:Modifier){
 @Preview(showSystemUi = true, showBackground = true)
 @Composable
 fun Preview(){
-    val navControlle:NavController = Navigation.findNavController(LocalView.current)
+
     val prefs = Prefs(LocalContext.current)
     MaterialThemeComposeUI {
         RecordBoughtCreditCard(CreditCardBoughtItemDTO(
@@ -331,6 +331,6 @@ fun Preview(){
             maxQuotes = 0,
             warningValue = 0.toBigDecimal(),
             status = true
-        ), listOf(), LocalDateTime.now(), LocalView.current,navControlle,prefs)
+        ), listOf(), LocalDateTime.now(), LocalView.current,null,prefs)
     }
 }

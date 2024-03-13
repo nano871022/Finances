@@ -27,6 +27,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import co.com.japl.module.creditcard.R
+import co.com.japl.module.creditcard.controllers.bought.forms.AdvanceViewModel
 import co.com.japl.module.creditcard.controllers.bought.forms.WalletViewModel
 import co.com.japl.ui.Prefs
 import co.com.japl.ui.components.FieldDatePicker
@@ -44,7 +45,7 @@ import java.time.LocalDateTime
 
 @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
 @Composable
-fun Wallet (viewModel:WalletViewModel){
+fun Advance (viewModel:AdvanceViewModel){
     val isLoadingState = remember {viewModel.loading}
     val loadingState = remember { viewModel.progress }
 
@@ -70,7 +71,7 @@ fun Wallet (viewModel:WalletViewModel){
 }
 
 @Composable
-private fun FloatingButtons(viewModel: WalletViewModel) {
+private fun FloatingButtons(viewModel: AdvanceViewModel) {
     val isNewState = remember { viewModel.isNew }
     Column {
         FloatButton(
@@ -98,7 +99,7 @@ private fun FloatingButtons(viewModel: WalletViewModel) {
 
 @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
 @Composable
-private fun Body(viewModel: WalletViewModel,modifier:Modifier){
+private fun Body(viewModel: AdvanceViewModel,modifier:Modifier){
     val creditCardState = remember { viewModel.creditCardName }
     val nameState = remember { viewModel.nameProduct }
     val errorNameState = remember { viewModel.errorNameProduct }
@@ -106,7 +107,6 @@ private fun Body(viewModel: WalletViewModel,modifier:Modifier){
     val errorValueState = remember { viewModel.errorValueProduct }
     val creditRateState = remember { viewModel.creditRate }
     val monthsState = remember { viewModel.monthProduct }
-    val errorMonthsState = remember { viewModel.errorMonthProduct }
     val valueCapitalState = remember { viewModel.capitalValue }
     val dateBoughtState = remember { viewModel.dateBought }
     val errorDateBoughtState = remember { viewModel.errorDateBought}
@@ -135,8 +135,8 @@ private fun Body(viewModel: WalletViewModel,modifier:Modifier){
 
         FieldText(title = stringResource(id = R.string.name_product),
             value=nameState.value,
-            hasErrorState = errorNameState,
             icon= Icons.Rounded.Cancel,
+            hasErrorState = errorNameState,
             validation = {viewModel.validate()},
             callback = {nameState.value = it},
             modifier= ModifiersCustom.FieldFillMAxWidhtAndPaddingShort())
@@ -150,13 +150,10 @@ private fun Body(viewModel: WalletViewModel,modifier:Modifier){
             currency = true,
             modifier=ModifiersCustom.FieldFillMAxWidhtAndPaddingShort())
 
-        FieldText(title = stringResource(id = R.string.months),
+        FieldView(name = stringResource(id = R.string.months),
             value=monthsState.value,
-            icon= Icons.Rounded.Cancel,
-            hasErrorState = errorMonthsState,
-            validation = {viewModel.validate()},
-            callback = {monthsState.value = it},
-            modifier=ModifiersCustom.FieldFillMAxWidhtAndPaddingShort())
+            modifier=ModifiersCustom.FieldFillMAxWidhtAndPaddingShort()
+            ,isMoney = false)
 
         Row {
             FieldView(
@@ -203,27 +200,27 @@ private fun Body(viewModel: WalletViewModel,modifier:Modifier){
 @RequiresApi(Build.VERSION_CODES.S)
 @Composable
 @Preview(showBackground = true, showSystemUi = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
-fun WalletPreviewDark(){
+internal fun AdvancePreviewDark(){
     val viewModel = viweModel()
     MaterialThemeComposeUI {
-        Wallet(viewModel)
+        Advance(viewModel)
     }
 }
 
 @RequiresApi(Build.VERSION_CODES.S)
 @Composable
 @Preview(showBackground = true, showSystemUi = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
-fun WalletPreview(){
+internal fun AdvancePreview(){
     val viewModel = viweModel()
     MaterialThemeComposeUI {
-        Wallet(viewModel)
+        Advance(viewModel)
     }
 }
 
 @Composable
-private fun viweModel():WalletViewModel{
+private fun viweModel():AdvanceViewModel{
     val prefs = Prefs(LocalContext.current)
-    val viewModel = WalletViewModel(0,0, LocalDateTime.now(),null,null,null,null,prefs)
+    val viewModel = AdvanceViewModel(0,0, LocalDateTime.now(),null,null,null,null,prefs)
     viewModel.loading.value = false
     return viewModel
 }

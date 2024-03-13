@@ -12,7 +12,7 @@ interface IBoughtPort {
 
     fun getBoughtCurrentPeriodList(creditCardDTO: CreditCardDTO, cutOff:LocalDateTime, cache:Boolean):List<Pair<String,Double>>?
 
-    fun create(creditCardBoughtDTO: CreditCardBoughtDTO,cache:Boolean): Boolean
+    fun create(creditCardBoughtDTO: CreditCardBoughtDTO,cache:Boolean): Int
 
     fun update(creditCardBoughtDTO: CreditCardBoughtDTO,cache:Boolean): Boolean
 

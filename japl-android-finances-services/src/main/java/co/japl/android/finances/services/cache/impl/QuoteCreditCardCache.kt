@@ -5,6 +5,7 @@ import co.japl.android.finances.services.dao.interfaces.IQuoteCreditCardDAO
 import co.japl.android.finances.services.dto.CreditCardBoughtDTO
 import java.math.BigDecimal
 import java.time.LocalDateTime
+import java.time.Period
 import javax.inject.Inject
 
 class QuoteCreditCardCache @Inject constructor(private val quoteCreditCardSvc:IQuoteCreditCardDAO): IQuoteCreditCardCache {
@@ -20,8 +21,7 @@ class QuoteCreditCardCache @Inject constructor(private val quoteCreditCardSvc:IQ
             it.codeCreditCard == codeCreditCard &&
                     it.boughtDate.isAfter(startDate) &&
                     it.boughtDate.isBefore(cutOffDate) &&
-                    it.endDate.isAfter(startDate) &&
-                    it.recurrent == "0".toShort()
+                    it.endDate.isAfter(startDate)
         }
         if(cacheAble.isEmpty()){
             quoteCreditCardSvc.getToDate(codeCreditCard,startDate,cutOffDate)
@@ -87,10 +87,10 @@ class QuoteCreditCardCache @Inject constructor(private val quoteCreditCardSvc:IQ
         var cacheable = list.filter {
             it.codeCreditCard == codeCreditCard &&
                     it.month > 1 &&
-                    it.boughtDate.isAfter(startDate) &&
-                    it.boughtDate.isBefore(cutoffCurrent) &&
-                    it.recurrent == "0".toShort()
-            it.endDate.isAfter(startDate)
+                    it.boughtDate.isBefore(startDate) &&
+                    Period.between(it.boughtDate.toLocalDate(),cutoffCurrent.toLocalDate()).months < it.month &&
+                    it.recurrent == "0".toShort() &&
+                    it.endDate.isAfter(startDate)
         }
         if(cacheable.isEmpty()){
             quoteCreditCardSvc.getPendingQuotes(codeCreditCard,startDate,cutoffCurrent)?.takeIf {
@@ -111,8 +111,9 @@ class QuoteCreditCardCache @Inject constructor(private val quoteCreditCardSvc:IQ
             it.codeCreditCard == codeCreditCard &&
                     it.month > 1 &&
                     it.boughtDate.isBefore(cutOff) &&
+                    Period.between(it.boughtDate.toLocalDate(),cutOff.toLocalDate()).months < it.month &&
                     it.recurrent == "1".toShort() &&
-                it.endDate.isAfter(cutOff)
+                    it.endDate.isAfter(cutOff)
         }
         if(cacheable.isEmpty()){
             quoteCreditCardSvc.getRecurrentPendingQuotes(codeCreditCard,cutOff)?.takeIf {

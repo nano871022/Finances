@@ -10,6 +10,8 @@ interface ITag {
 
     fun getAll():List<TagDTO>
 
-    fun get(codeBought:Int):TagDTO
+    fun get(codeBought:Int):TagDTO?
+
+    fun createOrUpdate(codeTag:Int,codeBought:Int):Int
 
 }

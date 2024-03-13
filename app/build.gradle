@@ -14,7 +14,7 @@ android {
         applicationId "co.japl.android.myapplication"
         minSdk 26
         targetSdk 33
-        versionCode 4_05_04_070
+        versionCode 4_05_04_071
         versionName "V 4.05.04.070 Added Simulator bought credit card"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"

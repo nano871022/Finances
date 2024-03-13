@@ -204,7 +204,10 @@ fun PopupSetting(viewModel: SettingsViewModel,state: MutableState<Boolean>) {
         Scaffold(
             floatingActionButton = {
                 PlainTooltipBox(tooltip = { Text(text = stringResource(id = R.string.save)) }) {
-                    IconButton(onClick = { viewModel.save() }) {
+                    IconButton(onClick = {
+                        viewModel.save()
+                        state.value = false
+                    }) {
                         Icon(
                             imageVector = Icons.Rounded.Save, contentDescription = stringResource(
                                 id = R.string.save

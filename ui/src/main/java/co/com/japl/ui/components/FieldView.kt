@@ -5,6 +5,7 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.annotation.StringRes
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -24,13 +25,13 @@ import co.com.japl.ui.R
 import co.com.japl.ui.theme.MaterialThemeComposeUI
 
 @Composable
-fun FieldView(@StringRes name:Int, value:String, modifier: Modifier, color: Color = MaterialTheme.colorScheme.onPrimaryContainer,isMoney:Boolean = true,alignment:Alignment = Alignment.BottomEnd,fontSize:TextUnit = TextUnit.Unspecified){
-    FieldView(name = stringResource(id = name  ), value = value , modifier = modifier, color = color,isMoney,alignment,fontSize)
+fun FieldView(@StringRes name:Int, value:String, modifier: Modifier, color: Color = MaterialTheme.colorScheme.onPrimaryContainer,isMoney:Boolean = true,alignment:Alignment = Alignment.BottomEnd,fontSize:TextUnit = TextUnit.Unspecified,onClick:() -> Unit = {}){
+    FieldView(name = stringResource(id = name  ), value = value , modifier = modifier, color = color,isMoney,alignment,fontSize,onClick)
 }
 
 
 @Composable
-fun FieldView(name:String, value:String, modifier: Modifier, color: Color = MaterialTheme.colorScheme.onPrimaryContainer,isMoney:Boolean = true,alignment:Alignment = Alignment.BottomEnd,fontSize:TextUnit = TextUnit.Unspecified) {
+fun FieldView(name:String, value:String, modifier: Modifier, color: Color = MaterialTheme.colorScheme.onPrimaryContainer,isMoney:Boolean = true,alignment:Alignment = Alignment.BottomEnd,fontSize:TextUnit = TextUnit.Unspecified,onClick:() -> Unit = {}) {
     Box(
         modifier = modifier
             .padding(top = 2.dp, start = 3.dp, end = 3.dp, bottom = 2.dp)
@@ -40,6 +41,7 @@ fun FieldView(name:String, value:String, modifier: Modifier, color: Color = Mate
                 shape = MaterialTheme.shapes.small
             )
             .padding(top = 2.dp, start = 5.dp, end = 5.dp, bottom = 2.dp)
+            .clickable { onClick.invoke() }
     ) {
         Text(
             text = name,

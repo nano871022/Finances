@@ -7,5 +7,6 @@ interface IBuyCreditCardSettingPort {
     fun getAll():List<BuyCreditCardSettingDTO>
 
     fun get(id:Int):BuyCreditCardSettingDTO?
-
+    fun create(dto:BuyCreditCardSettingDTO):Int
+    fun update(dto:BuyCreditCardSettingDTO):Boolean
 }

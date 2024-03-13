@@ -3,6 +3,7 @@ package co.com.japl.module.creditcard.controllers.bought.forms
 import android.widget.Toast
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.ViewModel
 import androidx.navigation.NavController
 import co.com.japl.finances.iports.dtos.CreditCardBoughtDTO
@@ -20,7 +21,7 @@ import kotlinx.coroutines.runBlocking
 import java.time.LocalDate
 import java.time.LocalDateTime
 
-class WalletViewModel constructor(private val codeCreditCard:Int,private val codeBought:Int,private val period:LocalDateTime,private val boughtSvc:IBoughtPort?,private val creditRateSvc:ITaxPort?,private val creditCardSvc:ICreditCardPort?,private val navController: NavController?,private val prefs:Prefs) : ViewModel(){
+class AdvanceViewModel constructor(private val codeCreditCard:Int, private val codeBought:Int, private val period:LocalDateTime, private val boughtSvc:IBoughtPort?, private val creditRateSvc:ITaxPort?, private val creditCardSvc:ICreditCardPort?, private val navController: NavController?, private val prefs:Prefs) : ViewModel(){
 
     private var cutOffDate:LocalDateTime? = null
     private var bought:CreditCardBoughtDTO? = null
@@ -38,7 +39,6 @@ class WalletViewModel constructor(private val codeCreditCard:Int,private val cod
     val valueProduct = mutableStateOf("")
     val errorValueProduct = mutableStateOf(false)
     val monthProduct = mutableStateOf("")
-    val errorMonthProduct = mutableStateOf(false)
     val creditRate = mutableStateOf("")
     val capitalValue = mutableStateOf("")
     val dateBought = mutableStateOf("")
@@ -58,7 +58,6 @@ class WalletViewModel constructor(private val codeCreditCard:Int,private val cod
         quoteValue.value = ""
         interestValue.value = ""
 
-        errorMonthProduct.value = false
         errorValueProduct.value = false
         errorNameProduct.value = false
         errorDateBought.value = false
@@ -139,12 +138,6 @@ class WalletViewModel constructor(private val codeCreditCard:Int,private val cod
             value = false
         }?:errorValueProduct.takeIf { it.value }?.let { it.value = false}
 
-        monthProduct.value.takeIf { it.isBlank() && NumbersUtil.isNumber(it).not() }?.let {
-            errorMonthProduct.value = true
-            validate = false
-            month = false
-        }?:errorMonthProduct.takeIf { it.value }?.let { it.value = false}
-
         dateBought.value.takeIf { it.isBlank() && DateUtils.isDateValid(it).not() }?.let {
             errorDateBought.value = true
             validate = false
@@ -196,7 +189,7 @@ class WalletViewModel constructor(private val codeCreditCard:Int,private val cod
                 endDate = LocalDateTime.MAX,
                 cutOutDate = period,
                 interest = NumbersUtil.toBigDecimal(creditRate.value).toDouble(),
-                kind = KindInterestRateEnum.WALLET_BUY,
+                kind = KindInterestRateEnum.CASH_ADVANCE,
                 kindOfTax = taxDto?.kindOfTax!!,
                 nameCreditCard = creditCardName.value,
                 recurrent = 0
@@ -228,12 +221,13 @@ class WalletViewModel constructor(private val codeCreditCard:Int,private val cod
         }
 
         creditRateSvc?.let {
-            it.get(codeCreditCard,cutOffDate?.monthValue!!,cutOffDate?.year!!,KindInterestRateEnum.WALLET_BUY)?.let {
+            it.get(codeCreditCard,cutOffDate?.monthValue?:period.monthValue,cutOffDate?.year?:period.year,KindInterestRateEnum.CASH_ADVANCE)?.let {
                 taxDto = it
                 creditRate.value = it.value.toString()
                 creditRateKind.value = it.kindOfTax?.getName()?:"EM"
+                monthProduct.value = it.period.toString()
                 navController?.let {
-                    nameProduct.value = it.context.getString(R.string.WALLET_BUY)
+                    nameProduct.value = it.context.getString(R.string.CASH_ADVANCE)
                 }
                 progress.floatValue = 0.8f
             }
@@ -249,6 +243,7 @@ class WalletViewModel constructor(private val codeCreditCard:Int,private val cod
                     valueProduct.value = NumbersUtil.toString(it.valueItem)
                     monthProduct.value = it.month.toString()
                     validate()
+
 
                     isNew.value = false
                 }

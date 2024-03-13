@@ -3,7 +3,9 @@ package co.japl.android.myapplication.finanzas.modules
 import android.content.Context
 import co.com.japl.finances.iports.inbounds.creditcard.ICreditCardPort
 import co.com.japl.finances.iports.inbounds.common.IDifferQuotesPort
+import co.com.japl.finances.iports.inbounds.creditcard.IBuyCreditCardSettingPort
 import co.com.japl.finances.iports.inbounds.creditcard.ICreditCardSettingPort
+import co.com.japl.finances.iports.inbounds.creditcard.ITagPort
 import co.com.japl.finances.iports.inbounds.creditcard.ITaxPort
 import co.com.japl.finances.iports.inbounds.creditcard.bought.IBoughtPort
 import co.com.japl.finances.iports.inbounds.creditcard.bought.lists.IBoughtListPort
@@ -74,7 +76,9 @@ import co.japl.finances.core.usercases.interfaces.common.IInput
 import co.japl.finances.core.usercases.interfaces.common.IPaid
 import co.japl.finances.core.usercases.interfaces.common.IProjections
 import co.japl.finances.core.usercases.interfaces.common.IQuoteCreditCard
+import co.japl.finances.core.usercases.interfaces.creditcard.IBuyCreditCardSetting
 import co.japl.finances.core.usercases.interfaces.creditcard.ICreditCardSetting
+import co.japl.finances.core.usercases.interfaces.creditcard.ITag
 import co.japl.finances.core.usercases.interfaces.creditcard.ITax
 import co.japl.finances.core.usercases.interfaces.creditcard.bought.lists.IBought
 import co.japl.finances.core.usercases.interfaces.creditcard.bought.lists.IBoughtList
@@ -314,5 +318,20 @@ abstract class AbstractModule {
     @Binds
     abstract fun bindUserCaseBought(implement:co.japl.finances.core.usercases.implement.creditcard.bought.Bought):IBought
 
+    @Binds
+    abstract fun bindUserCaseTag(implement:co.japl.finances.core.usercases.implement.creditcard.Tag):ITag
 
+    @Binds
+    abstract fun bindOutputTag(implement:co.japl.android.finances.services.core.TagImpl):co.com.japl.finances.iports.outbounds.ITagPort
+
+    @Binds
+    abstract fun bindInputTag(implement:co.japl.finances.core.adapters.inbound.implement.creditCard.TagImpl):ITagPort
+
+    @Binds
+    abstract fun bindTagSvc(implement:co.japl.android.finances.services.implement.TagsImpl):co.japl.android.finances.services.interfaces.ITagSvc
+
+    @Binds
+    abstract fun bindInboundBuyCreditCadSetting(implement:co.japl.finances.core.adapters.inbound.implement.creditCard.BuyCreditCardSettingImpl):IBuyCreditCardSettingPort
+    @Binds
+    abstract fun bindUserCaseBuyCreditCardSetting(implement:co.japl.finances.core.usercases.implement.creditcard.BuyCreditCardSettingImpl):IBuyCreditCardSetting
 }

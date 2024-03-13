@@ -113,7 +113,7 @@ class CreditCardQuotesParams {
                     }else {
                         val code = it.get(Params.PARAM_CREDIT_CARD_CODE).toString().toInt()
                         val name = it.get(Params.PARAM_CREDIT_CARD_NAME).toString()
-                        val id = it.getInt(Params.PARAM_BOUGHT_ID, 0)
+                        val id = it.get(Params.PARAM_BOUGHT_ID).toString().toInt()
                         return Triple(code, name, id)
                     }
                 }

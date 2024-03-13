@@ -11,6 +11,7 @@ import androidx.compose.material.icons.rounded.Cancel
 import androidx.compose.material.icons.rounded.Create
 import androidx.compose.material.icons.rounded.Update
 import androidx.compose.material3.Button
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.Scaffold
@@ -31,6 +32,7 @@ import co.com.japl.ui.components.CheckBoxField
 import co.com.japl.ui.components.FieldSelect
 import co.com.japl.ui.components.FieldText
 import co.com.japl.ui.components.FieldView
+import co.com.japl.ui.components.FloatButton
 import co.com.japl.ui.components.MoreOptionsDialog
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -143,28 +145,14 @@ private fun Buttons(viewModel: CreditCardSettingViewModel) {
     val state = remember {viewModel.showButtons}
     val newOneState = remember {viewModel.newOne}
         if (!newOneState.value) {
-            Button(
-                onClick = { viewModel.update() }, modifier = Modifier
-                    .padding(2.dp)
-            ) {
-                    Icon(
-                        imageVector = Icons.Rounded.Update, contentDescription = stringResource(
-                            id = R.string.save
-                        )
-                    )
+            FloatButton(imageVector = Icons.Rounded.Update,
+                descriptionIcon = R.string.save) {
+                viewModel.update()
             }
         } else {
-            Button(
-                onClick = {
-                    viewModel.create()
-                }, modifier = Modifier
-                    .padding(2.dp)
-            ) {
-                    Icon(
-                        imageVector = Icons.Rounded.Create, contentDescription = stringResource(
-                            id = R.string.save
-                        )
-                    )
+            FloatButton(imageVector = Icons.Rounded.Create,
+                descriptionIcon =R.string.save) {
+                viewModel.create()
             }
         }
 }
@@ -174,6 +162,7 @@ private fun Buttons(viewModel: CreditCardSettingViewModel) {
 @Preview(showBackground = true, showSystemUi = true)
 private fun CreditCardSettingPreview(){
     val viewModel = CreditCardSettingViewModel(codeCreditCard = null,codeCreditCardSetting = null, creditCardSvc = null,creditCardSettingSvc = null, navController=null)
+    viewModel.showProgress.value = false
     MaterialThemeComposeUI {
         CreditCardSetting(viewModel = viewModel)
     }

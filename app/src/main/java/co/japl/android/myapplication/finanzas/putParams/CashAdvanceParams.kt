@@ -13,6 +13,7 @@ class CashAdvanceParams {
 
     object params{
         val ARG_PARAM_CODE_CREDIT_CARD = "cod_credit_card"
+        val ARG_PARAM_CODE_BOUGHT = "cod_bought"
         val PARAM_DEEPLINK = "android-support-nav:controller:deepLinkIntent"
     }
 
@@ -26,15 +27,28 @@ class CashAdvanceParams {
             val parameters = bundleOf(params.ARG_PARAM_CODE_CREDIT_CARD to code.toString())
             navController.navigate(R.id.action_list_bought_to_cash_advance_fragment,parameters)
         }
-        fun download(argument:Bundle):String{
+        fun download(argument:Bundle):Pair<Int,Int?>{
             argument.let {
+                var codeCreditCard:Int? = null
+                var codeBought:Int? = null
                 if(it.containsKey(params.PARAM_DEEPLINK)) {
                     val intent = it.get(params.PARAM_DEEPLINK) as Intent
                     Uri.parse(intent.dataString).getQueryParameter(params.ARG_PARAM_CODE_CREDIT_CARD)?.let {
-                        return it
+                        codeCreditCard = it.toInt()
                     }
                 }
-                return it.get(params.ARG_PARAM_CODE_CREDIT_CARD).toString()
+                it.getString(params.ARG_PARAM_CODE_CREDIT_CARD)?.let {
+                    codeCreditCard = it.toInt()
+                }
+
+                if(it.containsKey(params.PARAM_DEEPLINK)) {
+                    val intent = it.get(params.PARAM_DEEPLINK) as Intent
+                    Uri.parse(intent.dataString).getQueryParameter(params.ARG_PARAM_CODE_BOUGHT)?.let {
+                        codeBought = it.toInt()
+                    }
+                }
+                codeBought = codeBought?:it.getInt(params.ARG_PARAM_CODE_BOUGHT)
+                return Pair(codeCreditCard!!,codeBought)
             }
         }
         fun toBack(navController: NavController){

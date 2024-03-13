@@ -39,6 +39,11 @@
     <string name="month">Mes</string>
     <string name="credit_rate">Tasa</string>
     <string name="period">Cuotas</string>
+    <string name="tag">Etiqueta</string>
+    <string name="add_tag">Agregar Etiqueta</string>
+    <string name="setting_kind">Tipo Configuración</string>
+    <string name="setting_name">Nombre Configuración</string>
+    <string name="recurrent">Recurrente</string>
 
     <string name="total_quote_value_short">Tot Cuota</string>
     <string name="interest_value_short">Interes</string>

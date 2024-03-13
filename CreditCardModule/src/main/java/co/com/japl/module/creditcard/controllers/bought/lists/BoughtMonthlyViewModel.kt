@@ -172,20 +172,24 @@ class BoughtMonthlyViewModel constructor(private val creditRate:ITaxPort?,privat
                 }
 
                 creditRate?.let {
-                    progress.floatValue = 0.9f
-                    it.getByCreditCard(creditCard.id,cutOff.value.toLocalDate())?.let{
-                        it.forEach {
-                            when(it.kind){
-                                KindInterestRateEnum.CASH_ADVANCE->showAdvance.value = true
-                                KindInterestRateEnum.WALLET_BUY->showWallet.value = true
-                                KindInterestRateEnum.CREDIT_CARD->{
-                                    showBought.value = true
-                                    showList.value = true
-                                }
-                            }
-                        }
+
+                    it.get(creditCard.id,cutOff.value.monthValue,cutOff.value.year,KindInterestRateEnum.CREDIT_CARD)?.let{
+                        showBought.value = true
+                        showList.value = true
+                        progress.floatValue = 0.85f
                     }
 
+                    it.get(creditCard.id,cutOff.value.monthValue,cutOff.value.year,KindInterestRateEnum.CASH_ADVANCE)?.let{
+                        showAdvance.value = true
+                        progress.floatValue = 0.9f
+                    }
+
+                    it.get(creditCard.id,cutOff.value.monthValue,cutOff.value.year,KindInterestRateEnum.WALLET_BUY)?.let{
+                        showWallet.value = true
+                        progress.floatValue = 0.95f
+                    }
+
+                    progress.floatValue = 100f
                 }
             }
         }

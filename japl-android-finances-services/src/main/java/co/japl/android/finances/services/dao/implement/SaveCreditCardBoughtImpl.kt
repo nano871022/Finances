@@ -22,6 +22,7 @@ import java.math.RoundingMode
 import java.nio.charset.Charset
 import java.nio.file.Files
 import java.nio.file.Paths
+import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.YearMonth
@@ -52,6 +53,9 @@ class SaveCreditCardBoughtImpl @Inject constructor(val context:Context, override
     @RequiresApi(Build.VERSION_CODES.O)
     override fun save(dto: CreditCardBoughtDTO): Long {
         Log.v(this.javaClass.name,"<<<=== save - Start")
+        if(dto.endDate == LocalDateTime.MAX){
+            dto.endDate = LocalDateTime.of(LocalDate.of(9999,12,31),LocalTime.MAX)
+        }
             val db = dbConnect.writableDatabase
             val values = CreditCardBoughtMap().mapping(dto)
             return if(dto.id > 0){
