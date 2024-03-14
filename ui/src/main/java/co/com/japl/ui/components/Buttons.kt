@@ -5,10 +5,14 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.FloatingActionButton
 import androidx.compose.material.FloatingActionButtonDefaults
 import androidx.compose.material.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Delete
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.PlainTooltipBox
+import androidx.compose.material3.PlainTooltipState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -31,6 +35,27 @@ fun FloatButton(imageVector:ImageVector,@StringRes descriptionIcon: Int,onClick:
             Icon(
                 imageVector = imageVector, contentDescription = stringResource(
                     id = descriptionIcon
+                )
+            )
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun IconButton(imageVector:ImageVector,@StringRes descriptionContent:Int , onClick:()->Unit,modifier:Modifier=Modifier){
+    PlainTooltipBox(tooltip = {
+        Text(text = stringResource(id = descriptionContent))
+    },tooltipState = PlainTooltipState()
+        ) {
+        IconButton(
+            onClick = onClick,
+            modifier = modifier
+        ) {
+            androidx.compose.material.Icon(
+                imageVector = imageVector,
+                contentDescription = stringResource(
+                    id = descriptionContent
                 )
             )
         }

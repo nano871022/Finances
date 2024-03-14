@@ -103,13 +103,30 @@ class QuoteViewModel constructor(private val codeCreditCard:Int,
 
     }
 
+    private fun getBuyCreditCardSetting(codeBought:Int,codeCreditCardSetting:Int):BuyCreditCardSettingDTO{
+        val dto = buySetting?.copy(
+            codeBuyCreditCard = codeBought,
+            codeCreditCardSetting = codeCreditCardSetting
+        ) ?: BuyCreditCardSettingDTO(
+             id=0,
+            codeBuyCreditCard=codeBought,
+            codeCreditCardSetting=codeCreditCardSetting,
+            create= LocalDateTime.now(),
+            active=1
+        )
+
+        return dto
+
+    }
+
     fun create(){
         if(validate) {
             boughtSvc?.let {
                 val id = it.create(bought!!,prefs.simulator)
                 if(id > 0) {
                     buyCreditCardSettingSvc?.let{svc->
-                        buySetting?.let{svc.createOrUpdate(it.copy(codeBuyCreditCard = id))}
+                        settingName.value?.let{svc.createOrUpdate(getBuyCreditCardSetting(id,it.first))
+                        }?:buySetting?.let {svc.delete(it.id)}
                     }
                     tagSvc?.let { svc ->
                         tagSelected.value?.let{svc.createOrUpdate(it.id,id)}
@@ -140,7 +157,8 @@ class QuoteViewModel constructor(private val codeCreditCard:Int,
                 val id = it.create(bought!!,prefs.simulator)
                 if(id > 0) {
                     buyCreditCardSettingSvc?.let{svc->
-                        buySetting?.let{svc.createOrUpdate(it.copy(codeBuyCreditCard = id))}
+                        settingName.value?.let{svc.createOrUpdate(getBuyCreditCardSetting(id,it.first))
+                        }?:buySetting?.let {svc.delete(it.id)}
                     }
                     tagSvc?.let { svc ->
                         tagSelected.value?.let{svc.createOrUpdate(it.id,id)}
@@ -170,7 +188,8 @@ class QuoteViewModel constructor(private val codeCreditCard:Int,
             boughtSvc?.let {
                 if(it.update(bought!!,prefs.simulator)) {
                     buyCreditCardSettingSvc?.let{svc->
-                        buySetting?.let{svc.createOrUpdate(it)}
+                        settingName.value?.let{bought?.let{dto->svc.createOrUpdate(getBuyCreditCardSetting(dto.id,it.first))}
+                        }?:buySetting?.let {svc.delete(it.id)}
                     }
                     tagSvc?.let { svc ->
                         tagSelected.value?.let{svc.createOrUpdate(it.id,codeBought)}
@@ -218,6 +237,16 @@ class QuoteViewModel constructor(private val codeCreditCard:Int,
             navController?.let {navController->
                 Toast.makeText(navController.context,R.string.toast_credit_rate_is_not_setting,Toast.LENGTH_SHORT).show().also {
                     navController.popBackStack()
+                }
+            }
+        }
+    }
+
+    fun deleteTag(codeTag:Int){
+        if(tagSvc?.delete(codeTag) == true){
+            navController?.let {navController->
+                Toast.makeText(navController.context,R.string.toast_successful_deleted,Toast.LENGTH_SHORT).show().also {
+                    loadTags()
                 }
             }
         }
@@ -364,18 +393,13 @@ class QuoteViewModel constructor(private val codeCreditCard:Int,
             }
         }
 
-        tagSvc?.let {
-            it.getAll()?.let {
-                tagList.clear()
-                tagList.addAll(it)
-                progress.floatValue = 0.7f
-            }
-            it.get(codeBought)?.let {
-                tagSelected.value = it
-                progress.floatValue = 0.75f
-            }
-        }
+        loadTags()
 
+        loadSettings()
+
+    }
+
+    private fun loadSettings(){
         creditCardSettingSvc?.let {
             it.getAll(codeCreditCard)?.let {
                 settingList.clear()
@@ -401,5 +425,19 @@ class QuoteViewModel constructor(private val codeCreditCard:Int,
         }
     }
 
+    private fun loadTags(){
+        tagSvc?.let {
+            it.getAll()?.let {
+                tagList.clear()
+                tagList.addAll(it)
+                progress.floatValue = 0.7f
+            }
+            it.get(codeBought)?.let {
+                tagSelected.value = it
+                progress.floatValue = 0.75f
+            }
+        }
+    }
 
 }
+

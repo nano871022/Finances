@@ -4,14 +4,14 @@ import android.app.Application
 import android.content.res.Configuration
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Cancel
 import androidx.compose.material.icons.rounded.CleaningServices
@@ -21,6 +21,7 @@ import androidx.compose.material.icons.rounded.Delete
 import androidx.compose.material.icons.rounded.Edit
 import androidx.compose.material.icons.rounded.Save
 import androidx.compose.material.icons.rounded.SaveAs
+import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.PlainTooltipBox
 import androidx.compose.material3.Scaffold
@@ -30,10 +31,12 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import co.com.japl.finances.iports.dtos.TagDTO
@@ -47,6 +50,7 @@ import co.com.japl.ui.components.FieldSelect
 import co.com.japl.ui.components.FieldText
 import co.com.japl.ui.components.FieldView
 import co.com.japl.ui.components.FloatButton
+import co.com.japl.ui.components.IconButton
 import co.com.japl.ui.components.Popup
 import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.com.japl.ui.theme.values.Dimensions
@@ -142,7 +146,7 @@ private fun Body(viewModel: QuoteViewModel,modifier:Modifier){
     val settingKinListSate = remember { viewModel.settingKindListState }
     val settingNameState = remember { viewModel.settingName }
     val settingNameListSate = remember { viewModel.settingNameListState}
-    val settingNameShowState = remember { mutableStateOf(false) }
+    val settingNameShowState = remember { mutableStateOf(viewModel.settingName.value?.let{true}?:false) }
     val recurrentState = remember { viewModel.recurrent }
 
 
@@ -209,6 +213,7 @@ private fun Body(viewModel: QuoteViewModel,modifier:Modifier){
                         settingNameShowState.value = true
                     }?:settingNameShowState.let {
                         settingkindState.value = null
+                        settingNameState.value = null
                         it.value = false
                     }
                 })
@@ -279,51 +284,60 @@ private fun PopupTags(tagPopupState:MutableState<Boolean>,tagState:MutableState<
     if(tagPopupState.value){
         Popup(title = R.string.tag,
             state = tagPopupState) {
-            Column (modifier=Modifier.fillMaxWidth()){
-                for(it in tagListState) {
-                    Row(modifier=Modifier.fillMaxWidth()) {
-                        Text(text = it.name, modifier = Modifier.weight(2f))
-                        IconButton(
-                            onClick = { tagState.value = it },
-                            modifier = Modifier.weight(1f)
-                        ) {
-                            Icon(
-                                imageVector = Icons.Rounded.Delete,
-                                contentDescription = stringResource(
-                                    id = R.string.delete
-                                )
-                            )
-                        }
-                    }
-                }
-                Row {
-                    FieldText(
-                        title = stringResource(id = R.string.tag),
-                        value = tagName.value,
-                        icon= Icons.Rounded.Cancel,
-                        callback={
-                            tagName.value = it
-                        },
-                        modifier = Modifier.weight(2f)
-                    )
+            Scaffold (modifier= Modifier
+                .fillMaxWidth()
+            , bottomBar = {
+                    Row {
+                        FieldText(
+                            title = stringResource(id = R.string.tag),
+                            value = tagName.value,
+                            icon= Icons.Rounded.Cancel,
+                            callback={
+                                tagName.value = it
+                            },
+                            modifier = Modifier.weight(2f)
+                        )
 
-                    PlainTooltipBox(tooltip = {
-                        Text(text = stringResource(id = R.string.add_tag))
-                    }, modifier = Modifier.weight(1f)) {
-                        IconButton(onClick = {
-                            viewModel.createTag(tagName.value)?.let{
-                                tagListState.add(it)
-                                tagState.value = it
-                                tagPopupState.value = false
+                        IconButton(
+                            imageVector = Icons.Rounded.AddCircleOutline,
+                            descriptionContent = R.string.add_tag,
+                            onClick = {
+                                tagName.value.takeIf { it.isNotBlank() }?.let {
+                                    viewModel.createTag(tagName.value)?.let {
+                                        tagListState.add(it)
+                                        tagState.value = it
+                                        tagPopupState.value = false
+                                    }
+                                }
+                            }, modifier = Modifier
+                                .weight(1f)
+                                .align(alignment = Alignment.CenterVertically))
+
+                    }
+                }){
+                    Column (modifier= Modifier
+                        .padding(bottom = 60.dp, start = Dimensions.PADDING_SHORT)
+                        .verticalScroll(rememberScrollState())) {
+                        for (it in tagListState) {
+                            Row(modifier = Modifier
+                                .fillMaxWidth()
+                                .clickable {
+                                    tagState.value = it
+                                    tagPopupState.value = false
+                                }) {
+                                Text(text = it.name, modifier = Modifier.weight(2f))
+                                IconButton(
+                                    imageVector = Icons.Rounded.Delete,
+                                    descriptionContent = R.string.delete,
+                                    onClick = {
+                                        viewModel.deleteTag(it.id)
+                                    },
+                                    modifier = Modifier.weight(1f)
+                                )
                             }
-                        }) {
-                            Icon(
-                                imageVector = Icons.Rounded.AddCircleOutline,
-                                contentDescription = stringResource(id = R.string.add_tag)
-                            )
+                            Divider()
                         }
                     }
-                }
             }
         }
     }

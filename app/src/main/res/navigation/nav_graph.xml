@@ -93,6 +93,9 @@
             android:id="@+id/action_list_bought_to_buy_credit_card2"
             app:destination="@id/buy_credit_card" />
         <deepLink app:uri="android-app://co.com.japl.finanzas.module.app/listBought"/>
+        <action
+            android:id="@+id/action_list_bought_to_boughWalletController"
+            app:destination="@id/boughWalletController" />
     </fragment>
 
     <fragment

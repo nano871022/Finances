@@ -11,6 +11,7 @@ import co.japl.finances.core.usercases.calculations.InterestCalculations
 import co.japl.finances.core.usercases.calculations.ValuesCalculation
 import co.japl.finances.core.usercases.mapper.CreditCardBoughtItemMapper
 import co.japl.finances.core.utils.DateUtils
+import org.intellij.lang.annotations.RegExp
 import java.time.LocalDateTime
 import javax.inject.Inject
 
@@ -51,7 +52,9 @@ class ListBoughts @Inject constructor(
 
         valuesCalculation.getQuotesPaid(dto.id,dto.month.toShort(),dto.boughtDate,cutoff,differQuotes)?.let { dto.monthPaid = it.toLong()}
 
-        interestCalculation.lastInterestCalc(dto,creditCard)?.let {
+        val differ = dto.nameItem.contains("\\* \\([0-9].\\. [0-9].".toRegex())
+
+        interestCalculation.lastInterestCalc(dto,creditCard,differ)?.let {
             dto.interest = it.value
             dto.kindOfTax = it.kind
         }
@@ -60,7 +63,8 @@ class ListBoughts @Inject constructor(
 
         valuesCalculation.getPendingToPay(dto.id,dto.month.toShort(),dto.monthPaid.toShort(),dto.valueItem,dto.capitalValue,differQuotes).let { dto.pendingToPay = it}
 
-        interestCalculation.getInterestValue(dto.month.toShort(),dto.monthPaid.toShort(),dto.kind,dto.pendingToPay,dto.valueItem,dto.interest,dto.kindOfTax,creditCard.interest1Quote,creditCard.interest1NotQuote).let { dto.interestValue = it}
+        interestCalculation.getInterestValue(dto.month.toShort(),dto.monthPaid.toShort(),dto.kind,dto.pendingToPay,dto.valueItem,dto.interest,dto.kindOfTax,creditCard.interest1Quote,creditCard.interest1NotQuote
+        ,differ).let { dto.interestValue = it}
 
         dto.quoteValue = (dto.interestValue?:0.0) + (dto.capitalValue?:0.0)
 

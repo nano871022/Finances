@@ -10,4 +10,6 @@ interface IBuyCreditCardSetting {
 
     fun update(dto:BuyCreditCardSettingDTO):Boolean
 
+    fun delete(codeSetting:Int):Boolean
+
 }

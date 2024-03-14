@@ -8,6 +8,7 @@ import androidx.navigation.NavController
 import co.com.japl.finances.iports.dtos.CreditCardBoughtItemDTO
 import co.com.japl.finances.iports.dtos.CreditCardDTO
 import co.com.japl.finances.iports.dtos.DifferInstallmentDTO
+import co.com.japl.finances.iports.enums.KindInterestRateEnum
 import co.com.japl.finances.iports.inbounds.creditcard.bought.lists.IBoughtListPort
 import co.com.japl.ui.Prefs
 import co.japl.android.myapplication.R
@@ -104,11 +105,29 @@ class BoughtViewModel @Inject constructor(
     }
 
     private fun goToEditBought() {
-        CreditCardQuotesParams.Companion.ListBought.newInstance(
-            bought.id,
-            bought.codeCreditCard,
-            navController
-        )
+        when(bought.kind) {
+            KindInterestRateEnum.CREDIT_CARD -> {
+                CreditCardQuotesParams.Companion.ListBought.newInstanceQuote(
+                    bought.id,
+                    bought.codeCreditCard,
+                    navController
+                )
+            }
+            KindInterestRateEnum.CASH_ADVANCE -> {
+                CreditCardQuotesParams.Companion.ListBought.newInstanceAdvance(
+                    bought.id,
+                    bought.codeCreditCard,
+                    navController
+                )
+            }
+            KindInterestRateEnum.WALLET_BUY -> {
+                CreditCardQuotesParams.Companion.ListBought.newInstanceWallet(
+                    bought.id,
+                    bought.codeCreditCard,
+                    navController
+                )
+            }
+        }
     }
 
     private fun goToAmortization(){

@@ -25,4 +25,8 @@ class BuyCreditCardSettingImpl @Inject constructor(private val buyCCSSvc: IBuyCr
     override fun update(dto: BuyCreditCardSettingDTO): Boolean {
         return buyCCSSvc.update(dto)
     }
+
+    override fun delete(codeSetting: Int): Boolean {
+        return buyCCSSvc.delete(codeSetting)
+    }
 }

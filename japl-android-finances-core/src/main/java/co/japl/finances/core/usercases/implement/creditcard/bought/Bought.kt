@@ -120,11 +120,13 @@ class Bought @Inject constructor(private val boughtSvc:IQuoteCreditCardPort,priv
         value: Double,
         kindOfTax: KindOfTaxEnum,
         kindOfInterest: KindInterestRateEnum
+
     ): Double {
         creditRateSvc.getById(codeCreditRate)?.let {it->
             val rate = InterestRateCalculation.getNM(it.value, it.kindOfTax!!)
             return interestCalculation.getInterestValue(
                     months, 0, it.kind, value, value, rate, KindOfTaxEnum.MONTLY_NOMINAL, false, false
+
                 )
             }
         return 0.0

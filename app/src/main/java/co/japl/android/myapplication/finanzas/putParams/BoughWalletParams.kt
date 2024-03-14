@@ -13,7 +13,9 @@ class BoughWalletParams {
 
     object params{
         val ARG_PARAM_CODE_CREDIT_CARD = "cod_credit_card"
+        val ARG_PARAM_CREDIT_CARD_CODE = "CreditCardCode"
         val ARG_PARAM_CODE_BOUGHT = "cod_bought"
+        val ARG_PARAM_BOUGHT_ID_CREDIT_CARD = "bought_id_credit_card"
         val PARAM_DEEPLINK = "android-support-nav:controller:deepLinkIntent"
     }
 
@@ -26,20 +28,28 @@ class BoughWalletParams {
             argument.let {
                 var codeCreditCard:Int? = null
                 var codeBought:Int? = null
-                    if(it.containsKey(params.PARAM_DEEPLINK)) {
+                if(it.containsKey(params.PARAM_DEEPLINK)) {
                     val intent = it.get(params.PARAM_DEEPLINK) as Intent
                     Uri.parse(intent.dataString).getQueryParameter(params.ARG_PARAM_CODE_CREDIT_CARD)?.let {
                         codeCreditCard = it.toInt()
                     }
                 }
-                codeCreditCard =  codeCreditCard?:it.get(params.ARG_PARAM_CODE_CREDIT_CARD).toString().toInt()
+                codeCreditCard =  codeCreditCard?:it.getString(params.ARG_PARAM_CODE_CREDIT_CARD)?.toInt()
+
+                it.getString(params.ARG_PARAM_CREDIT_CARD_CODE)?.let {
+                    codeCreditCard = it.toInt()
+                }
+
                 if(it.containsKey(params.PARAM_DEEPLINK)) {
                     val intent = it.get(params.PARAM_DEEPLINK) as Intent
                     Uri.parse(intent.dataString).getQueryParameter(params.ARG_PARAM_CODE_BOUGHT)?.let {
                         codeBought = it.toInt()
                     }
                 }
-                codeBought =  codeBought?:it.get(params.ARG_PARAM_CODE_BOUGHT)?.toString()?.toInt()
+                codeBought =  codeBought?:it.getString(params.ARG_PARAM_CODE_BOUGHT)?.toInt()
+                it.getInt(params.ARG_PARAM_BOUGHT_ID_CREDIT_CARD)?.let {
+                    codeBought = it
+                }
                 return Pair(codeCreditCard!!,codeBought)
             }
         }

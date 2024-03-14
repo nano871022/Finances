@@ -37,4 +37,8 @@ class BuyCreditCardSettingImpl @Inject constructor(private val buyCCSettingSvc:I
         require(dto.id > 0){"id must be > 0"}
         return buyCCSettingSvc.save(BuyCreditCardSettingMapper.mapper(dto)) > 0
     }
+
+    override fun delete(id: Int): Boolean {
+        return buyCCSettingSvc.delete(id)
+    }
 }

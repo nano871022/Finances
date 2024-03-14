@@ -25,9 +25,19 @@ class CreditCardQuotesParams {
     }
     companion object {
         object ListBought{
-            fun newInstance(quoteId:Int,creditCard:Int,navController: NavController){
+            fun newInstanceQuote(quoteId:Int,creditCard:Int,navController: NavController){
                 val parameters = bundleOf(Params.PARAM_CREDIT_CARD_CODE  to creditCard.toString(),Params.PARAM_BOUGHT_ID to quoteId)
                 navController.navigate(R.id.action_list_bought_to_buy_credit_card,parameters)
+            }
+
+            fun newInstanceAdvance(quoteId:Int,creditCard:Int,navController: NavController){
+                val parameters = bundleOf(Params.PARAM_CREDIT_CARD_CODE  to creditCard.toString(),Params.PARAM_BOUGHT_ID to quoteId)
+                navController.navigate(R.id.action_list_bought_to_cash_advance_fragment,parameters)
+            }
+
+            fun newInstanceWallet(quoteId:Int,creditCard:Int,navController: NavController){
+                val parameters = bundleOf(Params.PARAM_CREDIT_CARD_CODE  to creditCard.toString(),Params.PARAM_BOUGHT_ID to quoteId)
+                navController.navigate(R.id.action_list_bought_to_boughWalletController,parameters)
             }
 
             fun newInstanceFloat(quoteId:Int,creditCard:Int,navController: NavController){
