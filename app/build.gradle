@@ -14,8 +14,8 @@ android {
         applicationId "co.japl.android.myapplication"
         minSdk 26
         targetSdk 33
-        versionCode 4_05_03_061
-        versionName "Added save and create new button on bought with credit card, and copy option in bought list and fix issue with differer quote due the value to differ was right"
+        versionCode 4_05_04_075
+        versionName "V 4.05.04.075 Added Simulator bought credit card"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }

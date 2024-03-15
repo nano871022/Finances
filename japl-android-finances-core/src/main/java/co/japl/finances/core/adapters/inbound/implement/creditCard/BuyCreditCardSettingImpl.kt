@@ -14,7 +14,19 @@ class BuyCreditCardSettingImpl @Inject constructor(private val buyCCSSvc: IBuyCr
         return buyCCSSvc.create(dto)
     }
 
+    override fun createOrUpdate(dto: BuyCreditCardSettingDTO): Int =
+        get(dto.codeBuyCreditCard)?.let{
+            update(dto)?.takeIf { it }?.let{
+                return dto.id
+            }?:0
+        }?:create(dto)
+
+
     override fun update(dto: BuyCreditCardSettingDTO): Boolean {
         return buyCCSSvc.update(dto)
+    }
+
+    override fun delete(codeSetting: Int): Boolean {
+        return buyCCSSvc.delete(codeSetting)
     }
 }

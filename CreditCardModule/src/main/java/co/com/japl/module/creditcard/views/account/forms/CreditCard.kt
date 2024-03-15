@@ -23,6 +23,7 @@ import co.com.japl.module.creditcard.R
 import co.com.japl.module.creditcard.controllers.account.CreditCardViewModel
 import co.com.japl.ui.components.CheckBoxField
 import co.com.japl.ui.components.FieldText
+import co.com.japl.ui.components.FloatButton
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -47,26 +48,24 @@ fun CreditCard(viewModel: CreditCardViewModel){
             floatingActionButton = {
                 Column {
                         if(buttonUpdateState.value) {
-                            IconButton(onClick = { viewModel.goSettings() }) {
-                                Icon(
+                            Column {
+                                FloatButton(
                                     imageVector = Icons.Rounded.Settings,
-                                    contentDescription = stringResource(id = R.string.setting_redirect)
-                                )
-                            }
+                                    descriptionIcon = R.string.setting_redirect
+                                ) {
+                                    viewModel.goSettings()
+                                }
 
-                            IconButton(onClick = { viewModel.update() }) {
-                                Icon(
+                                FloatButton(
                                     imageVector = Icons.Rounded.Update,
-                                    contentDescription = stringResource(id = R.string.update)
-                                )
+                                    descriptionIcon = R.string.update
+                                ) {
+                                    viewModel.update()
+                                }
                             }
                         }else {
-                            IconButton(onClick = { viewModel.create() }) {
-                                Icon(
-                                    imageVector = Icons.Rounded.Create,
-                                    contentDescription = stringResource(id = R.string.create)
-                                )
-                            }
+                            FloatButton(imageVector = Icons.Rounded.Create,
+                                descriptionIcon =  R.string.create){ viewModel.create() }
                         }
                     }
             }

@@ -11,7 +11,7 @@ class TagImpl @Inject constructor(private val tagSvc: ITag) : ITagPort {
         return tagSvc.getAll()
     }
 
-    override fun get(codeBought: Int): TagDTO {
+    override fun get(codeBought: Int): TagDTO? {
         return tagSvc.get(codeBought)
     }
 
@@ -21,5 +21,9 @@ class TagImpl @Inject constructor(private val tagSvc: ITag) : ITagPort {
 
     override fun delete(codeTag: Int): Boolean {
         return tagSvc.delete(codeTag)
+    }
+
+    override fun createOrUpdate(codeTag: Int, codeBought: Int): Int {
+        return tagSvc.createOrUpdate(codeTag,codeBought)
     }
 }

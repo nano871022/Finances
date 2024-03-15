@@ -16,6 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import co.com.japl.ui.components.CheckBoxField
 import co.com.japl.ui.components.FieldText
+import co.com.japl.ui.components.FloatButton
 import co.com.japl.ui.theme.values.Dimensions
 import co.japl.android.myapplication.R
 import kotlinx.coroutines.Dispatchers
@@ -43,9 +44,8 @@ fun AccountForm(viewModel: AccountViewModel){
     }else {
         Scaffold(
             floatingActionButton = {
-                IconButton(onClick = { viewModel.save() }) {
-                    Icon(imageVector = Icons.Rounded.Add
-                        , contentDescription = "Add input to account")
+                FloatButton(imageVector = Icons.Rounded.Add, descriptionIcon = R.string.add_input_account) {
+                    viewModel.save()
                 }
             }
         ) {
@@ -66,7 +66,9 @@ private fun Body(viewModel: AccountViewModel,modifier:Modifier){
             , validation = {viewModel.validation()}
             , hasErrorState = viewModel.errorName
             , callback = { stateName.value = it }
-            ,modifier=modifier.fillMaxWidth().padding(Dimensions.PADDING_SHORT))
+            ,modifier= modifier
+                .fillMaxWidth()
+                .padding(Dimensions.PADDING_SHORT))
 
         CheckBoxField(
             title = stringResource(id = R.string.Active)

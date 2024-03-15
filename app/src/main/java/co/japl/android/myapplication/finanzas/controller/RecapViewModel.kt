@@ -5,14 +5,17 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import co.com.japl.finances.iports.dtos.RecapDTO
 import co.com.japl.finances.iports.inbounds.recap.IRecapPort
+import co.com.japl.ui.Prefs
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import java.time.LocalDate
 import javax.inject.Inject
 
 //@AndroidEntryPoint
-class RecapViewModel @Inject constructor(private var recapSvc:IRecapPort?) : ViewModel(){
+class RecapViewModel @Inject constructor(private var recapSvc:IRecapPort?,private val prefs:Prefs) : ViewModel(){
 
+    val cache = mutableStateOf(prefs.simulator)
     private var _recap:RecapDTO? = null
 
     private var _currentProgress = mutableFloatStateOf(0f)
@@ -43,7 +46,7 @@ class RecapViewModel @Inject constructor(private var recapSvc:IRecapPort?) : Vie
     suspend fun getRecap() = coroutineScope {
         launch {
             _currentProgress.value = 0.3f
-            _recap = recapSvc?.getTotalValues()
+            _recap = recapSvc?.getTotalValues(LocalDate.now(),cache.value)
             _currentProgress.value = 0.8f
         }
     }

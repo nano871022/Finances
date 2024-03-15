@@ -89,6 +89,7 @@ fun FieldDatePicker(@StringRes title:Int,value:String,isError:MutableState<Boole
                         DateUtils.localDateToStringDate(DateUtils.toLocalDate(it))
                     }?:""
                     stateDatePicker.value = false
+                    callable.invoke(stateValue.value)
                     validation.invoke()
                 }){
                     Text(text = stringResource(id = R.string.ok))

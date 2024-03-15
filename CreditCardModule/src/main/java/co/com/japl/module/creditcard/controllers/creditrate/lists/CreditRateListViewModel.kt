@@ -14,59 +14,74 @@ import co.com.japl.module.creditcard.R
 import co.com.japl.module.creditcard.navigations.ListCreditRate
 import kotlinx.coroutines.runBlocking
 
-class CreditRateListViewModel constructor(private val context:Context,private val creditCardSvc:ICreditCardPort,private val creditRateSvc:ITaxPort,private val navController: NavController):ViewModel() {
+class CreditRateListViewModel constructor(private val context:Context?,private val creditCardSvc:ICreditCardPort?,private val creditRateSvc:ITaxPort?,private val navController: NavController?):ViewModel() {
 
     var progress = mutableFloatStateOf(0f)
     var showProgress = mutableStateOf(true)
 
-    var creditCard:Map<CreditCardDTO?,List<TaxDTO>>? = HashMap<CreditCardDTO?,List<TaxDTO>>()
+    var creditCard:MutableMap<CreditCardDTO?,List<TaxDTO>>? = HashMap<CreditCardDTO?,List<TaxDTO>>()
 
     fun add(){
-        ListCreditRate.navigate(navigate = navController)
+        navController?.let { ListCreditRate.navigate(navigate = it)}
     }
 
     fun add(codeCreditCard:Int?){
         if(codeCreditCard == null){
             add()
         }else {
-            ListCreditRate.navigate(codeCreditCard,navigate = navController)
+            navController?.let { ListCreditRate.navigate(codeCreditCard,navigate = it)}
         }
     }
 
     fun delete(code:Int){
-        if(creditRateSvc.delete(code)){
-            val found = creditCard?.entries?.first { entry->entry.value.first{ it.id == code} != null }
-            creditCard?.get(found?.key)?.let{
-                val list = it.filter{ it.id != code }
-                val map = creditCard?.toMutableMap()
-                    map?.set(found?.key,list)
-                creditCard = map
-            }
+        creditRateSvc?.let {
+            if (creditRateSvc.delete(code)) {
+                val found =
+                    creditCard?.entries?.first { entry -> entry.value.first { it.id == code } != null }
+                creditCard?.get(found?.key)?.let {
+                    val list = it.filter { it.id != code }
+                    val map = creditCard?.toMutableMap()
+                    map?.set(found?.key, list)
+                    creditCard = map
+                }
 
-            Toast.makeText(context, R.string.toast_successful_deleted, Toast.LENGTH_SHORT).show()
-        }else{
-            Toast.makeText(context, R.string.toast_dont_successful_deleted, Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, R.string.toast_successful_deleted, Toast.LENGTH_SHORT)
+                    .show()
+            } else {
+                Toast.makeText(context, R.string.toast_dont_successful_deleted, Toast.LENGTH_SHORT)
+                    .show()
+            }
         }
     }
 
     fun enable(code:Int){
-        if(creditRateSvc.enable(code)){
-            Toast.makeText(context, R.string.toast_successful_enabled, Toast.LENGTH_SHORT).show()
-        }else{
-            Toast.makeText(context, R.string.toast_dont_successful_enabled, Toast.LENGTH_SHORT).show()
+        creditRateSvc?.let {
+
+
+            if (creditRateSvc.enable(code)) {
+                Toast.makeText(context, R.string.toast_successful_enabled, Toast.LENGTH_SHORT)
+                    .show()
+            } else {
+                Toast.makeText(context, R.string.toast_dont_successful_enabled, Toast.LENGTH_SHORT)
+                    .show()
+            }
         }
     }
 
     fun disable(code:Int){
-        if(creditRateSvc.disable(code)){
-            Toast.makeText(context, R.string.toast_successful_disabled, Toast.LENGTH_SHORT).show()
-        }else{
-            Toast.makeText(context, R.string.toast_dont_successful_disabled, Toast.LENGTH_SHORT).show()
+        creditRateSvc?.let {
+            if (creditRateSvc.disable(code)) {
+                Toast.makeText(context, R.string.toast_successful_disabled, Toast.LENGTH_SHORT)
+                    .show()
+            } else {
+                Toast.makeText(context, R.string.toast_dont_successful_disabled, Toast.LENGTH_SHORT)
+                    .show()
+            }
         }
     }
 
     fun edit(codeCreditCard:Int, codeCreditRate:Int){
-        ListCreditRate.navigate(codeCreditCard,codeCreditRate,navigate = navController)
+        navController?.let { ListCreditRate.navigate(codeCreditCard,codeCreditRate,navigate = navController)}
     }
 
     fun main() = runBlocking {
@@ -76,20 +91,24 @@ class CreditRateListViewModel constructor(private val context:Context,private va
     }
 
     suspend fun execute(){
-
-        creditCardSvc.getAll()?.let{list->
-            progress.floatValue = 0.5f
-            list.flatMap {
-                creditRateSvc.getByCreditCard(it.id)?.sortedByDescending { it.create }?: listOf()
-            }.groupBy{rate->
-                list.find {
-                    it.id == rate.codCreditCard
-                }}
-            }.let{
+        creditCardSvc?.let {
+            creditCardSvc.getAll()?.let { list ->
+                progress.floatValue = 0.5f
+                list.flatMap {
+                    creditRateSvc?.let{svc->
+                        svc.getByCreditCard(it.id)?.sortedByDescending { it.create }
+                    }?: listOf()
+                }.groupBy { rate ->
+                    list.find {
+                        it.id == rate.codCreditCard
+                    }
+                }
+            }.let {
                 progress.floatValue = 0.8f
-                creditCard = it
-            showProgress.value = false
+                creditCard = it?.toMutableMap()
+                showProgress.value = false
             }
+        }
     }
 
 }

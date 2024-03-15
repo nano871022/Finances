@@ -1,16 +1,24 @@
 package co.com.japl.module.creditcard.views.creditrate.lists
 
 import android.content.Context
+import android.content.res.Configuration
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.AddCircleOutline
 import androidx.compose.material3.Card
 import androidx.compose.material3.Divider
+import androidx.compose.material.FloatingActionButton
+import androidx.compose.material.FloatingActionButtonDefaults
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.Text
@@ -26,10 +34,12 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import co.com.japl.finances.iports.dtos.CreditCardDTO
 import co.com.japl.finances.iports.dtos.TaxDTO
 import co.com.japl.finances.iports.enums.KindInterestRateEnum
+import co.com.japl.finances.iports.enums.KindOfTaxEnum
 import co.com.japl.module.creditcard.R
 import co.com.japl.module.creditcard.controllers.creditrate.lists.CreditRateListViewModel
 import co.com.japl.module.creditcard.enums.MoreOptionsItemCreditRate
@@ -37,11 +47,14 @@ import co.com.japl.ui.components.AlertDialogOkCancel
 import co.com.japl.ui.components.Carousel
 import co.com.japl.ui.components.FieldView
 import co.com.japl.ui.components.MoreOptionsDialog
+import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.com.japl.ui.theme.values.Dimensions
 import co.com.japl.ui.theme.values.ModifiersCustom.Weight1fAndAlightCenterVertical
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.math.BigDecimal
+import java.time.LocalDateTime
 
 @Composable
 fun CreditRateList(viewModel: CreditRateListViewModel){
@@ -56,13 +69,14 @@ fun CreditRateList(viewModel: CreditRateListViewModel){
     }
 
     if(showProgress.value){
-        LinearProgressIndicator( progress = progress.floatValue)
+        LinearProgressIndicator( progress = progress.floatValue, modifier=Modifier.fillMaxWidth())
     }else{
         Scaffold(
             floatingActionButton = {
-                IconButton(onClick = {
+                FloatingActionButton(onClick = {
                     viewModel.add()
-                }) {
+                },elevation=FloatingActionButtonDefaults.elevation(10.dp),
+                    backgroundColor= MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.5f)) {
                     Icon(imageVector = Icons.Rounded.AddCircleOutline, contentDescription = stringResource(id = R.string.add_credit_rate))
                 }
             }
@@ -78,7 +92,7 @@ fun CreditRateList(viewModel: CreditRateListViewModel){
 private fun Body(viewModel: CreditRateListViewModel,modifier:Modifier=Modifier){
     val mapState = remember {viewModel.creditCard}
     mapState?.let {list->
-        Carousel(size = list.size) {
+        Carousel(size = list.size,modifier=Modifier.fillMaxHeight()) {
             val value = list.entries.toList()[it]
             CreditCard(value = value, viewModel = viewModel)
         }
@@ -87,8 +101,10 @@ private fun Body(viewModel: CreditRateListViewModel,modifier:Modifier=Modifier){
 
 @Composable
 private fun CreditCard(value:Map.Entry<CreditCardDTO?,List<TaxDTO>>,viewModel: CreditRateListViewModel){
+    val listState = remember{ mutableListOf(value.value) }
+
     OutlinedCard(modifier = Modifier
-        .fillMaxWidth()
+        .fillMaxWidth().fillMaxHeight()
         .padding(Dimensions.PADDING_SHORT)) {
         Column(modifier = Modifier.fillMaxWidth()) {
             FieldView(
@@ -105,18 +121,27 @@ private fun CreditCard(value:Map.Entry<CreditCardDTO?,List<TaxDTO>>,viewModel: C
             )
 
             Divider()
-
-            value.value.forEach { rate ->
-                Rate(
-                    rate = rate,
-                    { viewModel.delete(it) },
-                    { viewModel.enable(it) },
-                    { viewModel.disable(it) },
-                    { codeCreditCard,codeCreditRate-> viewModel.edit(codeCreditCard,codeCreditRate)})
+            Column(modifier=Modifier.verticalScroll(rememberScrollState())) {
+                listState.forEach { list ->
+                    list.forEach { rate ->
+                        Rate(
+                            rate = rate,
+                            { viewModel.delete(it) },
+                            { viewModel.enable(it) },
+                            { viewModel.disable(it) },
+                            { codeCreditCard, codeCreditRate ->
+                                viewModel.edit(
+                                    codeCreditCard,
+                                    codeCreditRate
+                                )
+                            })
+                    }
+                }
             }
         }
     }
 }
+
 
 @Composable
 private fun Rate(rate:TaxDTO,delete:(Int)->Unit, enable:(Int)->Unit, disable:(Int)->Unit,edit:(Int,Int)->Unit){
@@ -207,4 +232,63 @@ private fun getKindInterestRate(kind:KindInterestRateEnum,context: Context):Stri
         else -> context.getString(R.string.credit_card)
     }
 
+}
+
+@RequiresApi(Build.VERSION_CODES.S)
+@Composable
+@Preview(showSystemUi = true, showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
+fun CreditRateListPreview(){
+    val viewModel = getViewModel()
+    MaterialThemeComposeUI {
+        CreditRateList(viewModel)
+    }
+}
+
+@RequiresApi(Build.VERSION_CODES.S)
+@Composable
+@Preview(showSystemUi = true, showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
+fun CreditRateListPreviewDark(){
+    val viewModel = getViewModel()
+    MaterialThemeComposeUI {
+        CreditRateList(viewModel)
+    }
+}
+
+@Composable
+private fun getViewModel():CreditRateListViewModel{
+    val viewModel = CreditRateListViewModel(LocalContext.current, null,null, null)
+    viewModel.showProgress.value = false
+    viewModel.creditCard?.put(CreditCardDTO(0,"credit card 1",24,24,
+        BigDecimal.ZERO, LocalDateTime.now(),false,false,false),
+        arrayListOf(
+            TaxDTO(0,11,2023,1,1, LocalDateTime.now(),0.0,KindInterestRateEnum.CREDIT_CARD,21,KindOfTaxEnum.MONTHLY_EFFECTIVE),
+            TaxDTO(0,11,2023,1,1, LocalDateTime.now(),0.0,KindInterestRateEnum.CREDIT_CARD,21,KindOfTaxEnum.MONTHLY_EFFECTIVE),
+            TaxDTO(0,11,2023,1,1, LocalDateTime.now(),0.0,KindInterestRateEnum.CREDIT_CARD,21,KindOfTaxEnum.MONTHLY_EFFECTIVE),
+            TaxDTO(0,11,2023,1,1, LocalDateTime.now(),0.0,KindInterestRateEnum.CREDIT_CARD,21,KindOfTaxEnum.MONTHLY_EFFECTIVE),
+            TaxDTO(0,11,2023,1,1, LocalDateTime.now(),0.0,KindInterestRateEnum.CREDIT_CARD,21,KindOfTaxEnum.MONTHLY_EFFECTIVE),
+            TaxDTO(0,11,2023,1,1, LocalDateTime.now(),0.0,KindInterestRateEnum.CREDIT_CARD,21,KindOfTaxEnum.MONTHLY_EFFECTIVE),
+            TaxDTO(0,11,2023,1,1, LocalDateTime.now(),0.0,KindInterestRateEnum.CREDIT_CARD,21,KindOfTaxEnum.MONTHLY_EFFECTIVE),
+            TaxDTO(0,11,2023,1,1, LocalDateTime.now(),0.0,KindInterestRateEnum.CREDIT_CARD,21,KindOfTaxEnum.MONTHLY_EFFECTIVE),
+
+            TaxDTO(0,11,2023,1,1, LocalDateTime.now(),0.0,KindInterestRateEnum.CREDIT_CARD,21,KindOfTaxEnum.MONTHLY_EFFECTIVE),
+            TaxDTO(0,11,2023,1,1, LocalDateTime.now(),0.0,KindInterestRateEnum.CREDIT_CARD,21,KindOfTaxEnum.MONTHLY_EFFECTIVE),
+            TaxDTO(0,11,2023,1,1, LocalDateTime.now(),0.0,KindInterestRateEnum.CREDIT_CARD,21,KindOfTaxEnum.MONTHLY_EFFECTIVE),
+            TaxDTO(0,11,2023,1,1, LocalDateTime.now(),0.0,KindInterestRateEnum.CREDIT_CARD,21,KindOfTaxEnum.MONTHLY_EFFECTIVE),
+            TaxDTO(0,11,2023,1,1, LocalDateTime.now(),0.0,KindInterestRateEnum.CREDIT_CARD,21,KindOfTaxEnum.MONTHLY_EFFECTIVE),
+            TaxDTO(0,11,2023,1,1, LocalDateTime.now(),0.0,KindInterestRateEnum.CREDIT_CARD,21,KindOfTaxEnum.MONTHLY_EFFECTIVE),
+
+        ))
+    viewModel.creditCard?.put(CreditCardDTO(0,"Credut card 2",24,24,
+        BigDecimal.ZERO, LocalDateTime.now(),false,false,false),
+        arrayListOf(
+            TaxDTO(0,11,2023,1,1, LocalDateTime.now(),0.0,KindInterestRateEnum.CREDIT_CARD,21,KindOfTaxEnum.MONTHLY_EFFECTIVE),
+            TaxDTO(0,11,2023,1,1, LocalDateTime.now(),0.0,KindInterestRateEnum.CREDIT_CARD,21,KindOfTaxEnum.MONTHLY_EFFECTIVE),
+            TaxDTO(0,11,2023,1,1, LocalDateTime.now(),0.0,KindInterestRateEnum.CREDIT_CARD,21,KindOfTaxEnum.MONTHLY_EFFECTIVE),
+            TaxDTO(0,11,2023,1,1, LocalDateTime.now(),0.0,KindInterestRateEnum.CREDIT_CARD,21,KindOfTaxEnum.MONTHLY_EFFECTIVE),
+            TaxDTO(0,11,2023,1,1, LocalDateTime.now(),0.0,KindInterestRateEnum.CREDIT_CARD,21,KindOfTaxEnum.MONTHLY_EFFECTIVE),
+            TaxDTO(0,11,2023,1,1, LocalDateTime.now(),0.0,KindInterestRateEnum.CREDIT_CARD,21,KindOfTaxEnum.MONTHLY_EFFECTIVE),
+            TaxDTO(0,11,2023,1,1, LocalDateTime.now(),0.0,KindInterestRateEnum.CREDIT_CARD,21,KindOfTaxEnum.MONTHLY_EFFECTIVE),
+            TaxDTO(0,11,2023,1,1, LocalDateTime.now(),0.0,KindInterestRateEnum.CREDIT_CARD,21,KindOfTaxEnum.MONTHLY_EFFECTIVE),
+        ))
+    return viewModel
 }

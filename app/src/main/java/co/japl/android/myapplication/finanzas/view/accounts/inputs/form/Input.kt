@@ -22,6 +22,7 @@ import androidx.compose.ui.res.stringResource
 import co.com.japl.ui.components.FieldDatePicker
 import co.com.japl.ui.components.FieldSelect
 import co.com.japl.ui.components.FieldText
+import co.com.japl.ui.components.FloatButton
 import co.com.japl.ui.components.MoreOptionsDialog
 import co.com.japl.ui.theme.values.Dimensions
 import co.japl.android.myapplication.R
@@ -47,8 +48,8 @@ fun InputForm(viewModel: InputViewModel){
     }else {
         Scaffold(
             floatingActionButton = {
-                IconButton(onClick = { viewModel.save() }) {
-                    Icon(imageVector = Icons.Rounded.Add, contentDescription = stringResource(id = R.string.add))
+                FloatButton(imageVector = Icons.Rounded.Add, descriptionIcon = R.string.add_account) {
+                    viewModel.save()
                 }
             }
         ) {
@@ -81,14 +82,18 @@ private fun Body(viewModel: InputViewModel,modifier: Modifier) {
             , callable = {stateDate.value = it}
             , isError = stateErrorDate
             , validation = {viewModel.validation()}
-            , modifier = Modifier.fillMaxWidth().padding(Dimensions.PADDING_SHORT)
+            , modifier = Modifier
+                .fillMaxWidth()
+                .padding(Dimensions.PADDING_SHORT)
             )
 
         FieldSelect(title = stringResource(id = R.string.kind_of_pay)
             ,value = stateKindOfPayment.value
             , list = MoreOptionsKindPaymentInput.values().toList()
              , isError = stateErrorKindOfPayment
-            , modifier = Modifier.fillMaxWidth().padding(Dimensions.PADDING_SHORT)
+            , modifier = Modifier
+                .fillMaxWidth()
+                .padding(Dimensions.PADDING_SHORT)
             , callable = {
                 it?.let {
                     stateKindOfPayment.value = context.getString(it.getName())
@@ -101,7 +106,9 @@ private fun Body(viewModel: InputViewModel,modifier: Modifier) {
             , callback = {stateName.value = it}
             , hasErrorState = stateErrorName
             , icon = Icons.Rounded.Cancel
-            , modifier = Modifier.fillMaxWidth().padding(Dimensions.PADDING_SHORT))
+            , modifier = Modifier
+                .fillMaxWidth()
+                .padding(Dimensions.PADDING_SHORT))
 
         FieldText(title = stringResource(id = R.string.value)
             ,value = stateValue.value
@@ -110,7 +117,9 @@ private fun Body(viewModel: InputViewModel,modifier: Modifier) {
             , hasErrorState = stateErrorValue
             , currency = true
             , icon = Icons.Rounded.Cancel
-            , modifier = Modifier.fillMaxWidth().padding(Dimensions.PADDING_SHORT))
+            , modifier = Modifier
+                .fillMaxWidth()
+                .padding(Dimensions.PADDING_SHORT))
 
     }
 

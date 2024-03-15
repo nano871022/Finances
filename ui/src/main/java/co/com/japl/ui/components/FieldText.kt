@@ -42,8 +42,8 @@ fun FieldText( title:String
 
     TextField(value = valueState.value , onValueChange = {
         valueState.value = it
-        validation.invoke()
         callback.invoke(it)
+        validation.invoke()
     }, isError = hasErrorState.value, label = {
         Text(text = title)
     }, trailingIcon = {
@@ -82,8 +82,8 @@ fun FieldText( title:String
 
     TextField(value = valueState.value , onValueChange = {
         valueState.value = it
-        validation.invoke()
         callback.invoke(it)
+        validation.invoke()
     }, isError = hasErrorState.value, label = {
         Text(text = title)
     }, trailingIcon = {
@@ -113,16 +113,21 @@ fun FieldText( title:String
 
 @RequiresApi(Build.VERSION_CODES.S)
 @Composable
-@Preview(showSystemUi = true, showBackground = true)
+@Preview
 fun FieldTextPreview(){
     val hasError = remember {mutableStateOf(true)}
+    val value = remember { mutableStateOf("1000000") }
     MaterialThemeComposeUI {
         FieldText("Title Test"
-            , value="1000000"
+            , value=value.value
             ,hasErrorState=hasError
+            , callback = {value.value = it}
             , currency = true
             ,validation = { hasError.value = true}
             ,modifier=Modifier.fillMaxWidth().padding(5.dp)
             ,icon= Icons.Rounded.Cancel)
+
+        Text(text = value.value)
     }
+
 }

@@ -13,7 +13,7 @@ object CreditCardSetting {
     }
 
     fun navigate(codeCreditCard:Int, codeSetting:Int,navController: NavController){
-        val request = NavDeepLinkRequest.Builder.fromUri(navController.context.getString(R.string.navigate_credit_card_setting,codeCreditCard,codeSetting).toUri()).build()
+        val request = NavDeepLinkRequest.Builder.fromUri(navController.context.getString(R.string.navigate_credit_card_setting,codeSetting,codeCreditCard).toUri()).build()
         navController.navigate(request)
     }
 }

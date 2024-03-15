@@ -5,21 +5,28 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Close
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Divider
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.PlainTooltipBox
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
+import co.com.japl.ui.R
 import co.com.japl.ui.theme.MaterialThemeComposeUI
 
 @Composable
@@ -44,6 +51,7 @@ fun Popup(@StringRes title:Int, state: MutableState<Boolean>, content:@Composabl
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun Title(title:String,state: MutableState<Boolean>){
     Row(modifier = Modifier
@@ -55,12 +63,18 @@ private fun Title(title:String,state: MutableState<Boolean>){
             color = MaterialTheme.colorScheme.onPrimaryContainer,
             modifier = Modifier
                 .fillMaxWidth()
+                .align(alignment = Alignment.CenterVertically)
                 .weight(2f)
         )
-        IconButton(onClick = {
-            state.value = !state.value
-        },modifier=Modifier) {
-            Text(text = "X")
+        PlainTooltipBox(tooltip = { Text(text = stringResource(id = R.string.close)) }) {
+            IconButton(onClick = {
+                state.value = false
+            }, modifier = Modifier) {
+                Icon(
+                    imageVector = Icons.Outlined.Close,
+                    contentDescription = stringResource(id = R.string.close)
+                )
+            }
         }
     }
     Divider()

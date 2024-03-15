@@ -20,12 +20,12 @@ class RecapImpl @Inject constructor(
     private val inputSvc: IInput,
     private val creditCardSvc: ICreditCard
 ): IRecap {
-    override fun getTotalValues(): RecapDTO {
+    override fun getTotalValues(cutOff:LocalDate,cache:Boolean): RecapDTO {
         val projection = projectionSvc.getTotalSavedAndQuote()
         val totalQuoteCredit = creditSvc.getTotalQuote(LocalDate.now())
         val totalPaid = paidSvc.getTotalPaid()
-        val totalQuoteTC = quoteCreditCardSvc.getTotalQuote()
-        val totalInputs = inputSvc.getTotalInputs() ?: BigDecimal.ZERO
+        val totalQuoteTC = quoteCreditCardSvc.getTotalQuote(cache)
+        val totalInputs = inputSvc.getTotalInputs(cutOff) ?: BigDecimal.ZERO
         val warning = creditCardSvc.getAll().sumOf { it.warningValue }
         return RecapDTO(
             projectionSaved= projection.first.toDouble()

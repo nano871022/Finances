@@ -6,9 +6,11 @@ interface ITagPort {
 
     fun getAll():List<TagDTO>
 
-    fun get(codeBought:Int):TagDTO
+    fun get(codeBought:Int):TagDTO?
 
     fun create(dto:TagDTO):Int
 
     fun delete(codeTag:Int):Boolean
+
+    fun createOrUpdate(codeTag:Int,codeBought:Int):Int
 }

@@ -3,6 +3,7 @@ package co.japl.android.myapplication.finanzas.view.accounts.inputs.lists
 import android.content.Context
 import android.widget.Toast
 import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.lifecycle.ViewModel
@@ -17,7 +18,7 @@ import kotlinx.coroutines.runBlocking
 
 class InputListModelView (private val context:Context, val accountCode:Int,private val navController: NavController,private val inputSvc:IInputPort?) : ViewModel() {
 
-    var _items = mutableListOf<InputDTO>()
+    var _items = mutableStateListOf<InputDTO>()
 
     val stateDialogOptionsMore = mutableStateOf(false)
     var stateLoader = mutableStateOf(true)
@@ -60,9 +61,12 @@ class InputListModelView (private val context:Context, val accountCode:Int,priva
         progress.value = 0.2f
         inputSvc?.let{
             _items.clear()
-            _items.addAll(it.getInputs(accountCode)?: emptyList())
-            progress.value = 0.7f
-            stateLoader.value = false
+            it.getInputs(accountCode).let {
+                _items.addAll(it)
+                progress.value = 0.7f
+                stateLoader.value = false
+            }
+
         }
         progress.value = 0.8f
     }

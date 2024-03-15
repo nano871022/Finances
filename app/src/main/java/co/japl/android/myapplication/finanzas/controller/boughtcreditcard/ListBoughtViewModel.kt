@@ -1,5 +1,7 @@
 package co.japl.android.myapplication.finanzas.controller.boughtcreditcard
 
+import android.app.Application
+import android.content.Context
 import android.util.Log
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -8,12 +10,15 @@ import androidx.navigation.NavController
 import co.com.japl.finances.iports.inbounds.creditcard.ICreditCardPort
 import co.com.japl.finances.iports.inbounds.common.IDifferQuotesPort
 import co.com.japl.finances.iports.inbounds.creditcard.bought.lists.IBoughtListPort
+import co.com.japl.ui.Prefs
 import co.japl.android.myapplication.bussiness.interfaces.ITaxSvc
 import co.japl.android.myapplication.finanzas.enums.TaxEnum
+import co.japl.android.myapplication.finanzas.modules.EntryPoint
 import co.japl.android.myapplication.finanzas.pojo.BoughtCreditCard
 import co.japl.android.myapplication.finanzas.putParams.CashAdvanceParams
 import co.japl.android.myapplication.finanzas.putParams.CreditCardQuotesParams
 import co.japl.android.myapplication.pojo.CreditCard
+import dagger.hilt.EntryPoints
 import kotlinx.coroutines.runBlocking
 import java.time.LocalDateTime
 import java.time.YearMonth
@@ -21,13 +26,17 @@ import java.util.Optional
 import javax.inject.Inject
 
 class ListBoughtViewModel @Inject constructor(
-    private  var _taxSvc: ITaxSvc,
-    private  var _boughtListSvc: IBoughtListPort,
-    private  var _creditCardSvc: ICreditCardPort,
-    private var _differInstallmentSvc: IDifferQuotesPort,
-    private var navController: NavController
+    private val application: Application,
+    private var navController: NavController?,
+    public val prefs:Prefs
 ) : ViewModel() {
 
+    private  var _taxSvc: ITaxSvc = EntryPoints.get(application, EntryPoint::class.java).getTaxSvc()
+    private  var _boughtListSvc: IBoughtListPort = EntryPoints.get(application, EntryPoint::class.java).getBoughtCreditCardSvc()
+    private  var _creditCardSvc: ICreditCardPort = EntryPoints.get(application, EntryPoint::class.java).getCreditCardSvc()
+    private var _differInstallmentSvc: IDifferQuotesPort = EntryPoints.get(application, EntryPoint::class.java).getDifferInstallmentSvc()
+
+    val cache = mutableStateOf(prefs.simulator)
     val cashAdvance = mutableStateOf(false)
     val creditCard = mutableStateOf(false)
     private lateinit var _boughtCreditCard:BoughtCreditCard
@@ -50,16 +59,19 @@ class ListBoughtViewModel @Inject constructor(
     }
 
     fun goToCashAdvance(){
-        Log.d(javaClass.name,"go to cash advance")
-        CashAdvanceParams.newInstanceFloat(_creditCard.codeCreditCard.get()
-            ,navController)
+        navController?.let {
+            CashAdvanceParams.newInstanceFloat(
+                _creditCard.codeCreditCard.get(), it
+            )
+        }
     }
 
     fun goToCreditCard(){
-        Log.d(javaClass.name,"go to credit card")
-        CreditCardQuotesParams.Companion.ListBought.newInstanceFloat(0
-            ,_creditCard.codeCreditCard.get()
-            ,navController)
+        navController?.let {
+            CreditCardQuotesParams.Companion.ListBought.newInstanceFloat(
+                0, _creditCard.codeCreditCard.get(), it
+            )
+        }
     }
 
     fun main() = runBlocking {
@@ -82,7 +94,7 @@ class ListBoughtViewModel @Inject constructor(
         progress.floatValue = 0.4f
         val differ = _differInstallmentSvc.getDifferQuote(_creditCard.cutOff.get().toLocalDate())
         progress.floatValue = 0.5f
-        val bought = _boughtListSvc.getBoughtList(creditCardDto!!,_creditCard.cutOff.get())
+        val bought = _boughtListSvc.getBoughtList(creditCardDto!!,_creditCard.cutOff.get(),cache.value)
         progress.floatValue = 0.8f
         val group = bought.list?.sortedByDescending { it.boughtDate!! }?.groupBy { YearMonth.of(it.boughtDate.year,it.boughtDate.monthValue)!! }!!
         progress.floatValue = 0.9f
