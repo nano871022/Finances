@@ -3,6 +3,10 @@ package co.japl.android.myapplication.finanzas.view.accounts.inputs.lists
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.FloatingActionButton
+import androidx.compose.material.FloatingActionButtonDefaults
 import androidx.compose.material.Text
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -10,6 +14,7 @@ import androidx.compose.material3.CardElevation
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableIntStateOf
@@ -50,9 +55,11 @@ fun InputList(modelView: InputListModelView){
         }else {
             Scaffold (
                 floatingActionButton = {
-                    IconButton(onClick = {
+                    FloatingActionButton(onClick = {
                         modelView.goToInputForm()
-                    },modifier=Modifier.padding(bottom=Dimensions.PADDING_BOTTOM_SPACE_FLOATING_BUTTON)){
+                    }, elevation = FloatingActionButtonDefaults.elevation(10.dp),
+                        backgroundColor =  MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.5f),
+                        modifier=Modifier.padding(bottom=Dimensions.PADDING_BOTTOM_SPACE_FLOATING_BUTTON)){
                         Icon(painter = painterResource(id = R.drawable.ic_baseline_attach_money_24), contentDescription = "Add input to account")
                     }
                 }
@@ -69,12 +76,12 @@ private fun Content(modelView: InputListModelView,modifier:Modifier) {
     val stateOptionsId = remember { mutableIntStateOf(0) }
     val stateList = remember { modelView._items}
 
-    Column {
+    Column (modifier=Modifier.verticalScroll(rememberScrollState())) {
         InputListHeader(
             modelView._items.size.toLong(),
             modelView._items.sumOf { it.value.toDouble() })
 
-        for (item in stateList) {
+        stateList.forEach{item->
             InputItem(
                 date = item.date,
                 nameInput = item.name,

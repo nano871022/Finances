@@ -26,10 +26,10 @@ class InterestCalculations @Inject constructor(private val buyCreditCardSettingS
         }
     }
 
-    internal fun lastInterestCalc(dto:CreditCardBoughtItemDTO,creditCard: CreditCard):Tax?{
+    internal fun lastInterestCalc(dto:CreditCardBoughtItemDTO,creditCard: CreditCard,differ:Boolean = false):Tax?{
         return creditCard.takeIf { (
-                ( it.interest1Quote    && dto.monthPaid == 0L && dto.month == 1) ||
-                        ( it.interest1NotQuote && dto.monthPaid == 0L && dto.month > 1)
+                ( it.interest1Quote    && dto.monthPaid == 0L && dto.month == 1 && !differ) ||
+                        ( it.interest1NotQuote && dto.monthPaid == 0L && dto.month > 1 && !differ)
                 )  && dto.kind == KindInterestRateEnum.CREDIT_CARD}?.let{
             Tax(0.0,KindOfTaxEnum.MONTHLY_EFFECTIVE)
         }
@@ -68,14 +68,14 @@ class InterestCalculations @Inject constructor(private val buyCreditCardSettingS
 
     internal fun getInterestValue(month:Short, monthPaid:Short, kind:KindInterestRateEnum,pendingToPay:Double
                                   ,valueItem:Double, interest:Double,kindOfRate:KindOfTaxEnum
-                                  , interest1Quote: Boolean=false,interest1NotQuote: Boolean=false):Double{
+                                  , interest1Quote: Boolean=false,interest1NotQuote: Boolean=false,rediffer:Boolean=false):Double{
         require(KindOfTaxEnum.MONTHLY_EFFECTIVE == kindOfRate || KindOfTaxEnum.MONTLY_NOMINAL == kindOfRate)
-        return (month.takeIf { it == 1.toShort() && !interest1Quote }?.let {
+        return (month.takeIf { it == 1.toShort() && (!interest1Quote || rediffer) }?.let {
                 (pendingToPay * interest)
         }?:month.takeIf { it > 1}?.let{
             it.takeIf {
                 interest1NotQuote
-                && monthPaid == 0.toShort()
+                && monthPaid == 0.toShort() && !rediffer
                 && kind == KindInterestRateEnum.CREDIT_CARD}?.let{
                 0.0
             }?: it.takeIf {

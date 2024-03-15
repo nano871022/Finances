@@ -6,18 +6,22 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.FloatingActionButton
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.Scaffold
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.AddCircleOutline
+import androidx.compose.material.FloatingActionButtonDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import co.com.japl.finances.iports.enums.KindInterestRateEnum
 import co.com.japl.finances.iports.enums.KindOfTaxEnum
 import co.com.japl.module.creditcard.R
@@ -50,7 +54,9 @@ fun CreditRate(viewModel:CreateRateViewModel){
 
         Scaffold(
             floatingActionButton = {
-                IconButton(onClick = { viewModel.save() }) {
+                FloatingActionButton(onClick = { viewModel.save() },
+                    elevation=FloatingActionButtonDefaults.elevation(10.dp),
+                    backgroundColor= MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.5f)) {
                     Icon(
                         imageVector = Icons.Rounded.AddCircleOutline,
                         contentDescription = stringResource(id = R.string.add_credit_rate)
@@ -197,6 +203,7 @@ private fun getKind(value:String):String{
 @Preview(showSystemUi = true, showBackground = true)
 fun CreditRatePreview(){
     val viewModel = CreateRateViewModel(null,null,null,null,null)
+    viewModel.loader.value = false
     MaterialThemeComposeUI {
         CreditRate(viewModel)
     }

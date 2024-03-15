@@ -5,6 +5,6 @@ import co.japl.android.finances.services.enums.TaxEnum
 import co.japl.android.finances.services.interfaces.SaveSvc
 import java.util.*
 
-interface ITaxSvc : SaveSvc<TaxDTO> {
+interface ITaxDAO : SaveSvc<TaxDTO> {
     fun get(codCreditCard:Long,month:Int, year:Int, kind: TaxEnum = TaxEnum.CREDIT_CARD): Optional<TaxDTO>
 }

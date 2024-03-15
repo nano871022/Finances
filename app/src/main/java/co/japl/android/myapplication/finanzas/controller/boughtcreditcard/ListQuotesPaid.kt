@@ -16,6 +16,7 @@ import co.japl.android.myapplication.databinding.FragmentListPeriodsBinding
 import co.japl.android.myapplication.finanzas.putParams.PeriodsParams
 import co.com.japl.module.creditcard.controllers.paid.BoughtCreditCardViewModel
 import co.com.japl.module.creditcard.views.paid.PaidList
+import co.japl.android.myapplication.finanzas.ApplicationInitial
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 import kotlin.properties.Delegates
@@ -42,7 +43,7 @@ class ListQuotesPaid : Fragment() {
                 setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
                 setContent {
                     MaterialThemeComposeUI {
-                        PaidList(viewModel = BoughtCreditCardViewModel(port,creditCardId,findNavController()))
+                        PaidList(viewModel = BoughtCreditCardViewModel(port,creditCardId,findNavController(),ApplicationInitial.prefs))
 
                 }
             }

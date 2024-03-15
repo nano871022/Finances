@@ -9,8 +9,7 @@ import androidx.annotation.RequiresApi
 import co.japl.android.finances.services.dto.TaxDB
 import co.japl.android.finances.services.dto.TaxDTO
 import co.japl.android.finances.services.interfaces.IMapper
-import co.japl.android.finances.services.dao.interfaces.ITaxSvc
-import co.japl.android.finances.services.dto.InputDB
+import co.japl.android.finances.services.dao.interfaces.ITaxDAO
 import co.japl.android.finances.services.mapping.TaxMap
 import co.japl.android.finances.services.enums.TaxEnum
 import co.japl.android.finances.services.utils.DatabaseConstants
@@ -21,7 +20,7 @@ import java.nio.file.Paths
 import java.util.*
 import javax.inject.Inject
 
-class TaxImpl @Inject constructor(override var dbConnect: SQLiteOpenHelper) : ITaxSvc {
+class TaxImpl @Inject constructor(override var dbConnect: SQLiteOpenHelper) : ITaxDAO {
     private val COLUMNS = arrayOf(BaseColumns._ID,
                                   TaxDB.TaxEntry.COLUMN_TAX,
                                   TaxDB.TaxEntry.COLUMN_MONTH,

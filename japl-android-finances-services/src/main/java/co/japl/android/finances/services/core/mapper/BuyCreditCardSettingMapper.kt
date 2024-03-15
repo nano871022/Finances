@@ -13,5 +13,14 @@ object BuyCreditCardSettingMapper {
             buyCreditCardSetting.active
         )
     }
+    fun mapper(buyCreditCardSetting:co.com.japl.finances.iports.dtos.BuyCreditCardSettingDTO):BuyCreditCardSettingDTO {
+        return BuyCreditCardSettingDTO(
+            buyCreditCardSetting.id,
+            buyCreditCardSetting.codeBuyCreditCard,
+            buyCreditCardSetting.codeCreditCardSetting,
+            buyCreditCardSetting.create,
+            buyCreditCardSetting.active
+        )
+    }
 
 }

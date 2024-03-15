@@ -1,5 +1,7 @@
 package co.japl.android.myapplication.finanzas.view.creditcard.bought.list
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Column
@@ -13,6 +15,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import co.com.japl.finances.iports.dtos.CreditCardBoughtItemDTO
@@ -21,6 +24,7 @@ import co.com.japl.finances.iports.dtos.DifferInstallmentDTO
 import co.com.japl.finances.iports.dtos.RecapCreditCardBoughtListDTO
 import co.com.japl.finances.iports.enums.KindOfTaxEnum
 import co.com.japl.finances.iports.enums.KindInterestRateEnum
+import co.com.japl.ui.Prefs
 import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.japl.android.myapplication.finanzas.pojo.BoughtCreditCard
 import co.japl.android.myapplication.utils.NumbersUtil
@@ -28,20 +32,20 @@ import java.time.LocalDateTime
 import java.time.YearMonth
 
 @Composable
-fun BoughList(data:BoughtCreditCard){
+fun BoughList(data:BoughtCreditCard,prefs:Prefs){
 
     LazyColumn {
 
         items(data.group.size) {
             val key = data.group.keys.toList()[it]
-            MonthlyBoughtCreditCard(key,data.group[key]!!,data.creditCard,data.differQuotes,data.cutOff)
+            MonthlyBoughtCreditCard(key,data.group[key]!!,data.creditCard,data.differQuotes,data.cutOff,prefs)
         }
 
     }
 }
 
 @Composable
-private fun MonthlyBoughtCreditCard(key:YearMonth,list:List<CreditCardBoughtItemDTO>,creditCard:CreditCardDTO,differQuotes:List<DifferInstallmentDTO>,cutOff:LocalDateTime) {
+private fun MonthlyBoughtCreditCard(key:YearMonth,list:List<CreditCardBoughtItemDTO>,creditCard:CreditCardDTO,differQuotes:List<DifferInstallmentDTO>,cutOff:LocalDateTime,prefs:Prefs ) {
     val monthlyState = remember {
         BoughtMonthlyViewModel(key
             ,list
@@ -64,7 +68,7 @@ private fun MonthlyBoughtCreditCard(key:YearMonth,list:List<CreditCardBoughtItem
 
             if (monthlyState.state.value)
                 for (item in monthlyState.list) {
-                   RecordBoughtCreditCard(item,creditCard,differQuotes,cutOff)
+                   RecordBoughtCreditCard(item,creditCard,differQuotes,cutOff,prefs=prefs)
             }
         }
     }
@@ -85,6 +89,7 @@ fun getColor(model: BoughtViewModel): Color {
     }?:Color.Transparent
 }
 
+@RequiresApi(Build.VERSION_CODES.S)
 @Composable
 @Preview(showSystemUi = true, showBackground = true)
 private fun BoughListPreview(){
@@ -202,7 +207,8 @@ private fun BoughListPreview(){
         differQuotes = listOf(),
         cutOff = LocalDateTime.now()
     )
+    val prefs = Prefs(LocalContext.current)
     MaterialThemeComposeUI {
-        BoughList(boughtCreditCard)
+        BoughList(boughtCreditCard,prefs)
     }
 }

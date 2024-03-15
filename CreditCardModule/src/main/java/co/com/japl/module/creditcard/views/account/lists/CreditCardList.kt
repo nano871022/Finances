@@ -1,5 +1,6 @@
 package co.com.japl.module.creditcard.views.account.lists
 
+import android.content.res.Configuration
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -7,13 +8,16 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.FloatingActionButtonDefaults
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.AddCircleOutline
 import androidx.compose.material3.Card
 import androidx.compose.material3.Divider
+import androidx.compose.material.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -69,8 +73,11 @@ fun CreditCardList(creditCardViewModel:CreditCardListViewModel){
 
 @Composable
 private fun Body(creditCardViewModel:CreditCardListViewModel){
+    val listState = remember {creditCardViewModel.list}
     Scaffold(floatingActionButton = {
-        IconButton(onClick = { creditCardViewModel.onClick() }) {
+        FloatingActionButton(onClick = { creditCardViewModel.onClick() },
+            elevation = FloatingActionButtonDefaults.elevation(8.dp),
+            backgroundColor = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.5f)) {
             Icon(
                 imageVector = Icons.Rounded.AddCircleOutline,
                 contentDescription = stringResource(R.string.add_credit_card)
@@ -78,8 +85,8 @@ private fun Body(creditCardViewModel:CreditCardListViewModel){
         }
     },modifier = Modifier.padding(Dimensions.PADDING_SHORT)) {
         Column(modifier = Modifier.padding(it)) {
-        for(item in creditCardViewModel.list) {
-                Item(item,{creditCardViewModel.edit(it)},{creditCardViewModel.delete(it)},{creditCardViewModel.goToSettings(it)})
+        listState.forEach {item->
+                Item(item!!,{creditCardViewModel.edit(it)},{creditCardViewModel.delete(it)},{creditCardViewModel.goToSettings(it)})
             }
         }
     }
@@ -192,11 +199,27 @@ private fun ItemLarge(dto:CreditCardDTO,state:MutableState<Boolean>,edit:(Int)->
 
 @RequiresApi(Build.VERSION_CODES.S)
 @Composable
-@Preview(showSystemUi = true, showBackground = true)
+@Preview(showSystemUi = true, showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
 fun CreditCardListPreview(){
-
-    val creditCardViewModel = CreditCardListViewModel(creditCardSvc = null,navController = null)
+    val creditCardViewModel = getViewModel()
     MaterialThemeComposeUI {
         CreditCardList(creditCardViewModel)
     }
+}
+
+@RequiresApi(Build.VERSION_CODES.S)
+@Composable
+@Preview(showSystemUi = true, showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
+fun CreditCardListPreviewDark(){
+    val creditCardViewModel = getViewModel()
+    MaterialThemeComposeUI {
+        CreditCardList(creditCardViewModel)
+    }
+}
+
+fun getViewModel():CreditCardListViewModel{
+ val viewModel = CreditCardListViewModel(creditCardSvc = null,navController = null)
+    viewModel.showProgress.value = false
+    viewModel.progress.floatValue = 0.7f
+    return viewModel
 }

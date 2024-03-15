@@ -35,7 +35,7 @@ class CreditCardBoughtMap {
     fun mapping(dto:CreditCardBoughtDTO ):ContentValues{
         return ContentValues().apply {
             put(CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_CODE_CREDIT_CARD,dto.codeCreditCard)
-            put(CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_BOUGHT_DATE,DateUtils.localDateTimeToString(dto.boughtDate))
+            put(CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_BOUGHT_DATE,DateUtils.localDateTimeToStringDate(dto.boughtDate))
             put(CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_INTEREST,dto.interest)
             put(CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_MONTH,dto.month)
             put(CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_CREATE_DATE,DateUtils.localDateTimeToStringDate(dto.createDate))

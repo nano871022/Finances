@@ -13,33 +13,35 @@ import java.time.LocalDateTime
 import javax.inject.Inject
 
 class ListImpl @Inject constructor(private val service: IBoughtList,private val paidList:IPaidList): IBoughtListPort {
-    override fun getBoughtList(creditCardDTO: CreditCardDTO, cutOff:LocalDateTime): CreditCardBoughtListDTO {
-        return service.getBoughtList(CreditCardMap.mapper(creditCardDTO),cutOff).also {
+    override fun getBoughtList(creditCardDTO: CreditCardDTO, cutOff:LocalDateTime, cache:Boolean): CreditCardBoughtListDTO {
+        return service.getBoughtList(CreditCardMap.mapper(creditCardDTO),cutOff,cache).also {
             Log.d(javaClass.name,"<<<=== GetBoughtList CreditCard Id: ${creditCardDTO.id} Cutoff: ${cutOff} Size: ${it.list?.size}")
         }
     }
 
-    override fun getBoughtPeriodList(idCreditCard: Int): List<BoughtCreditCardPeriodDTO> {
-        return paidList?.getBoughtPeriodList(idCreditCard)?.sortedByDescending { it.periodStart }?: arrayListOf()
+
+
+    override fun getBoughtPeriodList(idCreditCard: Int,cache: Boolean): List<BoughtCreditCardPeriodDTO> {
+        return paidList?.getBoughtPeriodList(idCreditCard,cache)?.sortedByDescending { it.periodStart }?: arrayListOf()
     }
 
-    override fun delete(codeBought: Int): Boolean {
-        return service.delete(codeBought)
+    override fun delete(codeBought: Int, cache: Boolean): Boolean {
+        return service.delete(codeBought,cache)
     }
 
     override fun endingRecurrentPayment(codeBought: Int, cutOff: LocalDateTime): Boolean {
         return service.endingRecurrentPayment(codeBought,cutOff)
     }
 
-    override fun updateRecurrentValue(codeBought: Int, value: Double, cutOff:LocalDateTime): Boolean {
-        return service.updateRecurrentValue(codeBought,value,cutOff)
+    override fun updateRecurrentValue(codeBought: Int, value: Double, cutOff:LocalDateTime, cache: Boolean): Boolean {
+        return service.updateRecurrentValue(codeBought,value,cutOff,cache)
     }
 
-    override fun differntInstallment(codeBought: Int, value: Long, cutOff:LocalDateTime): Boolean {
-        return service.differntInstallment(codeBought,value,cutOff)
+    override fun differntInstallment(codeBought: Int, value: Long, cutOff:LocalDateTime, cache: Boolean): Boolean {
+        return service.differntInstallment(codeBought,value,cutOff,cache)
     }
 
-    override fun clone(codeBought: Int): Boolean {
-        return service.clone(codeBought)
+    override fun clone(codeBought: Int, cache: Boolean): Boolean {
+        return service.clone(codeBought,cache)
     }
 }

@@ -6,7 +6,7 @@ import co.japl.android.finances.services.interfaces.SaveSvc
 import java.math.BigDecimal
 import java.time.LocalDate
 
-interface IInputSvc: SaveSvc<InputDTO>,ISaveSvc<InputDTO>  {
+interface IInputDAO: SaveSvc<InputDTO>,ISaveSvc<InputDTO>  {
 
     public fun getTotalInputs():BigDecimal
 

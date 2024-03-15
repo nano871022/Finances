@@ -1,17 +1,24 @@
 package co.japl.android.myapplication.finanzas.view.accounts.lists
 
+import android.content.res.Configuration
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.FloatingActionButtonDefaults
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material3.Card
+import androidx.compose.material.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
@@ -25,6 +32,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import co.com.japl.finances.iports.dtos.AccountDTO
 import co.com.japl.ui.components.AlertDialogOkCancel
 import co.com.japl.ui.components.Carousel
 import co.com.japl.ui.components.FieldView
@@ -38,6 +47,8 @@ import co.japl.android.myapplication.finanzas.view.accounts.inputs.lists.InputLi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.time.LocalDate
+import java.time.LocalDateTime
 
 @Composable
 fun AccountList(viewModel: AccountViewModel) {
@@ -60,7 +71,11 @@ fun AccountList(viewModel: AccountViewModel) {
 
         Scaffold(
             floatingActionButton = {
-                IconButton(onClick = { viewModel.add() }) {
+                FloatingActionButton(onClick = { viewModel.add() },
+                    elevation =  FloatingActionButtonDefaults.elevation(
+                        defaultElevation = 10.dp
+                    ),
+                    backgroundColor =  MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.5f)) {
                     Icon(
                         imageVector = Icons.Rounded.Add,
                         contentDescription = stringResource(id = R.string.create)
@@ -89,7 +104,9 @@ private fun Body(viewModel: AccountViewModel,modifier:Modifier) {
              FieldView(
                  title = stringResource(id = R.string.name),
                  value = item.name,
-                 modifier = Modifier.weight(1f).align(Alignment.CenterVertically)
+                 modifier = Modifier
+                     .weight(1f)
+                     .align(Alignment.CenterVertically)
              )
              IconButton(onClick = { state.value = true }) {
                  Icon(
@@ -99,14 +116,16 @@ private fun Body(viewModel: AccountViewModel,modifier:Modifier) {
              }
          }
 
-         InputList(
-             modelView = InputListModelView(
-                 LocalContext.current,
-                 item.id,
-                 viewModel.navController!!,
-                 viewModel.inputSvc
+         Column {
+             InputList(
+                 modelView = InputListModelView(
+                     LocalContext.current,
+                     item.id,
+                     viewModel.navController!!,
+                     viewModel.inputSvc
+                 )
              )
-         )
+         }
          if (stateDelete.value) {
              AlertDialogOkCancel(
                  title = R.string.do_you_want_to_delete_this_record,
@@ -132,3 +151,19 @@ private fun Body(viewModel: AccountViewModel,modifier:Modifier) {
  }
 }
 
+@RequiresApi(Build.VERSION_CODES.S)
+@Composable
+@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_NO, showSystemUi = true)
+fun AccountListPreview() {
+    val viewModel = getViewModel()
+    MaterialThemeComposeUI {
+        AccountList(viewModel = viewModel)
+    }
+}
+
+fun getViewModel():AccountViewModel{
+    val viewModel = AccountViewModel(accountSvc = null, inputSvc = null,navController = null)
+    viewModel.loading.value = false
+    viewModel.list.add(AccountDTO(1, LocalDate.now(),"",true))
+    return viewModel
+}

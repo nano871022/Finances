@@ -14,6 +14,7 @@ import co.japl.android.finances.services.utils.DatabaseConstants
 import co.japl.android.finances.services.utils.DateUtils
 import java.math.BigDecimal
 import java.time.LocalDate
+import java.time.LocalDateTime
 import java.time.Period
 import java.util.*
 import javax.inject.Inject
@@ -63,7 +64,7 @@ class PaidImpl @Inject constructor(override var dbConnect: SQLiteOpenHelper) : I
         return items.also { Log.d(javaClass.name,"Recurrent Size ${it.size}") }
     }
 
-    override fun getTotalPaid(): BigDecimal {
+    override fun getTotalPaid(date:LocalDate): BigDecimal {
         val db = dbConnect.readableDatabase
         val listValues = mutableListOf<Double>()
         val cursor = db.rawQuery("""
@@ -80,8 +81,9 @@ class PaidImpl @Inject constructor(override var dbConnect: SQLiteOpenHelper) : I
                 val datePaid = cursor.getString(2).let { DateUtils.toLocalDate(it) }
                 val endDate = cursor.getString(3).let { DateUtils.toLocalDate(it) }
                 val value = cursor.getDouble(0)
-                //Log.d(javaClass.name,"=== GetTotalPaid Recurrent: $recurrent Date: $datePaid Value: $value End: $endDate")
-                if((recurrent == 1 || datePaid <= LocalDate.now()) && endDate >= LocalDate.now()) {
+                if((recurrent == 1 ||
+                            datePaid in date.withDayOfMonth(1).. date.plusMonths(1).withDayOfMonth(1).minusDays(1)) &&
+                            endDate >= date.withDayOfMonth(1)) {
                     listValues.add(value)
                 }
 

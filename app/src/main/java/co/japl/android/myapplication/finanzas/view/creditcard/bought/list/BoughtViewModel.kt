@@ -2,12 +2,15 @@ package co.japl.android.myapplication.finanzas.view.creditcard.bought.list
 
 import android.app.Application
 import android.view.View
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.AndroidViewModel
 import androidx.navigation.NavController
 import co.com.japl.finances.iports.dtos.CreditCardBoughtItemDTO
 import co.com.japl.finances.iports.dtos.CreditCardDTO
 import co.com.japl.finances.iports.dtos.DifferInstallmentDTO
+import co.com.japl.finances.iports.enums.KindInterestRateEnum
 import co.com.japl.finances.iports.inbounds.creditcard.bought.lists.IBoughtListPort
+import co.com.japl.ui.Prefs
 import co.japl.android.myapplication.R
 import co.japl.android.myapplication.bussiness.mapping.CalcMap
 import co.japl.android.myapplication.finanzas.enums.KindOfTaxEnum
@@ -26,8 +29,11 @@ import javax.inject.Inject
 
 @HiltViewModel
 class BoughtViewModel @Inject constructor(
-    private val application:Application
+    private val application:Application,
+    private val prefs:Prefs
     ):AndroidViewModel(application) {
+
+        val cache = mutableStateOf(prefs.simulator)
 
     private val boughtCreditCardSvc:IBoughtListPort = EntryPoints.get(application, EntryPoint::class.java).getBoughtCreditCardSvc()
     private lateinit var _bought:CreditCardBoughtItemDTO
@@ -80,7 +86,7 @@ class BoughtViewModel @Inject constructor(
     }
 
     private fun clone(){
-        if(bought.id > 0 && boughtCreditCardSvc.clone(bought.id)){
+        if(bought.id > 0 && boughtCreditCardSvc.clone(bought.id,cache.value)){
             Snackbar.make(
                 view,
                 R.string.ending_recurrent_copy_payment_successfull,
@@ -99,11 +105,29 @@ class BoughtViewModel @Inject constructor(
     }
 
     private fun goToEditBought() {
-        CreditCardQuotesParams.Companion.ListBought.newInstance(
-            bought.id,
-            bought.codeCreditCard,
-            navController
-        )
+        when(bought.kind) {
+            KindInterestRateEnum.CREDIT_CARD -> {
+                CreditCardQuotesParams.Companion.ListBought.newInstanceQuote(
+                    bought.id,
+                    bought.codeCreditCard,
+                    navController
+                )
+            }
+            KindInterestRateEnum.CASH_ADVANCE -> {
+                CreditCardQuotesParams.Companion.ListBought.newInstanceAdvance(
+                    bought.id,
+                    bought.codeCreditCard,
+                    navController
+                )
+            }
+            KindInterestRateEnum.WALLET_BUY -> {
+                CreditCardQuotesParams.Companion.ListBought.newInstanceWallet(
+                    bought.id,
+                    bought.codeCreditCard,
+                    navController
+                )
+            }
+        }
     }
 
     private fun goToAmortization(){
@@ -148,7 +172,7 @@ class BoughtViewModel @Inject constructor(
     }
 
     private fun updateRecurrentValueDialog(value:Double){
-            if (boughtCreditCardSvc.updateRecurrentValue(bought.id, value,_cutOff)) {
+            if (boughtCreditCardSvc.updateRecurrentValue(bought.id, value,_cutOff,cache.value)) {
                 Snackbar.make(
                     view,
                     R.string.ending_recurrent_payment_successfull,
@@ -167,7 +191,7 @@ class BoughtViewModel @Inject constructor(
     }
 
     private fun deleteDialog(){
-            if (boughtCreditCardSvc.delete(bought.id)) {
+            if (boughtCreditCardSvc.delete(bought.id,cache.value)) {
                 Snackbar.make(
                     view,
                     R.string.delete_successfull,
@@ -186,7 +210,7 @@ class BoughtViewModel @Inject constructor(
     }
 
     private fun differntInstallmentDialog(value:Long){
-        if(boughtCreditCardSvc.differntInstallment(bought.id, value,_cutOff)){
+        if(boughtCreditCardSvc.differntInstallment(bought.id, value,_cutOff,cache.value)){
             Snackbar.make(
                 view,
                 R.string.save_differ_installment,

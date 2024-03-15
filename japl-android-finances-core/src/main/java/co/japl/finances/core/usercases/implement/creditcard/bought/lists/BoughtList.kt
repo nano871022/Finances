@@ -1,29 +1,20 @@
 package co.japl.finances.core.usercases.implement.creditcard.bought.lists
 
 import android.util.Log
-import co.com.japl.finances.iports.dtos.BoughtCreditCardPeriodDTO
-import co.com.japl.finances.iports.dtos.CreditCardBoughtDTO
 import co.com.japl.finances.iports.dtos.CreditCardBoughtListDTO
-import co.com.japl.finances.iports.dtos.CreditCardDTO
-import co.com.japl.finances.iports.dtos.CreditCardSettingDTO
-import co.com.japl.finances.iports.dtos.DifferInstallmentDTO
 import co.com.japl.finances.iports.dtos.RecapCreditCardBoughtListDTO
 import co.com.japl.finances.iports.dtos.TagDTO
 import co.com.japl.finances.iports.enums.KindInterestRateEnum
-import co.com.japl.finances.iports.outbounds.IBuyCreditCardSettingPort
 import co.com.japl.finances.iports.outbounds.ICreditCardPort
-import co.com.japl.finances.iports.outbounds.ICreditCardSettingPort
 import co.com.japl.finances.iports.outbounds.IDifferInstallmentRecapPort
 import co.com.japl.finances.iports.outbounds.IQuoteCreditCardPort
 import co.com.japl.finances.iports.outbounds.ITagQuoteCreditCardPort
 import co.japl.finances.core.model.CreditCard
 import co.japl.finances.core.usercases.calculations.InterestCalculations
 import co.japl.finances.core.usercases.calculations.RecapCalculation
-import co.japl.finances.core.usercases.calculations.ValuesCalculation
 import co.japl.finances.core.usercases.implement.common.ListBoughts
 import co.japl.finances.core.usercases.interfaces.creditcard.bought.lists.IBoughtList
 import co.japl.finances.core.utils.DateUtils
-import java.math.BigDecimal
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
@@ -41,10 +32,10 @@ class BoughtList @Inject constructor(
 
 ): IBoughtList {
 
-    override fun getBoughtList(creditCard:CreditCard,cutoff:LocalDateTime): CreditCardBoughtListDTO {
+    override fun getBoughtList(creditCard:CreditCard,cutoff:LocalDateTime,cache:Boolean): CreditCardBoughtListDTO {
         val recap = RecapCreditCardBoughtListDTO()
         val period = YearMonth.of(cutoff.year,cutoff.month)
-        val list = listBoughts.getList(creditCard,cutoff)
+        val list = listBoughts.getList(creditCard,cutoff,cache)
         val taxQuote = interestCalculation.getTax(creditCard.codeCreditCard,KindInterestRateEnum.CREDIT_CARD,period)
         val taxAdvance = interestCalculation.getTax(creditCard.codeCreditCard,KindInterestRateEnum.CASH_ADVANCE,period)
         val differQuotes = differQuotesSvc.get(cutoff.toLocalDate())
@@ -60,17 +51,17 @@ class BoughtList @Inject constructor(
         }
     }
 
-    override fun delete(codeBought: Int): Boolean {
+    override fun delete(codeBought: Int,cache:Boolean): Boolean {
         require(codeBought > 0)
-        return quoteCCSvc.delete(codeBought)
+        return quoteCCSvc.delete(codeBought,cache)
     }
 
     override fun endingRecurrentPayment(codeBought: Int, cutoff: LocalDateTime): Boolean {
         return quoteCCSvc.endingRecurrentPayment(codeBought,cutoff)
     }
 
-    override fun updateRecurrentValue(codeBought: Int, value: Double, cutOff: LocalDateTime): Boolean {
-        quoteCCSvc.get(codeBought)?.let {
+    override fun updateRecurrentValue(codeBought: Int, value: Double, cutOff: LocalDateTime, cache: Boolean): Boolean {
+        quoteCCSvc.get(codeBought,cache)?.let {
             val newRecurrent = it.copy(
                 endDate = LocalDateTime.of(LocalDate.MAX, LocalTime.MAX)
                 , createDate = cutOff
@@ -79,11 +70,11 @@ class BoughtList @Inject constructor(
                 )
                 newRecurrent.boughtDate = it.boughtDate.withYear(newRecurrent.createDate.year).withMonth(newRecurrent.createDate.monthValue)
             val origin = it.copy(endDate = cutOff.minusMonths(1).plusDays(1))
-            return quoteCCSvc.create(newRecurrent).takeIf { response->response > 0}?.let{id->
-                if(quoteCCSvc.update(origin)){
+            return quoteCCSvc.create(newRecurrent,cache).takeIf { response->response > 0}?.let{id->
+                if(quoteCCSvc.update(origin,cache)){
                     return true
                 }else{
-                    quoteCCSvc.delete(id)
+                    quoteCCSvc.delete(id,cache)
                     return false
                 }
             }?:false
@@ -91,8 +82,8 @@ class BoughtList @Inject constructor(
         return false
     }
 
-    override fun differntInstallment(codeBought: Int, value: Long,cutOff:LocalDateTime): Boolean {
-        quoteCCSvc.get(codeBought)?.let {
+    override fun differntInstallment(codeBought: Int, value: Long,cutOff:LocalDateTime,cache:Boolean): Boolean {
+        quoteCCSvc.get(codeBought,cache)?.let {
             val creditCard = creditCardSvc.get(it.codeCreditCard)
             val dayOfMonth:Short = creditCard?.cutOffDay ?:it.cutOutDate.dayOfMonth.toShort()
             val months = DateUtils.getMonths(it.boughtDate,cutOff)
@@ -100,16 +91,16 @@ class BoughtList @Inject constructor(
             val differBought =  it.copy(month = (value).toInt()
                 , createDate = LocalDateTime.now()
                 , endDate =  DateUtils.cutOffAddMonth(dayOfMonth, cutOff, value)
-                , boughtDate =  LocalDateTime.now()
+                , boughtDate =  LocalDateTime.now().withDayOfMonth(it.boughtDate.dayOfMonth)
                 , valueItem = (it.valueItem.toDouble() - ((it.valueItem.toDouble() / it.month) * months)).toBigDecimal()
                 , nameItem = it.nameItem.plus(" (${it.id}. ${it.valueItem.toDouble()})")
                 , id = 0)
             val origin = it.copy(endDate = DateUtils.cutOffLastMonth(dayOfMonth,cutOff))
-            return quoteCCSvc.create(differBought).takeIf { response->response > 0}?.let{id->
-                    if(quoteCCSvc.update(origin)){
+            return quoteCCSvc.create(differBought,cache).takeIf { response->response > 0}?.let{id->
+                    if(quoteCCSvc.update(origin,cache)){
                         return true
                     }else{
-                        quoteCCSvc.delete(id)
+                        quoteCCSvc.delete(id,cache)
                         return false
                     }
             }?: false
@@ -117,16 +108,15 @@ class BoughtList @Inject constructor(
         return false
     }
 
-    override fun clone(codeBought: Int): Boolean {
+    override fun clone(codeBought: Int, cache: Boolean): Boolean {
         require(codeBought > 0)
-        return quoteCCSvc.get(codeBought)?.let {
+        return quoteCCSvc.get(codeBought,cache)?.let {
              return quoteCCSvc.create(it.copy(id=0,
                  nameItem = it.nameItem + "*",
                  createDate = LocalDateTime.now(),
-                 boughtDate = LocalDateTime.now())) > 0
+                 boughtDate = LocalDateTime.now()),cache) > 0
         }?:false
     }
-
 
     private fun tag(codeBought:Int):TagDTO?{
         return tagsSvc.getTags(codeBought).firstOrNull()

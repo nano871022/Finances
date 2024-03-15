@@ -2,6 +2,7 @@ package co.japl.finances.core.usercases.interfaces.creditcard
 
 import co.com.japl.finances.iports.dtos.TaxDTO
 import co.com.japl.finances.iports.enums.KindInterestRateEnum
+import java.time.LocalDate
 
 interface ITax {
     fun get(
@@ -18,6 +19,8 @@ interface ITax {
     fun update(dto:TaxDTO):Boolean
 
     fun getByCreditCard(codCreditCard:Int):List<TaxDTO>?
+
+    fun getByCreditCard(codCreditCard:Int,cutOff:LocalDate):List<TaxDTO>?
 
     fun delete(code:Int):Boolean
 

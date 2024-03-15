@@ -17,9 +17,9 @@ class InputsImpl @Inject constructor(private val inputSvc:IInputPort) : IInput {
 
     override fun updateValue(id: Int, value: Double): Boolean {
         val input = inputSvc.getInput(id)
-        return input?.copy(dateEnd = LocalDate.now().withDayOfMonth(1).minusDays(1))?.let {oldDTO->
-            inputSvc.update(oldDTO).takeIf { it }?.let {
-                input.copy(value = value.toBigDecimal(), id = 0)?.let {newRecord->
+        return input?.copy(dateEnd = LocalDate.now().withDayOfMonth(1).minusDays(1))?.let {currentDTO->
+            inputSvc.update(currentDTO).takeIf { it }?.let {
+                input.copy(value = value.toBigDecimal(), id = 0, dateEnd = LocalDate.MAX)?.let {newRecord->
                     if(inputSvc.create(newRecord) > 0){
                         return true
                     }else{

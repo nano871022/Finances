@@ -11,6 +11,7 @@ import co.japl.finances.core.usercases.calculations.InterestCalculations
 import co.japl.finances.core.usercases.calculations.ValuesCalculation
 import co.japl.finances.core.usercases.mapper.CreditCardBoughtItemMapper
 import co.japl.finances.core.utils.DateUtils
+import org.intellij.lang.annotations.RegExp
 import java.time.LocalDateTime
 import javax.inject.Inject
 
@@ -20,12 +21,12 @@ class ListBoughts @Inject constructor(
     , private val interestCalculation: InterestCalculations
 ){
 
-    internal fun getList(creditCard: CreditCard,cutOff:LocalDateTime): List<CreditCardBoughtItemDTO> {
+    internal fun getList(creditCard: CreditCard,cutOff:LocalDateTime,cache:Boolean): List<CreditCardBoughtItemDTO> {
         val startDate = DateUtils.startDateFromCutoff(creditCard.cutoffDay,cutOff)
-        val mainList = getMainList(creditCard,startDate,cutOff)
+        val mainList = getMainList(creditCard,startDate,cutOff,cache)
         val recurrentList = getRecurrentList(creditCard,cutOff)
-        val recurrentPendingList = getRecurrentListPending(creditCard,cutOff)
-        val pendingList = getPendingList(creditCard,startDate,cutOff)
+        val recurrentPendingList = getRecurrentListPending(creditCard,cutOff,cache)
+        val pendingList = getPendingList(creditCard,startDate,cutOff,cache)
 
         val list = ArrayList<CreditCardBoughtDTO>()
         list.addAll(mainList)
@@ -51,7 +52,22 @@ class ListBoughts @Inject constructor(
 
         valuesCalculation.getQuotesPaid(dto.id,dto.month.toShort(),dto.boughtDate,cutoff,differQuotes)?.let { dto.monthPaid = it.toLong()}
 
-        interestCalculation.lastInterestCalc(dto,creditCard)?.let {
+        var month = dto.month
+        var monthPaid = dto.monthPaid
+
+        val differ = dto.nameItem.contains("\\([0-9]+\\. [0-9]+\\.[0-9]+\\)".toRegex())
+        differ.takeIf { it }?.let {
+            "\\(([0-9]+)\\. [0-9]+\\.[0-9]+\\)".toRegex().find(dto.nameItem)?.let{
+                quoteCCSvc.get(it.groupValues[1].toInt(),false)?.let{
+                    DateUtils.getMonths(it.boughtDate,cutoff).takeIf { it == "1".toLong() }?.let{
+                        monthPaid = it
+                        month = 2
+                    }
+                }
+            }
+        }
+
+        interestCalculation.lastInterestCalc(dto,creditCard,differ)?.let {
             dto.interest = it.value
             dto.kindOfTax = it.kind
         }
@@ -60,7 +76,16 @@ class ListBoughts @Inject constructor(
 
         valuesCalculation.getPendingToPay(dto.id,dto.month.toShort(),dto.monthPaid.toShort(),dto.valueItem,dto.capitalValue,differQuotes).let { dto.pendingToPay = it}
 
-        interestCalculation.getInterestValue(dto.month.toShort(),dto.monthPaid.toShort(),dto.kind,dto.pendingToPay,dto.valueItem,dto.interest,dto.kindOfTax,creditCard.interest1Quote,creditCard.interest1NotQuote).let { dto.interestValue = it}
+        interestCalculation.getInterestValue(month.toShort(),
+            monthPaid.toShort(),
+            dto.kind,
+            dto.pendingToPay,
+            dto.valueItem,
+            dto.interest,
+            dto.kindOfTax,
+            creditCard.interest1Quote,
+            creditCard.interest1NotQuote,
+            differ).let { dto.interestValue = it}
 
         dto.quoteValue = (dto.interestValue?:0.0) + (dto.capitalValue?:0.0)
 
@@ -68,12 +93,12 @@ class ListBoughts @Inject constructor(
         return dto
     }
 
-    private fun getPendingList(creditCard:CreditCard,startDate: LocalDateTime,cutOff:LocalDateTime): List<CreditCardBoughtDTO> {
-        return quoteCCSvc.getPendingQuotes(creditCard.codeCreditCard,startDate,cutOff)
+    private fun getPendingList(creditCard:CreditCard,startDate: LocalDateTime,cutOff:LocalDateTime,cache: Boolean): List<CreditCardBoughtDTO> {
+        return quoteCCSvc.getPendingQuotes(creditCard.codeCreditCard,startDate,cutOff,cache)
     }
 
-    private fun getRecurrentListPending(creditCard: CreditCard,cutOff:LocalDateTime): List<CreditCardBoughtDTO> {
-        return quoteCCSvc.getRecurrentPendingQuotes(creditCard.codeCreditCard,cutOff).also{
+    private fun getRecurrentListPending(creditCard: CreditCard,cutOff:LocalDateTime,cache: Boolean): List<CreditCardBoughtDTO> {
+        return quoteCCSvc.getRecurrentPendingQuotes(creditCard.codeCreditCard,cutOff,cache).also{
             Log.d(javaClass.name,"=== PendingRecurrentList: ${it.size} $it")
         }
     }
@@ -90,8 +115,8 @@ class ListBoughts @Inject constructor(
         }
     }
 
-    private fun getMainList(creditCard:CreditCard,startDate: LocalDateTime,cutOff:LocalDateTime): List<CreditCardBoughtDTO> {
-        return quoteCCSvc.getToDate(creditCard.codeCreditCard,startDate,cutOff).also {
+    private fun getMainList(creditCard:CreditCard,startDate: LocalDateTime,cutOff:LocalDateTime,cache:Boolean): List<CreditCardBoughtDTO> {
+        return quoteCCSvc.getToDate(creditCard.codeCreditCard,startDate,cutOff,cache).also {
             Log.d(javaClass.name,"=== MainList: ${it.size} $it")
         }
     }
