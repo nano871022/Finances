@@ -50,6 +50,8 @@
     <string name="quote_credit_save">Guardar - Cuota Credito Fija</string>
     <string name="quote_credit_save_variable">Guardar - Cuota Credito Variable</string>
     <string name="name">Nombre</string>
+    <string name="add_input_account">Agregar Ingreso</string>
+    <string name="add_account">Agregar Cuenta</string>
     <string name="max_quotes">Cuotas Maximas</string>
     <string name="cancel">Cancelar</string>
     <string name="delete">Eliminar</string>

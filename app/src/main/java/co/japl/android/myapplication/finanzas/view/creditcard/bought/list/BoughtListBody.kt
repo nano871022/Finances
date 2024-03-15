@@ -211,7 +211,7 @@ private fun MainRow(model:BoughtViewModel){
     val stateDialogOptionsMore = remember { mutableStateOf(false) }
     when{
         stateDialogOptionsMore.value -> {
-            var rediferirValue = model.bought.pendingToPay + model.bought.capitalValue
+            var rediferirValue = model.bought.pendingToPay //+ model.bought.capitalValue
             if(rediferirValue > model.bought.valueItem){
                rediferirValue =model.bought.valueItem
             }

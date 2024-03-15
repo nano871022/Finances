@@ -22,6 +22,7 @@ import java.math.RoundingMode
 import java.nio.charset.Charset
 import java.nio.file.Files
 import java.nio.file.Paths
+import java.time.DateTimeException
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
@@ -50,6 +51,7 @@ class SaveCreditCardBoughtImpl @Inject constructor(val context:Context, override
     private val FORMAT_DATE_BOUGHT_WHERE = "substr(${CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_BOUGHT_DATE},7,4)||'-'||substr(${CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_BOUGHT_DATE},4,2)||'-'||substr(${CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_BOUGHT_DATE},1,2)"
     private val FORMAT_DATE_END_WHERE = "substr(${CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_END_DATE},7,4)||'-'||substr(${CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_END_DATE},4,2)||'-'||substr(${CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_END_DATE},1,2)"
     private val FORMAT_DATE_BOUGHT_WHERE_YYYYMM = "substr(${CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_BOUGHT_DATE},7,4)||'-'||substr(${CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_BOUGHT_DATE},4,2)"
+    private val FORMAT_DATE_BOUGHT_WHERE_MMYYYY = "substr(${CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_BOUGHT_DATE},1,4)||'-'||substr(${CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_BOUGHT_DATE},6,2)"
     @RequiresApi(Build.VERSION_CODES.O)
     override fun save(dto: CreditCardBoughtDTO): Long {
         Log.v(this.javaClass.name,"<<<=== save - Start")
@@ -196,6 +198,7 @@ class SaveCreditCardBoughtImpl @Inject constructor(val context:Context, override
             while(moveToNext()){
                 CreditCardBoughtMap().mapping(this)
                     ?.takeIf { it.endDate >= startDate }
+                    ?.takeIf { it.boughtDate <= cutoffCurrent }
                     ?.takeIf {getValidMonths(it,cutoffCurrent,startDate)}
                     ?.let{items.add(it)}
             }
@@ -488,7 +491,7 @@ class SaveCreditCardBoughtImpl @Inject constructor(val context:Context, override
         Log.i(this.javaClass.name,"<<<=== START Get Periods")
         val db = dbConnect.readableDatabase
         val cursor = db.rawQuery("""
-            SELECT DISTINCT $FORMAT_DATE_BOUGHT_WHERE_YYYYMM
+            SELECT DISTINCT $FORMAT_DATE_BOUGHT_WHERE_YYYYMM , $FORMAT_DATE_BOUGHT_WHERE_MMYYYY
             FROM ${CreditCardBoughtDB.CreditCardBoughtEntry.TABLE_NAME}
             WHERE ${CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_CODE_CREDIT_CARD} = ?
         """
@@ -497,15 +500,24 @@ class SaveCreditCardBoughtImpl @Inject constructor(val context:Context, override
         val items = mutableListOf<YearMonth>()
         with(cursor){
             while(moveToNext()) {
-                 getStringOrNull(0)?.let {
-                     it.split("-").let {
-                         items.add(YearMonth.of(it[0].toInt(),it[1].toInt()))
-                     }
-                 }
+                    getStringOrNull(0)?.let {items(it,items::add)}
+                    getStringOrNull(1)?.let {items(it,items::add)}
             }
         }
 
-        return items.also { Log.i(this.javaClass.name,"<<<=== FINISH Get all records Count ${it.size}") }
+        return items.distinct().also { Log.i(this.javaClass.name,"<<<=== FINISH Get all records Count ${it.size}") }
+    }
+
+    private fun items(value:String,exec:(period:YearMonth)->Unit){
+        try{
+        value.split("-").let {
+            if(it[0].length == 4) {
+                exec.invoke(YearMonth.of(it[0].toInt(), it[1].toInt()))
+            }
+        }
+        }catch(e:DateTimeException){}
+        catch (e:NumberFormatException){}
+
     }
 
 }

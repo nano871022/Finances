@@ -52,7 +52,20 @@ class ListBoughts @Inject constructor(
 
         valuesCalculation.getQuotesPaid(dto.id,dto.month.toShort(),dto.boughtDate,cutoff,differQuotes)?.let { dto.monthPaid = it.toLong()}
 
-        val differ = dto.nameItem.contains("\\* \\([0-9].\\. [0-9].".toRegex())
+        var month = dto.month
+        var monthPaid = dto.monthPaid
+
+        val differ = dto.nameItem.contains("\\([0-9]+\\. [0-9]+\\.[0-9]+\\)".toRegex())
+        differ.takeIf { it }?.let {
+            "\\(([0-9]+)\\. [0-9]+\\.[0-9]+\\)".toRegex().find(dto.nameItem)?.let{
+                quoteCCSvc.get(it.groupValues[1].toInt(),false)?.let{
+                    DateUtils.getMonths(it.boughtDate,cutoff).takeIf { it == "1".toLong() }?.let{
+                        monthPaid = it
+                        month = 2
+                    }
+                }
+            }
+        }
 
         interestCalculation.lastInterestCalc(dto,creditCard,differ)?.let {
             dto.interest = it.value
@@ -63,8 +76,16 @@ class ListBoughts @Inject constructor(
 
         valuesCalculation.getPendingToPay(dto.id,dto.month.toShort(),dto.monthPaid.toShort(),dto.valueItem,dto.capitalValue,differQuotes).let { dto.pendingToPay = it}
 
-        interestCalculation.getInterestValue(dto.month.toShort(),dto.monthPaid.toShort(),dto.kind,dto.pendingToPay,dto.valueItem,dto.interest,dto.kindOfTax,creditCard.interest1Quote,creditCard.interest1NotQuote
-        ,differ).let { dto.interestValue = it}
+        interestCalculation.getInterestValue(month.toShort(),
+            monthPaid.toShort(),
+            dto.kind,
+            dto.pendingToPay,
+            dto.valueItem,
+            dto.interest,
+            dto.kindOfTax,
+            creditCard.interest1Quote,
+            creditCard.interest1NotQuote,
+            differ).let { dto.interestValue = it}
 
         dto.quoteValue = (dto.interestValue?:0.0) + (dto.capitalValue?:0.0)
 

@@ -91,7 +91,7 @@ class BoughtList @Inject constructor(
             val differBought =  it.copy(month = (value).toInt()
                 , createDate = LocalDateTime.now()
                 , endDate =  DateUtils.cutOffAddMonth(dayOfMonth, cutOff, value)
-                , boughtDate =  LocalDateTime.now()
+                , boughtDate =  LocalDateTime.now().withDayOfMonth(it.boughtDate.dayOfMonth)
                 , valueItem = (it.valueItem.toDouble() - ((it.valueItem.toDouble() / it.month) * months)).toBigDecimal()
                 , nameItem = it.nameItem.plus(" (${it.id}. ${it.valueItem.toDouble()})")
                 , id = 0)

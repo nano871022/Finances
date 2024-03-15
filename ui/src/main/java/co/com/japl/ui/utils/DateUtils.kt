@@ -41,6 +41,28 @@ class DateUtils {
             }
         }
 
+        @RequiresApi(Build.VERSION_CODES.O)
+        fun toLocalDateTime2(value: String): LocalDateTime {
+            require(value.isNotBlank()) { "Value cannot be blank" }
+            if (value.contains("/")) {
+                val date = value.split("/")
+                require (date.size > 1) { "Value is not valid $date" }
+                return LocalDateTime.of(date[2].toInt(), date[1].toInt(), date[0].toInt(), 0, 0, 0)
+            } else {
+                val date = value.split("-")
+                require (date.size > 1) { "Value is not valid $date" }
+                return LocalDateTime.of(
+                    date[0].toInt(),
+                    date[1].toInt(),
+                    date[2].toInt(),
+                    23,
+                    59,
+                    59,
+                    999
+                )
+            }
+        }
+
         fun toLocalDate(milles: Long): LocalDate =
             LocalDateTime.ofInstant(Instant.ofEpochMilli(milles),ZoneId.of("UTC")).toLocalDate()
 

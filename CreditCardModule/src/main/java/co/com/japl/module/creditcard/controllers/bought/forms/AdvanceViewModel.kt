@@ -184,7 +184,7 @@ class AdvanceViewModel constructor(private val codeCreditCard:Int, private val c
                 nameItem = nameProduct.value,
                 valueItem = NumbersUtil.toBigDecimal(valueProduct.value),
                 month = NumbersUtil.toLong(monthProduct.value).toInt(),
-                boughtDate = DateUtils.toLocalDateTime(dateBought.value),
+                boughtDate = DateUtils.toLocalDateTime2(dateBought.value),
                 createDate = LocalDateTime.now(),
                 endDate = LocalDateTime.MAX,
                 cutOutDate = period,

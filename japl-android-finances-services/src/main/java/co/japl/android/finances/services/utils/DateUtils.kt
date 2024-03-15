@@ -37,7 +37,7 @@ class DateUtils {
                 if (date.size <= 1) {
                     return default
                 }
-                return LocalDateTime.of(date[0].toInt(),date[1].toInt(),date[1].toInt(),23,59,59,999)
+                return LocalDateTime.of(date[0].toInt(),date[1].toInt(),date[2].toInt(),23,59,59,999)
             }
         }
 
