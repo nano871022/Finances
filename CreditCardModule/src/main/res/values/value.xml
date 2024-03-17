@@ -32,6 +32,9 @@
     <string name="name">Nombre</string>
     <string name="value">Valor</string>
     <string name="kind_rate">Tipo de tasa</string>
+    <string name="phone_number">Número de Teléfono</string>
+    <string name="pattern">Patron Búsqueda en Texto</string>
+    <string name="validate">Validación</string>
     <string name="months">meses</string>
     <string name="disabled">Desabilitar</string>
     <string name="enabled">Habilitar</string>
@@ -97,6 +100,8 @@
     <string name="navigate_bought_cash_advance">android-app://co.com.japl.finanzas.module.app/cashAdvanceBought?cod_credit_card=%d</string>
     <string name="navigate_bought">android-app://co.com.japl.finanzas.module.app/bought?CreditCardCode=%d</string>
     <string name="navigate_bought_wallet">android-app://co.com.japl.finanzas.module.app/boughtWalletBought?cod_credit_card=%d</string>
+    <string name="navigate_form_sms_credit_rate">android-app://co.com.japl.finanzas.modulo.app/sms_credit_card</string>
+    <string name="navigate_form_sms_credit_rate_edit">android-app://co.com.japl.finanzas.modulo.app/sms_credit_card?code_sms_credit_Card=%d</string>
 
     <string-array name="Months">
         <item>--- Seleccionar --- </item>

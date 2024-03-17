@@ -441,5 +441,20 @@
         android:id="@+id/extraValueListController"
         android:name="co.japl.android.myapplication.finanzas.controller.ExtraValueListController"
         android:label="ExtraValueListController" />
+    <fragment
+        android:id="@+id/sms_list_credit_card"
+        android:name="co.japl.android.myapplication.finanzas.controller.boughtcreditcard.SmsListFragment"
+        android:label="fragment_list_sms_credit_card"
+        tools:layout="@layout/fragment_list_sms_credit_card" >
+        <action
+            android:id="@+id/action_sms_list_credit_card_to_smsFragment"
+            app:destination="@id/sms_credit_card" />
+        <deepLink app:uri="android-app://co.com.japl.finanzas.modulo.app/sms_credit_card"/>
+    </fragment>
+    <fragment
+        android:id="@+id/sms_credit_card"
+        android:name="co.japl.android.myapplication.finanzas.controller.boughtcreditcard.SmsFragment"
+        android:label="fragment_sms_credit_card"
+        tools:layout="@layout/fragment_sms_credit_card" />
 
 </navigation>

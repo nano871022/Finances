@@ -129,6 +129,7 @@
     <string name="warning_quote_value">Valor alerta cuota</string>
 
     <string name="taxes_credit_card">Tasas Tarjeta Credito</string>
+    <string name="sms_credit_card">SMS Tarjeta Crédito</string>
     <string name="credit_card">Tarjeta de Credito</string>
     <string name="month">Mes</string>
     <string name="year">Año</string>

@@ -23,5 +23,4 @@ interface IBought {
     fun interestValue(codeCreditRate:Int,months:Short,value:Double,kindOfTax:KindOfTaxEnum,kindOfInterest:KindInterestRateEnum):Double
 
     fun getById(codeBought:Int,cache:Boolean):CreditCardBoughtDTO?
-
 }

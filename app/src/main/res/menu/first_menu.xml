@@ -5,11 +5,15 @@
     tools:showIn="navigation_view"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     >
+
+
     <item
         android:id="@+id/item_menu_side_recap"
         android:icon="@android:drawable/ic_menu_view"
         android:titleCondensed="@string/recap"
         android:title="@string/recap" />
+
+    <group>
     <item
         android:id="@+id/item_menu_side_quoteCredit"
         android:icon="@drawable/ic_baseline_permanent"
@@ -21,7 +25,7 @@
         android:icon="@drawable/ic_baseline_varable"
         android:title="@string/quote_credit_variable"
         android:titleCondensed="@string/quote_credit_variable"/>
-
+    </group>
     <item
         android:id="@+id/item_menu_side_listsave"
         android:icon="@drawable/ic_sum"

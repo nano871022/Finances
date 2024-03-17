@@ -31,4 +31,6 @@ interface IQuoteCreditCardPort {
 
     fun getBoughtPeriodList(idCreditCard: Int): List<LocalDateTime>?
 
+    fun findByNameAndBoughtDateAndValue(name:String,boughtDate:LocalDateTime,amount:BigDecimal):CreditCardBoughtDTO?
+
 }

@@ -1,14 +1,26 @@
 package co.japl.android.myapplication.finanzas.modules
 
+import android.app.Activity
+import android.content.ContentResolver
 import android.content.Context
 import android.database.sqlite.SQLiteOpenHelper
+import co.com.japl.finances.iports.inbounds.creditcard.bought.IBoughtPort
+import co.com.japl.finances.iports.inbounds.creditcard.bought.IBoughtSmsPort
+import co.com.japl.module.creditcard.impl.SMSObserver
 import co.com.japl.ui.Prefs
+import co.com.japl.ui.impls.SMSObservable
+import co.com.japl.ui.interfaces.ISMSObservablePublicher
+import co.com.japl.ui.interfaces.ISMSObservableSubscriber
+import co.com.japl.ui.interfaces.ISMSObserver
 import co.japl.android.finances.services.cache.impl.QuoteCreditCardCache
 import co.japl.android.finances.services.dao.interfaces.IQuoteCreditCardDAO
 import co.japl.android.myapplication.bussiness.DB.connections.ConnectDB
 import co.japl.android.myapplication.bussiness.impl.CreditCardImpl
 import co.japl.android.myapplication.finanzas.ApplicationInitial
+import co.japl.android.myapplication.finanzas.annotations.IObservers
 import co.japl.android.myapplication.finanzas.bussiness.interfaces.ICreditCardSvc
+import co.japl.android.myapplication.finanzas.controller.SMS
+import co.japl.android.myapplication.finanzas.interfaces.ISMSBoadcastReceiver
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
@@ -16,6 +28,8 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ActivityContext
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import dagger.multibindings.IntoMap
+import dagger.multibindings.IntoSet
 import javax.inject.Singleton
 
 @Module
@@ -27,6 +41,7 @@ object Module {
         return ConnectDB(context)
     }
 
+
     @Singleton
     @Provides
     fun getPrefs():Prefs{
@@ -35,9 +50,29 @@ object Module {
 
     @Singleton
     @Provides
+    fun getSMSObserver():SMSObservable{
+        return SMSObservable()
+    }
+
+    @Singleton
+    @Provides
+    fun getSMSBroadcastReceiver(@ApplicationContext context:Context,publisher:ISMSObservablePublicher):ISMSBoadcastReceiver{
+        return SMS(publisher,context)
+    }
+
+    @Singleton
+    @Provides
     fun getDAOBoughtcache(implement:IQuoteCreditCardDAO):co.japl.android.finances.services.cache.interfaces.IQuoteCreditCardCache{
         return QuoteCreditCardCache(implement)
     }
+
+    @IntoMap
+    @IObservers(value = SMSObserver::class)
+    @Provides
+    fun getSMSObserverCreditCardModule(subscriber: ISMSObservableSubscriber,svc:IBoughtSmsPort):ISMSObserver{
+        return SMSObserver(subscriber,svc)
+    }
+
 
 
 }
