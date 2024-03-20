@@ -72,6 +72,53 @@ fun FieldText( title:String
                ,value:String=""
                ,icon:ImageVector? = null
                ,keyboardType: KeyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text)
+               ,modifier:Modifier=Modifier
+               ,validation:()->Unit = {}
+               ,readOnly:Boolean = false
+               ,lines:Int = 1
+               ,hasErrorState:MutableState<Boolean> = mutableStateOf(false)
+               ,callback:(String)->Unit={}){
+    val valueState = remember { mutableStateOf("") }
+    value?.takeIf { value.isNotEmpty() }?.let{valueState.value = it}
+
+    TextField(
+        value = valueState.value , onValueChange = {
+        valueState.value = it
+        callback.invoke(it)
+        validation.invoke()
+    }, isError = hasErrorState.value, label = {
+        Text(text = title)
+    }, trailingIcon = {
+        valueState.value.takeIf { it.isNotEmpty() }?.let {
+            IconButton(onClick = {
+                valueState.value= ""
+                callback.invoke(valueState.value)
+            }) {
+                icon?.let {
+                    Icon(
+                        imageVector = icon, contentDescription = stringResource(
+                            id = R.string.clear
+                        )
+                    )
+                }
+            }
+        }
+    }, readOnly = readOnly
+        , singleLine = lines == 1
+        , maxLines = lines
+        , minLines = lines
+        , modifier = modifier
+        , keyboardOptions = keyboardType
+
+    )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun FieldText( title:String
+               ,value:String=""
+               ,icon:ImageVector? = null
+               ,keyboardType: KeyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text)
                , currency:Boolean = false
                ,modifier:Modifier=Modifier
                ,validation:()->Unit = {}

@@ -13,6 +13,7 @@ import co.japl.finances.core.model.CreditCard
 import co.japl.finances.core.usercases.calculations.InterestCalculations
 import co.japl.finances.core.usercases.calculations.InterestRateCalculation
 import co.japl.finances.core.usercases.calculations.ValuesCalculation
+import co.japl.finances.core.usercases.interfaces.common.ICreditCard
 import co.japl.finances.core.usercases.interfaces.creditcard.ITax
 import co.japl.finances.core.usercases.interfaces.creditcard.bought.lists.IBought
 import co.japl.finances.core.usercases.interfaces.creditcard.bought.lists.IBoughtList

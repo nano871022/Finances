@@ -1,5 +1,6 @@
 package co.japl.android.finances.services.implement
 
+import android.database.CursorWindowAllocationException
 import android.database.sqlite.SQLiteOpenHelper
 import android.os.Build
 import android.provider.BaseColumns
@@ -25,23 +26,32 @@ class TagQuoteCreditCardImpl @Inject constructor(override var dbConnect: SQLiteO
 
     private val tagSvc:ITagSvc = TagsImpl(dbConnect)
 
-    @RequiresApi(Build.VERSION_CODES.O)
+    @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
     override fun getTags(codQuoteCreditCard: Int): List<TagDTO> {
-        val db = dbConnect.readableDatabase
-        val cursor = db.query(TagsQuoteCreditCardDB.Entry.TABLE_NAME
-            , COLUMNS
-            , "${TagsQuoteCreditCardDB.Entry.COLUMN_CODE_QUOTE_CREDIT_CARD} = ?"
-            , arrayOf(codQuoteCreditCard.toString()), null, null, null)
-        val mapper = TagQuoteCreditCardMap()
         val list = mutableListOf<TagDTO>()
-        with(cursor) {
-            while (moveToNext()) {
-                mapper.mapping(this).let {
-                    tagSvc.get(it.codTag).takeIf { it.isPresent }?.let {
-                        list.add(it.get())
+        try {
+            val db = dbConnect.readableDatabase
+            val cursor = db.query(
+                TagsQuoteCreditCardDB.Entry.TABLE_NAME,
+                COLUMNS,
+                "${TagsQuoteCreditCardDB.Entry.COLUMN_CODE_QUOTE_CREDIT_CARD} = ?",
+                arrayOf(codQuoteCreditCard.toString()),
+                null,
+                null,
+                null
+            )
+            val mapper = TagQuoteCreditCardMap()
+            with(cursor) {
+                while (moveToNext()) {
+                    mapper.mapping(this).let {
+                        tagSvc.get(it.codTag).takeIf { it.isPresent }?.let {
+                            list.add(it.get())
+                        }
                     }
                 }
             }
+        }catch(e:CursorWindowAllocationException){
+            Log.e(this.javaClass.name,"<<<=== getTags ISSUE - $e")
         }
         return list.also {
             Log.d(this.javaClass.name,"<<<=== getTags - Size: ${it.size}")

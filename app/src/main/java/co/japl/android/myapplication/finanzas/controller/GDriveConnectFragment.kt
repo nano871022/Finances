@@ -1,32 +1,24 @@
 package co.japl.android.myapplication.finanzas.controller
 
+import android.Manifest
 import android.content.Intent
-import android.opengl.Visibility
+import android.content.pm.PackageManager
 import android.os.Bundle
-import android.preference.PreferenceManager.OnActivityResultListener
+import android.provider.Telephony
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
-import android.view.View.OnClickListener
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
-import android.widget.Toast
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
 import co.japl.android.myapplication.R
-import co.japl.android.myapplication.finanzas.bussiness.config.GoogleDriveConfig
-import co.japl.android.myapplication.finanzas.bussiness.impl.GoogleDriveService
 import co.japl.android.myapplication.finanzas.bussiness.impl.GoogleLoginOldService
-import co.japl.android.myapplication.finanzas.bussiness.impl.GoogleLoginService
 import co.japl.android.myapplication.finanzas.bussiness.interfaces.IGoogleLoginService
-import co.japl.android.myapplication.finanzas.bussiness.interfaces.ServiceListener
-import com.google.android.gms.auth.api.Auth
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions
-import com.google.android.gms.auth.api.signin.GoogleSignInResult
-import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.SignInButton
-import com.google.android.gms.common.api.GoogleApiClient
-import java.io.File
+import java.util.Arrays
 
 class GDriveConnectFragment : Fragment() {
 
@@ -69,6 +61,8 @@ class GDriveConnectFragment : Fragment() {
         return root
     }
 
+
+
     private fun validLogin(){
         if(service.check()){
             logoutBtn.visibility = View.VISIBLE
@@ -88,4 +82,7 @@ class GDriveConnectFragment : Fragment() {
             validLogin()
         }
     }
+
+
+
 }

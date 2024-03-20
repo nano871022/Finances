@@ -5,6 +5,7 @@ import co.japl.android.finances.services.dto.QuoteCreditCard
 import co.japl.android.finances.services.interfaces.IGetPeriodsServices
 import co.japl.android.finances.services.interfaces.SaveSvc
 import co.japl.android.finances.services.interfaces.SearchSvc
+import java.math.BigDecimal
 import java.time.LocalDateTime
 import java.time.YearMonth
 
@@ -17,5 +18,7 @@ interface IQuoteCreditCardDAO:  SaveSvc<CreditCardBoughtDTO>,
         fun getLastAvailableQuotesTC():List<QuoteCreditCard>
 
         fun getPeriod(id:Int):List<YearMonth>
+
+    fun findByNameAndBoughtDateAndValue(name:String,boughtDate:LocalDateTime,amount: BigDecimal):CreditCardBoughtDTO?
 
 }

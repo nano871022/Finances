@@ -6,11 +6,16 @@ import co.com.japl.finances.iports.dtos.RecapMonthly
 import co.com.japl.finances.iports.enums.KindInterestRateEnum
 import co.com.japl.finances.iports.enums.KindOfTaxEnum
 import co.com.japl.finances.iports.inbounds.creditcard.bought.IBoughtPort
+import co.com.japl.finances.iports.inbounds.creditcard.bought.IBoughtSmsPort
 import co.japl.finances.core.usercases.interfaces.creditcard.bought.lists.IBought
+import co.japl.finances.core.usercases.interfaces.creditcard.bought.lists.IBoughtSms
+import co.japl.finances.core.utils.DateUtils
+import co.japl.finances.core.utils.NumbersUtil
+import java.time.LocalDate
 import java.time.LocalDateTime
 import javax.inject.Inject
 
-class BoughtImpl @Inject constructor(private val service:IBought) : IBoughtPort{
+class BoughtImpl @Inject constructor(private val service:IBought, private  val smsImpl:IBoughtSms) : IBoughtPort, IBoughtSmsPort{
     override fun getRecap(creditCard: CreditCardDTO, cutOffDate: LocalDateTime, cache: Boolean): RecapMonthly? {
         return service.getRecap(creditCard,cutOffDate,cache)
     }
@@ -58,6 +63,28 @@ class BoughtImpl @Inject constructor(private val service:IBought) : IBoughtPort{
     override fun getById(codeBought: Int, cache: Boolean): CreditCardBoughtDTO? {
         require(codeBought > 0) { "CodeBought cannot be 0" }
         return service.getById(codeBought,cache)
+    }
+
+    override fun createBySms(name: String, value: String, date: String,codeCreditCard:Int,kind:KindInterestRateEnum) {
+        if(name.isNotEmpty() && value.isNotEmpty() && date.isNotEmpty() && NumbersUtil.isNumber(value) && DateUtils.isDateValid(date)){
+            val dto = CreditCardBoughtDTO(
+                id = 0,
+                nameItem = "(SMS*) $name",
+                valueItem = NumbersUtil.toBigDecimal(value),
+                boughtDate = DateUtils.toLocalDateTime(date),
+                codeCreditCard = codeCreditCard,
+                endDate = LocalDateTime.MAX,
+                cutOutDate = LocalDateTime.now(),
+                createDate = LocalDateTime.now(),
+                interest = 0.0,
+                kind = kind,
+                kindOfTax = KindOfTaxEnum.MONTHLY_EFFECTIVE,
+                month = 1,
+                nameCreditCard = "",
+                recurrent = 0
+            )
+            smsImpl.createBySms(dto)
+        }
     }
 
 }

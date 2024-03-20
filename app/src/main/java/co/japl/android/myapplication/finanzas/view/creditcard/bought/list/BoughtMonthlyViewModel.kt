@@ -1,7 +1,9 @@
 package co.japl.android.myapplication.finanzas.view.creditcard.bought.list
 
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.toMutableStateList
 import androidx.lifecycle.ViewModel
 import co.com.japl.finances.iports.dtos.CreditCardBoughtItemDTO
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -18,7 +20,7 @@ class BoughtMonthlyViewModel @Inject constructor(
 ): ViewModel() {
 
     val key:YearMonth get() = _key
-    val list:List<CreditCardBoughtItemDTO> get() = _list
+    val list = _list.toMutableStateList()
 
     val totalBought:String get() = _totalBought
 

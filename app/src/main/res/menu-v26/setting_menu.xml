@@ -14,6 +14,7 @@
         android:titleCondensed="@string/check_payments_title"
         app:showAsAction="ifRoom" />
 
+    <group>
     <item
         android:id="@+id/item_menu_setting_credit_card"
         android:icon="@drawable/ic_credit_card_foreground"
@@ -27,6 +28,13 @@
         android:iconTint="?attr/colorPrimary"
         android:title="@string/taxes_credit_card"
         app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/sms_list_credit_card"
+        android:icon="@android:drawable/stat_notify_chat"
+        android:title="@string/sms_credit_card"
+        />
+</group>
 
     <item
         android:id="@+id/item_menu_setting_account"

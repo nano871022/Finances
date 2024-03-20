@@ -5,14 +5,19 @@ import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.IconButton
 import androidx.compose.material.Switch
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Cancel
+import androidx.compose.material.icons.rounded.Close
 import androidx.compose.material.icons.rounded.Save
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.PlainTooltipBox
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
@@ -22,6 +27,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import co.com.japl.finances.iports.dtos.RecapCreditCardBoughtListDTO
@@ -32,6 +38,8 @@ import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.com.japl.ui.theme.values.Dimensions
 import co.japl.android.myapplication.finanzas.ApplicationInitial
 import co.com.japl.ui.Prefs
+import co.com.japl.ui.components.FieldText
+import co.com.japl.ui.components.FloatButton
 import co.japl.android.myapplication.utils.NumbersUtil
 
 @Composable
@@ -200,20 +208,15 @@ private fun ContentCompact(recap: RecapCreditCardBoughtListDTO) {
 @Composable
 fun PopupSetting(viewModel: SettingsViewModel,state: MutableState<Boolean>) {
     val simulatorState = remember { viewModel.simulatorState }
+    val daysSmsRead = remember { viewModel.daysSmsRead }
+    val errorDaysSmsRead = remember { viewModel.errorDaysSmsRead }
+    val context = LocalContext.current
     co.com.japl.ui.components.Popup(title = R.string.settings_credit_card_boughts, state = state) {
         Scaffold(
             floatingActionButton = {
-                PlainTooltipBox(tooltip = { Text(text = stringResource(id = R.string.save)) }) {
-                    IconButton(onClick = {
-                        viewModel.save()
-                        state.value = false
-                    }) {
-                        Icon(
-                            imageVector = Icons.Rounded.Save, contentDescription = stringResource(
-                                id = R.string.save
-                            )
-                        )
-                    }
+                FloatButton(imageVector = Icons.Rounded.Save, descriptionIcon = R.string.save) {
+                    viewModel.save(context)
+                    state.value = false
                 }
             },
             modifier=Modifier.padding(Dimensions.PADDING_SHORT)
@@ -222,7 +225,9 @@ fun PopupSetting(viewModel: SettingsViewModel,state: MutableState<Boolean>) {
 
                 Row() {
                     Text(
-                        text = stringResource(id = R.string.simulator), modifier = Modifier
+                        text = stringResource(id = R.string.simulator),
+                        color=MaterialTheme.colorScheme.onPrimary,
+                        modifier = Modifier
                             .align(alignment = Alignment.CenterVertically)
                             .weight(2f)
                     )
@@ -230,7 +235,19 @@ fun PopupSetting(viewModel: SettingsViewModel,state: MutableState<Boolean>) {
                         simulatorState.value = it
                     })
                 }
-            Text(text = stringResource(id = R.string.description_simulator))
+                Text(text = stringResource(id = R.string.description_simulator)
+                        ,color=MaterialTheme.colorScheme.onPrimary
+                ,modifier=Modifier.fillMaxWidth())
+
+               FieldText(title = stringResource(id = R.string.days_sms_read),
+                   value = "${daysSmsRead.value}",
+                   hasErrorState = errorDaysSmsRead,
+                   keyboardType = KeyboardOptions(keyboardType = KeyboardType.Number),
+                   icon = Icons.Rounded.Cancel,
+                   validation = {viewModel.validation()},
+                   callback = {
+                       daysSmsRead.value = it
+                   },modifier= Modifier.padding(top=Dimensions.PADDING_SHORT).fillMaxWidth())
             }
         }
     }

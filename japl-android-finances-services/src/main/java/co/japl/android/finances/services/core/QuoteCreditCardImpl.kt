@@ -107,4 +107,12 @@ class QuoteCreditCardImpl @Inject constructor(private val quoteCCSvc: IQuoteCred
         return null
     }
 
+    override fun findByNameAndBoughtDateAndValue(
+        name: String,
+        boughtDate: LocalDateTime,
+        amount: BigDecimal
+    ): CreditCardBoughtDTO? {
+        return quoteCCSvc.findByNameAndBoughtDateAndValue(name,boughtDate,amount)?.let(CreditCardBoughtMapper::mapper)
+    }
+
 }

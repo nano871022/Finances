@@ -2,6 +2,7 @@ package co.japl.android.myapplication.finanzas.view.creditcard.bought.list
 
 import android.app.Application
 import android.view.View
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.AndroidViewModel
 import androidx.navigation.NavController
@@ -30,7 +31,8 @@ import javax.inject.Inject
 @HiltViewModel
 class BoughtViewModel @Inject constructor(
     private val application:Application,
-    private val prefs:Prefs
+    private val prefs:Prefs,
+    private val loader: MutableState<Boolean> = mutableStateOf(false)
     ):AndroidViewModel(application) {
 
         val cache = mutableStateOf(prefs.simulator)
@@ -93,7 +95,7 @@ class BoughtViewModel @Inject constructor(
                 Snackbar.LENGTH_LONG
             )
                 .setAction(R.string.close) {}
-                .show().also { navController.popBackStack() }
+                .show().also { loader.value = false }
         }else{
             Snackbar.make(
                 view,
@@ -159,7 +161,7 @@ class BoughtViewModel @Inject constructor(
                     Snackbar.LENGTH_LONG
                 )
                     .setAction(R.string.close) {}
-                    .show().also { navController.popBackStack() }
+                    .show().also { loader.value = false }
 
             } else {
                 Snackbar.make(
@@ -179,7 +181,7 @@ class BoughtViewModel @Inject constructor(
                     Snackbar.LENGTH_LONG
                 )
                     .setAction(R.string.close) {}
-                    .show().also { navController.popBackStack() }
+                    .show().also { loader.value = false }
             } else {
                 Snackbar.make(
                     view,
@@ -198,7 +200,9 @@ class BoughtViewModel @Inject constructor(
                     Snackbar.LENGTH_LONG
                 )
                     .setAction(R.string.close) {}
-                    .show().also { navController.popBackStack() }
+                    .show().also {
+                        loader.value = false
+                    }
             } else {
                 Snackbar.make(
                     view,
@@ -217,7 +221,7 @@ class BoughtViewModel @Inject constructor(
                 Snackbar.LENGTH_LONG
             )
                 .setAction(R.string.close) {}
-                .show().also { navController.popBackStack() }
+                .show().also { loader.value = false }
         } else {
             Snackbar.make(
                 view,

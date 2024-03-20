@@ -17,8 +17,25 @@ class DateUtils {
     companion object {
         @RequiresApi(Build.VERSION_CODES.O)
         fun toLocalDateTime(value: String): LocalDateTime {
-            val date = value.split("/")
-            return LocalDateTime.of(date[2].toInt(), date[1].toInt(), date[0].toInt(), 0, 0, 0)
+            require(value.isNotBlank()) { "Value cannot be blank" }
+            if (value.contains("/")) {
+                val date = value.split("/")
+                require (date.size > 1) { "Value is not valid $date" }
+                return LocalDateTime.of(date[2].toInt(), date[1].toInt(), date[0].toInt(), 0, 0, 0)
+            } else {
+                val value = value.contains("T")?.takeIf{ it }?.let{value.substring(0,value.indexOf("T"))}?:value
+                val date = value.split("-")
+                require (date.size > 1) { "Value is not valid $date" }
+                return LocalDateTime.of(
+                    date[0].toInt(),
+                    date[1].toInt(),
+                    date[2].toInt(),
+                    23,
+                    59,
+                    59,
+                    999
+                )
+            }
         }
 
         @RequiresApi(Build.VERSION_CODES.O)

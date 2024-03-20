@@ -21,6 +21,7 @@ import androidx.compose.material3.PlainTooltipBox
 import androidx.compose.material3.PlainTooltipState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -53,13 +54,13 @@ import java.time.format.DateTimeFormatter
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-internal fun RecordBoughtCreditCard(bought: CreditCardBoughtItemDTO, creditCard: CreditCardDTO, differQuotes:List<DifferInstallmentDTO>, cutOff: LocalDateTime, view:View= LocalView.current, navController: NavController? = Navigation.findNavController(view),prefs:Prefs) {
+internal fun RecordBoughtCreditCard(bought: CreditCardBoughtItemDTO, creditCard: CreditCardDTO, differQuotes:List<DifferInstallmentDTO>, cutOff: LocalDateTime, view:View= LocalView.current, navController: NavController? = Navigation.findNavController(view),prefs:Prefs,loader:MutableState<Boolean>) {
     val context = LocalContext.current
     val application = context.applicationContext
 
     val state = remember { mutableStateOf(false) }
     val model = remember {
-        BoughtViewModel (application = application as Application,prefs)
+        BoughtViewModel (application = application as Application,prefs, loader = loader)
             .setBought(bought)
             .setCreditCard(creditCard)
             .setDifferQuotes(differQuotes)
@@ -331,6 +332,7 @@ fun Preview(){
             maxQuotes = 0,
             warningValue = 0.toBigDecimal(),
             status = true
-        ), listOf(), LocalDateTime.now(), LocalView.current,null,prefs)
+        ), listOf(), LocalDateTime.now(), LocalView.current,null,prefs, remember{mutableStateOf(false)}
+        )
     }
 }
