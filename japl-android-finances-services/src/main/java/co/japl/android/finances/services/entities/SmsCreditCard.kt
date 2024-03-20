@@ -5,14 +5,14 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 
 data class SmsCreditCard(
-    val id:Int,
-    val phoneNumber:String,
-    val codeCreditCard:Int,
-    val nameCreditCard:String,
-    val pattern:String,
-    val kindInterestRateEnum: KindInterestRateEnum,
-    val active:Boolean,
-    val create:LocalDateTime
+    var id:Int?=null,
+    var phoneNumber:String?=null,
+    var codeCreditCard:Int?=null,
+    var nameCreditCard:String?=null,
+    var pattern:String?=null,
+    var kindInterestRateEnum: KindInterestRateEnum?=null,
+    var active:Boolean?=null,
+    var create:LocalDateTime?=null
 )
 
 object SmsCreditCardDB{

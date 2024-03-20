@@ -13,6 +13,8 @@ interface ISMSCreditCardPort {
 
     fun getById(codeSMSCreditCard: Int):SMSCreditCard?
 
+    fun getByCodeCreditCard(codeCreditCard: Int):List<SMSCreditCard>
+
     fun getByCreditCardAndKindInterest(codeCreditCard:Int,kind:KindInterestRateEnum):List<SMSCreditCard>
 
 }

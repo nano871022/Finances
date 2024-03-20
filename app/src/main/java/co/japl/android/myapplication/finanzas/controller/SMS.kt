@@ -8,7 +8,12 @@ import android.content.Intent
 import android.provider.Telephony
 import co.com.japl.ui.interfaces.ISMSObservablePublicher
 import co.com.japl.finances.iports.inbounds.common.ISMSRead
+import co.com.japl.ui.Prefs
 import co.japl.android.myapplication.finanzas.interfaces.ISMSBoadcastReceiver
+import java.time.Instant
+import java.time.LocalDateTime
+import java.time.ZoneId
+import java.time.ZoneOffset
 import javax.inject.Inject
 
 /**
@@ -39,22 +44,26 @@ import javax.inject.Inject
 class SMS @Inject constructor(private val observable:ISMSObservablePublicher,private val context:Context):ISMSBoadcastReceiver ,
     ISMSRead, BroadcastReceiver(){
 
-        override fun load(number: String):List<String>{
+        override fun load(number: String,numDaysRead:Int):List<String>{
+            val startDate = LocalDateTime.now().withHour(0).withMinute(0).withSecond(0).minusDays(numDaysRead.toLong())
             val list = arrayListOf<String>()
             val contentResolver = context.contentResolver
             val cursor = contentResolver.query(
                 Telephony.Sms.CONTENT_URI,
-                null,
-                null,
-                null,
-                null
+                arrayOf(Telephony.Sms.ADDRESS,Telephony.Sms.BODY,Telephony.Sms.DATE_SENT),
+                "${Telephony.Sms.ADDRESS} = ? AND ${Telephony.Sms.DATE_SENT} >= ? ",
+                arrayOf(number,
+                    startDate.toInstant(ZoneOffset.UTC).toEpochMilli().toString()),
+                "${Telephony.Sms.DATE_SENT} DESC"
             )
             if(cursor != null && cursor.moveToFirst()){
                 do{
                     val sender = cursor.getString(cursor.getColumnIndexOrThrow(Telephony.Sms.ADDRESS))
                     val message = cursor.getString(cursor.getColumnIndexOrThrow(Telephony.Sms.BODY))
-                    if(sender == number){
-                        list.add(message)
+                    val date = cursor.getString(cursor.getColumnIndexOrThrow(Telephony.Sms.DATE_SENT))
+                    val sentDate = LocalDateTime.ofInstant(Instant.ofEpochMilli(date.toLong()), ZoneId.systemDefault())
+                    if(startDate.isBefore(sentDate) &&sender == number) {
+                            list.add(message)
                     }
                 }while (cursor.moveToNext())
             }

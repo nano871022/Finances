@@ -1,5 +1,6 @@
 package co.com.japl.ui.components
 
+import android.content.res.Configuration
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
@@ -7,6 +8,7 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
@@ -116,6 +118,7 @@ fun FieldSelect(title: String,value:String, isError:MutableState<Boolean> = muta
 
 
     Box(modifier = modifier
+        .defaultMinSize(minHeight = 48.dp)
         .background(color = androidx.compose.material3.MaterialTheme.colorScheme.surfaceVariant)
         .border(1.dp, Color.Unspecified, shape = ShapeDefaults.ExtraLarge)
         .clickable { state.value = true }){
@@ -245,6 +248,24 @@ fun FieldSelect(title: String,value:String, isError:MutableState<Boolean> = muta
 @Composable
 @Preview(showSystemUi = true, showBackground = true)
 fun PreviewFieldSelect(){
+    MaterialThemeComposeUI {
+        FieldSelect(title = "Title",value = "Value", list = arrayListOf(Pair(1,"Value1"),Pair(2,"Value2")), modifier = Modifier,callable={})
+    }
+}
+
+@RequiresApi(Build.VERSION_CODES.S)
+@Composable
+@Preview(showSystemUi = true, showBackground = true)
+fun PreviewFieldSelectWithoutValue(){
+    MaterialThemeComposeUI {
+        FieldSelect(title = "Title",value = "", list = arrayListOf(Pair(1,"Value1"),Pair(2,"Value2")), modifier = Modifier,callable={})
+    }
+}
+
+@RequiresApi(Build.VERSION_CODES.S)
+@Composable
+@Preview(showSystemUi = true, showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
+fun PreviewFieldSelectDark(){
     MaterialThemeComposeUI {
         FieldSelect(title = "Title",value = "Value", list = arrayListOf(Pair(1,"Value1"),Pair(2,"Value2")), modifier = Modifier,callable={})
     }

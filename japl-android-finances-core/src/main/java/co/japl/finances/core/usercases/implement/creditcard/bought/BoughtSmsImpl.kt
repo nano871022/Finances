@@ -17,6 +17,7 @@ class BoughtSmsImpl @Inject constructor(private val creditRateSvc:ITax, private 
             DateUtils.cutOffLastMonth(cc.cutOffDay)?.let{dto.cutOutDate = it}
             creditRateSvc.getLatest(dto.codeCreditCard, dto.kind)?.let {
                 dto.interest = it.value
+                dto.month = it.period.takeIf { it > 1 }?.let{it.toInt()}?:1
                 it.kindOfTax?.let{dto.kindOfTax = it}
             }
         }

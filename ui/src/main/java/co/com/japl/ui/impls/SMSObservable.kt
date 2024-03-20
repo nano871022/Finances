@@ -13,11 +13,11 @@ class SMSObservable : ISMSObservableSubscriber, ISMSObservablePublicher{
 
     override fun notify(number:String,message: String) {
         observers.filter{
-            it.getNumber() == number
-        }?.forEach { it.notify(message) }
+            it.getNumber().takeIf { it.isNotEmpty() }?.any {  it == number}?:false
+        }?.forEach { it.notify(number,message) }
     }
 
     override fun getNumbers(): List<String> {
-        return observers.map { it.getNumber() }
+        return observers.map { it.getNumber() }.flatten()?: emptyList()
     }
 }

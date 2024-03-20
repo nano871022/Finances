@@ -8,13 +8,13 @@ object SmsCreditCardMapper {
 
     fun mapping(dto:SmsCreditCard):SMSCreditCard{
         return SMSCreditCard(
-            id = dto.id,
-            codeCreditCard = dto.codeCreditCard,
-            nameCreditCard = dto.nameCreditCard,
-            kindInterestRateEnum = dto.kindInterestRateEnum,
-            phoneNumber = dto.phoneNumber,
-            pattern = dto.pattern,
-            active = dto.active
+            id = dto.id!!,
+            codeCreditCard = dto.codeCreditCard!!,
+            nameCreditCard = dto.nameCreditCard!!,
+            kindInterestRateEnum = dto.kindInterestRateEnum!!,
+            phoneNumber = dto.phoneNumber!!,
+            pattern = dto.pattern!!,
+            active = dto.active!!
         )
     }
 

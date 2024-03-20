@@ -369,7 +369,7 @@ abstract class AbstractModule {
     abstract fun getInboundSmsCreditCardPort(svc:SMSCreditCardImpl):ISMSCreditCardPort
 
     @Binds
-    abstract fun getUserCaseSmsCreditCard(svc:co.japl.finances.core.usercases.implement.creditcard.SMSCreditCardImpl):ISMSCreditCard
+    abstract fun SmsCreditCardQuery(svc:co.japl.finances.core.usercases.implement.creditcard.SMSCreditCardImpl):ISMSCreditCard
 
     @Binds
     abstract fun getOutboundSmsCreditCardPort(svc:co.japl.android.finances.services.core.SMSCreditCardImpl):co.com.japl.finances.iports.outbounds.ISMSCreditCardPort

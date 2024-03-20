@@ -6,12 +6,17 @@ import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.Icon
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.CleaningServices
 import androidx.compose.material.icons.rounded.Save
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.Scaffold
 import androidx.compose.material.Text
+import androidx.compose.material.icons.rounded.Cancel
+import androidx.compose.material.icons.rounded.DirectionsRun
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -23,11 +28,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import co.com.japl.module.creditcard.R
 import co.com.japl.ui.components.FieldSelect
 import co.com.japl.ui.components.FieldText
 import co.com.japl.ui.components.FloatButton
 import co.com.japl.ui.theme.values.Dimensions
+import co.com.japl.ui.theme.values.ModifiersCustom.Weight1f
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -74,8 +81,9 @@ private fun Body(viewModel: SmsCreditCardViewModel,modifier:Modifier){
     val errorPhoneNumber = remember{viewModel.errorPhoneNumber}
     val pattern = remember{viewModel.pattern}
     val errorPattern = remember{viewModel.errorPattern}
+    val validationResult = remember{viewModel.validationResult}
 
-  Column{
+  Column(modifier=modifier.padding(Dimensions.PADDING_SHORT)){
       FieldSelect(title = stringResource(id = R.string.credit_card),
           value = creditCard.value?.second?:"",
           list = listCreditCard,
@@ -105,6 +113,7 @@ private fun Body(viewModel: SmsCreditCardViewModel,modifier:Modifier){
       , value = phoneNumber.value
               , hasErrorState = errorPhoneNumber,
           validation = {viewModel.validate()},
+          icon=Icons.Rounded.Cancel,
           callback = {
               phoneNumber.value = it
                      },
@@ -114,6 +123,7 @@ private fun Body(viewModel: SmsCreditCardViewModel,modifier:Modifier){
           , value = pattern.value
           , hasErrorState = errorPattern,
           validation = {viewModel.validate()},
+          icon = Icons.Rounded.Cancel,
           lines = 3,
           callback = {
               pattern.value = it
@@ -121,20 +131,28 @@ private fun Body(viewModel: SmsCreditCardViewModel,modifier:Modifier){
           modifier = modifier)
 
 
-      TextButton(onClick = { viewModel.validatePatternWithMessages() },
+      OutlinedButton(onClick = { viewModel.validatePatternWithMessages() },
           modifier = modifier.align(alignment = Alignment.End)) {
-          Text(text = stringResource(id = R.string.validate))
+
+          Icon(imageVector = Icons.Rounded.DirectionsRun,
+              contentDescription = stringResource(id = R.string.validate)
+              , tint = MaterialTheme.colorScheme.onPrimary
+          )
+
+          Text(text = stringResource(id = R.string.validate)
+          ,color = MaterialTheme.colorScheme.onPrimary
+              , textAlign = TextAlign.Center
+              ,modifier=Weight1f())
       }
 
     FieldText(title = stringResource(id = R.string.validate)
-          , value = pattern.value
-          , hasErrorState = errorPattern,
-          validation = {viewModel.validate()},
-          lines = 3,
+          , value = validationResult.value,
+          lines = 6,
+            icon = Icons.Rounded.Cancel,
+        callback = {
+            validationResult.value = it
+        },
           readOnly = true,
-          callback = {
-              pattern.value = it
-          },
           modifier = modifier)
 
 

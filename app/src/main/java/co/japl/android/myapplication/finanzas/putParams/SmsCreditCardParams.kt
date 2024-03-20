@@ -36,7 +36,9 @@ class SmsCreditCardParams(var parentFragmentManagers: FragmentManager) {
                 if(it.containsKey(ARG_PARAM_CODE)) {
                     return it.getInt(ARG_PARAM_CODE)
                 }else if(it.containsKey(Params.ARG_DEEPLINK)){
-                    return Uri.parse((it.getString(Params.ARG_DEEPLINK) as Intent).dataString).getQueryParameter(Params.ARG_PARAM_CODE)?.toInt()
+                    return Uri.parse((it.get(Params.ARG_DEEPLINK) as Intent).dataString).getQueryParameter(Params.ARG_PARAM_CODE)?.let{
+                        it.toInt()
+                    }
                 }
             }
             return null

@@ -66,13 +66,13 @@ fun BoughtList(listBoughtViewModel:ListBoughtViewModel){
                 modifier = Modifier.fillMaxWidth()
             )
         }else {
-            ListBought(listBoughtViewModel)
+            ListBought(listBoughtViewModel,isLoad)
         }
 }
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-private fun ListBought(listBoughtViewModel:ListBoughtViewModel){
+private fun ListBought(listBoughtViewModel:ListBoughtViewModel,loader:MutableState<Boolean>){
     val cashAdvanceState = remember { listBoughtViewModel.cashAdvance }
     val creditCardState = remember { listBoughtViewModel.creditCard }
     val popupState = remember { mutableStateOf(false) }
@@ -134,7 +134,7 @@ private fun ListBought(listBoughtViewModel:ListBoughtViewModel){
                 }
             }
 
-            BoughList(data = listBoughtViewModel.boughtCreditCard,listBoughtViewModel.prefs)
+            BoughList(data = listBoughtViewModel.boughtCreditCard,listBoughtViewModel.prefs,loader=loader)
 
 
         }

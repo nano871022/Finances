@@ -1,5 +1,6 @@
 package co.japl.android.myapplication.finanzas.view.accounts.inputs.lists
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
@@ -7,7 +8,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.FloatingActionButton
 import androidx.compose.material.FloatingActionButtonDefaults
-import androidx.compose.material.Text
+import androidx.compose.material3.Text
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CardElevation
@@ -29,6 +30,7 @@ import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import co.com.japl.ui.components.Carousel
 import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.japl.android.myapplication.R
 import co.com.japl.ui.components.FieldView
@@ -79,7 +81,21 @@ private fun Content(modelView: InputListModelView,modifier:Modifier) {
     Column (modifier=Modifier.verticalScroll(rememberScrollState())) {
         InputListHeader(
             modelView._items.size.toLong(),
-            modelView._items.sumOf { it.value.toDouble() })
+            modelView._items.sumOf { it.value.toDouble() },
+            modelView._items.map{
+                when(it.kindOf ) {
+                    "Mensual" -> it.value.toDouble() * 6
+                    "Semestral"-> it.value.toDouble() * 1
+                    else -> 0.0
+                }
+            }.sum(),
+            modelView._items.map{
+                when(it.kindOf ) {
+                    "Mensual" -> it.value.toDouble() * 12
+                    "Semestral"-> it.value.toDouble() * 2
+                    else -> it.value.toDouble()
+                }
+            }.sum())
 
         stateList.forEach{item->
             InputItem(
@@ -127,12 +143,21 @@ private fun InputItem(date:LocalDate,nameInput:String,valueInput:Double,onClick:
 
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
-private fun InputListHeader(numInputs:Long,totalInputs:Double){
-    Row{
-        FieldView(name = R.string.num_inputs, value = numInputs.toString(), modifier = Modifier.weight(1f))
+private fun InputListHeader(numInputs:Long,totalInputs:Double,totalMonthly:Double,totalYear:Double){
+    Carousel(modifier=Modifier.padding(bottom = Dimensions.PADDING_BOTTOM_CAROUSEL_SPACE),size = 2) {
+        if(it == 0){
+            Row{
+                FieldView(name = R.string.num_inputs, value = numInputs.toString(), isMoney=false, modifier = Modifier.weight(1f))
 
-        FieldView(name = R.string.input_total, value = NumbersUtil.COPtoString(totalInputs), modifier = Modifier.weight(1f))
+                FieldView(name = R.string.input_total, value = NumbersUtil.COPtoString(totalInputs), modifier = Modifier.weight(1f))
+            }
+        }else{
+            FieldView(name = R.string.monthly_input_total, value = NumbersUtil.COPtoString(totalMonthly), modifier = Modifier)
+            FieldView(name = R.string.yearly_input_total, value = NumbersUtil.COPtoString(totalYear), modifier = Modifier)
+        }
     }
+
 }
 

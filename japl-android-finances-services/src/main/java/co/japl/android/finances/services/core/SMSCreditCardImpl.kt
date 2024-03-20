@@ -5,6 +5,7 @@ import co.com.japl.finances.iports.enums.KindInterestRateEnum
 import co.com.japl.finances.iports.outbounds.ISMSCreditCardPort
 import co.japl.android.finances.services.core.mapper.SmsCreditCardMapper
 import co.japl.android.finances.services.dao.interfaces.ISmsCreditCardDAO
+import co.japl.android.finances.services.entities.SmsCreditCard
 import java.util.Optional
 import javax.inject.Inject
 
@@ -22,7 +23,15 @@ class SMSCreditCardImpl @Inject constructor(private val svc:ISmsCreditCardDAO): 
     }
 
     override fun getById(codeSMSCreditCard: Int): SMSCreditCard? {
-        return svc.get(codeSMSCreditCard)?.takeIf { it.isPresent }?.let {SmsCreditCardMapper.mapping(it.get())}
+        return svc.get(codeSMSCreditCard).takeIf { it.isPresent }?.let {SmsCreditCardMapper.mapping(it.get())}
+    }
+
+    override fun getByCodeCreditCard(codeCreditCard: Int): List<SMSCreditCard> {
+        require(codeCreditCard > 0)
+        val entity = SmsCreditCard(
+            codeCreditCard = codeCreditCard,
+        )
+        return svc.get(values=entity).map { SmsCreditCardMapper.mapping(it) }
     }
 
     override fun getByCreditCardAndKindInterest(

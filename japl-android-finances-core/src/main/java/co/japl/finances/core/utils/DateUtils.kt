@@ -20,11 +20,11 @@ class DateUtils {
             require(value.isNotBlank()) { "Value cannot be blank" }
             if (value.contains("/")) {
                 val date = value.split("/")
-                require (date.size > 1) { "Value is not valid $date" }
+                require(date.size > 1) { "Value is not valid $date" }
                 return LocalDateTime.of(date[2].toInt(), date[1].toInt(), date[0].toInt(), 0, 0, 0)
             } else {
                 val date = value.split("-")
-                require (date.size > 1) { "Value is not valid $date" }
+                require(date.size > 1) { "Value is not valid $date" }
                 return LocalDateTime.of(
                     date[0].toInt(),
                     date[1].toInt(),
@@ -268,7 +268,14 @@ class DateUtils {
                 return false
             }
         }
-    }
 
-}
+        fun isLocalDateRegex(value: String): Boolean {
+            return "\\d{2}\\/\\d{2}\\/\\d{4}".toRegex().matches(value)
+                    || "\\d{2}\\-\\d{2}\\-\\d{4}".toRegex().matches(value)
+                    || "\\d{4}\\/\\d{2}\\/\\d{2}".toRegex().matches(value)
+                    || "\\d{4}\\-\\d{2}\\-\\d{2}".toRegex().matches(value)
+        }
+
+
+    }}
 

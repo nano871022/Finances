@@ -14,6 +14,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.AddCircleOutline
 import androidx.compose.material.FloatingActionButtonDefaults
+import androidx.compose.material.icons.rounded.Cancel
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -122,6 +123,7 @@ private fun Body(viewModel: CreateRateViewModel,modifier:Modifier){
             , title = stringResource(id = R.string.year)
             , validation = {viewModel.validate()}
             , hasErrorState = yearError
+            , icon = Icons.Rounded.Cancel
             , modifier = Modifier
                 .fillMaxWidth()
                 .padding(Dimensions.PADDING_SHORT))

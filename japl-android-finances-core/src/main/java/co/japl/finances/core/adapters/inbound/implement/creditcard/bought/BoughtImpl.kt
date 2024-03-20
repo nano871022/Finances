@@ -11,6 +11,7 @@ import co.japl.finances.core.usercases.interfaces.creditcard.bought.lists.IBough
 import co.japl.finances.core.usercases.interfaces.creditcard.bought.lists.IBoughtSms
 import co.japl.finances.core.utils.DateUtils
 import co.japl.finances.core.utils.NumbersUtil
+import java.time.LocalDate
 import java.time.LocalDateTime
 import javax.inject.Inject
 

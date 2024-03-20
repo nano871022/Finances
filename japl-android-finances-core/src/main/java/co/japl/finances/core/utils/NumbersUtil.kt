@@ -16,6 +16,24 @@ class NumbersUtil {
             return DecimalFormat(formatDecimalMoneyCO).format(value)
         }
 
+        fun toDoubleOrZero(value:String):Double{
+            val postComma = value.indexOf(",")
+            val postDot = value.indexOf(".")
+            if(postDot >= 0 && postComma >=0 && postComma > postDot){
+                return value.replace(".","").replace(",",".").toDouble()
+            }else if(postComma == -1 && postDot > 0 && postDot < value.length - 3){
+                return value.replace(".","").toDouble()
+            }else if(postDot == -1 && postComma > 0 && postComma < value.length - 3){
+                return value.replace(",","").toDouble()
+            }else{
+                return value.replace(",","").toDouble()
+            }
+        }
+
+        fun isNumberRegex(value:String):Boolean{
+            return "[\\.\\,\\d]+".toRegex().matches(value)
+        }
+
         fun isNumber(value:String):Boolean{
             if(value.isEmpty()) return false
             try{

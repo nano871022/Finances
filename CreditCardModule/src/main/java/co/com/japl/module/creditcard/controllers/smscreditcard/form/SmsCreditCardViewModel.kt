@@ -33,6 +33,7 @@ class SmsCreditCardViewModel constructor(private val codeSMSCC:Int?,private val 
     val errorPhoneNumber = mutableStateOf(false)
     val pattern = mutableStateOf("")
     val errorPattern = mutableStateOf(false)
+    val validationResult = mutableStateOf("")
 
     val validate = mutableStateOf("")
 
@@ -47,7 +48,7 @@ class SmsCreditCardViewModel constructor(private val codeSMSCC:Int?,private val 
                     } }
                 }?:navController?.let { Toast.makeText(it.context, R.string.toast_unsuccessful_insert, Toast.LENGTH_SHORT).show() }
             }
-            smsCreditCard?.takeIf { it.id == 0 }?.let{
+            smsCreditCard?.takeIf { it.id > 0 }?.let{
                 svc?.update(it)?.takeIf { it }?.let{
                     navController?.let { Toast.makeText(it.context, R.string.toast_successful_update, Toast.LENGTH_SHORT).show().also {
                         navController.popBackStack()
@@ -76,9 +77,10 @@ class SmsCreditCardViewModel constructor(private val codeSMSCC:Int?,private val 
     fun validatePatternWithMessages(){
         smsCreditCard?.let {dto->
             svc?.let{
+                validationResult.value = ""
                 it.validateMessagePattern(dto)?.takeIf { it.isNotEmpty() }?.forEach{
-                    validate.value += it+"\n"
-                }
+                    validationResult.value += it+"\n\n"
+                }?:validationResult.let{it.value = "Not found sms"}
             }
         }
     }
@@ -114,7 +116,7 @@ class SmsCreditCardViewModel constructor(private val codeSMSCC:Int?,private val 
                 id = smsCreditCard?.id?:0,
                 phoneNumber= phoneNumber.value,
                 pattern = pattern.value,
-                kindInterestRateEnum = KindInterestRateEnum.findByOrdinal(kindInterestRate.value?.second?.toShort()?:0),
+                kindInterestRateEnum = KindInterestRateEnum.valueOf(kindInterestRate.value?.second?:""),
                 codeCreditCard = creditCard.value?.first?:0,
                 nameCreditCard = creditCard.value?.second?:"",
                 active = true

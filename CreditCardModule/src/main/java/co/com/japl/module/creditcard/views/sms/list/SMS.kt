@@ -3,6 +3,7 @@ package co.com.japl.module.creditcard.views.sms.list
 import android.content.res.Configuration
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -11,15 +12,16 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Card
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.Scaffold
-import androidx.compose.material.Text
+import androidx.compose.material3.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add
-import androidx.compose.material3.CardElevation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import co.com.japl.finances.iports.dtos.SMSCreditCard
@@ -38,8 +40,6 @@ import co.com.japl.ui.theme.values.ModifiersCustom.Weight1f
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import java.util.Collections
-import java.util.stream.Collectors
 
 @Composable
 fun SMS(viewModel:SmsCreditCardViewModel) {
@@ -87,6 +87,10 @@ private fun Content(viewModel: SmsCreditCardViewModel,modifier: Modifier){
                         viewModel.edit(it)
                     }, delete = {
                         viewModel.delete(it)
+                    }, enable = {
+                        viewModel.enabled(it)
+                    }, disable = {
+                        viewModel.disabled(it)
                     })
                 }
             }
@@ -95,7 +99,7 @@ private fun Content(viewModel: SmsCreditCardViewModel,modifier: Modifier){
 }
 
 @Composable
-private fun Card(sms:SMSCreditCard,modifier:Modifier=Modifier,edit:(Int)->Unit,delete:(Int)->Unit){
+private fun Card(sms:SMSCreditCard,modifier:Modifier=Modifier,edit:(Int)->Unit,delete:(Int)->Unit,enable:(Int)->Unit,disable:(Int)->Unit) {
     val popupStable = remember { mutableStateOf(false) }
     val popupDeleteDialog = remember { mutableStateOf(false) }
     Card( modifier = modifier
@@ -104,15 +108,17 @@ private fun Card(sms:SMSCreditCard,modifier:Modifier=Modifier,edit:(Int)->Unit,d
             start = Dimensions.PADDING_SHORT,
             end = Dimensions.PADDING_SHORT,
             top = Dimensions.PADDING_SHORT
-        )) {
+        ), border = BorderStroke(width= 1.dp, color = if(sms.active)Color.Unspecified else Color.Red)
+    ) {
         Row (
             verticalAlignment = Alignment.CenterVertically
+            ,modifier = Modifier.padding(Dimensions.PADDING_SHORT)
         ) {
             Text(text = sms.nameCreditCard,modifier=Weight1f())
 
             Text(text = sms.kindInterestRateEnum.name,modifier=Weight1f())
 
-            Text(text = sms.phoneNumber,modifier=Weight1f())
+            Text(text = sms.phoneNumber,modifier=Weight1f(), textAlign = TextAlign.End)
 
             IconButton(painter = R.drawable.more_vertical,
                 descriptionContent = R.string.see_more, onClick = {
@@ -121,11 +127,15 @@ private fun Card(sms:SMSCreditCard,modifier:Modifier=Modifier,edit:(Int)->Unit,d
         }
     }
     if (popupStable.value) {
-        MoreOptionsDialog(listOptions = MoreOptionsItemSmsCreditCard.values().toList(),
+        MoreOptionsDialog(listOptions = MoreOptionsItemSmsCreditCard.values().filter{
+            (sms.active && it != MoreOptionsItemSmsCreditCard.ENABLE) || (!sms.active && it != MoreOptionsItemSmsCreditCard.DISABLE)
+        }.toList(),
             onDismiss = { popupStable.value = false }) {
             when (it) {
                 MoreOptionsItemSmsCreditCard.DELETE -> popupDeleteDialog.value = true
                 MoreOptionsItemSmsCreditCard.EDIT -> edit.invoke(sms.id)
+                MoreOptionsItemSmsCreditCard.ENABLE -> enable.invoke(sms.id)
+                MoreOptionsItemSmsCreditCard.DISABLE -> disable.invoke(sms.id)
             }
             popupStable.value = false
         }
@@ -180,7 +190,7 @@ private fun getViewModel():SmsCreditCardViewModel {
             nameCreditCard = "Visa",
             phoneNumber = "123456789",
             pattern = "123456789",
-            active = true
+            active = false
         )
     ,
         SMSCreditCard(

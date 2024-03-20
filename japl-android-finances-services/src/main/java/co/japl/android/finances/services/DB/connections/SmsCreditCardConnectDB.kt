@@ -17,7 +17,7 @@ class SmsCreditCardConnectDB:IConnectDB{
 
     override fun onUpgrade(db: SQLiteDatabase?, oldVersion: Int, newVersion: Int) {
         Log.i(this.javaClass.name,"<<<=== SmsCreditCardConnectDB#onUpgrade - Start $oldVersion - $newVersion")
-        if(oldVersion < DatabaseConstants.DATA_BASE_VERSION_MINUS) {
+        if(oldVersion < SmsCreditCardQuery.DATA_BASE_VERSION_MINUS) {
             db?.execSQL(SmsCreditCardQuery.SQL_DELETE_ENTRIES)
             onCreate(db)
         }else{

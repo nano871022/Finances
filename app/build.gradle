@@ -14,8 +14,8 @@ android {
         applicationId "co.japl.android.myapplication"
         minSdk 26
         targetSdk 33
-        versionCode 4_05_05_076
-        versionName "V 4.05.04.075 Added Simulator bought credit card"
+        versionCode 4_05_05_081
+        versionName "V 4.05.04.081 Added read SMS with pattern code to get Name Item, value Item and date item"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }

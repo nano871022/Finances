@@ -7,7 +7,7 @@ import android.util.Log
 import co.japl.android.finances.services.utils.DatabaseConstants
 
 class ConnectDB(context: Context):SQLiteOpenHelper(context,
-        DatabaseConstants.DATA_BASE_NAME,null, 4_05_05_076) {
+        DatabaseConstants.DATA_BASE_NAME,null, 4_05_05_075) {
 
     override fun onCreate(p0: SQLiteDatabase?) {
         Log.i(this.javaClass.name,"<<<=== onCreate - Start $p0")

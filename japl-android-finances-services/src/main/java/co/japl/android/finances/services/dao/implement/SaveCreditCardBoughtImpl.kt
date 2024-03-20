@@ -521,11 +521,11 @@ class SaveCreditCardBoughtImpl @Inject constructor(val context:Context, override
     }
 
    override fun findByNameAndBoughtDateAndValue(name:String,boughtDate:LocalDateTime,amount:BigDecimal):CreditCardBoughtDTO? {
-        return getAll()?.firstOrNull {
-            it.nameItem.contains(name)
+        return getAll().takeIf { it.isNotEmpty() }?.filter {
+            it.nameItem.trim().contains(name.replace("(SMS*)","").trim())
                     && it.boughtDate.isEqual(boughtDate)
-                    && it.valueItem == amount
-        }
+                    && it.valueItem.toDouble() == amount.toDouble()
+        }?.firstOrNull()
     }
 
 }

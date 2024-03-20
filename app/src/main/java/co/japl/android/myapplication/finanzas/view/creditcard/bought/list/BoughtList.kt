@@ -12,6 +12,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -32,20 +34,20 @@ import java.time.LocalDateTime
 import java.time.YearMonth
 
 @Composable
-fun BoughList(data:BoughtCreditCard,prefs:Prefs){
+fun BoughList(data:BoughtCreditCard,prefs:Prefs,loader:MutableState<Boolean>){
 
     LazyColumn {
 
         items(data.group.size) {
             val key = data.group.keys.toList()[it]
-            MonthlyBoughtCreditCard(key,data.group[key]!!,data.creditCard,data.differQuotes,data.cutOff,prefs)
+            MonthlyBoughtCreditCard(key,data.group[key]!!,data.creditCard,data.differQuotes,data.cutOff,prefs,loader=loader)
         }
 
     }
 }
 
 @Composable
-private fun MonthlyBoughtCreditCard(key:YearMonth,list:List<CreditCardBoughtItemDTO>,creditCard:CreditCardDTO,differQuotes:List<DifferInstallmentDTO>,cutOff:LocalDateTime,prefs:Prefs ) {
+private fun MonthlyBoughtCreditCard(key:YearMonth,list:List<CreditCardBoughtItemDTO>,creditCard:CreditCardDTO,differQuotes:List<DifferInstallmentDTO>,cutOff:LocalDateTime,prefs:Prefs ,loader: MutableState<Boolean>) {
     val monthlyState = remember {
         BoughtMonthlyViewModel(key
             ,list
@@ -66,9 +68,10 @@ private fun MonthlyBoughtCreditCard(key:YearMonth,list:List<CreditCardBoughtItem
 
             HeaderMonthly(key = key, list = list, monthlyState = monthlyState)
 
-            if (monthlyState.state.value)
+            if (monthlyState.state.value) {
                 for (item in monthlyState.list) {
-                   RecordBoughtCreditCard(item,creditCard,differQuotes,cutOff,prefs=prefs)
+                    RecordBoughtCreditCard(item, creditCard, differQuotes, cutOff, prefs = prefs,loader=loader)
+                }
             }
         }
     }
@@ -209,6 +212,6 @@ private fun BoughListPreview(){
     )
     val prefs = Prefs(LocalContext.current)
     MaterialThemeComposeUI {
-        BoughList(boughtCreditCard,prefs)
+        BoughList(boughtCreditCard,prefs, loader = remember{ mutableStateOf(false) })
     }
 }

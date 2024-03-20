@@ -1,5 +1,6 @@
 package co.com.japl.ui.components
 
+import android.content.res.Configuration
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.annotation.StringRes
@@ -11,8 +12,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.IconButton
-import androidx.compose.material.Text
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Cancel
 import androidx.compose.material3.DatePicker
@@ -68,11 +69,18 @@ fun FieldDatePicker(@StringRes title:Int,value:String,isError:MutableState<Boole
             if(stateValue.value.isNotEmpty()){
                 Row {
 
-                    Text(text = stateValue.value
+                    Text(text = stateValue.value,
+                        color= if(isError.value){
+                            MaterialTheme.colorScheme.error}else{
+                            MaterialTheme.colorScheme.onSurface}
                         ,modifier = modifier.weight(1f).align(alignment = Alignment.CenterVertically))
 
                     IconButton(onClick = { stateValue.value = "" }) {
-                        Icon(imageVector = Icons.Rounded.Cancel, contentDescription = "Clear")
+                        Icon(imageVector = Icons.Rounded.Cancel, contentDescription = "Clear",
+                            tint= if(isError.value){
+                                MaterialTheme.colorScheme.error}else{
+                                MaterialTheme.colorScheme.onSurface}
+                            )
                     }
                 }
             }
@@ -117,6 +125,54 @@ fun FieldDatePickerPreview(){
             ,value = "2022-10-01"
             , callable = {}
             , isError = mutableStateOf(true)
+            , validation = {}
+            , modifier = Modifier
+                .fillMaxWidth()
+                .padding(5.dp))
+    }
+}
+
+@RequiresApi(Build.VERSION_CODES.S)
+@Composable
+@Preview(showSystemUi = true, showBackground = true)
+fun FieldDatePickerPreviewNotError(){
+    MaterialThemeComposeUI {
+        FieldDatePicker(title = androidx.compose.material3.R.string.date_picker_headline
+            ,value = "2022-10-01"
+            , callable = {}
+            , isError = mutableStateOf(false)
+            , validation = {}
+            , modifier = Modifier
+                .fillMaxWidth()
+                .padding(5.dp))
+    }
+}
+
+@RequiresApi(Build.VERSION_CODES.S)
+@Composable
+@Preview(showSystemUi = true, showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
+fun FieldDatePickerPreviewDark(){
+    MaterialThemeComposeUI {
+        FieldDatePicker(title = androidx.compose.material3.R.string.date_picker_headline
+            ,value = "2022-10-01"
+            , callable = {}
+            , isError = mutableStateOf(true)
+            , validation = {}
+            , modifier = Modifier
+                .fillMaxWidth()
+                .padding(5.dp))
+    }
+}
+
+@RequiresApi(Build.VERSION_CODES.S)
+@Composable
+@Preview(showSystemUi = true, showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
+fun FieldDatePickerPreviewNotErrorDark(){
+    MaterialThemeComposeUI {
+        FieldDatePicker(title = androidx.compose.material3.R.string.date_picker_headline
+            ,value = "2022-10-01"
+            , callable = {}
+            , isError = mutableStateOf(false)
             , validation = {}
             , modifier = Modifier
                 .fillMaxWidth()

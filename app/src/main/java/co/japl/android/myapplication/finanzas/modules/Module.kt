@@ -4,6 +4,10 @@ import android.app.Activity
 import android.content.ContentResolver
 import android.content.Context
 import android.database.sqlite.SQLiteOpenHelper
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
+import co.com.japl.finances.iports.inbounds.creditcard.ICreditCardPort
+import co.com.japl.finances.iports.inbounds.creditcard.ISMSCreditCardPort
 import co.com.japl.finances.iports.inbounds.creditcard.bought.IBoughtPort
 import co.com.japl.finances.iports.inbounds.creditcard.bought.IBoughtSmsPort
 import co.com.japl.module.creditcard.impl.SMSObserver
@@ -41,6 +45,11 @@ object Module {
         return ConnectDB(context)
     }
 
+    @Provides
+    fun provideMutableStateBooleanOf():MutableState<Boolean>{
+        return mutableStateOf(false)
+    }
+
 
     @Singleton
     @Provides
@@ -69,8 +78,8 @@ object Module {
     @IntoMap
     @IObservers(value = SMSObserver::class)
     @Provides
-    fun getSMSObserverCreditCardModule(subscriber: ISMSObservableSubscriber,svc:IBoughtSmsPort):ISMSObserver{
-        return SMSObserver(subscriber,svc)
+    fun getSMSObserverCreditCardModule(subscriber: ISMSObservableSubscriber,ccSvc:ICreditCardPort,msmSvc:ISMSCreditCardPort,svc:IBoughtSmsPort):ISMSObserver{
+        return SMSObserver(subscriber,ccSvc,svc,msmSvc)
     }
 
 

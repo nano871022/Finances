@@ -17,8 +17,8 @@ class SmsCreditCardMap {
             phoneNumber = cursor.getString(2),
             pattern = cursor.getString(3),
             kindInterestRateEnum = KindInterestRateEnum.findByOrdinal(cursor.getShort(4)),
-            active = cursor.getInt(5) == 1,
-            create = DateUtils.toLocalDateTime(cursor.getString(6))
+            active = cursor.getInt(6) == 1,
+            create = DateUtils.toLocalDateTime(cursor.getString(5))
         )
     }
 
@@ -27,9 +27,9 @@ class SmsCreditCardMap {
             put(SmsCreditCardDB.Entry.COLUMN_CODE_CREDIT_CARD,dto.codeCreditCard)
             put(SmsCreditCardDB.Entry.COLUMN_PHONE_NUMBER,dto.phoneNumber)
             put(SmsCreditCardDB.Entry.COLUMN_PATTERN,dto.pattern)
-            put(SmsCreditCardDB.Entry.COLUMN_KIND_INTEREST_RATE,dto.kindInterestRateEnum.getCode())
-            put(SmsCreditCardDB.Entry.COLUMN_ACTIVE,if(dto.active) 1 else 0)
-            put(SmsCreditCardDB.Entry.COLUMN_CREATE_DATE,DateUtils.localDateTimeToStringDB(dto.create))
+            put(SmsCreditCardDB.Entry.COLUMN_KIND_INTEREST_RATE,dto.kindInterestRateEnum!!.getCode())
+            put(SmsCreditCardDB.Entry.COLUMN_ACTIVE,if(dto.active!!) 1 else 0)
+            put(SmsCreditCardDB.Entry.COLUMN_CREATE_DATE,DateUtils.localDateTimeToStringDB(dto.create!!))
         }
     }
 }

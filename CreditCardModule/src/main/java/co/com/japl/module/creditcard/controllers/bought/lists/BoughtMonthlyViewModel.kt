@@ -1,5 +1,7 @@
 package co.com.japl.module.creditcard.controllers.bought.lists
 
+import android.util.Log
+import android.widget.Toast
 import androidx.compose.runtime.mutableDoubleStateOf
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableIntStateOf
@@ -8,9 +10,12 @@ import androidx.lifecycle.ViewModel
 import androidx.navigation.NavController
 import co.com.japl.finances.iports.dtos.CreditCardDTO
 import co.com.japl.finances.iports.enums.KindInterestRateEnum
+import co.com.japl.finances.iports.inbounds.common.ISMSRead
 import co.com.japl.finances.iports.inbounds.creditcard.ICreditCardPort
+import co.com.japl.finances.iports.inbounds.creditcard.ISMSCreditCardPort
 import co.com.japl.finances.iports.inbounds.creditcard.ITaxPort
 import co.com.japl.finances.iports.inbounds.creditcard.bought.IBoughtPort
+import co.com.japl.finances.iports.inbounds.creditcard.bought.IBoughtSmsPort
 import co.com.japl.finances.iports.inbounds.creditcard.bought.lists.IBoughtListPort
 import co.com.japl.module.creditcard.navigations.Bought
 import co.com.japl.ui.Prefs
@@ -20,7 +25,16 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.Period
 
-class BoughtMonthlyViewModel constructor(private val creditRate:ITaxPort?,private val creditCardSvc: ICreditCardPort?,private val boughtCreditCardSvc: IBoughtPort?,private val navController: NavController?,private val prefs:Prefs) : ViewModel(){
+class BoughtMonthlyViewModel constructor(
+                                        private val creditRate:ITaxPort?,
+                                        private val creditCardSvc: ICreditCardPort?,
+                                        private val boughtCreditCardSvc: IBoughtPort?,
+                                        private val navController: NavController?,
+                                        private val prefs:Prefs,
+                                        private val msmSvc: ISMSCreditCardPort?,
+                                        private val svc: IBoughtSmsPort?
+                                        ) : ViewModel(){
+
     val cache = mutableStateOf(prefs.simulator)
     var progress = mutableFloatStateOf(0f)
     var loader = mutableStateOf(false)
@@ -124,10 +138,38 @@ class BoughtMonthlyViewModel constructor(private val creditRate:ITaxPort?,privat
         execute()
         progress.floatValue = 100f
         loader.value = true
+        readSms()
     }
+
+
+    suspend fun readSms(){
+        try {
+            listCreditCard?.takeIf { it.isNotEmpty() }?.forEach { ccDto ->
+                arrayListOf(
+                msmSvc?.getByCreditCardAndKindInterest(ccDto.id, KindInterestRateEnum.CREDIT_CARD)
+                ,msmSvc?.getByCreditCardAndKindInterest(ccDto.id, KindInterestRateEnum.CASH_ADVANCE)
+                ,msmSvc?.getByCreditCardAndKindInterest(ccDto.id, KindInterestRateEnum.WALLET_BUY)
+                    )?.flatMap{ it!! }
+                    ?.forEach { sms ->
+                        msmSvc?.getSmsMessages(sms.phoneNumber, sms.pattern,prefs.creditCardSMSDaysRead)
+                            .takeIf { it?.isNotEmpty() == true }
+                            ?.forEach {
+                                svc?.createBySms(
+                                    name = it.first,
+                                    value = it.second.toString(),
+                                    date = DateUtils.localDateTimeToStringDate(it.third),
+                                    codeCreditRate = ccDto.id,
+                                    kind = sms.kindInterestRateEnum
+                                )
+                            }
+                    }
+            }
+        }catch (e:Exception){
+            Log.e(javaClass.name,e.message,e)
+        }
+    }
+
     suspend fun execute(){
-
-
         if (creditCardCode.intValue != 0) {
             clear()
             listCreditCard?.first { it.id == creditCardCode.intValue }?.let {creditCard->
