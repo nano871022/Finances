@@ -44,6 +44,7 @@
     <string name="amortization">Amortización</string>
     <string name="total_value">Valor total</string>
     <string name="save">Guardar</string>
+    <string name="saved">Guardado Correctamente</string>
     <string name="add">Agregar</string>
     <string name="save_new">Guardar y Crear Nuevo</string>
     <string name="setting_redirect">Ir a Configuraciones</string>
@@ -129,6 +130,7 @@
     <string name="warning_quote_value">Valor alerta cuota</string>
 
     <string name="taxes_credit_card">Tasas Tarjeta Credito</string>
+    <string name="sms_credit_card">SMS Tarjeta Crédito</string>
     <string name="credit_card">Tarjeta de Credito</string>
     <string name="month">Mes</string>
     <string name="year">Año</string>
@@ -145,6 +147,9 @@
     <string name="bough_wallet">Compra de cartera</string>
     <string name="sucursal_advance">Avance sucursal bancaria</string>
     <string name="bough_wallet_generic">Compra de cartera</string>
+
+    <string name="fragment_list_sms_credit_card">Lista SMS Tarjeta Crédito</string>
+    <string name="fragment_sms_credit_card">SMS Tarjeta Crédito</string>
 
     <string-array name="Months">
         <item>--- Seleccionar --- </item>
@@ -257,6 +262,8 @@
     <string name="input">Ingreso</string>
     <string name="num_inputs">Cantidad Ingresos</string>
     <string name="input_total">Total Ingresos</string>
+    <string name="yearly_input_total">Total Ingresos Anuales</string>
+    <string name="monthly_input_total">Total Ingresos Semestrales</string>
     <string name="input_minus_output">Ingresos -  Pagos</string>
     <string name="input_list">Lista de Ingreso</string>
     <string name="date_input">Fecha de Ingreso</string>
@@ -440,6 +447,6 @@
     <string name="message_tax_doesnt_create_yet">Para este periodo es necesario agregar una tasa de interes para la tarjeta de crédito actual, desea crear una?</string>
     <string name="title_account_doesnt_create_yet">No hay una Cuenta bancaria creada</string>
     <string name="message_account_doesnt_create_yet">Para utilizar este modulo es necesario crear una cuenta bancaria de referencia, desea crear una?</string>
-
+    <string name="days_sms_read">Dias de lectura SMS</string>
     <string name="go">Ir</string>
 </resources>

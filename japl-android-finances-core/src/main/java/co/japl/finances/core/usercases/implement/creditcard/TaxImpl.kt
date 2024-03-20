@@ -50,4 +50,10 @@ class TaxImpl @Inject constructor(private val service:ITaxPort): ITax {
     override fun disable(code: Int): Boolean {
         return service.disable(code)
     }
+
+    override fun getLatest(codeCreditCard: Int, kind: KindInterestRateEnum): TaxDTO? {
+        return service.getByCreditCard(codeCreditCard)?.filter {
+            it.kind == kind
+        }?.maxByOrNull { it.create }
+    }
 }

@@ -791,7 +791,7 @@ fun BoughtMonthlyPreviewFold(){
 
 private fun getViewMoel(context:Context):BoughtMonthlyViewModel{
     val prefs = Prefs(context)
-    val viewModel = BoughtMonthlyViewModel(null,null,null,null,prefs)
+    val viewModel = BoughtMonthlyViewModel(null,null,null,null,prefs,null,null)
     viewModel.loader.value = true
     viewModel.graphList.addAll(arrayListOf(Pair("Issue 1",1000.0),Pair("Issue 2",2000.0)))
     viewModel.graphListPeriod.addAll(arrayListOf(Pair("Issue 3",500.0),Pair("Issue 4",300.0)))

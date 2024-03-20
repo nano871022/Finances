@@ -1,13 +1,17 @@
 package co.japl.android.myapplication.finanzas.modules
 
+import android.app.Activity
 import android.content.Context
 import co.com.japl.finances.iports.inbounds.creditcard.ICreditCardPort
 import co.com.japl.finances.iports.inbounds.common.IDifferQuotesPort
+import co.com.japl.finances.iports.inbounds.common.ISMSRead
 import co.com.japl.finances.iports.inbounds.creditcard.IBuyCreditCardSettingPort
 import co.com.japl.finances.iports.inbounds.creditcard.ICreditCardSettingPort
+import co.com.japl.finances.iports.inbounds.creditcard.ISMSCreditCardPort
 import co.com.japl.finances.iports.inbounds.creditcard.ITagPort
 import co.com.japl.finances.iports.inbounds.creditcard.ITaxPort
 import co.com.japl.finances.iports.inbounds.creditcard.bought.IBoughtPort
+import co.com.japl.finances.iports.inbounds.creditcard.bought.IBoughtSmsPort
 import co.com.japl.finances.iports.inbounds.creditcard.bought.lists.IBoughtListPort
 import co.com.japl.finances.iports.inbounds.inputs.IAccountPort
 import co.com.japl.finances.iports.inbounds.inputs.IInputPort
@@ -60,11 +64,20 @@ import co.japl.android.myapplication.finanzas.bussiness.interfaces.IPaidSvc
 import co.japl.android.myapplication.finanzas.bussiness.interfaces.IProjectionsSvc
 import co.japl.android.myapplication.finanzas.bussiness.interfaces.IQuoteCreditCardSvc
 import co.com.japl.finances.iports.inbounds.recap.IRecapPort
+import co.com.japl.module.creditcard.impl.SMSObserver
+import co.com.japl.ui.impls.SMSObservable
+import co.com.japl.ui.interfaces.ISMSObservablePublicher
+import co.com.japl.ui.interfaces.ISMSObservableSubscriber
+import co.com.japl.ui.interfaces.ISMSObserver
+import co.japl.android.myapplication.finanzas.controller.SMS
+import co.japl.finances.core.adapters.inbound.implement.creditCard.SMSCreditCardImpl
+import co.japl.finances.core.adapters.inbound.implement.creditcard.bought.BoughtImpl
 import co.japl.finances.core.adapters.inbound.implement.creditcard.bought.lists.ListImpl
 import co.japl.finances.core.adapters.inbound.implement.recap.RecapImp
 import co.japl.finances.core.usercases.implement.common.DifferQuoteImpl
 import co.japl.finances.core.usercases.implement.common.PaidImp
 import co.japl.finances.core.usercases.implement.common.QuoteCreditCardImpl
+import co.japl.finances.core.usercases.implement.creditcard.bought.BoughtSmsImpl
 import co.japl.finances.core.usercases.implement.creditcard.bought.lists.BoughtList
 import co.japl.finances.core.usercases.implement.creditcard.paid.lists.PaidListImpl
 import co.japl.finances.core.usercases.implement.inputs.InputsImpl
@@ -78,21 +91,26 @@ import co.japl.finances.core.usercases.interfaces.common.IProjections
 import co.japl.finances.core.usercases.interfaces.common.IQuoteCreditCard
 import co.japl.finances.core.usercases.interfaces.creditcard.IBuyCreditCardSetting
 import co.japl.finances.core.usercases.interfaces.creditcard.ICreditCardSetting
+import co.japl.finances.core.usercases.interfaces.creditcard.ISMSCreditCard
 import co.japl.finances.core.usercases.interfaces.creditcard.ITag
 import co.japl.finances.core.usercases.interfaces.creditcard.ITax
 import co.japl.finances.core.usercases.interfaces.creditcard.bought.lists.IBought
 import co.japl.finances.core.usercases.interfaces.creditcard.bought.lists.IBoughtList
+import co.japl.finances.core.usercases.interfaces.creditcard.bought.lists.IBoughtSms
 import co.japl.finances.core.usercases.interfaces.creditcard.paid.lists.IPaidList
 import co.japl.finances.core.usercases.interfaces.recap.IRecap
 import dagger.Binds
 import dagger.Module
+import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import dagger.multibindings.IntoSet
 
 @Module
 @InstallIn(SingletonComponent::class)
 abstract class AbstractModule {
+
     @Binds
     abstract fun bindICreditCardService(implement: CreditCardImpl): ICreditCardSvc
     @Binds
@@ -334,4 +352,31 @@ abstract class AbstractModule {
     abstract fun bindInboundBuyCreditCadSetting(implement:co.japl.finances.core.adapters.inbound.implement.creditCard.BuyCreditCardSettingImpl):IBuyCreditCardSettingPort
     @Binds
     abstract fun bindUserCaseBuyCreditCardSetting(implement:co.japl.finances.core.usercases.implement.creditcard.BuyCreditCardSettingImpl):IBuyCreditCardSetting
+
+    @Binds
+    abstract fun getSMSObservablePublisher(sms: SMSObservable): ISMSObservablePublicher
+
+    @Binds
+    abstract fun getSMSObservableSubscriber(sms: SMSObservable): ISMSObservableSubscriber
+
+    @Binds
+    abstract fun getInboundBoughtSmsPort(svc:BoughtImpl):IBoughtSmsPort
+
+    @Binds
+    abstract fun getUserCaseBoughtSmsSvc(svc:BoughtSmsImpl):IBoughtSms
+
+    @Binds
+    abstract fun getInboundSmsCreditCardPort(svc:SMSCreditCardImpl):ISMSCreditCardPort
+
+    @Binds
+    abstract fun SmsCreditCardQuery(svc:co.japl.finances.core.usercases.implement.creditcard.SMSCreditCardImpl):ISMSCreditCard
+
+    @Binds
+    abstract fun getOutboundSmsCreditCardPort(svc:co.japl.android.finances.services.core.SMSCreditCardImpl):co.com.japl.finances.iports.outbounds.ISMSCreditCardPort
+
+    @Binds
+    abstract fun getDAOSmsCreditCard(svc:co.japl.android.finances.services.dao.implement.SmsCreditCardImpl):co.japl.android.finances.services.dao.interfaces.ISmsCreditCardDAO
+
+    @Binds
+    abstract fun getSmsRead(svc:SMS):ISMSRead
 }
