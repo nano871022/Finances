@@ -66,7 +66,7 @@ fun AccountList(viewModel: AccountViewModel) {
     }
 
     if(stateLoader.value) {
-        LinearProgressIndicator(      progress = stateProgress.value)
+        LinearProgressIndicator(      progress = stateProgress.value, modifier = Modifier.fillMaxWidth())
     }else {
 
         Scaffold(

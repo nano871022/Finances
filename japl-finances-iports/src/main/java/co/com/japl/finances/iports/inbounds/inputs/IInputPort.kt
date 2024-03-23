@@ -1,6 +1,7 @@
 package co.com.japl.finances.iports.inbounds.inputs
 
 import co.com.japl.finances.iports.dtos.InputDTO
+import java.time.YearMonth
 
 interface IInputPort {
 
@@ -15,4 +16,8 @@ interface IInputPort {
     fun create(input:InputDTO):Boolean
 
     fun update(input:InputDTO):Boolean
+
+    fun getTotalInputs(codeAccount:Int,period:YearMonth):Double
+
+
 }

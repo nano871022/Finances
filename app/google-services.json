@@ -14,31 +14,22 @@
       },
       "oauth_client": [
         {
-          "client_id": "332922408573-0qrgg6q1fi3k2mvvlf6l4bsoen05cu33.apps.googleusercontent.com",
+          "client_id": "332922408573-j1uk3tbu8jp6umcvt9ssdq0l32nlq49o.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "co.japl.android.myapplication",
             "certificate_hash": "c863db5704299ada73149260aaa3bdb9175cdd2e"
           }
-        },
-        {
-          "client_id": "332922408573-ejtg53mp8rbk1im696qha890lkqce0h4.apps.googleusercontent.com",
-          "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyDJ-h9cgSDb5zylhjWoYolWhZPZQsXJ17A"
+          "current_key": "AIzaSyA8PyvAZ4Z8fn1LcWc3DMU7YOJG1K-aZA8"
         }
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "332922408573-ejtg53mp8rbk1im696qha890lkqce0h4.apps.googleusercontent.com",
-              "client_type": 3
-            }
-          ]
+          "other_platform_oauth_client": []
         }
       }
     }

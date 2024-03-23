@@ -44,7 +44,7 @@ fun InputForm(viewModel: InputViewModel){
     }
 
     if(stateLoader.value) {
-        LinearProgressIndicator(      progress = stateProcess.value)
+        LinearProgressIndicator(      progress = stateProcess.value,modifier=Modifier.fillMaxWidth())
     }else {
         Scaffold(
             floatingActionButton = {

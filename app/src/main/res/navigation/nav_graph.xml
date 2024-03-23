@@ -363,7 +363,9 @@
         android:id="@+id/paidFragment"
         android:name="co.japl.android.myapplication.finanzas.controller.paids.PaidFragment"
         android:label="@string/paid"
-        tools:layout="@layout/fragment_paid" />
+        tools:layout="@layout/fragment_paid" >
+        <deepLink app:uri="android-app://co.com.japl.finanzas.module.app/paid/form"/>
+    </fragment>
     <fragment
         android:id="@+id/menu_item_paids"
         android:name="co.japl.android.myapplication.finanzas.controller.paids.PaidsFragment"
@@ -381,12 +383,15 @@
         <action
             android:id="@+id/action_menu_item_paids_to_accountFragment"
             app:destination="@id/accountFragment" />
+
     </fragment>
     <fragment
         android:id="@+id/paidListFragment"
         android:name="co.japl.android.myapplication.finanzas.controller.paids.PaidListFragment"
         android:label="@string/list_paid"
-        tools:layout="@layout/fragment_paid_list" />
+        tools:layout="@layout/fragment_paid_list">
+        <deepLink app:uri="android-app://co.com.japl.finanzas.module.app/paid/list"/>
+    </fragment>
     <fragment
         android:id="@+id/periodsPaidFragment"
         android:name="co.japl.android.myapplication.finanzas.controller.paids.PeriodsPaidFragment"
@@ -395,6 +400,7 @@
         <action
             android:id="@+id/action_periodsPaidFragment_to_paidListFragment"
             app:destination="@id/paidListFragment" />
+        <deepLink app:uri="android-app://co.com.japl.finanzas.module.app/paid/period"/>
     </fragment>
     <fragment
         android:id="@+id/menu_projections"

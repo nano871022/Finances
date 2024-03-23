@@ -1,4 +1,4 @@
-package co.japl.android.finances.services.implement
+package co.japl.android.finances.services.dao.implement
 
 import android.content.ContentValues
 import android.database.sqlite.SQLiteOpenHelper
@@ -8,18 +8,18 @@ import android.util.Log
 import androidx.annotation.RequiresApi
 import co.japl.android.finances.services.dto.*
 import co.japl.android.finances.services.interfaces.IGraph
-import co.japl.android.finances.services.interfaces.IPaidSvc
+import co.japl.android.finances.services.dao.interfaces.IPaidDAO
 import co.japl.android.finances.services.mapping.PaidMap
 import co.japl.android.finances.services.utils.DatabaseConstants
 import co.japl.android.finances.services.utils.DateUtils
 import java.math.BigDecimal
 import java.time.LocalDate
-import java.time.LocalDateTime
 import java.time.Period
+import java.time.YearMonth
 import java.util.*
 import javax.inject.Inject
 
-class PaidImpl @Inject constructor(override var dbConnect: SQLiteOpenHelper) : IPaidSvc, IGraph{
+class PaidImpl @Inject constructor(override var dbConnect: SQLiteOpenHelper) : IPaidDAO, IGraph{
     val COLUMNS = arrayOf(
         BaseColumns._ID,
         PaidDB.Entry.COLUMN_DATE_PAID,
@@ -62,6 +62,30 @@ class PaidImpl @Inject constructor(override var dbConnect: SQLiteOpenHelper) : I
             }
         }
         return items.also { Log.d(javaClass.name,"Recurrent Size ${it.size}") }
+    }
+
+    override fun getAll(codeAccount: Int, period: YearMonth): List<PaidDTO> {
+        val startPeriod = LocalDate.of(period.year,period.monthValue,1)
+        val endPeriod = startPeriod.plusMonths(1).minusDays(1)
+        val db = dbConnect.readableDatabase
+        val cursor = db.query(PaidDB.Entry.TABLE_NAME,
+            COLUMNS,
+            """
+                ${PaidDB.Entry.COLUMN_ACCOUNT} like ?
+                AND ${FORMAT_DATE_PAID} between ? and ?
+            """.trimMargin(),
+            arrayOf("%${codeAccount}%",DateUtils.localDateToStringDate(startPeriod),DateUtils.localDateToStringDate(endPeriod)),
+            null,null,null)
+        val items = mutableListOf<PaidDTO>()
+        val mapper = PaidMap()
+        with(cursor){
+            while(moveToNext()){
+                mapper.mapping(cursor).takeIf {
+                     it.date in startPeriod .. endPeriod
+                }?.let(items::add)
+            }
+        }
+        return items
     }
 
     override fun getTotalPaid(date:LocalDate): BigDecimal {
@@ -130,7 +154,7 @@ class PaidImpl @Inject constructor(override var dbConnect: SQLiteOpenHelper) : I
         val db = dbConnect.readableDatabase
 
         val cursor = db.query(
-            PaidDB.Entry.TABLE_NAME,COLUMNS,"id = ?",
+            PaidDB.Entry.TABLE_NAME,COLUMNS,"_id = ?",
             arrayOf(id.toString()),null,null,null)
         val mapper = PaidMap()
         with(cursor){

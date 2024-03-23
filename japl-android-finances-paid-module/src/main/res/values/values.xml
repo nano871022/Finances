@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="go_to_list">Ver la Lista de Ingresos</string>
+    <string name="go_to_periods">Ver la lista de Meses</string>
+    <string name="go_to_add">Crear Nuevo Registro</string>
+    <string name="account">Cuenta</string>
+    <string name="period">Periodo</string>
+    <string name="count">Cantidad</string>
+    <string name="paid_total">Total Pagado</string>
+    <string name="incomes_total">Total Ingresos</string>
+    <string name="incomes_less_paids">Ingresos - Pagos</string>
+
+    <string name="navigate_paid">android-app://co.com.japl.finanzas.module.app/paid/form?codePaid=%d</string>
+    <string name="navigate_paid_create">android-app://co.com.japl.finanzas.module.app/paid/form?code_account=%d</string>
+    <string name="navigate_paids">android-app://co.com.japl.finanzas.module.app/paid/list?code_account=%d</string>
+    <string name="navigate_period">android-app://co.com.japl.finanzas.module.app/paid/period?code_account=%d</string>
+
+    <string name="toast_update_successful">Se realizo la actualización correctamente</string>
+    <string name="toast_update_error">No se logró realizar la actualización</string>
+    <string name="toast_save_successful">Se creo el registro correctamente</string>
+    <string name="toast_save_error">No se logró crear el registro</string>
+
+</resources>

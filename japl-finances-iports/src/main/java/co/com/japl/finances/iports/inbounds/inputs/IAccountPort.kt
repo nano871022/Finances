@@ -8,6 +8,8 @@ interface IAccountPort {
 
     fun getAll():List<AccountDTO>
 
+    fun getAllActive():List<AccountDTO>
+
     fun delete(codeAccount: Int):Boolean
 
     fun create(dto:AccountDTO):Int

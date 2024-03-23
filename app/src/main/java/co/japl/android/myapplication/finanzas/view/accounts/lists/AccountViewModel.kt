@@ -54,6 +54,7 @@ class AccountViewModel constructor(private val accountSvc:IAccountPort?, public 
             }
         }
         progress.value = 0.8f
+        loading.value = false
     }
 
 }

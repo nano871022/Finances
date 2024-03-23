@@ -97,11 +97,8 @@ class InputViewModel constructor(private val codeAccount:Int,private val codeInp
                 loader.value = false
             }
         }
-        if(codeInput == null){
+
             loader.value = false
-        }
-
-
 
     }
 

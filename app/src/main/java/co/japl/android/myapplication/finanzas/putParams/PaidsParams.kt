@@ -17,18 +17,8 @@ class PaidsParams {
 
     companion object{
 
-        @RequiresApi(Build.VERSION_CODES.O)
-        fun newInstanceList(date:LocalDate, navController: NavController){
-            val parameter = bundleOf(Params.PARAM_DATE_PERIOD to DateUtils.localDateToString(date))
-            navController.navigate(R.id.action_paidsFragment_to_paidListFragment,parameter)
-        }
-
         fun newInstance(navController: NavController){
             navController.navigate(R.id.action_paidsFragment_to_paidFragment)
-        }
-
-        fun newInstancePeriods(navController: NavController){
-            navController.navigate(R.id.action_menu_item_paids_to_periodsPaidFragment)
         }
 
         @RequiresApi(Build.VERSION_CODES.O)

@@ -15,10 +15,16 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.auth.api.signin.SignInAccount
 import com.google.android.gms.common.api.GoogleApi
 
+enum class ProviderType{
+    GOOGLE,
+    BASIC
+}
+
 class GoogleLoginService(private val activity:Activity, override val RC_SIGN_IN: Int) :IGoogleLoginService{
     private lateinit var signInAccount:GoogleSignInAccount
     private val googleSignInOptions = GoogleSignInOptions
         .Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+      //  .requestIdToken(activity.getString(R.string.default_web_client_id))
         .requestEmail()
         .build()
     val signInClient = GoogleSignIn.getClient(activity,googleSignInOptions)
@@ -40,7 +46,7 @@ class GoogleLoginService(private val activity:Activity, override val RC_SIGN_IN:
         signInClient.signOut()
     }
 
-    override fun response(requestCode:Int,data:Intent){
+    override fun response(requestCode:Int,resultCode:Int,data:Intent){
         Log.d(this.javaClass.name,"Response Login: $data $requestCode ")
         if(requestCode == RC_SIGN_IN){
             val task = GoogleSignIn.getSignedInAccountFromIntent(data)
@@ -57,5 +63,13 @@ class GoogleLoginService(private val activity:Activity, override val RC_SIGN_IN:
 
     override fun getAccount():GoogleSignInAccount{
         return signInAccount
+    }
+
+    override fun read() {
+        TODO("Not yet implemented")
+    }
+
+    override fun upload() {
+        TODO("Not yet implemented")
     }
 }

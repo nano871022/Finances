@@ -4,124 +4,165 @@ import android.app.Activity
 import android.content.Intent
 import android.util.Log
 import co.japl.android.myapplication.finanzas.bussiness.config.GoogleDriveConfig
-import co.japl.android.myapplication.finanzas.bussiness.interfaces.ServiceListener
+import co.japl.android.myapplication.finanzas.bussiness.interfaces.IGoogleLoginService
+import com.google.android.gms.auth.UserRecoverableAuthException
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
-import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.Scope
-import com.google.android.gms.drive.*
+import com.google.api.services.drive.*
+import com.google.api.client.extensions.android.http.AndroidHttp
+import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential
+import com.google.api.client.http.FileContent
+import com.google.api.client.json.gson.GsonFactory
+import com.google.api.services.drive.DriveScopes
+import com.google.api.services.drive.model.File
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import java.util.Collections
 
-class GoogleDriveService(private val activity:Activity,private val config:GoogleDriveConfig) {
-    var serviceListener : ServiceListener? = null
-    private var driveClient: DriveClient? = null
-    private var driveResourceClient: DriveResourceClient? = null
+class GoogleDriveService(private val activity:Activity, private val config:GoogleDriveConfig,
+                         override val RC_SIGN_IN: Int
+):IGoogleLoginService {
     private var signInAccount: GoogleSignInAccount? = null
-    private val googleSignInClient: GoogleSignInClient by lazy{
-        val builder = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-        for ( scope in GoogleDriveService.SCOPES){
-            builder.requestScopes(scope)
+
+    private val googleSignInOptions by lazy{
+         GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+          //  .requestIdToken(activity.getString(R.string.default_web_client_id))
+            .requestScopes(Scope(DriveScopes.DRIVE_FILE))
+            .build()
+    }
+    private val googleSignInClient = GoogleSignIn.getClient(activity,googleSignInOptions)
+
+    override fun getIntent(): Intent = googleSignInClient.signInIntent
+
+    override fun check(): Boolean = getConnection()?.let {
+        signInAccount = it
+        it.takeIf { it.grantedScopes.isNotEmpty() }?.let{
+            it.grantedScopes.forEach{Log.d(this.javaClass.name,"=== GrantedScopes ${it}")}
+            signInAccount?.let { getDrive(it)}
+            true
         }
-        val signInOptions = builder.build()
-        GoogleSignIn.getClient(activity,signInOptions)
-    }
-    private fun initializeDriveClient(signInAccount:GoogleSignInAccount){
-        Log.d(this.javaClass.name,"InitializeDriveClient Start")
-        driveClient  = Drive.getDriveClient(activity,signInAccount)
-        driveResourceClient = Drive.getDriveResourceClient(activity, signInAccount)
-        serviceListener?.loggedIn()
-        Log.d(this.javaClass.name,"InitializeDriveClient Finish")
-    }
+    }?:false
 
-    fun checkLoginStatus(){
-        val requiredScopes = HashSet<Scope>(2)
-        requiredScopes.add(Drive.SCOPE_FILE)
-        requiredScopes.add(Drive.SCOPE_APPFOLDER)
-        signInAccount = GoogleSignIn.getLastSignedInAccount(activity)
-        val containsScope = signInAccount?.grantedScopes?.containsAll(requiredScopes)
-        val account = signInAccount
-        Log.d(this.javaClass.name,"checkLoginStatus $signInAccount $containsScope $account")
-        if(account != null && containsScope == true){
-            initializeDriveClient(account)
-        }else{
-            serviceListener?.cancelled("NOT LOGIN: Account: $account Scope: $containsScope")
-        }
-    }
+    private fun getConnection():GoogleSignInAccount?=GoogleSignIn.getLastSignedInAccount(activity)
 
-    fun auth(){
-        Log.d(this.javaClass.name,"<<<=== auth start ${googleSignInClient.signInIntent} $REQUEST_CODE_SIGN_IN")
-        activity.startActivityForResult(googleSignInClient.signInIntent, GoogleDriveService.REQUEST_CODE_SIGN_IN)
-        Log.d(this.javaClass.name,"<<<=== auth finish")
-    }
 
-    fun logout(){
+
+   override fun logout(){
         googleSignInClient.signOut()
         signInAccount = null
+    }
+
+    override fun getAccount(): GoogleSignInAccount = signInAccount?:throw Exception("Not logged in")
+    override fun read() {
+        getConnection()?.let {
+            getDrive(it)?.let {
+                readFiles(it)
+            }
+        }
+    }
+
+    override fun upload() {
+        getConnection()?.let {
+            getDrive(it)?.let {
+                createFile(it)
+            }
+        }
     }
 
     private fun handleSignIn(data: Intent){
         val getAccountTask = GoogleSignIn.getSignedInAccountFromIntent(data)
         if(getAccountTask.isSuccessful){
-            initializeDriveClient(getAccountTask.result)
-        }else{
-            Log.e(this.javaClass.name,"Sign in failed ${getAccountTask.exception}")
-            serviceListener?.handleError(Exception("Sign in failed",getAccountTask.exception))
+            getAccountTask.result?.let { getDrive(it)}
+        }
+    }
+
+    private fun getDrive(account:GoogleSignInAccount):Drive?{
+        val credential = GoogleAccountCredential.usingOAuth2(activity, listOf(DriveScopes.DRIVE,DriveScopes.DRIVE_FILE,DriveScopes.DRIVE_APPDATA,
+            DriveScopes.DRIVE_METADATA, "https://www.googleapis.com/auth/drive.appfolder"))
+        credential.selectedAccount = account.account
+        return Drive.Builder(AndroidHttp.newCompatibleTransport(), GsonFactory(), credential)
+            .setApplicationName("Finanzas")
+            .build()
+            .also { Log.d(javaClass.name,"=== HandleSignIn2 $it") }
+    }
+    private fun createFolder(drive:Drive) {
+
+            CoroutineScope(Dispatchers.IO).launch {
+                try{
+                val folder = File()
+                folder.name = "Finanzas"
+                folder.mimeType = "application/vnd.google-apps.folder"
+                drive.Files().create(folder).setFields("id").execute()
+                } catch (e: Exception) {
+                    Log.e(javaClass.name, "ERROR ${e.message}", e)
+                }
+            }
+
+    }
+
+
+
+    private fun createFile(drive: Drive){
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                val fileMetadata = File()
+                fileMetadata.name = "test.txt"
+                fileMetadata.mimeType = "text/plain"
+                fileMetadata.parents = Collections.singletonList("appDataFolder")
+                val filePath = java.io.File("files/test.txt")
+                val mediaContent = FileContent("text/plain", filePath)
+                val file = drive.Files().create(fileMetadata,mediaContent)
+                    .setFields("id")
+                    .execute()
+                Log.d(javaClass.name,"=== createFile ${file.id}")
+            }catch(e:Exception){
+                Log.e(javaClass.name, "ERROR ${e.message}", e)
+            }
+        }
+    }
+
+    private fun readFiles(drive: Drive) {
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                drive.Files().list()
+                    .setSpaces("appDataFolder")
+                    .setFields("nextPageToken, files(id, name)")
+                    .setPageSize(10)
+                    .execute()
+                    ?.files
+                    ?.forEach {
+                        Log.d(javaClass.name, "=== ${it.name} ${it.id}")
+                    }
+            } catch (e: Exception) {
+                Log.e(javaClass.name, "ERROR ${e.message}", e)
+            }
         }
     }
 
 
-    private fun openItem(data:Intent){
-        val driveId = data.getParcelableExtra<DriveId>(OpenFileActivityOptions.EXTRA_RESPONSE_DRIVE_ID)
-        downloadFile(driveId)
-    }
-
-    private fun downloadFile(data:DriveId?){
-        if(data == null){
-            Log.e(this.javaClass.name,"DownloadFile is null")
-            return
-        }
-        val drive = data.asDriveFile()
-        val fileName = "test"
-
-    }
-
-    fun onActivityResults(requestCode: Int, resultCode: Int, data: Intent?){
+    override fun response(requestCode: Int, resultCode: Int, data: Intent){
         Log.d(this.javaClass.name, "onActivityResult $requestCode $data")
-        when(requestCode){
-            GoogleDriveService.REQUEST_CODE_SIGN_IN -> {
-                Log.d(this.javaClass.name,"onActivityResults REQUEST CODE SIGN IN")
-                if(data != null){
+        when(requestCode) {
+            RC_SIGN_IN -> {
+                Log.d(this.javaClass.name, "onActivityResults REQUEST CODE SIGN IN")
+                if (data != null) {
                     handleSignIn(data)
-                }else{
-                    serviceListener?.cancelled("REQUST CODE SIGHN IN Data: $data Code: $resultCode Request: $requestCode")
+                } else {
                 }
-            }
-            GoogleDriveService.REQUEST_CODE_OPEN_ITEM->{
-                Log.d(this.javaClass.name,"onActivityResults REQUEST CODE OPEN ITEM")
-                if(data != null){
-                    openItem(data)
-                }else{
-                    serviceListener?.cancelled("REQUEST CODE OPEN ITEM Data: $data Code: $resultCode Request: $requestCode")
-                }
-            }
-            else -> {
-                Log.d(this.javaClass.name,"Invalid option $requestCode")
             }
         }
     }
 
 
-    companion object{
-    val SCOPES = setOf<Scope>(Drive.SCOPE_FILE,Drive.SCOPE_APPFOLDER)
-    val documentMimeTypes = arrayListOf("application/excel")
-    const val REQUEST_CODE_OPEN_ITEM = 100
-    const val REQUEST_CODE_SIGN_IN = 101
-    const val TAG = "GoogleDriveService"
-}
-
-
-
-
 
 }
+
+
+
+
+
+
 

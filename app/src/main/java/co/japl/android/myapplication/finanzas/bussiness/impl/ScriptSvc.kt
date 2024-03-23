@@ -1,3 +1,4 @@
+/*
 package co.japl.android.myapplication.finanzas.bussiness.impl
 
 import android.os.Build
@@ -71,3 +72,4 @@ class ScriptService {
         }
     }
 }
+*/

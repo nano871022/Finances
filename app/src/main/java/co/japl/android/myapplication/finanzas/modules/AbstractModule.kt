@@ -1,6 +1,5 @@
 package co.japl.android.myapplication.finanzas.modules
 
-import android.app.Activity
 import android.content.Context
 import co.com.japl.finances.iports.inbounds.creditcard.ICreditCardPort
 import co.com.japl.finances.iports.inbounds.common.IDifferQuotesPort
@@ -15,6 +14,7 @@ import co.com.japl.finances.iports.inbounds.creditcard.bought.IBoughtSmsPort
 import co.com.japl.finances.iports.inbounds.creditcard.bought.lists.IBoughtListPort
 import co.com.japl.finances.iports.inbounds.inputs.IAccountPort
 import co.com.japl.finances.iports.inbounds.inputs.IInputPort
+import co.com.japl.finances.iports.inbounds.paid.IPaidPort
 import co.japl.android.myapplication.bussiness.impl.Config
 import co.japl.android.myapplication.bussiness.impl.CreditCardImpl
 import co.japl.android.myapplication.bussiness.impl.SaveCreditCardBoughtImpl
@@ -64,11 +64,9 @@ import co.japl.android.myapplication.finanzas.bussiness.interfaces.IPaidSvc
 import co.japl.android.myapplication.finanzas.bussiness.interfaces.IProjectionsSvc
 import co.japl.android.myapplication.finanzas.bussiness.interfaces.IQuoteCreditCardSvc
 import co.com.japl.finances.iports.inbounds.recap.IRecapPort
-import co.com.japl.module.creditcard.impl.SMSObserver
 import co.com.japl.ui.impls.SMSObservable
 import co.com.japl.ui.interfaces.ISMSObservablePublicher
 import co.com.japl.ui.interfaces.ISMSObservableSubscriber
-import co.com.japl.ui.interfaces.ISMSObserver
 import co.japl.android.myapplication.finanzas.controller.SMS
 import co.japl.finances.core.adapters.inbound.implement.creditCard.SMSCreditCardImpl
 import co.japl.finances.core.adapters.inbound.implement.creditcard.bought.BoughtImpl
@@ -101,11 +99,9 @@ import co.japl.finances.core.usercases.interfaces.creditcard.paid.lists.IPaidLis
 import co.japl.finances.core.usercases.interfaces.recap.IRecap
 import dagger.Binds
 import dagger.Module
-import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
-import dagger.multibindings.IntoSet
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -213,7 +209,7 @@ abstract class AbstractModule {
     abstract fun bindOutboundPaid(implement: co.japl.android.finances.services.core.PaidImpl): co.com.japl.finances.iports.outbounds.IPaidRecapPort
 
     @Binds
-    abstract fun bindServicePaid(implement: co.japl.android.finances.services.implement.PaidImpl): co.japl.android.finances.services.interfaces.IPaidSvc
+    abstract fun bindServicePaid(implement: co.japl.android.finances.services.dao.implement.PaidImpl): co.japl.android.finances.services.dao.interfaces.IPaidDAO
 
 
     @Binds
@@ -379,4 +375,10 @@ abstract class AbstractModule {
 
     @Binds
     abstract fun getSmsRead(svc:SMS):ISMSRead
+
+    @Binds
+    abstract fun bindInboundPaidPort(svc:co.japl.finances.core.adapters.inbound.implement.paid.PaidImpl):IPaidPort
+
+    @Binds
+    abstract fun bindUserCasePaid2(svc:co.japl.finances.core.usercases.implement.paid.PaidImpl):co.japl.finances.core.usercases.interfaces.paid.IPaid
 }
