@@ -149,16 +149,17 @@ private fun Buttons(newOne:()->Unit){
     ){
         FieldView(
             name = R.string.period,
+            isMoney = false,
             value = period.format(
                     DateTimeFormatter.ofPattern("MMMM yyyy", Locale("es", "CO"))
                 ),
-            modifier = Weight1f().clickable { onClick.invoke() }
+            modifier = Weight1f(),onClick =  onClick
         )
 
         FieldView(
             name = R.string.value,
             value = NumbersUtil.toString(value),
-            modifier = Weight1f().clickable { onClick.invoke() }
+            modifier = Weight1f(), onClick=  onClick
         )
     }
 }
@@ -167,7 +168,9 @@ private fun Buttons(newOne:()->Unit){
     val menuState = remember { mutableStateOf(false) }
     val dialogState = remember { mutableStateOf(false) }
 
-    Card(modifier=Modifier.padding(Dimensions.PADDING_SHORT)) {
+    Card(
+        border = BorderStroke(1.dp,color= if(dto.recurrent) Color.Red else Color.Unspecified)
+        ,modifier=Modifier.padding(Dimensions.PADDING_SHORT)) {
         Column (modifier = Modifier.padding(Dimensions.PADDING_SHORT)) {
             Row {
                 Text(

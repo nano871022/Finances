@@ -91,7 +91,6 @@ class PaidViewModel (private val codeAccount:Int?,private val codePaid:Int?,priv
         value.value.takeIf { it.isNotBlank() && NumbersUtil.toDouble(it) > 0.0 }?.let {
             errorValue.value = false
         }?:errorValue.let{it.value = true}
-
         if(!errorAccount.value && !errorDate.value && !errorName.value && !errorValue.value){
             _paid = PaidDTO(id = codePaid?:0,
                 datePaid = LocalDateTime.of(date.value, LocalTime.MIN),

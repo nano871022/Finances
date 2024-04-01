@@ -19,7 +19,7 @@ class PaidMap {
         val name = cursor.getString(3)
         val value = cursor.getString(4).toBigDecimal()
         val recurrent = cursor.getInt(5)
-        val endDate = DateUtils.toLocalDate(cursor.getString(6),LocalDate.of(9999,12,31))
+        val endDate = cursor.getString(6)?.let { DateUtils.toLocalDate(it) } ?: LocalDate.of(9999,12,31)
         return PaidDTO(id,date,account,name,value,recurrent.toShort(),endDate)
     }
 
@@ -31,7 +31,12 @@ class PaidMap {
             put(PaidDB.Entry.COLUMN_ACCOUNT,dto.account)
             put(PaidDB.Entry.COLUMN_DATE_PAID, DateUtils.localDateToString(dto.date))
             put(PaidDB.Entry.COLUMN_RECURRENT,dto.recurrent)
-            put(PaidDB.Entry.COLUMN_END_DATE, DateUtils.localDateToString(dto.end))
+            val endDate = LocalDate.of(9999,12,31)
+            if(dto.id == 0 && dto.recurrent.toInt() == 1) {
+                put(PaidDB.Entry.COLUMN_END_DATE, DateUtils.localDateToString(endDate))
+            }else {
+                put(PaidDB.Entry.COLUMN_END_DATE, DateUtils.localDateToString(dto.end))
+            }
         }
     }
 }

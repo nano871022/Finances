@@ -160,6 +160,7 @@ Column (modifier=Modifier.padding(Dimensions.PADDING_SHORT)) {
     CheckBoxField(title = stringResource(id = R.string.recurrent), value = recurrentState.value,
         callback = {
             recurrentState.value = it
+            viewModel.validate()
         },modifier = Modifier
             .fillMaxWidth())
 }
