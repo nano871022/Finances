@@ -7,113 +7,50 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.RequiresApi
-import androidx.loader.app.LoaderManager
-import androidx.loader.content.AsyncTaskLoader
-import androidx.loader.content.Loader
+import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.navigation.fragment.findNavController
-import co.japl.android.myapplication.R
-import co.japl.android.myapplication.finanzas.holders.interfaces.IHolder
-import co.japl.android.myapplication.finanzas.bussiness.DTO.PaidDTO
-import co.japl.android.myapplication.finanzas.bussiness.impl.PaidImpl
-import co.japl.android.myapplication.finanzas.bussiness.interfaces.IPaidSvc
-import co.japl.android.myapplication.finanzas.holders.interfaces.IRecyclerView
-import co.japl.android.myapplication.finanzas.holders.PaidListHolder
+import co.com.japl.finances.iports.inbounds.paid.IPaidPort
+import co.com.japl.module.paid.controllers.paid.list.PaidViewModel
+import co.com.japl.module.paid.views.paid.list.Paid
+import co.com.japl.ui.theme.MaterialThemeComposeUI
+import co.japl.android.myapplication.databinding.FragmentPaidListBinding
 import co.japl.android.myapplication.finanzas.putParams.PaidsParams
 import dagger.hilt.android.AndroidEntryPoint
-import java.math.BigDecimal
-import java.time.LocalDate
+import java.time.YearMonth
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class PaidListFragment : Fragment() , LoaderManager.LoaderCallbacks<List<PaidDTO>> {
-    private lateinit var date:LocalDate
-    private lateinit var holder: IHolder<PaidDTO>
+class PaidListFragment : Fragment()  {
 
-    @Inject lateinit var service: IPaidSvc
+    @Inject lateinit var paidSvc: IPaidPort
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
 
-    @RequiresApi(Build.VERSION_CODES.O)
+
+    @RequiresApi(Build.VERSION_CODES.S)
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val root = inflater.inflate(R.layout.fragment_paid_list, container, false)
-        date = getDate(arguments)
-        holder = PaidListHolder(root,layoutInflater,findNavController())
-        holder.setFields(null)
-        loaderManager.initLoader(1,null,this)
-        return root
-    }
+        val root = FragmentPaidListBinding.inflate(inflater)
+        val date = PaidsParams.downloadList(requireArguments())
+        val codeAccount = PaidsParams.downloadCodeAccount(requireArguments())
 
-    @RequiresApi(Build.VERSION_CODES.O)
-    private fun getDate(arguments:Bundle?):LocalDate{
-        return arguments?.let {
-            PaidsParams.downloadList(it)
-        }?:LocalDate.now().withDayOfMonth(1)
-
-    }
-
-    @RequiresApi(Build.VERSION_CODES.O)
-    private fun getData():MutableList<PaidDTO>{
-        val data = service.get(getPaids()).toMutableList()
-        (service as PaidImpl).getRecurrent(date)?.let {
-            if(it.isNotEmpty()){
-                data.addAll(it)
-            }
-        }
-        data.sortByDescending { it.date }
-        return data
-    }
-
-    override fun onResume() {
-        super.onResume()
-        loaderManager.restartLoader(1,null,this)
-    }
-
-    @RequiresApi(Build.VERSION_CODES.O)
-    private fun getPaids():PaidDTO{
-        val id = 0
-        val account = ""
-        val name = ""
-        val value = BigDecimal.ZERO
-        val recurrent = 0
-        val endDate = LocalDate.of(9999,12,31)
-        return PaidDTO(id, date,account,name,value,recurrent.toShort(),endDate)
-    }
-
-    override fun onCreateLoader(id: Int, args: Bundle?): Loader<List<PaidDTO>> {
-        return object:AsyncTaskLoader<List<PaidDTO>>(requireContext()){
-            private var data:List<PaidDTO>? = null
-            override fun onStartLoading() {
-                super.onStartLoading()
-                if(data != null){
-                    deliverResult(data)
-                }else{
-                    forceLoad()
+        val viewModel = PaidViewModel(
+            accountCode = codeAccount?:0,
+            period= if(date != null) YearMonth.of(date.year,date.monthValue) else YearMonth.now(),
+            paidSvc = paidSvc,
+            navController = findNavController()
+        )
+        root.cvPaidFpl.apply {
+            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+            setContent {
+                MaterialThemeComposeUI {
+                    Paid(viewModel = viewModel)
                 }
             }
-            @RequiresApi(Build.VERSION_CODES.O)
-            override fun loadInBackground(): List<PaidDTO>? {
-                data = getData()
-                return data
-            }
         }
-    }
 
-    override fun onLoaderReset(loader: Loader<List<PaidDTO>>) {
-    }
-
-    @RequiresApi(Build.VERSION_CODES.O)
-    override fun onLoadFinished(loader: Loader<List<PaidDTO>>, data: List<PaidDTO>?) {
-        data?.let{
-        val dto = getPaids()
-        dto.value = if(data.isNotEmpty()) data.map{ it.value }.reduce{ acc,value-> acc+value} else BigDecimal.ZERO
-        holder.loadFields(dto)
-        (holder as IRecyclerView<PaidDTO>).loadRecycler(data.toMutableList())
-    }
+        return root.root.rootView
     }
 
 }

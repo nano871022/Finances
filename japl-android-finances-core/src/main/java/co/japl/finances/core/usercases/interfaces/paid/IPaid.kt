@@ -16,4 +16,6 @@ interface IPaid {
     fun create(paid:PaidDTO):Int
 
     fun update(paid:PaidDTO):Boolean
+
+    fun delete(id:Int):Boolean
 }

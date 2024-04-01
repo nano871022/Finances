@@ -9,6 +9,7 @@ import javax.inject.Inject
 
 class PaidImpl @Inject constructor(private val recapSvc: IPaidRecapPort)   : IPaid {
     override fun get(codeAccount: Int, period: YearMonth): List<PaidDTO> {
+
         return recapSvc.getActivePaid(codeAccount, period)
     }
 
@@ -38,5 +39,9 @@ class PaidImpl @Inject constructor(private val recapSvc: IPaidRecapPort)   : IPa
 
     override fun update(paid: PaidDTO): Boolean {
         return recapSvc.update(paid)
+    }
+
+    override fun delete(id: Int): Boolean {
+        return recapSvc.delete(id)
     }
 }

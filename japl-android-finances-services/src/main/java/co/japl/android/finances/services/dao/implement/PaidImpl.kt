@@ -31,6 +31,7 @@ class PaidImpl @Inject constructor(override var dbConnect: SQLiteOpenHelper) : I
     )
 
     private val FORMAT_DATE_PAID = "substr(${PaidDB.Entry.COLUMN_DATE_PAID},7,4)||'-'||substr(${PaidDB.Entry.COLUMN_DATE_PAID},4,2)||'-'||substr(${PaidDB.Entry.COLUMN_DATE_PAID},1,2)"
+    private val FORMAT_END_DATE = "substr(${PaidDB.Entry.COLUMN_END_DATE},7,4)||'-'||substr(${PaidDB.Entry.COLUMN_END_DATE},4,2)||'-'||substr(${PaidDB.Entry.COLUMN_END_DATE},1,2)"
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun get(values: PaidDTO): List<PaidDTO> {
@@ -82,6 +83,31 @@ class PaidImpl @Inject constructor(override var dbConnect: SQLiteOpenHelper) : I
             while(moveToNext()){
                 mapper.mapping(cursor).takeIf {
                      it.date in startPeriod .. endPeriod
+                }?.let(items::add)
+            }
+        }
+        return items
+    }
+
+    override fun getRecurrents(codeAccount: Int, period: YearMonth): List<PaidDTO> {
+        val startPeriod = LocalDate.of(period.year,period.monthValue,1)
+        val endPeriod = startPeriod.plusMonths(1).minusDays(1)
+        val db = dbConnect.readableDatabase
+        val cursor = db.query(PaidDB.Entry.TABLE_NAME,
+            COLUMNS,
+            """
+                ${PaidDB.Entry.COLUMN_ACCOUNT} like ?
+                AND ${PaidDB.Entry.COLUMN_RECURRENT} = 1
+                AND ${FORMAT_END_DATE} > ?
+            """.trimMargin(),
+            arrayOf("%${codeAccount}%",DateUtils.localDateToStringDate(endPeriod)),
+            null,null,null)
+        val items = mutableListOf<PaidDTO>()
+        val mapper = PaidMap()
+        with(cursor){
+            while(moveToNext()){
+                mapper.mapping(cursor).takeIf {
+                    it.end >= endPeriod
                 }?.let(items::add)
             }
         }

@@ -7,6 +7,7 @@ import androidx.annotation.StringRes
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Colors
@@ -23,6 +24,7 @@ import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
 import co.com.japl.ui.R
 import co.com.japl.ui.theme.MaterialThemeComposeUI
+import co.com.japl.ui.theme.values.Dimensions
 
 @Composable
 fun FieldView(@StringRes name:Int, value:String, modifier: Modifier, color: Color = MaterialTheme.colorScheme.onPrimaryContainer,isMoney:Boolean = true,alignment:Alignment = Alignment.BottomEnd,fontSize:TextUnit = TextUnit.Unspecified,onClick:() -> Unit = {}){
@@ -66,6 +68,20 @@ fun FieldView(name:String, value:String, modifier: Modifier, color: Color = Mate
                 .padding(top = 22.dp, start = 10.dp, end = 1.dp, bottom = 2.dp)
         )
 
+    }
+
+}
+
+
+@Composable fun FieldViewCards(@StringRes name:Int, value:String, modifier: Modifier, color: Color = MaterialTheme.colorScheme.onPrimaryContainer){
+
+    Row (modifier = modifier.fillMaxWidth()) {
+        Text(text= stringResource(id = name), color = MaterialTheme.colorScheme.onPrimaryContainer, modifier = Modifier
+            .padding(Dimensions.PADDING_SHORT)
+            .weight(1f))
+        Text(text=value, color = color, modifier = Modifier
+            .padding(Dimensions.PADDING_SHORT)
+            .weight(1f))
     }
 
 }
@@ -131,3 +147,30 @@ fun FieldView21Preview() {
         )
     }
 }
+
+@RequiresApi(Build.VERSION_CODES.S)
+@Composable
+@Preview(uiMode=Configuration.UI_MODE_NIGHT_YES)
+internal fun FieldViewPreviewCardsDark() {
+    MaterialThemeComposeUI {
+        FieldViewCards(
+            name = R.string.clear, value = "10000", modifier = Modifier
+                .fillMaxWidth()
+                .padding(5.dp)
+        )
+    }
+}
+
+@RequiresApi(Build.VERSION_CODES.S)
+@Composable
+@Preview(uiMode=Configuration.UI_MODE_NIGHT_NO)
+internal fun FieldViewPreviewCards() {
+    MaterialThemeComposeUI {
+        FieldViewCards(
+            name = R.string.see_more, value = "10000", modifier = Modifier
+                .fillMaxWidth()
+                .padding(5.dp)
+        )
+    }
+}
+

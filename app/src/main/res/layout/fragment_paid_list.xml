@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -7,70 +7,9 @@
     android:layout_margin="@dimen/space_min"
     tools:context=".finanzas.controller.paids.PaidListFragment">
 
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+  <androidx.compose.ui.platform.ComposeView
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:id="@+id/cv_paid_fpl"/>
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="@dimen/space_min"
-            android:orientation="vertical">
-
-            <ProgressBar
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/pb_load_pdl"/>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:layout_width="match_parent"
-                android:hint="@string/period"
-                android:layout_weight="1"
-                style="@style/MaterialTextInputLayoutView"
-                android:layout_height="wrap_content">
-                <com.google.android.material.textfield.TextInputEditText
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textAlignment="center"
-                    android:enabled="false"
-                    style="@style/MaterialTextInputLayoutView"
-                    android:id="@+id/tv_period_pdl"
-                    android:text="@string/date_hint"/>
-
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:layout_width="match_parent"
-                android:hint="@string/value"
-                style="@style/MaterialTextInputLayoutView"
-                android:layout_weight="1"
-                app:prefixText="$"
-                android:layout_height="wrap_content">
-                <com.google.android.material.textfield.TextInputEditText
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textAlignment="center"
-                    style="@style/MaterialTextInputLayoutView"
-                    android:enabled="false"
-                    android:id="@+id/tv_value_pdl"
-                    android:text="@string/money_hint"/>
-
-            </com.google.android.material.textfield.TextInputLayout>
-            </LinearLayout>
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/rv_paid_list"/>
-        </LinearLayout>
-
-    </ScrollView>
-
-
-</com.google.android.material.card.MaterialCardView>
+</LinearLayout>

@@ -1,5 +1,6 @@
 package co.com.japl.module.paid.controllers.paid.form
 
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.runtime.mutableDoubleStateOf
 import androidx.compose.runtime.mutableFloatStateOf
@@ -12,6 +13,7 @@ import co.com.japl.finances.iports.dtos.PaidDTO
 import co.com.japl.finances.iports.inbounds.inputs.IAccountPort
 import co.com.japl.finances.iports.inbounds.paid.IPaidPort
 import co.com.japl.module.paid.R
+import co.japl.android.myapplication.utils.NumbersUtil
 import kotlinx.coroutines.runBlocking
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -19,7 +21,9 @@ import java.time.LocalTime
 
 class PaidViewModel (private val codeAccount:Int?,private val codePaid:Int?,private val accountSvc: IAccountPort?,private val paidSvc: IPaidPort?,private val navController: NavController?) :ViewModel(){
     private var _paid: PaidDTO? = null
-    private val accountList = mutableStateListOf<AccountDTO>()
+    var accountList :List<AccountDTO>? = null
+    val accountListPair = mutableStateListOf<Pair<Int,String>>()
+
 
     val loading = mutableStateOf(true)
     val progressStatus = mutableFloatStateOf(0.0f)
@@ -30,7 +34,7 @@ class PaidViewModel (private val codeAccount:Int?,private val codePaid:Int?,priv
     val errorDate = mutableStateOf(false)
     val name = mutableStateOf("")
     val errorName = mutableStateOf(false)
-    val value = mutableDoubleStateOf(0.0)
+    val value = mutableStateOf("")
     val errorValue = mutableStateOf(false)
     val recurrent = mutableStateOf(false)
 
@@ -62,10 +66,10 @@ class PaidViewModel (private val codeAccount:Int?,private val codePaid:Int?,priv
     }
 
     fun clean(){
-        account.value = codeAccount?.let{ accountList.first { it.id == codeAccount } }
+        account.value = codeAccount?.let{ accountList?.first { it.id == codeAccount } }
         date.value = null
         name.value = ""
-        value.value = 0.0
+        value.value = ""
         recurrent.value = false
 
         _paid = null
@@ -84,7 +88,7 @@ class PaidViewModel (private val codeAccount:Int?,private val codePaid:Int?,priv
             errorName.value = false
         }?:errorName.let{it.value = true}
 
-        value.value.takeIf { it > 0.0 }?.let {
+        value.value.takeIf { it.isNotBlank() && NumbersUtil.toDouble(it) > 0.0 }?.let {
             errorValue.value = false
         }?:errorValue.let{it.value = true}
 
@@ -92,7 +96,7 @@ class PaidViewModel (private val codeAccount:Int?,private val codePaid:Int?,priv
             _paid = PaidDTO(id = codePaid?:0,
                 datePaid = LocalDateTime.of(date.value, LocalTime.MIN),
                 itemName = name.value,
-                itemValue = value.value,
+                itemValue = NumbersUtil.toDouble(value.value),
                 recurrent = recurrent.value,
                 account = account.value!!.id,
                 end = LocalDateTime.now())
@@ -111,8 +115,12 @@ class PaidViewModel (private val codeAccount:Int?,private val codePaid:Int?,priv
 
         accountSvc?.let {
             it.getAllActive().takeIf { it.isNotEmpty() }?.let { list ->
-                accountList.clear()
-                list.forEach (accountList::add)
+
+                accountListPair.clear()
+                accountList= list
+                list.map{
+                    Pair(it.id,it.name)
+                }.forEach (accountListPair::add)
                 progressStatus.value = 0.4f
             }
         }
@@ -122,7 +130,7 @@ class PaidViewModel (private val codeAccount:Int?,private val codePaid:Int?,priv
                     _paid = it
                     date.value = it.datePaid.toLocalDate()
                     name.value = it.itemName
-                    value.value = it.itemValue
+                    value.value = NumbersUtil.toString(it.itemValue)
                     recurrent.value = it.recurrent
                     progressStatus.value = 0.6f
                 }
@@ -130,7 +138,8 @@ class PaidViewModel (private val codeAccount:Int?,private val codePaid:Int?,priv
             }
         }
         codeAccount?.let{
-            account.value = accountList.first { it.id == codeAccount }
+            Log.d("codeAccount",">>> $it $accountList")
+            account.value = accountList?.firstOrNull { it.id == codeAccount }
             progressStatus.value = 0.8f
         }
         loading.value = false

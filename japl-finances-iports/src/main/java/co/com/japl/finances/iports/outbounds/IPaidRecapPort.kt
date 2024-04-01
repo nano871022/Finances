@@ -16,4 +16,6 @@ interface IPaidRecapPort {
 
     fun update(paid:PaidDTO):Boolean
 
+    fun delete(codePaid:Int):Boolean
+
 }

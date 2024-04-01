@@ -14,7 +14,12 @@ class PaidImpl @Inject constructor(private val paidImpl: IPaidDAO) : IPaidRecapP
     }
 
     override fun getActivePaid(codeAccount: Int, period: YearMonth): List<PaidDTO> {
-        return  paidImpl.getAll(codeAccount,period).takeIf { it.isNotEmpty() }?.map { PaidMapper.mapper(it)}?: emptyList()
+        val items =  paidImpl.getAll(codeAccount,period).takeIf { it.isNotEmpty() }?.map { PaidMapper.mapper(it)}?: emptyList()
+        val recurrents = paidImpl.getRecurrents(codeAccount,period).takeIf { it.isNotEmpty() }?.map { PaidMapper.mapper(it)}?: emptyList()
+        val list =  mutableListOf<PaidDTO>()
+        list.addAll(items)
+        list.addAll(recurrents)
+        return list
     }
 
     override fun get(codePaid: Int): PaidDTO? {
@@ -27,6 +32,10 @@ class PaidImpl @Inject constructor(private val paidImpl: IPaidDAO) : IPaidRecapP
 
     override fun update(paid: PaidDTO): Boolean {
         return paidImpl.save(PaidMapper.mapper(paid)) > 0
+    }
+
+    override fun delete(codePaid: Int): Boolean {
+        return paidImpl.delete(codePaid)
     }
 
 }

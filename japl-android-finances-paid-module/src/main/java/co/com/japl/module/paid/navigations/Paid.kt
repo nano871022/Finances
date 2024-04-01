@@ -7,7 +7,7 @@ import co.com.japl.module.paid.R
 
 object Paid {
     fun navigate(codePaid:Int,codeAccount:Int,navController: NavController){
-        val request = NavDeepLinkRequest.Builder.fromUri(navController.context.getString(R.string.navigate_paid,codePaid).toUri()).build()
+        val request = NavDeepLinkRequest.Builder.fromUri(navController.context.getString(R.string.navigate_paid,codePaid,codeAccount).toUri()).build()
         navController.navigate(request)
     }
 

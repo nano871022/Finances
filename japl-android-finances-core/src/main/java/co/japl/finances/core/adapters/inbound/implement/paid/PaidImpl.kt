@@ -31,4 +31,8 @@ class PaidImpl @Inject constructor(private val paidSvc:IPaid): IPaidPort {
     override fun update(paid: PaidDTO): Boolean {
         return paidSvc.update(paid)
     }
+
+    override fun delete(id: Int): Boolean {
+        return paidSvc.delete(id)
+    }
 }
