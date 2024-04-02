@@ -228,7 +228,7 @@ class PaidImpl @Inject constructor(override var dbConnect: SQLiteOpenHelper) : I
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    fun getPeriods():List<PaidDTO>{
+    override fun getPeriods():List<PaidDTO>{
         val db = dbConnect.readableDatabase
         val cursor = db.rawQuery("select max(${PaidDB.Entry.COLUMN_DATE_PAID}) from ${PaidDB.Entry.TABLE_NAME}",null)
         val list = mutableListOf<PaidDTO>()
@@ -237,10 +237,8 @@ class PaidImpl @Inject constructor(override var dbConnect: SQLiteOpenHelper) : I
                 val datePaid = cursor.getString(0)
                 datePaid?.let{
                var date = DateUtils.toLocalDate(datePaid)
-                Log.d(javaClass.name,"Periods  $date")
                 date = date.withDayOfMonth(1)
                 val periods = Period.between(date,LocalDate.now())
-                Log.d(javaClass.name,"Periods $periods $date")
                 for( i in 0..periods.months) {
                     val dateFound = date.plusMonths(i.toLong())
                     val records = get(getPaid(dateFound)).toMutableList()
@@ -249,9 +247,8 @@ class PaidImpl @Inject constructor(override var dbConnect: SQLiteOpenHelper) : I
                             records.addAll(it)
                         }
                     }
-                    val value = if (records.isNotEmpty()) records.map { it.value }
-                        .reduce { acc, value -> acc + value } else BigDecimal.ZERO
-                    list.add(getPeriodPaidDTO(dateFound, value))
+                    val value = if (records.isNotEmpty()) records.sumOf { it.value } else BigDecimal.ZERO
+                    list.add(getPeriodPaidDTO(dateFound, value,records.count()))
                 }
                 }
             }
@@ -261,8 +258,8 @@ class PaidImpl @Inject constructor(override var dbConnect: SQLiteOpenHelper) : I
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    private fun getPeriodPaidDTO(date:LocalDate, value:BigDecimal):PaidDTO{
-        val id = 0
+    private fun getPeriodPaidDTO(date:LocalDate, value:BigDecimal,count:Int):PaidDTO{
+        val id = count
         val account = ""
         val name = ""
         val recurrent = 0

@@ -1,8 +1,6 @@
 package co.com.japl.module.paid.controllers.monthly.list
 
-import android.os.Build
 import android.util.Log
-import androidx.annotation.RequiresApi
 import androidx.compose.runtime.mutableDoubleStateOf
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableIntStateOf
@@ -22,9 +20,8 @@ import java.time.YearMonth
 import java.time.format.TextStyle
 import java.util.Locale
 
-class MonthlyViewModel constructor(private val paidSvc: IPaidPort?, private val incomesSvc:IInputPort?,private val accountSvc:IAccountPort?, private val navController: NavController?): ViewModel() {
+class MonthlyViewModel constructor(private val period:YearMonth,private val paidSvc: IPaidPort?, private val incomesSvc:IInputPort?,private val accountSvc:IAccountPort?, private val navController: NavController?): ViewModel() {
     private var _accounts : List<AccountDTO>? = null
-    private var _period: YearMonth? = null
     val listAccount get() = _accounts
 
     val loaderState = mutableStateOf(true)
@@ -41,7 +38,7 @@ class MonthlyViewModel constructor(private val paidSvc: IPaidPort?, private val 
         try {
             navController?.let {
                 accountState.value?.let {
-                    Paids.navigate(it.id, navController)
+                    Paids.navigate(it.id,period, navController)
                 }
             }
         }catch (e:Exception){
@@ -64,8 +61,6 @@ class MonthlyViewModel constructor(private val paidSvc: IPaidPort?, private val 
 
     fun goToListCreate(){
         try {
-
-
             navController?.let {
                 accountState.value?.let {
                     Paid.navigate(it.id, navController)
@@ -84,8 +79,7 @@ class MonthlyViewModel constructor(private val paidSvc: IPaidPort?, private val 
     }
 
     suspend fun execute() {
-        _period = YearMonth.now()
-        periodState.value = "${_period?.month?.getDisplayName(TextStyle.FULL, Locale("es","CO"))} ${_period?.year}"
+        periodState.value = "${period?.month?.getDisplayName(TextStyle.FULL, Locale("es","CO"))} ${period?.year}"
         accountSvc?.let {
             it.getAllActive().takeIf { it.isNotEmpty() }?.let { list ->
                 accountList.clear()
@@ -102,7 +96,7 @@ class MonthlyViewModel constructor(private val paidSvc: IPaidPort?, private val 
 
         accountState.value?.let {account->
             paidSvc?.let {
-               _period?.let {_period->
+               period?.let {_period->
                    it.getRecap(codeAccount = account.id, period = _period)?.let { recap ->
                        countState.value = recap.count
                        paidTotalState.value = recap.totalPaid
@@ -114,7 +108,7 @@ class MonthlyViewModel constructor(private val paidSvc: IPaidPort?, private val 
 
             }
             incomesSvc?.let {
-                _period?.let { _period ->
+                period?.let { _period ->
                     it.getTotalInputs(account.id, _period)?.let { total ->
                         incomesTotalState.value = total
                         progressStatus.value = 0.9f

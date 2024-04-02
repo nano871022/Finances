@@ -1,4 +1,4 @@
-package co.japl.android.myapplication.finanzas.view.accounts.form
+package co.com.japl.module.paid.controllers.accounts.form
 
 import android.widget.Toast
 import androidx.compose.runtime.mutableFloatStateOf
@@ -7,7 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.navigation.NavController
 import co.com.japl.finances.iports.dtos.AccountDTO
 import co.com.japl.finances.iports.inbounds.inputs.IAccountPort
-import co.japl.android.myapplication.R
+import co.com.japl.module.paid.R
 import kotlinx.coroutines.runBlocking
 import java.time.LocalDate
 
@@ -42,16 +42,16 @@ class AccountViewModel constructor(private val codeAccount:Int?,private val acco
             if(_item?.id == 0) {
                 if(accountSvc.create(_item!!)>0){
                     navController.navigateUp()
-                    Toast.makeText(navController.context, R.string.toast_successful_insert, Toast.LENGTH_SHORT).show()
+                    Toast.makeText(navController.context, R.string.toast_save_successful, Toast.LENGTH_SHORT).show()
                 }else{
-                    Toast.makeText(navController.context, R.string.toast_unsuccessful_insert, Toast.LENGTH_SHORT).show()
+                    Toast.makeText(navController.context, R.string.toast_save_error, Toast.LENGTH_SHORT).show()
                 }
             }else {
                 if(accountSvc.update(_item!!)){
                     navController.navigateUp()
-                    Toast.makeText(navController.context, R.string.toast_successful_update, Toast.LENGTH_SHORT).show()
+                    Toast.makeText(navController.context, R.string.toast_update_successful, Toast.LENGTH_SHORT).show()
                 }else{
-                    Toast.makeText(navController.context, R.string.toast_dont_successful_update, Toast.LENGTH_SHORT).show()
+                    Toast.makeText(navController.context, R.string.toast_update_error, Toast.LENGTH_SHORT).show()
                 }
             }
         }else{

@@ -15,6 +15,7 @@ import co.com.japl.finances.iports.inbounds.creditcard.bought.lists.IBoughtListP
 import co.com.japl.finances.iports.inbounds.inputs.IAccountPort
 import co.com.japl.finances.iports.inbounds.inputs.IInputPort
 import co.com.japl.finances.iports.inbounds.paid.IPaidPort
+import co.com.japl.finances.iports.inbounds.paid.IPeriodPaidPort
 import co.japl.android.myapplication.bussiness.impl.Config
 import co.japl.android.myapplication.bussiness.impl.CreditCardImpl
 import co.japl.android.myapplication.bussiness.impl.SaveCreditCardBoughtImpl
@@ -71,6 +72,7 @@ import co.japl.android.myapplication.finanzas.controller.SMS
 import co.japl.finances.core.adapters.inbound.implement.creditCard.SMSCreditCardImpl
 import co.japl.finances.core.adapters.inbound.implement.creditcard.bought.BoughtImpl
 import co.japl.finances.core.adapters.inbound.implement.creditcard.bought.lists.ListImpl
+import co.japl.finances.core.adapters.inbound.implement.paid.PeriodImpl
 import co.japl.finances.core.adapters.inbound.implement.recap.RecapImp
 import co.japl.finances.core.usercases.implement.common.DifferQuoteImpl
 import co.japl.finances.core.usercases.implement.common.PaidImp
@@ -381,4 +383,16 @@ abstract class AbstractModule {
 
     @Binds
     abstract fun bindUserCasePaid2(svc:co.japl.finances.core.usercases.implement.paid.PaidImpl):co.japl.finances.core.usercases.interfaces.paid.IPaid
+
+    @Binds
+    abstract fun bindInputPeriodPaid(svc:PeriodImpl):IPeriodPaidPort
+
+    @Binds
+    abstract fun bindOutputPeriodPaid(svc:co.japl.android.finances.services.core.PaidImpl):co.com.japl.finances.iports.outbounds.IPeriodPaidPort
+
+    @Binds
+    abstract fun bindOutputPaid(svc:co.japl.android.finances.services.core.PaidImpl):co.com.japl.finances.iports.outbounds.IPaidPort
+
+    @Binds
+    abstract fun bindUserCasePeriodPaid(svc:co.japl.finances.core.usercases.implement.paid.PeriodPaid):co.japl.finances.core.usercases.interfaces.paid.IPeriodPaid
 }

@@ -25,14 +25,27 @@ class PaidImpl @Inject constructor(private val paidSvc:IPaid): IPaidPort {
     }
 
     override fun create(paid: PaidDTO): Int {
+        require(paid.id == 0) { "Code should be 0" }
         return paidSvc.create(paid)
     }
 
     override fun update(paid: PaidDTO): Boolean {
+        require(paid.id > 0) { "Id cannot be 0" }
         return paidSvc.update(paid)
     }
 
     override fun delete(id: Int): Boolean {
+        require(id > 0) { "Id cannot be 0" }
         return paidSvc.delete(id)
+    }
+
+    override fun endRecurrent(id: Int): Boolean {
+        require(id > 0) { "Id cannot be 0" }
+        return paidSvc.endRecurrent(id)
+    }
+
+    override fun copy(id: Int): Boolean {
+        require(id > 0) { "Id cannot be 0" }
+        return paidSvc.copy(id)
     }
 }

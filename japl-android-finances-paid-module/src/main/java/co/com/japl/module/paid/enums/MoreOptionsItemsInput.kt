@@ -1,8 +1,8 @@
-package co.japl.android.myapplication.finanzas.enums
+package co.com.japl.module.paid.enums
 
 import androidx.annotation.StringRes
+import co.com.japl.module.paid.R
 import co.com.japl.ui.enums.IMoreOptions
-import co.japl.android.myapplication.R
 
 enum class MoreOptionsItemsInput(val i: Int,@StringRes val title: Int) : IMoreOptions {
 

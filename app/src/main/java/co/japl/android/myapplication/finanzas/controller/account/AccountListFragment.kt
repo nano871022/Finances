@@ -13,9 +13,8 @@ import co.com.japl.finances.iports.inbounds.inputs.IAccountPort
 import co.com.japl.finances.iports.inbounds.inputs.IInputPort
 import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.japl.android.myapplication.databinding.FragmentAccountListBinding
-import co.japl.android.myapplication.finanzas.view.accounts.inputs.lists.InputListModelView
-import co.japl.android.myapplication.finanzas.view.accounts.lists.AccountList
-import co.japl.android.myapplication.finanzas.view.accounts.lists.AccountViewModel
+import co.com.japl.module.paid.views.accounts.list.AccountList
+import co.com.japl.module.paid.controllers.accounts.list.AccountViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 

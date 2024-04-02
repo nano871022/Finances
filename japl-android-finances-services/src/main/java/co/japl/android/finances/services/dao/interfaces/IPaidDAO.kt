@@ -15,4 +15,6 @@ interface IPaidDAO: SaveSvc<PaidDTO>, ISaveSvc<PaidDTO> {
     fun getAll(codeAccount:Int, period: YearMonth):List<PaidDTO>
 
     fun getRecurrents(codeAccount: Int, period: YearMonth): List<PaidDTO>
+
+    fun getPeriods():List<PaidDTO>
 }

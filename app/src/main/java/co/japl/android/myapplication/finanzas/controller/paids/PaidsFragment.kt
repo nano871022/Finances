@@ -29,8 +29,10 @@ import co.japl.android.myapplication.finanzas.bussiness.interfaces.IAccountSvc
 import co.japl.android.myapplication.finanzas.bussiness.interfaces.IGraph
 import co.japl.android.myapplication.finanzas.bussiness.interfaces.IPaidSvc
 import co.japl.android.myapplication.finanzas.bussiness.response.GraphValuesResp
+import co.japl.android.myapplication.finanzas.putParams.PaidsParams
 import dagger.hilt.android.AndroidEntryPoint
 import java.time.LocalDate
+import java.time.YearMonth
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -50,10 +52,12 @@ class PaidsFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val root = FragmentPaidsBinding.inflate(inflater,container,false)
+        val period = arguments?.let{PaidsParams.downloadPeriod(it)}
         val viewModel = MonthlyViewModel(
             paidSvc = service,
             accountSvc = accountSvc,
             incomesSvc = incomesSvc,
+            period = period?:YearMonth.now(),
             navController = findNavController()
         )
         root.cvPaidsFp.apply {

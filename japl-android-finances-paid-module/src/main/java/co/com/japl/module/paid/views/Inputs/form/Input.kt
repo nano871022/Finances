@@ -1,4 +1,4 @@
-package co.japl.android.myapplication.finanzas.view.accounts.inputs.form
+package co.com.japl.module.paid.views.Inputs.form
 
 import android.os.Build
 import androidx.annotation.RequiresApi
@@ -8,8 +8,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.Cancel
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
@@ -19,14 +17,15 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import co.com.japl.module.paid.R
+import co.com.japl.module.paid.controllers.Inputs.form.InputViewModel
 import co.com.japl.ui.components.FieldDatePicker
 import co.com.japl.ui.components.FieldSelect
 import co.com.japl.ui.components.FieldText
 import co.com.japl.ui.components.FloatButton
 import co.com.japl.ui.components.MoreOptionsDialog
 import co.com.japl.ui.theme.values.Dimensions
-import co.japl.android.myapplication.R
-import co.japl.android.myapplication.finanzas.enums.MoreOptionsKindPaymentInput
+import co.com.japl.module.paid.enums.MoreOptionsKindPaymentInput
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -60,7 +59,7 @@ fun InputForm(viewModel: InputViewModel){
 
 @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
 @Composable
-private fun Body(viewModel: InputViewModel,modifier: Modifier) {
+private fun Body(viewModel: InputViewModel, modifier: Modifier) {
     val stateDate = remember { viewModel.date }
     val stateKindOfPayment = remember { viewModel.kindOfPayment }
     val stateName = remember { viewModel.name }

@@ -196,7 +196,6 @@ private fun Buttons(newOne:()->Unit){
                 )
             }
 
-
                 FieldViewCards(
                     name = R.string.name_item,
                     value = dto.itemName,
@@ -213,7 +212,7 @@ private fun Buttons(newOne:()->Unit){
     }
 
     if(menuState.value){
-        MoreOptionsDialog(listOptions = PaidListOptions.values().toList()
+        MoreOptionsDialog(listOptions = viewModel.listOptions(dto)
             , onDismiss = { menuState.value = false }) {
             menuState.value = false
             when(it){
@@ -222,6 +221,12 @@ private fun Buttons(newOne:()->Unit){
                 }
                 PaidListOptions.DELETE->{
                     dialogState.value = true
+                }
+                PaidListOptions.COPY->{
+                    viewModel.copy(dto.id)
+                }
+                PaidListOptions.END->{
+                    viewModel.endRecurrent(dto.id)
                 }
             }
         }

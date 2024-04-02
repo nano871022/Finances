@@ -20,4 +20,8 @@ interface IPaidPort {
     fun update(paid:PaidDTO):Boolean
 
     fun delete(id:Int):Boolean
+
+    fun endRecurrent(id:Int):Boolean
+
+    fun copy(id:Int):Boolean
 }

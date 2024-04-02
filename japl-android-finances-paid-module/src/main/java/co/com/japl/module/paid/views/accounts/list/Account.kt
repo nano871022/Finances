@@ -1,4 +1,4 @@
-package co.japl.android.myapplication.finanzas.view.accounts.lists
+package co.com.japl.module.paid.views.accounts.list
 
 import android.content.res.Configuration
 import android.os.Build
@@ -8,47 +8,43 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.FloatingActionButtonDefaults
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material3.Card
 import androidx.compose.material.FloatingActionButton
+import androidx.compose.material.icons.rounded.MoreVert
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import co.com.japl.finances.iports.dtos.AccountDTO
+import co.com.japl.module.paid.R
+import co.com.japl.module.paid.controllers.Inputs.list.InputListModelView
+import co.com.japl.module.paid.controllers.accounts.list.AccountViewModel
+import co.com.japl.module.paid.enums.MoreOptionsItemsAccount
+import co.com.japl.module.paid.views.Inputs.list.InputList
 import co.com.japl.ui.components.AlertDialogOkCancel
 import co.com.japl.ui.components.Carousel
 import co.com.japl.ui.components.FieldView
 import co.com.japl.ui.components.MoreOptionsDialog
 import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.com.japl.ui.theme.values.Dimensions
-import co.japl.android.myapplication.R
-import co.japl.android.myapplication.finanzas.enums.MoreOptionsItemsAccount
-import co.japl.android.myapplication.finanzas.view.accounts.inputs.lists.InputList
-import co.japl.android.myapplication.finanzas.view.accounts.inputs.lists.InputListModelView
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.time.LocalDate
-import java.time.LocalDateTime
 
 @Composable
 fun AccountList(viewModel: AccountViewModel) {
@@ -89,7 +85,7 @@ fun AccountList(viewModel: AccountViewModel) {
 }
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-private fun Body(viewModel: AccountViewModel,modifier:Modifier) {
+private fun Body(viewModel: AccountViewModel, modifier:Modifier) {
     val listState = remember { viewModel.list}
     val state = remember { mutableStateOf(false) }
     val stateDelete = remember { mutableStateOf(false) }
@@ -110,7 +106,7 @@ private fun Body(viewModel: AccountViewModel,modifier:Modifier) {
              )
              IconButton(onClick = { state.value = true }) {
                  Icon(
-                     painter = painterResource(id = R.drawable.more_vertical),
+                     imageVector = Icons.Rounded.MoreVert,
                      contentDescription = "Add input to account"
                  )
              }
@@ -128,7 +124,7 @@ private fun Body(viewModel: AccountViewModel,modifier:Modifier) {
          }
          if (stateDelete.value) {
              AlertDialogOkCancel(
-                 title = R.string.do_you_want_to_delete_this_record,
+                 title = R.string.toast_do_you_want_to_delete_this_record,
                  confirmNameButton = R.string.delete,
                  onDismiss = { stateDelete.value = false }) {
                  viewModel.delete(item.id)
@@ -161,7 +157,7 @@ fun AccountListPreview() {
     }
 }
 
-fun getViewModel():AccountViewModel{
+fun getViewModel(): AccountViewModel {
     val viewModel = AccountViewModel(accountSvc = null, inputSvc = null,navController = null)
     viewModel.loading.value = false
     viewModel.list.add(AccountDTO(1, LocalDate.now(),"",true))

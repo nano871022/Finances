@@ -76,22 +76,23 @@ private fun Body(viewModel: SmsCreditCardViewModel){
 private fun Content(viewModel: SmsCreditCardViewModel,modifier: Modifier){
     val list = remember { viewModel.list}
 
-
-    Carousel(size = list.size) {
-        Column(
-            modifier = modifier.padding(bottom=Dimensions.PADDING_BOTTOM_SPACE_FLOATING_BUTTON)
-        ){
-            list[it]?.values?.forEach{
-                for(i in it) {
-                    Card(sms = i, modifier = Modifier, edit = {
-                        viewModel.edit(it)
-                    }, delete = {
-                        viewModel.delete(it)
-                    }, enable = {
-                        viewModel.enabled(it)
-                    }, disable = {
-                        viewModel.disabled(it)
-                    })
+    if(list.isNotEmpty()) {
+        Carousel(size = list.size) {
+            Column(
+                modifier = modifier.padding(bottom = Dimensions.PADDING_BOTTOM_SPACE_FLOATING_BUTTON)
+            ) {
+                list[it]?.values?.forEach {
+                    for (i in it) {
+                        Card(sms = i, modifier = Modifier, edit = {
+                            viewModel.edit(it)
+                        }, delete = {
+                            viewModel.delete(it)
+                        }, enable = {
+                            viewModel.enabled(it)
+                        }, disable = {
+                            viewModel.disabled(it)
+                        })
+                    }
                 }
             }
         }

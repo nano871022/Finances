@@ -2,23 +2,25 @@ package co.japl.finances.core.usercases.implement.paid
 
 import co.com.japl.finances.iports.dtos.PaidDTO
 import co.com.japl.finances.iports.dtos.PaidRecapDTO
+import co.com.japl.finances.iports.outbounds.IPaidPort
 import co.com.japl.finances.iports.outbounds.IPaidRecapPort
 import co.japl.finances.core.usercases.interfaces.paid.IPaid
+import java.time.LocalDateTime
 import java.time.YearMonth
 import javax.inject.Inject
 
-class PaidImpl @Inject constructor(private val recapSvc: IPaidRecapPort)   : IPaid {
+class PaidImpl @Inject constructor(private val recapSvc: IPaidRecapPort,private val paidSvc:IPaidPort)   : IPaid {
     override fun get(codeAccount: Int, period: YearMonth): List<PaidDTO> {
 
-        return recapSvc.getActivePaid(codeAccount, period)
+        return paidSvc.getActivePaid(codeAccount, period)
     }
 
     override fun get(codePaid: Int): PaidDTO? {
-        return recapSvc.get(codePaid)
+        return paidSvc.get(codePaid)
     }
 
     override fun getRecap(codeAccount: Int, period: YearMonth): PaidRecapDTO? {
-        return recapSvc.getActivePaid(codeAccount, period).takeIf { it.isNotEmpty() }?.let{
+        return paidSvc.getActivePaid(codeAccount, period).takeIf { it.isNotEmpty() }?.let{
             PaidRecapDTO(
                 date = period,
                 count = it.size,
@@ -34,14 +36,26 @@ class PaidImpl @Inject constructor(private val recapSvc: IPaidRecapPort)   : IPa
     }
 
     override fun create(paid: PaidDTO): Int {
-        return recapSvc.create(paid)
+        return paidSvc.create(paid)
     }
 
     override fun update(paid: PaidDTO): Boolean {
-        return recapSvc.update(paid)
+        return paidSvc.update(paid)
     }
 
     override fun delete(id: Int): Boolean {
-        return recapSvc.delete(id)
+        return paidSvc.delete(id)
+    }
+
+    override fun endRecurrent(id: Int): Boolean {
+        return paidSvc.get(id)?.let {
+            return paidSvc.update(it.copy(end = LocalDateTime.now().plusMonths(1).withDayOfMonth(1).minusDays(1)))
+        }?:false
+    }
+
+    override fun copy(id: Int): Boolean {
+        return paidSvc.get(id)?.let {
+            return paidSvc.create(it.copy(id = 0, itemName = it.itemName + "*"))>0
+        }?:false
     }
 }

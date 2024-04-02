@@ -1,4 +1,4 @@
-package co.japl.android.myapplication.finanzas.view.accounts.inputs.form
+package co.com.japl.module.paid.controllers.Inputs.form
 
 import android.widget.Toast
 import androidx.compose.runtime.mutableFloatStateOf
@@ -7,9 +7,9 @@ import androidx.lifecycle.ViewModel
 import androidx.navigation.NavController
 import co.com.japl.finances.iports.dtos.InputDTO
 import co.com.japl.finances.iports.inbounds.inputs.IInputPort
+import co.com.japl.module.paid.R
+import co.com.japl.module.paid.enums.MoreOptionsKindPaymentInput
 import co.com.japl.ui.utils.DateUtils
-import co.japl.android.myapplication.R
-import co.japl.android.myapplication.finanzas.enums.MoreOptionsKindPaymentInput
 import co.japl.android.myapplication.utils.NumbersUtil
 import kotlinx.coroutines.runBlocking
 import java.time.LocalDate
@@ -38,17 +38,17 @@ class InputViewModel constructor(private val codeAccount:Int,private val codeInp
                 if(it.id == 0){
                     if(inputSvc.create(it)){
                         navController.navigateUp()
-                        Toast.makeText(navController.context, R.string.toast_successful_insert, Toast.LENGTH_SHORT).show()
+                        Toast.makeText(navController.context, R.string.toast_save_successful, Toast.LENGTH_SHORT).show()
                     }else{
-                        Toast.makeText(navController.context, R.string.toast_unsuccessful_insert, Toast.LENGTH_SHORT).show()
+                        Toast.makeText(navController.context, R.string.toast_save_error, Toast.LENGTH_SHORT).show()
                     }
 
                 }else {
                     if(inputSvc.update(it)){
                         navController.navigateUp()
-                        Toast.makeText(navController.context, R.string.toast_successful_update, Toast.LENGTH_SHORT).show()
+                        Toast.makeText(navController.context, R.string.toast_update_successful, Toast.LENGTH_SHORT).show()
                     }else{
-                        Toast.makeText(navController.context, R.string.toast_dont_successful_update, Toast.LENGTH_SHORT).show()
+                        Toast.makeText(navController.context, R.string.toast_update_error, Toast.LENGTH_SHORT).show()
                     }
                 }
             }

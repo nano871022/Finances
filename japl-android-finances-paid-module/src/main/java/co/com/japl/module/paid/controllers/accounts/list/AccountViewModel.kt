@@ -1,4 +1,4 @@
-package co.japl.android.myapplication.finanzas.view.accounts.lists
+package co.com.japl.module.paid.controllers.accounts.list
 
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateListOf
@@ -8,7 +8,7 @@ import androidx.navigation.NavController
 import co.com.japl.finances.iports.dtos.AccountDTO
 import co.com.japl.finances.iports.inbounds.inputs.IAccountPort
 import co.com.japl.finances.iports.inbounds.inputs.IInputPort
-import co.japl.android.myapplication.finanzas.putParams.AccountParams
+import co.com.japl.module.paid.navigations.Account
 import kotlinx.coroutines.runBlocking
 
 class AccountViewModel constructor(private val accountSvc:IAccountPort?, public val inputSvc:IInputPort?,public val navController: NavController?): ViewModel(){
@@ -20,13 +20,13 @@ class AccountViewModel constructor(private val accountSvc:IAccountPort?, public 
 
     fun add(){
         navController?.let {
-            AccountParams.newInstanceDeep(navController)
+            Account.navigate(navController)
         }
     }
 
     fun edit(codeAccount:Int){
         navController?.let {
-            AccountParams.newInstanceDeep(codeAccount,navController)
+            Account.navigate(codeAccount,navController)
         }
     }
 

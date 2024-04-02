@@ -8,14 +8,4 @@ interface IPaidRecapPort {
 
     fun getTotalPaid(): BigDecimal
 
-    fun getActivePaid(codeAccount: Int, period: YearMonth):List<PaidDTO>
-
-    fun get(codePaid:Int):PaidDTO?
-
-    fun create(paid:PaidDTO):Int
-
-    fun update(paid:PaidDTO):Boolean
-
-    fun delete(codePaid:Int):Boolean
-
 }

@@ -11,10 +11,13 @@ import co.japl.android.myapplication.R
 import co.japl.android.myapplication.finanzas.bussiness.DTO.PaidDTO
 import co.com.japl.ui.utils.DateUtils
 import java.time.LocalDate
+import java.time.YearMonth
+import java.time.format.DateTimeFormatter
 
 class PaidsParams {
     object Params{
         val PARAM_DATE_PERIOD = "date_period"
+        val PARAM_PERIOD = "period"
         val PARAM_CODE_ACCOUNT = "code_account"
         val PARAM_CODE_PAID = "code_paid"
         const val ARG_DEEPLINK = "android-support-nav:controller:deepLinkIntent"
@@ -39,6 +42,12 @@ class PaidsParams {
                 if(Uri.parse(intent.dataString).getQueryParameter(Params.PARAM_DATE_PERIOD) != null){
                     return Uri.parse(intent.dataString).getQueryParameter(Params.PARAM_DATE_PERIOD)?.let{
                         DateUtils.toLocalDate(it)
+                    }
+                }else
+                if(Uri.parse(intent.dataString).getQueryParameter(Params.PARAM_PERIOD) != null){
+                    return Uri.parse(intent.dataString).getQueryParameter(Params.PARAM_PERIOD)?.let{
+                        val period = YearMonth.parse(it, DateTimeFormatter.ofPattern("yyyy-MM"))
+                        return LocalDate.of(period.year,period.monthValue,1)
                     }
                 }
             }
@@ -71,6 +80,19 @@ class PaidsParams {
         fun download(parameters: Bundle):PaidDTO?{
             return null
         }
+
+        fun downloadPeriod(parameter:Bundle):YearMonth?{
+            if(parameter.containsKey(Params.ARG_DEEPLINK)){
+                val intent = parameter.get(Params.ARG_DEEPLINK) as Intent
+                if(Uri.parse(intent.dataString).getQueryParameter(Params.PARAM_PERIOD) != null){
+                    return Uri.parse(intent.dataString).getQueryParameter(Params.PARAM_PERIOD)?.let{
+                        YearMonth.parse(it, DateTimeFormatter.ofPattern("yyyy-MM"))
+                    }
+                }
+            }
+            return null
+        }
+
 
         fun toBack(navController: NavController){
             navController.popBackStack()

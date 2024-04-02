@@ -383,7 +383,7 @@
         <action
             android:id="@+id/action_menu_item_paids_to_accountFragment"
             app:destination="@id/accountFragment" />
-
+        <deepLink app:uri="android-app://co.com.japl.finanzas.module.app/paid/monthly"/>
     </fragment>
     <fragment
         android:id="@+id/paidListFragment"
