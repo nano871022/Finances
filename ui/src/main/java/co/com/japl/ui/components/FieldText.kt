@@ -52,10 +52,7 @@ fun FieldText( title:String
                         Icon(imageVector = Icons.Rounded.AttachMoney,
                             contentDescription = stringResource(id = R.string.money))
                      }
-                     KeyboardType.Number ->{
-                         Icon(imageVector = Icons.Rounded.AttachMoney,
-                             contentDescription = stringResource(id = R.string.money))
-                     }
+
                      else->{
 
                      }

@@ -12,19 +12,20 @@
         android:title="@string/check_payments_title"
         android:titleCondensed="@string/check_payments_title"
         app:showAsAction="ifRoom" />
-    <group>
-    <item
-        android:id="@+id/item_menu_setting_credit_card"
-        android:icon="@drawable/ic_credit_card_foreground"
-        android:title="@string/credit_cards"
-        android:titleCondensed="@string/credit_card"
-        app:showAsAction="ifRoom" />
 
-    <item
-        android:id="@+id/item_menu_setting_taxes"
-        android:icon="@android:drawable/sym_contact_card"
-        android:title="@string/taxes_credit_card"
-        app:showAsAction="ifRoom" />
+    <group>
+        <item
+            android:id="@+id/item_menu_setting_credit_card"
+            android:icon="@drawable/ic_credit_card_foreground"
+            android:title="@string/credit_cards"
+            android:titleCondensed="@string/credit_card"
+            app:showAsAction="ifRoom" />
+
+        <item
+            android:id="@+id/item_menu_setting_taxes"
+            android:icon="@android:drawable/sym_contact_card"
+            android:title="@string/taxes_credit_card"
+            app:showAsAction="ifRoom" />
 
         <item
             android:id="@+id/sms_list_credit_card"
@@ -33,11 +34,19 @@
              />
     </group>
 
-    <item
-        android:id="@+id/item_menu_setting_account"
-        android:icon="@drawable/ic_credit_card_foreground"
-        android:title="@string/account"
-        app:showAsAction="ifRoom" />
+    <group >
+        <item
+            android:id="@+id/item_menu_setting_account"
+            android:icon="@drawable/ic_credit_card_foreground"
+            android:title="@string/account"
+            app:showAsAction="ifRoom" />
+
+        <item
+            android:id="@+id/sms_list_paid"
+            android:icon="@android:drawable/stat_notify_chat"
+            android:title="@string/sms_paid"
+            />
+    </group>
 
     <item
         android:id="@+id/item_menu_setting_check_paids"

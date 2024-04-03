@@ -36,7 +36,14 @@ class PaidImpl @Inject constructor(override var dbConnect: SQLiteOpenHelper) : I
     @RequiresApi(Build.VERSION_CODES.O)
     override fun get(values: PaidDTO): List<PaidDTO> {
         val db = dbConnect.readableDatabase
-        val cursor = db.query(PaidDB.Entry.TABLE_NAME,COLUMNS,null,null,null,null,null,null)
+        val cursor = db.query(PaidDB.Entry.TABLE_NAME,
+            COLUMNS,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null)
         val items = mutableListOf<PaidDTO>()
         val maxDate = values.date.plusMonths(1).minusDays(1)
         Log.d(javaClass.name,"Range ${values.date} $maxDate")
@@ -50,6 +57,43 @@ class PaidImpl @Inject constructor(override var dbConnect: SQLiteOpenHelper) : I
         }
         return items
     }
+
+    override fun findByNameValueDate(values: PaidDTO): List<PaidDTO> {
+        val db = dbConnect.readableDatabase
+        var selection:String? = null
+        var selectionArgs: MutableList<String>? = null
+        if(values.name.isNotEmpty()){
+            selection = "${selection?:""} ${PaidDB.Entry.COLUMN_NAME} like ?"
+            selectionArgs?.let{it.add("%${values.name.trim()}%")}?:selectionArgs.let{selectionArgs = mutableListOf("%${values.name.trim()}%") }
+        }
+        if(values.value > BigDecimal.ZERO){
+            selection = "${selection?:""} AND ${PaidDB.Entry.COLUMN_VALUE} = ?"
+            selectionArgs?.let{it.add("${values.value}")}?:selectionArgs.let{selectionArgs = mutableListOf("${values.value}") }
+        }/*
+        if (values.date != null) {
+            selection = "${selection?:""} AND ${PaidDB.Entry.COLUMN_DATE_PAID} = ?"
+            selectionArgs?.let{it.add("${values.date}")}?:selectionArgs.let{selectionArgs = mutableListOf("${values.date}") }
+        }
+        */
+        val cursor = db.query(PaidDB.Entry.TABLE_NAME,
+            COLUMNS,
+            selection,
+            selectionArgs?.toTypedArray(),
+            null,
+            null,
+            null,
+            null)
+        val items = mutableListOf<PaidDTO>()
+        val mapper = PaidMap()
+        with(cursor){
+            while(moveToNext()){
+                mapper.mapping(cursor)?.takeIf { it.date == values.date }
+                    ?.let{items.add(it)}
+            }
+        }
+        return items
+    }
+
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun getRecurrent(date:LocalDate):List<PaidDTO>{
@@ -146,11 +190,13 @@ class PaidImpl @Inject constructor(override var dbConnect: SQLiteOpenHelper) : I
     override fun save(dto: PaidDTO): Long {
         val db = dbConnect.writableDatabase
         val content: ContentValues? = PaidMap().mapping(dto)
-        Log.d(javaClass.name,"${dto.id} ${dto.date} ${dto.recurrent} ${dto.end}")
+
         return if(dto.id > 0){
             db?.update(PaidDB.Entry.TABLE_NAME,content,"${BaseColumns._ID}=?", arrayOf(dto.id.toString()))?.toLong() ?: 0
         }else {
             db?.insert(PaidDB.Entry.TABLE_NAME, null, content) ?: 0
+        }.also {
+            Log.d(javaClass.name,"=== Save ${dto.id} ${dto.date} ${dto.recurrent} ${dto.end} Response $it")
         }
     }
 

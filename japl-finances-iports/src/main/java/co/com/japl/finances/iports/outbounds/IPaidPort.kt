@@ -14,4 +14,6 @@ interface IPaidPort {
     fun update(paid: PaidDTO):Boolean
 
     fun delete(codePaid:Int):Boolean
+
+    fun findByNameValueDate(values: PaidDTO): List<PaidDTO>
 }

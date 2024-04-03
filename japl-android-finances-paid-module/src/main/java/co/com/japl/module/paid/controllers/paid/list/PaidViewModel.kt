@@ -11,13 +11,14 @@ import co.com.japl.finances.iports.inbounds.paid.IPaidPort
 import co.com.japl.module.paid.R
 import co.com.japl.module.paid.enums.PaidListOptions
 import co.com.japl.module.paid.navigations.Paid
+import co.com.japl.ui.Prefs
 import kotlinx.coroutines.runBlocking
 import java.time.LocalDateTime
 import java.time.YearMonth
 import java.time.format.DateTimeFormatter
 import java.util.Locale
 
-class PaidViewModel constructor(private val accountCode:Int, private val period:YearMonth,private val paidSvc:IPaidPort?=null,private val navController: NavController? = null): ViewModel(){
+class PaidViewModel constructor(private val accountCode:Int, private val period:YearMonth,private val paidSvc:IPaidPort?=null,public val prefs:Prefs?,private val navController: NavController? = null): ViewModel(){
 
     val progressStatus = mutableFloatStateOf(0.0f)
     val loaderState = mutableStateOf(true)

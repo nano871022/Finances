@@ -151,6 +151,10 @@
     <string name="fragment_list_sms_credit_card">Lista SMS Tarjeta Crédito</string>
     <string name="fragment_sms_credit_card">SMS Tarjeta Crédito</string>
 
+    <string name="fragment_list_sms_paid">Lista SMS Pagos</string>
+    <string name="fragment_sms_paid">SMS Pagos</string>
+    <string name="sms_paid">SMS Pagos</string>
+
     <string-array name="Months">
         <item>--- Seleccionar --- </item>
         <item>Enero</item>

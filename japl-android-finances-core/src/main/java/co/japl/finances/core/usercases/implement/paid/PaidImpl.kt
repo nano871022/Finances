@@ -5,11 +5,12 @@ import co.com.japl.finances.iports.dtos.PaidRecapDTO
 import co.com.japl.finances.iports.outbounds.IPaidPort
 import co.com.japl.finances.iports.outbounds.IPaidRecapPort
 import co.japl.finances.core.usercases.interfaces.paid.IPaid
+import co.japl.finances.core.usercases.interfaces.paid.ISms
 import java.time.LocalDateTime
 import java.time.YearMonth
 import javax.inject.Inject
 
-class PaidImpl @Inject constructor(private val recapSvc: IPaidRecapPort,private val paidSvc:IPaidPort)   : IPaid {
+class PaidImpl @Inject constructor(private val recapSvc: IPaidRecapPort,private val paidSvc:IPaidPort)   : IPaid , ISms{
     override fun get(codeAccount: Int, period: YearMonth): List<PaidDTO> {
 
         return paidSvc.getActivePaid(codeAccount, period)
@@ -57,5 +58,11 @@ class PaidImpl @Inject constructor(private val recapSvc: IPaidRecapPort,private 
         return paidSvc.get(id)?.let {
             return paidSvc.create(it.copy(id = 0, itemName = it.itemName + "*"))>0
         }?:false
+    }
+
+    override fun createBySms(dto: PaidDTO): Boolean {
+        return paidSvc.findByNameValueDate(dto).takeIf { it.isNotEmpty() }?.let {
+            return false
+        } ?: paidSvc.create(dto.copy(itemName = "(SMS) ${dto.itemName}")) > 0
     }
 }

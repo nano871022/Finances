@@ -464,4 +464,21 @@
         <deepLink app:uri="android-app://co.com.japl.finanzas.modulo.app/sms_credit_card"/>
     </fragment>
 
+    <fragment
+        android:id="@+id/sms_list_paid"
+        android:name="co.japl.android.myapplication.finanzas.controller.paids.SmsListFragment"
+        android:label="@string/fragment_list_sms_paid"
+        tools:layout="@layout/fragment_list_sms_credit_card" >
+        <action
+            android:id="@+id/action_sms_list_paid_to_sms_paid"
+            app:destination="@id/sms_paid" />
+    </fragment>
+    <fragment
+        android:id="@+id/sms_paid"
+        android:name="co.japl.android.myapplication.finanzas.controller.paids.SmsFragment"
+        android:label="@string/fragment_sms_paid"
+        tools:layout="@layout/fragment_sms_paid" >
+        <deepLink app:uri="android-app://co.com.japl.finanzas.module.app/paid/sms"/>
+    </fragment>
+
 </navigation>

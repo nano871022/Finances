@@ -213,7 +213,7 @@ fun MonthlyPreviewDark() {
 
 @Composable
 private fun getViewModel():MonthlyViewModel{
-    val viewModel = MonthlyViewModel( period = YearMonth.now(),paidSvc = null,incomesSvc = null,accountSvc = null,navController = null)
+    val viewModel = MonthlyViewModel( period = YearMonth.now(),paidSvc = null,incomesSvc = null,accountSvc = null,smsSvc = null,paidSmsSvc = null,prefs = null,navController = null)
     viewModel.loaderState.value = false
     viewModel.accountState.value = AccountDTO(id = 0, name = "Cuenta", active = true, create = LocalDate.now())
     viewModel.periodState.value = "Enero 2022"

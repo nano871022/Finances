@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
 import androidx.compose.material.LinearProgressIndicator
@@ -19,29 +20,36 @@ import androidx.compose.material.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add
+import androidx.compose.material.icons.rounded.BrightnessHigh
 import androidx.compose.material.icons.rounded.MoreVert
 import androidx.compose.material3.Divider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import co.com.japl.finances.iports.dtos.PaidDTO
 import co.com.japl.module.paid.R
 import co.com.japl.module.paid.controllers.paid.list.PaidViewModel
 import co.com.japl.module.paid.enums.PaidListOptions
+import co.com.japl.ui.Prefs
 import co.com.japl.ui.components.AlertDialogOkCancel
+import co.com.japl.ui.components.CheckBoxField
+import co.com.japl.ui.components.FieldText
 import co.com.japl.ui.components.FieldView
 import co.com.japl.ui.components.FieldViewCards
 import co.com.japl.ui.components.FloatButton
 import co.com.japl.ui.components.IconButton
 import co.com.japl.ui.components.MoreOptionsDialog
+import co.com.japl.ui.components.Popup
 import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.com.japl.ui.theme.values.Dimensions
 import co.com.japl.ui.theme.values.ModifiersCustom.Weight1f
@@ -97,19 +105,64 @@ private fun Buttons(newOne:()->Unit){
 }
 
 @Composable private fun Header(viewModel: PaidViewModel){
+    val settingState = remember {
+        mutableStateOf(false)
+    }
     Row{
 
         FieldView(name = stringResource(id = R.string.period),value=viewModel.periodOfList.value, modifier=Weight1f(), isMoney = false)
 
         FieldView(name = stringResource(id = R.string.value),value=NumbersUtil.toString(viewModel.allValues.value), modifier=Weight1f())
 
+        IconButton(imageVector = Icons.Rounded.BrightnessHigh,
+            descriptionContent = R.string.setting,
+            onClick = {
+                settingState.value = !settingState.value
+            },modifier=Weight1f())
+    }
+    if(settingState.value){
+        Settings(settingState = settingState,prefs= viewModel.prefs)
+    }
+}
+
+@Composable private fun Settings( settingState: MutableState<Boolean>,prefs: Prefs?){
+    val daysSmsReadState = remember {
+        mutableStateOf(prefs?.paidSMSDaysRead?.toString()?:"0")
+    }
+    Popup(title = R.string.setting, state = settingState) {
+        Scaffold (floatingActionButton = {
+            FloatButton(imageVector = Icons.Rounded.Add, descriptionIcon = R.string.save) {
+                daysSmsReadState.value?.takeIf { it.isNotBlank() }?.let{
+                    prefs?.paidSMSDaysRead = it.toInt()
+                }
+                settingState.value = false
+            }
+        }) {
+            Column (modifier = Modifier
+                .padding(it)
+                .padding(Dimensions.PADDING_SHORT)) {
+                FieldText(title = stringResource(id = R.string.msm_read_num)
+                , value = daysSmsReadState.value
+                    , keyboardType = KeyboardOptions(keyboardType = KeyboardType.Number)
+                    , callback = {
+                        it.takeIf { it.isNotBlank() }?.let {
+                            daysSmsReadState.value = it
+                        }
+                    }
+                    ,modifier = Modifier.fillMaxWidth()
+                )
+            }
+        }
     }
 }
 
 @Composable private fun List(viewModel: PaidViewModel,modifier: Modifier){
-    Column{
-            viewModel.list.forEach{
-                Items(it.value,viewModel)
+    val list = remember {
+        viewModel.list
+    }
+    Column(modifier = modifier){
+            list.keys.sortedByDescending { it }.forEach{
+                Items(list[it],viewModel)
             }
 
     }
@@ -263,7 +316,7 @@ internal fun PaidPreviewDark() {
 
 @Composable
 private fun getViewModel():PaidViewModel{
-    val viewModel = PaidViewModel(paidSvc = null, accountCode = 0 , period = YearMonth.now(),navController = null)
+    val viewModel = PaidViewModel(paidSvc = null, accountCode = 0 , period = YearMonth.now(),prefs= null,navController = null)
     viewModel.loaderState.value = false
     viewModel.allValues.value = 1000.0
     viewModel.periodOfList.value = "June 2022"

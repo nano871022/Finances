@@ -16,6 +16,8 @@ import co.com.japl.finances.iports.inbounds.inputs.IAccountPort
 import co.com.japl.finances.iports.inbounds.inputs.IInputPort
 import co.com.japl.finances.iports.inbounds.paid.IPaidPort
 import co.com.japl.finances.iports.inbounds.paid.IPeriodPaidPort
+import co.com.japl.finances.iports.inbounds.paid.ISMSPaidPort
+import co.com.japl.finances.iports.inbounds.paid.ISmsPort
 import co.japl.android.myapplication.bussiness.impl.Config
 import co.japl.android.myapplication.bussiness.impl.CreditCardImpl
 import co.japl.android.myapplication.bussiness.impl.SaveCreditCardBoughtImpl
@@ -68,11 +70,13 @@ import co.com.japl.finances.iports.inbounds.recap.IRecapPort
 import co.com.japl.ui.impls.SMSObservable
 import co.com.japl.ui.interfaces.ISMSObservablePublicher
 import co.com.japl.ui.interfaces.ISMSObservableSubscriber
+import co.japl.android.finances.services.core.SMSPaidImpl
 import co.japl.android.myapplication.finanzas.controller.SMS
 import co.japl.finances.core.adapters.inbound.implement.creditCard.SMSCreditCardImpl
 import co.japl.finances.core.adapters.inbound.implement.creditcard.bought.BoughtImpl
 import co.japl.finances.core.adapters.inbound.implement.creditcard.bought.lists.ListImpl
 import co.japl.finances.core.adapters.inbound.implement.paid.PeriodImpl
+import co.japl.finances.core.adapters.inbound.implement.paid.SMSImpl
 import co.japl.finances.core.adapters.inbound.implement.recap.RecapImp
 import co.japl.finances.core.usercases.implement.common.DifferQuoteImpl
 import co.japl.finances.core.usercases.implement.common.PaidImp
@@ -98,6 +102,8 @@ import co.japl.finances.core.usercases.interfaces.creditcard.bought.lists.IBough
 import co.japl.finances.core.usercases.interfaces.creditcard.bought.lists.IBoughtList
 import co.japl.finances.core.usercases.interfaces.creditcard.bought.lists.IBoughtSms
 import co.japl.finances.core.usercases.interfaces.creditcard.paid.lists.IPaidList
+import co.japl.finances.core.usercases.interfaces.paid.ISMS
+import co.japl.finances.core.usercases.interfaces.paid.ISms
 import co.japl.finances.core.usercases.interfaces.recap.IRecap
 import dagger.Binds
 import dagger.Module
@@ -395,4 +401,22 @@ abstract class AbstractModule {
 
     @Binds
     abstract fun bindUserCasePeriodPaid(svc:co.japl.finances.core.usercases.implement.paid.PeriodPaid):co.japl.finances.core.usercases.interfaces.paid.IPeriodPaid
+
+    @Binds
+    abstract fun getInboundSmsPaidPort(svc:SMSImpl):ISMSPaidPort
+    @Binds
+    abstract fun SmsPaidQuery(svc:co.japl.finances.core.usercases.implement.paid.SMSImpl):ISMS
+
+    @Binds
+    abstract fun getOutboundSmsPaidPort(svc:co.japl.android.finances.services.core.SMSPaidImpl):co.com.japl.finances.iports.outbounds.ISMSPaidPort
+
+    @Binds
+    abstract fun getDAOSmsPaid(svc:co.japl.android.finances.services.dao.implement.SmsPaidImpl):co.japl.android.finances.services.dao.interfaces.ISmsPaidDAO
+
+    @Binds
+    abstract fun bindInboundSmsPaidPort(svc:SMSImpl):ISmsPort
+
+    @Binds
+    abstract fun bindUserCaseSmsPaid(svc:co.japl.finances.core.usercases.implement.paid.PaidImpl):ISms
+
 }

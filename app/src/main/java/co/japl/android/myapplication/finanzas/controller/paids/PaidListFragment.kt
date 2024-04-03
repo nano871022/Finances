@@ -14,6 +14,7 @@ import co.com.japl.module.paid.controllers.paid.list.PaidViewModel
 import co.com.japl.module.paid.views.paid.list.Paid
 import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.japl.android.myapplication.databinding.FragmentPaidListBinding
+import co.japl.android.myapplication.finanzas.ApplicationInitial
 import co.japl.android.myapplication.finanzas.putParams.PaidsParams
 import dagger.hilt.android.AndroidEntryPoint
 import java.time.YearMonth
@@ -39,6 +40,7 @@ class PaidListFragment : Fragment()  {
             accountCode = codeAccount?:0,
             period= if(date != null) YearMonth.of(date.year,date.monthValue) else YearMonth.now(),
             paidSvc = paidSvc,
+            prefs = ApplicationInitial.prefs,
             navController = findNavController()
         )
         root.cvPaidFpl.apply {

@@ -22,6 +22,7 @@ class PaidImpl @Inject constructor(private val paidImpl: IPaidDAO) : IPaidRecapP
         val list =  mutableListOf<PaidDTO>()
         list.addAll(items)
         list.addAll(recurrents)
+        list.sortedByDescending { it.datePaid }
         return list
     }
 
@@ -30,7 +31,8 @@ class PaidImpl @Inject constructor(private val paidImpl: IPaidDAO) : IPaidRecapP
     }
 
     override fun create(paid: PaidDTO): Int {
-        return paidImpl.save(PaidMapper.mapper(paid)).toInt()
+        val paid = PaidMapper.mapper(paid)
+        return paidImpl.save(paid).toInt()
     }
 
     override fun update(paid: PaidDTO): Boolean {
@@ -39,6 +41,10 @@ class PaidImpl @Inject constructor(private val paidImpl: IPaidDAO) : IPaidRecapP
 
     override fun delete(codePaid: Int): Boolean {
         return paidImpl.delete(codePaid)
+    }
+
+    override fun findByNameValueDate(values: PaidDTO): List<PaidDTO> {
+        return paidImpl.findByNameValueDate(PaidMapper.mapper(values)).takeIf { it.isNotEmpty() }?.map { PaidMapper.mapper(it)}?: emptyList()
     }
 
     override fun get(): List<PeriodPaidDTO> {

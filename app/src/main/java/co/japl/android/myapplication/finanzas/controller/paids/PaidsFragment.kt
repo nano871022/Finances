@@ -17,11 +17,14 @@ import androidx.navigation.fragment.findNavController
 import co.com.japl.finances.iports.inbounds.inputs.IAccountPort
 import co.com.japl.finances.iports.inbounds.inputs.IInputPort
 import co.com.japl.finances.iports.inbounds.paid.IPaidPort
+import co.com.japl.finances.iports.inbounds.paid.ISMSPaidPort
+import co.com.japl.finances.iports.inbounds.paid.ISmsPort
 import co.com.japl.module.paid.controllers.monthly.list.MonthlyViewModel
 import co.com.japl.module.paid.views.monthly.list.Monthly
 import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.japl.android.myapplication.R
 import co.japl.android.myapplication.databinding.FragmentPaidsBinding
+import co.japl.android.myapplication.finanzas.ApplicationInitial
 import co.japl.android.myapplication.finanzas.holders.interfaces.IHolder
 import co.japl.android.myapplication.finanzas.bussiness.DTO.PaidsPOJO
 import co.japl.android.myapplication.finanzas.bussiness.impl.PaidImpl
@@ -44,6 +47,8 @@ class PaidsFragment : Fragment() {
     lateinit var accountSvc: IAccountPort
     @Inject
     lateinit var incomesSvc: IInputPort
+    @Inject lateinit var paidSmsSvc:ISmsPort
+    @Inject lateinit var smsSvc:ISMSPaidPort
 
 
     @RequiresApi(Build.VERSION_CODES.S)
@@ -58,6 +63,9 @@ class PaidsFragment : Fragment() {
             accountSvc = accountSvc,
             incomesSvc = incomesSvc,
             period = period?:YearMonth.now(),
+            paidSmsSvc = paidSmsSvc,
+            prefs = ApplicationInitial.prefs,
+            smsSvc = smsSvc,
             navController = findNavController()
         )
         root.cvPaidsFp.apply {

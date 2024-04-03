@@ -34,6 +34,8 @@ class PaidMap {
             val endDate = LocalDate.of(9999,12,31)
             if(dto.id == 0 && dto.recurrent.toInt() == 1) {
                 put(PaidDB.Entry.COLUMN_END_DATE, DateUtils.localDateToString(endDate))
+            }else if(dto.id == 0 && dto.recurrent.toInt() == 0) {
+                put(PaidDB.Entry.COLUMN_END_DATE, DateUtils.localDateToString(dto.date.plusMonths(1).withDayOfMonth(1).minusDays(1)))
             }else {
                 put(PaidDB.Entry.COLUMN_END_DATE, DateUtils.localDateToString(dto.end))
             }

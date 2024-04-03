@@ -20,6 +20,8 @@
     <string name="recurrent">Recurrente</string>
     <string name="copy">Copiar</string>
     <string name="end">Finalizar</string>
+    <string name="setting">Configuración</string>
+    <string name="msm_read_num">Número dias lectura SMS</string>
 
     <string name="year">Año</string>
     <string name="month">Mes</string>
@@ -47,6 +49,15 @@
     <string name="monthly_input_total">Total Mensual</string>
     <string name="yearly_input_total">Total Anual</string>
 
+    <string name="save">Guardar</string>
+    <string name="validate">Validar</string>
+    <string name="pattern">Patrón</string>
+    <string name="phone_number">Número de Teléfono</string>
+    <string name="kind_rate">Tipo Tasa</string>
+    <string name="enabled">Habilitar</string>
+    <string name="disabled">Desabilitar</string>
+
+
     <array name="months_short">
         <item>Enero</item>
         <item>Febrero</item>
@@ -71,6 +82,8 @@
     <string name="navigate_paids">android-app://co.com.japl.finanzas.module.app/paid/list?code_account=%d&amp;period=%s</string>
     <string name="navigate_period">android-app://co.com.japl.finanzas.module.app/paid/period?code_account=%d</string>
     <string name="navigate_monthly">android-app://co.com.japl.finanzas.module.app/paid/monthly?period=%s</string>
+    <string name="navigate_sms_form">android-app://co.com.japl.finanzas.module.app/paid/sms</string>
+    <string name="navigate_sms_form_code">android-app://co.com.japl.finanzas.module.app/paid/sms?code_sms_paid=%d</string>
 
     <string name="dialog_delete">¿Desea eliminar el registro?</string>
 
@@ -85,5 +98,8 @@
     <string name="toast_successful_copy">Se realizó la copia correctamente</string>
     <string name="toast_unsuccessful_copy">No se realizó la copia</string>
     <string name="toast_do_you_want_to_delete_this_record">¿Desea eliminar este registro?</string>
-
+    <string name="toast_successful_enabled">Se habilito correctamente</string>
+    <string name="toast_dont_successful_enabled">No se logró habilitar</string>
+    <string name="toast_successful_disabled">Se desabilito correctamente</string>
+    <string name="toast_dont_successful_disabled">No se logró desabilitar</string>
 </resources>
