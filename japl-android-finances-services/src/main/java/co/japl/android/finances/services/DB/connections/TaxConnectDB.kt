@@ -2,12 +2,15 @@ package co.japl.android.finances.services.DB.connections
 
 import android.database.sqlite.SQLiteDatabase
 import android.util.Log
+import co.japl.android.finances.services.DB.connections.abstracs.DBRestore
+import co.japl.android.finances.services.dto.TaxDB
 import co.japl.android.finances.services.interfaces.IConnectDB
+import co.japl.android.finances.services.mapping.TaxMap
 import co.japl.android.finances.services.queries.TaxQuery
 import co.japl.android.finances.services.utils.DatabaseConstants
 import java.lang.Exception
 
-class TaxConnectDB:IConnectDB{
+class TaxConnectDB: DBRestore(), IConnectDB{
 
     override fun onCreate(db: SQLiteDatabase?) {
         Log.i(this.javaClass.name,"<<<=== TaxConnectDB#onCreate - Start")
@@ -45,6 +48,10 @@ class TaxConnectDB:IConnectDB{
         db?.execSQL(TaxQuery.SQL_DELETE_ENTRIES)
         onCreate(db)
         Log.i(this.javaClass.name,"<<<=== TaxConnectDB#onDowngrade - End")
+    }
+
+    override fun onRestore(currentDB: SQLiteDatabase?, fromRestoreDB: SQLiteDatabase?) {
+        onRestore(currentDB,fromRestoreDB,javaClass.simpleName,TaxDB.TaxEntry.TABLE_NAME,TaxMap()::restore)
     }
 
 }

@@ -4,13 +4,15 @@ import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import android.util.Log
+import co.japl.android.finances.services.DB.connections.ConnectDB
 import co.japl.android.finances.services.DB.connections.SmsCreditCardConnectDB
 import co.japl.android.finances.services.DB.connections.SmsPaidConnectDB
 import co.japl.android.myapplication.finanzas.bussiness.DB.connections.*
 import co.japl.android.myapplication.utils.DatabaseConstants
 
-class ConnectDB(context: Context):SQLiteOpenHelper(context,
+class ConnectDB constructor(private val context: Context):SQLiteOpenHelper(context,
         DatabaseConstants.DATA_BASE_NAME,null, 4_05_05_082) {
+
 
     override fun onCreate(p0: SQLiteDatabase?) {
         Log.i(this.javaClass.name,"<<<=== onCreate - Start $p0")
@@ -100,6 +102,10 @@ class ConnectDB(context: Context):SQLiteOpenHelper(context,
         SmsCreditCardConnectDB().onDowngrade(db,oldVersion,newVersion)
         SmsPaidConnectDB().onDowngrade(db,oldVersion,newVersion)
         Log.i(this.javaClass.name,"<<<=== onDowngrade - End")
+    }
+
+    fun onRestore(currentDb: SQLiteDatabase?, fromRestoreDb: SQLiteDatabase?) {
+        ConnectDB(context = context).onRestore(currentDb,fromRestoreDb)
     }
 
 }

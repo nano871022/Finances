@@ -3,6 +3,7 @@ package co.japl.android.finances.services.mapping
 import android.content.ContentValues
 import android.database.Cursor
 import android.os.Build
+import android.provider.BaseColumns
 import androidx.annotation.RequiresApi
 import co.japl.android.finances.services.dto.CreditDB
 import co.japl.android.finances.services.dto.CreditDTO
@@ -36,6 +37,21 @@ class CreditMap {
             put(CreditDB.Entry.COLUMN_TAX,dto.tax)
             put(CreditDB.Entry.COLUMN_KIND_OF,dto.kindOf)
             put(CreditDB.Entry.COLUMN_KIND_OF_TAX,dto.kindOfTax)
+        }
+    }
+
+    fun restore(crsor:Cursor):ContentValues {
+        return ContentValues().apply {
+            put(BaseColumns._ID, crsor.getLong(0))
+            put(CreditDB.Entry.COLUMN_NAME, crsor.getString(1))
+            put(CreditDB.Entry.COLUMN_VALUE, crsor.getString(2).toDouble())
+            put(CreditDB.Entry.COLUMN_KIND_OF, crsor.getString(3))
+            put(CreditDB.Entry.COLUMN_DATE, crsor.getString(4))
+            put(CreditDB.Entry.COLUMN_QUOTE, crsor.getString(5).toDouble())
+            put(CreditDB.Entry.COLUMN_PERIODS, crsor.getInt(6))
+            put(CreditDB.Entry.COLUMN_TAX, crsor.getDouble(7))
+            put(CreditDB.Entry.COLUMN_KIND_OF, crsor.getString(8))
+            put(CreditDB.Entry.COLUMN_KIND_OF_TAX, crsor.getString(9))
         }
     }
 }

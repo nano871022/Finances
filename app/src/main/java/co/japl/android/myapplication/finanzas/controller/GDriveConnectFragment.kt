@@ -3,6 +3,7 @@ package co.japl.android.myapplication.finanzas.controller
 import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.database.sqlite.SQLiteOpenHelper
 import android.os.Bundle
 import android.provider.Telephony
 import android.util.Log
@@ -22,8 +23,11 @@ import co.japl.android.myapplication.finanzas.bussiness.impl.GoogleLoginOldServi
 import co.japl.android.myapplication.finanzas.bussiness.impl.GoogleLoginService
 import co.japl.android.myapplication.finanzas.bussiness.interfaces.IGoogleLoginService
 import com.google.android.gms.common.SignInButton
+import dagger.hilt.android.AndroidEntryPoint
 import java.util.Arrays
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class GDriveConnectFragment : Fragment() {
 
     private lateinit var loginBtn:Button
@@ -35,6 +39,8 @@ class GDriveConnectFragment : Fragment() {
 
     private lateinit var signButton: SignInButton
     private lateinit var service :IGoogleLoginService
+
+    @Inject lateinit var dbConnect: SQLiteOpenHelper
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,7 +55,7 @@ class GDriveConnectFragment : Fragment() {
         val root = inflater.inflate(R.layout.fragment_g_drive_connect, container, false)
         //service = GoogleLoginOldService(requireActivity(),9007)
         //service = GoogleLoginService(requireActivity(),1000)
-        service = GoogleDriveService(requireActivity(), GoogleDriveConfig(this.tag, arrayListOf("application/vnd.google-apps.drive.file")),100)
+        service = GoogleDriveService(dbConnect,requireActivity(), GoogleDriveConfig(this.tag, arrayListOf("application/vnd.google-apps.drive.file")),100)
         signButton = root.findViewById(R.id.signLogin)
         loginBtn = root.findViewById(R.id.login)
         logoutBtn = root.findViewById(R.id.logout)

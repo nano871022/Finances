@@ -3,6 +3,7 @@ package co.japl.android.finances.services.mapping
 import android.content.ContentValues
 import android.database.Cursor
 import android.os.Build
+import android.provider.BaseColumns
 import android.util.Log
 import androidx.annotation.RequiresApi
 import co.japl.android.finances.services.dto.CreditCardSettingDB
@@ -48,4 +49,15 @@ class CreditCardSettingMap {
         return Optional.empty()
     }
 
+    fun restore(crsor:Cursor):ContentValues {
+        return ContentValues().apply {
+            put(BaseColumns._ID, crsor.getLong(0))
+            put(CreditCardSettingDB.CreditCardEntry.COLUMN_NAME, crsor.getString(1))
+            put(CreditCardSettingDB.CreditCardEntry.COLUMN_VALUE, crsor.getString(2))
+            put(CreditCardSettingDB.CreditCardEntry.COLUMN_TYPE, crsor.getString(3))
+            put(CreditCardSettingDB.CreditCardEntry.COLUMN_ACTIVE, crsor.getShort(4))
+            put(CreditCardSettingDB.CreditCardEntry.COLUMN_COD_CREDIT_CARD, crsor.getInt(5))
+            put(CreditCardSettingDB.CreditCardEntry.COLUMN_CREATE_DATE, crsor.getString(6))
+        }
+    }
 }

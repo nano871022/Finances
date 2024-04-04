@@ -3,6 +3,7 @@ package co.japl.android.finances.services.mapping
 import android.content.ContentValues
 import android.database.Cursor
 import android.os.Build
+import android.provider.BaseColumns
 import androidx.annotation.RequiresApi
 import co.japl.android.finances.services.dto.PaidDB
 import co.japl.android.finances.services.dto.PaidDTO
@@ -39,6 +40,18 @@ class PaidMap {
             }else {
                 put(PaidDB.Entry.COLUMN_END_DATE, DateUtils.localDateToString(dto.end))
             }
+        }
+    }
+
+    fun restore(crsor:Cursor):ContentValues {
+        return ContentValues().apply {
+            put(BaseColumns._ID, crsor.getLong(0))
+            put(PaidDB.Entry.COLUMN_NAME, crsor.getString(3))
+            put(PaidDB.Entry.COLUMN_VALUE, crsor.getString(4).toDouble())
+            put(PaidDB.Entry.COLUMN_ACCOUNT, crsor.getString(2))
+            put(PaidDB.Entry.COLUMN_DATE_PAID, crsor.getString(1))
+            put(PaidDB.Entry.COLUMN_RECURRENT, crsor.getInt(5))
+            put(PaidDB.Entry.COLUMN_END_DATE, crsor.getString(6))
         }
     }
 }

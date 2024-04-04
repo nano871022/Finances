@@ -2,11 +2,14 @@ package co.japl.android.finances.services.DB.connections
 
 import android.database.sqlite.SQLiteDatabase
 import android.util.Log
+import co.japl.android.finances.services.DB.connections.abstracs.DBRestore
+import co.japl.android.finances.services.dto.TagsQuoteCreditCardDB
 import co.japl.android.finances.services.interfaces.IConnectDB
+import co.japl.android.finances.services.mapping.TagQuoteCreditCardMap
 import co.japl.android.finances.services.queries.TagsQuoteCreditCardQuery
 import java.lang.Exception
 
-class TagQuoteCreditCardConnectDB:IConnectDB{
+class TagQuoteCreditCardConnectDB: DBRestore(), IConnectDB{
 
     override fun onCreate(db: SQLiteDatabase?) {
         Log.i(this.javaClass.name,"<<<=== TagQuoteCreditCardConnectDB#onCreate - Start")
@@ -44,6 +47,10 @@ class TagQuoteCreditCardConnectDB:IConnectDB{
         db?.execSQL(TagsQuoteCreditCardQuery.SQL_DELETE_ENTRIES)
         onCreate(db)
         Log.i(this.javaClass.name,"<<<=== TagQuoteCreditCardConnectDB#onDowngrade - End")
+    }
+
+    override fun onRestore(currentDB: SQLiteDatabase?, fromRestoreDB: SQLiteDatabase?) {
+        onRestore(currentDB,fromRestoreDB,javaClass.simpleName,TagsQuoteCreditCardDB.Entry.TABLE_NAME,TagQuoteCreditCardMap()::restore)
     }
 
 }

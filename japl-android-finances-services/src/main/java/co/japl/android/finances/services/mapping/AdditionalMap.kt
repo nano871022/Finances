@@ -3,6 +3,7 @@ package co.japl.android.finances.services.mapping
 import android.content.ContentValues
 import android.database.Cursor
 import android.os.Build
+import android.provider.BaseColumns
 import androidx.annotation.RequiresApi
 import co.japl.android.finances.services.dto.AdditionalCreditDB
 import co.japl.android.finances.services.dto.AdditionalCreditDTO
@@ -29,6 +30,17 @@ class AdditionalMap {
             put(AdditionalCreditDB.Entry.COLUMN_CREDIT_CODE,dto.creditCode)
             put(AdditionalCreditDB.Entry.COLUMN_START_DATE,DateUtils.localDateToString(dto.startDate))
             put(AdditionalCreditDB.Entry.COLUMN_END_DATE,DateUtils.localDateToString(dto.endDate))
+        }
+    }
+
+    fun restore(crsor:Cursor):ContentValues {
+        return ContentValues().apply {
+            put(BaseColumns._ID, crsor.getLong(0))
+            put(AdditionalCreditDB.Entry.COLUMN_NAME, crsor.getString(1))
+            put(AdditionalCreditDB.Entry.COLUMN_VALUE, crsor.getString(2).toDouble())
+            put(AdditionalCreditDB.Entry.COLUMN_CREDIT_CODE, crsor.getLong(3))
+            put(AdditionalCreditDB.Entry.COLUMN_START_DATE, crsor.getString(4))
+            put(AdditionalCreditDB.Entry.COLUMN_END_DATE, crsor.getString(5))
         }
     }
 }

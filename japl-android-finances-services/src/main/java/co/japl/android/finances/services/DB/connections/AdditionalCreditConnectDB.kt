@@ -2,10 +2,14 @@ package co.japl.android.finances.services.DB.connections
 
 import android.database.sqlite.SQLiteDatabase
 import android.util.Log
+import co.japl.android.finances.services.DB.connections.abstracs.DBRestore
+import co.japl.android.finances.services.core.mapper.AdditionalCreditMapper
+import co.japl.android.finances.services.dto.AdditionalCreditDB
 import co.japl.android.finances.services.interfaces.IConnectDB
+import co.japl.android.finances.services.mapping.AdditionalMap
 import co.japl.android.finances.services.queries.AdditionalCreditQuery
 
-class AdditionalCreditConnectDB: IConnectDB {
+class AdditionalCreditConnectDB: DBRestore(), IConnectDB {
     override fun onCreate(db: SQLiteDatabase?) {
         Log.i(this.javaClass.name,"<<<=== AdditionalCreditConnectDB#onCreate - Start")
         db?.execSQL(AdditionalCreditQuery.SQL_CREATE_ENTRIES)
@@ -27,4 +31,9 @@ class AdditionalCreditConnectDB: IConnectDB {
         onCreate(db)
         Log.i(this.javaClass.name,"<<<=== AdditionalCreditConnectDB#downgrade - END")
     }
+
+    override fun onRestore(currentDB: SQLiteDatabase?, fromRestoreDB: SQLiteDatabase?) {
+        onRestore(currentDB,fromRestoreDB,javaClass.simpleName,AdditionalCreditDB.Entry.TABLE_NAME,AdditionalMap()::restore)
+    }
+
 }

@@ -2,11 +2,14 @@ package co.japl.android.finances.services.DB.connections
 
 import android.database.sqlite.SQLiteDatabase
 import android.util.Log
+import co.japl.android.finances.services.DB.connections.abstracs.DBRestore
+import co.japl.android.finances.services.entities.SmsPaidDB
 import co.japl.android.finances.services.interfaces.IConnectDB
+import co.japl.android.finances.services.mapping.SmsPaidMap
 import co.japl.android.finances.services.queries.SmsPaidQuery
 import java.lang.Exception
 
-class SmsPaidConnectDB:IConnectDB{
+class SmsPaidConnectDB: DBRestore(), IConnectDB{
 
     override fun onCreate(db: SQLiteDatabase?) {
         Log.i(this.javaClass.name,"<<<=== SmsPaidConnectDB#onCreate - Start")
@@ -46,5 +49,9 @@ class SmsPaidConnectDB:IConnectDB{
         onCreate(db)
         Log.i(this.javaClass.name,"<<<=== SmsPaidConnectDB#onDowngrade - End")
     }
+
+    override fun onRestore(currentDB: SQLiteDatabase?, fromRestoreDB: SQLiteDatabase?) {
+        onRestore(currentDB,fromRestoreDB,javaClass.simpleName,SmsPaidDB.Entry.TABLE_NAME,SmsPaidMap()::restore)
+            }
 
 }

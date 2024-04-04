@@ -10,6 +10,7 @@ import co.japl.android.finances.services.dto.*
 import co.japl.android.finances.services.interfaces.IGraph
 import co.japl.android.finances.services.dao.interfaces.IPaidDAO
 import co.japl.android.finances.services.mapping.PaidMap
+import co.japl.android.finances.services.queries.PaidQuery
 import co.japl.android.finances.services.utils.DatabaseConstants
 import co.japl.android.finances.services.utils.DateUtils
 import java.math.BigDecimal
@@ -161,6 +162,7 @@ class PaidImpl @Inject constructor(override var dbConnect: SQLiteOpenHelper) : I
     override fun getTotalPaid(date:LocalDate): BigDecimal {
         val db = dbConnect.readableDatabase
         val listValues = mutableListOf<Double>()
+
         val cursor = db.rawQuery("""
                 SELECT 
                       ${PaidDB.Entry.COLUMN_VALUE} AS value

@@ -3,6 +3,7 @@ package co.japl.android.finances.services.mapping
 import android.content.ContentValues
 import android.database.Cursor
 import android.os.Build
+import android.provider.BaseColumns
 import androidx.annotation.RequiresApi
 import co.japl.android.finances.services.dto.*
 import co.japl.android.finances.services.utils.DateUtils
@@ -32,6 +33,16 @@ class BuyCreditCardSettingMap {
             createDate,
             active
         )
+    }
+
+    fun restore(crsor:Cursor):ContentValues {
+        return ContentValues().apply {
+            put(BaseColumns._ID, crsor.getLong(0))
+            put(BuyCreditCardSettingDB.Entry.COLUMN_COD_BUY_CREDIT_CARD, crsor.getInt(1))
+            put(BuyCreditCardSettingDB.Entry.COLUMN_COD_CREDIT_CARD_SETTING, crsor.getInt(2))
+            put(BuyCreditCardSettingDB.Entry.COLUMN_ACTIVE, crsor.getInt(3))
+            put(BuyCreditCardSettingDB.Entry.COLUMN_CREATE_DATE, crsor.getString(4))
+        }
     }
 
 }
