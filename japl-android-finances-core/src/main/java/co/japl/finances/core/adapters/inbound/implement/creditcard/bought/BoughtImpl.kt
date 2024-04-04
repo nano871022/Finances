@@ -65,13 +65,15 @@ class BoughtImpl @Inject constructor(private val service:IBought, private  val s
         return service.getById(codeBought,cache)
     }
 
-    override fun createBySms(name: String, value: String, date: String,codeCreditCard:Int,kind:KindInterestRateEnum) {
-        if(name.isNotEmpty() && value.isNotEmpty() && date.isNotEmpty() && NumbersUtil.isNumber(value) && DateUtils.isDateValid(date)){
+    override fun createBySms(name: String, value: Double, date: LocalDateTime,codeCreditCard:Int,kind:KindInterestRateEnum) {
+        require(name.isNotEmpty()){"Name must not be empty"}
+        require(value > 0.0){"Value must be greater than 0"}
+        require(date != null){"Date must be valid"}
             val dto = CreditCardBoughtDTO(
                 id = 0,
                 nameItem = "(SMS*) $name",
-                valueItem = NumbersUtil.toBigDecimal(value),
-                boughtDate = DateUtils.toLocalDateTime(date),
+                valueItem = value.toBigDecimal(),
+                boughtDate = date,
                 codeCreditCard = codeCreditCard,
                 endDate = LocalDateTime.MAX,
                 cutOutDate = LocalDateTime.now(),
@@ -84,7 +86,6 @@ class BoughtImpl @Inject constructor(private val service:IBought, private  val s
                 recurrent = 0
             )
             smsImpl.createBySms(dto)
-        }
     }
 
 }

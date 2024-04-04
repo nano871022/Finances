@@ -5,6 +5,7 @@ import android.content.Intent
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import android.util.Log
+import android.widget.Toast
 import co.japl.android.finances.services.DB.connections.PaidConnectDB
 import co.japl.android.finances.services.dto.PaidDB
 import co.japl.android.myapplication.bussiness.DB.connections.ConnectDB
@@ -35,6 +36,18 @@ class GoogleDriveService(private var dbConnect: SQLiteOpenHelper,private val act
                          override val RC_SIGN_IN: Int
 ):IGoogleLoginService {
     private var signInAccount: GoogleSignInAccount? = null
+    private var message:String? = null
+    private val subscriberMessage = arrayListOf<()->Unit>()
+
+    override fun subscribeMessage(subscriber:()->Unit) = subscriberMessage.add(subscriber)
+
+    private fun message(message:String?) {
+        message?.let {
+            this.message = message
+            subscriberMessage.forEach { it.invoke() }
+        }
+    }
+    override fun message():String = message?:""
 
     private val googleSignInOptions by lazy{
          GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -65,22 +78,42 @@ class GoogleDriveService(private var dbConnect: SQLiteOpenHelper,private val act
     }
 
     override fun getAccount(): GoogleSignInAccount = signInAccount?:throw Exception("Not logged in")
-    override fun read() {
+    override fun restore() {
         getConnection()?.let {
             getDrive(it)?.let {
                 readFiles(it)
-                //readFilesCSVCopy(it)
             }
         }
     }
 
-    override fun upload() {
+    override fun backup() {
         getConnection()?.let {
             getDrive(it)?.let {
                 createFile(it)
-                //createFileCSVCopy(it)
             }
         }
+    }
+
+    override fun infoBackup() :String{
+        try {
+            getConnection()?.let {
+                getDrive(it)?.let {
+                    it.Files().list()
+                        .setSpaces("appDataFolder")
+                        .setFields("nextPageToken, files(id, name, version, modifiedTime)")
+                        .setPageSize(10)
+                        .execute()?.files?.takeIf { it.isNotEmpty() }?.filter {
+                            it.name == DatabaseConstants.DATA_BASE_NAME
+                        }?.first()?.let {
+                            return "${it.name} V ${it.version}  \nLast Modified:${it.modifiedTime}"
+                        }
+                }
+            }
+        }catch(e:Exception){
+            Log.e(javaClass.name,"ERROR ${e.message}",e)
+            return "ERROR ${e.message}"
+        }
+        return "NOT-INFO"
     }
 
     private fun handleSignIn(data: Intent){
@@ -98,22 +131,6 @@ class GoogleDriveService(private var dbConnect: SQLiteOpenHelper,private val act
             .build()
             .also { Log.d(javaClass.name,"=== HandleSignIn2 $it") }
     }
-    private fun createFolder(drive:Drive) {
-
-            CoroutineScope(Dispatchers.IO).launch {
-                try{
-                val folder = File()
-                folder.name = "Finanzas"
-                folder.mimeType = "application/vnd.google-apps.folder"
-                drive.Files().create(folder).setFields("id").execute()
-                } catch (e: Exception) {
-                    Log.e(javaClass.name, "ERROR ${e.message}", e)
-                }
-            }
-
-    }
-
-
 
     private fun createFile(drive: Drive){
         CoroutineScope(Dispatchers.IO).launch {
@@ -129,17 +146,24 @@ class GoogleDriveService(private var dbConnect: SQLiteOpenHelper,private val act
                 Log.d(javaClass.name,"=== uploadFiles ${filePath?.absolutePath} ${filePath?.exists()} ${(filePath?.totalSpace?:0)/(1024*1024)}Mb ${(filePath?.length()?:0)/(1024)}Kb")
 
                 drive.Files().list().setSpaces("appDataFolder")
-                    .setFields("nextPageToken, files(id, name)")
+                    .setFields("nextPageToken, files(id, name, version)")
                     .setPageSize(10)
                     .execute().files?.takeIf { it.isNotEmpty() }?.filter {
                         it.name == DatabaseConstants.DATA_BASE_NAME
                     }?.takeIf { it.size == 1 }?.first()?.let {
                         drive.Files().update(it.id,null,mediaContent)
-                            .execute()?.let {Log.d(javaClass.name, "=== updateFile ${it.id} ${it.name} ${it.size} ${it.version} ${it.driveId}")}
+                            .execute()?.let {Log.d(javaClass.name, "=== updateFile ${it.id} ${it.name} ${it.size} ${it.version} ${it.driveId}")
+                                message( "${message?:""} Finished Backup Process")}
                     }?:drive.let{
                     drive.Files().create(fileMetadata,mediaContent)
                         .setFields("id")
-                        .execute()?.let {Log.d(javaClass.name, "=== createFile ${it.id} ${it.name} ${it.size} ${it.version} ${it.driveId}")}
+                        .execute()?.let {
+                            Log.d(
+                                javaClass.name,
+                                "=== createFile ${it.id} ${it.name} ${it.size} ${it.version}}"
+                            )
+                            message( "${message?:""} Finished Backup Process")
+                        }
                 }
             }catch(e:Exception){
                 Log.e(javaClass.name, "ERROR ${e.message}", e)
@@ -147,40 +171,6 @@ class GoogleDriveService(private var dbConnect: SQLiteOpenHelper,private val act
         }
     }
 
-    private fun createFileCSVCopy(drive: Drive){
-        CoroutineScope(Dispatchers.IO).launch {
-            try {
-                val filePath = java.io.File.createTempFile("copy",".csv")
-                filePath.writeText("column1,column2,column3")
-
-                val fileMetadata = File()
-                fileMetadata.name = "copy.csv"
-                fileMetadata.mimeType = "text/csv"
-                fileMetadata.parents = Collections.singletonList("appDataFolder")
-
-                val mediaContent = FileContent(fileMetadata.mimeType, filePath)
-
-                Log.d(javaClass.name,"=== uploadFiles ${filePath?.absolutePath} ${filePath?.exists()} ${(filePath?.totalSpace?:0)/(1024*1024)}Mb ${(filePath?.length()?:0)/(1024)}Kb")
-
-                drive.Files().list().setSpaces("appDataFolder")
-                    .setFields("nextPageToken, files(id, name)")
-                    .setPageSize(10)
-                    .execute().files?.takeIf { it.isNotEmpty() }?.filter {
-                        it.name == filePath.name
-                    }?.takeIf { it.size == 1 }?.first()?.let {
-                        drive.Files().update(it.id,null,mediaContent)
-                            .execute()?.let {Log.d(javaClass.name, "=== updateFile ${it.id} ${it.name} ${it.size} ${it.version} ${it.driveId}")}
-                    }?:drive.let{
-                    drive.Files().create(fileMetadata,mediaContent)
-                        .setFields("id")
-                        .execute()?.let {Log.d(javaClass.name, "=== createFile ${it.id} ${it.name} ${it.size} ${it.version} ${it.driveId}")}
-                }
-
-            }catch(e:Exception){
-                Log.e(javaClass.name, "ERROR ${e.message}", e)
-            }
-        }
-    }
 
     private fun getFile():java.io.File?{
        return activity.applicationContext.getDatabasePath(DatabaseConstants.DATA_BASE_NAME)
@@ -204,40 +194,15 @@ class GoogleDriveService(private var dbConnect: SQLiteOpenHelper,private val act
                         Log.d(javaClass.name,"=== readFiles ${file.absolutePath} ${file.exists()} ${file.totalSpace/(1024*1024)}Mb ${file.length()/(1024)}Kb ${it.id} ${it.name} ${it.size} ${it.version} ${it.driveId}")
                         val db = SQLiteDatabase.openDatabase(file.absolutePath, null, SQLiteDatabase.OPEN_READONLY)
 
-                        (dbConnect as ConnectDB).onRestore(dbConnect.writableDatabase,db)
-                    }
-            } catch (e: Exception) {
-                Log.e(javaClass.name, "ERROR ${e.message}", e)
-            }
-        }
-    }
-
-    private fun readFilesCSVCopy(drive: Drive) {
-        CoroutineScope(Dispatchers.IO).launch {
-            try {
-                val file = java.io.File.createTempFile("copy",".csv")
-                val outputStream = FileOutputStream(file)
-                drive.Files().list()
-                    .setSpaces("appDataFolder")
-                    .setFields("nextPageToken, files(id, name)")
-                    .setPageSize(10)
-                    .execute()?.files?.takeIf { it.isNotEmpty() }?.filter {
-                        it.name == "copy.csv"
-                    }?.first()?.let {
-                        drive.Files().get(it.id).executeMediaAndDownloadTo(outputStream)
-                        outputStream.flush()
-                        outputStream.close()
-                        file.readLines()?.forEach {
-                            Log.d(javaClass.name,"=== readFiles ${it}")
+                        (dbConnect as ConnectDB).onRestore(dbConnect.writableDatabase,db).also {
+                          message( "${message?:""} Finished Restore Process")
                         }
-                        Log.d(javaClass.name,"=== readFiles ${file.absolutePath} ${file.exists()} ${file.totalSpace/(1024*1024)}Mb ${file.length()/(1024)}Kb ${it.id} ${it.name} ${it.size} ${it.version} ${it.driveId}")
                     }
             } catch (e: Exception) {
                 Log.e(javaClass.name, "ERROR ${e.message}", e)
             }
         }
     }
-
 
     override fun response(requestCode: Int, resultCode: Int, data: Intent){
         Log.d(this.javaClass.name, "onActivityResult $requestCode $data")

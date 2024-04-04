@@ -12,8 +12,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
-import androidx.compose.material.LinearProgressIndicator
-import androidx.compose.material.Surface
+import androidx.compose.material3.LinearProgressIndicator
+import androidx.compose.material3.Surface
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.MoreVert
 import androidx.compose.material3.MaterialTheme
@@ -101,7 +101,7 @@ private fun BodyYear(key:Int,list:List<PeriodPaidDTO>,goTo: (YearMonth) -> Unit)
     Surface(modifier = Modifier
         .padding(bottom = Dimensions.PADDING_SHORT)
         .clickable { dropDownState.value = !dropDownState.value },
-        elevation = 10.dp,
+
         shape = RoundedCornerShape(10.dp),
         border = BorderStroke(1.dp, MaterialTheme.colorScheme.onPrimaryContainer)
     ) {

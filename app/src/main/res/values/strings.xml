@@ -74,6 +74,12 @@
     <string name="email_address">Correo Electrónico</string>
     <string name="there_are_not_data">No hay datos</string>
 
+    <string name="backup">Backup</string>
+    <string name="restore">Restaurar</string>
+    <string name="login">Iniciar Sesion</string>
+    <string name="logout">Finalizar Session</string>
+    <string name="dialog_restore">¿Esta seguro de aplicar la restauración de esta copia?\ntodos los datos serán eliminados.</string>
+
     <string name="hello_first_fragment">Hello first fragment</string>
     <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
     <string name="delete_successfull">Se elimino correctamente</string>

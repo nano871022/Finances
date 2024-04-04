@@ -6,6 +6,7 @@ import co.com.japl.finances.iports.outbounds.ISMSPaidPort
 import co.japl.finances.core.usercases.interfaces.paid.ISMS
 import co.japl.finances.core.utils.DateUtils
 import co.japl.finances.core.utils.NumbersUtil
+import co.japl.finances.core.utils.SmsUtil
 import java.time.LocalDateTime
 import javax.inject.Inject
 
@@ -52,13 +53,8 @@ class SMSImpl @Inject constructor(private val svc:ISMSPaidPort, private val smsS
         val list = mutableListOf<Triple<String,Double,LocalDateTime>>()
         smsSvc.load(phoneNumber,numDaysRead).takeIf{it.isNotEmpty()}?.forEach{sms->
             if(pattern.isNotEmpty() && pattern.toRegex().containsMatchIn(sms)){
-               pattern.toRegex().find(sms)?.let{mr->
-                    if(mr.groupValues.size > 3){
-                        val name = mr.groupValues[2]
-                        val value = mr.groupValues[1].takeIf { it != null && NumbersUtil.isNumberRegex(it) }?.let(NumbersUtil::toDoubleOrZero) ?: 0.0
-                        val date = mr.groupValues[3].takeIf { it != null && DateUtils.isLocalDateRegex(it) }?.let(DateUtils::toLocalDateTime)?:LocalDateTime.now()
-                        list.add(Triple(name,value,date))
-                    }
+               pattern.toRegex().find(sms)?.let{
+                   SmsUtil.getValues(it.groupValues)?.let (list::add)
                 }
             }
         }

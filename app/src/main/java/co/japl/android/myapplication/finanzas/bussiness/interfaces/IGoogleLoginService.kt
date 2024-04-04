@@ -11,7 +11,13 @@ interface IGoogleLoginService {
     fun response(requestCode:Int, resultCode:Int,data:Intent)
     fun getAccount(): GoogleSignInAccount
 
-    fun read()
+    fun restore()
 
-    fun upload()
+    fun backup()
+
+    fun infoBackup():String
+
+    fun message():String
+
+    fun subscribeMessage(subscriber:()->Unit):Boolean
 }

@@ -65,11 +65,25 @@ class GoogleLoginService(private val activity:Activity, override val RC_SIGN_IN:
         return signInAccount
     }
 
-    override fun read() {
+    override fun restore() {
         TODO("Not yet implemented")
     }
 
-    override fun upload() {
+    override fun backup() {
         TODO("Not yet implemented")
     }
+
+    override fun infoBackup(): String {
+        TODO("Not yet implemented")
+    }
+
+    override fun message(): String {
+        TODO("Not yet implemented")
+    }
+
+    override fun subscribeMessage(subscriber: () -> Unit): Boolean {
+        TODO("Not yet implemented")
+    }
+
+
 }
