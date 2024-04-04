@@ -110,9 +110,10 @@ class PaidViewModel constructor(private val accountCode:Int, private val period:
                 it.sumOf { it.itemValue }.let{allValues.value = it}
                 progressStatus.value = 0.8f
 
-                loaderState.value = false
+
             }
         }
+        loaderState.value = false
     }
 
 }

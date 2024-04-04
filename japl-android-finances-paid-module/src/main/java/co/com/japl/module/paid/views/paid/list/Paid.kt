@@ -10,10 +10,8 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
 import androidx.compose.material.LinearProgressIndicator
 import androidx.compose.material3.Scaffold
@@ -22,7 +20,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.BrightnessHigh
 import androidx.compose.material.icons.rounded.MoreVert
-import androidx.compose.material3.Divider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -42,7 +39,6 @@ import co.com.japl.module.paid.controllers.paid.list.PaidViewModel
 import co.com.japl.module.paid.enums.PaidListOptions
 import co.com.japl.ui.Prefs
 import co.com.japl.ui.components.AlertDialogOkCancel
-import co.com.japl.ui.components.CheckBoxField
 import co.com.japl.ui.components.FieldText
 import co.com.japl.ui.components.FieldView
 import co.com.japl.ui.components.FieldViewCards
