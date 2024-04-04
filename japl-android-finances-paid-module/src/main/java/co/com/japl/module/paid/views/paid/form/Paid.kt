@@ -8,7 +8,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.LinearProgressIndicator
-import androidx.compose.material.Scaffold
+import androidx.compose.material3.Scaffold
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.Cancel
@@ -181,6 +181,18 @@ private fun Buttons(add:()->Unit,clear:()->Unit){
 @Composable
 @Preview(showSystemUi = true, showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
 internal fun PreviewPaidForm(){
+
+    val viewModel = getViewModel()
+    MaterialThemeComposeUI {
+        Form(viewModel = viewModel,modifier = Modifier.fillMaxWidth())
+    }
+
+}
+
+@RequiresApi(Build.VERSION_CODES.S)
+@Composable
+@Preview(showSystemUi = true, showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
+internal fun PreviewPaidFormDark(){
 
     val viewModel = getViewModel()
     MaterialThemeComposeUI {

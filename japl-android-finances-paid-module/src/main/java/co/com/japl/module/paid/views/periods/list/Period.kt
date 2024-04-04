@@ -223,6 +223,15 @@ internal fun PeriodPreview(){
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.S)
+@Composable
+@Preview(showBackground = true, showSystemUi = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
+internal fun PeriodPreviewDark(){
+    MaterialThemeComposeUI {
+        Period(getViewModel())
+    }
+}
+
 @Composable
 private fun getViewModel():PeriodsViewModel{
     val viewModel = PeriodsViewModel(
