@@ -47,8 +47,8 @@ class PaidImpl @Inject constructor(private val paidImpl: IPaidDAO) : IPaidRecapP
         return paidImpl.findByNameValueDate(PaidMapper.mapper(values)).takeIf { it.isNotEmpty() }?.map { PaidMapper.mapper(it)}?: emptyList()
     }
 
-    override fun get(): List<PeriodPaidDTO> {
-        return paidImpl.getPeriods().takeIf { it.isNotEmpty() }?.map {
+    override fun get(codeAccount: Long): List<PeriodPaidDTO> {
+        return paidImpl.getPeriods(codeAccount).takeIf { it.isNotEmpty() }?.map {
             PeriodPaidDTO(
                 date = YearMonth.of( it.date.year, it.date.monthValue),
                 value = it.value.toDouble(),

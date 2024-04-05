@@ -18,6 +18,7 @@ import androidx.compose.material.icons.rounded.Upload
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LinearProgressIndicator
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
@@ -52,6 +53,7 @@ fun GoogleAuthBackupRestore(viewModel:GoogleAuthBackupRestoreViewModel) {
             Row {
                 Text(
                     text = loginValue.value,
+                    color = MaterialTheme.colorScheme.onPrimary,
                     modifier = Modifier
                         .align(alignment = Alignment.CenterVertically)
                         .weight(2f)
@@ -103,6 +105,7 @@ fun GoogleAuthBackupRestore(viewModel:GoogleAuthBackupRestoreViewModel) {
                 Text(
                     text = result.value,
                     minLines = 20,
+                    color = MaterialTheme.colorScheme.onPrimary,
                     modifier = Modifier.fillMaxWidth()
                 )
             }
@@ -127,6 +130,15 @@ private fun AlertRestore(status:MutableState<Boolean>,action:()->Unit){
 @Composable
 @Preview(showSystemUi = true, showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
 internal fun GoogleAuthBackupRestorePreview(){
+    MaterialThemeComposeUI {
+        GoogleAuthBackupRestore(getViewModel())
+    }
+}
+
+@RequiresApi(Build.VERSION_CODES.S)
+@Composable
+@Preview(showSystemUi = true, showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
+internal fun GoogleAuthBackupRestorePreviewDark(){
     MaterialThemeComposeUI {
         GoogleAuthBackupRestore(getViewModel())
     }

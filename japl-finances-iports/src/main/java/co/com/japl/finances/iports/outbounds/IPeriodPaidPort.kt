@@ -4,5 +4,5 @@ import co.com.japl.finances.iports.dtos.PeriodPaidDTO
 
 interface IPeriodPaidPort {
 
-    fun get(): List<PeriodPaidDTO>
+    fun get(codeAccount:Long): List<PeriodPaidDTO>
 }

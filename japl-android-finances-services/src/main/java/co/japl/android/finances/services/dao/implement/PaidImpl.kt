@@ -99,7 +99,14 @@ class PaidImpl @Inject constructor(override var dbConnect: SQLiteOpenHelper) : I
     @RequiresApi(Build.VERSION_CODES.O)
     override fun getRecurrent(date:LocalDate):List<PaidDTO>{
         val db = dbConnect.readableDatabase
-        val cursor = db.query(PaidDB.Entry.TABLE_NAME,COLUMNS,"${PaidDB.Entry.COLUMN_RECURRENT} = 1",null,null,null,null,null)
+        val cursor = db.query(PaidDB.Entry.TABLE_NAME,
+            COLUMNS,
+            "${PaidDB.Entry.COLUMN_RECURRENT} = 1",
+            null,
+            null,
+            null,
+            null,
+            null)
         val items = mutableListOf<PaidDTO>()
         val mapper = PaidMap()
         with(cursor){
@@ -153,7 +160,17 @@ class PaidImpl @Inject constructor(override var dbConnect: SQLiteOpenHelper) : I
             while(moveToNext()){
                 mapper.mapping(cursor).takeIf {
                     it.end >= endPeriod
-                }?.let(items::add)
+                }?.let{
+                    try {
+                        items.add(
+                            it.copy(
+                                date = it.date.withMonth(period.monthValue).withYear(period.year)
+                            )
+                        )
+                    }catch (e:Exception){
+                        items.add(it)
+                    }
+                }
             }
         }
         return items
@@ -177,9 +194,9 @@ class PaidImpl @Inject constructor(override var dbConnect: SQLiteOpenHelper) : I
                 val datePaid = cursor.getString(2).let { DateUtils.toLocalDate(it) }
                 val endDate = cursor.getString(3).let { DateUtils.toLocalDate(it) }
                 val value = cursor.getDouble(0)
-                if((recurrent == 1 ||
+                if(((recurrent == 1 && endDate >= date.withDayOfMonth(1).plusMonths(1))||
                             datePaid in date.withDayOfMonth(1).. date.plusMonths(1).withDayOfMonth(1).minusDays(1)) &&
-                            endDate >= date.withDayOfMonth(1)) {
+                            endDate >= date.withDayOfMonth(1).plusMonths(1)) {
                     listValues.add(value)
                 }
 
@@ -276,9 +293,12 @@ class PaidImpl @Inject constructor(override var dbConnect: SQLiteOpenHelper) : I
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    override fun getPeriods():List<PaidDTO>{
+    override fun getPeriods(codeAccount: Long):List<PaidDTO>{
         val db = dbConnect.readableDatabase
-        val cursor = db.rawQuery("select max(${PaidDB.Entry.COLUMN_DATE_PAID}) from ${PaidDB.Entry.TABLE_NAME}",null)
+        val cursor = db.rawQuery(
+            "select max(${PaidDB.Entry.COLUMN_DATE_PAID}) from ${PaidDB.Entry.TABLE_NAME} WHERE ${PaidDB.Entry.COLUMN_ACCOUNT} like ?"
+            ,arrayOf("%${codeAccount}%")
+        )
         val list = mutableListOf<PaidDTO>()
         with(cursor){
             while(moveToNext()){

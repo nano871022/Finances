@@ -17,13 +17,14 @@ import androidx.compose.material3.Surface
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.MoreVert
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.snapshots.SnapshotStateMap
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.capitalize
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import co.com.japl.finances.iports.dtos.PeriodPaidDTO
@@ -77,15 +78,15 @@ private fun Body(viewModel: PeriodsViewModel){
         Header(count = listState.values.flatMap { it }.sumOf { it.count },
             value =  listState.values.flatMap { it }.sumOf { it.value })
 
-        Year(listState = listState, goTo = {viewModel.goToMonthly(it)})
+        Year(listState = listState, goTo = {viewModel.goToListDetail(it)})
     }
 }
 
 @Composable
 private fun Year(listState: SnapshotStateMap<Int, List<PeriodPaidDTO>>,goTo: (YearMonth) -> Unit){
     LazyColumn (modifier=Modifier.padding(Dimensions.PADDING_SHORT)){
-        items(listState.keys.size) { item ->
-            val key = listState.keys.filterIndexed { index, i -> index == item }.first()
+        items(listState.keys.sortedByDescending { it }.size) { item ->
+            val key = listState.keys.sortedByDescending { it }.filterIndexed { index, i -> index == item }.first()
             listState[key]?.let {
                 BodyYear(key = key, list = it, goTo = goTo)
             }
@@ -147,17 +148,16 @@ private fun Item(item:PeriodPaidDTO,goTo:(YearMonth)->Unit){
         mutableStateOf(false)
     }
     Card (modifier = Modifier.padding(bottom=Dimensions.PADDING_SHORT)) {
-        Column {
+        Column (modifier = Modifier.padding(Dimensions.PADDING_SHORT)) {
             Row {
-                FieldViewCards(
-                    name = R.string.month,
-                    value = item.date.format(
+                Text(
+                    text = item.date.format(
                         DateTimeFormatter.ofPattern(
                             "MMMM",
                             Locale("es", "CO")
                         )
-                    ),
-                    modifier = Weight1f().align(alignment = Alignment.CenterVertically)
+                    ).replaceFirstChar { it.titlecase() },
+                    modifier = Modifier.align(alignment = Alignment.CenterVertically)
                 )
                 FieldViewCards(
                     name = R.string.count,
@@ -235,6 +235,7 @@ internal fun PeriodPreviewDark(){
 @Composable
 private fun getViewModel():PeriodsViewModel{
     val viewModel = PeriodsViewModel(
+        codeAccount = null,
         navController = null,
         paidSvc = null
     )

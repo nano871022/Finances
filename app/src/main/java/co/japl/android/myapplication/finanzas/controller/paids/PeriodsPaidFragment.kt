@@ -14,6 +14,7 @@ import co.com.japl.module.paid.controllers.period.list.PeriodsViewModel
 import co.com.japl.module.paid.views.periods.list.Period
 import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.japl.android.myapplication.databinding.FragmentPeriodsPaidBinding
+import co.japl.android.myapplication.finanzas.putParams.PeriodPaidParam
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -29,7 +30,9 @@ class PeriodsPaidFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val root =  FragmentPeriodsPaidBinding.inflate(inflater)
+        val codeAccount = arguments?.let{PeriodPaidParam().downloadList(it)}
         val viewModel = PeriodsViewModel(
+            codeAccount = codeAccount,
             paidSvc = service,
             navController = findNavController()
         )

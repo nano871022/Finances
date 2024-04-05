@@ -1,7 +1,10 @@
 package co.japl.android.myapplication.finanzas.view.creditcard.bought.list
 
+import android.content.res.Configuration
+import android.os.Build
 import android.text.InputType
 import android.widget.TextView
+import androidx.annotation.RequiresApi
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -34,12 +37,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import co.japl.android.myapplication.R
 import co.japl.android.myapplication.finanzas.enums.MoreOptionsItemsCreditCard
 import co.com.japl.ui.components.AlertDialogOkCancel
 import co.com.japl.ui.components.FieldView
+import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.japl.android.myapplication.utils.NumbersUtil
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -241,5 +246,22 @@ private fun DifferInstallmentDialog(value:Double,creditRate: Double,onDismiss: (
                 }
             }
         }
+    }
+}
+
+@RequiresApi(Build.VERSION_CODES.S)
+@Composable
+@Preview(showSystemUi = true, showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
+    private fun DifferInstallmentDialogPreview(){
+        MaterialThemeComposeUI {
+            DifferInstallmentDialog(100.0,0.0,{},{})
+        }
+}
+@RequiresApi(Build.VERSION_CODES.S)
+@Composable
+@Preview(showSystemUi = true, showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
+private fun DifferInstallmentDialogPreviewDark(){
+    MaterialThemeComposeUI {
+        DifferInstallmentDialog(100.0,0.0,{},{})
     }
 }

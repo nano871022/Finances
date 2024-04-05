@@ -6,7 +6,7 @@ import co.japl.finances.core.usercases.interfaces.paid.IPeriodPaid
 import javax.inject.Inject
 
 class PeriodPaid @Inject constructor(private val periodPaidSvc: IPeriodPaidPort) : IPeriodPaid {
-    override fun get(): List<PeriodPaidDTO> {
-        return periodPaidSvc.get()
+    override fun get(codeAccount: Int): List<PeriodPaidDTO> {
+        return periodPaidSvc.get(codeAccount.toLong())
     }
 }

@@ -7,18 +7,19 @@ import androidx.navigation.NavController
 import co.com.japl.finances.iports.dtos.PeriodPaidDTO
 import co.com.japl.finances.iports.inbounds.paid.IPeriodPaidPort
 import co.com.japl.module.paid.navigations.Monthly
+import co.com.japl.module.paid.navigations.Paids
 import kotlinx.coroutines.runBlocking
 import java.time.YearMonth
 
-class PeriodsViewModel constructor(private val paidSvc: IPeriodPaidPort?, private val navController: NavController?): ViewModel(){
+class PeriodsViewModel constructor(private val codeAccount:Int?,private val paidSvc: IPeriodPaidPort?, private val navController: NavController?): ViewModel(){
     val progress = mutableStateOf(0f)
     val loader = mutableStateOf(true)
 
     val list = mutableStateMapOf<Int,List<PeriodPaidDTO>>()
 
-    fun goToMonthly(period:YearMonth){
+    fun goToListDetail(period:YearMonth){
         navController?.let {
-            Monthly.navigate(period,navController)
+            codeAccount?.let{Paids.navigate(codeAccount,period,navController)}
         }
     }
 
@@ -32,7 +33,7 @@ class PeriodsViewModel constructor(private val paidSvc: IPeriodPaidPort?, privat
 
         paidSvc?.let{
             progress.value = 0.2f
-            it.get().takeIf { it.isNotEmpty() }?.let{
+            codeAccount?.let{paidSvc.get(codeAccount)}?.takeIf { it.isNotEmpty() }?.let{
                 progress.value = 0.5f
                 list.putAll(it.groupBy { it.date.year })
                 progress.value = 0.8f

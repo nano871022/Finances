@@ -14,8 +14,8 @@ android {
         applicationId "co.japl.android.myapplication"
         minSdk 26
         targetSdk 33
-        versionCode 4_05_05_083
-        versionName "V 4.05.05.083 Migration Payment to new interface and added sms services loader"
+        versionCode 4_05_05_084
+        versionName "V 4.05.05.084 Migration Payment to new interface and added sms services loader"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }

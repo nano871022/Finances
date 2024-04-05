@@ -15,9 +15,11 @@ import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.CalendarMonth
 import androidx.compose.material.icons.rounded.RemoveRedEye
 import androidx.compose.material3.LinearProgressIndicator
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -71,7 +73,12 @@ viewModel.accountList
     }
     Scaffold (
        floatingActionButton = {
-            Buttons (gotoList = {viewModel.goToListDetail()},gotoPeriod = {viewModel.goToListPeriod()},gotoCreate = {viewModel.goToListCreate()})
+           if(accountState.value != null) {
+               Buttons(
+                   gotoList = { viewModel.goToListDetail() },
+                   gotoPeriod = { viewModel.goToListPeriod() },
+                   gotoCreate = { viewModel.goToListCreate() })
+           }
        },
         modifier = Modifier.padding(Dimensions.PADDING_SHORT)
     ){
@@ -136,8 +143,9 @@ private fun Accounts(viewModel: MonthlyViewModel) {
     Row (modifier = Modifier.padding(bottom=Dimensions.PADDING_SHORT)){
 
         FieldView(name = stringResource(id = R.string.period),
-            value = periodState.value,
+            value = periodState.value.replaceFirstChar { it.titlecase() },
             isMoney= false,
+            alignment = Alignment.Center,
             modifier = Modifier
                 .weight(1f)
                 .padding(end = Dimensions.PADDING_SHORT))
@@ -166,7 +174,8 @@ private fun Accounts(viewModel: MonthlyViewModel) {
                 .padding(end = Dimensions.PADDING_SHORT))
 
         FieldView(name = stringResource(id = R.string.incomes_less_paids),
-            value = NumbersUtil.toString(incomesTotalState.value - paidTotalState.value)
+            value = NumbersUtil.toString(incomesTotalState.value - paidTotalState.value),
+            color = if((incomesTotalState.value - paidTotalState.value) > 0) MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.error
             , modifier = Modifier.weight(1f))
     }
 }

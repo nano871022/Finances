@@ -54,6 +54,7 @@ import co.japl.android.myapplication.utils.NumbersUtil
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.text.DecimalFormat
 import java.time.LocalDateTime
 import java.time.YearMonth
 import java.time.format.DateTimeFormatter
@@ -106,7 +107,10 @@ private fun Buttons(newOne:()->Unit){
     }
     Row{
 
-        FieldView(name = stringResource(id = R.string.period),value=viewModel.periodOfList.value, modifier=Weight1f(), isMoney = false)
+        FieldView(name = stringResource(id = R.string.period),
+            value=viewModel.periodOfList.value.replaceFirstChar { it.titlecase() },
+            alignment = Alignment.Center,
+            modifier=Weight1f(), isMoney = false)
 
         FieldView(name = stringResource(id = R.string.value),value=NumbersUtil.toString(viewModel.allValues.value), modifier=Weight1f())
 
@@ -201,7 +205,8 @@ private fun Buttons(newOne:()->Unit){
             isMoney = false,
             value = period.format(
                     DateTimeFormatter.ofPattern("MMMM yyyy", Locale("es", "CO"))
-                ),
+                ).replaceFirstChar { it.titlecase() },
+            alignment = Alignment.Center,
             modifier = Weight1f(),onClick =  onClick
         )
 
@@ -222,18 +227,13 @@ private fun Buttons(newOne:()->Unit){
         ,modifier=Modifier.padding(Dimensions.PADDING_SHORT)) {
         Column (modifier = Modifier.padding(Dimensions.PADDING_SHORT)) {
             Row {
-                Text(
-                    text = stringResource(id = R.string.date_paid),
-                    modifier = Weight1f().align(
-                        alignment = Alignment.CenterVertically
-                    )
+
+                Text(text = "%02d".format(dto.datePaid.dayOfMonth),
+                    modifier = Modifier.align(alignment = Alignment.CenterVertically)
                 )
 
-                Text(
-                    text = DateUtils.localDateTimeToStringDate(dto.datePaid),
-                    modifier = Weight1f().align(
-                        alignment = Alignment.CenterVertically
-                    )
+                Text(text = dto.itemName,
+                    modifier = Modifier.weight(2f).padding(start=Dimensions.PADDING_TOP).align(alignment = Alignment.CenterVertically)
                 )
 
                 IconButton(
@@ -245,11 +245,7 @@ private fun Buttons(newOne:()->Unit){
                 )
             }
 
-                FieldViewCards(
-                    name = R.string.name_item,
-                    value = dto.itemName,
-                    modifier = Modifier
-                )
+
 
                 FieldViewCards(
                     name = R.string.value_item,
