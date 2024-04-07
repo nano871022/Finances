@@ -1,4 +1,21 @@
 <resources>
+    <string name="welcome_app">Bienvenido a Finanzas Personales</string>
+    <string name="app_msg">Esta aplicación contiene los siguientes modulos:</string>
+    <string name="simulators">Simuladores</string>
+    <string name="simulator_vary_quote">> Crédito a Cuota Variable</string>
+    <string name="simulator_fix_quote">> Crédito a Cuota Fija</string>
+    <string name="projection_payment">> Proyección de Gastos</string>
+    <string name="payment_cash">> Pagos con Tarjeta débito o Efectivo</string>
+    <string name="payment_credits">> Pago Créditos</string>
+    <string name="payment_credit_card">> Pagos con Tarjeta Crédito</string>
+    <string name="wiki_sms">Conoce mas en la Wiki</string>
+    <string name="wiki_url">https://github.com/nano871022/Finances/wiki</string>
+
+    <string name="error_login">No se puede realizar login, vuelva a intentar más tarde</string>
+    <string name="msg_checkbox">Mostrar Mensaje Bienvenidos</string>
+    <string name="settings_app">Configuraciones Aplicación</string>
+
+
     <string name="app_name">Finanzas</string>
     <string name="about_it">Acerca de</string>
     <string name="version">Versión</string>
@@ -460,4 +477,6 @@
     <string name="days_sms_read">Dias de lectura SMS</string>
     <string name="go">Ir</string>
     <string name="default_web_client_id">332922408573-j1uk3tbu8jp6umcvt9ssdq0l32nlq49o.apps.googleusercontent.com</string>
+
+    <string name="toast_save_successful">Se guardo correctamente</string>
 </resources>

@@ -29,6 +29,7 @@ import co.com.japl.module.paid.controllers.monthly.list.MonthlyViewModel
 import co.com.japl.ui.components.FieldSelect
 import co.com.japl.ui.components.FieldView
 import co.com.japl.ui.components.FloatButton
+import co.com.japl.ui.components.HelpWikiButton
 import co.com.japl.ui.components.PiecePieGraph
 import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.com.japl.ui.theme.values.Dimensions
@@ -88,16 +89,22 @@ viewModel.accountList
                 .fillMaxWidth()
                 .verticalScroll(rememberScrollState())
         ) {
-          FieldSelect(title = stringResource(id = R.string.account),
-              value = accountState.value?.name?:"",
-              list = accountList,
-              modifier = Modifier.padding(bottom = Dimensions.PADDING_SHORT),
-              callAble={pair->
-                pair?.let{viewModel.listAccount?.first { it.id == pair.first }?.let {
-                    accountState.value = it
-                    viewModel.loaderState.value = true
-                }}?:accountState?.let { it.value = null }
-              })
+            Row {
+                FieldSelect(title = stringResource(id = R.string.account),
+                    value = accountState.value?.name ?: "",
+                    list = accountList,
+                    modifier = Modifier.padding(bottom = Dimensions.PADDING_SHORT).weight(1f),
+                    callAble = { pair ->
+                        pair?.let {
+                            viewModel.listAccount?.first { it.id == pair.first }?.let {
+                                accountState.value = it
+                                viewModel.loaderState.value = true
+                            }
+                        } ?: accountState?.let { it.value = null }
+                    })
+
+                HelpWikiButton(wikiUrl = R.string.wiki_paid_url, descriptionContent = R.string.wiki_paid_description)
+            }
 
             if(accountState.value != null) {
                 Accounts(viewModel = viewModel)

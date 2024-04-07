@@ -120,6 +120,9 @@ class GoogleDriveService(private var dbConnect: SQLiteOpenHelper,private val act
         val getAccountTask = GoogleSignIn.getSignedInAccountFromIntent(data)
         if(getAccountTask.isSuccessful){
             getAccountTask.result?.let { getDrive(it)}
+        }else{
+            message(getAccountTask.exception?.message)
+            message(getAccountTask.result?.toString())
         }
     }
 

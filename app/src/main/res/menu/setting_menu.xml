@@ -54,6 +54,10 @@
         android:title="@string/paids"
         />
 
+    <item
+        android:id="@+id/item_menu_setting_settings_application"
+        android:icon="@android:drawable/ic_menu_set_as"
+        android:title="@string/settings_app"/>
 
     <item
     android:id="@+id/item_menu_setting_about_it"

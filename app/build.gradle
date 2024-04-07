@@ -14,8 +14,8 @@ android {
         applicationId "co.japl.android.myapplication"
         minSdk 26
         targetSdk 33
-        versionCode 4_05_05_084
-        versionName "V 4.05.05.084 Migration Payment to new interface and added sms services loader"
+        versionCode 4_05_05_088
+        versionName "V 4.05.05.088 Migration Payment to new interface and added sms services loader"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -24,8 +24,15 @@ android {
         release {
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            buildConfigField ("String",'GoogleClientId', prodGoogleClientId)
+        }
+        debug{
+            applicationIdSuffix ".debug"
+            buildConfigField ("String",'GoogleClientId', debugGoogleClientId)
         }
     }
+
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_17
         targetCompatibility JavaVersion.VERSION_17
@@ -70,6 +77,8 @@ dependencies {
     implementation 'androidx.core:core-splashscreen:1.0.1'
     implementation 'androidx.appcompat:appcompat:1.6.1'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+    implementation('androidx.credentials:credentials:1.2.2')
+    implementation('androidx.credentials:credentials-play-services-auth:1.2.2')
     implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.6.2'
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.2'
     implementation 'androidx.navigation:navigation-fragment-ktx:2.7.5'
@@ -93,7 +102,9 @@ dependencies {
     implementation 'com.google.http-client:google-http-client-gson:1.42.3'
     implementation platform('com.google.firebase:firebase-bom:32.7.4')
     implementation 'com.google.firebase:firebase-auth:22.3.1'
-    implementation 'com.google.android.play:core:1.10.3'
+    //implementation 'com.google.android.play:core:1.10.3'
+    implementation('com.google.android.play:integrity:1.3.0')
+    implementation('com.google.android.libraries.identity.googleid:googleid:1.1.0')
     implementation 'com.google.dagger:hilt-android:2.46.1'
 
     implementation 'com.squareup.okio:okio:3.4.0'

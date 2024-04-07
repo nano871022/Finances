@@ -71,7 +71,7 @@ class BoughtImpl @Inject constructor(private val service:IBought, private  val s
         require(date != null){"Date must be valid"}
             val dto = CreditCardBoughtDTO(
                 id = 0,
-                nameItem = "(SMS*) $name",
+                nameItem = name,
                 valueItem = value.toBigDecimal(),
                 boughtDate = date,
                 codeCreditCard = codeCreditCard,

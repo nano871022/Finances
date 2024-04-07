@@ -14,7 +14,7 @@ import co.com.japl.module.paid.enums.MoreOptionsItemsInput
 import co.com.japl.module.paid.navigations.Input
 import kotlinx.coroutines.runBlocking
 
-class InputListModelView (private val context:Context, val accountCode:Int,private val navController: NavController,private val inputSvc:IInputPort?) : ViewModel() {
+class InputListModelView (private val context:Context, val accountCode:Int,private val navController: NavController?,private val inputSvc:IInputPort?) : ViewModel() {
 
     var _items = mutableStateListOf<InputDTO>()
 
@@ -46,7 +46,7 @@ class InputListModelView (private val context:Context, val accountCode:Int,priva
     }
 
     fun goToInputForm(){
-        Input.navigate(accountCode,navController)
+       navController?.let{Input.navigate(accountCode,navController)}
     }
 
     fun main()= runBlocking  {

@@ -2,6 +2,7 @@ package co.com.japl.module.creditcard.views.bought
 
 import android.app.Application
 import android.content.Context
+import android.content.Intent
 import android.content.res.Configuration
 import android.os.Build
 import android.util.Log
@@ -26,6 +27,8 @@ import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.AddCircle
 import androidx.compose.material.icons.rounded.AddCircleOutline
 import androidx.compose.material.icons.rounded.CalendarMonth
+import androidx.compose.material.icons.rounded.Help
+import androidx.compose.material.icons.rounded.HelpOutline
 import androidx.compose.material.icons.rounded.RemoveRedEye
 import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
@@ -55,12 +58,15 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
+import androidx.core.content.ContextCompat
+import androidx.core.net.toUri
 import co.com.japl.module.creditcard.R
 import co.com.japl.module.creditcard.controllers.bought.lists.BoughtMonthlyViewModel
 import co.com.japl.ui.Prefs
 import co.com.japl.ui.components.Carousel
 import co.com.japl.ui.components.FieldSelect
 import co.com.japl.ui.components.FieldView
+import co.com.japl.ui.components.HelpWikiButton
 import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.com.japl.ui.theme.values.Dimensions
 import co.com.japl.ui.theme.values.ModifiersCustom.Weight1f
@@ -255,11 +261,23 @@ private fun FloatButtons(viewModel:BoughtMonthlyViewModel){
 @Composable
 private fun Header(creditCard:MutableState<String>,list:List<Pair<Int,String>>?, changeSelect: (Pair<Int, String>?) -> Unit) {
     var valueState by remember { creditCard }
-    FieldSelect(title = stringResource(id = R.string.credit_card),
-        value = valueState,
-        list = list,
-        modifier = Modifier.padding(bottom = Dimensions.PADDING_SHORT),
-        callable = changeSelect)
+
+
+    Row {
+        FieldSelect(
+            title = stringResource(id = R.string.credit_card),
+            value = valueState,
+            list = list,
+            modifier = Modifier
+                .padding(bottom = Dimensions.PADDING_SHORT)
+                .weight(1f),
+            callable = changeSelect
+        )
+
+        HelpWikiButton(wikiUrl = R.string.wiki_bought_url,
+            descriptionContent = R.string.help_bought_description,
+            tint = MaterialTheme.colorScheme.onPrimary)
+    }
 }
 
 @Composable
@@ -743,7 +761,7 @@ private fun RecapLastMonthMedium(lastMonthPaid:LocalDate,
 
 @RequiresApi(Build.VERSION_CODES.S)
 @Composable
-@Preview(showSystemUi = true, showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Preview(showSystemUi = true, showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES, backgroundColor = 0xFF000000)
 fun BoughtMonthlyPreviewNight(){
     val viewModel = getViewMoel(LocalContext.current)
     MaterialThemeComposeUI {

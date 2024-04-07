@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.annotation.RequiresApi
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import co.com.japl.finances.iports.inbounds.recap.IRecapPort
 import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.japl.android.myapplication.databinding.FragmentRecapBinding
@@ -21,7 +22,7 @@ class RecapFragment @Inject constructor() : Fragment() {
     @Inject lateinit var recapSvc:IRecapPort
 
     private var _binding: FragmentRecapBinding? = null
-    private val recapViewModel by lazy {RecapViewModel(recapSvc,ApplicationInitial.prefs)}
+    private val recapViewModel by lazy {RecapViewModel(recapSvc,ApplicationInitial.prefs,findNavController())}
 
     @RequiresApi(Build.VERSION_CODES.S)
     override fun onCreateView(

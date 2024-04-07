@@ -6,6 +6,7 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -46,6 +47,7 @@ import co.com.japl.module.creditcard.enums.MoreOptionsItemCreditRate
 import co.com.japl.ui.components.AlertDialogOkCancel
 import co.com.japl.ui.components.Carousel
 import co.com.japl.ui.components.FieldView
+import co.com.japl.ui.components.HelpWikiButton
 import co.com.japl.ui.components.MoreOptionsDialog
 import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.com.japl.ui.theme.values.Dimensions
@@ -91,10 +93,15 @@ fun CreditRateList(viewModel: CreditRateListViewModel){
 @Composable
 private fun Body(viewModel: CreditRateListViewModel,modifier:Modifier=Modifier){
     val mapState = remember {viewModel.creditCard}
-    mapState?.let {list->
-        Carousel(size = list.size,modifier=Modifier.fillMaxHeight()) {
-            val value = list.entries.toList()[it]
-            CreditCard(value = value, viewModel = viewModel)
+    Column {
+        Row(horizontalArrangement = Arrangement.End, modifier = Modifier.fillMaxWidth()) {
+            HelpWikiButton(wikiUrl = R.string.wiki_credit_rate_url, descriptionContent = R.string.wiki_credit_rate_description)
+        }
+        mapState?.let { list ->
+            Carousel(size = list.size, modifier = Modifier.fillMaxHeight()) {
+                val value = list.entries.toList()[it]
+                CreditCard(value = value, viewModel = viewModel)
+            }
         }
     }
 }
@@ -104,21 +111,24 @@ private fun CreditCard(value:Map.Entry<CreditCardDTO?,List<TaxDTO>>,viewModel: C
     val listState = remember{ mutableListOf(value.value) }
 
     OutlinedCard(modifier = Modifier
-        .fillMaxWidth().fillMaxHeight()
+        .fillMaxWidth()
+        .fillMaxHeight()
         .padding(Dimensions.PADDING_SHORT)) {
-        Column(modifier = Modifier.fillMaxWidth()) {
-            FieldView(
-                title = stringResource(id = R.string.credit_card),
-                value = value.key?.name ?: "", modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(Dimensions.PADDING_SHORT),
-                suffix = {
-                    IconButton(onClick = { viewModel.add(value.key?.id) }) {
-                        Icon(imageVector = Icons.Rounded.AddCircleOutline
-                            , contentDescription = stringResource(id = R.string.add_credit_rate))
+                FieldView(
+                    title = stringResource(id = R.string.credit_card),
+                    value = value.key?.name ?: "",
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(Dimensions.PADDING_SHORT).weight(1f),
+                    suffix = {
+                        IconButton(onClick = { viewModel.add(value.key?.id) }) {
+                            Icon(
+                                imageVector = Icons.Rounded.AddCircleOutline,
+                                contentDescription = stringResource(id = R.string.add_credit_rate)
+                            )
+                        }
                     }
-                }
-            )
+                )
 
             Divider()
             Column(modifier=Modifier.verticalScroll(rememberScrollState())) {
@@ -138,7 +148,6 @@ private fun CreditCard(value:Map.Entry<CreditCardDTO?,List<TaxDTO>>,viewModel: C
                     }
                 }
             }
-        }
     }
 }
 

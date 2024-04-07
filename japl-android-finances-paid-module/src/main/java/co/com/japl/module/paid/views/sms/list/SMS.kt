@@ -5,6 +5,7 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -33,6 +34,7 @@ import co.com.japl.module.paid.controllers.sms.list.SmsViewModel
 import co.com.japl.ui.components.AlertDialogOkCancel
 import co.com.japl.ui.components.Carousel
 import co.com.japl.ui.components.FloatButton
+import co.com.japl.ui.components.HelpWikiButton
 import co.com.japl.ui.components.IconButton
 import co.com.japl.ui.components.MoreOptionsDialog
 import co.com.japl.ui.theme.MaterialThemeComposeUI
@@ -76,12 +78,16 @@ private fun Body(viewModel: SmsViewModel){
 @Composable
 private fun Content(viewModel: SmsViewModel,modifier: Modifier){
     val list = remember { viewModel.list}
-
+    Column(
+        modifier = modifier.padding(bottom = Dimensions.PADDING_BOTTOM_SPACE_FLOATING_BUTTON)
+    ) {
+        Row (horizontalArrangement = Arrangement.End, modifier=Modifier.fillMaxWidth()) {
+            HelpWikiButton(wikiUrl = R.string.wiki_sms_paid_url,
+                descriptionContent = R.string.wiki_sms_paid_description)
+        }
     if(list.isNotEmpty()) {
         Carousel(size = list.size) {
-            Column(
-                modifier = modifier.padding(bottom = Dimensions.PADDING_BOTTOM_SPACE_FLOATING_BUTTON)
-            ) {
+
                 list[it]?.values?.forEach {
                     for (i in it) {
                         Card(sms = i, modifier = Modifier, edit = {

@@ -73,43 +73,11 @@ fun BoughtList(listBoughtViewModel:ListBoughtViewModel){
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun ListBought(listBoughtViewModel:ListBoughtViewModel,loader:MutableState<Boolean>){
-    val cashAdvanceState = remember { listBoughtViewModel.cashAdvance }
-    val creditCardState = remember { listBoughtViewModel.creditCard }
+
     val popupState = remember { mutableStateOf(false) }
     Scaffold(
         floatingActionButton = {
-            Column {
-                if (cashAdvanceState.value) {
-
-                    FloatingActionButton(
-                        onClick = {
-                            Log.d("FloatingButton", "cash advance button")
-                            listBoughtViewModel.goToCashAdvance()
-                        },
-                        elevation = FloatingActionButtonDefaults.elevation(10.dp),
-                        backgroundColor=MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.5f),
-                        modifier = Modifier
-                    ) {
-                        Icon(Icons.Filled.Add, stringResource(id = R.string.cash_advance))
-
-                    }
-                }
-
-                if (creditCardState.value) {
-                    FloatingActionButton(
-                        onClick = {
-                            Log.d("FloatingButton", "credit card button")
-                            listBoughtViewModel.goToCreditCard()
-                        },
-                        elevation = FloatingActionButtonDefaults.elevation(10.dp),
-                        backgroundColor=MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.5f),
-                        modifier = Modifier
-                    ) {
-                        Icon(Icons.Filled.AddBox, stringResource(id = R.string.credit_card))
-
-                    }
-                }
-            }
+           Buttons(listBoughtViewModel = listBoughtViewModel)
         }
     ) {
 
@@ -141,6 +109,44 @@ private fun ListBought(listBoughtViewModel:ListBoughtViewModel,loader:MutableSta
         Popup(listBoughtViewModel.boughtCreditCard.recap, popupState = popupState)
 
 
+    }
+}
+
+@Composable
+private fun Buttons(listBoughtViewModel:ListBoughtViewModel){
+    val cashAdvanceState = remember { listBoughtViewModel.cashAdvance }
+    val creditCardState = remember { listBoughtViewModel.creditCard }
+    Column {
+        if (cashAdvanceState.value) {
+
+            FloatingActionButton(
+                onClick = {
+                    Log.d("FloatingButton", "cash advance button")
+                    listBoughtViewModel.goToCashAdvance()
+                },
+                elevation = FloatingActionButtonDefaults.elevation(10.dp),
+                backgroundColor=MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.5f),
+                modifier = Modifier
+            ) {
+                Icon(Icons.Filled.Add, stringResource(id = R.string.cash_advance))
+
+            }
+        }
+
+        if (creditCardState.value) {
+            FloatingActionButton(
+                onClick = {
+                    Log.d("FloatingButton", "credit card button")
+                    listBoughtViewModel.goToCreditCard()
+                },
+                elevation = FloatingActionButtonDefaults.elevation(10.dp),
+                backgroundColor=MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.5f),
+                modifier = Modifier
+            ) {
+                Icon(Icons.Filled.AddBox, stringResource(id = R.string.credit_card))
+
+            }
+        }
     }
 }
 

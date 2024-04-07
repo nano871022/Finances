@@ -5,19 +5,25 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Close
 import androidx.compose.material3.Button
-import androidx.compose.material3.Card
 import androidx.compose.material3.Divider
+import androidx.compose.material3.Icon
 import androidx.compose.material3.LinearProgressIndicator
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -56,7 +62,7 @@ fun Recap(model:RecapViewModel= viewModel()) {
 
     }
 
-    DialogStart()
+    DialogStart(model)
 }
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -95,11 +101,10 @@ private fun CarouselView(model:RecapViewModel){
 }
 
 @Composable
-private fun DialogStart(){
-    val status = remember {
-        mutableStateOf(true)
-    }
+private fun DialogStart(model:RecapViewModel){
+    val status = remember {model.msgInitial}
     val context= LocalContext.current
+    val wikiUrl = stringResource(id = R.string.wiki_url).toUri()
     if(status.value){
    Dialog(onDismissRequest = { status.value = false }) {
 
@@ -107,19 +112,43 @@ private fun DialogStart(){
            shape = RoundedCornerShape(10.dp), modifier = Modifier.padding(Dimensions.PADDING_SHORT)
        ) {
            Column(modifier = Modifier.padding(Dimensions.PADDING_SHORT)) {
-               Text(text = "Bienvenido a Finanzas Personales", modifier = Modifier.fillMaxWidth())
+               Row {
+                   Text(
+                       text = stringResource(id = R.string.welcome_app),
+                       modifier = Modifier.fillMaxWidth().weight(2f).align(Alignment.CenterVertically)
+                   )
+
+                   Button(onClick = { status.value = false }) {
+                       Icon(imageVector = Icons.Rounded.Close,
+                           contentDescription = stringResource(id = R.string.close))
+                   }
+               }
                Divider(
                    modifier = Modifier
                        .fillMaxWidth()
                        .padding(top = Dimensions.PADDING_SHORT, bottom = Dimensions.PADDING_SHORT)
                )
-               Text(text = "Esta aplicación contiene los siguientes modulos: \n * Simulador de Credito a Cuota Variable \n * Simulador de Cŕedito a Cuota Fija \n * Pagos Efectivo o desde Tajeta Debito \n * Pagos de Créditos \n * Pagos con Tarjeta de Crédito")
+               Text(text = stringResource(id = R.string.app_msg))
+               Text(text = stringResource(id = R.string.simulators))
+               TextButton(onClick = {
+
+               }){Text(text = stringResource(id = R.string.simulator_vary_quote),color = MaterialTheme.colorScheme.onSurface)}
+               TextButton(onClick = {
+
+               }){Text(text = stringResource(id = R.string.simulator_fix_quote),color = MaterialTheme.colorScheme.onSurface)}
+               Divider(modifier = Modifier.fillMaxWidth())
+               TextButton(onClick = {
+
+               }){Text(text = stringResource(id = R.string.projection_payment),color = MaterialTheme.colorScheme.onSurface)}
+               TextButton(onClick = {}){Text(text = stringResource(id = R.string.payment_cash),color = MaterialTheme.colorScheme.onSurface)}
+               TextButton(onClick = {}){Text(text = stringResource(id = R.string.payment_credits),color = MaterialTheme.colorScheme.onSurface)}
+               TextButton(onClick = {}){Text(text = stringResource(id = R.string.payment_credit_card),color = MaterialTheme.colorScheme.onSurface)}
                 Button(onClick = {
-                    val intent = Intent(Intent.ACTION_VIEW,"https://github.com/nano871022/Finances/wiki".toUri())
+                    val intent = Intent(Intent.ACTION_VIEW, wikiUrl)
                     ContextCompat.startActivity(context,intent,null)
 
                 }) {
-Text(text = "Ir a la Wiki de la Aplicación")
+                    Text(text = stringResource(id = R.string.wiki_sms))
                 }
            }
        }
@@ -134,7 +163,7 @@ Text(text = "Ir a la Wiki de la Aplicación")
 @Preview(showBackground = true, showSystemUi = true)
 fun PreviewRecap() {
     val prefs = Prefs(LocalContext.current)
-    val model = RecapViewModel(null,prefs)
+    val model = RecapViewModel(null,prefs,null)
     val recap = RecapDTO(
       projectionSaved = 20000.0,
      projectionNext = 30000.0,

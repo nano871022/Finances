@@ -2,8 +2,10 @@ package co.japl.android.myapplication.finanzas.view.google
 
 import android.app.Activity
 import android.content.Intent
+import android.widget.Toast
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
+import co.japl.android.myapplication.R
 import co.japl.android.myapplication.finanzas.bussiness.interfaces.IGoogleLoginService
 import com.google.android.gms.common.api.Status
 import kotlinx.coroutines.CoroutineScope
@@ -29,11 +31,22 @@ class GoogleAuthBackupRestoreViewModel constructor(private val activity:Activity
 
     fun responseConnection(activity:androidx.activity.result.ActivityResult){
         result.value = "${result.value} \n ${activity.resultCode} ${(activity.data?.extras?.keySet()?.map { it })?:"Any Information Found"}"
-        if(activity.resultCode == Activity.RESULT_OK) {
+        if(activity.resultCode == Activity.RESULT_OK ) {
             activity.data?.let { data ->
                 svc?.response(svc?.RC_SIGN_IN!!, activity.resultCode, data).also {
                     validation()
                 }
+            }
+        }else{
+            activity.data?.extras?.keySet()?.filter { it == "googleSignInStatus" }?.forEach{status->
+                activity.data?.extras?.getBundle(status)?.keySet()?.forEach {bundleKey ->
+                    activity.data?.extras?.getBundle(status)?.getString(bundleKey)?.let{
+                        result.value = "${result.value} \n > $status => ${bundleKey}: $it"
+                    }
+                }
+            }
+            this.activity?.applicationContext?.let{
+                Toast.makeText(it, R.string.error_login,Toast.LENGTH_LONG).show()
             }
         }
     }

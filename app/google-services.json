@@ -40,6 +40,31 @@
           "other_platform_oauth_client": []
         }
       }
+    },{
+      "client_info": {
+        "mobilesdk_app_id": "1:332922408573:android:33801dcc0736245840ab14",
+        "android_client_info": {
+          "package_name": "co.japl.android.myapplication.debug"
+        }
+      },
+      "oauth_client": [{
+      "client_id": "332922408573-sq5fj56cbl35mptmvo0mvp3ig39mf58p.apps.googleusercontent.com",
+      "client_type": 1,
+      "android_info": {
+        "package_name": "co.japl.android.myapplication.debug",
+        "certificate_hash": "c863db5704299ada73149260aaa3bdb9175cdd2e"
+      }
+    }],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA8PyvAZ4Z8fn1LcWc3DMU7YOJG1K-aZA8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
     }
   ],
   "configuration_version": "1"

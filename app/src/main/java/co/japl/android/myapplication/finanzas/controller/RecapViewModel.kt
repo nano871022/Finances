@@ -3,9 +3,11 @@ package co.japl.android.myapplication.finanzas.controller
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
+import androidx.navigation.NavController
 import co.com.japl.finances.iports.dtos.RecapDTO
 import co.com.japl.finances.iports.inbounds.recap.IRecapPort
 import co.com.japl.ui.Prefs
+import co.japl.android.myapplication.R
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -13,9 +15,10 @@ import java.time.LocalDate
 import javax.inject.Inject
 
 //@AndroidEntryPoint
-class RecapViewModel @Inject constructor(private var recapSvc:IRecapPort?,private val prefs:Prefs) : ViewModel(){
+class RecapViewModel @Inject constructor(private var recapSvc:IRecapPort?,private val prefs:Prefs, private val navController: NavController?) : ViewModel(){
 
     val cache = mutableStateOf(prefs.simulator)
+    val msgInitial = mutableStateOf(prefs.msgInitial)
     private var _recap:RecapDTO? = null
 
     private var _currentProgress = mutableFloatStateOf(0f)
@@ -32,6 +35,7 @@ class RecapViewModel @Inject constructor(private var recapSvc:IRecapPort?,privat
     val totalCredits : Double get() =  _recap?.totalQuoteCredit?:0.0
     val totalCreditCard : Double get() =  _recap?.totalQuoteCreditCard?:0.0
     val warningValue : Double get() =  _recap?.warningValueCreditCard?:0.0
+
 
     fun setRecap(recap:RecapDTO){
         _recap = recap

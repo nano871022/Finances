@@ -57,6 +57,13 @@
     <string name="enabled">Habilitar</string>
     <string name="disabled">Desabilitar</string>
 
+    <string name="wiki_paid_url">https://github.com/nano871022/Finances/wiki/Pagos</string>
+    <string name="wiki_paid_description">Información acerca de pagos con tarjeta débito o efectivo</string>
+    <string name="wiki_sms_paid_url">https://github.com/nano871022/Finances/wiki/SMS</string>
+    <string name="wiki_sms_paid_description">Información acerca de Configuración de lecture SMS para pagos debifo/efectivo</string>
+    <string name="wiki_account_url">https://github.com/nano871022/Finances/wiki/Cuentas</string>
+    <string name="wiki_account_description">Información acerca de Configuración de cuentas para pagos</string>
+
 
     <array name="months_short">
         <item>Enero</item>
@@ -102,4 +109,5 @@
     <string name="toast_dont_successful_enabled">No se logró habilitar</string>
     <string name="toast_successful_disabled">Se desabilito correctamente</string>
     <string name="toast_dont_successful_disabled">No se logró desabilitar</string>
+    <string name="toast_saves_successful">Se guardo correctamente</string>
 </resources>

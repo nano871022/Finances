@@ -480,5 +480,10 @@
         tools:layout="@layout/fragment_sms_paid" >
         <deepLink app:uri="android-app://co.com.japl.finanzas.module.app/paid/sms"/>
     </fragment>
+    <fragment
+        android:id="@+id/item_menu_setting_settings_application"
+        android:name="co.japl.android.myapplication.finanzas.controller.setting.SettingsApp"
+        android:label="@string/settings_app"
+        tools:layout="@layout/fragment_settings_app" />
 
 </navigation>

@@ -4,6 +4,7 @@ import android.content.res.Configuration
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -38,6 +39,7 @@ import co.com.japl.module.paid.views.Inputs.list.InputList
 import co.com.japl.ui.components.AlertDialogOkCancel
 import co.com.japl.ui.components.Carousel
 import co.com.japl.ui.components.FieldView
+import co.com.japl.ui.components.HelpWikiButton
 import co.com.japl.ui.components.MoreOptionsDialog
 import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.com.japl.ui.theme.values.Dimensions
@@ -89,62 +91,70 @@ private fun Body(viewModel: AccountViewModel, modifier:Modifier) {
     val listState = remember { viewModel.list}
     val state = remember { mutableStateOf(false) }
     val stateDelete = remember { mutableStateOf(false) }
- Carousel(size = listState.size) {
-     val item = listState[it]
-     Card(
-         modifier = Modifier
-             .padding(Dimensions.PADDING_SHORT)
-             .fillMaxWidth()
-     ) {
-         Row {
-             FieldView(
-                 title = stringResource(id = R.string.name),
-                 value = item.name,
-                 modifier = Modifier
-                     .weight(1f)
-                     .align(Alignment.CenterVertically)
-             )
-             IconButton(onClick = { state.value = true }) {
-                 Icon(
-                     imageVector = Icons.Rounded.MoreVert,
-                     contentDescription = "Add input to account"
-                 )
-             }
-         }
+    Column {
+        Row(horizontalArrangement = Arrangement.End, modifier=Modifier.fillMaxWidth()) {
+            HelpWikiButton(wikiUrl = R.string.wiki_account_url,
+                descriptionContent = R.string.wiki_account_description)
+        }
+        Carousel(size = listState.size) {
+            val item = listState[it]
+            Card(
+                modifier = Modifier
+                    .padding(Dimensions.PADDING_SHORT)
+                    .fillMaxWidth()
+            ) {
+                Row {
+                    FieldView(
+                        title = stringResource(id = R.string.name),
+                        value = item.name,
+                        modifier = Modifier
+                            .weight(1f)
+                            .align(Alignment.CenterVertically)
+                    )
+                    IconButton(onClick = { state.value = true }) {
+                        Icon(
+                            imageVector = Icons.Rounded.MoreVert,
+                            contentDescription = "Add input to account"
+                        )
+                    }
 
-         Column {
-             InputList(
-                 modelView = InputListModelView(
-                     LocalContext.current,
-                     item.id,
-                     viewModel.navController!!,
-                     viewModel.inputSvc
-                 )
-             )
-         }
-         if (stateDelete.value) {
-             AlertDialogOkCancel(
-                 title = R.string.toast_do_you_want_to_delete_this_record,
-                 confirmNameButton = R.string.delete,
-                 onDismiss = { stateDelete.value = false }) {
-                 viewModel.delete(item.id)
-                 stateDelete.value = false
-             }
-         }
-     }
 
-     if (state.value) {
-         MoreOptionsDialog(listOptions = MoreOptionsItemsAccount.values().toList(),
-             onDismiss = { state.value = false },
-             onClick = {
-                 when (it) {
-                     MoreOptionsItemsAccount.DELETE -> stateDelete.value = true
-                     MoreOptionsItemsAccount.EDIT -> viewModel.edit(item.id)
-                 }
-                 state.value = false
-             })
-     }
- }
+                }
+
+                Column {
+                    InputList(
+                        modelView = InputListModelView(
+                            LocalContext.current,
+                            item.id,
+                            viewModel.navController,
+                            viewModel.inputSvc
+                        )
+                    )
+                }
+                if (stateDelete.value) {
+                    AlertDialogOkCancel(
+                        title = R.string.toast_do_you_want_to_delete_this_record,
+                        confirmNameButton = R.string.delete,
+                        onDismiss = { stateDelete.value = false }) {
+                        viewModel.delete(item.id)
+                        stateDelete.value = false
+                    }
+                }
+            }
+
+            if (state.value) {
+                MoreOptionsDialog(listOptions = MoreOptionsItemsAccount.values().toList(),
+                    onDismiss = { state.value = false },
+                    onClick = {
+                        when (it) {
+                            MoreOptionsItemsAccount.DELETE -> stateDelete.value = true
+                            MoreOptionsItemsAccount.EDIT -> viewModel.edit(item.id)
+                        }
+                        state.value = false
+                    })
+            }
+        }
+    }
 }
 
 @RequiresApi(Build.VERSION_CODES.S)
