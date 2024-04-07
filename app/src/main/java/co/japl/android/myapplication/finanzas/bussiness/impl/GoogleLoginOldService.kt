@@ -51,7 +51,7 @@ class GoogleLoginOldService(private val activity: Activity, override val RC_SIGN
 
     }
 
-    override fun response(requestCode:Int, data:Intent){
+    override fun response(requestCode:Int,resultCode:Int, data:Intent){
         if(requestCode == RC_SIGN_IN){
             val result = Auth.GoogleSignInApi.getSignInResultFromIntent(data)
             if(result?.isSuccess == true){
@@ -72,4 +72,26 @@ class GoogleLoginOldService(private val activity: Activity, override val RC_SIGN
     override fun getAccount():GoogleSignInAccount{
         return signInAccount
     }
+
+    override fun restore() {
+        TODO("Not yet implemented")
+    }
+
+    override fun backup() {
+        TODO("Not yet implemented")
+    }
+
+    override fun infoBackup(): String {
+        TODO("Not yet implemented")
+    }
+
+    override fun message(): String {
+        TODO("Not yet implemented")
+    }
+
+    override fun subscribeMessage(subscriber: () -> Unit): Boolean {
+        TODO("Not yet implemented")
+    }
+
+
 }

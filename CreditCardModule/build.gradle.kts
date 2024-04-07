@@ -47,7 +47,6 @@ dependencies {
     implementation(project(":ui"))
     implementation(project(":japl-finances-iports"))
     implementation(project(":japl-android-graphs"))
-    //implementation(project(":app"))
 
     implementation("androidx.core:core-ktx:1.12.0")
     implementation("androidx.core:core-splashscreen:1.0.1")

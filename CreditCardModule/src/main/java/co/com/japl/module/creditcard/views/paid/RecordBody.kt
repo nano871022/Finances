@@ -19,6 +19,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import co.com.japl.module.creditcard.R
+import co.com.japl.ui.components.FieldView
 import co.com.japl.ui.utils.WindowWidthSize
 import co.japl.android.myapplication.utils.NumbersUtil
 
@@ -40,14 +41,9 @@ private fun RecordBodyCompact(dateRange:String, capital:Double, interest:Double,
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(text = dateRange)
 
-                Column(modifier = Modifier.weight(1f)) {
-                    Text(text = stringResource(id = R.string.total_value))
-                    Text(
-                        text = NumbersUtil.COPtoString(capital + interest),
-                        textAlign = TextAlign.End,
-                        modifier = Modifier.fillMaxWidth()
-                    )
-                }
+                Text(text = stringResource(id = R.string.total_value), modifier = Modifier.weight(1f))
+
+                Text(text = NumbersUtil.toString(capital + interest),Modifier.weight(1f))
 
                 IconButton(onClick = { moreOptionsStatus.value = true }) {
                     Icon(
@@ -57,22 +53,14 @@ private fun RecordBodyCompact(dateRange:String, capital:Double, interest:Double,
                 }
             }
                 Row(modifier = Modifier.fillMaxWidth()) {
-                    Column(modifier = Modifier.weight(1f)) {
-                        Text(text = stringResource(id = R.string.interest_value))
-                        Text(
-                            text = NumbersUtil.COPtoString(interest),
-                            textAlign = TextAlign.End,
-                            modifier = Modifier.fillMaxWidth()
-                        )
-                    }
-                    Column(modifier = Modifier.weight(1f)) {
-                        Text(text = stringResource(id = R.string.capital_value))
-                        Text(
-                            text = NumbersUtil.COPtoString(capital),
-                            textAlign = TextAlign.End,
-                            modifier = Modifier.fillMaxWidth()
-                        )
-                    }
+
+                    FieldView(name = R.string.interest_value,
+                        value = NumbersUtil.toString(interest),
+                        modifier = Modifier.weight(1f))
+
+                    FieldView(name = R.string.interest_value,
+                        value = NumbersUtil.toString(capital),
+                        modifier = Modifier.weight(1f))
                 }
         }
 }

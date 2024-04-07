@@ -103,6 +103,8 @@ class SaveCreditCardBoughtImpl @Inject constructor(val context:Context, override
             return items.also { Log.v(this.javaClass.name,"<<<=== getAll - End ${it.size}") }
     }
 
+
+
     @RequiresApi(Build.VERSION_CODES.O)
     override fun delete(id:Int):Boolean{
         Log.v(this.javaClass.name,"<<<=== delete - Start")
@@ -521,11 +523,26 @@ class SaveCreditCardBoughtImpl @Inject constructor(val context:Context, override
     }
 
    override fun findByNameAndBoughtDateAndValue(name:String,boughtDate:LocalDateTime,amount:BigDecimal):CreditCardBoughtDTO? {
-        return getAll().takeIf { it.isNotEmpty() }?.filter {
-            it.nameItem.trim().contains(name.replace("(SMS*)","").trim())
-                    && it.boughtDate.isEqual(boughtDate)
-                    && it.valueItem.toDouble() == amount.toDouble()
-        }?.firstOrNull()
-    }
-
+       Log.d(this.javaClass.name, "<<<=== getByNameValueDate - Start")
+       val db = dbConnect.readableDatabase
+       val cursor = db.query(
+           CreditCardBoughtDB.CreditCardBoughtEntry.TABLE_NAME,
+           COLUMNS_CALC,
+           "${CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_NAME_ITEM} like ? AND  ${CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_VALUE_ITEM} = ?",
+           arrayOf("%${name}%",amount.toDouble().toString()),
+           null,
+           null,
+           null
+       )
+       val list = mutableListOf<CreditCardBoughtDTO>()
+       while(cursor.moveToNext()){
+           CreditCardBoughtMap().mapping(cursor).takeIf {
+               it.boughtDate.toLocalDate().compareTo(boughtDate.toLocalDate()) == 0 ||
+               it.boughtDate.toLocalDate() in boughtDate.toLocalDate()..boughtDate.plusDays(5).toLocalDate()
+           }?.let(list::add)
+       }
+       return list.firstOrNull().also{
+           Log.d(this.javaClass.name, "<<<=== getByNameValueDate - End $it")
+       }
+   }
 }

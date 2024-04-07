@@ -2,6 +2,7 @@ package co.japl.android.finances.services.mapping
 
 import android.content.ContentValues
 import android.database.Cursor
+import android.provider.BaseColumns
 import co.com.japl.finances.iports.enums.KindInterestRateEnum
 import co.japl.android.finances.services.entities.SmsCreditCard
 import co.japl.android.finances.services.entities.SmsCreditCardDB
@@ -30,6 +31,18 @@ class SmsCreditCardMap {
             put(SmsCreditCardDB.Entry.COLUMN_KIND_INTEREST_RATE,dto.kindInterestRateEnum!!.getCode())
             put(SmsCreditCardDB.Entry.COLUMN_ACTIVE,if(dto.active!!) 1 else 0)
             put(SmsCreditCardDB.Entry.COLUMN_CREATE_DATE,DateUtils.localDateTimeToStringDB(dto.create!!))
+        }
+    }
+
+    fun restore(crsor:Cursor):ContentValues {
+        return ContentValues().apply {
+            put(BaseColumns._ID, crsor.getLong(0))
+            put(SmsCreditCardDB.Entry.COLUMN_CODE_CREDIT_CARD, crsor.getInt(1))
+            put(SmsCreditCardDB.Entry.COLUMN_PHONE_NUMBER, crsor.getString(2))
+            put(SmsCreditCardDB.Entry.COLUMN_PATTERN, crsor.getString(3))
+            put(SmsCreditCardDB.Entry.COLUMN_KIND_INTEREST_RATE, crsor.getInt(4))
+            put(SmsCreditCardDB.Entry.COLUMN_ACTIVE, crsor.getInt(5))
+            put(SmsCreditCardDB.Entry.COLUMN_CREATE_DATE, crsor.getString(6))
         }
     }
 }

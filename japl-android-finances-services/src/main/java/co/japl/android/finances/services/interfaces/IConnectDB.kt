@@ -10,6 +10,8 @@ interface IConnectDB {
     fun onUpgrade(db: SQLiteDatabase?, oldVersion: Int, newVersion: Int)
     fun onDowngrade(db: SQLiteDatabase?, oldVersion: Int, newVersion: Int)
 
+    fun onRestore(currentDB: SQLiteDatabase?, fromRestoreDB: SQLiteDatabase?)
+
     fun updateRevert(){
 
     }

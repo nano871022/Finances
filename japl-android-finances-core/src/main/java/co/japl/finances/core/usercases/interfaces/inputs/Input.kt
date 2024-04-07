@@ -1,6 +1,7 @@
 package co.japl.finances.core.usercases.interfaces.inputs
 
 import co.com.japl.finances.iports.dtos.InputDTO
+import java.time.YearMonth
 
 interface IInput {
 
@@ -15,5 +16,7 @@ interface IInput {
     fun create(input: InputDTO): Boolean
 
     fun update(input: InputDTO): Boolean
+
+    fun getTotalInputs(codeAccount: Int, period: YearMonth): Double
 
 }

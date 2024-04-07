@@ -7,6 +7,7 @@ import co.com.japl.finances.iports.outbounds.ISMSCreditCardPort
 import co.japl.finances.core.usercases.interfaces.creditcard.ISMSCreditCard
 import co.japl.finances.core.utils.DateUtils
 import co.japl.finances.core.utils.NumbersUtil
+import co.japl.finances.core.utils.SmsUtil
 import java.time.LocalDateTime
 import javax.inject.Inject
 
@@ -50,20 +51,18 @@ class SMSCreditCardImpl @Inject constructor(private val svc:ISMSCreditCardPort, 
     }
 
     override fun getSmsMessages(phoneNumber:String,pattern:String,numDaysRead:Int):List<Triple<String,Double,LocalDateTime>>{
-        val list = mutableListOf<Triple<String,Double,LocalDateTime>>()
-        smsSvc.load(phoneNumber,numDaysRead).takeIf{it.isNotEmpty()}?.forEach{sms->
-            if(pattern.isNotEmpty() && pattern.toRegex().containsMatchIn(sms)){
-               pattern.toRegex().find(sms)?.let{mr->
-                    if(mr.groupValues.size > 3){
-                        val name = mr.groupValues[2]
-                        val value = mr.groupValues[1].takeIf { it != null && NumbersUtil.isNumberRegex(it) }?.let(NumbersUtil::toDoubleOrZero) ?: 0.0
-                        val date = mr.groupValues[3].takeIf { it != null && DateUtils.isLocalDateRegex(it) }?.let(DateUtils::toLocalDateTime)?:LocalDateTime.now()
-                        list.add(Triple(name,value,date))
-                    }
-                }
+        return smsSvc.load(phoneNumber,numDaysRead).takeIf{it.isNotEmpty()}
+            ?.mapNotNull{getSmsMessages(pattern,it)}
+            ?: emptyList()
+    }
+
+    override fun getSmsMessages(pattern: String,sms:String):Triple<String,Double,LocalDateTime>?{
+        if(pattern.isNotEmpty() && pattern.toRegex().containsMatchIn(sms)){
+            pattern.toRegex().find(sms)?.let{
+                return SmsUtil.getValues(it.groupValues)
             }
         }
-        return list
+        return null
     }
 
     override fun enable(codeSMSCreditCard: Int): Boolean {

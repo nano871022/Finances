@@ -3,6 +3,7 @@ package co.japl.finances.core.adapters.inbound.implement.inputs
 import co.com.japl.finances.iports.dtos.InputDTO
 import co.com.japl.finances.iports.inbounds.inputs.IInputPort
 import co.japl.finances.core.usercases.interfaces.inputs.IInput
+import java.time.YearMonth
 import javax.inject.Inject
 
 class InputImpl @Inject constructor(private val inputSvc:IInput): IInputPort {
@@ -28,5 +29,9 @@ class InputImpl @Inject constructor(private val inputSvc:IInput): IInputPort {
 
     override fun update(input: InputDTO): Boolean {
         return inputSvc.update(input)
+    }
+
+    override fun getTotalInputs(codeAccount: Int, period: YearMonth): Double {
+        return inputSvc.getTotalInputs(codeAccount,period)
     }
 }

@@ -14,6 +14,10 @@ class AccountPort @Inject constructor(private val service : IAccount): IAccountP
         return service.getAll()
     }
 
+    override fun getAllActive(): List<AccountDTO> {
+       return service.getAllActive().takeIf { it.isNotEmpty() }?.filter { it.active }?: emptyList()
+    }
+
     override fun delete(codeAccount: Int): Boolean {
         return service.delete(codeAccount)
     }

@@ -12,8 +12,8 @@ import co.com.japl.finances.iports.inbounds.inputs.IAccountPort
 import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.japl.android.myapplication.databinding.FragmentAccountBinding
 import co.japl.android.myapplication.finanzas.putParams.AccountParams
-import co.japl.android.myapplication.finanzas.view.accounts.form.AccountForm
-import co.japl.android.myapplication.finanzas.view.accounts.form.AccountViewModel
+import co.com.japl.module.paid.views.accounts.form.AccountForm
+import co.com.japl.module.paid.controllers.accounts.form.AccountViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 

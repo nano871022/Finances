@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="go_to_list">Ver la Lista de Ingresos</string>
+    <string name="go_to_periods">Ver la lista de Meses</string>
+    <string name="go_to_add">Crear Nuevo Registro</string>
+    <string name="account">Cuenta</string>
+    <string name="period">Periodo</string>
+    <string name="count">Cantidad</string>
+    <string name="paid_total">Total Pagado</string>
+    <string name="incomes_total">Total Ingresos</string>
+    <string name="incomes_less_paids">Ingresos - Pagos</string>
+
+    <string name="add_paid">Agregar Pago</string>
+    <string name="value">Valor</string>
+    <string name="date_paid">Fecha de pago</string>
+    <string name="name_item">Nombre</string>
+    <string name="value_item">Valor</string>
+    <string name="delete">Eliminar</string>
+    <string name="edit">Actualizar</string>
+    <string name="recurrent">Recurrente</string>
+    <string name="copy">Copiar</string>
+    <string name="end">Finalizar</string>
+    <string name="setting">Configuración</string>
+    <string name="msm_read_num">Número dias lectura SMS</string>
+
+    <string name="year">Año</string>
+    <string name="month">Mes</string>
+    <string name="see">Ver</string>
+
+    <string name="create">Crear</string>
+    <string name="name">Nombre</string>
+    <string name="add_input_account">Agregar Ingreso</string>
+    <string name="active">Activo</string>
+    <string name="monthly">Mensual</string>
+    <string name="bi_monthly">Bi-Mensual</string>
+    <string name="trimesterly">Trimestral</string>
+    <string name="quarterly">Cuatrimestral</string>
+    <string name="semesterly">Semestral</string>
+    <string name="yearly">Anual</string>
+    <string name="delete_input">Eliminar Ingreso</string>
+    <string name="update_input_value">Actualizar Valor</string>
+    <string name="add_account">Agregar Cuenta</string>
+    <string name="kind_of_pay">Tipo de Pago</string>
+    <string name="date_input">Fecha Ingreso</string>
+    <string name="update_value_paymnet">Actualizar Valor Pago</string>
+    <string name="cancel">Cancelar</string>
+    <string name="num_inputs">Cantidad</string>
+    <string name="input_total">Total</string>
+    <string name="monthly_input_total">Total Mensual</string>
+    <string name="yearly_input_total">Total Anual</string>
+
+    <string name="save">Guardar</string>
+    <string name="validate">Validar</string>
+    <string name="pattern">Patrón</string>
+    <string name="phone_number">Número de Teléfono</string>
+    <string name="kind_rate">Tipo Tasa</string>
+    <string name="enabled">Habilitar</string>
+    <string name="disabled">Desabilitar</string>
+
+    <string name="wiki_paid_url">https://github.com/nano871022/Finances/wiki/Pagos</string>
+    <string name="wiki_paid_description">Información acerca de pagos con tarjeta débito o efectivo</string>
+    <string name="wiki_sms_paid_url">https://github.com/nano871022/Finances/wiki/SMS</string>
+    <string name="wiki_sms_paid_description">Información acerca de Configuración de lecture SMS para pagos debifo/efectivo</string>
+    <string name="wiki_account_url">https://github.com/nano871022/Finances/wiki/Cuentas</string>
+    <string name="wiki_account_description">Información acerca de Configuración de cuentas para pagos</string>
+
+
+    <array name="months_short">
+        <item>Enero</item>
+        <item>Febrero</item>
+        <item>Marzo</item>
+        <item>Abril</item>
+        <item>Mayo</item>
+        <item>Junio</item>
+        <item>Julio</item>
+        <item>Agosto</item>
+        <item>Septiembre</item>
+        <item>Octubre</item>
+        <item>Noviembre</item>
+        <item>Diciembre</item>
+    </array>
+
+
+    <string name="navigate_account_code">android-app://co.com.japl.finanzas.module.app/accounts/inputs?code_paid=%d</string>
+    <string name="navigate_account">android-app://co.com.japl.finanzas.module.app/accounts/inputs</string>
+    <string name="navigate_input">android-app://co.com.japl.finanzas.module.app/accounts/input?account_code=%d</string>
+    <string name="navigate_paid">android-app://co.com.japl.finanzas.module.app/paid/form?code_paid=%d&amp;code_account=%d</string>
+    <string name="navigate_paid_create">android-app://co.com.japl.finanzas.module.app/paid/form?code_account=%d</string>
+    <string name="navigate_paids">android-app://co.com.japl.finanzas.module.app/paid/list?code_account=%d&amp;period=%s</string>
+    <string name="navigate_period">android-app://co.com.japl.finanzas.module.app/paid/period?code_account=%d</string>
+    <string name="navigate_monthly">android-app://co.com.japl.finanzas.module.app/paid/monthly?period=%s</string>
+    <string name="navigate_sms_form">android-app://co.com.japl.finanzas.module.app/paid/sms</string>
+    <string name="navigate_sms_form_code">android-app://co.com.japl.finanzas.module.app/paid/sms?code_sms_paid=%d</string>
+
+    <string name="dialog_delete">¿Desea eliminar el registro?</string>
+
+    <string name="toast_update_successful">Se realizo la actualización correctamente</string>
+    <string name="toast_update_error">No se logró realizar la actualización</string>
+    <string name="toast_save_successful">Se creo el registro correctamente</string>
+    <string name="toast_save_error">No se logró crear el registro</string>
+    <string name="toast_successful_deleted">Se eliminó correctamente</string>
+    <string name="toast_unsuccessful_deleted">No se eliminó el registro</string>
+    <string name="toast_successful_end_recurrent">Se realizó la finalización correctamente</string>
+    <string name="toast_unsuccessful_end_recurrent">No se logró finalizar</string>
+    <string name="toast_successful_copy">Se realizó la copia correctamente</string>
+    <string name="toast_unsuccessful_copy">No se realizó la copia</string>
+    <string name="toast_do_you_want_to_delete_this_record">¿Desea eliminar este registro?</string>
+    <string name="toast_successful_enabled">Se habilito correctamente</string>
+    <string name="toast_dont_successful_enabled">No se logró habilitar</string>
+    <string name="toast_successful_disabled">Se desabilito correctamente</string>
+    <string name="toast_dont_successful_disabled">No se logró desabilitar</string>
+    <string name="toast_saves_successful">Se guardo correctamente</string>
+</resources>

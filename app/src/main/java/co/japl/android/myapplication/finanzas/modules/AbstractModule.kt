@@ -1,6 +1,5 @@
 package co.japl.android.myapplication.finanzas.modules
 
-import android.app.Activity
 import android.content.Context
 import co.com.japl.finances.iports.inbounds.creditcard.ICreditCardPort
 import co.com.japl.finances.iports.inbounds.common.IDifferQuotesPort
@@ -15,6 +14,10 @@ import co.com.japl.finances.iports.inbounds.creditcard.bought.IBoughtSmsPort
 import co.com.japl.finances.iports.inbounds.creditcard.bought.lists.IBoughtListPort
 import co.com.japl.finances.iports.inbounds.inputs.IAccountPort
 import co.com.japl.finances.iports.inbounds.inputs.IInputPort
+import co.com.japl.finances.iports.inbounds.paid.IPaidPort
+import co.com.japl.finances.iports.inbounds.paid.IPeriodPaidPort
+import co.com.japl.finances.iports.inbounds.paid.ISMSPaidPort
+import co.com.japl.finances.iports.inbounds.paid.ISmsPort
 import co.japl.android.myapplication.bussiness.impl.Config
 import co.japl.android.myapplication.bussiness.impl.CreditCardImpl
 import co.japl.android.myapplication.bussiness.impl.SaveCreditCardBoughtImpl
@@ -64,15 +67,16 @@ import co.japl.android.myapplication.finanzas.bussiness.interfaces.IPaidSvc
 import co.japl.android.myapplication.finanzas.bussiness.interfaces.IProjectionsSvc
 import co.japl.android.myapplication.finanzas.bussiness.interfaces.IQuoteCreditCardSvc
 import co.com.japl.finances.iports.inbounds.recap.IRecapPort
-import co.com.japl.module.creditcard.impl.SMSObserver
 import co.com.japl.ui.impls.SMSObservable
 import co.com.japl.ui.interfaces.ISMSObservablePublicher
 import co.com.japl.ui.interfaces.ISMSObservableSubscriber
-import co.com.japl.ui.interfaces.ISMSObserver
+import co.japl.android.finances.services.core.SMSPaidImpl
 import co.japl.android.myapplication.finanzas.controller.SMS
 import co.japl.finances.core.adapters.inbound.implement.creditCard.SMSCreditCardImpl
 import co.japl.finances.core.adapters.inbound.implement.creditcard.bought.BoughtImpl
 import co.japl.finances.core.adapters.inbound.implement.creditcard.bought.lists.ListImpl
+import co.japl.finances.core.adapters.inbound.implement.paid.PeriodImpl
+import co.japl.finances.core.adapters.inbound.implement.paid.SMSImpl
 import co.japl.finances.core.adapters.inbound.implement.recap.RecapImp
 import co.japl.finances.core.usercases.implement.common.DifferQuoteImpl
 import co.japl.finances.core.usercases.implement.common.PaidImp
@@ -98,14 +102,14 @@ import co.japl.finances.core.usercases.interfaces.creditcard.bought.lists.IBough
 import co.japl.finances.core.usercases.interfaces.creditcard.bought.lists.IBoughtList
 import co.japl.finances.core.usercases.interfaces.creditcard.bought.lists.IBoughtSms
 import co.japl.finances.core.usercases.interfaces.creditcard.paid.lists.IPaidList
+import co.japl.finances.core.usercases.interfaces.paid.ISMS
+import co.japl.finances.core.usercases.interfaces.paid.ISms
 import co.japl.finances.core.usercases.interfaces.recap.IRecap
 import dagger.Binds
 import dagger.Module
-import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
-import dagger.multibindings.IntoSet
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -213,7 +217,7 @@ abstract class AbstractModule {
     abstract fun bindOutboundPaid(implement: co.japl.android.finances.services.core.PaidImpl): co.com.japl.finances.iports.outbounds.IPaidRecapPort
 
     @Binds
-    abstract fun bindServicePaid(implement: co.japl.android.finances.services.implement.PaidImpl): co.japl.android.finances.services.interfaces.IPaidSvc
+    abstract fun bindServicePaid(implement: co.japl.android.finances.services.dao.implement.PaidImpl): co.japl.android.finances.services.dao.interfaces.IPaidDAO
 
 
     @Binds
@@ -379,4 +383,40 @@ abstract class AbstractModule {
 
     @Binds
     abstract fun getSmsRead(svc:SMS):ISMSRead
+
+    @Binds
+    abstract fun bindInboundPaidPort(svc:co.japl.finances.core.adapters.inbound.implement.paid.PaidImpl):IPaidPort
+
+    @Binds
+    abstract fun bindUserCasePaid2(svc:co.japl.finances.core.usercases.implement.paid.PaidImpl):co.japl.finances.core.usercases.interfaces.paid.IPaid
+
+    @Binds
+    abstract fun bindInputPeriodPaid(svc:PeriodImpl):IPeriodPaidPort
+
+    @Binds
+    abstract fun bindOutputPeriodPaid(svc:co.japl.android.finances.services.core.PaidImpl):co.com.japl.finances.iports.outbounds.IPeriodPaidPort
+
+    @Binds
+    abstract fun bindOutputPaid(svc:co.japl.android.finances.services.core.PaidImpl):co.com.japl.finances.iports.outbounds.IPaidPort
+
+    @Binds
+    abstract fun bindUserCasePeriodPaid(svc:co.japl.finances.core.usercases.implement.paid.PeriodPaid):co.japl.finances.core.usercases.interfaces.paid.IPeriodPaid
+
+    @Binds
+    abstract fun getInboundSmsPaidPort(svc:SMSImpl):ISMSPaidPort
+    @Binds
+    abstract fun SmsPaidQuery(svc:co.japl.finances.core.usercases.implement.paid.SMSImpl):ISMS
+
+    @Binds
+    abstract fun getOutboundSmsPaidPort(svc:co.japl.android.finances.services.core.SMSPaidImpl):co.com.japl.finances.iports.outbounds.ISMSPaidPort
+
+    @Binds
+    abstract fun getDAOSmsPaid(svc:co.japl.android.finances.services.dao.implement.SmsPaidImpl):co.japl.android.finances.services.dao.interfaces.ISmsPaidDAO
+
+    @Binds
+    abstract fun bindInboundSmsPaidPort(svc:SMSImpl):ISmsPort
+
+    @Binds
+    abstract fun bindUserCaseSmsPaid(svc:co.japl.finances.core.usercases.implement.paid.PaidImpl):ISms
+
 }

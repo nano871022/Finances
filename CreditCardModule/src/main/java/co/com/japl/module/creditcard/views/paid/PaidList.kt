@@ -1,11 +1,14 @@
 package co.com.japl.module.creditcard.views.paid
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.LinearProgressIndicator
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
@@ -19,6 +22,7 @@ import co.com.japl.module.creditcard.R
 import co.com.japl.module.creditcard.controllers.paid.BoughtCreditCardViewModel
 import co.com.japl.module.creditcard.enums.MoreOptionsItemPaidPeriodEnum
 import co.com.japl.ui.components.MoreOptionsDialog
+import co.com.japl.ui.theme.values.Dimensions
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -45,22 +49,30 @@ fun PaidList(viewModel: BoughtCreditCardViewModel){
 
 @Composable
 private fun Yearly(viewModel:BoughtCreditCardViewModel){
-    val drowdownState = remember { mutableStateOf(false) }
     LazyColumn(modifier = Modifier.fillMaxWidth()){
         items(viewModel.periodList.size){item->
             val key = viewModel.periodList.keys.toList()[item]
             val list = viewModel.periodList[key]!!
-            Surface(onClick = { drowdownState.value = !drowdownState.value }) {
-                Column {
+            Yearly(key = key, list = list, viewModel = viewModel)
+        }
+    }
+}
 
-                    YearlyHeader(year = key, list = list)
-
-                    if (drowdownState.value) {
-                        Monthly(list = list, goto = { cutoffDay, cutoff ->
-                            viewModel.goToListDetail(cutoffDay, cutoff)
-                        })
-                    }
-                }
+@Composable
+private fun Yearly(key:Long,list:List<BoughtCreditCardPeriodDTO>,viewModel:BoughtCreditCardViewModel){
+    val drowdownState = remember { mutableStateOf(false) }
+    Surface(
+        border = BorderStroke(1.dp,color= MaterialTheme.colorScheme.onPrimaryContainer),
+        shadowElevation = 10.dp,
+        shape = RoundedCornerShape(10.dp),
+        onClick = { drowdownState.value = !drowdownState.value },
+        modifier=Modifier.padding(bottom = Dimensions.PADDING_SHORT)) {
+        Column {
+            YearlyHeader(year = key, list = list)
+            if (drowdownState.value) {
+                Monthly(list = list, goto = { cutoffDay, cutoff ->
+                    viewModel.goToListDetail(cutoffDay, cutoff)
+                })
             }
         }
     }

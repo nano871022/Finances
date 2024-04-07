@@ -14,8 +14,8 @@ android {
         applicationId "co.japl.android.myapplication"
         minSdk 26
         targetSdk 33
-        versionCode 4_05_05_081
-        versionName "V 4.05.04.081 Added read SMS with pattern code to get Name Item, value Item and date item"
+        versionCode 4_05_05_088
+        versionName "V 4.05.05.088 Migration Payment to new interface and added sms services loader"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -24,8 +24,15 @@ android {
         release {
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            buildConfigField ("String",'GoogleClientId', prodGoogleClientId)
+        }
+        debug{
+            applicationIdSuffix ".debug"
+            buildConfigField ("String",'GoogleClientId', debugGoogleClientId)
         }
     }
+
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_17
         targetCompatibility JavaVersion.VERSION_17
@@ -63,28 +70,44 @@ dependencies {
     implementation(project(':about-module'))
     implementation(project(":japl-finances-iports"))
     implementation(project(":CreditCardModule"))
+    implementation(project(":japl-android-finances-paid-module"))
 
 
     implementation 'androidx.core:core-ktx:1.12.0'
     implementation 'androidx.core:core-splashscreen:1.0.1'
     implementation 'androidx.appcompat:appcompat:1.6.1'
-    implementation 'com.google.android.material:material:1.10.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+    implementation('androidx.credentials:credentials:1.2.2')
+    implementation('androidx.credentials:credentials-play-services-auth:1.2.2')
     implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.6.2'
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.2'
     implementation 'androidx.navigation:navigation-fragment-ktx:2.7.5'
     implementation 'androidx.navigation:navigation-ui-ktx:2.7.5'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
-    implementation 'com.google.android.gms:play-services-auth:20.7.0'
-    implementation 'com.google.android.gms:play-services-drive:17.0.0'
-    implementation 'com.google.gms.google-services:com.google.gms.google-services.gradle.plugin:4.3.15'
-    implementation 'com.squareup.okio:okio:3.4.0'
-    implementation 'com.google.apis:google-api-services-script:v1-rev20220323-2.0.0'
-    implementation 'com.google.android.material:material:1.10.0'
-    implementation 'com.google.http-client:google-http-client-gson:1.42.3'
-    implementation platform('com.google.firebase:firebase-bom:31.2.3')
     implementation 'androidx.loader:loader:1.1.0'
+    implementation 'com.google.api-client:google-api-client:2.0.0'
+
+    implementation 'com.google.android.material:material:1.11.0'
+    implementation 'com.google.android.gms:play-services-auth:21.0.0'
+    implementation 'com.google.android.gms:play-services-drive:17.0.0'
+    implementation 'com.google.http-client:google-http-client-gson:1.42.3'
+    implementation 'com.google.gms.google-services:com.google.gms.google-services.gradle.plugin:4.4.1'
+    //implementation 'com.google.apis:google-api-services-script:v1-rev20220323-2.0.0'
+    implementation('com.google.api-client:google-api-client-android:1.23.0') {
+        exclude group: 'org.apache.httpcomponents'
+    }
+    implementation('com.google.apis:google-api-services-drive:v3-rev20240123-2.0.0') {
+        exclude group: 'org.apache.httpcomponents'
+    }
+    implementation 'com.google.http-client:google-http-client-gson:1.42.3'
+    implementation platform('com.google.firebase:firebase-bom:32.7.4')
+    implementation 'com.google.firebase:firebase-auth:22.3.1'
+    //implementation 'com.google.android.play:core:1.10.3'
+    implementation('com.google.android.play:integrity:1.3.0')
+    implementation('com.google.android.libraries.identity.googleid:googleid:1.1.0')
     implementation 'com.google.dagger:hilt-android:2.46.1'
+
+    implementation 'com.squareup.okio:okio:3.4.0'
     kapt 'com.google.dagger:hilt-android-compiler:2.48.1'
 
 

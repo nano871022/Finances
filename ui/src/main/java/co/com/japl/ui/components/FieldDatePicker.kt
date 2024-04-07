@@ -17,6 +17,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Cancel
 import androidx.compose.material3.DatePicker
+import androidx.compose.material3.DatePickerDefaults
 import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -45,7 +46,7 @@ import co.com.japl.ui.utils.DateUtils
 @Composable
 fun FieldDatePicker(@StringRes title:Int,value:String,isError:MutableState<Boolean> = mutableStateOf(false),validation:()->Unit,callable:(String)->Unit,modifier:Modifier = Modifier) {
     val state = rememberDatePickerState()
-    val stateDatePicker = remember { mutableStateOf(false) }
+    val stateDatePicker = remember { mutableStateOf(true) }
     val stateValue = remember { mutableStateOf(value) }
 
     Box(modifier = modifier
@@ -73,7 +74,9 @@ fun FieldDatePicker(@StringRes title:Int,value:String,isError:MutableState<Boole
                         color= if(isError.value){
                             MaterialTheme.colorScheme.error}else{
                             MaterialTheme.colorScheme.onSurface}
-                        ,modifier = modifier.weight(1f).align(alignment = Alignment.CenterVertically))
+                        ,modifier = modifier
+                            .weight(1f)
+                            .align(alignment = Alignment.CenterVertically))
 
                     IconButton(onClick = { stateValue.value = "" }) {
                         Icon(imageVector = Icons.Rounded.Cancel, contentDescription = "Clear",
@@ -88,6 +91,7 @@ fun FieldDatePicker(@StringRes title:Int,value:String,isError:MutableState<Boole
     }
     if(stateDatePicker.value){
         DatePickerDialog(
+
             onDismissRequest = {
                 stateDatePicker.value = false
             },
@@ -100,12 +104,14 @@ fun FieldDatePicker(@StringRes title:Int,value:String,isError:MutableState<Boole
                     callable.invoke(stateValue.value)
                     validation.invoke()
                 }){
-                    Text(text = stringResource(id = R.string.ok))
+                    Text(text = stringResource(id = R.string.ok)
+                    ,color = MaterialTheme.colorScheme.onSurface)
                 }
             },
             dismissButton = {
                 TextButton(onClick = { stateDatePicker.value = false }) {
-                    Text(text = stringResource(id = R.string.cancel))
+                    Text(text = stringResource(id = R.string.cancel)
+                    ,color = MaterialTheme.colorScheme.onSurface)
                 }
 
             }

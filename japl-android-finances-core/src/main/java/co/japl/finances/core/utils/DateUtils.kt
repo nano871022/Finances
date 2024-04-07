@@ -270,12 +270,34 @@ class DateUtils {
         }
 
         fun isLocalDateRegex(value: String): Boolean {
-            return "\\d{2}\\/\\d{2}\\/\\d{4}".toRegex().matches(value)
+            return     "\\d{2}\\/\\d{2}\\/\\d{4}".toRegex().matches(value)
                     || "\\d{2}\\-\\d{2}\\-\\d{4}".toRegex().matches(value)
                     || "\\d{4}\\/\\d{2}\\/\\d{2}".toRegex().matches(value)
                     || "\\d{4}\\-\\d{2}\\-\\d{2}".toRegex().matches(value)
+                    || "\\d{2}\\/\\d{2}\\/\\d{2}".toRegex().matches(value)
+                    || "\\d{2}\\-\\d{2}\\-\\d{2}".toRegex().matches(value)
+                    || "\\d{2}\\/[10-31]\\/\\d{4}".toRegex().matches(value)
         }
 
+        fun toLocalDateRegex(value:String):LocalDate?{
+               return if("\\d{2}\\/\\d{2}\\/\\d{4}".toRegex().matches(value)){
+                    LocalDate.parse(value, DateTimeFormatter.ofPattern("dd/MM/yyyy"))
+               }else if("\\d{2}\\-\\d{2}\\-\\d{4}".toRegex().matches(value)){
+                   LocalDate.parse(value, DateTimeFormatter.ofPattern("dd-MM-yyyy"))
+               }else if("\\d{4}\\/\\d{2}\\/\\d{2}".toRegex().matches(value)){
+                   LocalDate.parse(value, DateTimeFormatter.ofPattern("yyyy/MM/dd"))
+               }else if("\\d{4}\\-\\d{2}\\-\\d{2}".toRegex().matches(value)){
+                   LocalDate.parse(value, DateTimeFormatter.ofPattern("yyyy-MM-dd"))
+               }else if("\\d{2}\\/\\d{2}\\/\\d{2}".toRegex().matches(value)){
+                   LocalDate.parse(value, DateTimeFormatter.ofPattern("dd/MM/yy"))
+               }else if("\\d{2}\\-\\d{2}\\-\\d{2}".toRegex().matches(value)){
+                   LocalDate.parse(value, DateTimeFormatter.ofPattern("dd-MM-yy"))
+               }else if("\\d{2}\\/[10-31]\\/\\d{4}".toRegex().matches(value)){
+                   LocalDate.parse(value, DateTimeFormatter.ofPattern("MM/dd/yyyy"))
+               }else {
+                   null
+               }
+        }
 
     }}
 

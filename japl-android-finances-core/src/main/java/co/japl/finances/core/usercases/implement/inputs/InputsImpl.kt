@@ -4,6 +4,8 @@ import co.com.japl.finances.iports.dtos.InputDTO
 import co.com.japl.finances.iports.outbounds.IInputPort
 import co.japl.finances.core.usercases.interfaces.inputs.IInput
 import java.time.LocalDate
+import java.time.Period
+import java.time.YearMonth
 import javax.inject.Inject
 
 class InputsImpl @Inject constructor(private val inputSvc:IInputPort) : IInput {
@@ -41,5 +43,27 @@ class InputsImpl @Inject constructor(private val inputSvc:IInputPort) : IInput {
 
     override fun update(input: InputDTO): Boolean {
         return inputSvc.update(input)
+    }
+
+    override fun getTotalInputs(codeAccount: Int, period: YearMonth): Double {
+        return   inputSvc.getInputs(codeAccount).takeIf { it.isNotEmpty() }?.map { input->
+            when(input.kindOf){
+                "semestral"-> {
+                    val date = YearMonth.of(input.date.year,input.date.monthValue)
+                    if(date == period){
+                        return input.value.toDouble()
+                    }else if(date < period){
+                        val date = LocalDate.of(date.year,date.monthValue,1)
+                        val period = LocalDate.of(date.year,date.monthValue,1)
+                        Period.between(date,period).takeIf { it.months % 6 == 0 }?.let{
+                           input.value.toDouble()
+                        }?:0.0
+                    }else{
+                        0.0
+                    }
+                 }
+                else->input.value.toDouble()
+            }
+        }?.sumOf{ it }?:0.0
     }
 }

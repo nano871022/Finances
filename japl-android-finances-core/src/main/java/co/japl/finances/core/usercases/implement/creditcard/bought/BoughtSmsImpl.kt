@@ -21,9 +21,13 @@ class BoughtSmsImpl @Inject constructor(private val creditRateSvc:ITax, private 
                 it.kindOfTax?.let{dto.kindOfTax = it}
             }
         }
-        return boughtSvc.findByNameAndBoughtDateAndValue(dto.nameItem,dto.boughtDate,dto.valueItem)?.let{
+        return (boughtSvc.findByNameAndBoughtDateAndValue(
+            dto.nameItem,
+            dto.boughtDate,
+            dto.valueItem
+        )?.let {
             return false
-        }?:boutSvc.create(dto,false) > 0
+        }) ?: (boutSvc.create(dto.copy(nameItem = "(SMS*) ${dto.nameItem}"), false) > 0)
     }
 
 

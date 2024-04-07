@@ -3,6 +3,7 @@ package co.japl.android.finances.services.mapping
 import android.content.ContentValues
 import android.database.Cursor
 import android.os.Build
+import android.provider.BaseColumns
 import androidx.annotation.RequiresApi
 import co.japl.android.finances.services.interfaces.IMapper
 import co.japl.android.finances.services.dto.TagDB
@@ -34,4 +35,12 @@ class TagMap : IMapper<TagDTO>{
         )
     }
 
+    fun restore(crsor:Cursor):ContentValues {
+        return ContentValues().apply {
+            put(BaseColumns._ID, crsor.getLong(0))
+            put(TagDB.Entry.COLUMN_NAME, crsor.getString(1))
+            put(TagDB.Entry.COLUMN_DATE_CREATE, crsor.getString(2))
+            put(TagDB.Entry.COLUMN_ACTIVE, crsor.getInt(3))
+        }
+    }
 }

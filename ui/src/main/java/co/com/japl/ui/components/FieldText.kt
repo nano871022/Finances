@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.AttachMoney
 import androidx.compose.material.icons.rounded.Cancel
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -44,7 +45,19 @@ fun FieldText( title:String
         valueState.value = it
         callback.invoke(it)
         validation.invoke()
-    }, isError = hasErrorState.value, label = {
+    },
+        prefix = {
+                 when(keyboardType.keyboardType){
+                     KeyboardType.Decimal ->{
+                        Icon(imageVector = Icons.Rounded.AttachMoney,
+                            contentDescription = stringResource(id = R.string.money))
+                     }
+
+                     else->{
+
+                     }
+                 }
+        }, isError = hasErrorState.value, label = {
         Text(text = title)
     }, trailingIcon = {
         valueState.value.takeIf { it.isNotEmpty() }?.let {

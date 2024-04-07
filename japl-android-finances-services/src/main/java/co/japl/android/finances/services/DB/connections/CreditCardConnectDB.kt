@@ -2,11 +2,14 @@ package co.japl.android.finances.services.DB.connections
 
 import android.database.sqlite.SQLiteDatabase
 import android.util.Log
+import co.japl.android.finances.services.DB.connections.abstracs.DBRestore
+import co.japl.android.finances.services.dto.CreditCardDB
 import co.japl.android.finances.services.interfaces.IConnectDB
+import co.japl.android.finances.services.mapping.CreditCardMap
 import co.japl.android.finances.services.queries.CreditCardQuery
 import co.japl.android.finances.services.utils.DatabaseConstants
 
-class CreditCardConnectDB: IConnectDB {
+class CreditCardConnectDB: DBRestore(), IConnectDB {
 
     override fun onCreate(db: SQLiteDatabase?) {
         Log.i(this.javaClass.name,"<<<=== CreditCardConnectDB#onCreate - Start")
@@ -35,5 +38,9 @@ class CreditCardConnectDB: IConnectDB {
         Log.i(this.javaClass.name,"<<<=== CreditCardConnectDB#onDowngrade - End")
     }
 
-
+    override fun onRestore(currentDB: SQLiteDatabase?, fromRestoreDB: SQLiteDatabase?) {
+        onRestore(currentDB,fromRestoreDB,javaClass.simpleName,CreditCardDB.CreditCardEntry.TABLE_NAME,CreditCardMap()::restore)
     }
+
+
+}

@@ -2,10 +2,12 @@ package co.japl.android.finances.services.DB.connections
 
 import android.database.sqlite.SQLiteDatabase
 import android.util.Log
+import co.japl.android.finances.services.DB.connections.abstracs.DBRestore
+import co.japl.android.finances.services.dto.AddToCapitalCreditDB
 import co.japl.android.finances.services.interfaces.IConnectDB
 import co.japl.android.finances.services.queries.AddToCapitalQuery
 
-class AddToCapitalConnectDB: IConnectDB {
+class AddToCapitalConnectDB: DBRestore(), IConnectDB {
     override fun onCreate(db: SQLiteDatabase?) {
         Log.i(this.javaClass.name,"<<<=== AddToCapitalConnectDB#onCreate - Start")
         db?.execSQL(AddToCapitalQuery.SQL_CREATE_ENTRIES)
@@ -26,5 +28,9 @@ class AddToCapitalConnectDB: IConnectDB {
         db?.execSQL(AddToCapitalQuery.SQL_DELETE_ENTRIES)
         onCreate(db)
         Log.i(this.javaClass.name,"<<<=== AddToCapitalConnectDB#downgrade - END")
+    }
+
+    override fun onRestore(currentDB: SQLiteDatabase?, fromRestoreDB: SQLiteDatabase?) {
+
     }
 }

@@ -3,6 +3,7 @@ package co.japl.android.finances.services.mapping
 import android.content.ContentValues
 import android.database.Cursor
 import android.os.Build
+import android.provider.BaseColumns
 import androidx.annotation.RequiresApi
 import co.japl.android.finances.services.dto.TaxDB
 import co.japl.android.finances.services.dto.TaxDTO
@@ -50,6 +51,21 @@ class TaxMap : IMapper<TaxDTO>{
             period,
             kindOfTax
         )
+    }
+
+    fun restore(crsor:Cursor):ContentValues {
+        return ContentValues().apply {
+            put(BaseColumns._ID, crsor.getLong(0))
+            put(TaxDB.TaxEntry.COLUMN_TAX, crsor.getDouble(1))
+            put(TaxDB.TaxEntry.COLUMN_MONTH, crsor.getShort(2))
+            put(TaxDB.TaxEntry.COLUMN_YEAR, crsor.getInt(3))
+            put(TaxDB.TaxEntry.COLUMN_COD_CREDIT_CARD, crsor.getInt(4))
+            put(TaxDB.TaxEntry.COLUMN_status, crsor.getShort(5))
+            put(TaxDB.TaxEntry.COLUMN_CREATE_DATE, crsor.getString(6))
+            put(TaxDB.TaxEntry.COLUMN_KIND, crsor.getShort(7))
+            put(TaxDB.TaxEntry.COLUMN_PERIOD, crsor.getShort(8))
+            put(TaxDB.TaxEntry.COLUMN_KIND_OF_TAX, crsor.getString(9))
+        }
     }
 
 }

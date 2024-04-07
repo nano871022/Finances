@@ -53,6 +53,15 @@ class SMSCreditCardImpl @Inject constructor(private val svc:ISMSCreditCard) : IS
         return svc.getSmsMessages(phoneNumber,pattern,numDaysRead)
     }
 
+    override fun getSmsMessages(
+        pattern: String,
+        sms: String
+    ): Triple<String, Double, LocalDateTime>? {
+        require(pattern.isNotEmpty()){"Pattern must not be empty"}
+        require(sms.isNotEmpty()){"Sms must not be empty"}
+        return svc.getSmsMessages(pattern,sms)
+    }
+
     override fun enable(codeSMSCreditCard: Int): Boolean {
         return svc.enable(codeSMSCreditCard)
     }

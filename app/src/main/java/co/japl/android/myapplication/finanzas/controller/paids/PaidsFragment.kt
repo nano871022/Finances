@@ -9,11 +9,22 @@ import android.view.View
 import android.view.View.OnClickListener
 import android.view.ViewGroup
 import androidx.annotation.RequiresApi
+import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.loader.app.LoaderManager
 import androidx.loader.content.AsyncTaskLoader
 import androidx.loader.content.Loader
 import androidx.navigation.fragment.findNavController
+import co.com.japl.finances.iports.inbounds.inputs.IAccountPort
+import co.com.japl.finances.iports.inbounds.inputs.IInputPort
+import co.com.japl.finances.iports.inbounds.paid.IPaidPort
+import co.com.japl.finances.iports.inbounds.paid.ISMSPaidPort
+import co.com.japl.finances.iports.inbounds.paid.ISmsPort
+import co.com.japl.module.paid.controllers.monthly.list.MonthlyViewModel
+import co.com.japl.module.paid.views.monthly.list.Monthly
+import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.japl.android.myapplication.R
+import co.japl.android.myapplication.databinding.FragmentPaidsBinding
+import co.japl.android.myapplication.finanzas.ApplicationInitial
 import co.japl.android.myapplication.finanzas.holders.interfaces.IHolder
 import co.japl.android.myapplication.finanzas.bussiness.DTO.PaidsPOJO
 import co.japl.android.myapplication.finanzas.bussiness.impl.PaidImpl
@@ -21,114 +32,51 @@ import co.japl.android.myapplication.finanzas.bussiness.interfaces.IAccountSvc
 import co.japl.android.myapplication.finanzas.bussiness.interfaces.IGraph
 import co.japl.android.myapplication.finanzas.bussiness.interfaces.IPaidSvc
 import co.japl.android.myapplication.finanzas.bussiness.response.GraphValuesResp
-import co.japl.android.myapplication.finanzas.holders.PaidsHolder
-import co.japl.android.myapplication.finanzas.holders.interfaces.ICallerHolder
-import co.japl.android.myapplication.finanzas.putParams.AccountParams
 import co.japl.android.myapplication.finanzas.putParams.PaidsParams
 import dagger.hilt.android.AndroidEntryPoint
 import java.time.LocalDate
+import java.time.YearMonth
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class PaidsFragment : Fragment(), OnClickListener ,LoaderManager.LoaderCallbacks<Pair<PaidsPOJO,List<GraphValuesResp>>>{
-    private lateinit var holder: IHolder<PaidsPOJO>
-    private lateinit var dialog:AlertDialog
+class PaidsFragment : Fragment() {
 
-    @RequiresApi(Build.VERSION_CODES.O)
-    private val date = LocalDate.now().withDayOfMonth(1)
+    @Inject
+    lateinit var service: IPaidPort
+    @Inject
+    lateinit var accountSvc: IAccountPort
+    @Inject
+    lateinit var incomesSvc: IInputPort
+    @Inject lateinit var paidSmsSvc:ISmsPort
+    @Inject lateinit var smsSvc:ISMSPaidPort
 
-    @Inject lateinit var service:IPaidSvc
-    @Inject lateinit var accountSvc: IAccountSvc
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        LoaderManager.getInstance(this).initLoader(0,null,this)
-    }
-
-    @RequiresApi(Build.VERSION_CODES.O)
+    @RequiresApi(Build.VERSION_CODES.S)
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val root = inflater.inflate(R.layout.fragment_paids, container, false)
-        holder = PaidsHolder(root)
-        holder.setFields(this)
-        return root
-    }
-
-    @RequiresApi(Build.VERSION_CODES.O)
-    override fun onClick(p0: View?) {
-        when(p0?.id){
-            R.id.btn_add_ps->PaidsParams.newInstance(findNavController())
-            R.id.btn_detail_ps->PaidsParams.newInstanceList(date,findNavController())
-            R.id.btn_periods_ps->PaidsParams.newInstancePeriods(findNavController())
-        }
-    }
-
-    override fun onResume() {
-        super.onResume()
-        val list = accountSvc.getAll()
-        if(list.isEmpty()){
-            notExistAccountDialog()
-        }
-        LoaderManager.getInstance(this).restartLoader(0,null,this)
-    }
-
-    override fun onCreateLoader(id: Int, args: Bundle?): Loader<Pair<PaidsPOJO,List<GraphValuesResp>>> {
-    return object:AsyncTaskLoader<Pair<PaidsPOJO,List<GraphValuesResp>>>(requireContext()){
-        private var data:Pair<PaidsPOJO,List<GraphValuesResp>>? = null
-        override fun onStartLoading() {
-            super.onStartLoading()
-            if(data != null){
-                deliverResult(data)
-            }else{
-                forceLoad()
-            }
-        }
-        @RequiresApi(Build.VERSION_CODES.O)
-        override fun loadInBackground(): Pair<PaidsPOJO,List<GraphValuesResp>>? {
-            val paids = (service as PaidImpl).getPaids(date)
-            val graph = (service as IGraph).getValues(date)
-            data = Pair(paids,graph)
-            return data
-        }
-
-    }
-    }
-
-    override fun onLoaderReset(loader: Loader<Pair<PaidsPOJO,List<GraphValuesResp>>>) {
-    }
-
-    @RequiresApi(Build.VERSION_CODES.O)
-    override fun onLoadFinished(loader: Loader<Pair<PaidsPOJO,List<GraphValuesResp>>>, data: Pair<PaidsPOJO,List<GraphValuesResp>>?) {
-        data?.let{
-            holder.loadFields(it.first)
-            (holder as ICallerHolder<PaidsHolder>).execute{holder->
-                it.second?.forEach {
-                    holder.customDraw.addPiece(it.name,it.value)
+        val root = FragmentPaidsBinding.inflate(inflater,container,false)
+        val period = arguments?.let{PaidsParams.downloadPeriod(it)}
+        val viewModel = MonthlyViewModel(
+            paidSvc = service,
+            accountSvc = accountSvc,
+            incomesSvc = incomesSvc,
+            period = period?:YearMonth.now(),
+            paidSmsSvc = paidSmsSvc,
+            prefs = ApplicationInitial.prefs,
+            smsSvc = smsSvc,
+            navController = findNavController()
+        )
+        root.cvPaidsFp.apply {
+            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+            setContent {
+                MaterialThemeComposeUI {
+                    Monthly(viewModel = viewModel)
                 }
-                holder.customDraw.invalidate()
             }
         }
-    }
 
-    private fun notExistAccountDialog() {
-        if(!this::dialog.isInitialized || !dialog.isShowing) {
-            dialog = AlertDialog.Builder(view?.context)
-                .setTitle(R.string.title_account_doesnt_create_yet)
-                .setMessage(R.string.message_account_doesnt_create_yet)
-                .setPositiveButton(R.string.go, null)
-                .setNegativeButton(R.string.cancel, null)
-                .create()
-            dialog.show()
-            dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
-                dialog.cancel()
-                AccountParams.newInstance(findNavController())
-            }
-            dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setOnClickListener {
-                dialog.cancel()
-            }
-        }
+        return root.root.rootView
     }
-
 }
