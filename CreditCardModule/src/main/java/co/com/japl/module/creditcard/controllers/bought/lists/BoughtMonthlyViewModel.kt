@@ -156,8 +156,8 @@ class BoughtMonthlyViewModel constructor(
                             ?.forEach {
                                 svc?.createBySms(
                                     name = it.first,
-                                    value = it.second.toString(),
-                                    date = DateUtils.localDateTimeToStringDate(it.third),
+                                    value = it.second,
+                                    date = it.third,
                                     codeCreditRate = ccDto.id,
                                     kind = sms.kindInterestRateEnum
                                 )

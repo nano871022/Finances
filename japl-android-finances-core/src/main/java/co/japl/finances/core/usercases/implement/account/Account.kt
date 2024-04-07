@@ -25,4 +25,8 @@ class Account @Inject constructor(private val service : IAccountPort) : IAccount
     override fun update(dto: AccountDTO): Boolean {
         return service.update(dto)
     }
+
+    override fun getAllActive(): List<AccountDTO> {
+        return service.getAll().takeIf { it.isNotEmpty() }?.filter { it.active }?: emptyList()
+    }
 }

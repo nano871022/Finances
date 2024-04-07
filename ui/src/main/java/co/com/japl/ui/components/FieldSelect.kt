@@ -175,7 +175,12 @@ fun FieldSelect(title: String,value:String, isError:MutableState<Boolean> = muta
 }
 
 @Composable
-fun FieldSelect(title: String,value:String, isError:MutableState<Boolean> = mutableStateOf(false),list:SnapshotStateList<Pair<Int,String>>,modifier: Modifier,callAble:(Pair<Int,String>?)->Unit){
+fun FieldSelect(title: String,
+                value:String,
+                isError:MutableState<Boolean> = mutableStateOf(false),
+                list:SnapshotStateList<Pair<Int,String>>,
+                modifier: Modifier,
+                callAble:(Pair<Int,String>?)->Unit){
     val context = LocalContext.current
     val state = remember { mutableStateOf(false) }
     val stateValue = remember { mutableStateOf("") }

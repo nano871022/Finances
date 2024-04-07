@@ -139,6 +139,10 @@ class DateUtils {
             return DateTimeFormatter.ofPattern("yyyy-MM-dd\'T\'00:00").format(value)
         }
 
+        fun localDateToStringDB(value: LocalDate): String {
+            return DateTimeFormatter.ofPattern("yyyy-MM-dd").format(value)
+        }
+
         @RequiresApi(Build.VERSION_CODES.O)
         fun localDateTimeToStringDate(value: LocalDateTime): String {
             return DateTimeFormatter.ofPattern("yyyy-MM-dd").format(value)

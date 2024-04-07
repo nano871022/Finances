@@ -14,5 +14,5 @@ interface IAccount {
     fun create(dto: AccountDTO):Int
 
     fun update(dto: AccountDTO):Boolean
-
+    fun getAllActive(): List<AccountDTO>
 }

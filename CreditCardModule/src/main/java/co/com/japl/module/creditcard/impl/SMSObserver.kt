@@ -10,7 +10,7 @@ import co.com.japl.ui.interfaces.ISMSObservableSubscriber
 import co.com.japl.ui.interfaces.ISMSObserver
 import javax.inject.Inject
 
-class SMSObserver @Inject constructor(private val subscriber: ISMSObservableSubscriber,private val ccSvc:ICreditCardPort,private val svc:IBoughtSmsPort,private val msmSvc:ISMSCreditCardPort): ISMSObserver{
+class SMSObserver @Inject constructor(private val smsSvc:ISMSCreditCardPort,private val subscriber: ISMSObservableSubscriber,private val ccSvc:ICreditCardPort,private val svc:IBoughtSmsPort,private val msmSvc:ISMSCreditCardPort): ISMSObserver{
 
     private val numbers = mutableListOf<String>()
     private val smsCreditCardList = mutableListOf<SMSCreditCard>()
@@ -32,13 +32,8 @@ class SMSObserver @Inject constructor(private val subscriber: ISMSObservableSubs
     }
     override fun notify(phoneNumber:String,message: String) {
         smsCreditCardList.takeIf { it.isNotEmpty() }?.filter { it.phoneNumber == phoneNumber  }?.forEach {sms->
-            if (sms.pattern.toRegex().containsMatchIn(message)) {
-                sms.pattern.toRegex().find(message)?.let {
-                    val value = it.groupValues[1]
-                    val name = it.groupValues[2]
-                    val date = it.groupValues[3]
-                    svc.createBySms(name, value, date, sms.codeCreditCard, sms.kindInterestRateEnum)
-                }
+            smsSvc.getSmsMessages(sms.pattern, message)?.let {
+                svc.createBySms(it.first, it.second, it.third, sms.codeCreditCard, sms.kindInterestRateEnum)
             }
         }
     }

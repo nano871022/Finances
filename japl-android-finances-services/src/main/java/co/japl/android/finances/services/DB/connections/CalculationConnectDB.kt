@@ -2,11 +2,12 @@ package co.japl.android.finances.services.DB.connections
 
 import android.database.sqlite.SQLiteDatabase
 import android.util.Log
+import co.japl.android.finances.services.DB.connections.abstracs.DBRestore
 import co.japl.android.finances.services.interfaces.IConnectDB
 import co.japl.android.finances.services.queries.CalculationQuery
 import co.japl.android.finances.services.utils.DatabaseConstants
 
-class CalculationConnectDB : IConnectDB{
+class CalculationConnectDB : DBRestore(), IConnectDB{
 
     override fun onCreate(db: SQLiteDatabase?) {
         Log.i(this.javaClass.name,"<<<=== CalculationConnectDB#OnCreate - Start")
@@ -42,6 +43,9 @@ class CalculationConnectDB : IConnectDB{
         db?.execSQL(CalculationQuery.SQL_DELETE_ENTRIES)
         onCreate(db)
         Log.i(this.javaClass.name,"<<<=== CalculationConnectDB#onDowngrade - End")
+    }
+
+    override fun onRestore(currentDB: SQLiteDatabase?, fromRestoreDB: SQLiteDatabase?) {
     }
 
 

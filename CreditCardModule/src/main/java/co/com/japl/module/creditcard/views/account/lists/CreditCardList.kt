@@ -3,6 +3,7 @@ package co.com.japl.module.creditcard.views.account.lists
 import android.content.res.Configuration
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -44,6 +45,7 @@ import co.com.japl.ui.theme.values.ModifiersCustom.Weight1fAndPaddintRightSpace
 import co.com.japl.module.creditcard.enums.MoreOptionsItemsCreditCardList
 import co.com.japl.ui.utils.WindowWidthSize
 import co.com.japl.ui.components.AlertDialogOkCancel
+import co.com.japl.ui.components.HelpWikiButton
 import co.com.japl.ui.components.MoreOptionsDialog
 import co.japl.android.myapplication.utils.NumbersUtil
 import kotlinx.coroutines.CoroutineScope
@@ -85,6 +87,10 @@ private fun Body(creditCardViewModel:CreditCardListViewModel){
         }
     },modifier = Modifier.padding(Dimensions.PADDING_SHORT)) {
         Column(modifier = Modifier.padding(it)) {
+            Row(horizontalArrangement = Arrangement.End, modifier = Modifier.fillMaxWidth()) {
+                HelpWikiButton(wikiUrl = R.string.wiki_credit_card_url,
+                    descriptionContent = R.string.wiki_credit_card_description)
+            }
         listState.forEach {item->
                 Item(item!!,{creditCardViewModel.edit(it)},{creditCardViewModel.delete(it)},{creditCardViewModel.goToSettings(it)})
             }

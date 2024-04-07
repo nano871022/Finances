@@ -3,6 +3,7 @@ package co.japl.android.finances.services.mapping
 import android.content.ContentValues
 import android.database.Cursor
 import android.os.Build
+import android.provider.BaseColumns
 import androidx.annotation.RequiresApi
 import co.japl.android.finances.services.dto.*
 import co.japl.android.finances.services.dto.CheckPaymentsPOJO
@@ -38,5 +39,15 @@ class CheckPaymentsMap {
         val period = pojo.period ?: "${date.year}${if(date.monthValue <10 )"0"+date.monthValue else date.monthValue}"
         val codPaid = pojo.codPaid ?: 0
         return CheckPaymentsDTO(id.toInt(),date,check.toShort(),period, codPaid.toInt())
+    }
+
+    fun restore(crsor:Cursor):ContentValues {
+        return ContentValues().apply {
+            put(BaseColumns._ID, crsor.getLong(0))
+            put(CheckPaymentsDB.Entry.COLUMN_CHECK, crsor.getInt(1))
+            put(CheckPaymentsDB.Entry.COLUMN_DATE_CREATE, crsor.getString(2))
+            put(CheckPaymentsDB.Entry.COLUMN_PERIOD, crsor.getString(3))
+            put(CheckPaymentsDB.Entry.COLUMN_COD_PAID, crsor.getInt(4))
+        }
     }
 }

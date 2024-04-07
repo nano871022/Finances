@@ -216,7 +216,7 @@ private fun MainRow(model:BoughtViewModel){
             if(rediferirValue > model.bought.valueItem){
                rediferirValue =model.bought.valueItem
             }
-            MoreOptionsDialog(rediferirValue,model.getMoreOptionsList(),onDismiss = { stateDialogOptionsMore.value = false }, onClick = model::moreOption)
+            MoreOptionsDialog(rediferirValue,model.bought.interest,model.getMoreOptionsList(),onDismiss = { stateDialogOptionsMore.value = false }, onClick = model::moreOption)
         }
     }
     Row(modifier = Modifier.fillMaxWidth()

@@ -103,6 +103,15 @@
     <string name="navigate_form_sms_credit_rate">android-app://co.com.japl.finanzas.modulo.app/sms_credit_card</string>
     <string name="navigate_form_sms_credit_rate_edit">android-app://co.com.japl.finanzas.modulo.app/sms_credit_card?code_sms_credit_Card=%d</string>
 
+    <string name="wiki_bought_url">https://github.com/nano871022/Finances/wiki/Cr%C3%A9ditos</string>
+    <string name="help_bought_description">Información acerca de pagos</string>
+    <string name="wiki_sms_credit_card_url">https://github.com/nano871022/Finances/wiki/Sms-%E2%80%90-Tarjeta-Cr%C3%A9dito</string>
+    <string name="wiki_sms_credit_card_description">Información acerca de Configuración de Pagos con Tarjeta de Crédito</string>
+    <string name="wiki_credit_rate_url">https://github.com/nano871022/Finances/wiki/Tasas</string>
+    <string name="wiki_credit_rate_description">Infomación acerda de Configuración de Tasas de Tarjeta de Crédito</string>
+    <string name="wiki_credit_card_url">https://github.com/nano871022/Finances/wiki/Tarjeta-de-Cr%C3%A9dito-%E2%80%90-Configuraci%C3%B3n</string>
+    <string name="wiki_credit_card_description">Información acerca de Configuración de Tarjetas de Crédito</string>
+
     <string-array name="Months">
         <item>--- Seleccionar --- </item>
         <item>Enero</item>

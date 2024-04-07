@@ -13,8 +13,8 @@ import co.com.japl.finances.iports.inbounds.inputs.IInputPort
 import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.japl.android.myapplication.databinding.FragmentInputBinding
 import co.japl.android.myapplication.finanzas.putParams.InputListParams
-import co.japl.android.myapplication.finanzas.view.accounts.inputs.form.InputForm
-import co.japl.android.myapplication.finanzas.view.accounts.inputs.form.InputViewModel
+import co.com.japl.module.paid.views.Inputs.form.InputForm
+import co.com.japl.module.paid.controllers.Inputs.form.InputViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 

@@ -2,11 +2,14 @@ package co.japl.android.finances.services.DB.connections
 
 import android.database.sqlite.SQLiteDatabase
 import android.util.Log
+import co.japl.android.finances.services.DB.connections.abstracs.DBRestore
+import co.japl.android.finances.services.dto.CheckQuoteDB
 import co.japl.android.finances.services.interfaces.IConnectDB
+import co.japl.android.finances.services.mapping.CheckQuoteMap
 import co.japl.android.finances.services.queries.CheckQuoteQuery
 import java.lang.Exception
 
-class CheckQuoteConnectDB:IConnectDB{
+class CheckQuoteConnectDB: DBRestore(),IConnectDB{
 
     override fun onCreate(db: SQLiteDatabase?) {
         Log.i(this.javaClass.name,"<<<=== CheckQuoteConnectDB#onCreate - Start")
@@ -46,6 +49,10 @@ class CheckQuoteConnectDB:IConnectDB{
         db?.execSQL(CheckQuoteQuery.SQL_DELETE_ENTRIES)
         onCreate(db)
         Log.i(this.javaClass.name,"<<<=== CheckQuoteConnectDB#onDowngrade - End")
+    }
+
+    override fun onRestore(currentDB: SQLiteDatabase?, fromRestoreDB: SQLiteDatabase?) {
+        onRestore(currentDB,fromRestoreDB,javaClass.simpleName,CheckQuoteDB.Entry.TABLE_NAME,CheckQuoteMap()::restore)
     }
 
 }

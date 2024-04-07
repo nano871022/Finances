@@ -8,7 +8,6 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import co.japl.android.myapplication.R
 import co.japl.android.myapplication.bussiness.DTO.TaxDTO
-import co.japl.android.myapplication.finanzas.enums.MoreOptionsItemsAccount
 import co.japl.android.myapplication.finanzas.enums.MoreOptionsItemsTax
 import co.japl.android.myapplication.finanzas.enums.TaxEnum
 

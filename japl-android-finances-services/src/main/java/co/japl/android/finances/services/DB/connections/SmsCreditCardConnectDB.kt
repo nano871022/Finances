@@ -2,12 +2,15 @@ package co.japl.android.finances.services.DB.connections
 
 import android.database.sqlite.SQLiteDatabase
 import android.util.Log
+import co.japl.android.finances.services.DB.connections.abstracs.DBRestore
+import co.japl.android.finances.services.entities.SmsCreditCardDB
 import co.japl.android.finances.services.interfaces.IConnectDB
+import co.japl.android.finances.services.mapping.SmsCreditCardMap
 import co.japl.android.finances.services.queries.SmsCreditCardQuery
 import co.japl.android.finances.services.utils.DatabaseConstants
 import java.lang.Exception
 
-class SmsCreditCardConnectDB:IConnectDB{
+class SmsCreditCardConnectDB: DBRestore(), IConnectDB{
 
     override fun onCreate(db: SQLiteDatabase?) {
         Log.i(this.javaClass.name,"<<<=== SmsCreditCardConnectDB#onCreate - Start")
@@ -46,6 +49,10 @@ class SmsCreditCardConnectDB:IConnectDB{
         db?.execSQL(SmsCreditCardQuery.SQL_DELETE_ENTRIES)
         onCreate(db)
         Log.i(this.javaClass.name,"<<<=== SmsCreditCardConnectDB#onDowngrade - End")
+    }
+
+    override fun onRestore(currentDB: SQLiteDatabase?, fromRestoreDB: SQLiteDatabase?) {
+        onRestore(currentDB,fromRestoreDB,javaClass.simpleName,SmsCreditCardDB.Entry.TABLE_NAME,SmsCreditCardMap()::restore)
     }
 
 }

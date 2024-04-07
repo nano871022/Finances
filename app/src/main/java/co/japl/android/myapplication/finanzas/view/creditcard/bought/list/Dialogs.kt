@@ -1,7 +1,10 @@
 package co.japl.android.myapplication.finanzas.view.creditcard.bought.list
 
+import android.content.res.Configuration
+import android.os.Build
 import android.text.InputType
 import android.widget.TextView
+import androidx.annotation.RequiresApi
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -34,17 +37,19 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import co.japl.android.myapplication.R
 import co.japl.android.myapplication.finanzas.enums.MoreOptionsItemsCreditCard
 import co.com.japl.ui.components.AlertDialogOkCancel
 import co.com.japl.ui.components.FieldView
+import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.japl.android.myapplication.utils.NumbersUtil
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MoreOptionsDialog(valueToPay:Double,listOptions:List<MoreOptionsItemsCreditCard>, onDismiss:()->Unit, onClick:(MoreOptionsItemsCreditCard,Double) -> Unit) {
+fun MoreOptionsDialog(valueToPay:Double, creditRate:Double,listOptions:List<MoreOptionsItemsCreditCard>, onDismiss:()->Unit, onClick:(MoreOptionsItemsCreditCard,Double) -> Unit) {
     val stateDeleteDialog = remember { mutableStateOf(false) }
     val stateEndingDialog = remember { mutableStateOf(false) }
     val stateUpdateDialog = remember { mutableStateOf(false) }
@@ -87,7 +92,8 @@ fun MoreOptionsDialog(valueToPay:Double,listOptions:List<MoreOptionsItemsCreditC
         }
         stateDifferDialog.value -> {
             DifferInstallmentDialog(
-                  value = valueToPay
+                  value = valueToPay,
+                creditRate = creditRate
                 , onDismiss = {  stateDifferDialog.value = false}
                 , onClick = {
                     onClick.invoke( MoreOptionsItemsCreditCard.DIFFER_INSTALLMENT, it.toDouble())
@@ -155,9 +161,10 @@ private fun UpdateValueDialog(onDismiss: () -> Unit, onClick: (Double) -> Unit) 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun DifferInstallmentDialog(value:Double,onDismiss: () -> Unit, onClick: (Long) -> Unit) {
+private fun DifferInstallmentDialog(value:Double,creditRate: Double,onDismiss: () -> Unit, onClick: (Long) -> Unit) {
     val stateInstallment = remember { mutableStateOf("") }
     val newValueInstallment = remember { mutableDoubleStateOf(0.0) }
+    val interest = remember {mutableDoubleStateOf(0.0)}
     androidx.compose.material3.AlertDialog(
         onDismissRequest = onDismiss) {
         Surface {
@@ -170,7 +177,7 @@ private fun DifferInstallmentDialog(value:Double,onDismiss: () -> Unit, onClick:
                     modifier = Modifier.padding(5.dp),
                     fontSize = 18.sp
                 )
-                Divider()
+
                 FieldView(
                     name = R.string.pending_to_pay,
                     value = NumbersUtil.toString(value),
@@ -184,6 +191,7 @@ private fun DifferInstallmentDialog(value:Double,onDismiss: () -> Unit, onClick:
                     onValueChange = {
                         stateInstallment.value = it
                         newValueInstallment.doubleValue = value / NumbersUtil.toDouble(it)
+                        interest.doubleValue = value * creditRate
                     },
                     placeholder = { Text(text = "0")},
                     label = { Text(text = stringResource(id = R.string.periods)) },
@@ -208,6 +216,24 @@ private fun DifferInstallmentDialog(value:Double,onDismiss: () -> Unit, onClick:
                     )
                 )
 
+                FieldView(
+                    name = R.string.interest_value,
+                    value = NumbersUtil.toString(interest.doubleValue),
+                    modifier = Modifier.defaultMinSize(
+                        minWidth = TextFieldDefaults.MinWidth,
+                        minHeight = TextFieldDefaults.MinHeight
+                    )
+                )
+
+                FieldView(
+                    name = R.string.total_quote,
+                    value = NumbersUtil.toString(newValueInstallment.doubleValue + interest.doubleValue),
+                    modifier = Modifier.defaultMinSize(
+                        minWidth = TextFieldDefaults.MinWidth,
+                        minHeight = TextFieldDefaults.MinHeight
+                    )
+                )
+
                 Row {
                     TextButton(onClick = { onDismiss.invoke() }) {
                         Text(text = stringResource(id = R.string.cancel), color = MaterialTheme.colorScheme.onSurface)
@@ -220,5 +246,22 @@ private fun DifferInstallmentDialog(value:Double,onDismiss: () -> Unit, onClick:
                 }
             }
         }
+    }
+}
+
+@RequiresApi(Build.VERSION_CODES.S)
+@Composable
+@Preview(showSystemUi = true, showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
+    private fun DifferInstallmentDialogPreview(){
+        MaterialThemeComposeUI {
+            DifferInstallmentDialog(100.0,0.0,{},{})
+        }
+}
+@RequiresApi(Build.VERSION_CODES.S)
+@Composable
+@Preview(showSystemUi = true, showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
+private fun DifferInstallmentDialogPreviewDark(){
+    MaterialThemeComposeUI {
+        DifferInstallmentDialog(100.0,0.0,{},{})
     }
 }

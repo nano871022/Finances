@@ -3,6 +3,7 @@ package co.japl.android.finances.services.mapping
 import android.content.ContentValues
 import android.database.Cursor
 import android.os.Build
+import android.provider.BaseColumns
 import androidx.annotation.RequiresApi
 import co.japl.android.finances.services.interfaces.IMapper
 import co.japl.android.finances.services.dto.TagsQuoteCreditCardDB
@@ -35,6 +36,17 @@ class TagQuoteCreditCardMap : IMapper<TagsQuoteCreditCardDTO>{
             create = createDate,
             active = active.toInt() == 1
         )
+    }
+
+
+    fun restore(crsor:Cursor):ContentValues {
+        return ContentValues().apply {
+            put(BaseColumns._ID, crsor.getLong(0))
+            put(TagsQuoteCreditCardDB.Entry.COLUMN_CODE_QUOTE_CREDIT_CARD, crsor.getInt(1))
+            put(TagsQuoteCreditCardDB.Entry.COLUMN_CODE_TAG, crsor.getInt(2))
+            put(TagsQuoteCreditCardDB.Entry.COLUMN_DATE_CREATE, crsor.getString(3))
+            put(TagsQuoteCreditCardDB.Entry.COLUMN_ACTIVE, crsor.getInt(4))
+        }
     }
 
 }

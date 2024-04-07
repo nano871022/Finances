@@ -7,70 +7,44 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.RequiresApi
-import androidx.loader.app.LoaderManager
-import androidx.loader.content.AsyncTaskLoader
-import androidx.loader.content.Loader
+import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.navigation.fragment.findNavController
-import co.japl.android.myapplication.R
-import co.japl.android.myapplication.finanzas.bussiness.DTO.PaidDTO
-import co.japl.android.myapplication.finanzas.bussiness.impl.PaidImpl
-import co.japl.android.myapplication.finanzas.bussiness.interfaces.IPaidSvc
-import co.japl.android.myapplication.finanzas.holders.PeriodsPaidHolder
+import co.com.japl.finances.iports.inbounds.paid.IPeriodPaidPort
+import co.com.japl.module.paid.controllers.period.list.PeriodsViewModel
+import co.com.japl.module.paid.views.periods.list.Period
+import co.com.japl.ui.theme.MaterialThemeComposeUI
+import co.japl.android.myapplication.databinding.FragmentPeriodsPaidBinding
+import co.japl.android.myapplication.finanzas.putParams.PeriodPaidParam
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class PeriodsPaidFragment : Fragment() , LoaderManager.LoaderCallbacks<List<PaidDTO>> {
-    private lateinit var holder:PeriodsPaidHolder
+class PeriodsPaidFragment : Fragment() {
 
-    @Inject lateinit var service:IPaidSvc
+    @Inject lateinit var service:IPeriodPaidPort
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
 
-    @RequiresApi(Build.VERSION_CODES.O)
+    @RequiresApi(Build.VERSION_CODES.S)
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val root = inflater.inflate(R.layout.fragment_periods_paid, container, false)
-        holder = PeriodsPaidHolder(root,findNavController())
-        holder.setFields(null)
-        loaderManager.initLoader(1,null,this)
-        return root
-    }
-
-    override fun onResume() {
-        super.onResume()
-        loaderManager.restartLoader(1,null,this)
-    }
-
-    override fun onCreateLoader(id: Int, args: Bundle?): Loader<List<PaidDTO>> {
-        return object : AsyncTaskLoader<List<PaidDTO>>(requireContext()) {
-            private var data: List<PaidDTO>? = null
-            override fun onStartLoading() {
-                super.onStartLoading()
-                if (data != null) {
-                    deliverResult(data)
-                } else {
-                    forceLoad()
+        val root =  FragmentPeriodsPaidBinding.inflate(inflater)
+        val codeAccount = arguments?.let{PeriodPaidParam().downloadList(it)}
+        val viewModel = PeriodsViewModel(
+            codeAccount = codeAccount,
+            paidSvc = service,
+            navController = findNavController()
+        )
+        root.cvComposeFpp.apply {
+            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+            setContent {
+                MaterialThemeComposeUI {
+                    Period(viewModel = viewModel)
                 }
             }
-
-            @RequiresApi(Build.VERSION_CODES.O)
-            override fun loadInBackground(): List<PaidDTO>? {
-                data = (service as PaidImpl).getPeriods()
-                return data
-
-            }
         }
+        return root.root.rootView
     }
 
-    override fun onLoaderReset(loader: Loader<List<PaidDTO>>) {
-    }
-
-    override fun onLoadFinished(loader: Loader<List<PaidDTO>>, data: List<PaidDTO>?) {
-        data?.let { holder.loadRecycler(data.toMutableList())}
-    }
 }

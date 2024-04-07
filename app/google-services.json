@@ -14,7 +14,7 @@
       },
       "oauth_client": [
         {
-          "client_id": "332922408573-0qrgg6q1fi3k2mvvlf6l4bsoen05cu33.apps.googleusercontent.com",
+          "client_id": "332922408573-j1uk3tbu8jp6umcvt9ssdq0l32nlq49o.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "co.japl.android.myapplication",
@@ -22,23 +22,47 @@
           }
         },
         {
-          "client_id": "332922408573-ejtg53mp8rbk1im696qha890lkqce0h4.apps.googleusercontent.com",
-          "client_type": 3
+          "client_id": "332922408573-vqe4tmseub3gd99vi16v3gg1ui16hlp1.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "co.japl.android.myapplication",
+            "certificate_hash": "4505d7a8d33aeb6d2902c2d885064eec86b58511"
+          }
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyDJ-h9cgSDb5zylhjWoYolWhZPZQsXJ17A"
+          "current_key": "AIzaSyA8PyvAZ4Z8fn1LcWc3DMU7YOJG1K-aZA8"
         }
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "332922408573-ejtg53mp8rbk1im696qha890lkqce0h4.apps.googleusercontent.com",
-              "client_type": 3
-            }
-          ]
+          "other_platform_oauth_client": []
+        }
+      }
+    },{
+      "client_info": {
+        "mobilesdk_app_id": "1:332922408573:android:33801dcc0736245840ab14",
+        "android_client_info": {
+          "package_name": "co.japl.android.myapplication.debug"
+        }
+      },
+      "oauth_client": [{
+      "client_id": "332922408573-sq5fj56cbl35mptmvo0mvp3ig39mf58p.apps.googleusercontent.com",
+      "client_type": 1,
+      "android_info": {
+        "package_name": "co.japl.android.myapplication.debug",
+        "certificate_hash": "c863db5704299ada73149260aaa3bdb9175cdd2e"
+      }
+    }],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA8PyvAZ4Z8fn1LcWc3DMU7YOJG1K-aZA8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
         }
       }
     }

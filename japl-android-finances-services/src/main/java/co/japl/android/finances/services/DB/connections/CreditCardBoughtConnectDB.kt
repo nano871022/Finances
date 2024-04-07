@@ -2,11 +2,14 @@ package co.japl.android.finances.services.DB.connections
 
 import android.database.sqlite.SQLiteDatabase
 import android.util.Log
+import co.japl.android.finances.services.DB.connections.abstracs.DBRestore
+import co.japl.android.finances.services.dto.CreditCardBoughtDB
 import co.japl.android.finances.services.interfaces.IConnectDB
+import co.japl.android.finances.services.mapping.CreditCardBoughtMap
 import co.japl.android.finances.services.queries.CreditCardBoughtQuery
 import co.japl.android.finances.services.utils.DatabaseConstants
 
-class CreditCardBoughtConnectDB:IConnectDB {
+class CreditCardBoughtConnectDB: DBRestore(), IConnectDB {
 
     override fun onCreate(db: SQLiteDatabase?) {
         Log.i(this.javaClass.name,"<<<=== CreditCardBoughtConnectDB#onCreate - Start")
@@ -43,6 +46,10 @@ class CreditCardBoughtConnectDB:IConnectDB {
         db?.execSQL(CreditCardBoughtQuery.SQL_CREDIT_CARD_DELETE_ENTRIES)
         onCreate(db)
         Log.i(this.javaClass.name,"<<<=== CreditCardBoughtConnectDB#onDowngrade - End")
+    }
+
+    override fun onRestore(currentDB: SQLiteDatabase?, fromRestoreDB: SQLiteDatabase?) {
+        onRestore(currentDB,fromRestoreDB,javaClass.simpleName,CreditCardBoughtDB.CreditCardBoughtEntry.TABLE_NAME,CreditCardBoughtMap()::restore)
     }
 
 

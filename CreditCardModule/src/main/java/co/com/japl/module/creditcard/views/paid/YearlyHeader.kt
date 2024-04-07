@@ -13,6 +13,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import co.com.japl.finances.iports.dtos.BoughtCreditCardPeriodDTO
 import co.com.japl.module.creditcard.R
+import co.com.japl.ui.components.FieldView
+import co.com.japl.ui.theme.values.ModifiersCustom.Weight1f
 import co.com.japl.ui.utils.WindowWidthSize
 import co.japl.android.myapplication.utils.NumbersUtil
 
@@ -66,7 +68,9 @@ private fun YearlyHeaderMedium(year:Long, list:List<BoughtCreditCardPeriodDTO>){
 
             Text(
                 text = stringResource(id = R.string.interest_value),
-                modifier = Modifier.weight(1f).padding(start=10.dp)
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(start = 10.dp)
             )
             Text(
                 text = NumbersUtil.COPtoString(list.sumOf { it.interest }),
@@ -89,23 +93,14 @@ private fun YearlyHeaderCompact(year:Long, list:List<BoughtCreditCardPeriodDTO>)
             )
         }
         Row {
-            Column(modifier = Modifier.weight(1f)) {
-                Text(text = stringResource(id = R.string.capital_value))
-                Text(
-                    text = NumbersUtil.COPtoString(list.sumOf { it.capital }),
-                    textAlign = TextAlign.End,
-                    modifier = Modifier.fillMaxWidth()
-                )
-            }
 
-            Column(modifier = Modifier.weight(1f)) {
-                Text(text = stringResource(id = R.string.interest_value))
-                Text(
-                    text = NumbersUtil.COPtoString(list.sumOf { it.interest }),
-                    textAlign = TextAlign.End,
-                    modifier = Modifier.fillMaxWidth()
-                )
-            }
+            FieldView(name = R.string.capital_value,
+                value = NumbersUtil.toString(list.sumOf { it.capital }),
+                modifier = Weight1f())
+
+            FieldView(name = R.string.interest_value,
+                value = NumbersUtil.toString(list.sumOf { it.interest }),
+                modifier = Weight1f())
         }
     }
 }

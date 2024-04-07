@@ -3,6 +3,7 @@ package co.japl.android.finances.services.mapping
 import android.content.ContentValues
 import android.database.Cursor
 import android.os.Build
+import android.provider.BaseColumns
 import androidx.annotation.RequiresApi
 import co.japl.android.finances.services.dto.CreditCardBought
 import co.japl.android.finances.services.dto.CreditCardBoughtDB
@@ -80,4 +81,23 @@ class CreditCardBoughtMap {
             kind,
             kindOfTax)
     }
+
+    fun restore(cursor:Cursor):ContentValues {
+        return ContentValues().apply {
+            put(BaseColumns._ID, cursor.getLong(0))
+            put(CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_CODE_CREDIT_CARD, cursor.getInt(1))
+            put(CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_BOUGHT_DATE, cursor.getString(2))
+            put(CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_INTEREST, cursor.getDouble(3))
+            put(CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_MONTH, cursor.getInt(4))
+            put(CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_CREATE_DATE, cursor.getString(5))
+            put(CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_NAME_ITEM, cursor.getString(6))
+            put(CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_VALUE_ITEM, cursor.getString(7))
+            put(CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_CUT_OUT_DATE, cursor.getString(8))
+            put(CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_RECURRENT, cursor.getInt(9))
+            put(CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_KIND, cursor.getInt(10))
+            put(CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_KIND_OF_TAX, cursor.getString(11))
+            put(CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_END_DATE, cursor.getString(12))
+        }
+    }
+
 }
