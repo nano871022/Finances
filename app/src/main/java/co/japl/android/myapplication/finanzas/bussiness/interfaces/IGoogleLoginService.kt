@@ -8,6 +8,8 @@ interface IGoogleLoginService {
     fun getIntent(): Intent
     fun check():Boolean
     fun logout()
+
+    suspend fun login()
     fun response(requestCode:Int, resultCode:Int,data:Intent)
     fun getAccount(): GoogleSignInAccount
 

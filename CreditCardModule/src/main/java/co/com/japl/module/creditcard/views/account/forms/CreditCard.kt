@@ -95,6 +95,7 @@ private fun Body(viewModel: CreditCardViewModel, modifier:Modifier=Modifier){
 
         FieldText(title = stringResource(id = R.string.credit_card),
             value = nameState.value,
+            clearTitle = R.string.clear_credit_card,
             callback = { nameState.value = it },
             icon=Icons.Rounded.Cancel,
             hasErrorState = hasErrorNameState,
@@ -105,7 +106,8 @@ private fun Body(viewModel: CreditCardViewModel, modifier:Modifier=Modifier){
 
         FieldText(title = stringResource(id = R.string.max_quotes),
             value = maxQuotesState.value,
-            keyboardType = KeyboardOptions(keyboardType = KeyboardType.Decimal),
+            clearTitle = R.string.clear_max_quotes,
+            keyboardType = KeyboardOptions(keyboardType = KeyboardType.Number),
             hasErrorState = hasErrorQuoteMaxState,
             icon=Icons.Rounded.Cancel,
             callback = {maxQuotesState.value = it},
@@ -116,6 +118,7 @@ private fun Body(viewModel: CreditCardViewModel, modifier:Modifier=Modifier){
 
         FieldText(title = stringResource(id = R.string.cut_off_day),
             value = cutOffDayState.value,
+            clearTitle = R.string.clear_cut_day,
             keyboardType = KeyboardOptions(keyboardType = KeyboardType.Number),
             icon=Icons.Rounded.Cancel,
             hasErrorState = hasErrorCutOfDayState,

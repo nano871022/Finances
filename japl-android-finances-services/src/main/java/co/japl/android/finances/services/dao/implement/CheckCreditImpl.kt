@@ -1,4 +1,4 @@
-package co.japl.android.finances.services.implement
+package co.japl.android.finances.services.dao.implement
 
 import android.database.sqlite.SQLiteException
 import android.database.sqlite.SQLiteOpenHelper
@@ -7,7 +7,7 @@ import android.provider.BaseColumns
 import android.util.Log
 import androidx.annotation.RequiresApi
 import co.japl.android.finances.services.dto.*
-import co.japl.android.finances.services.interfaces.ICheckCreditSvc
+import co.japl.android.finances.services.dao.interfaces.ICheckCreditDAO
 import co.japl.android.finances.services.mapping.CheckCreditMap
 import co.japl.android.finances.services.pojo.PeriodCheckPaymentsPOJO
 import co.japl.android.finances.services.utils.DatabaseConstants
@@ -15,7 +15,8 @@ import java.util.*
 import javax.inject.Inject
 import kotlin.collections.ArrayList
 
-class CheckCreditImpl @Inject constructor(override var dbConnect: SQLiteOpenHelper) :ICheckCreditSvc {
+class CheckCreditImpl @Inject constructor(override var dbConnect: SQLiteOpenHelper) :
+    ICheckCreditDAO {
     private val mapper = CheckCreditMap()
     private val COLUMNS = arrayOf(
         BaseColumns._ID,

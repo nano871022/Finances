@@ -32,6 +32,7 @@ import com.google.android.material.navigation.NavigationView
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.Arrays
 import javax.inject.Inject
+import kotlin.IllegalArgumentException
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity(){
@@ -122,12 +123,15 @@ class MainActivity : AppCompatActivity(){
     }
 
     override fun onSupportNavigateUp(): Boolean {
-        if(isTablet() && navController.previousBackStackEntry == null){
+        try {
+            if (isTablet() && navController.previousBackStackEntry == null) {
+                return false
+            }
+
+            return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
+        }catch (e:IllegalArgumentException){
             return false
         }
-
-        return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
-
     }
 
 

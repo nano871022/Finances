@@ -1,4 +1,4 @@
-package co.japl.android.finances.services.implement
+package co.japl.android.finances.services.dao.implement
 
 import android.database.sqlite.SQLiteException
 import android.database.sqlite.SQLiteOpenHelper
@@ -6,32 +6,34 @@ import android.os.Build
 import android.provider.BaseColumns
 import android.util.Log
 import androidx.annotation.RequiresApi
+import co.japl.android.finances.services.dto.CreditCardBoughtDB
 import co.japl.android.finances.services.dto.*
-import co.japl.android.finances.services.interfaces.ICheckPaymentSvc
-import co.japl.android.finances.services.mapping.CheckPaymentsMap
+import co.japl.android.finances.services.dao.interfaces.ICheckQuoteDAO
+import co.japl.android.finances.services.mapping.CheckQuoteMap
 import co.japl.android.finances.services.pojo.PeriodCheckPaymentsPOJO
 import co.japl.android.finances.services.utils.DatabaseConstants
 import java.util.*
 import javax.inject.Inject
 import kotlin.collections.ArrayList
 
-class CheckPaymentImpl @Inject constructor(override var dbConnect: SQLiteOpenHelper) :ICheckPaymentSvc {
-    private val mapper = CheckPaymentsMap()
+class CheckQuoteImpl @Inject constructor(override var dbConnect: SQLiteOpenHelper) :
+    ICheckQuoteDAO {
+    private val mapper = CheckQuoteMap()
     private val COLUMNS = arrayOf(
         BaseColumns._ID,
-        CheckPaymentsDB.Entry.COLUMN_DATE_CREATE,
-        CheckPaymentsDB.Entry.COLUMN_CHECK,
-        CheckPaymentsDB.Entry.COLUMN_PERIOD,
-        CheckPaymentsDB.Entry.COLUMN_COD_PAID
+        CheckQuoteDB.Entry.COLUMN_DATE_CREATE,
+        CheckQuoteDB.Entry.COLUMN_CHECK,
+        CheckQuoteDB.Entry.COLUMN_PERIOD,
+        CheckQuoteDB.Entry.COLUMN_COD_QUOTE
     )
 
     @RequiresApi(Build.VERSION_CODES.O)
-    override fun getCheckPayment(codPaid: Int, period: String): Optional<CheckPaymentsDTO> {
+    override fun getCheckPayment(codPaid: Int, period: String): Optional<CheckQuoteDTO> {
         val db = dbConnect.writableDatabase
         val cursor = db.query(
-            CheckPaymentsDB.Entry.TABLE_NAME,
+            CheckQuoteDB.Entry.TABLE_NAME,
             COLUMNS,
-            " ${CheckPaymentsDB.Entry.COLUMN_COD_PAID} = ? AND ${CheckPaymentsDB.Entry.COLUMN_PERIOD} = ?",
+            " ${CheckQuoteDB.Entry.COLUMN_COD_QUOTE} = ? AND ${CheckQuoteDB.Entry.COLUMN_PERIOD} = ?",
             arrayOf(codPaid.toString(),period),
             null,
             null,
@@ -49,12 +51,14 @@ class CheckPaymentImpl @Inject constructor(override var dbConnect: SQLiteOpenHel
         val list = ArrayList<PeriodCheckPaymentsPOJO>()
         val db = dbConnect.writableDatabase
         val sql = """
-            SELECT ${CheckPaymentsDB.Entry.COLUMN_PERIOD},
-                   SUM((SELECT ${PaidDB.Entry.COLUMN_VALUE} FROM ${PaidDB.Entry.TABLE_NAME} WHERE ${BaseColumns._ID} = ${CheckPaymentsDB.Entry.COLUMN_COD_PAID}) )AS value
+            SELECT ${CheckQuoteDB.Entry.COLUMN_PERIOD},
+                   SUM((SELECT ${CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_VALUE_ITEM} 
+            FROM ${CreditCardBoughtDB.CreditCardBoughtEntry.TABLE_NAME} 
+            WHERE ${BaseColumns._ID} = ${CheckQuoteDB.Entry.COLUMN_COD_QUOTE}) )AS value
                     , COUNT(1) AS CNT
-            FROM ${CheckPaymentsDB.Entry.TABLE_NAME}  
+            FROM ${CheckQuoteDB.Entry.TABLE_NAME}  
             
-            GROUP BY ${CheckPaymentsDB.Entry.COLUMN_PERIOD}
+            GROUP BY ${CheckQuoteDB.Entry.COLUMN_PERIOD}
             """
         val cursor = db.rawQuery(sql, arrayOf()
         )
@@ -68,23 +72,23 @@ class CheckPaymentImpl @Inject constructor(override var dbConnect: SQLiteOpenHel
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    override fun save(dto: CheckPaymentsDTO): Long {
+    override fun save(dto: CheckQuoteDTO): Long {
         val db = dbConnect.writableDatabase
         val columns = mapper.mapping(dto)
         if(dto.id <= 0){
-            return db.insert(CheckPaymentsDB.Entry.TABLE_NAME,null,columns).also { Log.d(javaClass.name,"Save:: Insert $it") }
+            return db.insert(CheckQuoteDB.Entry.TABLE_NAME,null,columns).also { Log.d(javaClass.name,"Save:: Insert $it") }
         }
-        return  db.update(CheckPaymentsDB.Entry.TABLE_NAME ,mapper.mapping(dto),"${BaseColumns._ID} = ?", arrayOf(dto.id.toString())  ).toLong().also { Log.d(javaClass.name,"Save:: Update $it") }
+        return  db.update(CheckQuoteDB.Entry.TABLE_NAME ,mapper.mapping(dto),"${BaseColumns._ID} = ?", arrayOf(dto.id.toString())  ).toLong().also { Log.d(javaClass.name,"Save:: Update $it") }
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    override fun getAll(): List<CheckPaymentsDTO> {
+    override fun getAll(): List<CheckQuoteDTO> {
         Log.d(this.javaClass.name,"<<<=== getAll - Start")
-        val list = mutableListOf<CheckPaymentsDTO>()
+        val list = mutableListOf<CheckQuoteDTO>()
         try {
             val db = dbConnect.writableDatabase
             val cursor = db.query(
-                CheckPaymentsDB.Entry.TABLE_NAME,
+                CheckQuoteDB.Entry.TABLE_NAME,
                 COLUMNS,
                 null,
                 null,
@@ -108,15 +112,15 @@ class CheckPaymentImpl @Inject constructor(override var dbConnect: SQLiteOpenHel
 
     override fun delete(id: Int): Boolean {
         val db = dbConnect.writableDatabase
-        return db.delete(CheckPaymentsDB.Entry.TABLE_NAME, DatabaseConstants.SQL_DELETE_CALC_ID,
+        return db.delete(CheckQuoteDB.Entry.TABLE_NAME, DatabaseConstants.SQL_DELETE_CALC_ID,
             arrayOf(id.toString())) > 0
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    override fun get(id: Int): Optional<CheckPaymentsDTO> {
+    override fun get(id: Int): Optional<CheckQuoteDTO> {
         val db = dbConnect.writableDatabase
         val cursor = db.query(
-            CheckPaymentsDB.Entry.TABLE_NAME,
+            CheckQuoteDB.Entry.TABLE_NAME,
             COLUMNS,
             " ${BaseColumns._ID} = ?",
             arrayOf(id.toString()),
@@ -133,11 +137,11 @@ class CheckPaymentImpl @Inject constructor(override var dbConnect: SQLiteOpenHel
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    override fun get(values: CheckPaymentsDTO): List<CheckPaymentsDTO> {
+    override fun get(values: CheckQuoteDTO): List<CheckQuoteDTO> {
         val db = dbConnect.readableDatabase
-        val list = mutableListOf<CheckPaymentsDTO>()
+        val list = mutableListOf<CheckQuoteDTO>()
         val cursor = db.query(
-            CheckPaymentsDB.Entry.TABLE_NAME,COLUMNS,null,
+            CheckQuoteDB.Entry.TABLE_NAME,COLUMNS,null,
             null,null,null,null)
         with(cursor){
             while(moveToNext()){

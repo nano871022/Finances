@@ -1,7 +1,9 @@
 package co.com.japl.ui.components
 
+import android.content.res.Configuration
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
@@ -11,8 +13,10 @@ import androidx.compose.material.icons.rounded.Cancel
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
@@ -32,6 +36,7 @@ import co.com.japl.ui.utils.CurrencyVisualTransformation
 @Composable
 fun FieldText( title:String
               ,value:String=""
+               ,@StringRes clearTitle:Int = R.string.clear
               ,icon:ImageVector? = null
                ,keyboardType: KeyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text)
               ,modifier:Modifier=Modifier
@@ -41,7 +46,9 @@ fun FieldText( title:String
     val valueState = remember { mutableStateOf("") }
     value?.takeIf { value.isNotEmpty() }?.let{valueState.value = it}
 
-    TextField(value = valueState.value , onValueChange = {
+    TextField(value = valueState.value
+        , colors = TextFieldDefaults.colors(focusedLabelColor = MaterialTheme.colorScheme.onSurfaceVariant)
+        , onValueChange = {
         valueState.value = it
         callback.invoke(it)
         validation.invoke()
@@ -68,7 +75,7 @@ fun FieldText( title:String
                 icon?.let {
                     Icon(
                         imageVector = icon, contentDescription = stringResource(
-                            id = R.string.clear
+                            id = clearTitle
                         )
                     )
                 }
@@ -76,6 +83,7 @@ fun FieldText( title:String
         }
     }, modifier = modifier
         , keyboardOptions = keyboardType
+
     )
 }
 
@@ -83,6 +91,7 @@ fun FieldText( title:String
 @Composable
 fun FieldText( title:String
                ,value:String=""
+               ,@StringRes clearTitle:Int = R.string.clear
                ,icon:ImageVector? = null
                ,keyboardType: KeyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text)
                ,modifier:Modifier=Modifier
@@ -110,7 +119,7 @@ fun FieldText( title:String
                 icon?.let {
                     Icon(
                         imageVector = icon, contentDescription = stringResource(
-                            id = R.string.clear
+                            id = clearTitle
                         )
                     )
                 }
@@ -130,6 +139,7 @@ fun FieldText( title:String
 @Composable
 fun FieldText( title:String
                ,value:String=""
+               ,@StringRes clearTitle:Int = R.string.clear
                ,icon:ImageVector? = null
                ,keyboardType: KeyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text)
                , currency:Boolean = false
@@ -155,7 +165,7 @@ fun FieldText( title:String
                 icon?.let {
                     Icon(
                         imageVector = icon, contentDescription = stringResource(
-                            id = R.string.clear
+                            id = clearTitle
                         )
                     )
                 }
@@ -173,8 +183,29 @@ fun FieldText( title:String
 
 @RequiresApi(Build.VERSION_CODES.S)
 @Composable
-@Preview
+@Preview(showSystemUi = false, showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
 fun FieldTextPreview(){
+    val hasError = remember {mutableStateOf(true)}
+    val value = remember { mutableStateOf("1000000") }
+    MaterialThemeComposeUI {
+        FieldText("Title Test"
+            , value=value.value
+            ,hasErrorState=hasError
+            , callback = {value.value = it}
+            , currency = true
+            ,validation = { hasError.value = true}
+            ,modifier=Modifier.fillMaxWidth().padding(5.dp)
+            ,icon= Icons.Rounded.Cancel)
+
+        Text(text = value.value)
+    }
+
+}
+
+@RequiresApi(Build.VERSION_CODES.S)
+@Composable
+@Preview(showSystemUi = false, showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
+fun FieldTextPreviewDark(){
     val hasError = remember {mutableStateOf(true)}
     val value = remember { mutableStateOf("1000000") }
     MaterialThemeComposeUI {

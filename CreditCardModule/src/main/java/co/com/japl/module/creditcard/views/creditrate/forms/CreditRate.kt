@@ -1,5 +1,6 @@
 package co.com.japl.module.creditcard.views.creditrate.forms
 
+import android.content.res.Configuration
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Column
@@ -111,6 +112,7 @@ private fun Body(viewModel: CreateRateViewModel,modifier:Modifier){
             callable = {
                 kindCreditRate.value = it?.let{it.first.toString()}?:""
                        }
+            , cleanTitle = R.string.clean_kind_credit_rate
             , title = stringResource(id = R.string.kind_rate)
             , isError = kindCreditRateError
             , list = KindInterestRateEnum.values().map { Pair(it.getCode().toInt(), getKind(value = it.name)) }
@@ -120,9 +122,11 @@ private fun Body(viewModel: CreateRateViewModel,modifier:Modifier){
 
         FieldText(value = year.value,
             callback = {year.value = it}
+                , clearTitle = R.string.clean_year
             , title = stringResource(id = R.string.year)
             , validation = {viewModel.validate()}
             , hasErrorState = yearError
+
             , icon = Icons.Rounded.Cancel
             , modifier = Modifier
                 .fillMaxWidth()
@@ -133,6 +137,7 @@ private fun Body(viewModel: CreateRateViewModel,modifier:Modifier){
         FieldSelect(value = months.firstOrNull { month.value.isNotEmpty() && it.first == month.value.toInt() }?.second ?:"" ,
             callable = {month.value = it?.let{ it.second} ?: ""}
             , title = stringResource(id = R.string.month)
+            , cleanTitle = R.string.clean_month
             , list = months
             , isError = monthError
             , modifier = Modifier
@@ -145,7 +150,9 @@ private fun Body(viewModel: CreateRateViewModel,modifier:Modifier){
             .padding(Dimensions.PADDING_SHORT)){
             FieldText(value = rate.value,
                 callback = { rate.value = it },
-                title = stringResource(id = R.string.credit_rate),
+                title = stringResource(id = R.string.credit_rate_),
+                clearTitle = R.string.clear_credit_rate,
+                icon = Icons.Rounded.Cancel,
                 validation = { viewModel.validate() },
                 hasErrorState = rateError,
                 modifier = Weight1f().padding(end=Dimensions.PADDING_SHORT))
@@ -154,6 +161,7 @@ private fun Body(viewModel: CreateRateViewModel,modifier:Modifier){
             FieldSelect(value = kindRate.value,
                 callable = { kindRate.value = it?.let{it.second} ?: ""},
                 title = stringResource(id = R.string.kind_rate),
+                cleanTitle = R.string.clear_kind_credit_rate,
                 isError = kindRateError,
                 list= KindOfTaxEnum.values().map { Pair(it.ordinal,it.getName()) },
                 modifier = Weight1f()
@@ -202,8 +210,19 @@ private fun getKind(value:String):String{
 }
 @RequiresApi(Build.VERSION_CODES.S)
 @Composable
-@Preview(showSystemUi = true, showBackground = true)
+@Preview(showSystemUi = true, showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
 fun CreditRatePreview(){
+    val viewModel = CreateRateViewModel(null,null,null,null,null)
+    viewModel.loader.value = false
+    MaterialThemeComposeUI {
+        CreditRate(viewModel)
+    }
+}
+
+@RequiresApi(Build.VERSION_CODES.S)
+@Composable
+@Preview(showSystemUi = true, showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
+fun CreditRatePreviewDark(){
     val viewModel = CreateRateViewModel(null,null,null,null,null)
     viewModel.loader.value = false
     MaterialThemeComposeUI {
