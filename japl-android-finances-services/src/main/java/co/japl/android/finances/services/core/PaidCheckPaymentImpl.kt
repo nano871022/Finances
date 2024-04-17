@@ -6,7 +6,11 @@ import co.com.japl.finances.iports.enums.CheckPaymentsEnum
 import co.com.japl.finances.iports.outbounds.IPaidCheckPaymentPort
 import co.japl.android.finances.services.core.mapper.CheckPaymentMapper
 import co.japl.android.finances.services.dao.interfaces.ICheckPaymentDAO
+import co.japl.android.finances.services.dto.CheckPaymentsDTO
+import java.text.DecimalFormat
+import java.time.LocalDateTime
 import java.time.YearMonth
+import java.time.format.DateTimeFormatter
 import javax.inject.Inject
 
 class PaidCheckPaymentImpl @Inject constructor(private val svc:ICheckPaymentDAO) : IPaidCheckPaymentPort {
@@ -15,7 +19,15 @@ class PaidCheckPaymentImpl @Inject constructor(private val svc:ICheckPaymentDAO)
     }
 
     override fun getCheckPayments(period: YearMonth): List<CheckPaymentDTO> {
-        return svc.getAll().map{CheckPaymentMapper.mapper(it,CheckPaymentsEnum.PAYMENTS)}
+        return svc.get(
+            CheckPaymentsDTO(
+                id = 0,
+                date = LocalDateTime.MIN,
+                check= -1,
+                codPaid = 0,
+                period = period.format(DateTimeFormatter.ofPattern("yyyyMM")),
+            )
+        ).map{CheckPaymentMapper.mapper(it,CheckPaymentsEnum.PAYMENTS)}
     }
 
     override fun save(check: CheckPaymentDTO): CheckPaymentDTO {

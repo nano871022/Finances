@@ -39,7 +39,7 @@ class CheckPaymentImpl @Inject constructor(private val svc:ICreditCheckPaymentPo
                 )
         }?.takeIf { it.isNotEmpty() }?.let(list::addAll)
 
-        return list
+        return list.sortedByDescending { it.date }.distinctBy { it.codPaid }
     }
 
     override fun update(check: CheckPaymentDTO): Boolean {

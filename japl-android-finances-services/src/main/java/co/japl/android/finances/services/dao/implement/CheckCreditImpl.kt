@@ -138,15 +138,18 @@ class CheckCreditImpl @Inject constructor(override var dbConnect: SQLiteOpenHelp
     override fun get(values: CheckCreditDTO): List<CheckCreditDTO> {
         val db = dbConnect.readableDatabase
         val list = mutableListOf<CheckCreditDTO>()
+        var select = ""
+        var selectArgs = mutableListOf<String>()
+        if(values.period.isNotBlank()){
+            select = " ${CheckPaymentsDB.Entry.COLUMN_PERIOD} = ?"
+            selectArgs.add(values.period)
+        }
         val cursor = db.query(
-            CheckCreditDB.Entry.TABLE_NAME,COLUMNS,null,
-            null,null,null,null)
+            CheckCreditDB.Entry.TABLE_NAME,COLUMNS,select,
+            selectArgs.toTypedArray(),null,null,null)
         with(cursor){
             while(moveToNext()){
-                val value = mapper.mapping(cursor)
-                if(value.date < values.date ) {
-                    list.add(value)
-                }
+                 mapper.mapping(cursor).let(list::add)
             }
         }
         return list

@@ -39,6 +39,7 @@ class PaidViewModel (private val codeAccount:Int?,private val codePaid:Int?,priv
     val recurrent = mutableStateOf(false)
 
     fun save(){
+        validate()
         _paid?.let{paid->
             paid.id.takeIf { it > 0 }?.let{
                 paidSvc?.let {
@@ -114,7 +115,6 @@ class PaidViewModel (private val codeAccount:Int?,private val codePaid:Int?,priv
 
         accountSvc?.let {
             it.getAllActive().takeIf { it.isNotEmpty() }?.let { list ->
-
                 accountListPair.clear()
                 accountList= list
                 list.map{

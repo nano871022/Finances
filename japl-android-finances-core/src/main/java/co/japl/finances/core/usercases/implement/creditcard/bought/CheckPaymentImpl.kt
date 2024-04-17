@@ -1,5 +1,6 @@
 package co.japl.finances.core.usercases.implement.creditcard.bought
 
+import android.util.Log
 import co.com.japl.finances.iports.dtos.CheckPaymentDTO
 import co.com.japl.finances.iports.dtos.PeriodCheckPaymentDTO
 import co.com.japl.finances.iports.enums.CheckPaymentsEnum
@@ -12,11 +13,30 @@ import co.japl.finances.core.usercases.mapper.CreditCardMap
 import co.japl.finances.core.utils.DateUtils
 import java.time.LocalDateTime
 import java.time.YearMonth
+import java.time.format.DateTimeFormatter
 import javax.inject.Inject
 
 class CheckPaymentImpl @Inject constructor(private val svc:ICreditCardCheckPaymentPort, private val quoteSvc:IQuoteCreditCardPort, private val boughtListsvc:IBoughtList, private val creditCardSvc:ICreditCardPort):ICheckPayment {
     override fun getPeriodsPayment(): List<PeriodCheckPaymentDTO> {
-        return svc.getPeriodsPayment()
+      return  svc.getPeriodsPayment().map{
+            val period = it[0] as String
+            val codCreditCard = it[1] as Int
+            val count = it[2] as Long
+            val check = it[3] as Boolean
+            creditCardSvc.get(codCreditCard)?.let{
+                val creditCard = CreditCardMap.mapper(it)
+                val period = YearMonth.parse(period,DateTimeFormatter.ofPattern("yyyyMM"))
+                val cutoff = DateUtils.cutOff(it.cutOffDay, period)
+                boughtListsvc.getBoughtList(creditCard,cutoff,false).let{
+                    PeriodCheckPaymentDTO(period,count.toInt(),it.recap.quoteValue ,if (check) it.recap.quoteValue else 0.0)
+                }
+            }
+        }.groupBy { it?.period }.map{
+            PeriodCheckPaymentDTO(it.key!!,
+                it.value.sumOf { it?.count?:0 },
+                it.value.sumOf { it?.amount?:0.0 },
+                it.value.sumOf { it?.paid?:0.0 })
+        }
     }
 
     override fun getCheckPayments(period: YearMonth): List<CheckPaymentDTO> {

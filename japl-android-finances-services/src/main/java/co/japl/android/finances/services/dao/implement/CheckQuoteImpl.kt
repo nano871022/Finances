@@ -52,33 +52,17 @@ class CheckQuoteImpl @Inject constructor(override var dbConnect: SQLiteOpenHelpe
         val db = dbConnect.writableDatabase
         val sql = """
             SELECT ${CheckQuoteDB.Entry.COLUMN_PERIOD},
-                   SUM((SELECT ${CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_VALUE_ITEM} 
-                        FROM ${CreditCardBoughtDB.CreditCardBoughtEntry.TABLE_NAME} 
-                        WHERE ${CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_CODE_CREDIT_CARD} = ${CheckQuoteDB.Entry.COLUMN_COD_QUOTE} 
-                        AND (( 
-                            ${CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_BOUGHT_DATE} REGEXP '[\d\-]{10}' 
-                            AND  substr(${CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_BOUGHT_DATE},1,4) = substr(${CheckQuoteDB.Entry.COLUMN_PERIOD},1,4)
-                            AND substr(${CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_BOUGHT_DATE},6,2) = substr(${CheckQuoteDB.Entry.COLUMN_PERIOD},5,2)
-                        )OR 
-                        (${CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_BOUGHT_DATE} REGEXP '[\d\/]{10}'
-                            AND substr(${CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_BOUGHT_DATE},7,4) = substr(${CheckQuoteDB.Entry.COLUMN_PERIOD},1,4)
-                            AND substr(${CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_BOUGHT_DATE},4,2) = substr(${CheckQuoteDB.Entry.COLUMN_PERIOD},5,2)
-                        )
-                        )                       
-                    )) AS value
-                        
-                    , COUNT(1) AS CNT
+                   ${CheckQuoteDB.Entry.COLUMN_COD_QUOTE},
+                   ${CheckQuoteDB.Entry.COLUMN_CHECK}
             FROM ${CheckQuoteDB.Entry.TABLE_NAME}  
-            
-            GROUP BY ${CheckQuoteDB.Entry.COLUMN_PERIOD}
             """
         val cursor = db.rawQuery(sql, arrayOf()
         )
         while(cursor.moveToNext()){
             val period = cursor.getString(0)
-            val paid = cursor.getDouble(1)
-            val count = cursor.getLong(2)
-            list.add(PeriodCheckPaymentsPOJO(period,paid,0.0,count))
+            val cod_credit_card = cursor.getInt(1)
+            val check = cursor.getInt(2)
+            list.add(PeriodCheckPaymentsPOJO("$period::$cod_credit_card::$check",0.0,0.0,1))
         }
         return list.also { Log.d(javaClass.name,"<<== Get Periods Payment $it ${it.size}") }
     }
@@ -152,15 +136,19 @@ class CheckQuoteImpl @Inject constructor(override var dbConnect: SQLiteOpenHelpe
     override fun get(values: CheckQuoteDTO): List<CheckQuoteDTO> {
         val db = dbConnect.readableDatabase
         val list = mutableListOf<CheckQuoteDTO>()
+        var select = ""
+        var selectArgs = mutableListOf<String>()
+        if(values.period.isNotBlank()){
+            select = " ${CheckPaymentsDB.Entry.COLUMN_PERIOD} = ?"
+            selectArgs.add(values.period)
+        }
         val cursor = db.query(
-            CheckQuoteDB.Entry.TABLE_NAME,COLUMNS,null,
-            null,null,null,null)
+            CheckQuoteDB.Entry.TABLE_NAME,COLUMNS,select,
+            selectArgs.toTypedArray(),null,null,null)
         with(cursor){
             while(moveToNext()){
-                val value = mapper.mapping(cursor)
-                if(value.date < values.date ) {
-                    list.add(value)
-                }
+                mapper.mapping(cursor).let(list::add)
+
             }
         }
         return list

@@ -55,6 +55,7 @@ fun CheckPaids(viewModel:PeriodCheckPaymentViewModel) {
 
     if (loaderStatus.value) {
         LinearProgressIndicator( progress = progressState.value, modifier = Modifier.fillMaxWidth())
+        LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
     } else if(viewModel.map.isNotEmpty()) {
         Column (modifier = Modifier.padding(Dimensions.PADDING_SHORT)) {
             Header(viewModel = viewModel)

@@ -6,7 +6,7 @@ import java.time.YearMonth
 
 interface ICreditCardCheckPaymentPort {
 
-    fun getPeriodsPayment():List<PeriodCheckPaymentDTO>
+    fun getPeriodsPayment():List<Array<Any>>
 
     fun getCheckPayments(period: YearMonth): List<CheckPaymentDTO>
 

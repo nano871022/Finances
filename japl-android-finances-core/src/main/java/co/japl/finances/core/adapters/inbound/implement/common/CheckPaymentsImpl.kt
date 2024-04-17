@@ -32,9 +32,9 @@ class CheckPaymentsImpl @Inject constructor(
 
     override fun getCheckPayments(period: YearMonth): List<CheckPaymentDTO> {
         val list = mutableListOf<CheckPaymentDTO>()
-        paidSvc.getCheckPayments(period).takeIf { it.isNotEmpty() }?.let{ list.addAll(it) }
-        creditSvc.getCheckPayments(period).takeIf { it.isNotEmpty() }?.let{ list.addAll(it) }
-        creditCardSvc.getCheckPayments(period).takeIf { it.isNotEmpty() }?.let{ list.addAll(it) }
+        paidSvc.getCheckPayments(period).takeIf { it.isNotEmpty() }?.let( list::addAll )
+        creditSvc.getCheckPayments(period).takeIf { it.isNotEmpty() }?.let( list::addAll )
+        creditCardSvc.getCheckPayments(period).takeIf { it.isNotEmpty() }?.let( list::addAll )
         return list
     }
 

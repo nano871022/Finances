@@ -24,7 +24,7 @@ class PaidImpl @Inject constructor(private val paidImpl: IPaidDAO) : IPaidRecapP
         list.addAll(items)
         list.addAll(recurrents)
         list.sortedByDescending { it.datePaid }
-        return list
+        return list.distinctBy { it.id }
     }
 
     override fun get(codePaid: Int): PaidDTO? {

@@ -137,18 +137,28 @@ class CheckPaymentImpl @Inject constructor(override var dbConnect: SQLiteOpenHel
     override fun get(values: CheckPaymentsDTO): List<CheckPaymentsDTO> {
         val db = dbConnect.readableDatabase
         val list = mutableListOf<CheckPaymentsDTO>()
+        var select = ""
+        var selectArgs = mutableListOf<String>()
+        if(values.period.isNotBlank()){
+            select = " ${CheckPaymentsDB.Entry.COLUMN_PERIOD} = ?"
+            selectArgs.add(values.period)
+        }
         val cursor = db.query(
-            CheckPaymentsDB.Entry.TABLE_NAME,COLUMNS,null,
-            null,null,null,null)
+            CheckPaymentsDB.Entry.TABLE_NAME,
+            COLUMNS,
+            select,
+            selectArgs.toTypedArray(),
+            null,
+            null,
+            null)
         with(cursor){
             while(moveToNext()){
-                val value = mapper.mapping(cursor)
-                if(value.date < values.date ) {
-                    list.add(value)
-                }
+                mapper.mapping(cursor).let(list::add)
             }
         }
-        return list
+        return list.also {
+            Log.d(javaClass.name,"<<== Get $it ")
+        }
     }
 
     override fun backup(path: String) {
