@@ -19,4 +19,5 @@ interface IPaidDAO: SaveSvc<PaidDTO>, ISaveSvc<PaidDTO> {
     fun getPeriods(codeAccount:Long):List<PaidDTO>
 
     fun findByNameValueDate(values: PaidDTO): List<PaidDTO>
+
 }

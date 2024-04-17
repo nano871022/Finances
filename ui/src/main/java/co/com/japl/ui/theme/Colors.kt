@@ -37,6 +37,6 @@ val color_theme_dark_on_surface_variant = Color(0XFF8EDD7D)
 val color_theme_dark_surface = Color(0xFF111111)
 val color_theme_dark_on_surface = Color(0XFF8EDD7D)
 
-val color_theme_dark_error = Color(0xFFFC4B4B)
+val color_theme_dark_error = Color(0xFFE9B7B6)
 val color_theme_dark_outline_variant = Color(0XFF8EDD7D)
 val color_theme_dark_outline = Color(0XFF8EDD7D)

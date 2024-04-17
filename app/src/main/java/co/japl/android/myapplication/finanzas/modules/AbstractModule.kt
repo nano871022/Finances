@@ -68,13 +68,14 @@ import co.japl.android.myapplication.finanzas.bussiness.interfaces.IPaidSvc
 import co.japl.android.myapplication.finanzas.bussiness.interfaces.IProjectionsSvc
 import co.japl.android.myapplication.finanzas.bussiness.interfaces.IQuoteCreditCardSvc
 import co.com.japl.finances.iports.inbounds.recap.IRecapPort
+import co.com.japl.finances.iports.outbounds.ICreditPort
 import co.com.japl.ui.impls.SMSObservable
 import co.com.japl.ui.interfaces.ISMSObservablePublicher
 import co.com.japl.ui.interfaces.ISMSObservableSubscriber
-import co.japl.android.finances.services.core.SMSPaidImpl
 import co.japl.android.finances.services.dao.interfaces.ICheckCreditDAO
 import co.japl.android.finances.services.dao.interfaces.ICheckQuoteDAO
 import co.japl.android.myapplication.finanzas.controller.SMS
+import co.japl.finances.core.adapters.inbound.implement.common.CheckPaymentsImpl
 import co.japl.finances.core.adapters.inbound.implement.creditCard.SMSCreditCardImpl
 import co.japl.finances.core.adapters.inbound.implement.creditcard.bought.BoughtImpl
 import co.japl.finances.core.adapters.inbound.implement.creditcard.bought.lists.ListImpl
@@ -97,7 +98,6 @@ import co.japl.finances.core.usercases.interfaces.common.IPaid
 import co.japl.finances.core.usercases.interfaces.common.IProjections
 import co.japl.finances.core.usercases.interfaces.common.IQuoteCreditCard
 import co.japl.finances.core.usercases.interfaces.creditcard.IBuyCreditCardSetting
-import co.japl.finances.core.usercases.interfaces.creditcard.ICheckPayment
 import co.japl.finances.core.usercases.interfaces.creditcard.ICreditCardSetting
 import co.japl.finances.core.usercases.interfaces.creditcard.ISMSCreditCard
 import co.japl.finances.core.usercases.interfaces.creditcard.ITag
@@ -198,7 +198,7 @@ abstract class AbstractModule {
     abstract fun bindOutboundAdditionalCreditPort(implement: co.japl.android.finances.services.core.AdditionalCreditImpl): co.com.japl.finances.iports.outbounds.IAdditionalRecapPort
 
     @Binds
-    abstract fun bindServiceCreditFix(implement: co.japl.android.finances.services.implement.CreditFixImpl): co.japl.android.finances.services.interfaces.ICreditFix
+    abstract fun bindServiceCreditFix(implement: co.japl.android.finances.services.dao.implement.CreditFixImpl): co.japl.android.finances.services.dao.interfaces.ICreditDAO
 
     @Binds
     abstract fun bindServiceAdditionalCredit(implement: co.japl.android.finances.services.implement.AdditionalCreditImpl): co.japl.android.finances.services.interfaces.IAdditionalCreditSvc
@@ -459,4 +459,9 @@ abstract class AbstractModule {
     @Binds
     abstract fun bindDAOCreditCardCheckPayment(svc:co.japl.android.finances.services.dao.implement.CheckQuoteImpl):ICheckQuoteDAO
 
+    @Binds
+    abstract fun bindInputCheckPaymentPort(svc:CheckPaymentsImpl):co.com.japl.finances.iports.inbounds.common.ICheckPaymentPort
+
+    @Binds
+    abstract fun bindOutboundCreditPort(svc:co.japl.android.finances.services.core.CreditFixImpl):ICreditPort
 }

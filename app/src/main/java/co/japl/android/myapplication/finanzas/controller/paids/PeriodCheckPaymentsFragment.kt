@@ -8,7 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.RequiresApi
 import androidx.compose.ui.platform.ViewCompositionStrategy
-import co.com.japl.finances.iports.inbounds.paid.ICheckPaymentPort
+import co.com.japl.finances.iports.inbounds.common.ICheckPaymentPort
 import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.japl.android.myapplication.databinding.FragmentPeriodCheckPaymentsBinding
 import co.japl.android.myapplication.finanzas.view.checkpaids.list.CheckPaids
@@ -18,9 +18,7 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class PeriodCheckPaymentsFragment : Fragment() {
 
-    @Inject lateinit var paidSvc:ICheckPaymentPort
-    @Inject lateinit var quoteSvc:co.com.japl.finances.iports.inbounds.creditcard.bought.ICheckPaymentPort
-    @Inject lateinit var creditSvc:co.com.japl.finances.iports.inbounds.credit.ICheckPaymentPort
+    @Inject lateinit var checkPaymentSvc:ICheckPaymentPort
 
     @RequiresApi(Build.VERSION_CODES.S)
     override fun onCreateView(
@@ -28,7 +26,7 @@ class PeriodCheckPaymentsFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val root = FragmentPeriodCheckPaymentsBinding.inflate( inflater)
-       val viewModel = PeriodCheckPaymentViewModel( paidPeriodCheck = paidSvc,creditPeriodCheck = creditSvc,creditCardPeriodCheck=quoteSvc)
+       val viewModel = PeriodCheckPaymentViewModel( checkPaymentSvc)
         root.cvComposeFpcp.apply { 
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {

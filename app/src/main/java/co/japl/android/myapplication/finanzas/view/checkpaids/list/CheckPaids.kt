@@ -62,7 +62,9 @@ fun CheckPaids(viewModel:PeriodCheckPaymentViewModel) {
         }
     }else{
         Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
-            Text(text = stringResource(id = R.string.not_data), textAlign = TextAlign.Center)
+            Text(text = stringResource(id = R.string.not_data),
+                textAlign = TextAlign.Center,
+                color = MaterialTheme.colorScheme.onBackground)
         }
     }
 }
@@ -170,8 +172,31 @@ internal fun CheckPaidsPreview(){
 @RequiresApi(Build.VERSION_CODES.S)
 @Composable
 @Preview(showBackground = true, showSystemUi = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
-internal fun CheckPaidsPreviewDark(){
+internal fun CheckPaidsPreviewDark() {
     val viewModel = getViewModel()
+    MaterialThemeComposeUI {
+        CheckPaids(viewModel = viewModel)
+    }
+}
+
+
+@RequiresApi(Build.VERSION_CODES.S)
+@Composable
+@Preview(showBackground = true, showSystemUi = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
+internal fun CheckPaidsPreviewDarkWithoutdata(){
+        val viewModel = getViewModel()
+        viewModel.map.clear()
+        MaterialThemeComposeUI {
+            CheckPaids(viewModel = viewModel)
+        }
+}
+
+@RequiresApi(Build.VERSION_CODES.S)
+@Composable
+@Preview(showBackground = true, showSystemUi = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
+internal fun CheckPaidsPreviewWithoutdata(){
+    val viewModel = getViewModel()
+    viewModel.map.clear()
     MaterialThemeComposeUI {
         CheckPaids(viewModel = viewModel)
     }
@@ -189,7 +214,7 @@ internal fun CheckPaidsPreview2(){
 
 @Composable
 private fun getViewModel():PeriodCheckPaymentViewModel{
-    val viewModel =  PeriodCheckPaymentViewModel(null,null,null)
+    val viewModel =  PeriodCheckPaymentViewModel(null)
     viewModel.loader.value = false
     viewModel.map.put(2024, arrayListOf(
         PeriodCheckPaymentDTO(

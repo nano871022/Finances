@@ -68,6 +68,6 @@ internal fun SettingsAppPreviewDark(){
 }
 
 @Composable
-fun getViewModel():SettingsAppViewModel{
+private fun getViewModel():SettingsAppViewModel{
     return  SettingsAppViewModel(prefs=Prefs(LocalContext.current), context = LocalContext.current)
 }

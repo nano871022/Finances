@@ -8,9 +8,7 @@ import co.com.japl.finances.iports.dtos.PeriodCheckPaymentDTO
 import co.com.japl.finances.iports.inbounds.paid.ICheckPaymentPort
 import kotlinx.coroutines.runBlocking
 
-class PeriodCheckPaymentViewModel constructor(private val paidPeriodCheck:ICheckPaymentPort?,
-                                              private val creditPeriodCheck:co.com.japl.finances.iports.inbounds.credit.ICheckPaymentPort?,
-                                              private val creditCardPeriodCheck:co.com.japl.finances.iports.inbounds.creditcard.bought.ICheckPaymentPort? ):ViewModel() {
+class PeriodCheckPaymentViewModel constructor(private val periodCheckPaymentSvc:co.com.japl.finances.iports.inbounds.common.ICheckPaymentPort? ):ViewModel() {
 
     val progression = mutableFloatStateOf(0.0f)
     val loader = mutableStateOf(true)
@@ -26,11 +24,7 @@ class PeriodCheckPaymentViewModel constructor(private val paidPeriodCheck:ICheck
     suspend fun execute(){
         val list = mutableListOf<PeriodCheckPaymentDTO>()
         progression.floatValue = 0.3f
-        paidPeriodCheck?.getPeriodsPayment()?.takeIf { it.isNotEmpty() }?.let( list::addAll )
-        progression.floatValue = 0.4f
-        creditPeriodCheck?.getPeriodsPayment()?.takeIf { it.isNotEmpty() }?.let( list::addAll )
-        progression.floatValue = 0.5f
-        creditCardPeriodCheck?.getPeriodsPayment()?.takeIf { it.isNotEmpty() }?.let( list::addAll )
+        periodCheckPaymentSvc?.getPeriodsPayment()?.takeIf { it.isNotEmpty() }?.let( list::addAll )
         progression.floatValue = 0.6f
         list.takeIf { it.isNotEmpty() }?.let { map.putAll(list.groupBy{ it.period.year }) }
         progression.floatValue = 0.7f

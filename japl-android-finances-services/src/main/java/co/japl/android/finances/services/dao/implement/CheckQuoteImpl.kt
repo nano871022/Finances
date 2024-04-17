@@ -53,8 +53,20 @@ class CheckQuoteImpl @Inject constructor(override var dbConnect: SQLiteOpenHelpe
         val sql = """
             SELECT ${CheckQuoteDB.Entry.COLUMN_PERIOD},
                    SUM((SELECT ${CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_VALUE_ITEM} 
-            FROM ${CreditCardBoughtDB.CreditCardBoughtEntry.TABLE_NAME} 
-            WHERE ${BaseColumns._ID} = ${CheckQuoteDB.Entry.COLUMN_COD_QUOTE}) )AS value
+                        FROM ${CreditCardBoughtDB.CreditCardBoughtEntry.TABLE_NAME} 
+                        WHERE ${CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_CODE_CREDIT_CARD} = ${CheckQuoteDB.Entry.COLUMN_COD_QUOTE} 
+                        AND (( 
+                            ${CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_BOUGHT_DATE} REGEXP '[\d\-]{10}' 
+                            AND  substr(${CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_BOUGHT_DATE},1,4) = substr(${CheckQuoteDB.Entry.COLUMN_PERIOD},1,4)
+                            AND substr(${CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_BOUGHT_DATE},6,2) = substr(${CheckQuoteDB.Entry.COLUMN_PERIOD},5,2)
+                        )OR 
+                        (${CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_BOUGHT_DATE} REGEXP '[\d\/]{10}'
+                            AND substr(${CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_BOUGHT_DATE},7,4) = substr(${CheckQuoteDB.Entry.COLUMN_PERIOD},1,4)
+                            AND substr(${CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_BOUGHT_DATE},4,2) = substr(${CheckQuoteDB.Entry.COLUMN_PERIOD},5,2)
+                        )
+                        )                       
+                    )) AS value
+                        
                     , COUNT(1) AS CNT
             FROM ${CheckQuoteDB.Entry.TABLE_NAME}  
             

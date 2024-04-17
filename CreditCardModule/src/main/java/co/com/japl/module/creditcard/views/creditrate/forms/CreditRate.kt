@@ -135,7 +135,9 @@ private fun Body(viewModel: CreateRateViewModel,modifier:Modifier){
         val months = stringArrayResource(id = R.array.Months).mapIndexed { index, value -> Pair(index,value)}
 
         FieldSelect(value = months.firstOrNull { month.value.isNotEmpty() && it.first == month.value.toInt() }?.second ?:"" ,
-            callable = {month.value = it?.let{ it.second} ?: ""}
+            callable = {
+                    month.value = it?.let{ it.first.toString()} ?: ""
+                       }
             , title = stringResource(id = R.string.month)
             , cleanTitle = R.string.clean_month
             , list = months

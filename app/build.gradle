@@ -23,8 +23,8 @@ android {
         applicationId "co.japl.android.myapplication"
         minSdk 26
         targetSdk 33
-        versionCode 4_05_06_098
-        versionName "V 4.05.06.098 Fix Issues interface"
+        versionCode 4_05_07_099
+        versionName "V 4.05.07.099 Fix Issues interface"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         signingConfig signingConfigs.prod
