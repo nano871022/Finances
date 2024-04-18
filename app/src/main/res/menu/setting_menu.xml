@@ -10,7 +10,6 @@
         android:id="@+id/item_menu_setting_check_payments"
         android:icon="@android:drawable/ic_menu_add"
         android:title="@string/check_payments_title"
-        android:titleCondensed="@string/check_payments_title"
         app:showAsAction="ifRoom" />
 
     <group>
@@ -18,7 +17,6 @@
             android:id="@+id/item_menu_setting_credit_card"
             android:icon="@drawable/ic_credit_card_foreground"
             android:title="@string/credit_cards"
-            android:titleCondensed="@string/credit_card"
             app:showAsAction="ifRoom" />
 
         <item
@@ -64,10 +62,12 @@
     android:icon="@drawable/ic_credit_card_foreground"
     android:title="@string/about_it"/>
 
+    <!--
     <item
         android:id="@+id/item_menu_setting_google_login"
         android:icon="@drawable/ic_credit_card_foreground"
         android:title="LogIn on Google" />
+        -->
 
 
 </menu>

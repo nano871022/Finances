@@ -16,4 +16,6 @@ interface IPaidPort {
     fun delete(codePaid:Int):Boolean
 
     fun findByNameValueDate(values: PaidDTO): List<PaidDTO>
+
+    fun findByRecurrent(period:YearMonth):List<PaidDTO>
 }

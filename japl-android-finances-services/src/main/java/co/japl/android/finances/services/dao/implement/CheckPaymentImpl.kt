@@ -1,4 +1,4 @@
-package co.japl.android.finances.services.implement
+package co.japl.android.finances.services.dao.implement
 
 import android.database.sqlite.SQLiteException
 import android.database.sqlite.SQLiteOpenHelper
@@ -7,7 +7,7 @@ import android.provider.BaseColumns
 import android.util.Log
 import androidx.annotation.RequiresApi
 import co.japl.android.finances.services.dto.*
-import co.japl.android.finances.services.interfaces.ICheckPaymentSvc
+import co.japl.android.finances.services.dao.interfaces.ICheckPaymentDAO
 import co.japl.android.finances.services.mapping.CheckPaymentsMap
 import co.japl.android.finances.services.pojo.PeriodCheckPaymentsPOJO
 import co.japl.android.finances.services.utils.DatabaseConstants
@@ -15,7 +15,8 @@ import java.util.*
 import javax.inject.Inject
 import kotlin.collections.ArrayList
 
-class CheckPaymentImpl @Inject constructor(override var dbConnect: SQLiteOpenHelper) :ICheckPaymentSvc {
+class CheckPaymentImpl @Inject constructor(override var dbConnect: SQLiteOpenHelper) :
+    ICheckPaymentDAO {
     private val mapper = CheckPaymentsMap()
     private val COLUMNS = arrayOf(
         BaseColumns._ID,
@@ -136,18 +137,28 @@ class CheckPaymentImpl @Inject constructor(override var dbConnect: SQLiteOpenHel
     override fun get(values: CheckPaymentsDTO): List<CheckPaymentsDTO> {
         val db = dbConnect.readableDatabase
         val list = mutableListOf<CheckPaymentsDTO>()
+        var select = ""
+        var selectArgs = mutableListOf<String>()
+        if(values.period.isNotBlank()){
+            select = " ${CheckPaymentsDB.Entry.COLUMN_PERIOD} = ?"
+            selectArgs.add(values.period)
+        }
         val cursor = db.query(
-            CheckPaymentsDB.Entry.TABLE_NAME,COLUMNS,null,
-            null,null,null,null)
+            CheckPaymentsDB.Entry.TABLE_NAME,
+            COLUMNS,
+            select,
+            selectArgs.toTypedArray(),
+            null,
+            null,
+            null)
         with(cursor){
             while(moveToNext()){
-                val value = mapper.mapping(cursor)
-                if(value.date < values.date ) {
-                    list.add(value)
-                }
+                mapper.mapping(cursor).let(list::add)
             }
         }
-        return list
+        return list.also {
+            Log.d(javaClass.name,"<<== Get $it ")
+        }
     }
 
     override fun backup(path: String) {

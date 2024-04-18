@@ -31,6 +31,7 @@ class PaidImpl @Inject constructor(private val paidSvc:IPaid): IPaidPort {
 
     override fun update(paid: PaidDTO): Boolean {
         require(paid.id > 0) { "Id cannot be 0" }
+        require(paid.account > 0) { "Account cannot be 0" }
         return paidSvc.update(paid)
     }
 

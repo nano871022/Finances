@@ -42,7 +42,6 @@ class CreditCardViewModel constructor(private val codeCreditCard:Int?,private va
         hasErrorQuoteMax.value = maxQuotes.value.isEmpty() || NumbersUtil.isNumber(maxQuotes.value).not() || maxQuotes.value.toInt() <= 0
         hasErrorCutOfDay.value = cutOffDay.value.isEmpty() || NumbersUtil.isNumber(cutOffDay.value).not() || (cutOffDay.value.toInt() <= 0 && cutOffDay.value.toInt() > 30)
         hasErrorWarning.value = warningValue.value.isEmpty() || NumbersUtil.isNumber(warningValue.value).not() || (NumbersUtil.toBigDecimal(warningValue.value) <= BigDecimal.ZERO)
-        Log.d(this.javaClass.name,"hasErrorWarning: ${hasErrorWarning.value} warningValue: ${warningValue.value} toBigDecimal: ${NumbersUtil.toBigDecimal(warningValue.value)} IsNumber ${NumbersUtil.isNumber(warningValue.value).not()}")
         showButtons.value = (hasErrorName.value || hasErrorQuoteMax.value || hasErrorCutOfDay.value || hasErrorWarning.value).not()
 
         if(showButtons.value) {

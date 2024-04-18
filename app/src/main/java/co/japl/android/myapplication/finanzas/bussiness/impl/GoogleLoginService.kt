@@ -20,7 +20,7 @@ enum class ProviderType{
     BASIC
 }
 
-class GoogleLoginService(private val activity:Activity, override val RC_SIGN_IN: Int) :IGoogleLoginService{
+abstract class GoogleLoginService(private val activity:Activity, override val RC_SIGN_IN: Int) :IGoogleLoginService{
     private lateinit var signInAccount:GoogleSignInAccount
     private val googleSignInOptions = GoogleSignInOptions
         .Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)

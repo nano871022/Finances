@@ -37,7 +37,11 @@ class PaidMap {
                 put(PaidDB.Entry.COLUMN_END_DATE, DateUtils.localDateToString(endDate))
             }else if(dto.id == 0 && dto.recurrent.toInt() == 0) {
                 put(PaidDB.Entry.COLUMN_END_DATE, DateUtils.localDateToString(dto.date.plusMonths(1).withDayOfMonth(1).minusDays(1)))
-            }else {
+            }else if(dto.date == dto.end && dto.recurrent.toInt() == 1) {
+                put(PaidDB.Entry.COLUMN_END_DATE, DateUtils.localDateToString(endDate))
+            }else if(dto.date == dto.end && dto.recurrent.toInt() == 0) {
+                put(PaidDB.Entry.COLUMN_END_DATE, DateUtils.localDateToString(dto.end.plusMonths(1).withMonth(1).minusDays(1)))
+            } else{
                 put(PaidDB.Entry.COLUMN_END_DATE, DateUtils.localDateToString(dto.end))
             }
         }

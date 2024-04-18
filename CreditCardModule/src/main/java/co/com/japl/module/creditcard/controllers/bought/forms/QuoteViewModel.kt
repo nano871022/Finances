@@ -268,7 +268,7 @@ class QuoteViewModel constructor(private val codeCreditCard:Int,
             value = false
         }?:errorValueProduct.takeIf { it.value }?.let { it.value = false}
 
-        monthProduct.value.takeIf { it.isBlank() || NumbersUtil.isNumber(it).not() }?.let {
+        monthProduct.value.takeIf { it.isBlank() || NumbersUtil.isNumber(it).not() || it.toInt() <= 0 }?.let {
             errorMonthProduct.value = true
             validate = false
             month = false

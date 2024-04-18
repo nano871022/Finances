@@ -15,6 +15,7 @@
     <string name="msg_checkbox">Mostrar Mensaje Bienvenidos</string>
     <string name="settings_app">Configuraciones Aplicación</string>
 
+    <string name="not_data">No hay datos que mostrar</string>
 
     <string name="app_name">Finanzas</string>
     <string name="about_it">Acerca de</string>
@@ -297,6 +298,7 @@
     <string name="update_input_value">Actualizar Valor</string>
     <string name="delete_input">Eliminar Ingreso</string>
 
+    <string name="count_short">#</string>
 
     <string name="num_items">Número Productos</string>
     <string name="num_month_close">Número de Meses Cercano</string>
@@ -476,7 +478,9 @@
     <string name="message_account_doesnt_create_yet">Para utilizar este modulo es necesario crear una cuenta bancaria de referencia, desea crear una?</string>
     <string name="days_sms_read">Dias de lectura SMS</string>
     <string name="go">Ir</string>
-    <string name="default_web_client_id">332922408573-j1uk3tbu8jp6umcvt9ssdq0l32nlq49o.apps.googleusercontent.com</string>
+    <string name="default_web_client_id">332922408573-hdcfmvvogd9thf0ujtqbl1rghn5voud2.apps.googleusercontent.com</string>
+    <string name="default_web_client_id2">332922408573-sq5fj56cbl35mptmvo0mvp3ig39mf58p.apps.googleusercontent.com</string>
+    <string name="default_web_client_id3">332922408573-j1uk3tbu8jp6umcvt9ssdq0l32nlq49o.apps.googleusercontent.com</string>
 
     <string name="toast_save_successful">Se guardo correctamente</string>
 </resources>

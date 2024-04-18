@@ -1,5 +1,8 @@
 package co.com.japl.module.paid.views.Inputs.list
 
+import android.content.res.Configuration
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -25,14 +28,17 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import co.com.japl.module.paid.R
 import co.com.japl.module.paid.controllers.Inputs.list.InputListModelView
 import co.com.japl.ui.components.Carousel
 import co.com.japl.ui.components.FieldView
+import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.com.japl.ui.theme.values.Dimensions
 import co.com.japl.ui.theme.values.ModifiersCustom.Weight1f
 import co.japl.android.myapplication.utils.NumbersUtil
@@ -150,7 +156,7 @@ private fun InputListHeader(numInputs:Long,totalInputs:Double,totalMonthly:Doubl
             Row{
                 FieldView(name = R.string.num_inputs, value = numInputs.toString(), isMoney=false, modifier = Weight1f())
 
-                FieldView(name = R.string.input_total, value = NumbersUtil.COPtoString(totalInputs), modifier = Weight1f())
+                FieldView(name = R.string.input_total, value = NumbersUtil.toString(totalInputs), modifier = Weight1f())
             }
         }else{
             Row {
@@ -170,3 +176,20 @@ private fun InputListHeader(numInputs:Long,totalInputs:Double,totalMonthly:Doubl
 
 }
 
+@RequiresApi(Build.VERSION_CODES.S)
+@Composable
+@Preview(showSystemUi = true, showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
+internal fun InputListPreview(){
+    MaterialThemeComposeUI {
+        InputList(getViewModel())
+    }
+}
+
+@Composable
+private fun getViewModel():InputListModelView{
+    val context = LocalContext.current
+    val viewModel = InputListModelView(context = context, accountCode = 0,null,null)
+    viewModel.stateDialogOptionsMore.value = false
+    viewModel.stateLoader.value = false
+    return viewModel
+}

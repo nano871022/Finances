@@ -46,7 +46,7 @@ import co.com.japl.ui.utils.DateUtils
 @Composable
 fun FieldDatePicker(@StringRes title:Int,value:String,isError:MutableState<Boolean> = mutableStateOf(false),validation:()->Unit,callable:(String)->Unit,modifier:Modifier = Modifier) {
     val state = rememberDatePickerState()
-    val stateDatePicker = remember { mutableStateOf(true) }
+    val stateDatePicker = remember { mutableStateOf(false) }
     val stateValue = remember { mutableStateOf(value) }
 
     Box(modifier = modifier

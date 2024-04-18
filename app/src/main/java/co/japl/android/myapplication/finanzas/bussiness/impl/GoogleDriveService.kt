@@ -2,12 +2,22 @@ package co.japl.android.myapplication.finanzas.bussiness.impl
 
 import android.app.Activity
 import android.content.Intent
+import androidx.credentials.GetCredentialRequest
+import androidx.credentials.GetCredentialResponse
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
+import android.os.Build
 import android.util.Log
 import android.widget.Toast
+import androidx.annotation.RequiresApi
+import androidx.credentials.CredentialManager
+import androidx.credentials.CustomCredential
+import androidx.credentials.PasswordCredential
+import androidx.credentials.PublicKeyCredential
 import co.japl.android.finances.services.DB.connections.PaidConnectDB
 import co.japl.android.finances.services.dto.PaidDB
+import co.japl.android.myapplication.R
+import co.japl.android.myapplication.R.*
 import co.japl.android.myapplication.bussiness.DB.connections.ConnectDB
 import co.japl.android.myapplication.finanzas.bussiness.config.GoogleDriveConfig
 import co.japl.android.myapplication.finanzas.bussiness.interfaces.IGoogleLoginService
@@ -17,6 +27,9 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.Scope
+import com.google.android.libraries.identity.googleid.GetGoogleIdOption
+import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
+import com.google.android.libraries.identity.googleid.GoogleIdTokenParsingException
 import com.google.api.services.drive.*
 import com.google.api.client.extensions.android.http.AndroidHttp
 import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential
@@ -51,11 +64,51 @@ class GoogleDriveService(private var dbConnect: SQLiteOpenHelper,private val act
 
     private val googleSignInOptions by lazy{
          GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-          //  .requestIdToken(activity.getString(R.string.default_web_client_id))
-            .requestScopes(Scope(DriveScopes.DRIVE_FILE))
+            //.requestIdToken(activity.getString(R.string.default_web_client_id))
+            .requestScopes(Scope(DriveScopes.DRIVE_FILE),)
             .build()
     }
+
+    private val googleIdOption: GetGoogleIdOption = GetGoogleIdOption.Builder()
+        .setFilterByAuthorizedAccounts(true)
+        .setServerClientId(activity.getString(string.default_web_client_id))
+        .setAutoSelectEnabled(true)
+        .setNonce("ofuscacion para api token")
+        .build()
+
+    private val request : GetCredentialRequest = GetCredentialRequest.Builder().addCredentialOption(googleIdOption).build()
+
     private val googleSignInClient = GoogleSignIn.getClient(activity,googleSignInOptions)
+
+    override suspend fun login(){
+        val result : GetCredentialResponse = CredentialManager.create(activity).getCredential(request = request,context = activity)
+        handleSignIn(result)
+    }
+
+    private fun handleSignIn(result:GetCredentialResponse){
+        val credential = result.credential
+        when(credential) {
+            is PublicKeyCredential -> {
+                val responseJson = credential.authenticationResponseJson
+            }
+            is PasswordCredential -> {
+                val username = credential.id
+                val password = credential.password
+            }
+            is CustomCredential -> {
+                if(credential.type== GoogleIdTokenCredential.TYPE_GOOGLE_ID_TOKEN_CREDENTIAL){
+                    try{
+                        val googleIdTokenCredential = GoogleIdTokenCredential.createFrom(credential.data)
+                    }catch (e:GoogleIdTokenParsingException){
+                        Log.e(javaClass.simpleName,"=== ERROR: Receive an Invalid google id token response ${e.message}")
+                    }
+                }else{
+                    Log.e(javaClass.simpleName,"=== ERROR: Unexpected type of credential")
+                }
+            }
+            else-> Log.e(javaClass.simpleName,"=== ERROR: Unexpected type of credential")
+        }
+    }
 
     override fun getIntent(): Intent = googleSignInClient.signInIntent
 
