@@ -1,4 +1,4 @@
-package co.japl.android.finances.services.implement
+package co.japl.android.finances.services.dao.implement
 
 import android.database.sqlite.SQLiteException
 import android.database.sqlite.SQLiteOpenHelper
@@ -7,7 +7,7 @@ import android.provider.BaseColumns
 import android.util.Log
 import androidx.annotation.RequiresApi
 import co.japl.android.finances.services.dto.*
-import co.japl.android.finances.services.interfaces.ICheckCreditSvc
+import co.japl.android.finances.services.dao.interfaces.ICheckCreditDAO
 import co.japl.android.finances.services.mapping.CheckCreditMap
 import co.japl.android.finances.services.pojo.PeriodCheckPaymentsPOJO
 import co.japl.android.finances.services.utils.DatabaseConstants
@@ -15,7 +15,8 @@ import java.util.*
 import javax.inject.Inject
 import kotlin.collections.ArrayList
 
-class CheckCreditImpl @Inject constructor(override var dbConnect: SQLiteOpenHelper) :ICheckCreditSvc {
+class CheckCreditImpl @Inject constructor(override var dbConnect: SQLiteOpenHelper) :
+    ICheckCreditDAO {
     private val mapper = CheckCreditMap()
     private val COLUMNS = arrayOf(
         BaseColumns._ID,
@@ -137,15 +138,18 @@ class CheckCreditImpl @Inject constructor(override var dbConnect: SQLiteOpenHelp
     override fun get(values: CheckCreditDTO): List<CheckCreditDTO> {
         val db = dbConnect.readableDatabase
         val list = mutableListOf<CheckCreditDTO>()
+        var select = ""
+        var selectArgs = mutableListOf<String>()
+        if(values.period.isNotBlank()){
+            select = " ${CheckPaymentsDB.Entry.COLUMN_PERIOD} = ?"
+            selectArgs.add(values.period)
+        }
         val cursor = db.query(
-            CheckCreditDB.Entry.TABLE_NAME,COLUMNS,null,
-            null,null,null,null)
+            CheckCreditDB.Entry.TABLE_NAME,COLUMNS,select,
+            selectArgs.toTypedArray(),null,null,null)
         with(cursor){
             while(moveToNext()){
-                val value = mapper.mapping(cursor)
-                if(value.date < values.date ) {
-                    list.add(value)
-                }
+                 mapper.mapping(cursor).let(list::add)
             }
         }
         return list

@@ -3,6 +3,7 @@ package co.com.japl.ui.components
 import android.content.res.Configuration
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.annotation.StringRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -105,7 +106,7 @@ fun FieldSelect(title:String,value:String?,list:List<IMoreOptions>?,isError:Muta
 }
 
 @Composable
-fun FieldSelect(title: String,value:String, isError:MutableState<Boolean> = mutableStateOf(false),list:List<Pair<Int,String>>?,modifier: Modifier,callable:(Pair<Int,String>?)->Unit){
+fun FieldSelect(title: String,value:String,  @StringRes cleanTitle:Int = R.string.clear, isError:MutableState<Boolean> = mutableStateOf(false),list:List<Pair<Int,String>>?,modifier: Modifier,callable:(Pair<Int,String>?)->Unit){
     val context = LocalContext.current
     val state = remember { mutableStateOf(false) }
     val stateValue = remember { mutableStateOf("") }
@@ -145,7 +146,7 @@ fun FieldSelect(title: String,value:String, isError:MutableState<Boolean> = muta
                 }) {
                     Icon(
                         imageVector = Icons.Rounded.Cancel,
-                        contentDescription = stringResource(id = R.string.clear),
+                        contentDescription = stringResource(id = cleanTitle),
                         modifier = Modifier
                         ,tint = if(isError.value){MaterialTheme.colorScheme.error}else{MaterialTheme.colorScheme.onSurface}
                     )

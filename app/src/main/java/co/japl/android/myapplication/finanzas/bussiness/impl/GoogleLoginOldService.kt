@@ -51,6 +51,10 @@ class GoogleLoginOldService(private val activity: Activity, override val RC_SIGN
 
     }
 
+    override suspend fun login() {
+        TODO("Not yet implemented")
+    }
+
     override fun response(requestCode:Int,resultCode:Int, data:Intent){
         if(requestCode == RC_SIGN_IN){
             val result = Auth.GoogleSignInApi.getSignInResultFromIntent(data)

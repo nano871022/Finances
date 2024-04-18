@@ -10,6 +10,7 @@ import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.Month
 import java.time.Period
+import java.time.YearMonth
 import java.time.format.DateTimeFormatter
 import java.time.format.DateTimeParseException
 
@@ -213,6 +214,31 @@ class DateUtils {
                 else -> cutOffResponse
             }
             return cutOffResponse
+        }
+
+        fun cutOff(cutOffDay: Short,period:YearMonth): LocalDateTime {
+            var now = LocalDate.of(period.year,period.monthValue,1)
+            var month = now.month
+            var cutOff = now.withDayOfMonth(1).minusDays(1).plusDays(cutOffDay.toLong())
+            if (cutOff.month != month) {
+                cutOff = cutOff.withDayOfMonth(1).minusDays(1)
+            }
+            month = cutOff.month
+            cutOff = cutOff.minusMonths(1)
+            if (month == cutOff.month) {
+                cutOff = cutOff.withDayOfMonth(1).minusDays(1)
+            }
+            cutOff = when (cutOff.dayOfWeek) {
+                DayOfWeek.SATURDAY -> cutOff.minusDays(1)
+                DayOfWeek.SUNDAY -> cutOff.plusDays(1)
+                else -> cutOff
+            }
+            return LocalDateTime.of(cutOff, LocalTime.MAX).also {
+                Log.d(
+                    javaClass.name,
+                    "<<<=== FINISH:cutOff Day: $cutOffDay ${cutOff.dayOfWeek} Response: $it"
+                )
+            }
         }
 
         @RequiresApi(Build.VERSION_CODES.O)

@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -119,7 +120,7 @@ private fun CreditCard(value:Map.Entry<CreditCardDTO?,List<TaxDTO>>,viewModel: C
                     value = value.key?.name ?: "",
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(Dimensions.PADDING_SHORT).weight(1f),
+                        .padding(Dimensions.PADDING_SHORT),
                     suffix = {
                         IconButton(onClick = { viewModel.add(value.key?.id) }) {
                             Icon(
@@ -131,20 +132,22 @@ private fun CreditCard(value:Map.Entry<CreditCardDTO?,List<TaxDTO>>,viewModel: C
                 )
 
             Divider()
-            Column(modifier=Modifier.verticalScroll(rememberScrollState())) {
+            Column(modifier=Modifier) {
                 listState.forEach { list ->
-                    list.forEach { rate ->
-                        Rate(
-                            rate = rate,
-                            { viewModel.delete(it) },
-                            { viewModel.enable(it) },
-                            { viewModel.disable(it) },
-                            { codeCreditCard, codeCreditRate ->
-                                viewModel.edit(
-                                    codeCreditCard,
-                                    codeCreditRate
-                                )
-                            })
+                    LazyColumn () {
+                        items(list.size){ pos ->
+                            Rate(
+                                rate = list[pos],
+                                { viewModel.delete(it) },
+                                { viewModel.enable(it) },
+                                { viewModel.disable(it) },
+                                { codeCreditCard, codeCreditRate ->
+                                    viewModel.edit(
+                                        codeCreditCard,
+                                        codeCreditRate
+                                    )
+                                })
+                        }
                     }
                 }
             }

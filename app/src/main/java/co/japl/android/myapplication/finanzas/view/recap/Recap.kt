@@ -1,6 +1,7 @@
 package co.japl.android.myapplication.finanzas.view.recap
 
 import android.content.Intent
+import android.content.res.Configuration
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -102,10 +103,10 @@ private fun CarouselView(model:RecapViewModel){
 
 @Composable
 private fun DialogStart(model:RecapViewModel){
-    val status = remember {model.msgInitial}
+    val status = remember {model.msgInitial }
     val context= LocalContext.current
     val wikiUrl = stringResource(id = R.string.wiki_url).toUri()
-    if(status.value){
+    if(false /*status.value*/){
    Dialog(onDismissRequest = { status.value = false }) {
 
        Surface(
@@ -163,6 +164,7 @@ private fun DialogStart(model:RecapViewModel){
 @Preview(showBackground = true, showSystemUi = true)
 fun PreviewRecap() {
     val prefs = Prefs(LocalContext.current)
+
     val model = RecapViewModel(null,prefs,null)
     val recap = RecapDTO(
       projectionSaved = 20000.0,
@@ -172,6 +174,28 @@ fun PreviewRecap() {
      totalInputs = 60000.0,
      totalQuoteCreditCard = 70000.0,
      warningValueCreditCard = 80000.0
+    )
+    model.setRecap(recap)
+    co.com.japl.ui.theme.MaterialThemeComposeUI {
+        Recap(model)
+    }
+}
+
+@RequiresApi(Build.VERSION_CODES.S)
+@Composable
+@Preview(showBackground = true, showSystemUi = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
+fun PreviewRecapDark() {
+    val prefs = Prefs(LocalContext.current)
+
+    val model = RecapViewModel(null,prefs,null)
+    val recap = RecapDTO(
+        projectionSaved = 20000.0,
+        projectionNext = 30000.0,
+        totalPaid = 40000.0,
+        totalQuoteCredit = 50000.0,
+        totalInputs = 60000.0,
+        totalQuoteCreditCard = 70000.0,
+        warningValueCreditCard = 80000.0
     )
     model.setRecap(recap)
     co.com.japl.ui.theme.MaterialThemeComposeUI {

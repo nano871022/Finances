@@ -41,12 +41,22 @@
     <string name="year">Año</string>
     <string name="month">Mes</string>
     <string name="credit_rate">Tasa</string>
+    <string name="credit_rate_">Tasa del crédito</string>
     <string name="period">Cuotas</string>
     <string name="tag">Etiqueta</string>
     <string name="add_tag">Agregar Etiqueta</string>
     <string name="setting_kind">Tipo Configuración</string>
     <string name="setting_name">Nombre Configuración</string>
     <string name="recurrent">Recurrente</string>
+
+    <string name="clean_kind_credit_rate">Limpiar tipo de tasa</string>
+    <string name="clean_year">Limpiar año</string>
+    <string name="clean_month">Limpiar Mes</string>
+    <string name="clear_credit_rate">Limpiar Tasa</string>
+    <string name="clear_kind_credit_rate">Limpiar Tipo de tasa</string>
+    <string name="clear_credit_card">Limpiar Tarjeta Crédito</string>
+    <string name="clear_max_quotes">Limpiar Maxima Cuota</string>
+    <string name="clear_cut_day">Limpiar dia corte</string>
 
     <string name="total_quote_value_short">Tot Cuota</string>
     <string name="interest_value_short">Interes</string>

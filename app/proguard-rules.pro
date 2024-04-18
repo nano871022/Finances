@@ -23,3 +23,15 @@
 -keep class androidx.credentials.playservices.** {
   *;
 }
+-keep class com.google.googlesignin.**{ *;}
+-keepnames class com.google.googlesignin.* {*;}
+
+-keep class com.google.firebase.** {*;}
+-keepclasseswithmembers class com.google.firebase.FirebaseException
+
+-keep class com.google.api.** {*;}
+
+-keep class com.google.android.gms.common.** {*;}
+-keep class com.google.android.gms.auth.** {*;}
+-keep class com.google.android.gms.internal.** {*;}
+

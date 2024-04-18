@@ -8,6 +8,7 @@ import co.com.japl.finances.iports.outbounds.IPaidRecapPort
 import co.com.japl.finances.iports.outbounds.IPeriodPaidPort
 import co.japl.android.finances.services.core.mapper.PaidMapper
 import java.math.BigDecimal
+import java.time.LocalDate
 import java.time.YearMonth
 import javax.inject.Inject
 
@@ -23,7 +24,7 @@ class PaidImpl @Inject constructor(private val paidImpl: IPaidDAO) : IPaidRecapP
         list.addAll(items)
         list.addAll(recurrents)
         list.sortedByDescending { it.datePaid }
-        return list
+        return list.distinctBy { it.id }
     }
 
     override fun get(codePaid: Int): PaidDTO? {
@@ -45,6 +46,12 @@ class PaidImpl @Inject constructor(private val paidImpl: IPaidDAO) : IPaidRecapP
 
     override fun findByNameValueDate(values: PaidDTO): List<PaidDTO> {
         return paidImpl.findByNameValueDate(PaidMapper.mapper(values)).takeIf { it.isNotEmpty() }?.map { PaidMapper.mapper(it)}?: emptyList()
+    }
+
+    override fun findByRecurrent(period: YearMonth): List<PaidDTO> {
+        return paidImpl.getRecurrent(LocalDate.of(period.year,period.monthValue,1).plusMonths(1).minusDays(1))
+            .takeIf { it.isNotEmpty() }
+            ?.map { PaidMapper.mapper(it)}?: emptyList()
     }
 
     override fun get(codeAccount: Long): List<PeriodPaidDTO> {

@@ -26,6 +26,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import co.com.japl.ui.components.AlertDialogOkCancel
@@ -33,7 +34,11 @@ import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.com.japl.ui.theme.values.Dimensions
 import co.com.japl.ui.theme.values.ModifiersCustom.Weight1f
 import co.japl.android.myapplication.R
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
+@RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
 @Composable
 fun GoogleAuthBackupRestore(viewModel:GoogleAuthBackupRestoreViewModel) {
     val loginValue = remember { viewModel.loginValue }
@@ -41,8 +46,11 @@ fun GoogleAuthBackupRestore(viewModel:GoogleAuthBackupRestoreViewModel) {
     val isLogged = remember { viewModel.isLogged }
     val isProcessing = remember { viewModel.isProcessing }
     val statusRestoreDialog = remember { mutableStateOf(false) }
+    val context = LocalContext.current
     val stateResultActivity = rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-        viewModel.responseConnection(it)
+        CoroutineScope(Dispatchers.IO).launch {
+            viewModel.responseConnection(it)
+        }
     }
         Column (modifier = Modifier
             .fillMaxWidth()
@@ -60,20 +68,55 @@ fun GoogleAuthBackupRestore(viewModel:GoogleAuthBackupRestoreViewModel) {
                 )
 
                 if (!isLogged.value) {
-                    Button(
-                        onClick = {
-                            stateResultActivity.launch(viewModel.login())
-                            //viewModel.login()
-                        },
-                    ) {
-                        Icon(
-                            imageVector = Icons.Rounded.Login,
-                            contentDescription = stringResource(id = R.string.login)
-                        )
-                        Text(text = stringResource(id = R.string.login))
+                    Column {
+                        Button(
+                            onClick = {
+                                stateResultActivity.launch(viewModel.login())
+
+                            },
+                        ) {
+                            Icon(
+                                imageVector = Icons.Rounded.Login,
+                                contentDescription = stringResource(id = R.string.login)
+                            )
+                            Text(text = stringResource(id = R.string.login))
+                        }
+
+                        Button(
+                            onClick = {
+                                stateResultActivity.launch(viewModel.loginSimple())
+
+                            },
+                        ) {
+                            Icon(
+                                imageVector = Icons.Rounded.Login,
+                                contentDescription = stringResource(id = R.string.login)
+                            )
+                            Text(text = stringResource(id = R.string.login))
+                        }
+
+                        Button(
+                            onClick = {
+                                CoroutineScope(Dispatchers.IO).launch{
+
+                                    viewModel.loginWeb2(context) { stateResultActivity.launch(it) }
+                                }
+
+                            },
+                        ) {
+                            Icon(
+                                imageVector = Icons.Rounded.Login,
+                                contentDescription = stringResource(id = R.string.login)
+                            )
+                            Text(text = stringResource(id = R.string.login))
+                        }
                     }
                 } else {
-                    Button(onClick = { viewModel.logout() },) {
+                    Button(onClick = {
+                        CoroutineScope(Dispatchers.IO).launch {
+                            viewModel.logout()
+                        }
+                                     },) {
                         Icon(
                             imageVector = Icons.Rounded.Logout,
                             contentDescription = stringResource(id = R.string.logout)
@@ -84,7 +127,11 @@ fun GoogleAuthBackupRestore(viewModel:GoogleAuthBackupRestoreViewModel) {
             }
             if (isLogged.value) {
                 Row {
-                    Button(onClick = { viewModel.backup() }, modifier = Weight1f()) {
+                    Button(onClick = {
+                        CoroutineScope(Dispatchers.IO).launch {
+                            viewModel.backup()
+                        }
+                                     }, modifier = Weight1f()) {
                         Icon(
                             imageVector = Icons.Rounded.Upload,
                             contentDescription = stringResource(id = R.string.backup)
@@ -110,7 +157,11 @@ fun GoogleAuthBackupRestore(viewModel:GoogleAuthBackupRestoreViewModel) {
                 )
             }
 
-    AlertRestore(status = statusRestoreDialog,action={viewModel.restore()})
+    AlertRestore(status = statusRestoreDialog,action={
+        CoroutineScope(Dispatchers.IO).launch {
+            viewModel.restore()
+        }
+    })
 
 }
 
@@ -146,5 +197,5 @@ internal fun GoogleAuthBackupRestorePreviewDark(){
 
 @Composable
 private fun getViewModel():GoogleAuthBackupRestoreViewModel{
-    return  GoogleAuthBackupRestoreViewModel(null,null)
+    return  GoogleAuthBackupRestoreViewModel(null,null,null,null,null)
 }

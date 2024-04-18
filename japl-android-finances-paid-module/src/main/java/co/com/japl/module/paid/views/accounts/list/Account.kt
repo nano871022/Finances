@@ -167,6 +167,38 @@ fun AccountListPreview() {
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.S)
+@Composable
+@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_NO, showSystemUi = true)
+fun AccountListPreviewNoAccount() {
+    val viewModel = getViewModel()
+    viewModel.list.clear()
+    MaterialThemeComposeUI {
+        AccountList(viewModel = viewModel)
+    }
+}
+
+@RequiresApi(Build.VERSION_CODES.S)
+@Composable
+@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES, showSystemUi = true)
+fun AccountListPreviewDarkNoAccount() {
+    val viewModel = getViewModel()
+    viewModel.list.clear()
+    MaterialThemeComposeUI {
+        AccountList(viewModel = viewModel)
+    }
+}
+
+@RequiresApi(Build.VERSION_CODES.S)
+@Composable
+@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES, showSystemUi = true)
+fun AccountListPreviewDark() {
+    val viewModel = getViewModel()
+    MaterialThemeComposeUI {
+        AccountList(viewModel = viewModel)
+    }
+}
+
 fun getViewModel(): AccountViewModel {
     val viewModel = AccountViewModel(accountSvc = null, inputSvc = null,navController = null)
     viewModel.loading.value = false

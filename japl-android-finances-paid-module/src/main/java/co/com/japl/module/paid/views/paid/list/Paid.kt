@@ -170,7 +170,7 @@ private fun Buttons(newOne:()->Unit){
 
 @Composable private fun Items(list:List<PaidDTO>?,viewModel:PaidViewModel){
     val visibleContentState = remember {
-        mutableStateOf(false)
+        mutableStateOf(true)
     }
     list?.takeIf { it.isNotEmpty() }?.let {
         Surface (
@@ -229,6 +229,7 @@ private fun Buttons(newOne:()->Unit){
             Row {
 
                 Text(text = "%02d".format(dto.datePaid.dayOfMonth),
+                    color= MaterialTheme.colorScheme.onPrimaryContainer,
                     modifier = Modifier.align(alignment = Alignment.CenterVertically)
                 )
 

@@ -111,10 +111,13 @@ class PaidImpl @Inject constructor(override var dbConnect: SQLiteOpenHelper) : I
         val mapper = PaidMap()
         with(cursor){
             while(moveToNext()){
-                mapper.mapping(cursor).takeIf { it.date < date && it.end > date }?.let {  items.add(it) }
+                mapper.mapping(cursor).takeIf {
+                    Log.d(javaClass.name,"=== getRecurrent $it")
+                    it.date < date && it.end > date
+                }?.let {  items.add(it) }
             }
         }
-        return items.also { Log.d(javaClass.name,"Recurrent Size ${it.size}") }
+        return items.also { Log.d(javaClass.name,"=== getRecurrent $date $it") }
     }
 
     override fun getAll(codeAccount: Int, period: YearMonth): List<PaidDTO> {
@@ -124,7 +127,7 @@ class PaidImpl @Inject constructor(override var dbConnect: SQLiteOpenHelper) : I
         val cursor = db.query(PaidDB.Entry.TABLE_NAME,
             COLUMNS,
             """
-                ${PaidDB.Entry.COLUMN_ACCOUNT} like ?
+                (${PaidDB.Entry.COLUMN_ACCOUNT} like ? or ${PaidDB.Entry.COLUMN_ACCOUNT} = 0)
                 AND ${FORMAT_DATE_PAID} between ? and ?
             """.trimMargin(),
             arrayOf("%${codeAccount}%",DateUtils.localDateToStringDate(startPeriod),DateUtils.localDateToStringDate(endPeriod)),
@@ -215,7 +218,7 @@ class PaidImpl @Inject constructor(override var dbConnect: SQLiteOpenHelper) : I
         }else {
             db?.insert(PaidDB.Entry.TABLE_NAME, null, content) ?: 0
         }.also {
-            Log.d(javaClass.name,"=== Save ${dto.id} ${dto.date} ${dto.recurrent} ${dto.end} Response $it")
+            Log.d(javaClass.name,"=== Save ${dto.id} ${dto.account} ${dto.date} ${dto.recurrent} ${dto.end} Response $it")
         }
     }
 
