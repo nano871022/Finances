@@ -134,6 +134,15 @@ class DateUtils {
             return value.toLong()
         }
 
+        fun withDayOfMonth(date:LocalDateTime,day:Int):LocalDateTime{
+            val maxDayOfMonth = date.plusMonths(1).withMonth(1).minusDays(1).dayOfMonth
+            return if(maxDayOfMonth >= day){
+                date.withDayOfMonth(day)
+            }else{
+                date.plusDays((day  - date.dayOfMonth).toLong())
+            }
+        }
+
         @RequiresApi(Build.VERSION_CODES.O)
         fun getMonths(startDate: LocalDate, endDate: LocalDateTime): Long {
             val period = Period.between(startDate, endDate.toLocalDate())

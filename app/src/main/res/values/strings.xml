@@ -16,6 +16,7 @@
     <string name="settings_app">Configuraciones Aplicación</string>
 
     <string name="not_data">No hay datos que mostrar</string>
+    <string name="ccio_restore">Restaurar</string>
 
     <string name="app_name">Finanzas</string>
     <string name="about_it">Acerca de</string>
@@ -483,4 +484,7 @@
     <string name="default_web_client_id3">332922408573-j1uk3tbu8jp6umcvt9ssdq0l32nlq49o.apps.googleusercontent.com</string>
 
     <string name="toast_save_successful">Se guardo correctamente</string>
+    <string name="ending_recurrent_restore_payment_successfull">Se restauro correctamente</string>
+    <string name="dont_restore_payment_successfull">No se logro restaurar correctamente</string>
+    <string name="do_you_want_to_restore_this_record">¿Desea restaurar este registro al valor original?</string>
 </resources>

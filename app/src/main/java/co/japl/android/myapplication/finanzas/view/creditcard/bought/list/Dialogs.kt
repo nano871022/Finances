@@ -54,6 +54,7 @@ fun MoreOptionsDialog(valueToPay:Double, creditRate:Double,listOptions:List<More
     val stateEndingDialog = remember { mutableStateOf(false) }
     val stateUpdateDialog = remember { mutableStateOf(false) }
     val stateDifferDialog = remember { mutableStateOf(false) }
+    val stateRestoreDialog = remember { mutableStateOf(false) }
     when{
         stateDeleteDialog.value -> {
             AlertDialogOkCancel (
@@ -90,6 +91,7 @@ fun MoreOptionsDialog(valueToPay:Double, creditRate:Double,listOptions:List<More
                 }
             )
         }
+
         stateDifferDialog.value -> {
             DifferInstallmentDialog(
                   value = valueToPay,
@@ -101,6 +103,17 @@ fun MoreOptionsDialog(valueToPay:Double, creditRate:Double,listOptions:List<More
                     onDismiss.invoke()
                 }
             )
+        }
+        stateRestoreDialog.value -> {
+            AlertDialogOkCancel (
+                R.string.do_you_want_to_restore_this_record, R.string.restore
+                ,onDismiss = {
+                    stateRestoreDialog.value = false
+                    onDismiss.invoke()
+                },onClick = { onClick.invoke(MoreOptionsItemsCreditCard.RESTORE,0.0)
+                    stateRestoreDialog.value = false
+                    onDismiss.invoke()
+                })
         }
     }
     androidx.compose.material3.AlertDialog(
@@ -117,6 +130,7 @@ fun MoreOptionsDialog(valueToPay:Double, creditRate:Double,listOptions:List<More
                             MoreOptionsItemsCreditCard.ENDING -> stateEndingDialog.value = true
                             MoreOptionsItemsCreditCard.UPDATE_VALUE -> stateUpdateDialog.value = true
                             MoreOptionsItemsCreditCard.DIFFER_INSTALLMENT -> stateDifferDialog.value = true
+                            MoreOptionsItemsCreditCard.RESTORE->stateRestoreDialog.value = true
                             else->onClick.invoke(item,0.0)
                         }
 

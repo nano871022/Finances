@@ -75,12 +75,12 @@ class InterestCalculations @Inject constructor(private val buyCreditCardSettingS
         }?:month.takeIf { it > 1}?.let{
             it.takeIf {
                 interest1NotQuote
-                && monthPaid == 0.toShort() && !rediffer
+                && monthPaid == 1.toShort() && !rediffer
                 && kind == KindInterestRateEnum.CREDIT_CARD}?.let{
                 0.0
             }?: it.takeIf {
                 interest1NotQuote
-                        && monthPaid == 1.toShort()
+                        && monthPaid == 2.toShort()
                         && month > 1.toShort()
                         && kind == KindInterestRateEnum.CREDIT_CARD}?.let{
                 (pendingToPay * interest) + (valueItem * interest)

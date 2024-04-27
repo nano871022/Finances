@@ -29,6 +29,10 @@ class ListImpl @Inject constructor(private val service: IBoughtList,private val 
         return service.delete(codeBought,cache)
     }
 
+    override fun restore(codeBought: Int, cache: Boolean): Boolean {
+        return service.restore(codeBought,cache)
+    }
+
     override fun endingRecurrentPayment(codeBought: Int, cutOff: LocalDateTime): Boolean {
         return service.endingRecurrentPayment(codeBought,cutOff)
     }

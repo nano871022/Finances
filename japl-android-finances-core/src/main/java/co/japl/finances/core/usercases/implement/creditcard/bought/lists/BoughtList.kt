@@ -1,6 +1,8 @@
 package co.japl.finances.core.usercases.implement.creditcard.bought.lists
 
+import android.os.Build
 import android.util.Log
+import androidx.annotation.RequiresApi
 import co.com.japl.finances.iports.dtos.CreditCardBoughtListDTO
 import co.com.japl.finances.iports.dtos.RecapCreditCardBoughtListDTO
 import co.com.japl.finances.iports.dtos.TagDTO
@@ -56,6 +58,23 @@ class BoughtList @Inject constructor(
         return quoteCCSvc.delete(codeBought,cache)
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
+    override fun restore(codeBought: Int, cache: Boolean): Boolean {
+        return quoteCCSvc.get(codeBought,cache)?.let {
+            Regex("\\((\\d+)\\. [\\d\\.]+\\)").find(it.nameItem)
+                ?.takeIf { it.groupValues.size > 1 }?.let {
+                    val id = it.groupValues[1].toInt()
+                    quoteCCSvc.get(id,cache)?.let{
+                        quoteCCSvc.update(it.copy(endDate = it.createDate.plusMonths((it.month + 1).toLong())),cache)
+                            .takeIf { it}
+                            ?.let {
+                            quoteCCSvc.delete(codeBought,cache)
+                        }
+                    }
+                }
+        }?:false
+    }
+
     override fun endingRecurrentPayment(codeBought: Int, cutoff: LocalDateTime): Boolean {
         return quoteCCSvc.endingRecurrentPayment(codeBought,cutoff)
     }
@@ -91,7 +110,7 @@ class BoughtList @Inject constructor(
             val differBought =  it.copy(month = (value).toInt()
                 , createDate = LocalDateTime.now()
                 , endDate =  DateUtils.cutOffAddMonth(dayOfMonth, cutOff, value)
-                , boughtDate =  LocalDateTime.now().withDayOfMonth(it.boughtDate.dayOfMonth)
+                , boughtDate =  DateUtils.withDayOfMonth(LocalDateTime.now(),it.boughtDate.dayOfMonth)
                 , valueItem = (it.valueItem.toDouble() - ((it.valueItem.toDouble() / it.month) * months)).toBigDecimal()
                 , nameItem = it.nameItem.plus(" (${it.id}. ${it.valueItem.toDouble()})")
                 , id = 0)

@@ -22,14 +22,14 @@ class ValuesCalculation @Inject constructor(){
         return differQuotes?.firstOrNull{it?.cdBoughtCreditCard?.toInt() == codeBought}?.let{
             DateUtils.getMonths(LocalDateTime.of(it.create, LocalTime.MAX),cutOff).toShort()
         } ?: month.takeIf {it > 1}?.let {
-            DateUtils.getMonths(boughtDate,cutOff).toShort()
+            (DateUtils.getMonths(boughtDate,cutOff) + 1).toShort()
         }?:0.toShort()
     }
 
     internal fun getPendingToPay(codeBought:Int,month:Short,monthPaid:Short,valueItem:Double,capitalValue:Double, differQuotes:List<DifferInstallmentDTO?>?):Double{
         return month.takeIf {  it > 1}?.let{
             val differQuote = differQuotes?.firstOrNull{ it?.cdBoughtCreditCard?.toInt() == codeBought }
-            val capitalBought = capitalValue * monthPaid
+            val capitalBought = capitalValue * (monthPaid - 1)
             return (differQuote?.let {it.pendingValuePayable - capitalBought
             }?:valueItem.minus(capitalBought))
                 .takeIf { it > 0.0 }?: 0.0

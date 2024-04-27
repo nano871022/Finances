@@ -84,6 +84,26 @@ class BoughtViewModel @Inject constructor(
             MoreOptionsItemsCreditCard.AMORTIZATION ->{goToAmortization()}
             MoreOptionsItemsCreditCard.DELETE ->{deleteDialog()}
             MoreOptionsItemsCreditCard.CLONE ->{clone()}
+            MoreOptionsItemsCreditCard.RESTORE ->{restoreDialog()}
+        }
+    }
+
+    private fun restoreDialog(){
+        if(bought.id > 0 && boughtCreditCardSvc.restore(bought.id,cache.value)){
+            Snackbar.make(
+                view,
+                R.string.ending_recurrent_restore_payment_successfull,
+                Snackbar.LENGTH_LONG
+            )
+                .setAction(R.string.close) {}
+                .show().also { loader.value = false }
+        }else{
+            Snackbar.make(
+                view,
+                R.string.dont_restore_payment_successfull,
+                Snackbar.LENGTH_LONG
+            )
+                .setAction(R.string.close, null).show()
         }
     }
 
@@ -256,6 +276,10 @@ class BoughtViewModel @Inject constructor(
 
         if(bought.recurrent ){
             items = items.filter{ it != MoreOptionsItemsCreditCard.DIFFER_INSTALLMENT}.toTypedArray()
+        }
+
+        if(!Regex("\\(\\d+\\. [\\d\\.]+\\)").containsMatchIn(bought.nameItem)){
+            items = items.filter { it != MoreOptionsItemsCreditCard.RESTORE}.toTypedArray()
         }
         return items.toList()
     }
