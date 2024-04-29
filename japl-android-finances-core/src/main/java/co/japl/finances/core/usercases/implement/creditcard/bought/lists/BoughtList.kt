@@ -106,11 +106,15 @@ class BoughtList @Inject constructor(
             val creditCard = creditCardSvc.get(it.codeCreditCard)
             val dayOfMonth:Short = creditCard?.cutOffDay ?:it.cutOutDate.dayOfMonth.toShort()
             val months = DateUtils.getMonths(it.boughtDate,cutOff)
-
+            val date = if(it.boughtDate.dayOfMonth <= dayOfMonth){
+                DateUtils.withDayOfMonth(LocalDateTime.now(),it.boughtDate.dayOfMonth)
+            }else{
+                DateUtils.withDayOfMonth(LocalDateTime.now(),dayOfMonth.toInt()).minusDays(2)
+            }
             val differBought =  it.copy(month = (value).toInt()
                 , createDate = LocalDateTime.now()
                 , endDate =  DateUtils.cutOffAddMonth(dayOfMonth, cutOff, value)
-                , boughtDate =  DateUtils.withDayOfMonth(LocalDateTime.now(),it.boughtDate.dayOfMonth)
+                , boughtDate =  date
                 , valueItem = (it.valueItem.toDouble() - ((it.valueItem.toDouble() / it.month) * months)).toBigDecimal()
                 , nameItem = it.nameItem.plus(" (${it.id}. ${it.valueItem.toDouble()})")
                 , id = 0)

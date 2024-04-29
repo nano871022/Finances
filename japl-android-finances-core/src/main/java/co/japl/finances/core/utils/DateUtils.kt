@@ -211,7 +211,7 @@ class DateUtils {
         @RequiresApi(Build.VERSION_CODES.O)
         fun cutOffLastMonth(cutOffDay: Short, cutOff: LocalDateTime): LocalDateTime {
 
-            val cutOffEndMonth = cutOff.withDayOfMonth(1).minusDays(1)
+            val cutOffEndMonth = cutOff.withDayOfMonth(1).minusDays(1)// last day of before month over date provided
             var cutOffResponse = if (cutOffEndMonth.dayOfMonth < cutOffDay) {
                 cutOffEndMonth
             } else {

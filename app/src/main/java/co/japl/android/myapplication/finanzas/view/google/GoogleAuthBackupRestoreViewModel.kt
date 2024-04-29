@@ -61,7 +61,7 @@ class GoogleAuthBackupRestoreViewModel constructor(private val activity:Activity
                 }
             }
         }else{
-            activity.data?.extras?.keySet()?.forEach{status->
+            activity.data?.extras?.keySet()?.filter { it.isNotBlank() }?.forEach{status->
                 activity.data?.extras?.getBundle(status)?.keySet()?.forEach {bundleKey ->
                     activity.data?.extras?.getBundle(status)?.getString(bundleKey)?.let{
                         result.value = "${result.value} \n > $status => ${bundleKey}: $it"

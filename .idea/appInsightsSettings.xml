@@ -27,7 +27,7 @@
             <InsightsFilterSettings>
               <option name="connection">
                 <ConnectionSetting>
-                  <option name="appId" value="co.japl.android.myapplication.debug" />
+                  <option name="appId" value="co.japl.android.myapplication" />
                   <option name="mobileSdkAppId" value="1:332922408573:android:33801dcc0736245840ab14" />
                   <option name="projectId" value="finanzas-361817" />
                   <option name="projectNumber" value="332922408573" />

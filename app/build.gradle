@@ -23,8 +23,8 @@ android {
         applicationId "co.japl.android.myapplication"
         minSdk 26
         targetSdk 33
-        versionCode 4_05_09_104
-        versionName "V 4.05.09 build 104 31 day of month without 31 days and differ to back"
+        versionCode 4_05_10_107
+        versionName "V 4.05.10 build 107 31 day of month without 31 days and differ to back"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         signingConfig signingConfigs.prod
@@ -33,6 +33,7 @@ android {
     buildTypes {
 
         release {
+            shrinkResources true
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.prod
@@ -40,9 +41,9 @@ android {
         }
 
         debug{
-            applicationIdSuffix ".debug"
+            shrinkResources true
             minifyEnabled true
-          //  proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             buildConfigField ("String",'GoogleClientId', debugGoogleClientId)
         }
     }

@@ -18,6 +18,7 @@ import co.japl.android.myapplication.finanzas.pojo.BoughtCreditCard
 import co.japl.android.myapplication.finanzas.putParams.CashAdvanceParams
 import co.japl.android.myapplication.finanzas.putParams.CreditCardQuotesParams
 import co.japl.android.myapplication.pojo.CreditCard
+import co.japl.finances.core.utils.DateUtils
 import dagger.hilt.EntryPoints
 import kotlinx.coroutines.runBlocking
 import java.time.LocalDateTime
@@ -96,7 +97,11 @@ class ListBoughtViewModel @Inject constructor(
         progress.floatValue = 0.5f
         val bought = _boughtListSvc.getBoughtList(creditCardDto!!,_creditCard.cutOff.get(),cache.value)
         progress.floatValue = 0.8f
-        val group = bought.list?.sortedByDescending { it.boughtDate!! }?.groupBy { YearMonth.of(it.boughtDate.year,it.boughtDate.monthValue)!! }!!
+        val group = bought.list.takeIf { it.isNotEmpty() }
+            ?.sortedByDescending { it.boughtDate }
+            ?.groupBy {
+                YearMonth.from(it.boughtDate)
+        }?: emptyMap()
         progress.floatValue = 0.9f
         _boughtCreditCard= BoughtCreditCard(bought.recap,group,creditCardDto,differ, cutOff = _creditCard.cutOff.get())
         progress.floatValue = 1f
