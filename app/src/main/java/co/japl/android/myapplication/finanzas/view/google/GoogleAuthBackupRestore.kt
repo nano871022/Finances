@@ -71,7 +71,7 @@ fun GoogleAuthBackupRestore(viewModel:GoogleAuthBackupRestoreViewModel) {
                     Column {
                         Button(
                             onClick = {
-                                stateResultActivity.launch(viewModel.login())
+                                viewModel.login()?.let { stateResultActivity.launch(it) }
 
                             },
                         ) {
@@ -84,7 +84,7 @@ fun GoogleAuthBackupRestore(viewModel:GoogleAuthBackupRestoreViewModel) {
 
                         Button(
                             onClick = {
-                                stateResultActivity.launch(viewModel.loginSimple())
+                                viewModel.loginSimple()?.let { stateResultActivity.launch(it) }
 
                             },
                         ) {

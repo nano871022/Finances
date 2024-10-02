@@ -13,11 +13,15 @@ import co.japl.android.finances.services.interfaces.ICreditCardSvc
 import co.japl.android.finances.services.utils.DateUtils
 import java.math.BigDecimal
 import java.time.LocalDateTime
+import java.time.Period
+import java.time.YearMonth
 import javax.inject.Inject
 
 class QuoteCreditCardImpl @Inject constructor(private val quoteCCSvc: IQuoteCreditCardDAO,
                                               private val creditcardSvc:ICreditCardSvc,
                                               private val quoteCreditCardCache:IQuoteCreditCardCache): IQuoteCreditCardPort {
+
+    val EXPREG_DIFFER = "\\((\\d{1,4}\\.) (\\d*\\.\\d{1,2})\\)".toRegex()
     override fun getRecurrentBuys(key: Int, cutOff: LocalDateTime): List<CreditCardBoughtDTO> {
         return quoteCCSvc.getRecurrentBuys(key,cutOff).map (CreditCardBoughtMapper::mapper)
     }
@@ -28,8 +32,27 @@ class QuoteCreditCardImpl @Inject constructor(private val quoteCCSvc: IQuoteCred
         cutOffDate: LocalDateTime,
         cache: Boolean
     ): List<CreditCardBoughtDTO> {
-        return if(cache.not()){quoteCCSvc.getToDate(key,startDate,cutOffDate).map (CreditCardBoughtMapper::mapper)}
+        val result = if(cache.not()){quoteCCSvc.getToDate(key,startDate,cutOffDate).map (CreditCardBoughtMapper::mapper)}
         else{quoteCreditCardCache.getToDate(key,startDate,cutOffDate).map (CreditCardBoughtMapper::mapper)}
+        val list = result.filter{
+            !EXPREG_DIFFER.containsMatchIn(it.nameItem)
+        }.toMutableList()
+
+        result.filter {
+            EXPREG_DIFFER.containsMatchIn(it.nameItem)
+        }.map{
+            EXPREG_DIFFER.find(it.nameItem)?.let{match->
+                val id = match.groupValues[1]?.replace(".", "")?.toInt() ?: 0
+                quoteCCSvc.get(id).takeIf { it.isPresent }?.let {find->
+                    val months = Period.between(find.get().boughtDate.toLocalDate(),it.boughtDate.toLocalDate()).toTotalMonths()
+                    Log.d(javaClass.name,"Month ${it.month} ${find.get().month} differ: $months ${it.boughtDate} ${find.get().boughtDate}")
+                     it.boughtDate = find.get().boughtDate
+                    it.month += months.toInt()
+                    list.add(it)
+                }
+            }
+        }
+        return list
     }
 
     override fun getCapitalPendingQuotes(

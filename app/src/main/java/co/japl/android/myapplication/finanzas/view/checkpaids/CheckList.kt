@@ -154,10 +154,22 @@ internal fun CheckListPreviewDark(){
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.S)
+@Composable
+@Preview(showSystemUi = true, showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
+internal fun CheckListPreviewDarkV2(){
+    val viewModel = getViewModel()
+    viewModel.loaderStatus.value = true
+    MaterialThemeComposeUI {
+        CheckList(viewModel = viewModel)
+    }
+}
+
 @Composable
 private fun getViewModel():CheckListViewModel{
     val viewModel = CheckListViewModel(YearMonth.now(),null)
     viewModel.loaderStatus.value = false
+    viewModel.loaderProgressStatus.value = false
     viewModel.listState.add(
         CheckPaymentDTO(
         id = 0,

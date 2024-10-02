@@ -55,7 +55,7 @@ android {
 }
 
 dependencies {
-    implementation(project(":ui"))
+    implementation(project(":UI"))
     implementation(project(":japl-finances-iports"))
     implementation(project(":japl-android-graphs"))
 
