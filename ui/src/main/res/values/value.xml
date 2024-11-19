@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="cancel">Cancelar</string>
+    <string name="ok">Ok</string>
+    <string name="clear">Limpiar</string>
+    <string name="see_more">Ver más</string>
+    <string name="close">Cerrar</string>
+    <string name="money">Dinero</string>
+    <string name="any_data_to_show">No hay datos que mostrar</string>
+</resources>
