@@ -1,11 +1,13 @@
 plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
+    id 'org.jetbrains.kotlin.plugin.compose'
     // Add the Google services Gradle plugin
     id 'com.google.gms.google-services'
     id 'kotlin-kapt'
     id 'dagger.hilt.android.plugin'
     id 'com.google.firebase.crashlytics'
+
 }
 
 android {
@@ -23,8 +25,8 @@ android {
         applicationId "co.japl.android.myapplication"
         minSdk 26
         targetSdk 34
-        versionCode 4_05_11_109
-        versionName "V 4.05.11 build 109 Show differt records on the right side of list"
+        versionCode 4_05_14_117
+        versionName "V 4.05.14 build 117 recap about records saved in all tables"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         signingConfig signingConfigs.prod
@@ -73,6 +75,9 @@ android {
         }
     }
     namespace 'co.japl.android.myapplication'
+    kapt {
+        correctErrorTypes true
+    }
 }
 
 
@@ -82,26 +87,26 @@ dependencies {
     implementation(project(':japl-android-finances-core'))
     implementation(project(':japl-android-finances-services'))
     implementation(project(':japl-android-graphs'))
-    implementation(project(':UI'))
+    implementation(project(':ui'))
     implementation(project(':about-module'))
     implementation(project(":japl-finances-iports"))
     implementation(project(":CreditCardModule"))
     implementation(project(":japl-android-finances-paid-module"))
 
 
-    implementation 'androidx.core:core-ktx:1.13.1'
+    implementation 'androidx.core:core-ktx:1.13.1' //this manage version of android this version es 14 version 1.15.0 manage android 15
     implementation 'androidx.core:core-splashscreen:1.0.1'
     implementation 'androidx.appcompat:appcompat:1.7.0'
-    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
-    implementation('androidx.credentials:credentials:1.2.2')
-    implementation('androidx.credentials:credentials-play-services-auth:1.2.2')
-    implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.8.6'
-    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.6'
-    implementation 'androidx.navigation:navigation-fragment-ktx:2.8.1'
-    implementation 'androidx.navigation:navigation-ui-ktx:2.8.1'
+    implementation 'androidx.constraintlayout:constraintlayout:2.2.0'
+    implementation('androidx.credentials:credentials:1.3.0')
+    implementation('androidx.credentials:credentials-play-services-auth:1.3.0')
+    implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.8.7'
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.7'
+    implementation 'androidx.navigation:navigation-fragment-ktx:2.8.3'
+    implementation 'androidx.navigation:navigation-ui-ktx:2.8.3'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'androidx.loader:loader:1.1.0'
-    implementation 'com.google.api-client:google-api-client:2.0.0'
+    implementation 'com.google.api-client:google-api-client:2.2.0'
 
     implementation 'com.google.android.material:material:1.12.0'
     implementation 'com.google.android.gms:play-services-auth:21.2.0'
@@ -116,38 +121,39 @@ dependencies {
         exclude group: 'org.apache.httpcomponents'
     }
     implementation 'com.google.http-client:google-http-client-gson:1.42.3'
-    implementation platform('com.google.firebase:firebase-bom:33.4.0')
-    implementation 'com.google.firebase:firebase-auth:23.0.0'
+    implementation platform('com.google.firebase:firebase-bom:33.5.1')
+    implementation 'com.google.firebase:firebase-auth:23.1.0'
     //implementation 'com.google.android.play:core:1.10.3'
     implementation('com.google.android.play:integrity:1.4.0')
     implementation('com.google.android.libraries.identity.googleid:googleid:1.1.1')
-    implementation 'com.google.dagger:hilt-android:2.46.1'
+    implementation 'com.google.dagger:hilt-android:2.52'
+    implementation 'com.google.dagger:dagger-producers:2.52'
+    kapt 'com.google.dagger:hilt-compiler:2.52'
     implementation 'com.google.firebase:firebase-crashlytics-ktx'
     implementation 'com.google.firebase:firebase-analytics-ktx'
 
-    implementation 'com.squareup.okio:okio:3.4.0'
-    kapt 'com.google.dagger:hilt-android-compiler:2.48.1'
+    implementation 'com.squareup.okio:okio:3.6.0'
 
 
-    implementation("androidx.compose.material:material-icons-extended:1.7.2")
-    implementation("androidx.compose.material:material-icons-core:1.7.2")
-    implementation("androidx.compose.material3:material3-window-size-class:1.3.0")
-    implementation("androidx.activity:activity-compose:1.9.2")
+    implementation("androidx.compose.material:material-icons-extended:1.7.5")
+    implementation("androidx.compose.material:material-icons-core:1.7.5")
+    implementation("androidx.compose.material3:material3-window-size-class:1.3.1")
+    implementation("androidx.activity:activity-compose:1.9.3")
     implementation("androidx.compose.material3:material3")
-    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.6")
-    implementation("androidx.compose.runtime:runtime-livedata:1.7.2")
-    implementation("androidx.compose.runtime:runtime-rxjava2:1.7.2")
-    implementation("androidx.compose.ui:ui-tooling:1.7.2")
-    implementation("androidx.compose.ui:ui-tooling-preview:1.7.2")
-    implementation("androidx.compose.ui:ui:1.7.2")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.7")
+    implementation("androidx.compose.runtime:runtime-livedata:1.7.5")
+    implementation("androidx.compose.runtime:runtime-rxjava2:1.7.5")
+    implementation("androidx.compose.ui:ui-tooling:1.7.5")
+    implementation("androidx.compose.ui:ui-tooling-preview:1.7.5")
+    implementation("androidx.compose.ui:ui:1.7.5")
     implementation("androidx.compose.ui:ui-graphics")
-    implementation("androidx.compose.material:material:1.7.2")
+    implementation("androidx.compose.material:material:1.7.5")
 
 
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.2.1")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.6.1")
-    androidTestImplementation(platform("androidx.compose:compose-bom:2023.03.00"))
+    androidTestImplementation(platform("androidx.compose:compose-bom:2024.10.01"))
     androidTestImplementation("androidx.compose.ui:ui-test-junit4")
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")

@@ -54,4 +54,8 @@ class TaxConnectDB: DBRestore(), IConnectDB{
         onRestore(currentDB,fromRestoreDB,javaClass.simpleName,TaxDB.TaxEntry.TABLE_NAME,TaxMap()::restore)
     }
 
+    override fun onStats(connectionDB: SQLiteDatabase?): Pair<String, Long> {
+        return onStats(connectionDB, TaxDB.TaxEntry.TABLE_NAME)
+    }
+
 }

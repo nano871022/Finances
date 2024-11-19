@@ -12,4 +12,6 @@ interface ICheckPayment {
     fun update(check: CheckPaymentDTO): Boolean
 
     fun save(check: CheckPaymentDTO): CheckPaymentDTO
+
+    fun delete(dto: CheckPaymentDTO): Boolean
 }

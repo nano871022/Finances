@@ -1,6 +1,7 @@
 package co.japl.android.finances.services.dao.implement
 
 import android.content.Context
+import android.database.CursorWindowAllocationException
 import android.database.sqlite.SQLiteOpenHelper
 import android.os.Build
 import android.provider.BaseColumns
@@ -147,9 +148,10 @@ class SaveCreditCardBoughtImpl @Inject constructor(val context:Context, override
         return null
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun getToDate(key:Int,startDate:LocalDateTime,cutOffDate: LocalDateTime): List<CreditCardBoughtDTO> {
-        Log.d(this.javaClass.name,"<<<=== STARTING::getToDate")
+        try {
+            Log.d(this.javaClass.name, "<<<=== STARTING::getToDate")
             val db = dbConnect.readableDatabase
             val startDateStr = DateUtils.localDateTimeToStringDate(startDate)
             val endDateStr = DateUtils.localDateTimeToStringDate(cutOffDate)
@@ -162,7 +164,15 @@ class SaveCreditCardBoughtImpl @Inject constructor(val context:Context, override
                     AND (date($FORMAT_DATE_END_WHERE) > ? OR ${CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_END_DATE} > ?)
                     AND ${CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_RECURRENT} = 0
                 """.trimMargin(),
-                arrayOf(key.toString(),startDateStr, endDateStr,startDateStr, endDateStr,startDateStr,startDateStr),
+                arrayOf(
+                    key.toString(),
+                    startDateStr,
+                    endDateStr,
+                    startDateStr,
+                    endDateStr,
+                    startDateStr,
+                    startDateStr
+                ),
                 null,
                 null,
                 "${CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_BOUGHT_DATE} ASC"
@@ -177,7 +187,16 @@ class SaveCreditCardBoughtImpl @Inject constructor(val context:Context, override
                     }
                 }
             }
-            return items.also { Log.d(this.javaClass.name,"<<<=== ENDING::getToDate Size:${it.size}") }
+            return items.also {
+                Log.d(
+                    this.javaClass.name,
+                    "<<<=== ENDING::getToDate Size:${it.size}"
+                )
+            }
+        }catch(e:CursorWindowAllocationException){
+            Log.e(this.javaClass.name,"ERROR Cursor:  ${e.message}",e)
+            return emptyList()
+        }
     }
     @RequiresApi(Build.VERSION_CODES.O)
     override fun getPendingQuotes(key:Int,startDate: LocalDateTime,cutoffCurrent: LocalDateTime): List<CreditCardBoughtDTO> {
@@ -260,7 +279,7 @@ class SaveCreditCardBoughtImpl @Inject constructor(val context:Context, override
      * QUOTES PENDING MORE THAN ONE QUOTE TO PAID
      */
 
-    @RequiresApi(Build.VERSION_CODES.O)
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun getBought(key: Int, startDate:LocalDateTime,cutOff: LocalDateTime): Optional<Long> {
         Log.d(this.javaClass.name,"<<<=== getBought - Start")
             val list = getToDate(key, startDate,cutOff)
@@ -285,7 +304,7 @@ class SaveCreditCardBoughtImpl @Inject constructor(val context:Context, override
             return Optional.ofNullable(value).also{Log.d(this.javaClass.name,"<<<=== getBoughtPendingQuotes - End $it")}
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun getBoughtQuotes(key: Int, startDate:LocalDateTime,cutOff: LocalDateTime): Optional<Long> {
         Log.d(this.javaClass.name,"<<<=== getBoughtQuotes - Start")
             val list = getToDate(key,startDate,cutOff)
@@ -296,7 +315,7 @@ class SaveCreditCardBoughtImpl @Inject constructor(val context:Context, override
             return Optional.ofNullable((value+countRecurrent).toLong()).also { Log.d(this.javaClass.name,"<<<=== getBoughtQuotes - End $it") }
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun getPendingToPay(key: Int, startDate:LocalDateTime,cutOff: LocalDateTime): Optional<BigDecimal> {
         Log.d(this.javaClass.name,"<<<=== getPendingToPay - Start")
             val differQuotes = differInstallmentSvc.get(cutOff.toLocalDate())
@@ -356,36 +375,55 @@ class SaveCreditCardBoughtImpl @Inject constructor(val context:Context, override
         return Optional.empty()
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun getRecurrentBuys(key: Int, cutOff: LocalDateTime): List<CreditCardBoughtDTO> {
-        Log.d(this.javaClass.name,"<<<=== STARTING::getRecurrentBuys key: $key CutOff: $cutOff")
+        try {
+            Log.d(
+                this.javaClass.name,
+                "<<<=== STARTING::getRecurrentBuys key: $key CutOff: $cutOff"
+            )
             val cutOffDay = creditCardSvc.get(key).get().cutOffDay
             val db = dbConnect.readableDatabase
-            val cutOffLastMonth = DateUtils.cutOffLastMonth(cutOffDay,cutOff)
-            val startCutOffLastMonth = DateUtils.startDateFromCutoff(cutOffDay,cutOffLastMonth)
+            val cutOffLastMonth = DateUtils.cutOffLastMonth(cutOffDay, cutOff)
+            val startCutOffLastMonth = DateUtils.startDateFromCutoff(cutOffDay, cutOffLastMonth)
 
             val endDateStr = DateUtils.localDateTimeToStringDate(cutOffLastMonth)
             val startDateStr = DateUtils.localDateTimeToStringDate(startCutOffLastMonth)
 
-            val cursor = db.query(CreditCardBoughtDB.CreditCardBoughtEntry.TABLE_NAME,COLUMNS_CALC,
+            val cursor = db.query(
+                CreditCardBoughtDB.CreditCardBoughtEntry.TABLE_NAME,
+                COLUMNS_CALC,
                 """
                     ${CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_RECURRENT} = ? 
                     and ${CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_CODE_CREDIT_CARD} = ?
                     and ($FORMAT_DATE_BOUGHT_WHERE <= ? OR ${CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_BOUGHT_DATE} <= ?)
                     and ($FORMAT_DATE_END_WHERE >= ? OR ${CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_END_DATE} >= ?)
                 """.trimMargin(),
-                arrayOf("1",key.toString(),startDateStr,startDateStr,endDateStr,endDateStr),null,null,null)
+                arrayOf("1", key.toString(), startDateStr, startDateStr, endDateStr, endDateStr),
+                null,
+                null,
+                null
+            )
             val items = mutableListOf<CreditCardBoughtDTO>()
-            with(cursor){
-                while(moveToNext()){
-                     CreditCardBoughtMap().mapping(this)?.let {
-                         if (it.endDate >= cutOffLastMonth ){
-                             items.add(it)
-                     }
-                     }
+            with(cursor) {
+                while (moveToNext()) {
+                    CreditCardBoughtMap().mapping(this)?.let {
+                        if (it.endDate >= cutOffLastMonth) {
+                            items.add(it)
+                        }
+                    }
                 }
             }
-            return items.also { Log.d(this.javaClass.name,"<<<=== ENDING::getRecurrentBuys StartDate: $startDateStr EndDate: $endDateStr Size: ${it.size}") }
+            return items.also {
+                Log.d(
+                    this.javaClass.name,
+                    "<<<=== ENDING::getRecurrentBuys StartDate: $startDateStr EndDate: $endDateStr Size: ${it.size}"
+                )
+            }
+        } catch (e: CursorWindowAllocationException) {
+            Log.e(this.javaClass.name, "<<<=== ERROR::getRecurrentBuys cursor: ${e.message}", e)
+            return mutableListOf()
+        }
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -447,7 +485,21 @@ class SaveCreditCardBoughtImpl @Inject constructor(val context:Context, override
         return false.also { Log.d(javaClass.name,"<<<=== ENDING::endingRecurrentPayment BAD Validation Id: $idBought cutOff: $cutOff Response: $it")  }
     }
 
-
+    @RequiresApi(Build.VERSION_CODES.O)
+    override fun endingPayment(idBought: Int,message:String, cutOff:LocalDateTime): Boolean {
+        Log.d(javaClass.name,"<<<=== STARTING::endingPayment Id: $idBought CutOff: $cutOff")
+        val bought = get(idBought)
+        if(bought.isPresent){
+            val creditCard = creditCardSvc.get(bought.get().codeCreditCard)
+            if(creditCard.isPresent) {
+                val endDate = DateUtils.startDateFromCutoff(creditCard.get().cutOffDay, cutOff).minusDays(2)
+                bought.get().endDate = endDate
+                bought.get().nameItem += message
+                return (save(bought.get()) > 0).also { Log.d(javaClass.name,"<<<=== ENDING::endingPayment Id: $idBought cutOff: $cutOff EndDate: $endDate Response: $it") }
+            }
+        }
+        return false.also { Log.d(javaClass.name,"<<<=== ENDING::endingPayment BAD Validation Id: $idBought cutOff: $cutOff Response: $it")  }
+    }
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun backup(pathFile: String) {

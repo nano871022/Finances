@@ -124,7 +124,7 @@ private fun Body(viewModel: AdvanceViewModel,modifier:Modifier){
             isMoney = false
         )
 
-        FieldDatePicker(title = androidx.compose.material3.R.string.date_picker_headline
+        FieldDatePicker(title = androidx.compose.material3.R.string.m3c_date_picker_headline
             ,value = dateBoughtState.value
             , callable = {dateBoughtState.value = it}
             , isError = errorDateBoughtState

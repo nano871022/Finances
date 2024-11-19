@@ -6,9 +6,11 @@ import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import co.com.japl.finances.iports.dtos.CheckPaymentDTO
 import co.com.japl.finances.iports.inbounds.common.ICheckPaymentPort
 import co.japl.android.myapplication.R
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import java.time.YearMonth
 
@@ -34,6 +36,16 @@ class CheckListViewModel constructor(private val period:YearMonth,private val sv
         }
 
     }
+
+    fun remove(dto:CheckPaymentDTO){
+            svc?.delete(dto)?.takeIf { it }?.let {
+                loaderStatus.value = true
+                loaderProgressStatus.value = true
+                main()
+                loaderProgressStatus.value = false
+            }
+    }
+    
     fun main() = runBlocking {
         progression.floatValue = 0.1f
         execute()

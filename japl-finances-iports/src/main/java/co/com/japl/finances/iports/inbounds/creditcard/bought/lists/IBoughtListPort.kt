@@ -18,6 +18,8 @@ interface IBoughtListPort {
 
     fun endingRecurrentPayment(codeBought: Int, cutOff:LocalDateTime):Boolean
 
+    fun endingPayment(codeBought: Int, message:String, cutOff:LocalDateTime):Boolean
+
     fun updateRecurrentValue(codeBought:Int, value:Double, cutOff:LocalDateTime, cache:Boolean):Boolean
 
     fun differntInstallment(codeBought:Int, value:Long, cutOff:LocalDateTime, cache:Boolean):Boolean

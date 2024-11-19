@@ -44,6 +44,7 @@ class GoogleAuthBackupRestoreViewModel constructor(private val activity:Activity
     val result = mutableStateOf("***LOG INFO ********")
     val isLogged = mutableStateOf(false)
     val isProcessing = mutableStateOf(false)
+    val statsLocal = mutableStateOf(arrayListOf<List<Pair<String,Long>>>())
 
     init{
         CoroutineScope(Dispatchers.IO).launch {
@@ -205,6 +206,15 @@ class GoogleAuthBackupRestoreViewModel constructor(private val activity:Activity
                 isProcessing.value = false
             }
         }
+
+    }
+
+    suspend fun statsLocal() {
+        isProcessing.value = true
+        driveSvc?.stats()?.let{
+             this.statsLocal.value.addAll(listOf(it))
+             isProcessing.value = false
+           }
 
     }
 }

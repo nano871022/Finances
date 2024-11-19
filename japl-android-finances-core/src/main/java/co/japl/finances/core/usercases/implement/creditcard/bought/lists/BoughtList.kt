@@ -79,6 +79,10 @@ class BoughtList @Inject constructor(
         return quoteCCSvc.endingRecurrentPayment(codeBought,cutoff)
     }
 
+    override fun endingPayment(codeBought: Int, message:String, cutoff: LocalDateTime): Boolean {
+        return quoteCCSvc.endingPayment(codeBought,message,cutoff)
+    }
+
     override fun updateRecurrentValue(codeBought: Int, value: Double, cutOff: LocalDateTime, cache: Boolean): Boolean {
         quoteCCSvc.get(codeBought,cache)?.let {
             val newRecurrent = it.copy(

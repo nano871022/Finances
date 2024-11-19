@@ -47,4 +47,10 @@ class CheckPaymentImpl @Inject constructor(private val svc:IPaidCheckPaymentPort
     override fun save(check: CheckPaymentDTO): CheckPaymentDTO {
         return svc.save(check)
     }
+
+    override fun delete(dto: CheckPaymentDTO): Boolean {
+        val response = paidSvc.get(dto.codPaid.toInt())
+        return response?.let { paidSvc.delete(it.id) }?:false
+
+    }
 }

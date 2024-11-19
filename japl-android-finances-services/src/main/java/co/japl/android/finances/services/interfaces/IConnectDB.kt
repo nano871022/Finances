@@ -35,4 +35,12 @@ interface IConnectDB {
             }
         }
     }
+
+    fun onStats(connectionDB: SQLiteDatabase?):Pair<String,Long>
+    fun onStats(connectionDB: SQLiteDatabase?,tableName:String):Pair<String,Long>{
+        return connectionDB?.let {
+            val cursor = it.rawQuery("SELECT COUNT(1) as cnt FROM $tableName", arrayOf())
+            return Pair(tableName,cursor.getLong(0)).also { cursor.close() }
+        }?:Pair(tableName,0)
+    }
 }

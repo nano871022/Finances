@@ -401,11 +401,13 @@
     </array>
 
     <string name="do_you_want_to_ending_recurrent_payment">¿Desea finalizar pago recurrente?</string>
+    <string name="do_you_want_to_ending_payment">¿Desea finalizar este pago?</string>
+    <string name="message_finish_message">Agregar mensaje a compra para finalizar</string>
     <string name="update_value_recurrent_paymner">Actualizar valor pago recurrente</string>
     <string name="update_value_paymnet">Actualizar valor pago</string>
     <string name="dont_ending_recurrent_payment">No se logro finalizar el pago recurrente</string>
     <string name="dont_copy_payment_successfull">No se logro realizar la copia</string>
-    <string name="dont_ending_payment">No se logro finaliazr el pago</string>
+    <string name="dont_ending_payment">No se logro finalizar el pago</string>
     <string name="ending_recurrent_payment_successfull">Se finalizo correctamente</string>
     <string name="ending_recurrent_copy_payment_successfull">Se finalizo la copia correctamente</string>
     <string name="theres_not_records_to_show_you">No hay registros para mostrar</string>

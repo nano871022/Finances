@@ -55,4 +55,8 @@ class SmsCreditCardConnectDB: DBRestore(), IConnectDB{
         onRestore(currentDB,fromRestoreDB,javaClass.simpleName,SmsCreditCardDB.Entry.TABLE_NAME,SmsCreditCardMap()::restore)
     }
 
+    override fun onStats(connectionDB: SQLiteDatabase?): Pair<String, Long> {
+        return onStats(connectionDB, SmsCreditCardDB.Entry.TABLE_NAME)
+    }
+
 }

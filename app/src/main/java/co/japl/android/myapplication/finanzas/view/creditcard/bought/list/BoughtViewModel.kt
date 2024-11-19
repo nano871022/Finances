@@ -75,12 +75,18 @@ class BoughtViewModel @Inject constructor(
         return this
     }
 
-    fun moreOption(option:MoreOptionsItemsCreditCard,value:Double=0.0){
+    fun moreOption(option:MoreOptionsItemsCreditCard,valueDouble:Double=0.0,valueStr:String=""){
         when(option){
             MoreOptionsItemsCreditCard.EDIT ->{goToEditBought()}
-            MoreOptionsItemsCreditCard.ENDING ->{endingDialog()}
-            MoreOptionsItemsCreditCard.UPDATE_VALUE ->{updateRecurrentValueDialog(value)}
-            MoreOptionsItemsCreditCard.DIFFER_INSTALLMENT ->{differntInstallmentDialog(value.toLong())}
+            MoreOptionsItemsCreditCard.ENDING ->{
+                if(valueStr.isBlank()) {
+                    endingDialog()
+                }else{
+                    endingDialog(valueStr)
+                }
+            }
+            MoreOptionsItemsCreditCard.UPDATE_VALUE ->{updateRecurrentValueDialog(valueDouble)}
+            MoreOptionsItemsCreditCard.DIFFER_INSTALLMENT ->{differntInstallmentDialog(valueDouble.toLong())}
             MoreOptionsItemsCreditCard.AMORTIZATION ->{goToAmortization()}
             MoreOptionsItemsCreditCard.DELETE ->{deleteDialog()}
             MoreOptionsItemsCreditCard.CLONE ->{clone()}
@@ -193,6 +199,26 @@ class BoughtViewModel @Inject constructor(
             }
     }
 
+    private fun endingDialog(value:String){
+        if (boughtCreditCardSvc.endingPayment(bought.id, value, bought.cutOutDate)) {
+            Snackbar.make(
+                view,
+                R.string.ending_recurrent_payment_successfull,
+                Snackbar.LENGTH_LONG
+            )
+                .setAction(R.string.close) {}
+                .show().also { loader.value = false }
+
+        } else {
+            Snackbar.make(
+                view,
+                R.string.dont_ending_payment,
+                Snackbar.LENGTH_LONG
+            )
+                .setAction(R.string.close, null).show()
+        }
+    }
+
     private fun updateRecurrentValueDialog(value:Double){
             if (boughtCreditCardSvc.updateRecurrentValue(bought.id, value,_cutOff,cache.value)) {
                 Snackbar.make(
@@ -266,8 +292,11 @@ class BoughtViewModel @Inject constructor(
         if( (bought.createDate.toLocalDate() !in dateFirst.minusMonths(1)..dateLast)){
             items = items.filter{ it != MoreOptionsItemsCreditCard.EDIT}.toTypedArray()
         }
-        if(!bought.recurrent  || (bought.recurrent && bought.createDate.toLocalDate() in dateFirst..dateLast)){
+        if(!bought.recurrent && bought.monthPaid < 1){
             items = items.filter{ it != MoreOptionsItemsCreditCard.ENDING}.toTypedArray()
+        }
+        if((!bought.recurrent && bought.monthPaid > 0 )  ||
+            (bought.recurrent && bought.createDate.toLocalDate() in dateFirst..dateLast)){
             items = items.filter{ it != MoreOptionsItemsCreditCard.UPDATE_VALUE }.toTypedArray()
         }
         if(bought.month > 1 && months < 1 ){

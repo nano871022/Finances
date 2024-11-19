@@ -60,4 +60,15 @@ class CheckPaymentsImpl @Inject constructor(
             CheckPaymentsEnum.QUOTE_CREDIT_CARD -> creditCardSvc.save(check)
         }
     }
+
+    override fun delete(dto: CheckPaymentDTO): Boolean {
+        require(dto.codPaid  > 0){"Id must be greater than 0"}
+        return when(dto.type){
+            CheckPaymentsEnum.PAYMENTS ->{
+                return paidSvc.delete(dto)
+            }
+            CheckPaymentsEnum.CREDITS -> false
+            CheckPaymentsEnum.QUOTE_CREDIT_CARD -> false
+        }
+    }
 }

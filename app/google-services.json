@@ -35,6 +35,13 @@
             "package_name": "co.japl.android.myapplication",
             "certificate_hash": "c863db5704299ada73149260aaa3bdb9175cdd2e"
           }
+        },{
+          "client_id": "332922408573-cv3pfej5ivtvpgjio189vhattmhtr3f2.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "co.japl.android.myapplication",
+            "certificate_hash": "dce72e3c6e8df4315c5c6377d83ffc8f991194"
+          }
         }
       ],
       "api_key": [

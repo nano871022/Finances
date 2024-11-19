@@ -4,14 +4,17 @@
     <selectionStates>
       <SelectionState runConfigName="Finanzas">
         <option name="selectionMode" value="DROPDOWN" />
-        <DropdownSelection timestamp="2024-05-27T14:10:16.726527914Z">
+        <DropdownSelection timestamp="2024-11-19T02:34:09.600678912Z">
           <Target type="DEFAULT_BOOT">
             <handle>
-              <DeviceId pluginId="LocalEmulator" identifier="path=/home/alejo/.android/avd/10.1_WXGA_Tablet_API_29.avd" />
+              <DeviceId pluginId="LocalEmulator" identifier="path=/home/alejo/.android/avd/5.4_FWVGA_API_30.avd" />
             </handle>
           </Target>
         </DropdownSelection>
         <DialogSelection />
+      </SelectionState>
+      <SelectionState runConfigName="app">
+        <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
     </selectionStates>
   </component>

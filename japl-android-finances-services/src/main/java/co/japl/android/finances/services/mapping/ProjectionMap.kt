@@ -5,6 +5,7 @@ import android.database.Cursor
 import android.os.Build
 import android.provider.BaseColumns
 import androidx.annotation.RequiresApi
+import androidx.core.text.isDigitsOnly
 import co.japl.android.finances.services.dto.*
 import co.japl.android.finances.services.utils.DateUtils
 
@@ -42,7 +43,7 @@ class ProjectionMap {
             put(ProjectionDB.Entry.COLUMN_NAME, crsor.getString(1))
             put(ProjectionDB.Entry.COLUMN_TYPE, crsor.getString(2))
             put(ProjectionDB.Entry.COLUMN_ACTIVE, crsor.getInt(3))
-            put(ProjectionDB.Entry.COLUMN_VALUE, crsor.getString(4).toDouble())
+            put(ProjectionDB.Entry.COLUMN_VALUE, crsor.getString(4).takeIf { it.isNotBlank() && it.isDigitsOnly() }?.toDouble()?:0.0)
             put(ProjectionDB.Entry.COLUMN_QUOTE, crsor.getString(5).toDouble())
             put(ProjectionDB.Entry.COLUMN_DATE_CREATE, crsor.getString(6))
             put(ProjectionDB.Entry.COLUMN_DATE_END, crsor.getString(7))

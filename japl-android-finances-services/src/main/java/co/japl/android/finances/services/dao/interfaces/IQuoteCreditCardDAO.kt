@@ -15,10 +15,12 @@ interface IQuoteCreditCardDAO:  SaveSvc<CreditCardBoughtDTO>,
 
         fun endingRecurrentPayment(idBought: Int,cutOff:LocalDateTime):Boolean
 
+        fun endingPayment(idBought: Int,message:String,cutOff:LocalDateTime):Boolean
+
         fun getLastAvailableQuotesTC():List<QuoteCreditCard>
 
         fun getPeriod(id:Int):List<YearMonth>
 
-    fun findByNameAndBoughtDateAndValue(name:String,boughtDate:LocalDateTime,amount: BigDecimal):CreditCardBoughtDTO?
+        fun findByNameAndBoughtDateAndValue(name:String,boughtDate:LocalDateTime,amount: BigDecimal):CreditCardBoughtDTO?
 
 }

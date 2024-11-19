@@ -22,8 +22,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -34,6 +36,7 @@ import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.com.japl.ui.theme.values.Dimensions
 import co.com.japl.ui.theme.values.ModifiersCustom.Weight1f
 import co.japl.android.myapplication.R
+import co.japl.android.myapplication.finanzas.holders.validations.notNull
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -81,35 +84,6 @@ fun GoogleAuthBackupRestore(viewModel:GoogleAuthBackupRestoreViewModel) {
                             )
                             Text(text = stringResource(id = R.string.login))
                         }
-
-                        Button(
-                            onClick = {
-                                viewModel.loginSimple()?.let { stateResultActivity.launch(it) }
-
-                            },
-                        ) {
-                            Icon(
-                                imageVector = Icons.Rounded.Login,
-                                contentDescription = stringResource(id = R.string.login)
-                            )
-                            Text(text = stringResource(id = R.string.login))
-                        }
-
-                        Button(
-                            onClick = {
-                                CoroutineScope(Dispatchers.IO).launch{
-
-                                    viewModel.loginWeb2(context) { stateResultActivity.launch(it) }
-                                }
-
-                            },
-                        ) {
-                            Icon(
-                                imageVector = Icons.Rounded.Login,
-                                contentDescription = stringResource(id = R.string.login)
-                            )
-                            Text(text = stringResource(id = R.string.login))
-                        }
                     }
                 } else {
                     Button(onClick = {
@@ -126,28 +100,7 @@ fun GoogleAuthBackupRestore(viewModel:GoogleAuthBackupRestoreViewModel) {
                 }
             }
             if (isLogged.value) {
-                Row {
-                    Button(onClick = {
-                        CoroutineScope(Dispatchers.IO).launch {
-                            viewModel.backup()
-                        }
-                                     }, modifier = Weight1f()) {
-                        Icon(
-                            imageVector = Icons.Rounded.Upload,
-                            contentDescription = stringResource(id = R.string.backup)
-                        )
-                        Text(text = stringResource(id = R.string.backup))
-
-                    }
-
-                    Button(onClick = { statusRestoreDialog.value = true }, modifier = Weight1f()) {
-                        Icon(
-                            imageVector = Icons.Rounded.Restore,
-                            contentDescription = stringResource(id = R.string.restore)
-                        )
-                        Text(text = stringResource(id = R.string.restore))
-                    }
-                }
+                Logged(viewModel,statusRestoreDialog)
             }
                 Text(
                     text = result.value,
@@ -163,6 +116,40 @@ fun GoogleAuthBackupRestore(viewModel:GoogleAuthBackupRestoreViewModel) {
         }
     })
 
+}
+
+@Composable
+private fun Logged(viewModel:GoogleAuthBackupRestoreViewModel,statusRestoreDialog:MutableState<Boolean>){
+    var stateStats by remember {viewModel.statsLocal }
+    CoroutineScope(Dispatchers.IO).launch {
+        viewModel.statsLocal()
+    }
+    Row {
+        Button(onClick = {
+            CoroutineScope(Dispatchers.IO).launch {
+                viewModel.backup()
+            }
+        }, modifier = Weight1f()) {
+            Icon(
+                imageVector = Icons.Rounded.Upload,
+                contentDescription = stringResource(id = R.string.backup)
+            )
+            Text(text = stringResource(id = R.string.backup))
+
+        }
+
+        Button(onClick = { statusRestoreDialog.value = true }, modifier = Weight1f()) {
+            Icon(
+                imageVector = Icons.Rounded.Restore,
+                contentDescription = stringResource(id = R.string.restore)
+            )
+            Text(text = stringResource(id = R.string.restore))
+        }
+
+        if(stateStats.isNotEmpty()){
+            Text("values Stats")
+        }
+    }
 }
 
 @Composable

@@ -34,4 +34,7 @@ class InputConnectDB: DBRestore(), IConnectDB {
     override fun onRestore(currentDB: SQLiteDatabase?, fromRestoreDB: SQLiteDatabase?) {
         onRestore(currentDB,fromRestoreDB,javaClass.simpleName,InputDB.Entry.TABLE_NAME,InputMap(null)::restore)
     }
+    override fun onStats(connectionDB: SQLiteDatabase?): Pair<String, Long> {
+        return onStats(connectionDB, InputDB.Entry.TABLE_NAME)
+    }
 }

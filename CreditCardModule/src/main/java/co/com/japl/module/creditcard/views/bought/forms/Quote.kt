@@ -23,7 +23,7 @@ import androidx.compose.material.icons.rounded.Save
 import androidx.compose.material.icons.rounded.SaveAs
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.PlainTooltipBox
+import androidx.compose.material3.TooltipBox
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -160,7 +160,7 @@ private fun Body(viewModel: QuoteViewModel,modifier:Modifier){
             isMoney = false
         )
 
-        FieldDatePicker(title = androidx.compose.material3.R.string.date_picker_headline
+        FieldDatePicker(title = androidx.compose.material3.R.string.m3c_date_picker_headline
             ,value = dateBoughtState.value
             , callable = {dateBoughtState.value = it}
             , isError = errorDateBoughtState
@@ -230,7 +230,10 @@ private fun Body(viewModel: QuoteViewModel,modifier:Modifier){
 
         CheckBoxField(title = stringResource(id = R.string.recurrent),
             value = recurrentState.value,
-            callback = {recurrentState.value = it},
+            callback = {
+                        recurrentState.value = it
+                        viewModel.validate()
+                       },
             modifier = ModifiersCustom.FieldFillMAxWidhtAndPaddingShort())
 
         Row {

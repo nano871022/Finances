@@ -25,16 +25,19 @@ class DateUtils {
             } else {
                 val value = value.contains("T")?.takeIf{ it }?.let{value.substring(0,value.indexOf("T"))}?:value
                 val date = value.split("-")
-                require (date.size > 1) { "Value is not valid $date" }
-                return LocalDateTime.of(
-                    date[0].toInt(),
-                    date[1].toInt(),
-                    date[2].toInt(),
-                    23,
-                    59,
-                    59,
-                    999
-                )
+                if (date.size > 1) {
+                    return LocalDateTime.of(
+                        date[0].toInt(),
+                        date[1].toInt(),
+                        date[2].toInt(),
+                        23,
+                        59,
+                        59,
+                        999
+                    )
+                }else{
+                    return LocalDateTime.now()
+                }
             }
         }
 

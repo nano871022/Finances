@@ -105,6 +105,10 @@ class QuoteCreditCardImpl @Inject constructor(private val quoteCCSvc: IQuoteCred
         return quoteCCSvc.endingRecurrentPayment(key,cutOff)
     }
 
+    override fun endingPayment(key: Int,message:String, cutOff: LocalDateTime): Boolean {
+        return quoteCCSvc.endingPayment(key,message,cutOff)
+    }
+
     override fun create(bought: CreditCardBoughtDTO,cache:Boolean): Int {
         require(bought.id == 0)
         return if(cache.not()){quoteCCSvc.save(CreditCardBoughtMapper.mapper(bought)).toInt()}

@@ -23,7 +23,7 @@ class ValuesCalculation @Inject constructor(){
             DateUtils.getMonths(LocalDateTime.of(it.create, LocalTime.MAX),cutOff).toShort()
         } ?: month.takeIf {it > 1}?.let {
             (DateUtils.getMonths(boughtDate,cutOff) + 1).toShort()
-        }?:0.toShort()
+        }?:1.toShort()
     }
 
     internal fun getPendingToPay(codeBought:Int,month:Short,monthPaid:Short,valueItem:Double,capitalValue:Double, differQuotes:List<DifferInstallmentDTO?>?):Double{
