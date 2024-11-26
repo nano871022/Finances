@@ -11,21 +11,21 @@ import co.com.japl.finances.iports.dtos.CreditCardDTO
 import javax.inject.Inject
 
 class CreditCardImpl @Inject constructor(private val credirCardSvc:ICreditCardSvc): ICreditCardPort {
-    override fun getAll(): List<CreditCardDTO> {
-        return credirCardSvc.getAll().map(CreditCardMap::mapper)
+    override fun getAll(): List<CreditCardDTO> = Caching ("AllCreditCard") {
+        return@Caching credirCardSvc.getAll().map(CreditCardMap::mapper)
     }
 
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
-    override fun get(id: Int): CreditCardDTO? {
+    override fun get(id: Int): CreditCardDTO? = Caching("CreditCard|get|$id") {
         try {
             val creditCard = credirCardSvc.get(id)
             if (creditCard.isPresent) {
-                return CreditCardMap.mapper(creditCard.get())
+                return@Caching CreditCardMap.mapper(creditCard.get())
             }
         }catch (e: CursorWindowAllocationException){
             Log.e(javaClass.name,e.message,e)
         }
-        return null
+        return@Caching null
 
     }
 

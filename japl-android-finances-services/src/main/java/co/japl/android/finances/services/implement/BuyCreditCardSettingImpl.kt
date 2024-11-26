@@ -1,5 +1,6 @@
 package co.japl.android.finances.services.implement
 
+import android.database.CursorWindow
 import android.database.sqlite.SQLiteOpenHelper
 import android.os.Build
 import android.provider.BaseColumns
@@ -69,6 +70,12 @@ class BuyCreditCardSettingImpl @Inject constructor(override var dbConnect: SQLit
     @RequiresApi(Build.VERSION_CODES.O)
     override fun get(id: Int): Optional<BuyCreditCardSettingDTO> {
         Log.d(javaClass.name,"<<<=== STARTING::get Id: $id")
+        /*
+        val field = CursorWindow::class.java.getDeclaredField("sCursorWindowSize")
+        field.isAccessible = true
+        field.set(null, 800 * 1024 * 1024)
+         */
+
         val db = dbConnect.writableDatabase
         val cursor = db.query(
             BuyCreditCardSettingDB.Entry.TABLE_NAME,

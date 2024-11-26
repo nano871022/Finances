@@ -8,6 +8,7 @@ import co.com.japl.finances.iports.dtos.RecapDTO
 import co.com.japl.finances.iports.inbounds.recap.IRecapPort
 import co.com.japl.ui.Prefs
 import co.japl.android.myapplication.R
+import co.japl.finances.core.usercases.interfaces.creditcard.bought.lists.IBought
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -15,7 +16,7 @@ import java.time.LocalDate
 import javax.inject.Inject
 
 //@AndroidEntryPoint
-class RecapViewModel @Inject constructor(private var recapSvc:IRecapPort?,private val prefs:Prefs, private val navController: NavController?) : ViewModel(){
+class RecapViewModel @Inject constructor(private var recapSvc:IRecapPort?,private var boughtCreditCard:IBought?,private val prefs:Prefs, private val navController: NavController?) : ViewModel(){
 
     val cache = mutableStateOf(prefs.simulator)
     val msgInitial = mutableStateOf(prefs.msgInitial)
@@ -49,6 +50,8 @@ class RecapViewModel @Inject constructor(private var recapSvc:IRecapPort?,privat
 
     suspend fun getRecap() = coroutineScope {
         launch {
+            _currentProgress.value = 0.2f
+            boughtCreditCard?.fixDataProcess()
             _currentProgress.value = 0.3f
             _recap = recapSvc?.getTotalValues(LocalDate.now(),cache.value)
             _currentProgress.value = 0.8f

@@ -230,8 +230,11 @@ class DateUtils {
             }
         }
 
-        fun cutOff(cutOffDay: Short, date: LocalDate): LocalDateTime {
+        fun cutOff(cutOffDay: Short, date: LocalDate,repeat:Int=0): LocalDateTime {
             var dateTime = LocalDateTime.of(date, LocalTime.MAX)
+            if( repeat > 3 || cutOffDay <= 0){
+                return dateTime
+            }
             try {
                 if (date.dayOfMonth <= cutOffDay) {
                     dateTime = LocalDateTime.of(

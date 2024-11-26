@@ -40,7 +40,14 @@ interface IConnectDB {
     fun onStats(connectionDB: SQLiteDatabase?,tableName:String):Pair<String,Long>{
         return connectionDB?.let {
             val cursor = it.rawQuery("SELECT COUNT(1) as cnt FROM $tableName", arrayOf())
-            return Pair(tableName,cursor.getLong(0)).also { cursor.close() }
+            with(cursor) {
+                while(moveToNext()) {
+                    val columnPos = cursor.getColumnIndex("cnt")
+                    val value = cursor.getLong(columnPos)
+                    return Pair(tableName, value).also { cursor.close() }
+                }
+            }
+            return Pair(tableName,0)
         }?:Pair(tableName,0)
     }
 }

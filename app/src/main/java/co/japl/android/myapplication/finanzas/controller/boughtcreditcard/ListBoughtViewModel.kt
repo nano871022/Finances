@@ -7,8 +7,10 @@ import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.navigation.NavController
+import co.com.japl.finances.iports.enums.KindInterestRateEnum
 import co.com.japl.finances.iports.inbounds.creditcard.ICreditCardPort
 import co.com.japl.finances.iports.inbounds.common.IDifferQuotesPort
+import co.com.japl.finances.iports.inbounds.creditcard.ITaxPort
 import co.com.japl.finances.iports.inbounds.creditcard.bought.lists.IBoughtListPort
 import co.com.japl.ui.Prefs
 import co.japl.android.myapplication.bussiness.interfaces.ITaxSvc
@@ -32,7 +34,7 @@ class ListBoughtViewModel @Inject constructor(
     public val prefs:Prefs
 ) : ViewModel() {
 
-    private  var _taxSvc: ITaxSvc = EntryPoints.get(application, EntryPoint::class.java).getTaxSvc()
+    private  var _taxSvc: ITaxPort = EntryPoints.get(application, EntryPoint::class.java).getInboundTaxPort()
     private  var _boughtListSvc: IBoughtListPort = EntryPoints.get(application, EntryPoint::class.java).getBoughtCreditCardSvc()
     private  var _creditCardSvc: ICreditCardPort = EntryPoints.get(application, EntryPoint::class.java).getCreditCardSvc()
     private var _differInstallmentSvc: IDifferQuotesPort = EntryPoints.get(application, EntryPoint::class.java).getDifferInstallmentSvc()
@@ -81,13 +83,13 @@ class ListBoughtViewModel @Inject constructor(
 
     suspend fun getQuotes(){
         progress.floatValue = 0.1f
-        _taxSvc.get(_params.first.toLong(),_params.second.monthValue,_params.second.year,
-            TaxEnum.CASH_ADVANCE).takeIf { it.isPresent }?.get()?.let {
+        _taxSvc.get(_params.first,_params.second.monthValue,_params.second.year,
+            KindInterestRateEnum.CASH_ADVANCE)?.let {
             cashAdvance.value = true
         }
         progress.floatValue = 0.2f
-        _taxSvc.get(_params.first.toLong(),_params.second.monthValue,_params.second.year,
-            TaxEnum.CREDIT_CARD).takeIf { it.isPresent }?.get()?.let {
+        _taxSvc.get(_params.first,_params.second.monthValue,_params.second.year,
+            KindInterestRateEnum.CREDIT_CARD)?.let {
             creditCard.value = true
         }
         progress.floatValue = 0.3f

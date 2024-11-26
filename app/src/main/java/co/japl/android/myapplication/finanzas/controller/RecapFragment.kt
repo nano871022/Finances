@@ -14,15 +14,17 @@ import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.japl.android.myapplication.databinding.FragmentRecapBinding
 import co.japl.android.myapplication.finanzas.ApplicationInitial
 import co.japl.android.myapplication.finanzas.view.recap.Recap
+import co.japl.finances.core.usercases.interfaces.creditcard.bought.lists.IBought
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
 @AndroidEntryPoint
 class RecapFragment @Inject constructor() : Fragment() {
     @Inject lateinit var recapSvc:IRecapPort
+    @Inject lateinit var boughtCreditCardSvc : IBought
 
     private var _binding: FragmentRecapBinding? = null
-    private val recapViewModel by lazy {RecapViewModel(recapSvc,ApplicationInitial.prefs,findNavController())}
+    private val recapViewModel by lazy {RecapViewModel(recapSvc,boughtCreditCardSvc,ApplicationInitial.prefs,findNavController())}
 
     @RequiresApi(Build.VERSION_CODES.S)
     override fun onCreateView(

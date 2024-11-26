@@ -15,6 +15,7 @@ import co.japl.android.finances.services.dao.interfaces.IQuoteCreditCardDAO
 import co.japl.android.finances.services.interfaces.SaveSvc
 import co.japl.android.finances.services.mapping.CreditCardBoughtMap
 import co.japl.android.finances.services.mapping.CreditCardMap
+import co.japl.android.finances.services.utils.CursorUtils
 import co.japl.android.finances.services.utils.DatabaseConstants
 import co.japl.android.finances.services.utils.DateUtils
 import com.google.gson.Gson
@@ -24,10 +25,12 @@ import java.nio.charset.Charset
 import java.nio.file.Files
 import java.nio.file.Paths
 import java.time.DateTimeException
+import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.YearMonth
+import java.time.ZoneOffset
 import java.util.*
 import javax.inject.Inject
 
@@ -49,15 +52,11 @@ class SaveCreditCardBoughtImpl @Inject constructor(val context:Context, override
 
     private val creditCardSvc:SaveSvc<CreditCardDTO> = CreditCardImpl(dbConnect)
     private val differInstallmentSvc = DifferInstallmentImpl(dbConnect)
-    private val FORMAT_DATE_BOUGHT_WHERE = "substr(${CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_BOUGHT_DATE},7,4)||'-'||substr(${CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_BOUGHT_DATE},4,2)||'-'||substr(${CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_BOUGHT_DATE},1,2)"
-    private val FORMAT_DATE_END_WHERE = "substr(${CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_END_DATE},7,4)||'-'||substr(${CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_END_DATE},4,2)||'-'||substr(${CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_END_DATE},1,2)"
-    private val FORMAT_DATE_BOUGHT_WHERE_YYYYMM = "substr(${CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_BOUGHT_DATE},7,4)||'-'||substr(${CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_BOUGHT_DATE},4,2)"
-    private val FORMAT_DATE_BOUGHT_WHERE_MMYYYY = "substr(${CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_BOUGHT_DATE},1,4)||'-'||substr(${CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_BOUGHT_DATE},6,2)"
     @RequiresApi(Build.VERSION_CODES.O)
     override fun save(dto: CreditCardBoughtDTO): Long {
         Log.v(this.javaClass.name,"<<<=== save - Start")
         if(dto.endDate == LocalDateTime.MAX){
-            dto.endDate = LocalDateTime.of(LocalDate.of(9999,12,31),LocalTime.MAX)
+            dto.endDate = DateUtils.DEFAULT_DATE_TIME
         }
             val db = dbConnect.writableDatabase
             val values = CreditCardBoughtMap().mapping(dto)
@@ -128,18 +127,20 @@ class SaveCreditCardBoughtImpl @Inject constructor(val context:Context, override
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    fun getDifferOriginBought(name:String,bougthDate:LocalDateTime,endDate:LocalDateTime):CreditCardBoughtDTO?{
+    fun getDifferOriginBought(name:String,boughtDate:LocalDateTime,endDate:LocalDateTime):CreditCardBoughtDTO?{
         val db = dbConnect.writableDatabase
-        val boughtStr = DateUtils.localDateTimeToStringDate(bougthDate)
-        val endStr = DateUtils.localDateTimeToStringDate(endDate)
         val cursor = db.query(CreditCardBoughtDB.CreditCardBoughtEntry.TABLE_NAME,
             COLUMNS_CALC,
             """
-                ($FORMAT_DATE_BOUGHT_WHERE = ? OR ${CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_BOUGHT_DATE} = ?)
+                ${CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_BOUGHT_DATE}  between ?  and  ? 
                 AND ${CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_NAME_ITEM} = ?
-                AND ($FORMAT_DATE_END_WHERE <= ? OR ${CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_END_DATE} <= ?) 
+                AND ${CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_END_DATE}  <=  ?  
              """,
-            arrayOf(boughtStr,boughtStr,name,endStr,endStr),null,null,"${CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_END_DATE} DESC")
+            arrayOf(DateUtils.toSeconds(boughtDate.withHour(0).withMinute(0).withSecond(0)).toString(),
+                    DateUtils.toSeconds(boughtDate.withHour(11).withMinute(59).withSecond(59)).toString(),
+                    name,
+                    DateUtils.toSeconds(endDate).toString()),
+            null,null,"${CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_END_DATE} DESC")
         with(cursor) {
             if (moveToNext()) {
                 return CreditCardBoughtMap().mapping(this).also { Log.d(javaClass.name,"<<<=== END:getDifferOriginBought $it") }
@@ -151,27 +152,22 @@ class SaveCreditCardBoughtImpl @Inject constructor(val context:Context, override
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun getToDate(key:Int,startDate:LocalDateTime,cutOffDate: LocalDateTime): List<CreditCardBoughtDTO> {
         try {
-            Log.d(this.javaClass.name, "<<<=== STARTING::getToDate")
+            Log.d(this.javaClass.name, "<<<=== STARTING::getToDate $startDate ..  $cutOffDate CC: $key")
             val db = dbConnect.readableDatabase
-            val startDateStr = DateUtils.localDateTimeToStringDate(startDate)
-            val endDateStr = DateUtils.localDateTimeToStringDate(cutOffDate)
             val cursor = db.query(
                 CreditCardBoughtDB.CreditCardBoughtEntry.TABLE_NAME,
                 COLUMNS_CALC,
                 """ 
                      ${CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_CODE_CREDIT_CARD} = ?
-                    AND (date($FORMAT_DATE_BOUGHT_WHERE) between ? and ? OR ${CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_BOUGHT_DATE} between ? and ?)
-                    AND (date($FORMAT_DATE_END_WHERE) > ? OR ${CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_END_DATE} > ?)
+                    AND  ${CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_BOUGHT_DATE}  between  ?  and  ? 
+                    AND  ${CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_END_DATE}  >  ? 
                     AND ${CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_RECURRENT} = 0
                 """.trimMargin(),
                 arrayOf(
                     key.toString(),
-                    startDateStr,
-                    endDateStr,
-                    startDateStr,
-                    endDateStr,
-                    startDateStr,
-                    startDateStr
+                    DateUtils.toSeconds(startDate).toString(),
+                    DateUtils.toSeconds(cutOffDate).toString(),
+                    DateUtils.toSeconds(startDate).toString()
                 ),
                 null,
                 null,
@@ -201,18 +197,18 @@ class SaveCreditCardBoughtImpl @Inject constructor(val context:Context, override
     @RequiresApi(Build.VERSION_CODES.O)
     override fun getPendingQuotes(key:Int,startDate: LocalDateTime,cutoffCurrent: LocalDateTime): List<CreditCardBoughtDTO> {
         Log.d(this.javaClass.name,"<<<=== START::getPendingQuotes Key: $key Start: $startDate Cutoff: $cutoffCurrent")
-        val startDateStr = DateUtils.localDateTimeToStringDate(startDate)
-        val initDateStr = DateUtils.localDateTimeToStringDate(LocalDateTime.of(1900,1,1,0,0,0))
         val db = dbConnect.readableDatabase
         val cursor = db.query(CreditCardBoughtDB.CreditCardBoughtEntry.TABLE_NAME,COLUMNS_CALC,
             """
                         ${CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_MONTH} > 1 
                     and ${CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_CODE_CREDIT_CARD} = ?
                     and ${CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_RECURRENT} = 0 
-                    and ($FORMAT_DATE_BOUGHT_WHERE between ? and ? OR ${CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_BOUGHT_DATE} between ? and ?)
-                    and ($FORMAT_DATE_END_WHERE >= ? OR ${CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_END_DATE} >= ?)
+                    and ${CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_BOUGHT_DATE} <= ?
+                    and ${CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_END_DATE} >= ?
                     """,
-            arrayOf(key.toString(),initDateStr,startDateStr,initDateStr,startDateStr,startDateStr,startDateStr),null,null,null)
+            arrayOf(key.toString(),
+                DateUtils.toSeconds(cutoffCurrent).toString(),
+                DateUtils.toSeconds(startDate).toString()),null,null,null)
 
         val items = mutableListOf<CreditCardBoughtDTO>()
         with(cursor){
@@ -264,11 +260,11 @@ class SaveCreditCardBoughtImpl @Inject constructor(val context:Context, override
         val differInstallment = differInstallmentSvc.get(creditCardBoughtDTO.id)
         return (differInstallment.takeIf { it.isPresent }?.let {
             return (DateUtils.getMonths(LocalDateTime.of(it.get().create, LocalTime.MAX),cutoffCurrent) < it.get().newInstallment).also {
-                Log.d(javaClass.name,"validMonths: End: ${creditCardBoughtDTO.endDate} CutOff: $cutoffCurrent Bought: ${creditCardBoughtDTO.boughtDate} Name: ${creditCardBoughtDTO.nameItem} It: $it")
+                //Log.d(javaClass.name,"validMonths: End: ${creditCardBoughtDTO.endDate} CutOff: $cutoffCurrent Bought: ${creditCardBoughtDTO.boughtDate} Name: ${creditCardBoughtDTO.nameItem} It: $it")
             }
         } ?: (DateUtils.getMonths(creditCardBoughtDTO.boughtDate,cutoffCurrent) < creditCardBoughtDTO.month)
                 ).also {
-            Log.d(javaClass.name,"validMonths: End: ${creditCardBoughtDTO.endDate} CutOff: $cutoffCurrent Bought: ${creditCardBoughtDTO.boughtDate} Name: ${creditCardBoughtDTO.nameItem} Create: ${creditCardBoughtDTO.createDate} It: $it")
+            //Log.d(javaClass.name,"validMonths: End: ${creditCardBoughtDTO.endDate} CutOff: $cutoffCurrent Bought: ${creditCardBoughtDTO.boughtDate} Name: ${creditCardBoughtDTO.nameItem} Create: ${creditCardBoughtDTO.createDate} It: $it")
         }
     }
 
@@ -378,17 +374,11 @@ class SaveCreditCardBoughtImpl @Inject constructor(val context:Context, override
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun getRecurrentBuys(key: Int, cutOff: LocalDateTime): List<CreditCardBoughtDTO> {
         try {
-            Log.d(
-                this.javaClass.name,
-                "<<<=== STARTING::getRecurrentBuys key: $key CutOff: $cutOff"
-            )
+            Log.d(this.javaClass.name,"<<<=== STARTING::getRecurrentBuys key: $key CutOff: $cutOff")
             val cutOffDay = creditCardSvc.get(key).get().cutOffDay
             val db = dbConnect.readableDatabase
             val cutOffLastMonth = DateUtils.cutOffLastMonth(cutOffDay, cutOff)
             val startCutOffLastMonth = DateUtils.startDateFromCutoff(cutOffDay, cutOffLastMonth)
-
-            val endDateStr = DateUtils.localDateTimeToStringDate(cutOffLastMonth)
-            val startDateStr = DateUtils.localDateTimeToStringDate(startCutOffLastMonth)
 
             val cursor = db.query(
                 CreditCardBoughtDB.CreditCardBoughtEntry.TABLE_NAME,
@@ -396,10 +386,13 @@ class SaveCreditCardBoughtImpl @Inject constructor(val context:Context, override
                 """
                     ${CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_RECURRENT} = ? 
                     and ${CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_CODE_CREDIT_CARD} = ?
-                    and ($FORMAT_DATE_BOUGHT_WHERE <= ? OR ${CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_BOUGHT_DATE} <= ?)
-                    and ($FORMAT_DATE_END_WHERE >= ? OR ${CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_END_DATE} >= ?)
+                    and ${CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_BOUGHT_DATE} <= ?
+                    and ${CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_END_DATE} >= ?
                 """.trimMargin(),
-                arrayOf("1", key.toString(), startDateStr, startDateStr, endDateStr, endDateStr),
+                arrayOf("1",
+                    key.toString(),
+                    DateUtils.toSeconds(startCutOffLastMonth).toString(),
+                    DateUtils.toSeconds(cutOffLastMonth).toString()),
                 null,
                 null,
                 null
@@ -417,7 +410,7 @@ class SaveCreditCardBoughtImpl @Inject constructor(val context:Context, override
             return items.also {
                 Log.d(
                     this.javaClass.name,
-                    "<<<=== ENDING::getRecurrentBuys StartDate: $startDateStr EndDate: $endDateStr Size: ${it.size}"
+                    "<<<=== ENDING::getRecurrentBuys StartDate: $startCutOffLastMonth EndDate: $cutOffLastMonth Size: ${it.size}"
                 )
             }
         } catch (e: CursorWindowAllocationException) {
@@ -432,15 +425,16 @@ class SaveCreditCardBoughtImpl @Inject constructor(val context:Context, override
         val db = dbConnect.readableDatabase
         val cutOffDay = creditCardSvc.get(key).get().cutOffDay
         val cutOffLastMonth = DateUtils.cutOffLastMonth(cutOffDay,cutOff)
-        val cutOffLastMonthStr = DateUtils.localDateTimeToStringDate(cutOffLastMonth)
 
         val cursor = db.query(CreditCardBoughtDB.CreditCardBoughtEntry.TABLE_NAME,COLUMNS_CALC,
         """
             ${CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_CODE_CREDIT_CARD} = ?
             and ${CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_RECURRENT} = 1
             and ${CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_MONTH} > 1
-            and ($FORMAT_DATE_BOUGHT_WHERE <= ? OR ${CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_BOUGHT_DATE} <= ?)
-        """.trimIndent(), arrayOf(key.toString(),cutOffLastMonthStr,cutOffLastMonthStr),null,null,null)
+            and ${CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_BOUGHT_DATE} <= ?
+        """.trimIndent(),
+            arrayOf(key.toString(),
+                DateUtils.toSeconds(cutOffLastMonth).toString()),null,null,null)
         val items = mutableListOf<CreditCardBoughtDTO>()
         with(cursor){
             while (moveToNext()){
@@ -545,7 +539,7 @@ class SaveCreditCardBoughtImpl @Inject constructor(val context:Context, override
         Log.i(this.javaClass.name,"<<<=== START Get Periods")
         val db = dbConnect.readableDatabase
         val cursor = db.rawQuery("""
-            SELECT DISTINCT $FORMAT_DATE_BOUGHT_WHERE_YYYYMM , $FORMAT_DATE_BOUGHT_WHERE_MMYYYY
+            SELECT DISTINCT strftime('%Y-%m',datetime(${CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_BOUGHT_DATE} , 'unixepoch')) as period
             FROM ${CreditCardBoughtDB.CreditCardBoughtEntry.TABLE_NAME}
             WHERE ${CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_CODE_CREDIT_CARD} = ?
         """
@@ -555,7 +549,6 @@ class SaveCreditCardBoughtImpl @Inject constructor(val context:Context, override
         with(cursor){
             while(moveToNext()) {
                     getStringOrNull(0)?.let {items(it,items::add)}
-                    getStringOrNull(1)?.let {items(it,items::add)}
             }
         }
 
@@ -597,4 +590,76 @@ class SaveCreditCardBoughtImpl @Inject constructor(val context:Context, override
            Log.d(this.javaClass.name, "<<<=== getByNameValueDate - End $it")
        }
    }
+
+    override fun fixDataProcess(){
+        fixBoughtDateTimeToInstant()
+        fixEndDateTimeToInstant()
+    }
+
+    private fun checkDatesWrong(columnCheck:String):Boolean{
+        val db = dbConnect.readableDatabase
+        val cursor = db.rawQuery(
+            "SELECT COUNT(1) as cnt FROM ${CreditCardBoughtDB.CreditCardBoughtEntry.TABLE_NAME} WHERE $columnCheck NOT REGEXP '^[0-9]+$'",
+            null)
+
+        with(cursor){
+                if (moveToNext()){
+                    return (CursorUtils.getInt(cursor, "cnt") ?: 0) > 0
+                }
+            }
+
+        return false
+    }
+
+    private fun fixBoughtDateTimeToInstant(){
+        if(checkDatesWrong(CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_BOUGHT_DATE)){
+            var value = 0
+            val db = dbConnect.readableDatabase
+            val cursor = db.rawQuery("SELECT ${BaseColumns._ID}, ${CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_BOUGHT_DATE} " +
+                    "FROM ${CreditCardBoughtDB.CreditCardBoughtEntry.TABLE_NAME} " +
+                    "WHERE ${CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_BOUGHT_DATE} NOT REGEXP '^[0-9]+$'",
+                null)
+
+            with(cursor){
+                while (moveToNext()){
+                    val id = CursorUtils.getInt(cursor, BaseColumns._ID)
+                    val boughtDate = CursorUtils.getLocalDateTime(cursor, CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_BOUGHT_DATE)
+                    db.execSQL("UPDATE ${CreditCardBoughtDB.CreditCardBoughtEntry.TABLE_NAME} SET ${CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_BOUGHT_DATE} = ? WHERE ${BaseColumns._ID} = ?",
+                        arrayOf(DateUtils.toSeconds(boughtDate), id))
+                    value += 1
+                }
+            }
+            Log.w(this.javaClass.name, "=== fixBoughtDateTimeToInstant Records $value")
+        }
+    }
+
+    private fun fixEndDateTimeToInstant(){
+        if(checkDatesWrong(CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_END_DATE)){
+            var value = 0
+            val db = dbConnect.readableDatabase
+            val cursor = db.rawQuery("SELECT ${BaseColumns._ID}, ${CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_END_DATE} " +
+                    "FROM ${CreditCardBoughtDB.CreditCardBoughtEntry.TABLE_NAME} " +
+                    "WHERE ${CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_END_DATE} NOT REGEXP '^[0-9]+$'",
+                null)
+
+            with(cursor){
+                while (moveToNext()){
+
+                    val id = CursorUtils.getInt(cursor, BaseColumns._ID)
+                    val endDate = CursorUtils.getLocalDateTime(cursor, CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_END_DATE)
+
+                    val millis = try{
+                        DateUtils.toSeconds(endDate)
+                    }catch(e:ArithmeticException){
+                        Log.w(this.javaClass.simpleName,"=== error epocMillis $endDate")
+                        DateUtils.toSeconds(DateUtils.DEFAULT_DATE_TIME)
+                    }
+                    db.execSQL("UPDATE ${CreditCardBoughtDB.CreditCardBoughtEntry.TABLE_NAME} SET ${CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_END_DATE} = ? WHERE ${BaseColumns._ID} = ?",
+                        arrayOf(millis, id))
+                    value += 1
+                }
+            }
+            Log.w(this.javaClass.name, "=== fixEndDateTimeToInstant Records $value")
+        }
+    }
 }

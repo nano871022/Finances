@@ -1,11 +1,13 @@
 package co.japl.android.finances.services.implement
 
+import android.database.CursorWindow
 import android.database.sqlite.SQLiteException
 import android.database.sqlite.SQLiteOpenHelper
 import android.os.Build
 import android.provider.BaseColumns
 import android.util.Log
 import androidx.annotation.RequiresApi
+import co.japl.android.finances.services.core.Caching
 import co.japl.android.finances.services.dto.CreditCardDB
 import co.japl.android.finances.services.dto.CreditCardDTO
 import co.japl.android.finances.services.mapping.CreditCardMap
@@ -75,7 +77,7 @@ class   CreditCardImpl @Inject constructor(override var dbConnect: SQLiteOpenHel
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    override fun get(id: Int): Optional<CreditCardDTO> {
+    override fun get(id: Int): Optional<CreditCardDTO> = Caching("CreditCardDAO|get|$id"){
         val db = dbConnect.writableDatabase
         val cursor = db.query(
             CreditCardDB.CreditCardEntry.TABLE_NAME,
@@ -87,11 +89,11 @@ class   CreditCardImpl @Inject constructor(override var dbConnect: SQLiteOpenHel
             null
         )
         with(cursor) {
-            while (moveToNext()) {
-                return Optional.ofNullable(mapper.mapping(this))
+            if (moveToFirst()) {
+                return@Caching Optional.ofNullable(mapper.mapping(this))
             }
         }
-        return Optional.empty()
+        return@Caching Optional.empty()
     }
 
     @RequiresApi(Build.VERSION_CODES.O)

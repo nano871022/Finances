@@ -65,6 +65,10 @@ class BoughtImpl @Inject constructor(private val service:IBought, private  val s
         return service.getById(codeBought,cache)
     }
 
+    override fun fixDataProcess() {
+        service.fixDataProcess()
+    }
+
     override fun createBySms(name: String, value: Double, date: LocalDateTime,codeCreditCard:Int,kind:KindInterestRateEnum) {
         require(name.isNotEmpty()){"Name must not be empty"}
         require(value > 0.0){"Value must be greater than 0"}

@@ -6,15 +6,25 @@ import android.widget.EditText
 import androidx.annotation.RequiresApi
 import java.time.DateTimeException
 import java.time.DayOfWeek
+import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.Month
 import java.time.Period
+import java.time.ZoneOffset
+import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 
 class DateUtils {
     companion object {
+
+        val DEFAULT_DATE_TIME = LocalDateTime.of(2099, 12, 31, 23, 59, 59)
+
+        fun toSeconds(date:LocalDateTime?):Long?{
+            return date?.toInstant(ZoneOffset.UTC)?.epochSecond
+        }
+
         @RequiresApi(Build.VERSION_CODES.O)
         fun toLocalDateTime(value: String): LocalDateTime {
             require(value.isNotBlank()) { "Value cannot be blank" }
@@ -43,6 +53,10 @@ class DateUtils {
 
         @RequiresApi(Build.VERSION_CODES.O)
         fun toLocalDateTime(value: String,default:LocalDateTime): LocalDateTime {
+            if("^[0-9]+$".toRegex().matches(value)){
+                val instant = Instant.ofEpochSecond(value.toLong())
+                return LocalDateTime.ofInstant(instant,ZoneOffset.UTC)
+            }
             if(value.isBlank()){
                 return default
             }
@@ -64,7 +78,6 @@ class DateUtils {
 
         @RequiresApi(Build.VERSION_CODES.O)
         fun toLocalDate(value: String): LocalDate {
-            Log.d(javaClass.name,"<<<=== START:toLocalDate value: $value")
             var date = value.split("/")
             if(date[0].length == 4){
                 return LocalDate.of(date[0].toInt(), date[1].toInt(), date[2].toInt())
@@ -142,18 +155,6 @@ class DateUtils {
             }
             return value.toLong()
         }
-        @RequiresApi(Build.VERSION_CODES.O)
-        fun getLocalDateTimeByString(date:EditText):LocalDateTime{
-            try {
-                val bought = date.text.toString()
-                val date = bought.split("/")
-
-                return LocalDateTime.of(date[2].toInt(), date[1].toInt(), date[0].toInt(), 0, 0, 0)
-            }catch(e:Exception){
-                date.error = "Invalid value"
-            }
-            return LocalDateTime.now()
-        }
 
         @RequiresApi(Build.VERSION_CODES.O)
         fun startDateFromCutoff(cutOffDay:Short,cutOff:LocalDateTime):LocalDateTime{
@@ -180,13 +181,16 @@ class DateUtils {
             }
         }
 
-        private fun dayOfMonthByRangeDaysAndMonth(year:Int,month:Int,cutOffDay:Short):Short{
-
+        private fun dayOfMonthByRangeDaysAndMonth(year:Int,month:Int,cutOffDay:Short,repeat:Int=0):Short{
             val date = LocalDate.of(year,month,1)
+            if(repeat>2 || cutOffDay <= 0)   {
+                Log.e(this.javaClass.simpleName,"=== error: $repeat $year $month $cutOffDay")
+                return date.dayOfMonth.toShort()
+            }
             try{
                 return date.withDayOfMonth(cutOffDay.toInt()).dayOfMonth.toShort()
             }catch(e:DateTimeException){
-                return dayOfMonthByRangeDaysAndMonth(year,month,(cutOffDay -1).toShort())
+                return dayOfMonthByRangeDaysAndMonth(year,month,(cutOffDay -1).toShort(), repeat = repeat + 1)
             }
         }
 
@@ -232,15 +236,6 @@ class DateUtils {
                 else -> cutOff
             }
             return LocalDateTime.of(cutOff, LocalTime.MAX).also { Log.d(javaClass.name,"<<<=== FINISH:cutOffLastMonth Day: $cutOffDay ${cutOff.dayOfWeek } Response: $it") }
-        }
-
-        @RequiresApi(Build.VERSION_CODES.O)
-        fun cutOffAddMonth(cutOffDay:Short, cutOff:LocalDateTime,months:Long):LocalDateTime{
-            val cutOffEndMonth = cutOff.withDayOfMonth(1).plusMonths(months).minusDays(1)
-            if(cutOffEndMonth.dayOfMonth < cutOffDay){
-                return cutOffEndMonth
-            }
-            return cutOffEndMonth.withDayOfMonth(cutOffDay.toInt())
         }
     }
 

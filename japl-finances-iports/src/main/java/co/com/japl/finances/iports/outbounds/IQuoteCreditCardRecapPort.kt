@@ -35,4 +35,6 @@ interface IQuoteCreditCardPort {
 
     fun findByNameAndBoughtDateAndValue(name:String,boughtDate:LocalDateTime,amount:BigDecimal):CreditCardBoughtDTO?
 
+    fun fixDataProcess()
+
 }

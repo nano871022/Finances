@@ -10,7 +10,9 @@ import co.japl.android.finances.services.dto.CreditCardDB
 import co.japl.android.finances.services.dto.CreditCardDTO
 import co.japl.android.finances.services.implement.Config
 import co.japl.android.finances.services.dto.CreditCard
+import co.japl.android.finances.services.utils.CursorUtils
 import co.japl.android.finances.services.utils.DateUtils
+import java.math.BigDecimal
 import java.util.*
 
 class CreditCardMap {
@@ -30,21 +32,21 @@ class CreditCardMap {
 
     @RequiresApi(Build.VERSION_CODES.O)
     fun mapping(cursor:Cursor):CreditCardDTO{
-        val name = cursor.getString(1)
-        val maxQuotes = cursor.getShort(2)
-        val cutOffDay = cursor.getShort(3)
-        val warningValue = cursor.getString(4).toBigDecimal()
-        val status = cursor.getShort(5) > 0
-        val interest1Quote = cursor.getShort(6) > 0
-        val interest1NotQuote = cursor.getShort(7) > 0
+        val name = CursorUtils.getString(cursor,CreditCardDB.CreditCardEntry.COLUMN_NAME)
+        val maxQuotes = CursorUtils.getShort(cursor,CreditCardDB.CreditCardEntry.COLUMN_MAX_QUOTES)
+        val cutOffDay = CursorUtils.getShort(cursor,CreditCardDB.CreditCardEntry.COLUMN_CUT_OFF_DAY)
+        val warningValue = CursorUtils.getBigDecimal(cursor,CreditCardDB.CreditCardEntry.COLUMN_WARNING_VALUE)
+        val status = (CursorUtils.getShort(cursor, CreditCardDB.CreditCardEntry.COLUMN_STATUS) ?: 0) > 0
+        val interest1Quote = (CursorUtils.getShort(cursor, CreditCardDB.CreditCardEntry.COLUMN_INTEREST_1Q)?:0) > 0
+        val interest1NotQuote = (CursorUtils.getShort(cursor, CreditCardDB.CreditCardEntry.COLUMN_INTEREST_1NOTQ)?:0) > 0
         val createDate = DateUtils.toLocalDateTime(cursor.getString(8))
-        val id = cursor.getString(0).toInt()
+        val id = CursorUtils.getInt(cursor,BaseColumns._ID)
         return  CreditCardDTO(
-            id,
-            name,
-            maxQuotes,
-            cutOffDay,
-            warningValue,
+            id?:0,
+            name?:"",
+            maxQuotes?:0,
+            cutOffDay?:0,
+            warningValue?: BigDecimal.ZERO,
             createDate,
             status,
             interest1Quote,
@@ -70,14 +72,14 @@ class CreditCardMap {
     fun restore(crsor:Cursor):ContentValues {
         return ContentValues().apply {
             put(BaseColumns._ID, crsor.getLong(0))
-            put(CreditCardDB.CreditCardEntry.COLUMN_NAME, crsor.getString(1))
-            put(CreditCardDB.CreditCardEntry.COLUMN_MAX_QUOTES, crsor.getShort(2))
-            put(CreditCardDB.CreditCardEntry.COLUMN_CUT_OFF_DAY, crsor.getShort(3))
-            put(CreditCardDB.CreditCardEntry.COLUMN_WARNING_VALUE, crsor.getString(4))
-            put(CreditCardDB.CreditCardEntry.COLUMN_STATUS, crsor.getShort(5))
-            put(CreditCardDB.CreditCardEntry.COLUMN_INTEREST_1Q, crsor.getShort(6))
-            put(CreditCardDB.CreditCardEntry.COLUMN_INTEREST_1NOTQ, crsor.getShort(7))
-            put(CreditCardDB.CreditCardEntry.COLUMN_CREATE_DATE, crsor.getString(8))
+            put(CreditCardDB.CreditCardEntry.COLUMN_NAME, CursorUtils.getString(crsor, CreditCardDB.CreditCardEntry.COLUMN_NAME))
+            put(CreditCardDB.CreditCardEntry.COLUMN_MAX_QUOTES, CursorUtils.getShort(crsor, CreditCardDB.CreditCardEntry.COLUMN_MAX_QUOTES))
+            put(CreditCardDB.CreditCardEntry.COLUMN_CUT_OFF_DAY, CursorUtils.getShort(crsor, CreditCardDB.CreditCardEntry.COLUMN_CUT_OFF_DAY))
+            put(CreditCardDB.CreditCardEntry.COLUMN_WARNING_VALUE, CursorUtils.getString(crsor, CreditCardDB.CreditCardEntry.COLUMN_WARNING_VALUE))
+            put(CreditCardDB.CreditCardEntry.COLUMN_STATUS, CursorUtils.getShort(crsor, CreditCardDB.CreditCardEntry.COLUMN_STATUS))
+            put(CreditCardDB.CreditCardEntry.COLUMN_INTEREST_1Q, CursorUtils.getShort(crsor, CreditCardDB.CreditCardEntry.COLUMN_INTEREST_1Q))
+            put(CreditCardDB.CreditCardEntry.COLUMN_INTEREST_1NOTQ, CursorUtils.getShort(crsor, CreditCardDB.CreditCardEntry.COLUMN_INTEREST_1NOTQ))
+            put(CreditCardDB.CreditCardEntry.COLUMN_CREATE_DATE, CursorUtils.getString(crsor, CreditCardDB.CreditCardEntry.COLUMN_CREATE_DATE))
         }
     }
 }

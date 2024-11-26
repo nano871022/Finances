@@ -113,7 +113,6 @@ class TaxImpl @Inject constructor(override var dbConnect: SQLiteOpenHelper) : IT
                 null,
                 null
             )
-            try {
                 with(cursor) {
                     while (moveToNext()) {
                         return Optional.ofNullable(mapper.mapping(this)).also {
@@ -123,9 +122,7 @@ class TaxImpl @Inject constructor(override var dbConnect: SQLiteOpenHelper) : IT
                 }
 
             return Optional.empty()
-        }finally{
-            Log.d(this.javaClass.name,"<<<=== FINISH:GetTax - get $month , $year $kind EMPTY")
-        }
+
     }
     @RequiresApi(Build.VERSION_CODES.O)
     override fun backup(pathFile: String) {

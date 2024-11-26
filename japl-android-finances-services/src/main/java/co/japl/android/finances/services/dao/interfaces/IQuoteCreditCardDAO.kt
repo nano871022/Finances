@@ -23,4 +23,6 @@ interface IQuoteCreditCardDAO:  SaveSvc<CreditCardBoughtDTO>,
 
         fun findByNameAndBoughtDateAndValue(name:String,boughtDate:LocalDateTime,amount: BigDecimal):CreditCardBoughtDTO?
 
+        fun fixDataProcess()
+
 }

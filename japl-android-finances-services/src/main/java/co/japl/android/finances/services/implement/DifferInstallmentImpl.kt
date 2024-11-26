@@ -6,6 +6,7 @@ import android.os.Build
 import android.provider.BaseColumns
 import android.util.Log
 import androidx.annotation.RequiresApi
+import co.japl.android.finances.services.core.Caching
 import co.japl.android.finances.services.dto.*
 import co.japl.android.finances.services.interfaces.IDifferInstallment
 import co.japl.android.finances.services.mapping.DifferInstallmentMap
@@ -81,7 +82,7 @@ class DifferInstallmentImpl @Inject constructor( override var dbConnect: SQLiteO
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    override fun get(id: Int): Optional<DifferInstallmentDTO> {
+    override fun get(id: Int): Optional<DifferInstallmentDTO> = Caching("Differ|get|$id"){
         val db = dbConnect.readableDatabase
 
         val cursor = db.query(
@@ -89,11 +90,11 @@ class DifferInstallmentImpl @Inject constructor( override var dbConnect: SQLiteO
             arrayOf(id.toString()),null,null,null)
         val mapper = DifferInstallmentMap()
         with(cursor){
-            while(moveToNext()){
-                return Optional.ofNullable(mapper.mapping(cursor))
+            if(moveToFirst()){
+                return@Caching Optional.ofNullable(mapper.mapping(cursor))
             }
         }
-        return Optional.empty()
+        return@Caching Optional.empty()
     }
 
     override fun backup(path: String) {

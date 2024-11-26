@@ -113,7 +113,9 @@ class TaxImpl @Inject constructor(override var dbConnect: SQLiteOpenHelper) :  I
                 null,
                 null
             )
+
             try {
+
                 with(cursor) {
                     while (moveToNext()) {
                         return Optional.ofNullable(mapper.mapping(this)).also {
