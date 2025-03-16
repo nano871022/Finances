@@ -6,6 +6,7 @@ import android.content.Context
 import android.database.sqlite.SQLiteOpenHelper
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
+import co.com.japl.finances.iports.inbounds.credit.ICreditPort
 import co.com.japl.finances.iports.inbounds.creditcard.ICreditCardPort
 import co.com.japl.finances.iports.inbounds.creditcard.ISMSCreditCardPort
 import co.com.japl.finances.iports.inbounds.creditcard.bought.IBoughtPort
@@ -81,6 +82,7 @@ object Module {
     fun getSMSObserverCreditCardModule( smsSvc: ISMSCreditCardPort,subscriber: ISMSObservableSubscriber,ccSvc:ICreditCardPort,msmSvc:ISMSCreditCardPort,svc:IBoughtSmsPort):ISMSObserver{
         return SMSObserver(smsSvc,subscriber,ccSvc,svc,msmSvc)
     }
+
 
 
 

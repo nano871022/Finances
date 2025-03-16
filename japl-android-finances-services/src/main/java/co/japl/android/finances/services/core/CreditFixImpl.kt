@@ -22,4 +22,8 @@ class CreditFixImpl @Inject constructor(private val creditFix: ICreditDAO):ICred
         return creditFix.getCurrentBoughtCredits(LocalDate.of(period.year,period.monthValue,1).plusMonths(1).minusDays(1))
             .map(CreditMapper::mapper)
     }
+
+    override fun delete(id: Int): Boolean {
+        return creditFix.delete(id)
+    }
 }

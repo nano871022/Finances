@@ -45,7 +45,7 @@ import co.com.japl.ui.utils.DateUtils
 @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun FieldDatePicker(@StringRes title:Int,value:String,isError:MutableState<Boolean> = mutableStateOf(false),validation:()->Unit,callable:(String)->Unit,modifier:Modifier = Modifier) {
+fun FieldDatePicker(@StringRes title:Int,value:String,isEnablePicker:MutableState<Boolean> = mutableStateOf(true),isError:MutableState<Boolean> = mutableStateOf(false),validation:()->Unit,callable:(String)->Unit,modifier:Modifier = Modifier) {
     val state = rememberDatePickerState()
     val stateDatePicker = remember { mutableStateOf(false) }
     val stateValue = remember { mutableStateOf(value) }
@@ -54,7 +54,9 @@ fun FieldDatePicker(@StringRes title:Int,value:String,isError:MutableState<Boole
         .background(color = androidx.compose.material3.MaterialTheme.colorScheme.surfaceVariant)
         .border(1.dp, Color.Unspecified, shape = ShapeDefaults.ExtraLarge)
         .clickable {
-            stateDatePicker.value = true
+            if(isEnablePicker.value) {
+                stateDatePicker.value = true
+            }
         }) {
         Column {
 

@@ -4,7 +4,7 @@
     <selectionStates>
       <SelectionState runConfigName="Finanzas">
         <option name="selectionMode" value="DROPDOWN" />
-        <DropdownSelection timestamp="2024-11-19T02:34:09.600678912Z">
+        <DropdownSelection timestamp="2024-11-20T00:21:37.042599581Z">
           <Target type="DEFAULT_BOOT">
             <handle>
               <DeviceId pluginId="LocalEmulator" identifier="path=/home/alejo/.android/avd/5.4_FWVGA_API_30.avd" />
@@ -14,6 +14,17 @@
         <DialogSelection />
       </SelectionState>
       <SelectionState runConfigName="app">
+        <option name="selectionMode" value="DROPDOWN" />
+        <DropdownSelection timestamp="2024-11-25T16:38:57.875594704Z">
+          <Target type="DEFAULT_BOOT">
+            <handle>
+              <DeviceId pluginId="LocalEmulator" identifier="path=/home/alejo/.android/avd/5.1_WVGA_API_26.avd" />
+            </handle>
+          </Target>
+        </DropdownSelection>
+        <DialogSelection />
+      </SelectionState>
+      <SelectionState runConfigName="GoogleAuthBackupRestorePreview">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
     </selectionStates>

@@ -1,12 +1,13 @@
-package co.japl.android.finances.services.implement
+package co.japl.android.finances.services.dao.implement
 
 import android.content.ContentValues
 import android.database.sqlite.SQLiteOpenHelper
 import android.os.Build
 import android.provider.BaseColumns
+import android.util.Log
 import androidx.annotation.RequiresApi
 import co.japl.android.finances.services.dto.*
-import co.japl.android.finances.services.interfaces.IGracePeriod
+import co.japl.android.finances.services.dao.interfaces.IGracePeriodDAO
 import co.japl.android.finances.services.mapping.GracePeriodMap
 import co.japl.android.finances.services.utils.DatabaseConstants
 import co.japl.android.finances.services.utils.DateUtils
@@ -14,7 +15,7 @@ import java.time.LocalDate
 import java.util.*
 import javax.inject.Inject
 
-class GracePeriodImpl @Inject constructor(override var dbConnect: SQLiteOpenHelper) : IGracePeriod{
+class GracePeriodImpl @Inject constructor(override var dbConnect: SQLiteOpenHelper) : IGracePeriodDAO {
     val COLUMNS = arrayOf(
         BaseColumns._ID,
         GracePeriodDB.Entry.COLUMN_DATE_CREATE,
@@ -62,7 +63,9 @@ class GracePeriodImpl @Inject constructor(override var dbConnect: SQLiteOpenHelp
                 items.add(mapper.mapping(cursor))
             }
         }
-        return items
+        return items.also {
+            Log.d(this.toString(),"<<< Get filter by CreditCode: $codCredit Size: ${it.size}")
+        }
     }
 
 

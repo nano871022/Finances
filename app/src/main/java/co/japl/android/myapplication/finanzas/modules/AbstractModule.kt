@@ -4,6 +4,7 @@ import android.content.Context
 import co.com.japl.finances.iports.inbounds.creditcard.ICreditCardPort
 import co.com.japl.finances.iports.inbounds.common.IDifferQuotesPort
 import co.com.japl.finances.iports.inbounds.common.ISMSRead
+import co.com.japl.finances.iports.inbounds.credit.IPeriodGracePort
 import co.com.japl.finances.iports.inbounds.creditcard.IBuyCreditCardSettingPort
 import co.com.japl.finances.iports.inbounds.creditcard.ICreditCardSettingPort
 import co.com.japl.finances.iports.inbounds.creditcard.ISMSCreditCardPort
@@ -74,8 +75,11 @@ import co.com.japl.ui.interfaces.ISMSObservablePublicher
 import co.com.japl.ui.interfaces.ISMSObservableSubscriber
 import co.japl.android.finances.services.dao.interfaces.ICheckCreditDAO
 import co.japl.android.finances.services.dao.interfaces.ICheckQuoteDAO
+import co.japl.android.finances.services.dao.interfaces.IGracePeriodDAO
 import co.japl.android.myapplication.finanzas.controller.SMS
 import co.japl.finances.core.adapters.inbound.implement.common.CheckPaymentsImpl
+import co.japl.finances.core.adapters.inbound.implement.credit.CreditImpl
+import co.japl.finances.core.adapters.inbound.implement.credit.PeriodGraceImpl
 import co.japl.finances.core.adapters.inbound.implement.creditCard.SMSCreditCardImpl
 import co.japl.finances.core.adapters.inbound.implement.creditcard.bought.BoughtImpl
 import co.japl.finances.core.adapters.inbound.implement.creditcard.bought.lists.ListImpl
@@ -97,6 +101,8 @@ import co.japl.finances.core.usercases.interfaces.common.IInput
 import co.japl.finances.core.usercases.interfaces.common.IPaid
 import co.japl.finances.core.usercases.interfaces.common.IProjections
 import co.japl.finances.core.usercases.interfaces.common.IQuoteCreditCard
+import co.japl.finances.core.usercases.interfaces.credit.ICredit
+import co.japl.finances.core.usercases.interfaces.credit.IPeriodGrace
 import co.japl.finances.core.usercases.interfaces.creditcard.IBuyCreditCardSetting
 import co.japl.finances.core.usercases.interfaces.creditcard.ICreditCardSetting
 import co.japl.finances.core.usercases.interfaces.creditcard.ISMSCreditCard
@@ -106,6 +112,7 @@ import co.japl.finances.core.usercases.interfaces.creditcard.bought.lists.IBough
 import co.japl.finances.core.usercases.interfaces.creditcard.bought.lists.IBoughtList
 import co.japl.finances.core.usercases.interfaces.creditcard.bought.lists.IBoughtSms
 import co.japl.finances.core.usercases.interfaces.creditcard.paid.lists.IPaidList
+import co.japl.finances.core.usercases.interfaces.paid.IPeriodPaid
 import co.japl.finances.core.usercases.interfaces.paid.ISMS
 import co.japl.finances.core.usercases.interfaces.paid.ISms
 import co.japl.finances.core.usercases.interfaces.recap.IRecap
@@ -464,4 +471,17 @@ abstract class AbstractModule {
 
     @Binds
     abstract fun bindOutboundCreditPort(svc:co.japl.android.finances.services.core.CreditFixImpl):ICreditPort
+
+    @Binds
+    abstract fun bindInboundCreditPort(impl:CreditImpl):co.com.japl.finances.iports.inbounds.credit.ICreditPort
+    @Binds
+    abstract fun bindUsercaseCreditPort(impl:co.japl.finances.core.usercases.implement.credit.CreditImpl):ICredit
+    @Binds
+    abstract fun bindInboundPeriodGracePort(impl:PeriodGraceImpl):IPeriodGracePort
+    @Binds
+    abstract fun bindUsercasePeriodGrace(impl:co.japl.finances.core.usercases.implement.credit.PeriodGraceImpl):IPeriodGrace
+    @Binds
+    abstract fun bindOutboundPeriodGracePort(impl:co.japl.android.finances.services.core.PeriodGraceImpl):co.com.japl.finances.iports.outbounds.IPeriodGracePort
+    @Binds
+    abstract fun bindDAOPeriodGrace(impl:co.japl.android.finances.services.dao.implement.GracePeriodImpl):IGracePeriodDAO
 }

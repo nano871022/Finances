@@ -7,4 +7,6 @@ interface ICreditPort {
     fun getById(id:Int):CreditDTO?
 
     fun getAllActive(period:YearMonth):List<CreditDTO>
+
+    fun delete(id: Int): Boolean
 }

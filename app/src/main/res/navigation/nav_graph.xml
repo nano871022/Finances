@@ -260,6 +260,7 @@
         <action
             android:id="@+id/action_additionalListFragment_to_additionalCreditFragment"
             app:destination="@id/additionalCreditFragment" />
+        <deepLink app:uri="android-app://co.com.japl.finanzas.module.app/additionals_credit"/>
     </fragment>
     <fragment
         android:id="@+id/creditFixFragment"
@@ -284,6 +285,7 @@
         <action
             android:id="@+id/action_amortizationCreditFragment_to_extraValueListController"
             app:destination="@id/extraValueListController" />
+        <deepLink app:uri="android-app://co.com.japl.finanzas.module.app/amortization_credit"/>
     </fragment>
     <fragment
         android:id="@+id/creditListFragment"
@@ -446,7 +448,8 @@
     <fragment
         android:id="@+id/extraValueListController"
         android:name="co.japl.android.myapplication.finanzas.controller.ExtraValueListController"
-        android:label="ExtraValueListController" />
+        android:label="ExtraValueListController" >
+    </fragment>
     <fragment
         android:id="@+id/sms_list_credit_card"
         android:name="co.japl.android.myapplication.finanzas.controller.boughtcreditcard.SmsListFragment"

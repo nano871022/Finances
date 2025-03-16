@@ -92,6 +92,7 @@ dependencies {
     implementation(project(":japl-finances-iports"))
     implementation(project(":CreditCardModule"))
     implementation(project(":japl-android-finances-paid-module"))
+    implementation(project(":credit"))
 
 
     implementation 'androidx.core:core-ktx:1.13.1' //this manage version of android this version es 14 version 1.15.0 manage android 15

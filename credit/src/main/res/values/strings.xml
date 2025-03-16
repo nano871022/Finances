@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="total_due">Deuda Total</string>
+    <string name="credit_cnt">Cantidad de Créditos</string>
+    <string name="total_quote">Cuota Total</string>
+    <string name="credit_cnt_short">Cantidad</string>
+    <string name="quote_date">Fecha Cuota Pago</string>
+    <string name="quote_payment_date_short">Fecha</string>
+    <string name="quote_payment_name_short">Nombre</string>
+    <string name="quote_payment_value_short">Cuota</string>
+    <string name="quote_payment_date">Fecha de Pago de la Cuota</string>
+    <string name="quote_payment_name">Nombre del Crédito</string>
+    <string name="quote_payment_value">Valor de la Cuota</string>
+    <string name="additional">Adicionar Cobro</string>
+    <string name="amortization">Tabla Amortización</string>
+    <string name="period_grace">Periodo de Gracia</string>
+    <string name="delete">Eliminar</string>
+    <string name="do_you_want_to_delete_this_record">¿Desea eliminar este registro?</string>
+    <string name="navigate_amortization">android-app://co.com.japl.finanzas.module.app/amortization_credit?CREDIT=%s&amp;DATE_BILL=%s&amp;DATE_LAST=%s</string>
+    <string name="navigate_additional">android-app://co.com.japl.finanzas.module.app/additionals_credit?CREDIT_CODE=%d</string>
+    <string name="delete_period_grace">Eliminar Periodo de Gracia</string>
+    <string name="do_you_want_to_delete_period_grace">¿Desea eliminar el periodo de gracia?</string>
+    <string name="periods">Periodos</string>
+    <string name="last_month">Mes Anterior</string>
+    <string name="current_month">Mes Actual</string>
+    <string name="next_month">Mes Siguiente</string>
+    <string name="start_date">Fecha Inicio</string>
+    <string name="end_date">Fecha Fin</string>
+    <string name="cancel">Cancelar</string>
+    <string name="save">Guardar</string>
+    <string name="toast_successful_deleted">El registro fue eliminado con exito</string>
+    <string name="toast_dont_successful_deleted">No se logro eliminar el registro</string>
+    <string name="toast_period_grace_successful_deleted">El periodo de gracia fue eliminado con exito</string>
+    <string name="toast_period_grace_dont_successful_deleted">No se elmino el periodo de gracia</string>
+    <string name="toast_period_grace_successful_added">Periodo de gracia agregado con exito</string>
+    <string name="toast_period_grace_dont_successful_added">Periodo de gracia no fue agregado</string>
+</resources>
