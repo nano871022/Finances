@@ -203,11 +203,11 @@ class SaveCreditCardBoughtImpl @Inject constructor(val context:Context, override
                         ${CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_MONTH} > 1 
                     and ${CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_CODE_CREDIT_CARD} = ?
                     and ${CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_RECURRENT} = 0 
-                    and ${CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_BOUGHT_DATE} <= ?
+                    and ${CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_BOUGHT_DATE} < ?
                     and ${CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_END_DATE} >= ?
                     """,
             arrayOf(key.toString(),
-                DateUtils.toSeconds(cutoffCurrent).toString(),
+                DateUtils.toSeconds(startDate).toString(),
                 DateUtils.toSeconds(startDate).toString()),null,null,null)
 
         val items = mutableListOf<CreditCardBoughtDTO>()
@@ -215,9 +215,9 @@ class SaveCreditCardBoughtImpl @Inject constructor(val context:Context, override
             while(moveToNext()){
                 CreditCardBoughtMap().mapping(this)
                     ?.takeIf { it.endDate >= startDate }
-                    ?.takeIf { it.boughtDate <= cutoffCurrent }
+                    ?.takeIf { it.boughtDate < startDate }
                     ?.takeIf {getValidMonths(it,cutoffCurrent,startDate)}
-                    ?.let{items.add(it)}
+                    ?.let(items::add)
             }
         }
         return items.also { Log.d(this.javaClass.name,"<<<=== FINISH::getPendingQuotes Size: ${it.size}") }

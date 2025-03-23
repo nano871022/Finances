@@ -188,6 +188,7 @@
             app:exitAnim="@android:anim/fade_out"
             app:destination="@id/taxes"
             app:popUpToInclusive="true"/>
+        <deepLink app:uri="android-app://co.com.japl.finanzas.modulo.app/credit_rates"/>
     </fragment>
     <fragment
         android:id="@+id/taxes"

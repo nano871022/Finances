@@ -25,8 +25,8 @@ android {
         applicationId "co.japl.android.myapplication"
         minSdk 26
         targetSdk 34
-        versionCode 4_05_14_121
-        versionName "V 4.05.14 build 121 recap about records saved in all tables"
+        versionCode 4_05_15_122
+        versionName "V 4.05.15 build 122 Migration Credit List and fix duplicate pending quotes in current month"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         signingConfig signingConfigs.prod

@@ -29,4 +29,6 @@ interface ITax {
     fun disable(code:Int):Boolean
 
     fun getLatest(codeCreditCard:Int,kind:KindInterestRateEnum):TaxDTO?
+
+    fun clone(code:Int):Boolean
 }

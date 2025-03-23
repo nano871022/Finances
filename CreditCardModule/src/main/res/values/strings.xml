@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="duplicate">Duplicar</string>
+    <string name="toast_successful_cloned">Se realizo la clonación correctamente</string>
+    <string name="toast_dont_successful_cloned">No se realizar la clonación</string>
+</resources>

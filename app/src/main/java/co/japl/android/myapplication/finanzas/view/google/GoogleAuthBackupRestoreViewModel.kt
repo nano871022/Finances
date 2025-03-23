@@ -126,14 +126,13 @@ class GoogleAuthBackupRestoreViewModel constructor(private val activity:Activity
     }
 
    suspend fun backup() {
-        isProcessing.value.takeIf { it }?.let {
+       isProcessing.value = true
             (loginSvc?.getAccount() as GoogleSignInAccount)?.let {
                 driveSvc?.backup(it)?.let {
                     result.value = "${result.value} \n $it"
                     isProcessing.value = false
                 }
             }
-        }
     }
 
     fun onload(){

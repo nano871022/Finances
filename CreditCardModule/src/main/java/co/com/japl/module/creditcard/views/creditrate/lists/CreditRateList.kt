@@ -146,7 +146,7 @@ private fun CreditCard(value:Map.Entry<CreditCardDTO?,List<TaxDTO>>,viewModel: C
                                         codeCreditCard,
                                         codeCreditRate
                                     )
-                                })
+                                },{ viewModel.clone(it)})
                         }
                     }
                 }
@@ -156,7 +156,7 @@ private fun CreditCard(value:Map.Entry<CreditCardDTO?,List<TaxDTO>>,viewModel: C
 
 
 @Composable
-private fun Rate(rate:TaxDTO,delete:(Int)->Unit, enable:(Int)->Unit, disable:(Int)->Unit,edit:(Int,Int)->Unit){
+private fun Rate(rate:TaxDTO,delete:(Int)->Unit, enable:(Int)->Unit, disable:(Int)->Unit,edit:(Int,Int)->Unit, clone:(Int)->Unit){
     val context = LocalContext.current
     val state = remember {
         mutableStateOf(false)
@@ -220,6 +220,7 @@ private fun Rate(rate:TaxDTO,delete:(Int)->Unit, enable:(Int)->Unit, disable:(In
                     MoreOptionsItemCreditRate.ENABLED->enable.invoke(rate.id)
                     MoreOptionsItemCreditRate.DELETE->stateOptions.value = true
                     MoreOptionsItemCreditRate.EDIT->edit.invoke(rate.codCreditCard,rate.id)
+                    MoreOptionsItemCreditRate.CLONE->clone.invoke(rate.id)
                 }
                 state.value = false
             })

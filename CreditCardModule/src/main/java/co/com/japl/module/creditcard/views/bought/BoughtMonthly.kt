@@ -1,8 +1,6 @@
 package co.com.japl.module.creditcard.views.bought
 
-import android.app.Application
 import android.content.Context
-import android.content.Intent
 import android.content.res.Configuration
 import android.os.Build
 import android.util.Log
@@ -10,7 +8,6 @@ import android.view.MotionEvent
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -27,22 +24,18 @@ import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.AddCircle
 import androidx.compose.material.icons.rounded.AddCircleOutline
 import androidx.compose.material.icons.rounded.CalendarMonth
-import androidx.compose.material.icons.rounded.Help
-import androidx.compose.material.icons.rounded.HelpOutline
+import androidx.compose.material.icons.rounded.Percent
 import androidx.compose.material.icons.rounded.RemoveRedEye
 import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -58,8 +51,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
-import androidx.core.content.ContextCompat
-import androidx.core.net.toUri
 import co.com.japl.module.creditcard.R
 import co.com.japl.module.creditcard.controllers.bought.lists.BoughtMonthlyViewModel
 import co.com.japl.ui.Prefs
@@ -189,6 +180,7 @@ private fun FloatButtons(viewModel:BoughtMonthlyViewModel){
     var showAddBought by remember { viewModel.showBought }
     var showAddAdvance by remember { viewModel.showAdvance }
     var showAddBoughtWallet by remember { viewModel.showWallet }
+    var showAddCreditRate by remember { viewModel.showCreditRate }
 
     Column {
         if(showList) {
@@ -251,6 +243,19 @@ private fun FloatButtons(viewModel:BoughtMonthlyViewModel){
                     imageVector = Icons.Rounded.Add,
                     contentDescription = stringResource(
                         id = R.string.add_bought_wallet
+                    )
+                )
+            }
+        }
+
+        if(showAddCreditRate) {
+            FloatingActionButton(onClick = { viewModel.goToAddCreditRate() },
+                elevation=FloatingActionButtonDefaults.elevation(10.dp),
+                backgroundColor= MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.5f)) {
+                Icon(
+                    imageVector = Icons.Rounded.Percent,
+                    contentDescription = stringResource(
+                        id = R.string.add_credit_rate
                     )
                 )
             }
@@ -819,6 +824,7 @@ private fun getViewMoel(context:Context):BoughtMonthlyViewModel{
     viewModel.showAdvance.value = true
     viewModel.showBought.value = true
     viewModel.showWallet.value = true
+    viewModel.showCreditRate.value = true
     return viewModel
 }
 
