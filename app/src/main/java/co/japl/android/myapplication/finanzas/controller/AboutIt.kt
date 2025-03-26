@@ -31,7 +31,7 @@ class AboutIt : Fragment() {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
                 MaterialThemeComposeUI {
-                    About(versionDetail = BuildConfig.VERSION_NAME)
+                    About(versionDetail = BuildConfig.VERSION_NAME, applicationId = BuildConfig.APPLICATION_ID)
                 }
             }
         }

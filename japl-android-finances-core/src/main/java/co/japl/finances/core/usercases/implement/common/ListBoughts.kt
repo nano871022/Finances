@@ -68,7 +68,7 @@ class ListBoughts @Inject constructor(
                     DateUtils.getMonths(it.boughtDate,cutoff)?.let{
                         if ( it == "1".toLong() ) {
                             monthPaid = it
-                            month = 2
+                           // month = 2
                         }
                     }
                 }

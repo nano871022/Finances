@@ -123,6 +123,7 @@ class BoughtList @Inject constructor(
                 , nameItem = it.nameItem.plus(" (${it.id}. ${it.valueItem.toDouble()})")
                 , id = 0)
             val origin = it.copy(endDate = DateUtils.cutOffLastMonth(dayOfMonth,cutOff))
+            Log.d("differinstallmentquote","$differBought $origin")
             return quoteCCSvc.create(differBought,cache).takeIf { response->response > 0}?.let{id->
                     if(quoteCCSvc.update(origin,cache)){
                         return true
