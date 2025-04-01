@@ -1,4 +1,4 @@
-package co.japl.android.finances.services.implement
+package co.japl.android.finances.services.dao.implement
 
 import android.content.ContentValues
 import android.database.sqlite.SQLiteOpenHelper
@@ -8,7 +8,7 @@ import android.util.Log
 import androidx.annotation.RequiresApi
 import co.japl.android.finances.services.dto.AdditionalCreditDB
 import co.japl.android.finances.services.dto.AdditionalCreditDTO
-import co.japl.android.finances.services.interfaces.IAdditionalCreditSvc
+import co.japl.android.finances.services.dao.interfaces.IAdditionalCreditDAO
 import co.japl.android.finances.services.mapping.AdditionalMap
 import co.japl.android.finances.services.utils.DatabaseConstants
 import co.japl.android.finances.services.utils.DateUtils
@@ -17,7 +17,8 @@ import java.time.LocalDate
 import java.util.*
 import javax.inject.Inject
 
-class AdditionalCreditImpl @Inject constructor(override var dbConnect: SQLiteOpenHelper) :  IAdditionalCreditSvc{
+class AdditionalCreditImpl @Inject constructor(override var dbConnect: SQLiteOpenHelper) :
+    IAdditionalCreditDAO {
     public  val COLUMNS = arrayOf(
         BaseColumns._ID,
         AdditionalCreditDB.Entry.COLUMN_NAME,

@@ -2,6 +2,7 @@ package co.japl.android.finances.services.dao.implement
 
 import android.content.Context
 import android.database.CursorWindowAllocationException
+import android.database.sqlite.SQLiteException
 import android.database.sqlite.SQLiteOpenHelper
 import android.os.Build
 import android.provider.BaseColumns
@@ -353,20 +354,24 @@ class SaveCreditCardBoughtImpl @Inject constructor(val context:Context, override
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun get(id: Int): Optional<CreditCardBoughtDTO> {
-        val db = dbConnect.writableDatabase
-        val cursor = db.query(
-            CreditCardBoughtDB.CreditCardBoughtEntry.TABLE_NAME,
-            COLUMNS_CALC,
-            " ${BaseColumns._ID}= ?",
-            arrayOf(id.toString()),
-            null,
-            null,
-            null
-        )
-        with(cursor) {
-            while (moveToNext()) {
-                return Optional.ofNullable(CreditCardBoughtMap().mapping(this))
+        try {
+            val db = dbConnect.writableDatabase
+            val cursor = db.query(
+                CreditCardBoughtDB.CreditCardBoughtEntry.TABLE_NAME,
+                COLUMNS_CALC,
+                " ${BaseColumns._ID}= ?",
+                arrayOf(id.toString()),
+                null,
+                null,
+                null
+            )
+            with(cursor) {
+                while (moveToNext()) {
+                    return Optional.ofNullable(CreditCardBoughtMap().mapping(this))
+                }
             }
+        }catch (e:SQLiteException){
+            Log.e(this.javaClass.name,"<<<=== get - Error $e")
         }
         return Optional.empty()
     }

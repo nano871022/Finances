@@ -73,6 +73,7 @@ import co.com.japl.finances.iports.outbounds.ICreditPort
 import co.com.japl.ui.impls.SMSObservable
 import co.com.japl.ui.interfaces.ISMSObservablePublicher
 import co.com.japl.ui.interfaces.ISMSObservableSubscriber
+import co.japl.android.finances.services.dao.interfaces.IAdditionalCreditDAO
 import co.japl.android.finances.services.dao.interfaces.ICheckCreditDAO
 import co.japl.android.finances.services.dao.interfaces.ICheckQuoteDAO
 import co.japl.android.finances.services.dao.interfaces.IGracePeriodDAO
@@ -112,7 +113,6 @@ import co.japl.finances.core.usercases.interfaces.creditcard.bought.lists.IBough
 import co.japl.finances.core.usercases.interfaces.creditcard.bought.lists.IBoughtList
 import co.japl.finances.core.usercases.interfaces.creditcard.bought.lists.IBoughtSms
 import co.japl.finances.core.usercases.interfaces.creditcard.paid.lists.IPaidList
-import co.japl.finances.core.usercases.interfaces.paid.IPeriodPaid
 import co.japl.finances.core.usercases.interfaces.paid.ISMS
 import co.japl.finances.core.usercases.interfaces.paid.ISms
 import co.japl.finances.core.usercases.interfaces.recap.IRecap
@@ -208,7 +208,7 @@ abstract class AbstractModule {
     abstract fun bindServiceCreditFix(implement: co.japl.android.finances.services.dao.implement.CreditFixImpl): co.japl.android.finances.services.dao.interfaces.ICreditDAO
 
     @Binds
-    abstract fun bindServiceAdditionalCredit(implement: co.japl.android.finances.services.implement.AdditionalCreditImpl): co.japl.android.finances.services.interfaces.IAdditionalCreditSvc
+    abstract fun bindServiceAdditionalCredit(implement: co.japl.android.finances.services.dao.implement.AdditionalCreditImpl): IAdditionalCreditDAO
 
 
     @Binds

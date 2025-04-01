@@ -42,7 +42,9 @@ import co.japl.finances.core.utils.DateUtils
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.time.LocalDate
 import java.time.LocalDateTime
+import java.time.Period
 import java.time.YearMonth
 
 @RequiresApi(Build.VERSION_CODES.Q)
@@ -119,7 +121,7 @@ private fun Item(item:CheckPaymentDTO,delete: (CheckPaymentDTO) -> Unit = {}){
             }, value = status.value,
                 description = { color, modifier ->
                     item.date?.let{
-                        Text(text = DateUtils.localDateTimeToString(it),
+                        Text(text = "${DateUtils.localDateTimeToString(it)} - ${Period.between(LocalDate.now(),it.toLocalDate()).days}",
                             modifier = modifier.padding(start = Dimensions.PADDING_TOP),
                             fontSize = TextUnit(12f, TextUnitType.Sp),
                             color = MaterialTheme.colorScheme.error)
@@ -208,7 +210,7 @@ private fun getViewModel():CheckListViewModel{
         codPaid = 0,
         name = "Semanal",
         period = YearMonth.now(),
-        date = LocalDateTime.now(),
+        date = LocalDateTime.now().minusYears(2),
         amount = 1000.00,
         check = true,
         type = CheckPaymentsEnum.CREDITS

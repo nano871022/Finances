@@ -19,9 +19,8 @@ class CreditFixImpl @Inject constructor(private val creditFixPort: ICreditFixRec
     override fun getTotalQuote(date: LocalDate): BigDecimal {
         val list = creditFixPort.getAll().filter { date < it.date.plusMonths(it.periods.toLong()) }
         val additionals = list.map {
-            additionalSvc.getListByIdCredit(it.id.toLong())
-        }?.flatMap { it.toList() }
-            ?.sumOf { it.value }
+            additionalSvc.getListByIdCredit(it.id.toLong()).sumOf { it.value }
+        }.sumOf { it }
 
         val quote =  list.sumOf { it.quoteValue }
         return quote + (additionals ?: BigDecimal.ZERO)

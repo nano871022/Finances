@@ -1,6 +1,7 @@
 package co.japl.android.finances.services.implement
 
 import android.database.CursorWindow
+import android.database.sqlite.SQLiteException
 import android.database.sqlite.SQLiteOpenHelper
 import android.os.Build
 import android.provider.BaseColumns
@@ -75,7 +76,7 @@ class BuyCreditCardSettingImpl @Inject constructor(override var dbConnect: SQLit
         field.isAccessible = true
         field.set(null, 800 * 1024 * 1024)
          */
-
+    try{
         val db = dbConnect.writableDatabase
         val cursor = db.query(
             BuyCreditCardSettingDB.Entry.TABLE_NAME,
@@ -91,6 +92,9 @@ class BuyCreditCardSettingImpl @Inject constructor(override var dbConnect: SQLit
                 return Optional.ofNullable(mapper.mapping(this)).also{Log.d(javaClass.name,"<<<=== ENDING::get $it")}
             }
         }
+    }catch(e:SQLiteException){
+        Log.e(this.javaClass.name, e.message, e)
+    }
            Log.d(javaClass.name,"<<<=== ENDING::get EMPTY")
         return Optional.empty()
     }

@@ -3,6 +3,7 @@ package co.japl.finances.core.usercases.implement.credit
 import co.com.japl.finances.iports.dtos.CheckPaymentDTO
 import co.com.japl.finances.iports.dtos.PeriodCheckPaymentDTO
 import co.com.japl.finances.iports.enums.CheckPaymentsEnum
+import co.com.japl.finances.iports.outbounds.IAdditionalRecapPort
 import co.com.japl.finances.iports.outbounds.ICreditCheckPaymentPort
 import co.com.japl.finances.iports.outbounds.ICreditPort
 import co.japl.finances.core.usercases.interfaces.credit.ICheckPayment
@@ -11,7 +12,7 @@ import java.time.LocalTime
 import java.time.YearMonth
 import javax.inject.Inject
 
-class CheckPaymentImpl @Inject constructor(private val svc:ICreditCheckPaymentPort,private val creditSvc:ICreditPort):ICheckPayment {
+class CheckPaymentImpl @Inject constructor(private val svc:ICreditCheckPaymentPort,private val creditSvc:ICreditPort,private val additionalSvc:IAdditionalRecapPort):ICheckPayment {
     override fun getPeriodsPayment(): List<PeriodCheckPaymentDTO> {
         return svc.getPeriodsPayment()
     }
@@ -22,16 +23,18 @@ class CheckPaymentImpl @Inject constructor(private val svc:ICreditCheckPaymentPo
             creditSvc.getById(it.codPaid.toInt())?.let { credit ->
                 it.name = credit.name
                 it.amount = credit.quoteValue.toDouble()
+                it.amount += additionalSvc.getListByIdCredit(credit.id.toLong()).sumOf { it.value }.toDouble()
             }
             it
         }?: emptyList()
         list.addAll(check)
         creditSvc.getAllActive(period).takeIf { it.isNotEmpty() && it.size > check.size }
             ?.map { credit ->
+                val additional = additionalSvc.getListByIdCredit(credit.id.toLong()).sumOf { it.value }.toDouble()
                 CheckPaymentDTO(
                     id = 0,
                     name = credit.name,
-                    amount = credit.quoteValue.toDouble(),
+                    amount = credit.quoteValue.toDouble() + additional,
                     date = LocalDateTime.of(credit.date, LocalTime.MAX),
                     codPaid = credit.id.toLong(),
                     period = period,

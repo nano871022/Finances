@@ -143,6 +143,7 @@ class CheckPaymentImpl @Inject constructor(override var dbConnect: SQLiteOpenHel
             select = " ${CheckPaymentsDB.Entry.COLUMN_PERIOD} = ?"
             selectArgs.add(values.period)
         }
+        try{
         val cursor = db.query(
             CheckPaymentsDB.Entry.TABLE_NAME,
             COLUMNS,
@@ -155,6 +156,9 @@ class CheckPaymentImpl @Inject constructor(override var dbConnect: SQLiteOpenHel
             while(moveToNext()){
                 mapper.mapping(cursor).let(list::add)
             }
+        }
+    }catch(e:SQLiteException) {
+            Log.e(this.javaClass.name, e.message, e)
         }
         return list.also {
             Log.d(javaClass.name,"<<== Get $it ")

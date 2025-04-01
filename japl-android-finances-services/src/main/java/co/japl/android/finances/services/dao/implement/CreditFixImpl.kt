@@ -6,7 +6,7 @@ import android.os.Build
 import android.provider.BaseColumns
 import androidx.annotation.RequiresApi
 import co.japl.android.finances.services.dto.*
-import co.japl.android.finances.services.interfaces.IAdditionalCreditSvc
+import co.japl.android.finances.services.dao.interfaces.IAdditionalCreditDAO
 import co.japl.android.finances.services.dao.interfaces.ICreditDAO
 import co.japl.android.finances.services.dao.interfaces.IGracePeriodDAO
 import co.japl.android.finances.services.interfaces.IGraph
@@ -14,7 +14,6 @@ import co.japl.android.finances.services.interfaces.ISaveSvc
 import co.japl.android.finances.services.mapping.CreditMap
 import co.japl.android.finances.services.dto.GraphValuesResp
 import co.japl.android.finances.services.enums.KindOfTaxEnum
-import co.japl.android.finances.services.implement.AdditionalCreditImpl
 import co.japl.android.finances.services.implement.KindOfTaxImpl
 import co.japl.android.finances.services.implement.QuoteCredit
 import co.japl.android.finances.services.utils.DatabaseConstants
@@ -27,7 +26,7 @@ import java.util.*
 import javax.inject.Inject
 
 class CreditFixImpl @Inject constructor(override var dbConnect: SQLiteOpenHelper) : ICreditDAO, IGraph{
-    private val additionalSvc:IAdditionalCreditSvc = AdditionalCreditImpl(dbConnect)
+    private val additionalSvc: IAdditionalCreditDAO = AdditionalCreditImpl(dbConnect)
     private val gracePeriodSvc: IGracePeriodDAO = GracePeriodImpl(dbConnect)
     private val calcTaxSvc = KindOfTaxImpl()
     private val calc = QuoteCredit()
