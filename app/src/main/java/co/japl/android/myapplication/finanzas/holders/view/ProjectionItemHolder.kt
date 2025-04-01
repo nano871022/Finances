@@ -45,7 +45,12 @@ class ProjectionItemHolder(val itemView:View) : IItemHolder<ProjectionDTO,MoreOp
             LocalDate.now()).toTotalMonths()}")
         val months = Period.between(LocalDate.now(),values.end).toTotalMonths()
         val index = itemView.resources.getStringArray(R.array.kind_of_projection_list).indexOf(values.type)
-        val originMonths = KindofProjectionEnum.values()[index].months
+        var originMonths:Int = 1
+        try {
+            originMonths = KindofProjectionEnum.entries[index].months
+        }catch (e:Exception){
+            Log.e("ProjectionItemHolder","I $index Size Enum ${KindofProjectionEnum.entries.size} ${e.message.toString()}")
+        }
         val month = originMonths - months
         name.text = values.name
         date.text = DateUtils.localDateToString(values.end)

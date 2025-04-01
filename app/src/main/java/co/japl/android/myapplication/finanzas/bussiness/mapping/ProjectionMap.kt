@@ -3,9 +3,11 @@ package co.japl.android.myapplication.finanzas.bussiness.mapping
 import android.content.ContentValues
 import android.database.Cursor
 import android.os.Build
+import android.util.Log
 import androidx.annotation.RequiresApi
 import co.japl.android.myapplication.finanzas.bussiness.DTO.*
 import co.com.japl.ui.utils.DateUtils
+import java.time.LocalDate
 
 class ProjectionMap {
 
@@ -17,8 +19,22 @@ class ProjectionMap {
         val type = cursor.getString(3)
         val active = cursor.getShort(4)
         val quote = cursor.getString(5).toBigDecimal()
-        val start = DateUtils.toLocalDate(cursor.getString(6))
-        val end = DateUtils.toLocalDate(cursor.getString(7))
+        var start : LocalDate = LocalDate.now()
+        try {
+            start = co.japl.android.finances.services.utils.DateUtils.toLocalDate(cursor.getString(6))
+        }catch(e:Exception){
+            if(e.message?.contains("Invalid date") == false){
+                Log.e("Projectionmap",e.message.toString())
+            }
+        }
+        var end: LocalDate = LocalDate.now()
+        try{
+            co.japl.android.finances.services.utils.DateUtils.toLocalDate(cursor.getString(7))
+        }catch(e:Exception){
+            if(e.message?.contains("Invalid date") == false){
+                Log.e("Projectionmap",e.message.toString())
+            }
+        }
         return ProjectionDTO(id,start,end,name,type,value,quote,active)
     }
 

@@ -2,6 +2,7 @@ package co.japl.android.myapplication.finanzas.controller.projections
 
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -19,6 +20,7 @@ import co.japl.android.myapplication.finanzas.holders.ListProjectionHolder
 import co.japl.android.myapplication.finanzas.holders.interfaces.IListHolder
 import co.japl.android.myapplication.utils.NumbersUtil
 import dagger.hilt.android.AndroidEntryPoint
+import java.math.BigDecimal
 import java.time.LocalDate
 import java.time.Period
 import javax.inject.Inject
@@ -78,9 +80,14 @@ class ListProjectFragment : Fragment(),LoaderManager.LoaderCallbacks<List<Projec
             holder.loadFields {
                 val tot = data.sumOf {
                     val index = kindOfList.indexOf(it.type)
-                    val months = KindofProjectionEnum.values()[index].months
-                    it.quote * (months - Period.between(LocalDate.now(), it.end)
-                        .toTotalMonths()).toBigDecimal()
+                    try {
+                        val months = KindofProjectionEnum.entries[index].months
+                        it.quote * (months - Period.between(LocalDate.now(), it.end)
+                            .toTotalMonths()).toBigDecimal()
+                    } catch (e: Exception) {
+                        Log.e("ListProjectFragment","I $index Size Enum ${KindofProjectionEnum.entries} ${e.message.toString()}")
+                        BigDecimal.ZERO
+                    }
                 }
                 it.items.text = data.count().toString()
                 it.total.text = NumbersUtil.toString(tot)
