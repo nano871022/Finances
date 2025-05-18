@@ -274,6 +274,7 @@
         <action
             android:id="@+id/action_creditFixFragment_to_amortizationCreditFragment"
             app:destination="@id/amortizationCreditFragment" />
+        <deepLink app:uri="android-app://co.com.japl.finanzas.module.app/add_credit_fix"/>
     </fragment>
     <fragment
         android:id="@+id/amortizationCreditFragment"
@@ -314,6 +315,7 @@
         <action
             android:id="@+id/action_monthlyCreditListFragment_to_additionalListFragment"
             app:destination="@id/additionalListFragment" />
+        <deepLink app:uri="android-app://co.com.japl.finanzas.module.app/monthly_credit_list"/>
     </fragment>
     <fragment
         android:id="@+id/periodCreditListFragment"
@@ -323,6 +325,7 @@
         <action
             android:id="@+id/action_periodCreditListFragment_to_monthlyCreditListFragment"
             app:destination="@id/monthlyCreditListFragment" />
+        <deepLink app:uri="android-app://co.com.japl.finanzas.module.app/period_credits"/>
     </fragment>
     <fragment
         android:id="@+id/item_menu_setting_account"

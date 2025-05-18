@@ -4,6 +4,7 @@ import co.japl.android.finances.services.core.mapper.CreditMapper
 import co.japl.android.finances.services.dao.interfaces.ICreditDAO
 import co.com.japl.finances.iports.outbounds.ICreditFixRecapPort
 import co.com.japl.finances.iports.dtos.CreditDTO
+import co.com.japl.finances.iports.dtos.RecapCreditDTO
 import co.com.japl.finances.iports.outbounds.ICreditPort
 import java.time.LocalDate
 import java.time.YearMonth
@@ -26,4 +27,5 @@ class CreditFixImpl @Inject constructor(private val creditFix: ICreditDAO):ICred
     override fun delete(id: Int): Boolean {
         return creditFix.delete(id)
     }
+
 }

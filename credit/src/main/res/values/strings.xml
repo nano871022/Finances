@@ -18,6 +18,9 @@
     <string name="do_you_want_to_delete_this_record">¿Desea eliminar este registro?</string>
     <string name="navigate_amortization">android-app://co.com.japl.finanzas.module.app/amortization_credit?CREDIT=%s&amp;DATE_BILL=%s&amp;DATE_LAST=%s</string>
     <string name="navigate_additional">android-app://co.com.japl.finanzas.module.app/additionals_credit?CREDIT_CODE=%d</string>
+    <string name="navigate_add_credit">android-app://co.com.japl.finanzas.module.app/add_credit_fix</string>
+    <string name="navigate_detail_credits">android-app://co.com.japl.finanzas.module.app/monthly_credit_list</string>
+    <string name="navigate_period_credits">android-app://co.com.japl.finanzas.module.app/period_credits</string>
     <string name="delete_period_grace">Eliminar Periodo de Gracia</string>
     <string name="do_you_want_to_delete_period_grace">¿Desea eliminar el periodo de gracia?</string>
     <string name="periods">Periodos</string>
@@ -34,4 +37,31 @@
     <string name="toast_period_grace_dont_successful_deleted">No se elmino el periodo de gracia</string>
     <string name="toast_period_grace_successful_added">Periodo de gracia agregado con exito</string>
     <string name="toast_period_grace_dont_successful_added">Periodo de gracia no fue agregado</string>
+    <string name="month_payment">Mes de Pago</string>
+    <string name="no_data">No hay data que mostrar</string>
+    <string name="quote_value">Valor de la Cuota</string>
+    <string name="additional_value">Valor Adicional</string>
+    <string name="pending_payment">Pendiente por Pagar</string>
+    <string name="interest_value">Valor Intereses</string>
+    <string name="capital_value">Valor a Capital</string>
+    <string name="add_credit">Agregar Credito</string>
+    <string name="check_periods">Periodos</string>
+    <string name="detail_credits">Detalle</string>
+    <string name="num_credits">Cantidad</string>
+
+    <string-array name="months">
+        <item>--- Seleccionar --- </item>
+        <item>Enero</item>
+        <item>Febrero</item>
+        <item>Marzo</item>
+        <item>Abril</item>
+        <item>Mayo</item>
+        <item>Junio</item>
+        <item>Julio</item>
+        <item>Agosto</item>
+        <item>Septiembre</item>
+        <item>Octubre</item>
+        <item>Noviembre</item>
+        <item>Diciembre</item>
+    </string-array>
 </resources>

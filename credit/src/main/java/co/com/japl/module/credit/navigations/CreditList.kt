@@ -26,4 +26,20 @@ object CreditList {
         val request = NavDeepLinkRequest.Builder.fromUri(navController.context.getString(R.string.navigate_additional,id).toUri()).build()
         navController.navigate(request)
     }
+
+    fun addCredit(navController: NavController){
+        val request = NavDeepLinkRequest.Builder.fromUri(navController.context.getString(R.string.navigate_add_credit).toUri()).build()
+        navController.navigate(request)
+    }
+
+    fun detailCredits(navController: NavController){
+        val request = NavDeepLinkRequest.Builder.fromUri(navController.context.getString(R.string.navigate_detail_credits).toUri()).build()
+        navController.navigate(request)
+    }
+
+    fun periodCredits(navController: NavController){
+        val request = NavDeepLinkRequest.Builder.fromUri(navController.context.getString(R.string.navigate_period_credits).toUri()).build()
+        navController.navigate(request)
+
+    }
 }

@@ -1,6 +1,7 @@
 package co.japl.finances.core.adapters.inbound.implement.credit
 
 import co.com.japl.finances.iports.dtos.CreditDTO
+import co.com.japl.finances.iports.dtos.RecapCreditDTO
 import co.com.japl.finances.iports.inbounds.credit.ICreditPort
 import co.japl.finances.core.usercases.interfaces.credit.ICredit
 import java.time.YearMonth
@@ -19,6 +20,13 @@ class CreditImpl @Inject constructor(private val creditSvc:ICredit):ICreditPort 
             return false
         }
         return creditSvc.delete(id)
+    }
+
+    override fun getCreditsEnables(period:YearMonth): List<RecapCreditDTO> {
+        if(period > YearMonth.now()){
+            return emptyList()
+        }
+        return creditSvc.getCreditsEnables(period)
     }
 
 }

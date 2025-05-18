@@ -1,6 +1,7 @@
 package co.com.japl.finances.iports.outbounds
 
 import co.com.japl.finances.iports.dtos.CreditDTO
+import co.com.japl.finances.iports.dtos.RecapCreditDTO
 import java.time.YearMonth
 
 interface ICreditPort {

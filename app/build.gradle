@@ -25,8 +25,8 @@ android {
         applicationId "co.japl.android.myapplication"
         minSdk 26
         targetSdk 34
-        versionCode 4_05_19_126
-        versionName "V 4.05.19 build 126 Fix issue datetime and additional values in credits missing"
+        versionCode 4_05_20_127
+        versionName "V 4.05.20 build 127 Fix issue datetime and additional values in credits missing"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         signingConfig signingConfigs.prod
