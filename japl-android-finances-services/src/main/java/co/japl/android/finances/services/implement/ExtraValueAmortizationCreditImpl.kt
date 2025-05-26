@@ -37,7 +37,8 @@ class ExtraValueAmortizationCreditImpl @Inject constructor(override var dbConnec
     @RequiresApi(Build.VERSION_CODES.O)
     override fun getAll(code: Int): List<ExtraValueAmortizationCreditDTO> {
         val db = dbConnect.readableDatabase
-        val cursor = db.query(
+        val list = mutableListOf<ExtraValueAmortizationCreditDTO>()
+        db.query(
             AddAmortizationDB.Entry.TABLE_NAME,
             COLUMNS,
             "${AddAmortizationDB.Entry.COLUMN_CODE}=?",
@@ -45,10 +46,10 @@ class ExtraValueAmortizationCreditImpl @Inject constructor(override var dbConnec
             null,
             null,
             null
-        )
-        val list = mutableListOf<ExtraValueAmortizationCreditDTO>()
-        while (cursor.moveToNext()){
-            list.add(ExtraValueAmortizationCreditMap().mapping(cursor))
+        )?.use { cursor ->
+            while (cursor.moveToNext()) {
+                list.add(ExtraValueAmortizationCreditMap().mapping(cursor))
+            }
         }
         return list.also { Log.d(javaClass.name, "<<<=== FINISH::getAll Code: $code Response: $list") }
     }
@@ -63,7 +64,8 @@ class ExtraValueAmortizationCreditImpl @Inject constructor(override var dbConnec
     @RequiresApi(Build.VERSION_CODES.O)
     override fun getAll(): List<ExtraValueAmortizationCreditDTO> {
         val db = dbConnect.readableDatabase
-        val cursor = db.query(
+        val list = mutableListOf<ExtraValueAmortizationCreditDTO>()
+        db.query(
             AddAmortizationDB.Entry.TABLE_NAME,
             COLUMNS,
             null,
@@ -71,10 +73,10 @@ class ExtraValueAmortizationCreditImpl @Inject constructor(override var dbConnec
             null,
             null,
             null
-        )
-        val list = mutableListOf<ExtraValueAmortizationCreditDTO>()
-        while (cursor.moveToNext()) {
-            list.add(ExtraValueAmortizationCreditMap().mapping(cursor))
+        )?.use { cursor ->
+            while (cursor.moveToNext()) {
+                list.add(ExtraValueAmortizationCreditMap().mapping(cursor))
+            }
         }
         return list.also { Log.d(javaClass.name, "getAll: $list") }
     }
@@ -87,7 +89,7 @@ class ExtraValueAmortizationCreditImpl @Inject constructor(override var dbConnec
     @RequiresApi(Build.VERSION_CODES.O)
     override fun get(id: Int): Optional<ExtraValueAmortizationCreditDTO> {
         val db = dbConnect.readableDatabase
-        val cursor = db.query(
+        db.query(
             AddAmortizationDB.Entry.TABLE_NAME,
             COLUMNS,
             "${BaseColumns._ID}=?",
@@ -95,9 +97,10 @@ class ExtraValueAmortizationCreditImpl @Inject constructor(override var dbConnec
             null,
             null,
             null
-        )
-        while (cursor.moveToNext()){
-            return Optional.of(ExtraValueAmortizationCreditMap().mapping(cursor))
+        )?.use { cursor ->
+            while (cursor.moveToNext()) {
+                return@get Optional.of(ExtraValueAmortizationCreditMap().mapping(cursor))
+            }
         }
         return Optional.empty()
     }

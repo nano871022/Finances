@@ -1,6 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="CompilerConfiguration">
-    <bytecodeTargetLevel target="17" />
+    <bytecodeTargetLevel target="17">
+      <module name="AndroidStudioProjects.finanzas.Finanzas.japl-android-finances-paid-module" target="21" />
+      <module name="AndroidStudioProjects.finanzas.Finanzas.ui" target="21" />
+      <module name="Finanzas.about-module" target="21" />
+      <module name="Finanzas.app" target="21" />
+      <module name="Finanzas.CreditCardModule~1" target="21" />
+      <module name="finanzas.Finanzas.credit" target="21" />
+      <module name="Finanzas.japl-android-finances-core" target="21" />
+      <module name="Finanzas.japl-android-finances-services" target="21" />
+      <module name="Finanzas.japl-android-graphs" target="21" />
+      <module name="Finanzas.japl-finances-iports" target="21" />
+    </bytecodeTargetLevel>
   </component>
 </project>

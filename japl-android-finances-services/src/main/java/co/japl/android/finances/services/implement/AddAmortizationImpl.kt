@@ -37,7 +37,8 @@ class AddAmortizationImpl @Inject constructor(override var dbConnect: SQLiteOpen
     @RequiresApi(Build.VERSION_CODES.O)
     override fun getAll(code: Int): List<AddAmortizationDTO> {
         val db = dbConnect.readableDatabase
-        val cursor = db.query(
+        val list = mutableListOf<AddAmortizationDTO>()
+        db.query(
             AddAmortizationDB.Entry.TABLE_NAME,
             COLUMNS,
             "${AddAmortizationDB.Entry.COLUMN_CODE}=?",
@@ -45,10 +46,10 @@ class AddAmortizationImpl @Inject constructor(override var dbConnect: SQLiteOpen
             null,
             null,
             null
-        )
-        val list = mutableListOf<AddAmortizationDTO>()
-        while (cursor.moveToNext()){
-            list.add(AddAmortizationMap().mapping(cursor))
+        )?.use { cursor ->
+            while (cursor.moveToNext()) {
+                list.add(AddAmortizationMap().mapping(cursor))
+            }
         }
         return list.also { Log.d(javaClass.name, "<<<=== FINISH::getAll Code: $code Response: $list") }
     }
@@ -63,7 +64,8 @@ class AddAmortizationImpl @Inject constructor(override var dbConnect: SQLiteOpen
     @RequiresApi(Build.VERSION_CODES.O)
     override fun getAll(): List<AddAmortizationDTO> {
         val db = dbConnect.readableDatabase
-        val cursor = db.query(
+        val list = mutableListOf<AddAmortizationDTO>()
+        db.query(
             AddAmortizationDB.Entry.TABLE_NAME,
             COLUMNS,
             null,
@@ -71,10 +73,10 @@ class AddAmortizationImpl @Inject constructor(override var dbConnect: SQLiteOpen
             null,
             null,
             null
-        )
-        val list = mutableListOf<AddAmortizationDTO>()
-        while (cursor.moveToNext()) {
-            list.add(AddAmortizationMap().mapping(cursor))
+        )?.use { cursor ->
+            while (cursor.moveToNext()) {
+                list.add(AddAmortizationMap().mapping(cursor))
+            }
         }
         return list.also { Log.d(javaClass.name, "getAll: $list") }
     }
@@ -87,7 +89,7 @@ class AddAmortizationImpl @Inject constructor(override var dbConnect: SQLiteOpen
     @RequiresApi(Build.VERSION_CODES.O)
     override fun get(id: Int): Optional<AddAmortizationDTO> {
         val db = dbConnect.readableDatabase
-        val cursor = db.query(
+        db.query(
             AddAmortizationDB.Entry.TABLE_NAME,
             COLUMNS,
             "${BaseColumns._ID}=?",
@@ -95,9 +97,10 @@ class AddAmortizationImpl @Inject constructor(override var dbConnect: SQLiteOpen
             null,
             null,
             null
-        )
-        while (cursor.moveToNext()){
-            return Optional.of(AddAmortizationMap().mapping(cursor))
+        )?.use { cursor ->
+            while (cursor.moveToNext()) {
+                return@get Optional.of(AddAmortizationMap().mapping(cursor))
+            }
         }
         return Optional.empty()
     }

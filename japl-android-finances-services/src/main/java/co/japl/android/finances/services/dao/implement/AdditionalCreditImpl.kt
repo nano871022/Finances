@@ -51,14 +51,16 @@ class AdditionalCreditImpl @Inject constructor(override var dbConnect: SQLiteOpe
     override fun getAll(): List<AdditionalCreditDTO> {
         val db = dbConnect.readableDatabase
 
-        val cursor = db.query(AdditionalCreditDB.Entry.TABLE_NAME,COLUMNS,null,null,null,null,null)
         val items = mutableListOf<AdditionalCreditDTO>()
         val mapper = AdditionalMap()
-        with(cursor){
-            while(moveToNext()){
-                items.add( mapper.mapping(cursor))
+        db.query(AdditionalCreditDB.Entry.TABLE_NAME,COLUMNS,null,null,null,null,null)
+            ?.use { cursor ->
+                with(cursor) {
+                    while (moveToNext()) {
+                        items.add(mapper.mapping(cursor))
+                    }
+                }
             }
-        }
         return items
     }
 
@@ -72,14 +74,15 @@ class AdditionalCreditImpl @Inject constructor(override var dbConnect: SQLiteOpe
     override fun get(id: Int): Optional<AdditionalCreditDTO> {
         val db = dbConnect.readableDatabase
         val date = DateUtils.localDateToStringDate(LocalDate.now())
-        val cursor = db.query(AdditionalCreditDB.Entry.TABLE_NAME
+        db.query(AdditionalCreditDB.Entry.TABLE_NAME
             ,COLUMNS
             ,"${AdditionalCreditDB.Entry.COLUMN_CREDIT_CODE} = ? AND $FORMAT_DATE_END_WHERE >= ?"
             ,arrayOf(id.toString(),date)
-            ,null,null,null)
-        with(cursor){
-            while(moveToNext()){
-                return Optional.ofNullable(AdditionalMap().mapping(cursor))
+            ,null,null,null)?.use { cursor ->
+            with(cursor) {
+                while (moveToNext()) {
+                    return@get Optional.ofNullable(AdditionalMap().mapping(cursor))
+                }
             }
         }
         return Optional.empty()
@@ -90,14 +93,15 @@ class AdditionalCreditImpl @Inject constructor(override var dbConnect: SQLiteOpe
         val db = dbConnect.readableDatabase
         val list = ArrayList<AdditionalCreditDTO>()
         val date = DateUtils.localDateToStringDate(LocalDate.now())
-        val cursor = db.query(AdditionalCreditDB.Entry.TABLE_NAME
+        db.query(AdditionalCreditDB.Entry.TABLE_NAME
             ,COLUMNS
             ,"${AdditionalCreditDB.Entry.COLUMN_CREDIT_CODE} = ? AND $FORMAT_DATE_END_WHERE >= ?"
             ,arrayOf(id.toString(),date)
-            ,null,null,null)
-        with(cursor){
-            while(moveToNext()){
-                 AdditionalMap().mapping(cursor)?.let{list.add(it)}
+            ,null,null,null)?.use { cursor ->
+            with(cursor) {
+                while (moveToNext()) {
+                    AdditionalMap().mapping(cursor)?.let { list.add(it) }
+                }
             }
         }
         return list
@@ -106,7 +110,7 @@ class AdditionalCreditImpl @Inject constructor(override var dbConnect: SQLiteOpe
     @RequiresApi(Build.VERSION_CODES.O)
     fun getAdditional(id:Int):AdditionalCreditDTO? {
         val db = dbConnect.readableDatabase
-        val cursor = db.query(
+        db.query(
             AdditionalCreditDB.Entry.TABLE_NAME,
             COLUMNS,
             "${BaseColumns._ID} = ?",
@@ -114,10 +118,11 @@ class AdditionalCreditImpl @Inject constructor(override var dbConnect: SQLiteOpe
             null,
             null,
             null
-        )
-        with(cursor) {
-            while (moveToNext()) {
-                return AdditionalMap().mapping(cursor)
+        )?.use { cursor ->
+            with(cursor) {
+                while (moveToNext()) {
+                    return@getAdditional AdditionalMap().mapping(cursor)
+                }
             }
         }
         return null
@@ -127,14 +132,15 @@ class AdditionalCreditImpl @Inject constructor(override var dbConnect: SQLiteOpe
     override fun get(values: AdditionalCreditDTO): List<AdditionalCreditDTO> {
         val db = dbConnect.readableDatabase
         val localDate = DateUtils.localDateToStringDate(LocalDate.now())
-        val cursor = db.query(AdditionalCreditDB.Entry.TABLE_NAME,COLUMNS
-            ,"${AdditionalCreditDB.Entry.COLUMN_CREDIT_CODE} = ? AND $FORMAT_DATE_END_WHERE >= ?"
-            , arrayOf(values.creditCode.toString(),localDate),null,null,null)
         val list = arrayListOf<AdditionalCreditDTO>()
         val mapper = AdditionalMap()
-        with(cursor){
-            while(moveToNext()){
-                list.add( mapper.mapping(cursor) )
+        db.query(AdditionalCreditDB.Entry.TABLE_NAME,COLUMNS
+            ,"${AdditionalCreditDB.Entry.COLUMN_CREDIT_CODE} = ? AND $FORMAT_DATE_END_WHERE >= ?"
+            , arrayOf(values.creditCode.toString(),localDate),null,null,null)?.use { cursor ->
+            with(cursor) {
+                while (moveToNext()) {
+                    list.add(mapper.mapping(cursor))
+                }
             }
         }
         return list.also { Log.d(javaClass.name,"<<<=== END Get $it CreditCard: ${values.creditCode}") }
@@ -144,14 +150,15 @@ class AdditionalCreditImpl @Inject constructor(override var dbConnect: SQLiteOpe
     override fun get(codeCredit:Int, date:LocalDate): List<AdditionalCreditDTO> {
         val db = dbConnect.readableDatabase
         val localDate = DateUtils.localDateToStringDate(date)
-        val cursor = db.query(AdditionalCreditDB.Entry.TABLE_NAME,COLUMNS
-            ,"${AdditionalCreditDB.Entry.COLUMN_CREDIT_CODE} = ? AND $FORMAT_DATE_END_WHERE >= ?"
-            , arrayOf(codeCredit.toString(),localDate),null,null,null)
         val list = arrayListOf<AdditionalCreditDTO>()
         val mapper = AdditionalMap()
-        with(cursor){
-            while(moveToNext()){
-                list.add( mapper.mapping(cursor) )
+        val cursor = db.query(AdditionalCreditDB.Entry.TABLE_NAME,COLUMNS
+            ,"${AdditionalCreditDB.Entry.COLUMN_CREDIT_CODE} = ? AND $FORMAT_DATE_END_WHERE >= ?"
+            , arrayOf(codeCredit.toString(),localDate),null,null,null)?.use { cursor ->
+            with(cursor) {
+                while (moveToNext()) {
+                    list.add(mapper.mapping(cursor))
+                }
             }
         }
         return list.also { Log.d(javaClass.name,"<<<=== END Get $it CreditCard: ${codeCredit}") }

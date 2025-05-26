@@ -31,19 +31,21 @@ import co.com.japl.ui.model.datatable.Header
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DataTable(textColor:Color=MaterialTheme.colorScheme.onBackground,
-              listHeader:List<Header>?,
-              sizeBody:Int,
-              footer:@Composable RowScope.()->Unit?,
-              listBody:@Composable RowScope.(Int)->Unit){
+fun DataTable(
+    textColor: Color = MaterialTheme.colorScheme.onBackground,
+    listHeader: List<Header>?,
+    sizeBody: Int,
+    footer: @Composable RowScope.() -> Unit?,
+    listBody: @Composable RowScope.(Int) -> Unit
+) {
 
-    val tooltipStateName = remember {mutableStateListOf<TooltipState>()}
-    val tooltipPosition = remember {mutableStateListOf<PopupPositionProvider>()}
+    val tooltipStateName = remember { mutableStateListOf<TooltipState>() }
+    val tooltipPosition = remember { mutableStateListOf<PopupPositionProvider>() }
 
-    if( listHeader != null) {
+    if (listHeader != null) {
         listHeader.forEachIndexed { index, _ ->
             tooltipStateName.add(index, TooltipState(false))
-            tooltipPosition.add(index,TooltipDefaults.rememberPlainTooltipPositionProvider())
+            tooltipPosition.add(index, TooltipDefaults.rememberPlainTooltipPositionProvider())
         }
         Row(
             modifier = Modifier
@@ -101,18 +103,18 @@ fun DataTable(textColor:Color=MaterialTheme.colorScheme.onBackground,
                 Text(
                     text = "${index + 1}",
                     color = textColor,
-                    modifier = Modifier.padding(end = 5.dp).align(alignment = Alignment.CenterVertically)
+                    modifier = Modifier
+                        .padding(end = 5.dp)
+                        .align(alignment = Alignment.CenterVertically)
                 )
 
                 listBody(index)
             }
             HorizontalDivider()
         }
-        if(footer != null) {
-            item {
-                Row(modifier = Modifier.fillMaxWidth()) {
-                    footer()
-                }
+        item {
+            Row(modifier = Modifier.fillMaxWidth()) {
+                footer()
             }
         }
     }

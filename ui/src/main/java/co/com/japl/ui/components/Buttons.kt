@@ -8,6 +8,7 @@ import androidx.compose.material.FloatingActionButton
 import androidx.compose.material.FloatingActionButtonDefaults
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.rounded.HelpOutline
 import androidx.compose.material.icons.rounded.HelpOutline
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -104,6 +105,6 @@ fun HelpWikiButton(@StringRes wikiUrl:Int,@StringRes descriptionContent:Int,tint
         val intent = Intent(Intent.ACTION_VIEW, wikiUrl)
         ContextCompat.startActivity(context,intent,null)
     }) {
-        Icon(imageVector = Icons.Rounded.HelpOutline, contentDescription = stringResource(id = descriptionContent),tint=tint)
+        Icon(imageVector = Icons.AutoMirrored.Rounded.HelpOutline, contentDescription = stringResource(id = descriptionContent),tint=tint)
     }
 }

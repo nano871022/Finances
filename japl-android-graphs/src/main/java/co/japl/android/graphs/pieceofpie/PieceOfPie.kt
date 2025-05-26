@@ -65,7 +65,7 @@ class PieceOfPie constructor(val context:Context):IGraph{
 
     override fun drawBackground():ShapeDrawable{
         return ShapeDrawable(OvalShape()).apply {
-            paint.color = context.resources.getColor(R.color.background)
+            paint.color = context.resources.getColor(R.color.background,null)
             setBounds(posX,posY,posX +withSize, posY + heightSize)
         }
     }

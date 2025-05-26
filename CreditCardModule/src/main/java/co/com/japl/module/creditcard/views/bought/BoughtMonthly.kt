@@ -102,7 +102,10 @@ fun BoughtMonthly(viewModel:BoughtMonthlyViewModel?=null) {
                 })
 
            if(loaderStatus.not() ) {
-               LinearProgressIndicator( progress = progressStatus,modifier=Modifier.fillMaxWidth())
+               LinearProgressIndicator(
+                   progress = { progressStatus },
+                   modifier = Modifier.fillMaxWidth(),
+               )
            }else{
                 Loaded(viewModel = viewModel)
            }

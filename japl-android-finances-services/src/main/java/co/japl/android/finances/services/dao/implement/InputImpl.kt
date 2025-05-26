@@ -34,13 +34,15 @@ class InputImpl @Inject constructor(override var dbConnect: SQLiteOpenHelper,pub
     @RequiresApi(Build.VERSION_CODES.O)
     override fun get(values: InputDTO): List<InputDTO> {
         val db = dbConnect.readableDatabase
-        val cursor = db.query(InputDB.Entry.TABLE_NAME,COLUMNS,"${InputDB.Entry.COLUMN_ACCOUNT_CODE}=?",arrayOf(values.accountCode.toString()),null,null,null,null)
         val items = mutableListOf<InputDTO>()
-        with(cursor){
-            while(moveToNext()){
-                items.add(mapper.mapping(cursor))
+        db.query(InputDB.Entry.TABLE_NAME,COLUMNS,"${InputDB.Entry.COLUMN_ACCOUNT_CODE}=?",arrayOf(values.accountCode.toString()),null,null,null,null)
+            ?.use { cursor ->
+                with(cursor) {
+                    while (moveToNext()) {
+                        items.add(mapper.mapping(cursor))
+                    }
+                }
             }
-        }
         return items
     }
 
@@ -68,14 +70,15 @@ class InputImpl @Inject constructor(override var dbConnect: SQLiteOpenHelper,pub
                  )) WHERE endDate >= date('now')
         """.trimMargin(),
             arrayOf()
-        )
-        with(cursor){
-            while(moveToNext()){
-
-                val input = cursor.getDouble(0).toBigDecimal()
-                val cnt = cursor.getInt(1)
-
-                return input.also { Log.d(javaClass.name,"=== GetTotalInput Montlhy $cnt. $input.") }
+        )?.use { cursor ->
+            with(cursor) {
+                while (moveToNext()) {
+                    val input = cursor.getDouble(0).toBigDecimal()
+                    val cnt = cursor.getInt(1)
+                    return input.also {
+                        Log.d(javaClass.name,"=== GetTotalInput Montlhy $cnt. $input.")
+                    }
+                }
             }
         }
         return BigDecimal.ZERO
@@ -84,7 +87,7 @@ class InputImpl @Inject constructor(override var dbConnect: SQLiteOpenHelper,pub
 
     override fun getTotalInputsSemestral(): BigDecimal {
         val db = dbConnect.readableDatabase
-        val cursor = db.rawQuery("""
+        db.rawQuery("""
             SELECT
                 SUM(${InputDB.Entry.COLUMN_VALUE}) AS value
                 , COUNT(1) as cnt
@@ -94,13 +97,14 @@ class InputImpl @Inject constructor(override var dbConnect: SQLiteOpenHelper,pub
                 AND $FORMAT_DATE_INPUT_WHERE BETWEEN date('now','start of month') and date('now','start of month','+1 month') 
                 AND ${InputDB.Entry.COLUMN_KIND_OF} = 'semestral'
                 AND exists (SELECT 1 FROM ${AccountDB.Entry.TABLE_NAME} WHERE ${BaseColumns._ID} = ${InputDB.Entry.COLUMN_ACCOUNT_CODE})
-              """.trimMargin(), arrayOf())
-        with(cursor) {
-            while (moveToNext()) {
-                val input = cursor.getDouble(0).toBigDecimal()
-                val cnt = cursor.getInt(1)
-                Log.d(javaClass.name, "=== GetTotalInputSemestral $cnt. $input")
-                return input
+              """.trimMargin(), arrayOf())?.use { cursor ->
+            with(cursor) {
+                while (moveToNext()) {
+                    val input = cursor.getDouble(0).toBigDecimal()
+                    val cnt = cursor.getInt(1)
+                    Log.d(javaClass.name, "=== GetTotalInputSemestral $cnt. $input")
+                    return@getTotalInputsSemestral input
+                }
             }
         }
         return BigDecimal.ZERO
@@ -108,18 +112,21 @@ class InputImpl @Inject constructor(override var dbConnect: SQLiteOpenHelper,pub
 
     override fun getAllValid(accountCode:Int,date: LocalDate): List<InputDTO> {
         val db = dbConnect.readableDatabase
-        val cursor = db.query(InputDB.Entry.TABLE_NAME,COLUMNS,"""
+        val items = mutableListOf<InputDTO>()
+        db.query(InputDB.Entry.TABLE_NAME,COLUMNS,"""
                 ${InputDB.Entry.COLUMN_ACCOUNT_CODE} = ?
             """, arrayOf(accountCode.toString()),null,null,null)
-        Log.d(javaClass.name,"=== GetAllValid $FORMAT_DATE_END_WHERE Date ${DateUtils.localDateToStringDate(date)}")
-        val items = mutableListOf<InputDTO>()
-        with(cursor){
-            while(moveToNext()){
-                mapper.mapping(cursor).takeIf { it.dateEnd > date }?.let {
-                    Log.d(javaClass.name,"=== GetAllValid ${it.dateEnd} Date ${date} ${it}")
-                    items.add(it)
-                }}
-        }
+            ?.use { cursor ->
+                Log.d(javaClass.name,"=== GetAllValid $FORMAT_DATE_END_WHERE Date ${DateUtils.localDateToStringDate(date)}")
+                with(cursor) {
+                    while (moveToNext()) {
+                        mapper.mapping(cursor).takeIf { it.dateEnd > date }?.let {
+                            Log.d(javaClass.name,"=== GetAllValid ${it.dateEnd} Date ${date} ${it}")
+                            items.add(it)
+                        }
+                    }
+                }
+            }
         return items
     }
 
@@ -136,15 +143,16 @@ class InputImpl @Inject constructor(override var dbConnect: SQLiteOpenHelper,pub
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun getAll(): List<InputDTO> {
-
         val db = dbConnect.readableDatabase
-        val cursor = db.query(InputDB.Entry.TABLE_NAME,COLUMNS,"${InputDB.Entry.COLUMN_ACCOUNT_CODE} > 0",null,null,null,null)
         val items = mutableListOf<InputDTO>()
-        with(cursor){
-            while(moveToNext()){
-                items.add(mapper.mapping(cursor))
+        db.query(InputDB.Entry.TABLE_NAME,COLUMNS,"${InputDB.Entry.COLUMN_ACCOUNT_CODE} > 0",null,null,null,null)
+            ?.use { cursor ->
+                with(cursor) {
+                    while (moveToNext()) {
+                        items.add(mapper.mapping(cursor))
+                    }
+                }
             }
-        }
         return items.also { Log.d(javaClass.name,"<<<=== FINISH::GetAll Size: ${items.size}") }
     }
 
@@ -159,14 +167,16 @@ class InputImpl @Inject constructor(override var dbConnect: SQLiteOpenHelper,pub
     override fun get(id: Int): Optional<InputDTO> {
         val db = dbConnect.readableDatabase
 
-        val cursor = db.query(
+        db.query(
             InputDB.Entry.TABLE_NAME,COLUMNS,"${BaseColumns._ID} = ?",
             arrayOf(id.toString()),null,null,null)
-        with(cursor){
-            while(moveToNext()){
-                return Optional.ofNullable(mapper.mapping(cursor))
+            ?.use { cursor ->
+                with(cursor) {
+                    while (moveToNext()) {
+                        return@get Optional.ofNullable(mapper.mapping(cursor))
+                    }
+                }
             }
-        }
         return Optional.empty()
     }
 

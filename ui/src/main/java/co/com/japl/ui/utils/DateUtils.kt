@@ -111,7 +111,7 @@ class DateUtils {
 
         @RequiresApi(Build.VERSION_CODES.O)
         fun toLocalDate(value: String, default: LocalDate): LocalDate {
-            if (value == null || value == "") {
+            if ( value.isBlank() ) {
                 return default
             }
             val date = value.split("/")

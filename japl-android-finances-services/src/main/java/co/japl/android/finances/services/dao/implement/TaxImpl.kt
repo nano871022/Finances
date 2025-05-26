@@ -51,7 +51,7 @@ class TaxImpl @Inject constructor(override var dbConnect: SQLiteOpenHelper) : IT
         val list = mutableListOf<TaxDTO>()
         try {
             val db = dbConnect.writableDatabase
-            val cursor = db.query(
+            db.query(
                 TaxDB.TaxEntry.TABLE_NAME,
                 COLUMNS,
                 null,
@@ -59,10 +59,11 @@ class TaxImpl @Inject constructor(override var dbConnect: SQLiteOpenHelper) : IT
                 null,
                 null,
                 null
-            )
-            with(cursor) {
-                while (moveToNext()) {
-                    list.add(mapper.mapping(this))
+            )?.use { cursor ->
+                with(cursor) {
+                    while (moveToNext()) {
+                        list.add(mapper.mapping(this))
+                    }
                 }
             }
             return list
@@ -84,7 +85,7 @@ class TaxImpl @Inject constructor(override var dbConnect: SQLiteOpenHelper) : IT
     @RequiresApi(Build.VERSION_CODES.O)
     override fun get(id: Int): Optional<TaxDTO> {
         val db = dbConnect.writableDatabase
-        val cursor = db.query(
+        db.query(
             TaxDB.TaxEntry.TABLE_NAME,
             COLUMNS,
             " ${BaseColumns._ID} = ?",
@@ -92,10 +93,11 @@ class TaxImpl @Inject constructor(override var dbConnect: SQLiteOpenHelper) : IT
             null,
             null,
             null
-        )
-        with(cursor) {
-            while (moveToNext()) {
-                return Optional.ofNullable(mapper.mapping(this))
+        )?.use { cursor ->
+            with(cursor) {
+                while (moveToNext()) {
+                    return Optional.ofNullable(mapper.mapping(this))
+                }
             }
         }
         return Optional.empty()
@@ -104,7 +106,7 @@ class TaxImpl @Inject constructor(override var dbConnect: SQLiteOpenHelper) : IT
     @RequiresApi(Build.VERSION_CODES.N)
     override fun get(codCreditCard:Long,month:Int, year:Int,kind: TaxEnum):Optional<TaxDTO>{
             val db = dbConnect.writableDatabase
-            val cursor = db.query(
+            db.query(
                 TaxDB.TaxEntry.TABLE_NAME,
                 COLUMNS,
                 " ${TaxDB.TaxEntry.COLUMN_MONTH} = ? and ${TaxDB.TaxEntry.COLUMN_YEAR} = ? and ${TaxDB.TaxEntry.COLUMN_KIND} = ? and ${TaxDB.TaxEntry.COLUMN_COD_CREDIT_CARD} = ?",
@@ -112,14 +114,18 @@ class TaxImpl @Inject constructor(override var dbConnect: SQLiteOpenHelper) : IT
                 null,
                 null,
                 null
-            )
+            )?.use { cursor ->
                 with(cursor) {
                     while (moveToNext()) {
                         return Optional.ofNullable(mapper.mapping(this)).also {
-                            Log.d(this.javaClass.name, "=== FINISH:GetTax Month: $month Year $year $kind Response $it")
+                            Log.d(
+                                this.javaClass.name,
+                                "=== FINISH:GetTax Month: $month Year $year $kind Response $it"
+                            )
                         }
                     }
                 }
+            }
 
             return Optional.empty()
 

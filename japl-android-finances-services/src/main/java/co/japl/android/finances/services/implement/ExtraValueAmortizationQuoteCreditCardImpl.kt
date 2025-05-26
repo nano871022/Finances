@@ -37,7 +37,8 @@ class ExtraValueAmortizationQuoteCreditCardImpl @Inject constructor(override var
     @RequiresApi(Build.VERSION_CODES.O)
     override fun getAll(code: Int): List<ExtraValueAmortizationQuoteCreditCardDTO> {
         val db = dbConnect.readableDatabase
-        val cursor = db.query(
+        val list = mutableListOf<ExtraValueAmortizationQuoteCreditCardDTO>()
+        db.query(
             AddAmortizationDB.Entry.TABLE_NAME,
             COLUMNS,
             "${AddAmortizationDB.Entry.COLUMN_CODE}=?",
@@ -45,10 +46,10 @@ class ExtraValueAmortizationQuoteCreditCardImpl @Inject constructor(override var
             null,
             null,
             null
-        )
-        val list = mutableListOf<ExtraValueAmortizationQuoteCreditCardDTO>()
-        while (cursor.moveToNext()){
-            list.add(ExtraValueAmortizationQuoteCreditCardMap().mapping(cursor))
+        )?.use { cursor ->
+            while (cursor.moveToNext()) {
+                list.add(ExtraValueAmortizationQuoteCreditCardMap().mapping(cursor))
+            }
         }
         return list.also { Log.d(javaClass.name, "<<<=== FINISH::getAll Code: $code Response: $list") }
     }
@@ -63,7 +64,8 @@ class ExtraValueAmortizationQuoteCreditCardImpl @Inject constructor(override var
     @RequiresApi(Build.VERSION_CODES.O)
     override fun getAll(): List<ExtraValueAmortizationQuoteCreditCardDTO> {
         val db = dbConnect.readableDatabase
-        val cursor = db.query(
+        val list = mutableListOf<ExtraValueAmortizationQuoteCreditCardDTO>()
+        db.query(
             AddAmortizationDB.Entry.TABLE_NAME,
             COLUMNS,
             null,
@@ -71,10 +73,10 @@ class ExtraValueAmortizationQuoteCreditCardImpl @Inject constructor(override var
             null,
             null,
             null
-        )
-        val list = mutableListOf<ExtraValueAmortizationQuoteCreditCardDTO>()
-        while (cursor.moveToNext()) {
-            list.add(ExtraValueAmortizationQuoteCreditCardMap().mapping(cursor))
+        )?.use { cursor ->
+            while (cursor.moveToNext()) {
+                list.add(ExtraValueAmortizationQuoteCreditCardMap().mapping(cursor))
+            }
         }
         return list.also { Log.d(javaClass.name, "getAll: $list") }
     }
@@ -87,7 +89,7 @@ class ExtraValueAmortizationQuoteCreditCardImpl @Inject constructor(override var
     @RequiresApi(Build.VERSION_CODES.O)
     override fun get(id: Int): Optional<ExtraValueAmortizationQuoteCreditCardDTO> {
         val db = dbConnect.readableDatabase
-        val cursor = db.query(
+        db.query(
             AddAmortizationDB.Entry.TABLE_NAME,
             COLUMNS,
             "${BaseColumns._ID}=?",
@@ -95,9 +97,10 @@ class ExtraValueAmortizationQuoteCreditCardImpl @Inject constructor(override var
             null,
             null,
             null
-        )
-        while (cursor.moveToNext()){
-            return Optional.of(ExtraValueAmortizationQuoteCreditCardMap().mapping(cursor))
+        )?.use { cursor ->
+            while (cursor.moveToNext()) {
+                return@get Optional.of(ExtraValueAmortizationQuoteCreditCardMap().mapping(cursor))
+            }
         }
         return Optional.empty()
     }

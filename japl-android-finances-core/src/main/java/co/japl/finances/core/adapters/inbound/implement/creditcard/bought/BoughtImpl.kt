@@ -72,7 +72,6 @@ class BoughtImpl @Inject constructor(private val service:IBought, private  val s
     override fun createBySms(name: String, value: Double, date: LocalDateTime,codeCreditCard:Int,kind:KindInterestRateEnum) {
         require(name.isNotEmpty()){"Name must not be empty"}
         require(value > 0.0){"Value must be greater than 0"}
-        require(date != null){"Date must be valid"}
             val dto = CreditCardBoughtDTO(
                 id = 0,
                 nameItem = name,

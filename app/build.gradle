@@ -19,14 +19,14 @@ android {
             keyPassword 'Nano871022.'
         }
     }
-    compileSdk 34
+    compileSdk 35
 
     defaultConfig {
         applicationId "co.japl.android.myapplication"
         minSdk 26
         targetSdk 34
-        versionCode 4_05_20_127
-        versionName "V 4.05.20 build 127 Fix issue datetime and additional values in credits missing"
+        versionCode 4_05_21_128
+        versionName "V 4.05.21 build 128 Fixed issues with differ installment payment, now it show in correct month, and fixed issue with db connection was not closed"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         signingConfig signingConfigs.prod
@@ -67,6 +67,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig true
     }
 
     packagingOptions {

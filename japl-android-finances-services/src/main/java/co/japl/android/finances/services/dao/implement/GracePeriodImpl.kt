@@ -38,31 +38,35 @@ class GracePeriodImpl @Inject constructor(override var dbConnect: SQLiteOpenHelp
     @RequiresApi(Build.VERSION_CODES.O)
     override fun getAll(): List<GracePeriodDTO> {
         val db = dbConnect.readableDatabase
-        val cursor = db.query(GracePeriodDB.Entry.TABLE_NAME,COLUMNS,null,null,null,null,null)
         val items = mutableListOf<GracePeriodDTO>()
         val mapper = GracePeriodMap()
-        with(cursor){
-            while(moveToNext()){
-                items.add(mapper.mapping(cursor))
+        db.query(GracePeriodDB.Entry.TABLE_NAME,COLUMNS,null,null,null,null,null)
+            ?.use { cursor ->
+                with(cursor) {
+                    while (moveToNext()) {
+                        items.add(mapper.mapping(cursor))
+                    }
+                }
             }
-        }
         return items
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
    override fun get(codCredit:Long): List<GracePeriodDTO> {
         val db = dbConnect.readableDatabase
-        val cursor = db.query(GracePeriodDB.Entry.TABLE_NAME,COLUMNS
+        val items = mutableListOf<GracePeriodDTO>()
+        val mapper = GracePeriodMap()
+        db.query(GracePeriodDB.Entry.TABLE_NAME,COLUMNS
             ,"${GracePeriodDB.Entry.COLUMN_CODE_CREDIT} = ?"
             , arrayOf(codCredit.toString())
             ,null,null,null)
-        val items = mutableListOf<GracePeriodDTO>()
-        val mapper = GracePeriodMap()
-        with(cursor){
-            while(moveToNext()){
-                items.add(mapper.mapping(cursor))
+            ?.use { cursor ->
+                with(cursor) {
+                    while (moveToNext()) {
+                        items.add(mapper.mapping(cursor))
+                    }
+                }
             }
-        }
         return items.also {
             Log.d(this.toString(),"<<< Get filter by CreditCode: $codCredit Size: ${it.size}")
         }
@@ -80,13 +84,14 @@ class GracePeriodImpl @Inject constructor(override var dbConnect: SQLiteOpenHelp
     override fun get(id: Int): Optional<GracePeriodDTO> {
         val db = dbConnect.readableDatabase
 
-        val cursor = db.query(
+        db.query(
             GracePeriodDB.Entry.TABLE_NAME,COLUMNS,"${GracePeriodDB.Entry.COLUMN_CODE_CREDIT} = ?",
-            arrayOf(id.toString()),null,null,null)
-        val mapper = GracePeriodMap()
-        with(cursor){
-            while(moveToNext()){
-                return Optional.ofNullable(mapper.mapping(cursor))
+            arrayOf(id.toString()),null,null,null)?.use { cursor ->
+            val mapper = GracePeriodMap()
+            with(cursor) {
+                while (moveToNext()) {
+                    return@get Optional.ofNullable(mapper.mapping(cursor))
+                }
             }
         }
         return Optional.empty()
@@ -96,7 +101,7 @@ class GracePeriodImpl @Inject constructor(override var dbConnect: SQLiteOpenHelp
     override fun get(id: Int, date: LocalDate): Optional<GracePeriodDTO> {
         val db = dbConnect.readableDatabase
 
-        val cursor = db.query(
+        db.query(
             GracePeriodDB.Entry.TABLE_NAME,COLUMNS,
             """
                 ${GracePeriodDB.Entry.COLUMN_CODE_CREDIT} = ?
@@ -104,12 +109,14 @@ class GracePeriodImpl @Inject constructor(override var dbConnect: SQLiteOpenHelp
                 AND ${GracePeriodDB.Entry.COLUMN_DATE_END} >= ?
             """.trimMargin(),
             arrayOf(id.toString(),DateUtils.localDateToStringDate(date),DateUtils.localDateToStringDate(date)),null,null,null)
-        val mapper = GracePeriodMap()
-        with(cursor){
-            while(moveToNext()){
-                 return Optional.of(mapper.mapping(cursor))
+            ?.use { cursor ->
+                val mapper = GracePeriodMap()
+                with(cursor) {
+                    while (moveToNext()) {
+                        return@get Optional.of(mapper.mapping(cursor))
+                    }
+                }
             }
-        }
         return Optional.empty()
     }
 

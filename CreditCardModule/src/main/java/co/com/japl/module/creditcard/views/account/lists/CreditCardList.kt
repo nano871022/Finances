@@ -15,6 +15,7 @@ import androidx.compose.material.icons.rounded.AddCircleOutline
 import androidx.compose.material3.Card
 import androidx.compose.material3.Divider
 import androidx.compose.material.FloatingActionButton
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
@@ -67,7 +68,10 @@ fun CreditCardList(creditCardViewModel:CreditCardListViewModel){
     }
 
     if(status.value) {
-        LinearProgressIndicator(progress = progress.floatValue, modifier = Modifier.fillMaxWidth())
+        LinearProgressIndicator(
+            progress = { progress.floatValue },
+            modifier = Modifier.fillMaxWidth(),
+        )
     }else {
         Body(creditCardViewModel = creditCardViewModel)
     }
@@ -153,7 +157,7 @@ private fun ItemCompact(dto:CreditCardDTO,state:MutableState<Boolean>,edit:(Int)
             }
         }
 
-        Divider()
+        HorizontalDivider()
 
         Row (modifier=Modifier.padding(top=Dimensions.PADDING_TOP)){
             Text(text = stringResource(id = R.string.cut_off_day),modifier = Weight1fAndPaddintRightSpace())

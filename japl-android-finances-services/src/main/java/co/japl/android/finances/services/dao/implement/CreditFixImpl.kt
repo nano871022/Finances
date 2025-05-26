@@ -56,14 +56,16 @@ class CreditFixImpl @Inject constructor(override var dbConnect: SQLiteOpenHelper
     @RequiresApi(Build.VERSION_CODES.O)
     override fun getAll(): List<CreditDTO> {
         val db = dbConnect.readableDatabase
-        val cursor = db.query(CreditDB.Entry.TABLE_NAME,COLUMNS,null,null,null,null,null)
         val items = mutableListOf<CreditDTO>()
-        val mapper = CreditMap()
-        with(cursor){
-            while(moveToNext()){
-                items.add(mapper.mapping(cursor))
+        db.query(CreditDB.Entry.TABLE_NAME,COLUMNS,null,null,null,null,null)
+            ?.use { cursor ->
+                val mapper = CreditMap()
+                with(cursor) {
+                    while (moveToNext()) {
+                        items.add(mapper.mapping(cursor))
+                    }
+                }
             }
-        }
         return items
     }
 
@@ -76,13 +78,15 @@ class CreditFixImpl @Inject constructor(override var dbConnect: SQLiteOpenHelper
     @RequiresApi(Build.VERSION_CODES.O)
     override fun get(id: Int): Optional<CreditDTO> {
         val db = dbConnect.readableDatabase
-        val cursor = db.query(CreditDB.Entry.TABLE_NAME,COLUMNS,"${BaseColumns._ID} = ?",
+        db.query(CreditDB.Entry.TABLE_NAME,COLUMNS,"${BaseColumns._ID} = ?",
             arrayOf(id.toString()),null,null,null)
-        with(cursor){
-            while(moveToNext()){
-                return Optional.ofNullable(CreditMap().mapping(cursor))
+            ?.use { cursor ->
+                with(cursor) {
+                    while (moveToNext()) {
+                        return@get Optional.ofNullable(CreditMap().mapping(cursor))
+                    }
+                }
             }
-        }
         return Optional.empty()
     }
     private val FORMAT_DATE_BOUGHT_WHERE = "substr(${CreditDB.Entry.COLUMN_DATE},7,4)||'-'||substr(${CreditDB.Entry.COLUMN_DATE},4,2)||'-'||substr(${CreditDB.Entry.COLUMN_DATE},1,2)"
@@ -91,20 +95,22 @@ class CreditFixImpl @Inject constructor(override var dbConnect: SQLiteOpenHelper
         val db = dbConnect.readableDatabase
         val list = mutableListOf<CreditDTO>()
         val dateFormatter = DateUtils.localDateToStringDate(values.date)
-        val cursor = db.query(CreditDB.Entry.TABLE_NAME,COLUMNS
+        db.query(CreditDB.Entry.TABLE_NAME,COLUMNS
             ,"$FORMAT_DATE_BOUGHT_WHERE < ?",
             arrayOf(dateFormatter),null,null,null)
-        with(cursor){
-            while(moveToNext()){
-                val value = CreditMap().mapping(cursor)
-                if(gracePeriodSvc.get(value.id,values.date).isPresent){
-                    value.quoteValue = BigDecimal.ZERO
-                }
-                if(value.date.plusMonths(value.periods.toLong()).isAfter(values.date)) {
-                    list.add(value)
+            ?.use { cursor ->
+                with(cursor) {
+                    while (moveToNext()) {
+                        val value = CreditMap().mapping(cursor)
+                        if (gracePeriodSvc.get(value.id, values.date).isPresent) {
+                            value.quoteValue = BigDecimal.ZERO
+                        }
+                        if (value.date.plusMonths(value.periods.toLong()).isAfter(values.date)) {
+                            list.add(value)
+                        }
+                    }
                 }
             }
-        }
         return list
     }
 
@@ -113,18 +119,20 @@ class CreditFixImpl @Inject constructor(override var dbConnect: SQLiteOpenHelper
         val db = dbConnect.readableDatabase
         val list = mutableListOf<CreditDTO>()
         val dateFormatter = DateUtils.localDateToStringDate(date)
-        val cursor = db.query(CreditDB.Entry.TABLE_NAME,COLUMNS
+        db.query(CreditDB.Entry.TABLE_NAME,COLUMNS
             ,"$FORMAT_DATE_BOUGHT_WHERE < ?",
             arrayOf(dateFormatter),null,null,null)
-        with(cursor){
-            while(moveToNext()){
-                val value = CreditMap().mapping(cursor)
-                if(gracePeriodSvc.get(value.id,date).isPresent){
-                    value.quoteValue = BigDecimal.ZERO
+            ?.use { cursor ->
+                with(cursor) {
+                    while (moveToNext()) {
+                        val value = CreditMap().mapping(cursor)
+                        if (gracePeriodSvc.get(value.id, date).isPresent) {
+                            value.quoteValue = BigDecimal.ZERO
+                        }
+                        list.add(value)
+                    }
                 }
-                list.add(value)
             }
-        }
         return list
     }
 
@@ -234,18 +242,20 @@ class CreditFixImpl @Inject constructor(override var dbConnect: SQLiteOpenHelper
     override fun getPeriods(): List<PeriodCreditDTO> {
         val list = mutableListOf<PeriodCreditDTO>()
         val db = dbConnect.writableDatabase
-        val cursor = db.rawQuery("SELECT min(${CreditDB.Entry.COLUMN_DATE}) FROM ${CreditDB.Entry.TABLE_NAME}",null)
-        with(cursor){
-            while (moveToNext()){
-                val date = DateUtils.toLocalDate(cursor.getString(0))
-                val periods = Period.between(date,LocalDate.now())
-                for(i in 0..periods.toTotalMonths()) {
-                    val date = date.plusMonths(i.toLong()).withDayOfMonth(1)
-                    val value = getQuoteValue(date)
-                    list.add(PeriodCreditDTO(date, value.first, value.second))
+        db.rawQuery("SELECT min(${CreditDB.Entry.COLUMN_DATE}) FROM ${CreditDB.Entry.TABLE_NAME}",null)
+            ?.use { cursor ->
+                with(cursor) {
+                    while (moveToNext()) {
+                        val date = DateUtils.toLocalDate(cursor.getString(0))
+                        val periods = Period.between(date, LocalDate.now())
+                        for (i in 0..periods.toTotalMonths()) {
+                            val date = date.plusMonths(i.toLong()).withDayOfMonth(1)
+                            val value = getQuoteValue(date)
+                            list.add(PeriodCreditDTO(date, value.first, value.second))
+                        }
+                    }
                 }
             }
-        }
         return list.sortedByDescending { it.date }
     }
 

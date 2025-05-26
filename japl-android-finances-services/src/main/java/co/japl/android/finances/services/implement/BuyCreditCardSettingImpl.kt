@@ -1,18 +1,17 @@
 package co.japl.android.finances.services.implement
 
-import android.database.CursorWindow
 import android.database.sqlite.SQLiteException
 import android.database.sqlite.SQLiteOpenHelper
 import android.os.Build
 import android.provider.BaseColumns
 import android.util.Log
 import androidx.annotation.RequiresApi
-import co.japl.android.finances.services.dto.BuyCreditCardSettingDTO
 import co.japl.android.finances.services.dto.BuyCreditCardSettingDB
-import co.japl.android.finances.services.mapping.BuyCreditCardSettingMap
+import co.japl.android.finances.services.dto.BuyCreditCardSettingDTO
 import co.japl.android.finances.services.interfaces.IBuyCreditCardSettingSvc
+import co.japl.android.finances.services.mapping.BuyCreditCardSettingMap
 import co.japl.android.finances.services.utils.DatabaseConstants
-import java.util.*
+import java.util.Optional
 import javax.inject.Inject
 
 class BuyCreditCardSettingImpl @Inject constructor(override var dbConnect: SQLiteOpenHelper) : IBuyCreditCardSettingSvc {
@@ -45,7 +44,7 @@ class BuyCreditCardSettingImpl @Inject constructor(override var dbConnect: SQLit
         Log.d(this.javaClass.name,"<<<=== STARTING::getAll ")
         val list = mutableListOf<BuyCreditCardSettingDTO>()
             val db = dbConnect.writableDatabase
-            val cursor = db.query(
+            db.query(
                 BuyCreditCardSettingDB.Entry.TABLE_NAME,
                 COLUMNS,
                 null,
@@ -53,10 +52,11 @@ class BuyCreditCardSettingImpl @Inject constructor(override var dbConnect: SQLit
                 null,
                 null,
                 null
-            )
-            with(cursor) {
-                while (moveToNext()) {
-                    list.add(mapper.mapping(this))
+            )?.use { cursor ->
+                with(cursor) {
+                    while (moveToNext()) {
+                        list.add(mapper.mapping(this))
+                    }
                 }
             }
             return list.also { Log.d(this.javaClass.name, "<<<=== ENDING::getAll Size: ${it.size}")}
@@ -78,7 +78,7 @@ class BuyCreditCardSettingImpl @Inject constructor(override var dbConnect: SQLit
          */
     try{
         val db = dbConnect.writableDatabase
-        val cursor = db.query(
+        db.query(
             BuyCreditCardSettingDB.Entry.TABLE_NAME,
             COLUMNS,
             " ${BuyCreditCardSettingDB.Entry.COLUMN_COD_BUY_CREDIT_CARD} = ?",
@@ -86,10 +86,12 @@ class BuyCreditCardSettingImpl @Inject constructor(override var dbConnect: SQLit
             null,
             null,
             null
-        )
-        with(cursor) {
-            if (moveToNext()) {
-                return Optional.ofNullable(mapper.mapping(this)).also{Log.d(javaClass.name,"<<<=== ENDING::get $it")}
+        )?.use { cursor ->
+            with(cursor) {
+                if (moveToNext()) {
+                    return@get Optional.ofNullable(mapper.mapping(this))
+                        .also { Log.d(javaClass.name, "<<<=== ENDING::get $it") }
+                }
             }
         }
     }catch(e:SQLiteException){

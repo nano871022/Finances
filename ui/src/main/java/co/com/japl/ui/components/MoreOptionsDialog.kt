@@ -50,14 +50,20 @@ fun MoreOptionsDialog(listOptions:List<IMoreOptions>,onDismiss:()->Unit,onClick:
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MoreOptionsDialogPair(listOptions:List<Pair<Int,String>>,onDismiss:()->Unit,onClick: (Pair<Int,String>) -> Unit){
-    AlertDialog(onDismissRequest = onDismiss) {
-        Surface{
-            Column(modifier = Modifier.fillMaxWidth()
-                , horizontalAlignment = Alignment.CenterHorizontally) {
-                Text(text = stringResource(id = R.string.see_more), modifier = Modifier.padding(5.dp), fontSize = 18.sp)
-                Divider()
-                for ( item in listOptions) {
-                    Options(name = item.second,onClick = { onClick(item) })
+    BasicAlertDialog(onDismissRequest = onDismiss) {
+        Surface {
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(
+                    text = stringResource(id = R.string.see_more),
+                    modifier = Modifier.padding(5.dp),
+                    fontSize = 18.sp
+                )
+                HorizontalDivider()
+                for (item in listOptions) {
+                    Options(name = item.second, onClick = { onClick(item) })
                 }
             }
         }
@@ -67,14 +73,20 @@ fun MoreOptionsDialogPair(listOptions:List<Pair<Int,String>>,onDismiss:()->Unit,
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MoreOptionsDialogPair(listOptions:SnapshotStateList<Pair<Int,String>>,onDismiss:()->Unit,onClick: (Pair<Int,String>) -> Unit){
-    AlertDialog(onDismissRequest = onDismiss) {
-        Surface{
-            Column(modifier = Modifier.fillMaxWidth()
-                , horizontalAlignment = Alignment.CenterHorizontally) {
-                Text(text = stringResource(id = R.string.see_more), modifier = Modifier.padding(5.dp), fontSize = 18.sp)
-                Divider()
-                for ( item in listOptions) {
-                    Options(name = item.second,onClick = { onClick(item) })
+    BasicAlertDialog(onDismissRequest = onDismiss) {
+        Surface {
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(
+                    text = stringResource(id = R.string.see_more),
+                    modifier = Modifier.padding(5.dp),
+                    fontSize = 18.sp
+                )
+                HorizontalDivider()
+                for (item in listOptions) {
+                    Options(name = item.second, onClick = { onClick(item) })
                 }
             }
         }
@@ -86,7 +98,7 @@ fun MoreOptionsDialogPair(listOptions:SnapshotStateList<Pair<Int,String>>,onDism
 private fun Options(@StringRes name:Int,onClick:()->Unit){
     TextButton(onClick = onClick,modifier= Modifier.fillMaxWidth()) {
         Text(text = stringResource(id = name),color= MaterialTheme.colorScheme.onSurface) }
-    Divider()
+    HorizontalDivider()
 }
 
 @Composable

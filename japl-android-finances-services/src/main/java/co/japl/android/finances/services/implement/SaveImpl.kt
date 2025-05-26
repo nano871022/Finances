@@ -37,13 +37,15 @@ class SaveImpl @Inject constructor(override var dbConnect: SQLiteOpenHelper) : I
     override  fun getAll():List<CalcDTO>{
         val db = dbConnect.readableDatabase
 
-        val cursor = db.query(CalcDB.CalcEntry.TABLE_NAME,COLUMNS_CALC,null,null,null,null,null)
         val items = mutableListOf<CalcDTO>()
-        with(cursor){
-            while(moveToNext()){
-                items.add(CalcMap().mapping(this))
+        db.query(CalcDB.CalcEntry.TABLE_NAME,COLUMNS_CALC,null,null,null,null,null)
+            ?.use { cursor ->
+                with(cursor) {
+                    while (moveToNext()) {
+                        items.add(CalcMap().mapping(this))
+                    }
+                }
             }
-        }
         return items
     }
 
@@ -55,7 +57,7 @@ class SaveImpl @Inject constructor(override var dbConnect: SQLiteOpenHelper) : I
     @RequiresApi(Build.VERSION_CODES.O)
     override fun get(id: Int): Optional<CalcDTO> {
         val db = dbConnect.writableDatabase
-        val cursor = db.query(
+        db.query(
             CalcDB.CalcEntry.TABLE_NAME,
             COLUMNS_CALC,
             " id = ?",
@@ -63,10 +65,11 @@ class SaveImpl @Inject constructor(override var dbConnect: SQLiteOpenHelper) : I
             null,
             null,
             null
-        )
-        with(cursor) {
-            while (moveToNext()) {
-                return Optional.ofNullable(CalcMap().mapping(this))
+        )?.use { cursor ->
+            with(cursor) {
+                while (moveToNext()) {
+                    return@get Optional.ofNullable(CalcMap().mapping(this))
+                }
             }
         }
         return Optional.empty()

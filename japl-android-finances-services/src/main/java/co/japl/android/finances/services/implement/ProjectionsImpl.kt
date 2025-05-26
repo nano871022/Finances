@@ -16,77 +16,79 @@ import java.time.Period
 import java.util.*
 import javax.inject.Inject
 
-class ProjectionsImpl @Inject constructor(override var dbConnect: SQLiteOpenHelper) : IProjectionsSvc {
-     val COLUMNS = arrayOf(
-         BaseColumns._ID,
+class ProjectionsImpl @Inject constructor(override var dbConnect: SQLiteOpenHelper) :
+    IProjectionsSvc {
+    val COLUMNS = arrayOf(
+        BaseColumns._ID,
         ProjectionDB.Entry.COLUMN_NAME,
-         ProjectionDB.Entry.COLUMN_VALUE,
-         ProjectionDB.Entry.COLUMN_TYPE,
-         ProjectionDB.Entry.COLUMN_ACTIVE,
-         ProjectionDB.Entry.COLUMN_QUOTE,
-         ProjectionDB.Entry.COLUMN_DATE_CREATE,
-         ProjectionDB.Entry.COLUMN_DATE_END
+        ProjectionDB.Entry.COLUMN_VALUE,
+        ProjectionDB.Entry.COLUMN_TYPE,
+        ProjectionDB.Entry.COLUMN_ACTIVE,
+        ProjectionDB.Entry.COLUMN_QUOTE,
+        ProjectionDB.Entry.COLUMN_DATE_CREATE,
+        ProjectionDB.Entry.COLUMN_DATE_END
     )
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun getClose(): Triple<LocalDate, Int, BigDecimal> {
-            val list = getAllActive().filter{ LocalDate.now() <= it.end }
-            if(list.size > 0){
-                val record = list[0]
-                val date = record.end
-                val quote = record.quote
-                val type = record.type
-                val months = getMonths(type)
-                val faltantes = Period.between(LocalDate.now(),date).toTotalMonths()
-                val month = months - faltantes
-                var saved = quote * month.toBigDecimal()
-                if(saved < BigDecimal.ZERO){
-                    saved = BigDecimal.ZERO
-                }
-                return Triple(date,faltantes.toInt(),saved)
+        val list = getAllActive().filter { LocalDate.now() <= it.end }
+        if (list.size > 0) {
+            val record = list[0]
+            val date = record.end
+            val quote = record.quote
+            val type = record.type
+            val months = getMonths(type)
+            val faltantes = Period.between(LocalDate.now(), date).toTotalMonths()
+            val month = months - faltantes
+            var saved = quote * month.toBigDecimal()
+            if (saved < BigDecimal.ZERO) {
+                saved = BigDecimal.ZERO
             }
-        return Triple(LocalDate.now(),0,BigDecimal.ZERO)
+            return Triple(date, faltantes.toInt(), saved)
+        }
+        return Triple(LocalDate.now(), 0, BigDecimal.ZERO)
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun getFar(): Triple<LocalDate, Int, BigDecimal> {
-        val list = getAllActive().filter{ LocalDate.now() <= it.end }
-            if(list.size > 0){
-                val record = list[list.size-1]
-                val date =record.end
-                val quote = record.quote
-                val type = record.type
-                val months = getMonths(type)
-                val faltantes = Period.between(LocalDate.now(),date).toTotalMonths()
-                val month = months - faltantes
-                var saved = quote * month.toBigDecimal()
-                if(saved < BigDecimal.ZERO){
-                    saved = BigDecimal.ZERO
-                }
-                return Triple(date,faltantes.toInt(),saved)
+        val list = getAllActive().filter { LocalDate.now() <= it.end }
+        if (list.size > 0) {
+            val record = list[list.size - 1]
+            val date = record.end
+            val quote = record.quote
+            val type = record.type
+            val months = getMonths(type)
+            val faltantes = Period.between(LocalDate.now(), date).toTotalMonths()
+            val month = months - faltantes
+            var saved = quote * month.toBigDecimal()
+            if (saved < BigDecimal.ZERO) {
+                saved = BigDecimal.ZERO
             }
-        return Triple(LocalDate.now(),0,BigDecimal.ZERO)
+            return Triple(date, faltantes.toInt(), saved)
+        }
+        return Triple(LocalDate.now(), 0, BigDecimal.ZERO)
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun getTotal(): Pair<Int, BigDecimal> {
-        val items = getAllActive().filter{ LocalDate.now() <= it.end }
-        return Pair(items.size,items.sumOf {
+        val items = getAllActive().filter { LocalDate.now() <= it.end }
+        return Pair(items.size, items.sumOf {
             val months = getMonths(it.type)
-            var value = it.quote * (months-Period.between(LocalDate.now(),it.end).toTotalMonths()).toBigDecimal()
-            if(value < BigDecimal.ZERO){
+            var value = it.quote * (months - Period.between(LocalDate.now(), it.end)
+                .toTotalMonths()).toBigDecimal()
+            if (value < BigDecimal.ZERO) {
                 value = BigDecimal.ZERO
             }
             value
         })
     }
 
-    private fun getMonths(type:String):Int{
-        return when(type.toLowerCase()){
+    private fun getMonths(type: String): Int {
+        return when (type.toLowerCase()) {
             "trimestral" -> 3
-            "cuatrimestral" ->4
-            "semestral" ->6
-            "anual" ->12
+            "cuatrimestral" -> 4
+            "semestral" -> 6
+            "anual" -> 12
             else -> 0
         }
     }
@@ -94,15 +96,19 @@ class ProjectionsImpl @Inject constructor(override var dbConnect: SQLiteOpenHelp
     @RequiresApi(Build.VERSION_CODES.O)
     override fun getAllActive(): List<ProjectionDTO> {
         val db = dbConnect.readableDatabase
-        val cursor = db.query(ProjectionDB.Entry.TABLE_NAME,COLUMNS,"${ProjectionDB.Entry.COLUMN_ACTIVE}=1",
-            null,null,null,"${ProjectionDB.Entry.COLUMN_DATE_END} ASC")
         val items = mutableListOf<ProjectionDTO>()
         val mapper = ProjectionMap()
-        with(cursor){
-            while(moveToNext()){
-                items.add(mapper.mapping(cursor))
+        db.query(
+            ProjectionDB.Entry.TABLE_NAME, COLUMNS, "${ProjectionDB.Entry.COLUMN_ACTIVE}=1",
+            null, null, null, "${ProjectionDB.Entry.COLUMN_DATE_END} ASC"
+        )
+            ?.use { cursor ->
+                with(cursor) {
+                    while (moveToNext()) {
+                        items.add(mapper.mapping(cursor))
+                    }
+                }
             }
-        }
         items.sortBy { it.end }
         return items
     }
@@ -111,9 +117,14 @@ class ProjectionsImpl @Inject constructor(override var dbConnect: SQLiteOpenHelp
     override fun save(dto: ProjectionDTO): Long {
         val db = dbConnect.writableDatabase
         val content: ContentValues? = ProjectionMap().mapping(dto)
-        return if(dto.id > 0){
-            db?.update(ProjectionDB.Entry.TABLE_NAME,content,"${BaseColumns._ID}=?", arrayOf(dto.id.toString()))?.toLong() ?: 0
-        }else {
+        return if (dto.id > 0) {
+            db?.update(
+                ProjectionDB.Entry.TABLE_NAME,
+                content,
+                "${BaseColumns._ID}=?",
+                arrayOf(dto.id.toString())
+            )?.toLong() ?: 0
+        } else {
             db?.insert(ProjectionDB.Entry.TABLE_NAME, null, content) ?: 0
         }
     }
@@ -121,14 +132,16 @@ class ProjectionsImpl @Inject constructor(override var dbConnect: SQLiteOpenHelp
     @RequiresApi(Build.VERSION_CODES.O)
     override fun getAll(): List<ProjectionDTO> {
         val db = dbConnect.readableDatabase
-        val cursor = db.query(ProjectionDB.Entry.TABLE_NAME,COLUMNS,null,null,null,null,null)
         val items = mutableListOf<ProjectionDTO>()
         val mapper = ProjectionMap()
-        with(cursor){
-            while(moveToNext()){
-                items.add(mapper.mapping(cursor))
+        db.query(ProjectionDB.Entry.TABLE_NAME, COLUMNS, null, null, null, null, null)
+            ?.use { cursor ->
+                with(cursor) {
+                    while (moveToNext()) {
+                        items.add(mapper.mapping(cursor))
+                    }
+                }
             }
-        }
         return items
     }
 
@@ -136,20 +149,23 @@ class ProjectionsImpl @Inject constructor(override var dbConnect: SQLiteOpenHelp
         val db = dbConnect.writableDatabase
         return db.delete(
             ProjectionDB.Entry.TABLE_NAME, DatabaseConstants.SQL_DELETE_CALC_ID,
-            arrayOf(id.toString())) > 0
+            arrayOf(id.toString())
+        ) > 0
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun get(id: Int): Optional<ProjectionDTO> {
         val db = dbConnect.readableDatabase
 
-        val cursor = db.query(
-            ProjectionDB.Entry.TABLE_NAME,COLUMNS,"${BaseColumns._ID} = ?",
-            arrayOf(id.toString()),null,null,null)
         val mapper = ProjectionMap()
-        with(cursor){
-            while(moveToNext()){
-                return Optional.ofNullable(mapper.mapping(cursor))
+        db.query(
+            ProjectionDB.Entry.TABLE_NAME, COLUMNS, "${BaseColumns._ID} = ?",
+            arrayOf(id.toString()), null, null, null
+        )?.use { cursor ->
+            with(cursor) {
+                while (moveToNext()) {
+                    return@get Optional.ofNullable(mapper.mapping(cursor))
+                }
             }
         }
         return Optional.empty()
@@ -158,14 +174,16 @@ class ProjectionsImpl @Inject constructor(override var dbConnect: SQLiteOpenHelp
     @RequiresApi(Build.VERSION_CODES.O)
     override fun get(values: ProjectionDTO): List<ProjectionDTO> {
         val db = dbConnect.readableDatabase
-        val cursor = db.query(ProjectionDB.Entry.TABLE_NAME,COLUMNS,null,null,null,null,null)
         val items = mutableListOf<ProjectionDTO>()
         val mapper = ProjectionMap()
-        with(cursor){
-            while(moveToNext()){
-                items.add(mapper.mapping(cursor))
+        db.query(ProjectionDB.Entry.TABLE_NAME, COLUMNS, null, null, null, null, null)
+            ?.use { cursor ->
+                with(cursor) {
+                    while (moveToNext()) {
+                        items.add(mapper.mapping(cursor))
+                    }
+                }
             }
-        }
         return items
     }
 

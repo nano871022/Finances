@@ -20,6 +20,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.AddCircleOutline
 import androidx.compose.material.FloatingActionButton
 import androidx.compose.material.icons.rounded.Add
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
@@ -57,7 +58,10 @@ import java.time.LocalDateTime
     }
 
     if(stateShow.value) {
-        LinearProgressIndicator(progress = stateProgress.floatValue, modifier = Modifier.fillMaxWidth())
+        LinearProgressIndicator(
+            progress = { stateProgress.floatValue },
+            modifier = Modifier.fillMaxWidth(),
+        )
     }else {
         Body(viewModel = viewModel)
     }
@@ -162,7 +166,7 @@ private fun ItemCompact(item:CreditCardSettingDTO,statusShowOptions:MutableState
                     )
                 }
             }
-            Divider()
+            HorizontalDivider()
             Row (modifier=Modifier.padding(top=Dimensions.PADDING_TOP)) {
                 Text(text = stringResource(id = R.string.value), modifier = Weight1f())
                 Text(text = item.value, modifier = Weight1f())

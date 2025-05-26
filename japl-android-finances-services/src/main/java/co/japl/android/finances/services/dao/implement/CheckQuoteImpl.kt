@@ -30,7 +30,7 @@ class CheckQuoteImpl @Inject constructor(override var dbConnect: SQLiteOpenHelpe
     @RequiresApi(Build.VERSION_CODES.O)
     override fun getCheckPayment(codPaid: Int, period: String): Optional<CheckQuoteDTO> {
         val db = dbConnect.writableDatabase
-        val cursor = db.query(
+        db.query(
             CheckQuoteDB.Entry.TABLE_NAME,
             COLUMNS,
             " ${CheckQuoteDB.Entry.COLUMN_COD_QUOTE} = ? AND ${CheckQuoteDB.Entry.COLUMN_PERIOD} = ?",
@@ -38,10 +38,11 @@ class CheckQuoteImpl @Inject constructor(override var dbConnect: SQLiteOpenHelpe
             null,
             null,
             null
-        )
-        with(cursor) {
-            while (moveToNext()) {
-                return Optional.ofNullable(mapper.mapping(this))
+        )?.use { cursor ->
+            with(cursor) {
+                while (moveToNext()) {
+                    return@getCheckPayment Optional.ofNullable(mapper.mapping(this))
+                }
             }
         }
         return Optional.empty()
@@ -56,13 +57,13 @@ class CheckQuoteImpl @Inject constructor(override var dbConnect: SQLiteOpenHelpe
                    ${CheckQuoteDB.Entry.COLUMN_CHECK}
             FROM ${CheckQuoteDB.Entry.TABLE_NAME}  
             """
-        val cursor = db.rawQuery(sql, arrayOf()
-        )
-        while(cursor.moveToNext()){
-            val period = cursor.getString(0)
-            val cod_credit_card = cursor.getInt(1)
-            val check = cursor.getInt(2)
-            list.add(PeriodCheckPaymentsPOJO("$period::$cod_credit_card::$check",0.0,0.0,1))
+        db.rawQuery(sql, arrayOf())?.use { cursor ->
+            while (cursor.moveToNext()) {
+                val period = cursor.getString(0)
+                val cod_credit_card = cursor.getInt(1)
+                val check = cursor.getInt(2)
+                list.add(PeriodCheckPaymentsPOJO("$period::$cod_credit_card::$check", 0.0, 0.0, 1))
+            }
         }
         return list.also { Log.d(javaClass.name,"<<== Get Periods Payment $it ${it.size}") }
     }
@@ -83,7 +84,7 @@ class CheckQuoteImpl @Inject constructor(override var dbConnect: SQLiteOpenHelpe
         val list = mutableListOf<CheckQuoteDTO>()
         try {
             val db = dbConnect.writableDatabase
-            val cursor = db.query(
+            db.query(
                 CheckQuoteDB.Entry.TABLE_NAME,
                 COLUMNS,
                 null,
@@ -91,10 +92,11 @@ class CheckQuoteImpl @Inject constructor(override var dbConnect: SQLiteOpenHelpe
                 null,
                 null,
                 null
-            )
-            with(cursor) {
-                while (moveToNext()) {
-                    list.add(mapper.mapping(this))
+            )?.use { cursor ->
+                with(cursor) {
+                    while (moveToNext()) {
+                        list.add(mapper.mapping(this))
+                    }
                 }
             }
             return list
@@ -123,10 +125,11 @@ class CheckQuoteImpl @Inject constructor(override var dbConnect: SQLiteOpenHelpe
             null,
             null,
             null
-        )
-        with(cursor) {
-            while (moveToNext()) {
-                return Optional.ofNullable(mapper.mapping(this))
+        )?.use { cursor ->
+            with(cursor) {
+                while (moveToNext()) {
+                    return@get Optional.ofNullable(mapper.mapping(this))
+                }
             }
         }
         return Optional.empty()
@@ -142,15 +145,16 @@ class CheckQuoteImpl @Inject constructor(override var dbConnect: SQLiteOpenHelpe
             select = " ${CheckPaymentsDB.Entry.COLUMN_PERIOD} = ?"
             selectArgs.add(values.period)
         }
-        val cursor = db.query(
+        db.query(
             CheckQuoteDB.Entry.TABLE_NAME,COLUMNS,select,
             selectArgs.toTypedArray(),null,null,null)
-        with(cursor){
-            while(moveToNext()){
-                mapper.mapping(cursor).let(list::add)
-
+            ?.use { cursor ->
+                with(cursor) {
+                    while (moveToNext()) {
+                        mapper.mapping(cursor).let(list::add)
+                    }
+                }
             }
-        }
         return list
     }
 

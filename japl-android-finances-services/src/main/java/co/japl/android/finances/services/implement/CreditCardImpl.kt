@@ -49,7 +49,7 @@ class   CreditCardImpl @Inject constructor(override var dbConnect: SQLiteOpenHel
         val list = mutableListOf<CreditCardDTO>()
         try {
             val db = dbConnect.writableDatabase
-            val cursor = db.query(
+            db.query(
                 CreditCardDB.CreditCardEntry.TABLE_NAME,
                 COLUMNS,
                 null,
@@ -57,10 +57,11 @@ class   CreditCardImpl @Inject constructor(override var dbConnect: SQLiteOpenHel
                 null,
                 null,
                 null
-            )
-            with(cursor) {
-                while (moveToNext()) {
-                    list.add(mapper.mapping(this))
+            )?.use { cursor ->
+                with(cursor) {
+                    while (moveToNext()) {
+                        list.add(mapper.mapping(this))
+                    }
                 }
             }
             return list.also{Log.d(this.javaClass.name, "<<<=== getAll - End Size: ${it.size}")}
@@ -79,7 +80,7 @@ class   CreditCardImpl @Inject constructor(override var dbConnect: SQLiteOpenHel
     @RequiresApi(Build.VERSION_CODES.O)
     override fun get(id: Int): Optional<CreditCardDTO> = Caching("CreditCardDAO|get|$id"){
         val db = dbConnect.writableDatabase
-        val cursor = db.query(
+        db.query(
             CreditCardDB.CreditCardEntry.TABLE_NAME,
             COLUMNS,
             " ${BaseColumns._ID} = ?",
@@ -87,10 +88,11 @@ class   CreditCardImpl @Inject constructor(override var dbConnect: SQLiteOpenHel
             null,
             null,
             null
-        )
-        with(cursor) {
-            if (moveToFirst()) {
-                return@Caching Optional.ofNullable(mapper.mapping(this))
+        )?.use { cursor ->
+            with(cursor) {
+                if (moveToFirst()) {
+                    return@Caching Optional.ofNullable(mapper.mapping(this))
+                }
             }
         }
         return@Caching Optional.empty()

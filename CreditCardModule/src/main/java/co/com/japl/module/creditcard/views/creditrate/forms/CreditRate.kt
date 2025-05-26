@@ -51,7 +51,9 @@ fun CreditRate(viewModel:CreateRateViewModel){
     }
 
     if(statePogress.value){
-        LinearProgressIndicator(progress.floatValue)
+        LinearProgressIndicator(
+            progress = { progress.floatValue },
+        )
     }else {
 
         Scaffold(

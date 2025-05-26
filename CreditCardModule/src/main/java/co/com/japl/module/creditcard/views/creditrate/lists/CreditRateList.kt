@@ -21,6 +21,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.Divider
 import androidx.compose.material.FloatingActionButton
 import androidx.compose.material.FloatingActionButtonDefaults
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.Text
@@ -72,7 +73,10 @@ fun CreditRateList(viewModel: CreditRateListViewModel){
     }
 
     if(showProgress.value){
-        LinearProgressIndicator( progress = progress.floatValue, modifier=Modifier.fillMaxWidth())
+        LinearProgressIndicator(
+            progress = { progress.floatValue },
+            modifier = Modifier.fillMaxWidth(),
+        )
     }else{
         Scaffold(
             floatingActionButton = {
@@ -131,7 +135,7 @@ private fun CreditCard(value:Map.Entry<CreditCardDTO?,List<TaxDTO>>,viewModel: C
                     }
                 )
 
-            Divider()
+        HorizontalDivider()
             Column(modifier=Modifier) {
                 listState.forEach { list ->
                     LazyColumn () {

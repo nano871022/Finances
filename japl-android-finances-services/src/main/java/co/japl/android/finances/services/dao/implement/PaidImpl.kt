@@ -37,23 +37,25 @@ class PaidImpl @Inject constructor(override var dbConnect: SQLiteOpenHelper) : I
     @RequiresApi(Build.VERSION_CODES.O)
     override fun get(values: PaidDTO): List<PaidDTO> {
         val db = dbConnect.readableDatabase
-        val cursor = db.query(PaidDB.Entry.TABLE_NAME,
+        val items = mutableListOf<PaidDTO>()
+        db.query(PaidDB.Entry.TABLE_NAME,
             COLUMNS,
             null,
             null,
             null,
             null,
             null,
-            null)
-        val items = mutableListOf<PaidDTO>()
-        val maxDate = values.date.plusMonths(1).minusDays(1)
-        Log.d(javaClass.name,"Range ${values.date} $maxDate")
-        val mapper = PaidMap()
-        with(cursor){
-            while(moveToNext()){
-                mapper.mapping(cursor)
-                    .takeIf {it.date >= values.date && it.date <= maxDate && it.end >= maxDate}
-                    ?.let{items.add(it)}
+            null)?.use { cursor ->
+
+            val maxDate = values.date.plusMonths(1).minusDays(1)
+            Log.d(javaClass.name, "Range ${values.date} $maxDate")
+            val mapper = PaidMap()
+            with(cursor) {
+                while (moveToNext()) {
+                    mapper.mapping(cursor)
+                        .takeIf { it.date >= values.date && it.date <= maxDate && it.end >= maxDate }
+                        ?.let { items.add(it) }
+                }
             }
         }
         return items
@@ -76,20 +78,21 @@ class PaidImpl @Inject constructor(override var dbConnect: SQLiteOpenHelper) : I
             selectionArgs?.let{it.add("${values.date}")}?:selectionArgs.let{selectionArgs = mutableListOf("${values.date}") }
         }
         */
-        val cursor = db.query(PaidDB.Entry.TABLE_NAME,
+        val items = mutableListOf<PaidDTO>()
+        db.query(PaidDB.Entry.TABLE_NAME,
             COLUMNS,
             selection,
             selectionArgs?.toTypedArray(),
             null,
             null,
             null,
-            null)
-        val items = mutableListOf<PaidDTO>()
-        val mapper = PaidMap()
-        with(cursor){
-            while(moveToNext()){
-                mapper.mapping(cursor)?.takeIf { it.date == values.date }
-                    ?.let{items.add(it)}
+            null)?.use { cursor ->
+            val mapper = PaidMap()
+            with(cursor) {
+                while (moveToNext()) {
+                    mapper.mapping(cursor)?.takeIf { it.date == values.date }
+                        ?.let { items.add(it) }
+                }
             }
         }
         return items
@@ -99,22 +102,23 @@ class PaidImpl @Inject constructor(override var dbConnect: SQLiteOpenHelper) : I
     @RequiresApi(Build.VERSION_CODES.O)
     override fun getRecurrent(date:LocalDate):List<PaidDTO>{
         val db = dbConnect.readableDatabase
-        val cursor = db.query(PaidDB.Entry.TABLE_NAME,
+        val items = mutableListOf<PaidDTO>()
+        db.query(PaidDB.Entry.TABLE_NAME,
             COLUMNS,
             "${PaidDB.Entry.COLUMN_RECURRENT} = 1",
             null,
             null,
             null,
             null,
-            null)
-        val items = mutableListOf<PaidDTO>()
-        val mapper = PaidMap()
-        with(cursor){
-            while(moveToNext()){
-                mapper.mapping(cursor).takeIf {
-                    Log.d(javaClass.name,"=== getRecurrent $it")
-                    it.date < date && it.end > date
-                }?.let {  items.add(it) }
+            null)?.use { cursor ->
+            val mapper = PaidMap()
+            with(cursor) {
+                while (moveToNext()) {
+                    mapper.mapping(cursor).takeIf {
+                        Log.d(javaClass.name, "=== getRecurrent $it")
+                        it.date < date && it.end > date
+                    }?.let { items.add(it) }
+                }
             }
         }
         return items.also { Log.d(javaClass.name,"=== getRecurrent $date $it") }
@@ -124,21 +128,22 @@ class PaidImpl @Inject constructor(override var dbConnect: SQLiteOpenHelper) : I
         val startPeriod = LocalDate.of(period.year,period.monthValue,1)
         val endPeriod = startPeriod.plusMonths(1).minusDays(1)
         val db = dbConnect.readableDatabase
-        val cursor = db.query(PaidDB.Entry.TABLE_NAME,
+        val items = mutableListOf<PaidDTO>()
+        db.query(PaidDB.Entry.TABLE_NAME,
             COLUMNS,
             """
                 (${PaidDB.Entry.COLUMN_ACCOUNT} like ? or ${PaidDB.Entry.COLUMN_ACCOUNT} = 0)
                 AND ${FORMAT_DATE_PAID} between ? and ?
             """.trimMargin(),
             arrayOf("%${codeAccount}%",DateUtils.localDateToStringDate(startPeriod),DateUtils.localDateToStringDate(endPeriod)),
-            null,null,null)
-        val items = mutableListOf<PaidDTO>()
-        val mapper = PaidMap()
-        with(cursor){
-            while(moveToNext()){
-                mapper.mapping(cursor).takeIf {
-                     it.date in startPeriod .. endPeriod
-                }?.let(items::add)
+            null,null,null)?.use { cursor ->
+            val mapper = PaidMap()
+            with(cursor) {
+                while (moveToNext()) {
+                    mapper.mapping(cursor).takeIf {
+                        it.date in startPeriod..endPeriod
+                    }?.let(items::add)
+                }
             }
         }
         return items
@@ -183,26 +188,29 @@ class PaidImpl @Inject constructor(override var dbConnect: SQLiteOpenHelper) : I
         val db = dbConnect.readableDatabase
         val listValues = mutableListOf<Double>()
 
-        val cursor = db.rawQuery("""
+        db.rawQuery("""
                 SELECT 
                       ${PaidDB.Entry.COLUMN_VALUE} AS value
                     , ${PaidDB.Entry.COLUMN_RECURRENT} AS recurrent
                     , ${PaidDB.Entry.COLUMN_DATE_PAID} AS date_paid
                      , ${PaidDB.Entry.COLUMN_END_DATE} AS end_paid
                 FROM ${PaidDB.Entry.TABLE_NAME} 
-                """, arrayOf())
-        with(cursor){
-            while (moveToNext()){
-                val recurrent = cursor.getInt(1)
-                val datePaid = cursor.getString(2).let { DateUtils.toLocalDate(it) }
-                val endDate = cursor.getString(3).let { DateUtils.toLocalDate(it) }
-                val value = cursor.getDouble(0)
-                if(((recurrent == 1 && endDate >= date.withDayOfMonth(1).plusMonths(1))||
-                            datePaid in date.withDayOfMonth(1).. date.plusMonths(1).withDayOfMonth(1).minusDays(1)) &&
-                            endDate >= date.withDayOfMonth(1).plusMonths(1)) {
-                    listValues.add(value)
-                }
+                """, arrayOf())?.use { cursor ->
+            with(cursor) {
+                while (moveToNext()) {
+                    val recurrent = cursor.getInt(1)
+                    val datePaid = cursor.getString(2).let { DateUtils.toLocalDate(it) }
+                    val endDate = cursor.getString(3).let { DateUtils.toLocalDate(it) }
+                    val value = cursor.getDouble(0)
+                    if (((recurrent == 1 && endDate >= date.withDayOfMonth(1).plusMonths(1)) ||
+                                datePaid in date.withDayOfMonth(1)..date.plusMonths(1)
+                            .withDayOfMonth(1).minusDays(1)) &&
+                        endDate >= date.withDayOfMonth(1).plusMonths(1)
+                    ) {
+                        listValues.add(value)
+                    }
 
+                }
             }
         }
         return listValues.sum().toBigDecimal().also{ Log.d(javaClass.name,"<<<=== GetTotalPaid Total $it") }
@@ -225,12 +233,13 @@ class PaidImpl @Inject constructor(override var dbConnect: SQLiteOpenHelper) : I
     @RequiresApi(Build.VERSION_CODES.O)
     override fun getAll(): List<PaidDTO> {
         val db = dbConnect.readableDatabase
-        val cursor = db.query(PaidDB.Entry.TABLE_NAME,COLUMNS,null,null,null,null,null)
         val items = mutableListOf<PaidDTO>()
-        val mapper = PaidMap()
-        with(cursor){
-            while(moveToNext()){
-                items.add(mapper.mapping(cursor))
+        db.query(PaidDB.Entry.TABLE_NAME, COLUMNS, null, null, null, null, null)?.use { cursor ->
+            val mapper = PaidMap()
+            with(cursor) {
+                while (moveToNext()) {
+                    items.add(mapper.mapping(cursor))
+                }
             }
         }
         return items
@@ -247,13 +256,14 @@ class PaidImpl @Inject constructor(override var dbConnect: SQLiteOpenHelper) : I
     override fun get(id: Int): Optional<PaidDTO> {
         val db = dbConnect.readableDatabase
 
-        val cursor = db.query(
+        db.query(
             PaidDB.Entry.TABLE_NAME,COLUMNS,"_id = ?",
-            arrayOf(id.toString()),null,null,null)
-        val mapper = PaidMap()
-        with(cursor){
-            while(moveToNext()){
-                return Optional.ofNullable(mapper.mapping(cursor))
+            arrayOf(id.toString()),null,null,null)?.use { cursor ->
+            val mapper = PaidMap()
+            with(cursor) {
+                while (moveToNext()) {
+                    return@get Optional.ofNullable(mapper.mapping(cursor))
+                }
             }
         }
         return Optional.empty()
@@ -298,29 +308,31 @@ class PaidImpl @Inject constructor(override var dbConnect: SQLiteOpenHelper) : I
     @RequiresApi(Build.VERSION_CODES.O)
     override fun getPeriods(codeAccount: Long):List<PaidDTO>{
         val db = dbConnect.readableDatabase
-        val cursor = db.rawQuery(
+        val list = mutableListOf<PaidDTO>()
+        db.rawQuery(
             "select max(${PaidDB.Entry.COLUMN_DATE_PAID}) from ${PaidDB.Entry.TABLE_NAME} WHERE ${PaidDB.Entry.COLUMN_ACCOUNT} like ?"
             ,arrayOf("%${codeAccount}%")
-        )
-        val list = mutableListOf<PaidDTO>()
-        with(cursor){
-            while(moveToNext()){
-                val datePaid = cursor.getString(0)
-                datePaid?.let{
-               var date = DateUtils.toLocalDate(datePaid)
-                date = date.withDayOfMonth(1)
-                val periods = Period.between(date,LocalDate.now())
-                for( i in 0..periods.months) {
-                    val dateFound = date.plusMonths(i.toLong())
-                    val records = get(getPaid(dateFound)).toMutableList()
-                    getRecurrent(dateFound)?.let {
-                        if (it.isNotEmpty()) {
-                            records.addAll(it)
+        )?.use { cursor ->
+            with(cursor) {
+                while (moveToNext()) {
+                    val datePaid = cursor.getString(0)
+                    datePaid?.let {
+                        var date = DateUtils.toLocalDate(datePaid)
+                        date = date.withDayOfMonth(1)
+                        val periods = Period.between(date, LocalDate.now())
+                        for (i in 0..periods.months) {
+                            val dateFound = date.plusMonths(i.toLong())
+                            val records = get(getPaid(dateFound)).toMutableList()
+                            getRecurrent(dateFound)?.let {
+                                if (it.isNotEmpty()) {
+                                    records.addAll(it)
+                                }
+                            }
+                            val value =
+                                if (records.isNotEmpty()) records.sumOf { it.value } else BigDecimal.ZERO
+                            list.add(getPeriodPaidDTO(dateFound, value, records.count()))
                         }
                     }
-                    val value = if (records.isNotEmpty()) records.sumOf { it.value } else BigDecimal.ZERO
-                    list.add(getPeriodPaidDTO(dateFound, value,records.count()))
-                }
                 }
             }
         }
