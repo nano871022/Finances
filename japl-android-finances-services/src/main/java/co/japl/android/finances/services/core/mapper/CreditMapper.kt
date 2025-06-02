@@ -17,4 +17,18 @@ object CreditMapper {
             creditDTO.kindOfTax
         )
     }
+
+    fun mapper(creditDTO: co.com.japl.finances.iports.dtos.CreditDTO):CreditDTO{
+        return CreditDTO(
+            creditDTO.id,
+            creditDTO.name,
+            creditDTO.date,
+            creditDTO.tax,
+            creditDTO.periods,
+            creditDTO.value,
+            creditDTO.quoteValue,
+            creditDTO.kindOf,
+            creditDTO.kindOfTax
+        )
+    }
 }

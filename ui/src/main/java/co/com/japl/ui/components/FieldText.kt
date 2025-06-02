@@ -32,6 +32,7 @@ import androidx.compose.ui.unit.dp
 import co.com.japl.ui.R
 import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.com.japl.ui.utils.CurrencyVisualTransformation
+import co.japl.android.myapplication.utils.NumbersUtil
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -143,9 +144,13 @@ fun FieldText( title:String
                ,value:String=""
                ,@StringRes clearTitle:Int = R.string.clear
                ,icon:ImageVector? = null
-               ,keyboardType: KeyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text)
+               ,keyboardType: KeyboardOptions = KeyboardOptions.Default
                , currency:Boolean = false
+               , decimal:Boolean = false
                ,modifier:Modifier=Modifier
+               ,formatDecimal:String=NumbersUtil.formatDecimal
+               , placeHolder:String=""
+               , suffixValue:String=""
                ,validation:()->Unit = {}
                ,hasErrorState:MutableState<Boolean> = mutableStateOf(false)
                ,callback:(String)->Unit={}){
@@ -156,9 +161,10 @@ fun FieldText( title:String
         valueState.value = it
         callback.invoke(it)
         validation.invoke()
-    }, isError = hasErrorState.value, label = {
+    }, isError = hasErrorState.value,
+        label = {
         Text(text = title)
-    }, trailingIcon = {
+    },  trailingIcon = {
         valueState.value.takeIf { it.isNotEmpty() }?.let {
             IconButton(onClick = {
                 valueState.value= ""
@@ -174,12 +180,18 @@ fun FieldText( title:String
             }
         }
     }, modifier = modifier
-        , visualTransformation = CurrencyVisualTransformation(valueState.value)
+        , visualTransformation = CurrencyVisualTransformation(formatDecimal,currency,decimal)
         , prefix = {
             if (valueState.value.isNotEmpty() && currency)
                 Text(text = "$")
+        }, suffix = {
+            if(suffixValue.isNotBlank()){
+                Text(text = suffixValue)
+            }
+        }, keyboardOptions = keyboardType
+        , placeholder = {
+            Text(text = placeHolder)
         }
-        , keyboardOptions = keyboardType
     )
 }
 

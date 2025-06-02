@@ -155,7 +155,7 @@ class CreateRateViewModel constructor(private val codeCreditCard:Int?,private va
 
         year.value = LocalDate.now().year.toString()
         month.value = LocalDate.now().monthValue.toString()
-        creditRateKind.value = KindOfTaxEnum.MONTHLY_EFFECTIVE.getName()
+        creditRateKind.value = KindOfTaxEnum.ANUAL_EFFECTIVE.getName()
         creditCardKind.value = KindInterestRateEnum.CREDIT_CARD.getCode().toString()
 
         creditRateSvc?.let{svc->
@@ -176,7 +176,7 @@ class CreateRateViewModel constructor(private val codeCreditCard:Int?,private va
                     month.value = it.month.toString()
                     rate.value = it.value.toString()
                     creditCardKind.value = it.kind.getCode().toString()
-                    creditRateKind.value = it.kindOfTax?.getName()?:KindOfTaxEnum.MONTHLY_EFFECTIVE.getName()
+                    creditRateKind.value = it.kindOfTax?.getName()?:KindOfTaxEnum.ANUAL_EFFECTIVE.getName()
                     period.value = it.period.toString()
                     status.value = it.status>0
                 }

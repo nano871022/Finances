@@ -4,6 +4,7 @@ import android.content.Context
 import co.com.japl.finances.iports.inbounds.creditcard.ICreditCardPort
 import co.com.japl.finances.iports.inbounds.common.IDifferQuotesPort
 import co.com.japl.finances.iports.inbounds.common.ISMSRead
+import co.com.japl.finances.iports.inbounds.credit.ICreditFormPort
 import co.com.japl.finances.iports.inbounds.credit.IPeriodGracePort
 import co.com.japl.finances.iports.inbounds.creditcard.IBuyCreditCardSettingPort
 import co.com.japl.finances.iports.inbounds.creditcard.ICreditCardSettingPort
@@ -484,4 +485,6 @@ abstract class AbstractModule {
     abstract fun bindOutboundPeriodGracePort(impl:co.japl.android.finances.services.core.PeriodGraceImpl):co.com.japl.finances.iports.outbounds.IPeriodGracePort
     @Binds
     abstract fun bindDAOPeriodGrace(impl:co.japl.android.finances.services.dao.implement.GracePeriodImpl):IGracePeriodDAO
+    @Binds
+    abstract fun bindInboundCreditFormPort(impl:co.japl.finances.core.usercases.implement.credit.CreditFormImpl):ICreditFormPort
 }

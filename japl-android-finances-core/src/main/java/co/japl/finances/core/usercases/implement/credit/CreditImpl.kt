@@ -1,17 +1,16 @@
 package co.japl.finances.core.usercases.implement.credit
 
-import android.util.Log
 import co.com.japl.finances.iports.dtos.CreditDTO
 import co.com.japl.finances.iports.dtos.RecapCreditDTO
 import co.com.japl.finances.iports.enums.KindInterestRateEnum
 import co.com.japl.finances.iports.enums.KindOfTaxEnum
 import co.com.japl.finances.iports.outbounds.IAdditionalRecapPort
-import co.com.japl.finances.iports.outbounds.ICreditFixRecapPort
 import co.com.japl.finances.iports.outbounds.ICreditPort
 import co.japl.finances.core.usercases.calculations.InterestCalculations
 import co.japl.finances.core.usercases.calculations.InterestRateCalculation
 import co.japl.finances.core.usercases.calculations.ValuesCalculation
 import co.japl.finances.core.usercases.interfaces.credit.ICredit
+import java.math.BigDecimal
 import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.YearMonth
@@ -30,6 +29,28 @@ class CreditImpl @Inject constructor(private val creditSvc:ICreditPort, private 
     }
 
     override fun getCreditsEnables(period: YearMonth): List<RecapCreditDTO> = creditSvc.getAllActive(period).map (this::getRecapCreditByCredit)
+    override fun save(credit: CreditDTO): Int {
+        return creditSvc.save(credit)
+    }
+
+    override fun calculateQuoteCredit(
+        value: BigDecimal,
+        rate: Double,
+        kindRate: KindOfTaxEnum,
+        month: Int
+    ): BigDecimal {
+        val rateEM = InterestRateCalculation.getEM(rate, kindRate)
+        val quote = valuesCalculation.calculateQuoteCredit(
+            value = value.toDouble(),
+            rateEM = rateEM,
+            months = month.toShort()
+        )
+        return if(quote.isNaN().not()) quote.toBigDecimal() else BigDecimal.ZERO
+    }
+
+    override fun findCreditById(id: Int): CreditDTO? {
+        return creditSvc.getById(id)
+    }
 
 
     private fun getRecapCreditByCredit(creditDTO: CreditDTO):RecapCreditDTO {
@@ -64,7 +85,7 @@ class CreditImpl @Inject constructor(private val creditSvc:ICreditPort, private 
             valueItem = creditDTO.value.toDouble(),
             interest = tax,
             kind = KindInterestRateEnum.CREDIT_CARD,
-            kindOfRate = kindOfRate,
+            kindOfRate = KindOfTaxEnum.MONTLY_NOMINAL,
             interest1Quote = false,
             interest1NotQuote = false,
             rediffer = false

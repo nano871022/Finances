@@ -81,16 +81,16 @@ private fun Body(viewModel: SmsViewModel){
 @Composable
 private fun Content(viewModel: SmsViewModel,modifier: Modifier){
     val list = remember { viewModel.list}
-    Column(
-        modifier = modifier.padding(bottom = Dimensions.PADDING_BOTTOM_SPACE_FLOATING_BUTTON)
-    ) {
+    Column {
         Row (horizontalArrangement = Arrangement.End, modifier=Modifier.fillMaxWidth()) {
             HelpWikiButton(wikiUrl = R.string.wiki_sms_paid_url,
                 descriptionContent = R.string.wiki_sms_paid_description)
         }
     if(list.isNotEmpty()) {
         Carousel(size = list.size) {
-
+            Column(
+                modifier = modifier.padding(bottom = Dimensions.PADDING_BOTTOM_SPACE_FLOATING_BUTTON)
+            ) {
                 list[it]?.values?.forEach {
                     for (i in it) {
                         Card(sms = i, modifier = Modifier, edit = {
@@ -104,6 +104,7 @@ private fun Content(viewModel: SmsViewModel,modifier: Modifier){
                         })
                     }
                 }
+            }
             }
         }
     }

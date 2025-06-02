@@ -35,7 +35,6 @@ import androidx.compose.ui.unit.dp
 import co.com.japl.finances.iports.dtos.RecapCreditDTO
 import co.com.japl.module.credit.R
 import co.com.japl.module.credit.controllers.recap.RecapViewModel
-import co.com.japl.ui.components.FieldView
 import co.com.japl.ui.components.FloatButton
 import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.com.japl.ui.theme.values.Dimensions
@@ -44,7 +43,7 @@ import co.japl.android.graphs.pieceofpie.PieceOfPie
 import co.japl.android.myapplication.utils.NumbersUtil
 import java.math.BigDecimal
 import java.time.YearMonth
-
+import co.com.japl.ui.components.FieldView
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
@@ -98,14 +97,14 @@ private fun List(list:List<RecapCreditDTO>,yearMonth: YearMonth){
 
             Row (modifier = Modifier.padding(bottom=Dimensions.PADDING_BOTTOM)) {
                 FieldView(
-                    title = stringResource(R.string.num_credits),
+                    name = stringResource(R.string.num_credits),
                     value = "${list.size}",
                     modifier = Modifier.weight(1f)
                         .padding(end = Dimensions.PADDING_SHORT)
                 )
 
                 FieldView(
-                    title = stringResource(R.string.month_payment),
+                    name = stringResource(R.string.month_payment),
                     value = "${months[yearMonth.monthValue]} ${yearMonth.year}",
                     modifier = Modifier.weight(2f)
                         .padding(start = Dimensions.PADDING_SHORT)
@@ -113,21 +112,21 @@ private fun List(list:List<RecapCreditDTO>,yearMonth: YearMonth){
             }
 
             FieldView(
-                title = stringResource(R.string.quote_value),
+                name = stringResource(R.string.quote_value),
                 value = NumbersUtil.COPtoString(list.sumOf { it.quoteValue }),
                 modifier = Modifier.fillMaxWidth().padding(bottom = Dimensions.PADDING_BOTTOM)
             )
 
             Row (modifier = Modifier.padding(bottom=Dimensions.PADDING_BOTTOM)){
                 FieldView(
-                    title = stringResource(R.string.interest_value),
+                    name = stringResource(R.string.interest_value),
                     value = NumbersUtil.COPtoString(list.sumOf { it.interestValue }),
                     modifier = Modifier.fillMaxWidth().weight(2f)
                         .padding(end = Dimensions.PADDING_SHORT)
                 )
 
                 FieldView(
-                    title = stringResource(R.string.capital_value),
+                    name = stringResource(R.string.capital_value),
                     value = NumbersUtil.COPtoString(list.sumOf { it.capitalValue }),
                     modifier = Modifier.fillMaxWidth().weight(2f)
                         .padding(start = Dimensions.PADDING_SHORT)
@@ -135,14 +134,14 @@ private fun List(list:List<RecapCreditDTO>,yearMonth: YearMonth){
             }
             Row (modifier = Modifier.padding(bottom=Dimensions.PADDING_BOTTOM)){
                 FieldView(
-                    title = stringResource(R.string.pending_payment),
+                    name = stringResource(R.string.pending_payment),
                     value = NumbersUtil.COPtoString(list.sumOf { it.pendingPerPaid }),
                     modifier = Modifier.fillMaxWidth().weight(2f)
                         .padding(end = Dimensions.PADDING_SHORT)
                 )
 
                 FieldView(
-                    title = stringResource(R.string.additional_value),
+                    name = stringResource(R.string.additional_value),
                     value = NumbersUtil.COPtoString(list.sumOf { it.additionalAmount }),
                     modifier = Modifier.fillMaxWidth().weight(2f)
                         .padding(start = Dimensions.PADDING_SHORT)

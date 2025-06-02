@@ -28,4 +28,8 @@ class CreditFixImpl @Inject constructor(private val creditFix: ICreditDAO):ICred
         return creditFix.delete(id)
     }
 
+    override fun save(credit: CreditDTO): Int {
+        return creditFix.save(CreditMapper.mapper(credit)).toInt()
+    }
+
 }

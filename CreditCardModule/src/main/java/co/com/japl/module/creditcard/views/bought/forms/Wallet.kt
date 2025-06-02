@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Cancel
@@ -24,6 +25,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import co.com.japl.module.creditcard.R
@@ -147,6 +149,7 @@ private fun Body(viewModel: WalletViewModel,modifier:Modifier){
             hasErrorState = errorValueState,
             validation = {viewModel.validate()},
             callback = {valueState.value = it},
+            keyboardType = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Decimal),
             currency = true,
             modifier=ModifiersCustom.FieldFillMAxWidhtAndPaddingShort())
 

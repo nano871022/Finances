@@ -9,7 +9,7 @@ enum class KindInterestRateEnum(private val code:Short) {
     fun getCode()=code
     companion object {
         fun findByOrdinal(ordinal:Short): KindInterestRateEnum {
-            return KindInterestRateEnum.values().firstOrNull { it.code == ordinal} ?: CREDIT_CARD
+            return KindInterestRateEnum.entries.firstOrNull { it.code == ordinal} ?: CREDIT_CARD
         }
     }
 }

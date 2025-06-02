@@ -2,6 +2,7 @@ package co.japl.finances.core.usercases.calculations
 
 import android.util.Log
 import co.com.japl.finances.iports.dtos.DifferInstallmentDTO
+import co.com.japl.finances.iports.enums.KindOfTaxEnum
 import co.japl.finances.core.utils.DateUtils
 import java.time.LocalDateTime
 import java.time.LocalTime
@@ -39,5 +40,11 @@ class ValuesCalculation @Inject constructor(){
             }?:valueItem.minus(capitalBought))
                 .takeIf { it > 0.0 }?: 0.0
         }?: valueItem
+    }
+
+    internal fun calculateQuoteCredit(value:Double,rateEM:Double,months:Short):Double{
+        val step1 = (value) * ( ( rateEM / 100 ) * Math.pow( 1 + (rateEM / 100),months.toDouble()))
+        val step2 = Math.pow( 1 + ( rateEM / 100 ),months.toDouble()) - 1
+        return step1 / step2
     }
 }

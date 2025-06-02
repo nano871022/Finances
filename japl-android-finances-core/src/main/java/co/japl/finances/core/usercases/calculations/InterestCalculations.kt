@@ -90,8 +90,6 @@ class InterestCalculations @Inject constructor(private val buyCreditCardSettingS
         } ?: 0.0).also {
             Log.v(this.javaClass.name,"<<<=== FINISH::GetInterestValue month: $month monthPaid: $monthPaid kind: $kind pendingToPay: $pendingToPay valueItem: $valueItem interest: $interest kindOfRate: $kindOfRate interest1Quote: $interest1Quote interest1NotQuote: $interest1NotQuote Response $it")
         }
-
-
     }
 
 }

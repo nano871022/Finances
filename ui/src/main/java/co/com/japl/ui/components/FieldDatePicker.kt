@@ -36,8 +36,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-//import co.com.alameda181.ui.R
-//import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.com.japl.ui.R
 import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.com.japl.ui.utils.DateUtils
@@ -79,7 +77,8 @@ fun FieldDatePicker(@StringRes title:Int,value:String,isEnablePicker:MutableStat
                             MaterialTheme.colorScheme.onSurface}
                         ,modifier = modifier
                             .weight(1f)
-                            .align(alignment = Alignment.CenterVertically))
+                           .align(alignment = Alignment.CenterVertically)
+                    )
 
                     IconButton(onClick = { stateValue.value = "" }) {
                         Icon(imageVector = Icons.Rounded.Cancel, contentDescription = "Clear",

@@ -48,6 +48,20 @@
     <string name="check_periods">Periodos</string>
     <string name="detail_credits">Detalle</string>
     <string name="num_credits">Cantidad</string>
+    <string name="clean_credit">Limpiar</string>
+    <string name="kind_payment">Tipo de Pago</string>
+    <string name="name_credit">Nombre</string>
+    <string name="value_credit">Valor</string>
+    <string name="rate_credit">Tasa</string>
+    <string name="periods_credit">Meses</string>
+    <string name="quote_credit">Valor de la Cuota</string>
+    <string name="date_credit">Fecha del Crédito</string>
+    <string name="type_payment_credit">Tipo de Pago</string>
+    <string name="kind_rate">Tipo de Tasa</string>
+    <string name="back_view">Ir Página Anterior</string>
+    <string name="invalid_option_amortization">Necesita crear el credito antes de entrar en esta opción</string>
+    <string name="invalid_form">Alguno de los campos no se ha llenado correctamente.</string>
+    <string name="save_success">Se guardo el crédito correctamente</string>
 
     <string-array name="months">
         <item>--- Seleccionar --- </item>
