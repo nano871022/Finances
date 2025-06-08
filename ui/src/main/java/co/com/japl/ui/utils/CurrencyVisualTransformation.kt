@@ -1,7 +1,6 @@
 package co.com.japl.ui.utils
 
 import android.icu.text.DecimalFormat
-import android.util.Log
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.input.OffsetMapping
 import androidx.compose.ui.text.input.TransformedText
@@ -20,7 +19,7 @@ class CurrencyVisualTransformation (private val formatDecimal:String = NumbersUt
         if(NumbersUtil.isIntNumber(text.text) && currencyForce.not() && decimalForce){
             return TransformedText(text, OffsetMapping.Identity)
         }
-        val transformation = DecimalFormat(formatDecimal).format(text.text.toDouble())
+        val transformation = DecimalFormat(formatDecimal).format(NumbersUtil.toDouble(text.text))
 
         return TransformedText(AnnotatedString(transformation), CurrencyOffSetMapping(text.text,transformation,'.',','))
     }

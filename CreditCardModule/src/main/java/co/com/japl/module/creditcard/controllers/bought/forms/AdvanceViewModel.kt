@@ -9,12 +9,14 @@ import androidx.navigation.NavController
 import co.com.japl.finances.iports.dtos.CreditCardBoughtDTO
 import co.com.japl.finances.iports.dtos.TaxDTO
 import co.com.japl.finances.iports.enums.KindInterestRateEnum
+import co.com.japl.finances.iports.enums.KindOfTaxEnum
 import co.com.japl.finances.iports.inbounds.creditcard.ICreditCardPort
 import co.com.japl.finances.iports.inbounds.creditcard.ITaxPort
 import co.com.japl.finances.iports.inbounds.creditcard.bought.IBoughtPort
 import co.com.japl.module.creditcard.R
 import co.com.japl.ui.Prefs
 import co.com.japl.ui.utils.DateUtils
+import co.com.japl.ui.utils.initialFieldState
 import co.japl.android.myapplication.utils.NumbersUtil
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.runBlocking
@@ -33,38 +35,78 @@ class AdvanceViewModel constructor(private val codeCreditCard:Int, private val c
 
     val isNew = mutableStateOf(true)
 
-    val creditCardName = mutableStateOf("")
-    val nameProduct = mutableStateOf("")
-    val errorNameProduct = mutableStateOf(false)
-    val valueProduct = mutableStateOf("")
-    val errorValueProduct = mutableStateOf(false)
-    val monthProduct = mutableStateOf("")
-    val creditRate = mutableStateOf("")
-    val capitalValue = mutableStateOf("")
-    val dateBought = mutableStateOf("")
-    val errorDateBought = mutableStateOf(false)
-    val quoteValue = mutableStateOf("")
-    val interestValue = mutableStateOf("")
-    val creditRateKind = mutableStateOf("")
+    val creditCardName = initialFieldState(
+        initialValue = "",
+        validator = {it.isNotBlank()},
+        onValueChangeCallBack = { bought?.nameCreditCard = it }
+    )
+
+    val nameProduct = initialFieldState(
+        initialValue = "",
+        validator = {it.isNotBlank()},
+        onValueChangeCallBack = { bought?.nameItem = it; validate() }
+    )
+
+    val valueProduct = initialFieldState(
+        initialValue = "",
+        validator = {it.isNotBlank() && NumbersUtil.isNumber(it)},
+        onValueChangeCallBack = { bought?.valueItem = NumbersUtil.toBigDecimal(it); validate() }
+    )
+    val monthProduct = initialFieldState(
+        initialValue = "",
+        validator = {it.isNotBlank() && NumbersUtil.isNumber(it) && it.toInt() > 0},
+        onValueChangeCallBack = { bought?.month = it.toInt(); validate() }
+    )
+    val creditRate = initialFieldState(
+        initialValue = "",
+        validator = {it.isNotBlank() && NumbersUtil.isNumber(it)},
+        onValueChangeCallBack = { bought?.interest = NumbersUtil.toBigDecimal(it).toDouble() }
+    )
+    val capitalValue = initialFieldState(
+        initialValue = "",
+        validator = {it.isNotBlank() && NumbersUtil.isNumber(it)},
+        onValueChangeCallBack = { }
+    )
+    val dateBought = initialFieldState(
+        initialValue = "",
+        validator = {it.isNotBlank() && DateUtils.isDateValid(it)},
+        onValueChangeCallBack = { bought?.boughtDate = DateUtils.toLocalDateTime2(it) }
+    )
+    val quoteValue = initialFieldState(
+        initialValue = "",
+        validator = {it.isNotBlank() && NumbersUtil.isNumber(it)},
+        onValueChangeCallBack = { }
+    )
+
+    val interestValue = initialFieldState(
+        initialValue = "",
+        validator = {it.isNotBlank() && NumbersUtil.isNumber(it)},
+        onValueChangeCallBack = { }
+    )
+    val creditRateKind = initialFieldState(
+        initialValue = "",
+        validator = {it.isNotBlank()},
+        onValueChangeCallBack = { }
+    )
+
+    init{
+        main()
+    }
 
     fun clear(){
 
-        nameProduct.value = ""
-        valueProduct.value = ""
-        monthProduct.value = ""
-        creditRate.value = ""
-        capitalValue.value = ""
+        nameProduct.reset("")
+        valueProduct.reset("")
+        monthProduct.reset("")
+        creditRate.reset("")
+        capitalValue.reset("")
         isNew.value = true
-        quoteValue.value = ""
-        interestValue.value = ""
-
-        errorValueProduct.value = false
-        errorNameProduct.value = false
-        errorDateBought.value = false
-
+        quoteValue.reset("")
+        interestValue.reset("")
     }
 
     fun create(){
+        validate()
         if(validate) {
             boughtSvc?.let {
                 if(it.create(bought!!,prefs.simulator)>0) {
@@ -89,6 +131,7 @@ class AdvanceViewModel constructor(private val codeCreditCard:Int, private val c
     }
 
     fun update(){
+        validate()
         if(validate) {
             boughtSvc?.let {
                 if(it.update(bought!!,prefs.simulator)) {
@@ -122,32 +165,27 @@ class AdvanceViewModel constructor(private val codeCreditCard:Int, private val c
         }
     }
 
-    fun validate(){
+    fun validate() {
         var value = true
         var month = true
 
         validate = true
-        nameProduct.value.takeIf { it.isBlank() }?.let {
-            errorNameProduct.value = true
-            validate = false
-        }?:errorNameProduct.takeIf { it.value }?.let{ it.value = false}
 
-        valueProduct.value.takeIf { it.isBlank() && NumbersUtil.isNumber(it).not() }?.let {
-            errorValueProduct.value = true
-            validate = false
-            value = false
-        }?:errorValueProduct.takeIf { it.value }?.let { it.value = false}
-
-        dateBought.value.takeIf { it.isBlank() && DateUtils.isDateValid(it).not() }?.let {
-            errorDateBought.value = true
-            validate = false
-        }?:errorDateBought.takeIf { it.value }?.let { it.value = false}
-
-        if(month && value){
+        nameProduct.validate().not().or(nameProduct.error.value).takeIf { it }
+            ?.let { validate = false }
+        valueProduct.validate().not().or(valueProduct.error.value).takeIf { it }
+            ?.let { validate = false; value = false }
+        dateBought.validate().not().or(dateBought.error.value).takeIf { it }
+            ?.let { validate = false }
+        calculateValues(month,value)
+        createNewDTO()
+    }
+    private fun calculateValues(month:Boolean,value: Boolean) {
+        if (month && value) {
             val month = NumbersUtil.toLong(monthProduct.value).toInt()
             val value = NumbersUtil.toBigDecimal(valueProduct.value)
             boughtSvc?.let {
-                taxDto?.let {taxDto->
+                taxDto?.let { taxDto ->
                     val quoteBought = it.quoteValue(
                         taxDto?.id!!,
                         month.toShort(),
@@ -169,14 +207,15 @@ class AdvanceViewModel constructor(private val codeCreditCard:Int, private val c
                         taxDto?.kindOfTax!!,
                         taxDto?.kind!!
                     )
-                    quoteValue.value = NumbersUtil.COPtoString(quoteBought)
-                    interestValue.value = NumbersUtil.COPtoString(interestBought)
-                    capitalValue.value = NumbersUtil.COPtoString(capitalBought)
+                    quoteValue.onValueChange(NumbersUtil.COPtoString(quoteBought))
+                    interestValue.onValueChange(NumbersUtil.COPtoString(interestBought))
+                    capitalValue.onValueChange(NumbersUtil.COPtoString(capitalBought))
                 }
             }
 
         }
-
+    }
+    private fun createNewDTO(){
         if(validate && taxDto != null){
             bought = CreditCardBoughtDTO(
                 codeCreditCard = codeCreditCard,
@@ -208,11 +247,11 @@ class AdvanceViewModel constructor(private val codeCreditCard:Int, private val c
 
     suspend fun execute(){
         progress.floatValue = 0.2f
-        dateBought.value = DateUtils.localDateToStringDate(LocalDate.now())
+        dateBought.onValueChange( DateUtils.localDateToStringDate(LocalDate.now()))
         progress.floatValue = 0.3f
         creditCardSvc?.let {
             it.getCreditCard(codeCreditCard)?.let {
-                creditCardName.value = it.name
+                creditCardName.onValueChange( it.name)
                 DateUtils.cutOff(it.cutOffDay, period.toLocalDate())?.let {
                     cutOffDate = it
                 }
@@ -223,11 +262,11 @@ class AdvanceViewModel constructor(private val codeCreditCard:Int, private val c
         creditRateSvc?.let {
             it.get(codeCreditCard,cutOffDate?.monthValue?:period.monthValue,cutOffDate?.year?:period.year,KindInterestRateEnum.CASH_ADVANCE)?.let {
                 taxDto = it
-                creditRate.value = it.value.toString()
-                creditRateKind.value = it.kindOfTax?.getName()?:"EM"
-                monthProduct.value = it.period.toString()
+                creditRate.onValueChange(it.value.toString())
+                creditRateKind.onValueChange(it.kindOfTax?.getName()?: KindOfTaxEnum.MONTHLY_EFFECTIVE.value)
+                monthProduct.onValueChange(it.period.toString())
                 navController?.let {
-                    nameProduct.value = it.context.getString(R.string.CASH_ADVANCE)
+                    nameProduct.onValueChange(it.context.getString(R.string.CASH_ADVANCE))
                 }
                 progress.floatValue = 0.8f
             }
@@ -238,13 +277,11 @@ class AdvanceViewModel constructor(private val codeCreditCard:Int, private val c
                 it.getById(codeBought, prefs.simulator)?.let {
                     bought = it
 
-                    dateBought.value = DateUtils.localDateTimeToStringDate(it.boughtDate)
-                    nameProduct.value = it.nameItem
-                    valueProduct.value = NumbersUtil.toString(it.valueItem)
-                    monthProduct.value = it.month.toString()
+                    dateBought.onValueChange(DateUtils.localDateTimeToStringDate(it.boughtDate))
+                    nameProduct.onValueChange(it.nameItem)
+                    valueProduct.onValueChange(NumbersUtil.toString(it.valueItem))
+                    monthProduct.onValueChange(it.month.toString())
                     validate()
-
-
                     isNew.value = false
                 }
             }

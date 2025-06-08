@@ -1,29 +1,23 @@
 package co.com.japl.module.credit.controllers.forms
 
 import android.content.Context
-import android.util.Log
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.mutableFloatStateOf
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import co.com.japl.finances.iports.dtos.CreditDTO
-import co.com.japl.finances.iports.enums.KindInterestRateEnum
 import co.com.japl.finances.iports.enums.KindOfTaxEnum
 import co.com.japl.finances.iports.enums.KindPaymentsEnums
 import co.com.japl.finances.iports.inbounds.credit.ICreditFormPort
 import co.com.japl.module.credit.R
 import co.com.japl.module.credit.navigations.CreditList
+import co.com.japl.ui.utils.initialFieldState
 import co.japl.android.myapplication.utils.NumbersUtil
 import dagger.hilt.android.scopes.ViewModelScoped
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.math.BigDecimal
 import java.time.LocalDate
@@ -32,109 +26,61 @@ import java.time.LocalDate
 class CreditFormViewModel constructor(var id:Int?,val creditSvc: ICreditFormPort?,val context:Context?, val navController: NavController?): ViewModel() {
     var progress = mutableFloatStateOf(0f)
     var showProgress = mutableStateOf(true)
-    private val _uiState = MutableStateFlow(CreditFormState())
-    val uiState: StateFlow<CreditFormState> = _uiState.asStateFlow()
-    val kindPayment = mutableStateOf(KindPaymentsEnums.entries.map{ Pair(it.month,context?.resources?.getString(it.title)?:"Invalid")})
-    val kindRate = mutableStateOf(KindOfTaxEnum.entries.toTypedArray().mapIndexed { index, kindOfTaxEnum -> Pair(index,context?.resources?.getString(kindOfTaxEnum.title)?:"Invalid") })
     val snackbarHostState = SnackbarHostState()
-    val isErrorKindPayment = mutableStateOf(false)
-    val isErrorKindRate = mutableStateOf(false)
-    val isErrorDate = mutableStateOf(false)
-    val isErrorName = mutableStateOf(false)
-    val isErrorValue = mutableStateOf(false)
-    val isErrorRate = mutableStateOf(false)
-    val isErrorMonth = mutableStateOf(false)
+
+    val kindPayment = initialFieldState<Triple<Int,String, KindPaymentsEnums?>?>(
+        initialValue = Triple( KindPaymentsEnums.MONTHLY.ordinal,  context?.resources?.getString(KindPaymentsEnums.MONTHLY.title)?:"", KindPaymentsEnums.MONTHLY),
+        list=KindPaymentsEnums.entries.map{ Triple(it.month,context?.resources?.getString(it.title)?:"Invalid",it)},
+        validator = { it != null },
+        onValueChangeCallBack = {  }
+    )
+
+    val creditDate = initialFieldState<LocalDate>(
+        initialValue = LocalDate.now(),
+        validator = {it != null},
+        onValueChangeCallBack = {  }
+    )
+
+    val name = initialFieldState<String>(
+        initialValue = "",
+        validator = {it.isNotBlank()},
+        onValueChangeCallBack = {  }
+    )
+
+    val value = initialFieldState(
+        initialValue = "",
+        validator = { it.isNotBlank() && NumbersUtil.isNumber(it) },
+        onValueChangeCallBack = {  }
+    )
+
+    val rate = initialFieldState(
+        initialValue = "",
+        validator = {it.isNotBlank() && NumbersUtil.isNumber(it)},
+        onValueChangeCallBack = {  }
+    )
+
+    val kindRate = initialFieldState<Triple<Int,String, KindOfTaxEnum>?>(
+        initialValue = Triple(KindOfTaxEnum.ANUAL_EFFECTIVE.ordinal,context?.resources?.getString(KindOfTaxEnum.ANUAL_EFFECTIVE.title)?:"",KindOfTaxEnum.ANUAL_EFFECTIVE),
+        list = KindOfTaxEnum.entries.map{ Triple(it.ordinal,context?.resources?.getString(it.title)?:"Invalid",it) },
+        validator = {it != null},
+        onValueChangeCallBack = {  }
+    )
+
+    val month = initialFieldState(
+        initialValue = "",
+        validator = {it.isNotBlank() && NumbersUtil.isNumber(it)},
+        onValueChangeCallBack = {  }
+    )
+
+    val quoteCredit = initialFieldState(
+        initialValue = "",
+        validator = {it.isNotBlank() && NumbersUtil.isNumber(it)},
+        onValueChangeCallBack = {  }
+    )
+
 
     init{
         execute()
-    }
-
-    fun onKindPaymentChange(id:Int?,kindPayment: String?) {
-        val error = if (kindPayment?.isBlank() == true) "Required" else null
-        isErrorKindPayment.value = error?.isNotBlank()?:false
-        _uiState.update { currentState ->
-            currentState.copy(
-                kindPayment = Triple(id?:0,kindPayment?:"",KindPaymentsEnums.findByIndex(id)),
-                kindPaymentError = error,
-                isFormValid = validate()
-            )
-        }
-    }
-
-    fun onCreditDateChange(creditDate: LocalDate) {
-        val error = if (creditDate.isAfter(LocalDate.now())) "Required" else null
-        isErrorDate.value = error?.isNotBlank()?:false
-        _uiState.update { currentState ->
-            currentState.copy(
-                creditDate = creditDate,
-                creditDateError = error,
-                isFormValid = validate()
-            )
-        }
-    }
-
-    fun onNameChange(name: String) {
-        val error = if (name.isBlank()) "Required" else null
-        isErrorName.value = error?.isNotBlank()?:false
-        _uiState.update { currentState ->
-            currentState.copy(
-                name = name,
-                nameError = error,
-                isFormValid = validate()
-            )
-        }
-    }
-
-    fun onValueChange(value: String) {
-
-        val error = if (NumbersUtil.isNumber(value) && NumbersUtil.toBigDecimal(value).compareTo(BigDecimal.ZERO) == 0) "Required" else null
-        isErrorValue.value = error?.isNotBlank()?:false
-        _uiState.update { currentState ->
-            currentState.copy(
-                value = value,
-                valueAmt = if (NumbersUtil.isNumber(value) && NumbersUtil.toBigDecimal(value).compareTo(BigDecimal.ZERO) != 0) NumbersUtil.toBigDecimal(value) else BigDecimal.ZERO,
-                valueError = error,
-                isFormValid = validate()
-            )
-        }
-    }
-
-    fun onRateChange(rate: String) {
-        val error = if (NumbersUtil.isNumber(rate) && NumbersUtil.toDouble(rate).compareTo(0.0) == 0) "Required" else null
-        Log.d("CreditFormViewModel","onRateChange $rate $error")
-        isErrorRate.value = error?.isNotBlank()?:false
-        _uiState.update { currentState ->
-            currentState.copy(
-                rate = rate,
-                rateAmt = if (NumbersUtil.isNumber(rate) && NumbersUtil.toDouble(rate).compareTo(0.0) != 0) NumbersUtil.toDouble(rate) else 0.0,
-                rateError = error,
-                isFormValid = validate()
-            )
-        }
-    }
-
-    fun onKindRateChange(id:Int?,kindRate: String?) {
-        val error = if (kindRate?.isBlank() == true) "Required" else null
-        isErrorKindRate.value = error?.isNotBlank()?:false
-        _uiState.update { currentState ->
-            currentState.copy(
-                kindRate = Triple(id?:0,kindRate?:"",KindOfTaxEnum.findByIndex(id)),
-                kindRateError = error,
-                isFormValid = validate()
-            )
-        }
-    }
-
-    fun onMonthChange(month: String) {
-        val error = if (NumbersUtil.isIntNumber(month) && month.toInt().compareTo(0) == 0) "Required" else null
-        isErrorMonth.value = error?.isNotBlank()?:false
-        _uiState.update { currentState ->
-            currentState.copy(
-                month = if (NumbersUtil.isIntNumber(month) && month.toInt().compareTo(0) != 0) month.toInt() else 0,
-                monthError = error,
-                isFormValid = validate()
-            )
-        }
     }
 
     fun onSubmitFormClicked(){
@@ -152,73 +98,14 @@ class CreditFormViewModel constructor(var id:Int?,val creditSvc: ICreditFormPort
 
     fun validate():Boolean{
         var valid = true
-        if(_uiState.value.kindPayment.second.isBlank()){
-            valid = false
-            isErrorKindPayment.value = true
-            _uiState.update { currentState ->
-                currentState.copy(
-                    kindPaymentError = "Required"
-                )
-            }
-        }
 
-                if (_uiState.value.creditDate.isAfter(LocalDate.now())) {
-                    valid = false
-                    isErrorDate.value = true
-                    _uiState.update { currentState ->
-                        currentState.copy(
-                            creditDateError = "Required"
-                        )
-                    }
-                }
-                if(_uiState.value.name.isBlank()) {
-                    valid = false
-                    isErrorName.value = true
-                    _uiState.update { currentState ->
-                        currentState.copy(
-                            nameError = "Required"
-                        )
-                    }
-                }
-                if(_uiState.value.valueAmt.compareTo(BigDecimal.ZERO) == 0) {
-                    valid = false
-                    isErrorValue.value = true
-                    _uiState.update { currentState ->
-                        currentState.copy(
-                            valueError = "Required"
-                        )
-                    }
-                }
-                if(_uiState.value.rateAmt.compareTo(0.0) == 0) {
-                    valid = false
-                    isErrorRate.value = true
-                    _uiState.update { currentState ->
-                        currentState.copy(
-                            rateError = "Required"
-                        )
-                    }
-                }else{
-                    isErrorRate.value = false
-                }
-
-                if(_uiState.value.kindRate.second.isBlank() ) {
-                    valid = false
-                    isErrorKindRate.value = true
-                    _uiState.update { currentState ->
-                        currentState.copy(
-                            kindRateError = "Required"
-                        )
-                    }
-                }
-                if(_uiState.value.month == 0) {
-                    valid = false
-                    isErrorMonth.value = true
-                    _uiState.update { currentState ->
-                        currentState.copy(
-                            monthError = "Required"
-                        )
-                    }
-                }
+        kindPayment.validate().not().or(kindPayment.error.value).takeIf { it }?.let { valid = false }
+        creditDate.validate().not().or(creditDate.error.value).takeIf { it }?.let { valid = false }
+        name.validate().not().or(name.error.value).takeIf { it }?.let { valid = false }
+        value.validate().not().or(value.error.value).takeIf { it }?.let { valid = false }
+        rate.validate().not().or(rate.error.value).takeIf { it }?.let { valid = false }
+        kindRate.validate().not().or(kindRate.error.value).takeIf { it }?.let { valid = false }
+        month.validate().not().or(month.error.value).takeIf { it }?.let { valid = false }
         return valid.also { it.takeIf { it }?.let { executeCalculateQuote() } }
     }
 
@@ -250,27 +137,20 @@ class CreditFormViewModel constructor(var id:Int?,val creditSvc: ICreditFormPort
             creditSvc?.findCreditById(id = it).let{ credit ->
                 progress.floatValue = 0.4f
                 credit?.let{
-                _uiState.update { currentState ->
                     progress.floatValue = 0.7f
-                    val kindPaymentEnum = KindPaymentsEnums.findByValue(credit.kindOf)
-                    val kindOfTaxPair = kindPayment.value.get(kindPaymentEnum.ordinal)
+                    val kindPaymentEnum:KindPaymentsEnums = KindPaymentsEnums.findByValue(credit.kindOf)
+                    val kindOfTaxPair = kindPayment.list.get(kindPaymentEnum.ordinal)
                     val kindRateEnum = KindOfTaxEnum.findByValue(credit.kindOfTax)
-                    val kindRatePair = kindRate.value.get(kindRateEnum.ordinal)
-                    currentState.copy(
-                        kindPayment = Triple(kindOfTaxPair.first,kindOfTaxPair.second,kindPaymentEnum),
-                        creditDate = credit.date,
-                        name = credit.name,
-                        value = credit.toString(),
-                        valueAmt = credit.value,
-                        rate = credit.tax.toString(),
-                        rateAmt = credit.tax,
-                        kindRate = Triple(kindRatePair.first,kindRatePair.second,kindRateEnum),
-                        month = credit.periods
-                    )
-                }
+                    val kindRatePair = kindRate.list.get(kindRateEnum.ordinal)
 
+                    kindPayment.onValueChange(Triple(kindOfTaxPair?.first?:0,kindOfTaxPair?.second?:"",kindPaymentEnum))
+                    creditDate.onValueChange(credit.date)
+                    name.onValueChange(credit.name)
+                    value.onValueChange(NumbersUtil.toString(credit.value))
+                    rate.onValueChange(NumbersUtil.toString(credit.tax))
+                    kindRate.onValueChange(Triple(kindRatePair?.first?:0,kindRatePair?.second?:"",kindRateEnum))
+                    month.onValueChange("credit.periods")
                 }
-                defaultSelectValues()
                 showProgress.value = false
                 progress.floatValue = 0.8f
             }
@@ -278,44 +158,18 @@ class CreditFormViewModel constructor(var id:Int?,val creditSvc: ICreditFormPort
         progress.floatValue = 1f
     }
 
-    private fun defaultSelectValues(){
-        if(uiState.value.kindRate.third == null){
-            val kindRatePair = kindRate.value.get(KindOfTaxEnum.ANUAL_EFFECTIVE.ordinal)
-            _uiState.update { currentState ->
-                currentState.copy(
-                    kindRate = Triple(kindRatePair.first,kindRatePair.second,KindOfTaxEnum.ANUAL_EFFECTIVE  )
-                )
-            }
-        }
-        if(uiState.value.kindPayment.third == null){
-            val kindPaymentsPair = kindPayment.value.get(KindPaymentsEnums.MONTHLY.ordinal)
-            _uiState.update { currentState ->
-                currentState.copy(
-                    kindPayment = Triple(kindPaymentsPair.first,kindPaymentsPair.second,KindPaymentsEnums.MONTHLY  )
-                )
-            }
-        }
-    }
-
     fun backView(){
         navController?.popBackStack()
     }
 
     fun clean(){
-        _uiState.update { currentState ->
-            currentState.copy(
-                kindPayment = Triple(0,"",null),
-                creditDate = LocalDate.now(),
-                name = "",
-                value = "",
-                valueAmt = BigDecimal.ZERO
-                ,rate = "",
-                rateAmt = 0.0,
-                kindRate = Triple(0,"",null),
-                month = 0
-            )
-        }
-        defaultSelectValues()
+        kindPayment.reset(Triple( KindPaymentsEnums.MONTHLY.ordinal,  context?.resources?.getString(KindPaymentsEnums.MONTHLY.title)?:"", KindPaymentsEnums.MONTHLY))
+        creditDate.reset(LocalDate.now())
+        name.reset("")
+        value.reset("")
+        rate.reset("")
+        kindRate.reset(Triple(KindOfTaxEnum.ANUAL_EFFECTIVE.ordinal,context?.resources?.getString(KindOfTaxEnum.ANUAL_EFFECTIVE.title)?:"",KindOfTaxEnum.ANUAL_EFFECTIVE))
+        month.reset("")
     }
 
     fun amortization(){
@@ -328,7 +182,7 @@ class CreditFormViewModel constructor(var id:Int?,val creditSvc: ICreditFormPort
             }
         }else{
             navController?.let {
-                CreditList.amortization(getCreateCreditDTO(), uiState.value.creditDate, it)
+                CreditList.amortization(getCreateCreditDTO(), creditDate.value, it)
             }
         }
     }
@@ -336,14 +190,14 @@ class CreditFormViewModel constructor(var id:Int?,val creditSvc: ICreditFormPort
     fun getCreateCreditDTO():CreditDTO{
         return CreditDTO(
             id = id?:0,
-            name = _uiState.value.name,
-            date = _uiState.value.creditDate,
-            tax = _uiState.value.rateAmt,
-            periods = _uiState.value.month,
-            value = _uiState.value.valueAmt,
-            quoteValue = _uiState.value.quoteCredit,
-            kindOf = _uiState.value.kindPayment.third?.name?:"",
-            kindOfTax = _uiState.value.kindRate.third?.getName()?:""
+            name = name.value,
+            date = creditDate.value,
+            tax = NumbersUtil.toDouble(rate.value),
+            periods = month.value.toInt(),
+            value = NumbersUtil.toBigDecimal(value.value),
+            quoteValue = NumbersUtil.toBigDecimal(quoteCredit.value),
+            kindOf = kindPayment.value?.second?: KindPaymentsEnums.MONTHLY.name,
+            kindOfTax = kindRate.value?.second?: KindOfTaxEnum.ANUAL_EFFECTIVE.name
         )
     }
 
@@ -353,16 +207,12 @@ class CreditFormViewModel constructor(var id:Int?,val creditSvc: ICreditFormPort
 
     suspend fun calculateQuote(){
         creditSvc?.calculateQuoteCredit(
-            value = _uiState.value.valueAmt,
-            rate = _uiState.value.rateAmt,
-            kindRate = _uiState.value.kindRate.third?:KindOfTaxEnum.MONTHLY_EFFECTIVE,
-            month = _uiState.value.month
+            value = NumbersUtil.toBigDecimal(value.value),
+            rate = NumbersUtil.toDouble(rate.value),
+            kindRate = kindRate.value?.third?:KindOfTaxEnum.ANUAL_EFFECTIVE,
+            month = month.value.toInt()
         )?.let { quote ->
-            _uiState.update{ currentState ->
-               currentState.copy(
-                   quoteCredit = quote
-               )
-            }
+            quoteCredit.onValueChange(NumbersUtil.toString(quote))
         }
     }
 

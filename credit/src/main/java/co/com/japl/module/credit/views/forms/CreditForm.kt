@@ -3,7 +3,6 @@ package co.com.japl.module.credit.views.forms
 import android.content.res.Configuration
 import android.os.Build
 import androidx.annotation.RequiresApi
-import androidx.compose.animation.core.updateTransition
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -16,19 +15,17 @@ import androidx.compose.material.icons.rounded.Cancel
 import androidx.compose.material.icons.rounded.CleaningServices
 import androidx.compose.material.icons.rounded.TableChart
 import androidx.compose.material3.LinearProgressIndicator
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
+import co.com.japl.finances.iports.enums.KindOfTaxEnum
+import co.com.japl.finances.iports.enums.KindPaymentsEnums
 import co.com.japl.module.credit.R
 import co.com.japl.module.credit.controllers.forms.CreditFormViewModel
 import co.com.japl.ui.components.FieldDatePicker
@@ -40,7 +37,6 @@ import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.com.japl.ui.theme.values.Dimensions
 import co.com.japl.ui.utils.DateUtils
 import co.japl.android.myapplication.utils.NumbersUtil
-import java.math.BigDecimal
 
 @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
 @Composable
@@ -80,17 +76,6 @@ private fun Body(viewModel: CreditFormViewModel) {
 @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
 @Composable
 private fun Form(viewModel: CreditFormViewModel, modifier: Modifier) {
-    val uisState by viewModel.uiState.collectAsState()
-    val isErrorKindPayment = remember { viewModel.isErrorKindPayment }
-    val isErrorName = remember { viewModel.isErrorName }
-    val isErrorValue = remember { viewModel.isErrorValue }
-    val isErrorRate = remember { viewModel.isErrorRate }
-    val isErrorMonth = remember { viewModel.isErrorMonth }
-    val isErrorKindRate = remember { viewModel.isErrorKindRate }
-    val isErrorDate = remember { viewModel.isErrorDate }
-    val kindPayment = remember { viewModel.kindPayment }
-    val kindRate = remember { viewModel.kindRate }
-
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -98,30 +83,31 @@ private fun Form(viewModel: CreditFormViewModel, modifier: Modifier) {
     ) {
         FieldSelect(
             title = stringResource(R.string.kind_payment),
-            value = uisState.kindPayment.second,
+            value = viewModel.kindPayment.value?.second?:"",
             cleanTitle = R.string.clean_credit,
-            list = kindPayment.value,
+            list = viewModel.kindPayment.list.map{Pair (it?.first?:0,it?.second?:"")},
             modifier = Modifier.padding(bottom = Dimensions.PADDING_BOTTOM),
-            isError = isErrorKindPayment,
-            callable = { viewModel.onKindPaymentChange(it?.first, it?.second) })
+            isError = viewModel.kindPayment.error,
+            callable = { viewModel.kindPayment.onValueChange(Triple(it?.first?:0, it?.second?:"",viewModel.kindPayment.list?.find{ its -> its?.first!! == it?.first?:-1}?.third?: KindPaymentsEnums.MONTHLY))})
+
 
         FieldDatePicker(
             title = R.string.date_credit,
-            value = DateUtils.localDateToStringDate(uisState.creditDate),
+            value = DateUtils.localDateToStringDate(viewModel.creditDate.value),
             validation = viewModel::validate,
-            isError = isErrorDate,
-            callable = { viewModel.onCreditDateChange(DateUtils.toLocalDate(it)) },
+            isError = viewModel.creditDate.error,
+            callable = { viewModel.creditDate.onValueChange(DateUtils.toLocalDate(it)) },
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(bottom = Dimensions.PADDING_BOTTOM)
         )
         FieldText(
             title = stringResource(R.string.name_credit),
-            value = uisState.name,
+            value = viewModel.name.value,
             clearTitle = R.string.clean_credit,
-            callback = viewModel::onNameChange,
+            callback = viewModel.name::onValueChange,
             validation = viewModel::validate,
-            hasErrorState = isErrorName,
+            hasErrorState = viewModel.name.error,
             icon= Icons.Rounded.Cancel,
             modifier = Modifier
                 .fillMaxWidth()
@@ -130,18 +116,18 @@ private fun Form(viewModel: CreditFormViewModel, modifier: Modifier) {
 
         FieldText(
             title = stringResource(R.string.value_credit),
-            value = uisState.value,
+            value = viewModel.value.valueStr,
             clearTitle = R.string.clean_credit,
-            placeHolder = NumbersUtil.toString(uisState.valueAmt),
+            placeHolder = viewModel.value.valueStr,
             currency = true,
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(bottom = Dimensions.PADDING_BOTTOM),
             validation = viewModel::validate,
-            hasErrorState = isErrorValue,
+            hasErrorState = viewModel.value.error,
             keyboardType = KeyboardOptions.Default.copy( keyboardType = KeyboardType.Decimal),
             icon= Icons.Rounded.Cancel,
-            callback = { viewModel.onValueChange(it) }
+            callback = { viewModel.value.onValueChange(it) }
         )
 
         Row(
@@ -151,12 +137,12 @@ private fun Form(viewModel: CreditFormViewModel, modifier: Modifier) {
         ) {
             FieldText(
                 title = stringResource(R.string.rate_credit),
-                value = uisState.rate,
-                placeHolder = NumbersUtil.toString(uisState.rateAmt),
+                value = viewModel.rate.valueStr,
+                placeHolder = viewModel.rate.valueStr,
                 clearTitle = R.string.clean_credit,
-                callback = { viewModel.onRateChange(it) },
+                callback = { viewModel.rate.onValueChange(it) },
                 validation = viewModel::validate,
-                hasErrorState = isErrorRate,
+                hasErrorState = viewModel.rate.error,
                 formatDecimal = NumbersUtil.format8Decimal,
                 icon= Icons.Rounded.Cancel,
                 suffixValue = "%",
@@ -169,26 +155,26 @@ private fun Form(viewModel: CreditFormViewModel, modifier: Modifier) {
 
             FieldSelect(
                 title = stringResource(R.string.kind_rate),
-                value = uisState.kindRate.third?.getName()?:"",
-                list = kindRate.value,
-                isError = isErrorKindRate,
+                value = viewModel.kindRate.value?.third?.getName()?:"",
+                list = viewModel.kindRate.list.map { Pair(it?.first?:0,it?.second?:"")  },
+                isError = viewModel.kindRate.error,
                 modifier = Modifier
                     .padding(bottom = Dimensions.PADDING_BOTTOM)
                     .weight(1f),
                 callable = {
-                    viewModel.onKindRateChange(it?.first, it?.second)
+                    viewModel.kindRate.onValueChange(Triple(it?.first?:0, it?.second?:"",viewModel.kindRate.list?.first { its->its?.first!! == it?.first?:-1}?.third?: KindOfTaxEnum.ANUAL_EFFECTIVE))
                 })
         }
 
         FieldText(
             title = stringResource(R.string.periods_credit),
-            value = if(uisState.month != 0)uisState.month.toString() else "",
-            placeHolder = uisState.month.toString(),
+            value = viewModel.month.valueStr,
+            placeHolder = viewModel.month.valueStr,
             clearTitle = R.string.clean_credit,
-            callback = { viewModel.onMonthChange(it) },
+            callback = { viewModel.month.onValueChange(it) },
             validation = viewModel::validate,
             decimal = true,
-            hasErrorState = isErrorMonth,
+            hasErrorState = viewModel.month.error,
             icon= Icons.Rounded.Cancel,
             keyboardType = KeyboardOptions(keyboardType = KeyboardType.Number),
             modifier = Modifier
@@ -198,7 +184,7 @@ private fun Form(viewModel: CreditFormViewModel, modifier: Modifier) {
 
         FieldView(
             name = R.string.quote_credit,
-            value = NumbersUtil.toString(uisState.quoteCredit),
+            value = viewModel.quoteCredit.valueStr,
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(bottom = Dimensions.PADDING_BOTTOM)

@@ -25,8 +25,8 @@ android {
         applicationId "co.japl.android.myapplication"
         minSdk 26
         targetSdk 34
-        versionCode 4_05_22_130
-        versionName "V 4.05.22 build 130 Migrated form create credit record and fix issue with values numerics with format decimals"
+        versionCode 4_05_23_131
+        versionName "V 4.05.23 build 131 Fix issues with ui with numbers in text fild in old forms"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         signingConfig signingConfigs.prod

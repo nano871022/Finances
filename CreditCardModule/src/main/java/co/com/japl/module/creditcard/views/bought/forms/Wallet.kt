@@ -50,11 +50,6 @@ fun Wallet (viewModel:WalletViewModel){
     val isLoadingState = remember {viewModel.loading}
     val loadingState = remember { viewModel.progress }
 
-        CoroutineScope(Dispatchers.IO).launch {
-            viewModel.main()
-        }
-
-
     if(isLoadingState.value){
         LinearProgressIndicator(progress = loadingState.floatValue,modifier=Modifier.fillMaxWidth())
     }else {
@@ -101,70 +96,56 @@ private fun FloatingButtons(viewModel: WalletViewModel) {
 @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
 @Composable
 private fun Body(viewModel: WalletViewModel,modifier:Modifier){
-    val creditCardState = remember { viewModel.creditCardName }
-    val nameState = remember { viewModel.nameProduct }
-    val errorNameState = remember { viewModel.errorNameProduct }
-    val valueState = remember { viewModel.valueProduct }
-    val errorValueState = remember { viewModel.errorValueProduct }
-    val creditRateState = remember { viewModel.creditRate }
-    val monthsState = remember { viewModel.monthProduct }
-    val errorMonthsState = remember { viewModel.errorMonthProduct }
-    val valueCapitalState = remember { viewModel.capitalValue }
-    val dateBoughtState = remember { viewModel.dateBought }
-    val errorDateBoughtState = remember { viewModel.errorDateBought}
-    val quoteValueState = remember { viewModel.quoteValue }
-    val interestValueState = remember { viewModel.interestValue }
-    val creditRateKindState = remember { viewModel.creditRateKind }
 
     Column(modifier= Modifier
         .padding(Dimensions.PADDING_SHORT)
         .verticalScroll(rememberScrollState())) {
         FieldView(
             name = R.string.credit_card,
-            value = creditCardState.value,
+            value = viewModel.creditCardName.value,
             modifier = ModifiersCustom.FieldFillMAxWidhtAndPaddingShort(),
             isMoney = false
         )
 
         FieldDatePicker(title = androidx.compose.material3.R.string.m3c_date_picker_headline
-            ,value = dateBoughtState.value
-            , callable = {dateBoughtState.value = it}
-            , isError = errorDateBoughtState
+            ,value = viewModel.dateBought.value
+            , callable = viewModel.dateBought::onValueChange
+            , isError = viewModel.dateBought.error
             , validation = {viewModel.validate()}
             , modifier = Modifier
                 .fillMaxWidth()
                 .padding(5.dp))
 
         FieldText(title = stringResource(id = R.string.name_product),
-            value=nameState.value,
-            hasErrorState = errorNameState,
+            value=viewModel.nameProduct.value,
+            hasErrorState = viewModel.nameProduct.error,
             icon= Icons.Rounded.Cancel,
             validation = {viewModel.validate()},
-            callback = {nameState.value = it},
+            callback = viewModel.nameProduct::onValueChange,
             modifier= ModifiersCustom.FieldFillMAxWidhtAndPaddingShort())
 
         FieldText(title = stringResource(id = R.string.value_product),
-            value=valueState.value,
+            value=viewModel.valueProduct.value,
             icon= Icons.Rounded.Cancel,
-            hasErrorState = errorValueState,
+            hasErrorState = viewModel.valueProduct.error,
             validation = {viewModel.validate()},
-            callback = {valueState.value = it},
+            callback = viewModel.valueProduct::onValueChange,
             keyboardType = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Decimal),
             currency = true,
             modifier=ModifiersCustom.FieldFillMAxWidhtAndPaddingShort())
 
         FieldText(title = stringResource(id = R.string.months),
-            value=monthsState.value,
+            value=viewModel.monthProduct.value,
             icon= Icons.Rounded.Cancel,
-            hasErrorState = errorMonthsState,
+            hasErrorState = viewModel.monthProduct.error,
             validation = {viewModel.validate()},
-            callback = {monthsState.value = it},
+            callback = viewModel.monthProduct::onValueChange,
             modifier=ModifiersCustom.FieldFillMAxWidhtAndPaddingShort())
 
         Row {
             FieldView(
                 name = R.string.credit_rate,
-                value = (creditRateState.value?.takeIf { it.isNotBlank() }?.let { "$it %" }
+                value = (viewModel.creditRate.value?.takeIf { it.isNotBlank() }?.let { "$it %" }
                     ?: "").toString(),
                 modifier = Modifier.weight(2f),
                 isMoney = false
@@ -172,7 +153,7 @@ private fun Body(viewModel: WalletViewModel,modifier:Modifier){
 
             FieldView(
                 name = R.string.credit_rate,
-                value = creditRateKindState.value,
+                value = viewModel.creditRateKind.value,
                 modifier = Modifier.weight(1f),
                 isMoney = false
             )
@@ -180,21 +161,21 @@ private fun Body(viewModel: WalletViewModel,modifier:Modifier){
 
         FieldView(
             name = R.string.capital_value,
-            value = valueCapitalState.value,
+            value = viewModel.capitalValue.value,
             modifier = ModifiersCustom.FieldFillMAxWidhtAndPaddingShort(),
             isMoney = false
         )
 
         FieldView(
             name = R.string.interest_value,
-            value = interestValueState.value,
+            value = viewModel.interestValue.value,
             modifier = ModifiersCustom.FieldFillMAxWidhtAndPaddingShort(),
             isMoney = false
         )
 
         FieldView(
             name = R.string.quote_value,
-            value = quoteValueState.value,
+            value = viewModel.quoteValue.value,
             modifier = ModifiersCustom.FieldFillMAxWidhtAndPaddingShort(),
             isMoney = false
         )
