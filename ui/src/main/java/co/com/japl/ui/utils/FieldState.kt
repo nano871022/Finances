@@ -79,6 +79,7 @@ fun <T> initialFieldState(
 sealed class FormUIState{
     object Current:FormUIState()
     object Loading:FormUIState()
+    object NotData:FormUIState()
     data class Success(val message:String):FormUIState()
     data class Error(val message:String):FormUIState()
 
