@@ -62,6 +62,29 @@
     <string name="invalid_option_amortization">Necesita crear el credito antes de entrar en esta opción</string>
     <string name="invalid_form">Alguno de los campos no se ha llenado correctamente.</string>
     <string name="save_success">Se guardo el crédito correctamente</string>
+    <string name="Add">Agregar</string>
+    <string name="title_name_additional_list">Nombre</string>
+    <string name="tooltip_name_additional_list">Nombre del valor adicional</string>
+    <string name="title_value_additional_list">Valor</string>
+    <string name="tooltip_value_additional_list">Valor adicional</string>
+    <string name="count">Cantidad</string>
+    <string name="total_value">Valor Total</string>
+    <string name="see_more">Ver Más</string>
+    <string name="edit">Editar</string>
+    <string name="do_you_want_to_delete_additional">¿Deseas eliminar el registro?</string>
+    <string name="delete_record">Registro eliminado correctamente</string>
+    <string name="close">Cerrar</string>
+    <string name="error_delete_record">No se logro eliminar el registro</string>
+    <string name="navigate_add_additional">android-app://co.com.japl.finanzas.module.app/additional_credit_form?CREDIT_CODE=%d</string>
+    <string name="navigate_edit_additional">android-app://co.com.japl.finanzas.module.app/additional_credit_form?id=%d&amp;CREDIT_CODE=%d</string>
+    <string name="clear_additiona_credit_form">Limpiar formulario</string>
+    <string name="add_additiona_credit">Agregar credito adicional</string>
+    <string name="name">Nombre</string>
+    <string name="value">Valor</string>
+    <string name="create_record_success">Registro Creado Correctamente</string>
+    <string name="error_record_success">Se produjo un error al crear el registro</string>
+    <string name="update_record_success">Se actualizo el registro correctamente</string>
+    <string name="error_upd_record_success">Error al actualizar el registro</string>
 
     <string-array name="months">
         <item>--- Seleccionar --- </item>

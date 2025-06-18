@@ -15,8 +15,9 @@ import kotlinx.coroutines.flow.onEach
 class FieldState<T>( initialValue:T,
                      listValues:List<T> = emptyList(),
                      private val validator:(T)->Boolean = {false},
+                     private val formatter:(String)->T?  = { null },
                      private val onValueChangeCallBack: (T) -> Unit = {}){
-    var value: T by mutableStateOf(initialValue)
+    var value: T by mutableStateOf<T>(initialValue)
         private set
     var valueStr:String by mutableStateOf(initialValue.toString())
         private set
@@ -56,6 +57,20 @@ class FieldState<T>( initialValue:T,
         }
     }
 
+    fun onValueChangeStr(newValue:String){
+        if(touched.not()){
+            touched = true
+        }
+        formatter.invoke(newValue)?.let{
+            value = it
+        }
+        valueStr = newValue
+        error.value = validator.invoke(value).not()
+        if(error.value.not()) {
+            onValueChangeCallBack.invoke(value)
+        }
+    }
+
     fun validate():Boolean = validator.invoke(value)
 
     fun reset(initialValue:T){
@@ -71,9 +86,10 @@ fun <T> initialFieldState(
     initialValue:T,
     list:List<T> = emptyList(),
     validator:(T)->Boolean = {false},
+    formatter:(String)->T?  = { null },
     onValueChangeCallBack: (T) -> Unit = {}
 ): FieldState<T>{
-    return FieldState(initialValue,list,validator,onValueChangeCallBack)
+    return FieldState(initialValue,list,validator,formatter,onValueChangeCallBack)
 }
 
 sealed class FormUIState{

@@ -252,7 +252,9 @@
         android:id="@+id/additionalCreditFragment"
         android:name="co.japl.android.myapplication.finanzas.controller.creditfix.AdditionalCreditFragment"
         android:label="@string/aditional"
-        tools:layout="@layout/fragment_additional_credit" />
+        tools:layout="@layout/fragment_additional_credit" >
+        <deepLink app:uri="android-app://co.com.japl.finanzas.module.app/additional_credit_form"/>
+    </fragment>
     <fragment
         android:id="@+id/additionalListFragment"
         android:name="co.japl.android.myapplication.finanzas.controller.creditfix.AdditionalListFragment"
@@ -419,6 +421,7 @@
         <action
             android:id="@+id/action_menu_projections_to_projectionFragment"
             app:destination="@id/projectionFragment" />
+        <deepLink app:uri="android-app://co.com.japl.finanzas.module.app/paid/projections"/>
     </fragment>
     <fragment
         android:id="@+id/listProjectFragment"
@@ -428,12 +431,15 @@
         <action
             android:id="@+id/action_listProjectFragment_to_projectionFragment"
             app:destination="@id/projectionFragment" />
+        <deepLink app:uri="android-app://co.com.japl.finanzas.module.app/paid/projection/list"/>
     </fragment>
     <fragment
         android:id="@+id/projectionFragment"
         android:name="co.japl.android.myapplication.finanzas.controller.projections.ProjectionFragment"
         android:label="@string/projection"
-        tools:layout="@layout/fragment_projection" />
+        tools:layout="@layout/fragment_projection" >
+        <deepLink app:uri="android-app://co.com.japl.finanzas.module.app/paid/projection/form"/>
+    </fragment>
     <fragment
         android:id="@+id/item_menu_side_recap"
         android:name="co.japl.android.myapplication.finanzas.controller.RecapFragment"

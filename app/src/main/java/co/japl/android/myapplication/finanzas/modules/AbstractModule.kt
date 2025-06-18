@@ -4,6 +4,8 @@ import android.content.Context
 import co.com.japl.finances.iports.inbounds.creditcard.ICreditCardPort
 import co.com.japl.finances.iports.inbounds.common.IDifferQuotesPort
 import co.com.japl.finances.iports.inbounds.common.ISMSRead
+import co.com.japl.finances.iports.inbounds.credit.IAdditional
+import co.com.japl.finances.iports.inbounds.credit.IAdditionalFormPort
 import co.com.japl.finances.iports.inbounds.credit.ICreditFormPort
 import co.com.japl.finances.iports.inbounds.credit.IPeriodCreditPort
 import co.com.japl.finances.iports.inbounds.credit.IPeriodGracePort
@@ -20,6 +22,8 @@ import co.com.japl.finances.iports.inbounds.inputs.IInputPort
 import co.com.japl.finances.iports.inbounds.paid.ICheckPaymentPort
 import co.com.japl.finances.iports.inbounds.paid.IPaidPort
 import co.com.japl.finances.iports.inbounds.paid.IPeriodPaidPort
+import co.com.japl.finances.iports.inbounds.paid.IProjectionListPort
+import co.com.japl.finances.iports.inbounds.paid.IProjectionsPort
 import co.com.japl.finances.iports.inbounds.paid.ISMSPaidPort
 import co.com.japl.finances.iports.inbounds.paid.ISmsPort
 import co.japl.android.myapplication.bussiness.impl.Config
@@ -71,6 +75,7 @@ import co.japl.android.myapplication.finanzas.bussiness.interfaces.IPaidSvc
 import co.japl.android.myapplication.finanzas.bussiness.interfaces.IProjectionsSvc
 import co.japl.android.myapplication.finanzas.bussiness.interfaces.IQuoteCreditCardSvc
 import co.com.japl.finances.iports.inbounds.recap.IRecapPort
+import co.com.japl.finances.iports.outbounds.IAdditionalPort
 import co.com.japl.finances.iports.outbounds.ICreditPort
 import co.com.japl.ui.impls.SMSObservable
 import co.com.japl.ui.interfaces.ISMSObservablePublicher
@@ -81,6 +86,7 @@ import co.japl.android.finances.services.dao.interfaces.ICheckQuoteDAO
 import co.japl.android.finances.services.dao.interfaces.IGracePeriodDAO
 import co.japl.android.myapplication.finanzas.controller.SMS
 import co.japl.finances.core.adapters.inbound.implement.common.CheckPaymentsImpl
+import co.japl.finances.core.adapters.inbound.implement.credit.AdditionalPort
 import co.japl.finances.core.adapters.inbound.implement.credit.CreditImpl
 import co.japl.finances.core.adapters.inbound.implement.credit.PeriodCreditImpl
 import co.japl.finances.core.adapters.inbound.implement.credit.PeriodGraceImpl
@@ -88,11 +94,13 @@ import co.japl.finances.core.adapters.inbound.implement.creditCard.SMSCreditCard
 import co.japl.finances.core.adapters.inbound.implement.creditcard.bought.BoughtImpl
 import co.japl.finances.core.adapters.inbound.implement.creditcard.bought.lists.ListImpl
 import co.japl.finances.core.adapters.inbound.implement.paid.PeriodImpl
+import co.japl.finances.core.adapters.inbound.implement.paid.ProjectionImpl
 import co.japl.finances.core.adapters.inbound.implement.paid.SMSImpl
 import co.japl.finances.core.adapters.inbound.implement.recap.RecapImp
 import co.japl.finances.core.usercases.implement.common.DifferQuoteImpl
 import co.japl.finances.core.usercases.implement.common.PaidImp
 import co.japl.finances.core.usercases.implement.common.QuoteCreditCardImpl
+import co.japl.finances.core.usercases.implement.credit.AdditionalImpl
 import co.japl.finances.core.usercases.implement.credit.PeriodCredit
 import co.japl.finances.core.usercases.implement.creditcard.bought.BoughtSmsImpl
 import co.japl.finances.core.usercases.implement.creditcard.bought.lists.BoughtList
@@ -118,6 +126,7 @@ import co.japl.finances.core.usercases.interfaces.creditcard.bought.lists.IBough
 import co.japl.finances.core.usercases.interfaces.creditcard.bought.lists.IBoughtList
 import co.japl.finances.core.usercases.interfaces.creditcard.bought.lists.IBoughtSms
 import co.japl.finances.core.usercases.interfaces.creditcard.paid.lists.IPaidList
+import co.japl.finances.core.usercases.interfaces.paid.IProjection
 import co.japl.finances.core.usercases.interfaces.paid.ISMS
 import co.japl.finances.core.usercases.interfaces.paid.ISms
 import co.japl.finances.core.usercases.interfaces.recap.IRecap
@@ -495,4 +504,18 @@ abstract class AbstractModule {
     abstract fun bindInboundPeriodCreditPort(impl: PeriodCreditImpl): IPeriodCreditPort
     @Binds
     abstract fun bindUserCasePeriodCredit(impl: PeriodCredit): IPeriodCredit
+    @Binds
+    abstract fun bindInboundAdditionalCredit(impl: AdditionalPort): IAdditional
+    @Binds
+    abstract fun bindUsercaseAdditionalCredit(impl: AdditionalImpl):co.japl.finances.core.usercases.interfaces.credit.IAdditional
+    @Binds
+    abstract fun binOutboundAdditionalCredit(impl:co.japl.android.finances.services.core.AdditionalCreditImpl): IAdditionalPort
+    @Binds
+    abstract fun bindInboundAdditionalFormCredit(impl:AdditionalPort): IAdditionalFormPort
+    @Binds
+    abstract fun bindInboundProjectionRecap(impl: ProjectionImpl): IProjectionsPort
+    @Binds
+    abstract fun bindUsercaseProjectionRecap(impl:co.japl.finances.core.usercases.implement.paid.ProjectionImpl): IProjection
+    @Binds
+    abstract fun bindInpboundProjectionList(impl: ProjectionImpl): IProjectionListPort
 }

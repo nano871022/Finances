@@ -10,7 +10,7 @@ import co.japl.android.myapplication.utils.NumbersUtil
 class CurrencyVisualTransformation (private val formatDecimal:String = NumbersUtil.formatDecimal, private val currencyForce:Boolean = false,private val decimalForce:Boolean = false):VisualTransformation {
 
     override fun filter(text: AnnotatedString): TransformedText {
-        if(text.text.isBlank()){
+        if(text.text.isBlank() || (currencyForce && !NumbersUtil.isNumber(text.text))){
             return TransformedText(text, OffsetMapping.Identity)
         }
         if(NumbersUtil.isNumber(text.text).not() && currencyForce.not() && decimalForce.not()){

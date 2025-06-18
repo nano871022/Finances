@@ -10,4 +10,5 @@ interface IAdditionalCreditDAO : SaveSvc<AdditionalCreditDTO>, ISaveSvc<Addition
     fun get(id: Long): List<AdditionalCreditDTO>
     fun updateValue(id:Int,value:BigDecimal):Boolean
     fun get(codeCredit:Int, date: LocalDate): List<AdditionalCreditDTO>
+    fun update(dto:AdditionalCreditDTO):Int
 }

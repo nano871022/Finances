@@ -11,5 +11,7 @@ data class ProjectionDTO(
     var type:String,
     var value:BigDecimal,
     var quote:BigDecimal,
+    var monthsLeft:Int = 0,
+    var amountSaved:BigDecimal = BigDecimal.ZERO,
     var active:Short
 )

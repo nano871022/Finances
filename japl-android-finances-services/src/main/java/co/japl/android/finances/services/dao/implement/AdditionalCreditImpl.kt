@@ -39,7 +39,7 @@ class AdditionalCreditImpl @Inject constructor(override var dbConnect: SQLiteOpe
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    fun update(dto:AdditionalCreditDTO):Int{
+    override fun update(dto:AdditionalCreditDTO):Int{
         val db = dbConnect.writableDatabase
         val values:ContentValues? = AdditionalMap().mapping(dto)
         return ((db?.update(AdditionalCreditDB.Entry.TABLE_NAME,values,"${BaseColumns._ID} = ?",arrayOf(dto.id.toString()))) ?: 0).also {
@@ -76,7 +76,7 @@ class AdditionalCreditImpl @Inject constructor(override var dbConnect: SQLiteOpe
         val date = DateUtils.localDateToStringDate(LocalDate.now())
         db.query(AdditionalCreditDB.Entry.TABLE_NAME
             ,COLUMNS
-            ,"${AdditionalCreditDB.Entry.COLUMN_CREDIT_CODE} = ? AND $FORMAT_DATE_END_WHERE >= ?"
+            ,"${BaseColumns._ID} = ? AND $FORMAT_DATE_END_WHERE >= ?"
             ,arrayOf(id.toString(),date)
             ,null,null,null)?.use { cursor ->
             with(cursor) {
@@ -104,7 +104,9 @@ class AdditionalCreditImpl @Inject constructor(override var dbConnect: SQLiteOpe
                 }
             }
         }
-        return list
+        return list.also{
+            Log.d(this.javaClass.name,"<<<=== GET:List CodeCredit: $id List: $it ")
+        }
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
