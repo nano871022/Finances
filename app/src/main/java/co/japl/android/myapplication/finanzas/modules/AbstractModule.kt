@@ -22,6 +22,7 @@ import co.com.japl.finances.iports.inbounds.inputs.IInputPort
 import co.com.japl.finances.iports.inbounds.paid.ICheckPaymentPort
 import co.com.japl.finances.iports.inbounds.paid.IPaidPort
 import co.com.japl.finances.iports.inbounds.paid.IPeriodPaidPort
+import co.com.japl.finances.iports.inbounds.paid.IProjectionFormPort
 import co.com.japl.finances.iports.inbounds.paid.IProjectionListPort
 import co.com.japl.finances.iports.inbounds.paid.IProjectionsPort
 import co.com.japl.finances.iports.inbounds.paid.ISMSPaidPort
@@ -226,7 +227,7 @@ abstract class AbstractModule {
 
 
     @Binds
-    abstract fun bindServiceProjections(implement: co.japl.android.finances.services.implement.ProjectionsImpl): co.japl.android.finances.services.interfaces.IProjectionsSvc
+    abstract fun bindServiceProjections(implement: co.japl.android.finances.services.dao.implement.ProjectionsImpl): co.japl.android.finances.services.dao.interfaces.IProjectionsSvc
 
     @Binds
     abstract fun bindOutboundProjections(implement: co.japl.android.finances.services.core.ProjectionsImpl): co.com.japl.finances.iports.outbounds.IProjectionsRecapPort
@@ -518,4 +519,6 @@ abstract class AbstractModule {
     abstract fun bindUsercaseProjectionRecap(impl:co.japl.finances.core.usercases.implement.paid.ProjectionImpl): IProjection
     @Binds
     abstract fun bindInpboundProjectionList(impl: ProjectionImpl): IProjectionListPort
+    @Binds
+    abstract fun bindInboundProjectionForm(impl:ProjectionImpl): IProjectionFormPort
 }

@@ -43,11 +43,10 @@ class ProjectionListViewModel @Inject constructor(
     }
 
     fun delete(id: Int) {
-        projectionListPort?.let{
-            it.delete(id).let{
-                if(it){
-                    if(it){
-                        viewModelScope.launch {
+        projectionListPort?.let { svc ->
+            svc.delete(id).let {
+                viewModelScope.launch {
+                    if (it) {
                         snackbarHost.showSnackbar(
                             message = context.getString(R.string.record_was_remove_success),
                             actionLabel = context.getString(R.string.close),
@@ -55,15 +54,12 @@ class ProjectionListViewModel @Inject constructor(
                         ).also {
                             load()
                         }
-                        }
-                    }else{
-                        viewModelScope.launch {
-                            snackbarHost.showSnackbar(
-                                message = context.getString(R.string.record_was_remove_error),
-                                actionLabel = context.getString(R.string.close),
-                                duration = SnackbarDuration.Short
-                            )
-                        }
+                    } else {
+                        snackbarHost.showSnackbar(
+                            message = context.getString(R.string.record_was_remove_error),
+                            actionLabel = context.getString(R.string.close),
+                            duration = SnackbarDuration.Short
+                        )
                     }
                 }
             }

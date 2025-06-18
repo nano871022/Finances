@@ -1,19 +1,16 @@
-package co.japl.android.finances.services.implement
+package co.japl.android.finances.services.dao.implement
 
 import android.content.ContentValues
 import android.database.sqlite.SQLiteOpenHelper
 import android.os.Build
 import android.provider.BaseColumns
 import androidx.annotation.RequiresApi
+import co.japl.android.finances.services.dao.interfaces.IProjectionsSvc
 import co.japl.android.finances.services.dto.ProjectionDB
 import co.japl.android.finances.services.dto.ProjectionDTO
-import co.japl.android.finances.services.interfaces.IProjectionsSvc
 import co.japl.android.finances.services.mapping.ProjectionMap
 import co.japl.android.finances.services.utils.DatabaseConstants
-import java.math.BigDecimal
-import java.time.LocalDate
-import java.time.Period
-import java.util.*
+import java.util.Optional
 import javax.inject.Inject
 
 class ProjectionsImpl @Inject constructor(override var dbConnect: SQLiteOpenHelper) :
@@ -28,70 +25,6 @@ class ProjectionsImpl @Inject constructor(override var dbConnect: SQLiteOpenHelp
         ProjectionDB.Entry.COLUMN_DATE_CREATE,
         ProjectionDB.Entry.COLUMN_DATE_END
     )
-
-    @RequiresApi(Build.VERSION_CODES.O)
-    override fun getClose(): Triple<LocalDate, Int, BigDecimal> {
-        val list = getAllActive().filter { LocalDate.now() <= it.end }
-        if (list.size > 0) {
-            val record = list[0]
-            val date = record.end
-            val quote = record.quote
-            val type = record.type
-            val months = getMonths(type)
-            val faltantes = Period.between(LocalDate.now(), date).toTotalMonths()
-            val month = months - faltantes
-            var saved = quote * month.toBigDecimal()
-            if (saved < BigDecimal.ZERO) {
-                saved = BigDecimal.ZERO
-            }
-            return Triple(date, faltantes.toInt(), saved)
-        }
-        return Triple(LocalDate.now(), 0, BigDecimal.ZERO)
-    }
-
-    @RequiresApi(Build.VERSION_CODES.O)
-    override fun getFar(): Triple<LocalDate, Int, BigDecimal> {
-        val list = getAllActive().filter { LocalDate.now() <= it.end }
-        if (list.size > 0) {
-            val record = list[list.size - 1]
-            val date = record.end
-            val quote = record.quote
-            val type = record.type
-            val months = getMonths(type)
-            val faltantes = Period.between(LocalDate.now(), date).toTotalMonths()
-            val month = months - faltantes
-            var saved = quote * month.toBigDecimal()
-            if (saved < BigDecimal.ZERO) {
-                saved = BigDecimal.ZERO
-            }
-            return Triple(date, faltantes.toInt(), saved)
-        }
-        return Triple(LocalDate.now(), 0, BigDecimal.ZERO)
-    }
-
-    @RequiresApi(Build.VERSION_CODES.O)
-    override fun getTotal(): Pair<Int, BigDecimal> {
-        val items = getAllActive().filter { LocalDate.now() <= it.end }
-        return Pair(items.size, items.sumOf {
-            val months = getMonths(it.type)
-            var value = it.quote * (months - Period.between(LocalDate.now(), it.end)
-                .toTotalMonths()).toBigDecimal()
-            if (value < BigDecimal.ZERO) {
-                value = BigDecimal.ZERO
-            }
-            value
-        })
-    }
-
-    private fun getMonths(type: String): Int {
-        return when (type.toLowerCase()) {
-            "trimestral" -> 3
-            "cuatrimestral" -> 4
-            "semestral" -> 6
-            "anual" -> 12
-            else -> 0
-        }
-    }
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun getAllActive(): List<ProjectionDTO> {

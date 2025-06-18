@@ -20,4 +20,15 @@
     <string name="close">Cerrar</string>
     <string name="quote_value">Valor Cuota</string>
     <string name="months_left_to_pay_short">Faltantes</string>
+    <string name="clean_form">Limpiar</string>
+    <string name="date_of_projection">Fecha de Pago</string>
+    <string name="period_projection">Periodo Ahorro</string>
+    <string name="name_projection">Nombre</string>
+    <string name="value_projection">Valor a Ahorrar</string>
+    <string name="quote_projection">Valor Cuota de la Proyección</string>
+    <string name="save_project_success">Registro Creado Correctamente</string>
+    <string name="save_project_error">Error al crear la proyección</string>
+    <string name="update_project_error">No se logro actualizar la proyección</string>
+    <string name="update_project_success">Se logró actualizar la proyección</string>
+    <string name="clean_period">Limpiar periodo</string>
 </resources>

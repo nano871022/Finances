@@ -50,7 +50,7 @@ class FieldState<T>( initialValue:T,
             touched = true
         }
         value = newValue
-        valueStr = newValue.toString()
+        valueStr = newValue?.toString()?:""
         error.value = validator.invoke(newValue).not()
         if(error.value.not()) {
             onValueChangeCallBack.invoke(newValue)

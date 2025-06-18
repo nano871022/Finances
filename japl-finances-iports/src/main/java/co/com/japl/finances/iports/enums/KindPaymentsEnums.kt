@@ -18,5 +18,12 @@ enum class KindPaymentsEnums constructor(@StringRes val title:Int, val month:Int
         fun findByIndex(index:Int?):KindPaymentsEnums{
             return KindPaymentsEnums.entries.firstOrNull { it.month == index } ?: MONTHLY
         }
+
+        fun existIndex(index:Int?):Boolean{
+            return KindPaymentsEnums.entries.any { it.month == index }
+        }
+        fun find(kind:String):KindPaymentsEnums{
+            return KindPaymentsEnums.entries.firstOrNull { it.toString() == kind } ?: MONTHLY
+        }
     }
 }

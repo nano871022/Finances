@@ -33,6 +33,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import co.com.japl.finances.iports.dtos.ProjectionDTO
+import co.com.japl.finances.iports.enums.KindPaymentsEnums
 import co.com.japl.module.paid.R
 import co.com.japl.module.paid.controllers.projections.list.ProjectionListViewModel
 import co.com.japl.ui.components.AlertDialogOkCancel
@@ -192,6 +193,7 @@ private fun RowBody(item: ProjectionDTO,edit:(Int)->Unit,delete:(Int)->Unit){
                 }
                 1 -> {optionDeleteState.value = true}
             }
+            optionState.value = false
         }
     }
     if(optionDeleteState.value){
@@ -200,8 +202,11 @@ private fun RowBody(item: ProjectionDTO,edit:(Int)->Unit,delete:(Int)->Unit){
             confirmNameButton = R.string.delete,
             onDismiss = {
                 optionDeleteState.value = false
+
             }){
             delete.invoke(item.id)
+            optionDeleteState.value = false
+
         }
 
     }
@@ -252,12 +257,12 @@ private fun getViewModelList(): ProjectionListViewModel {
         ProjectionDTO(
             id = 0,
             name = "prueba1",
-            type= "",
+            type= KindPaymentsEnums.MONTHLY,
             value= BigDecimal.valueOf(2_000),
             quote = BigDecimal.valueOf(200),
             amountSaved = BigDecimal.valueOf(800),
             monthsLeft = 7,
-            active = 1,
+            active = true,
             create = LocalDate.now().minusMonths(3),
             end = LocalDate.now().plusMonths(6)
         ))
@@ -265,12 +270,12 @@ private fun getViewModelList(): ProjectionListViewModel {
         ProjectionDTO(
             id = 0,
             name = "prueba2",
-            type= "",
+            type= KindPaymentsEnums.MONTHLY,
             value= BigDecimal.valueOf(5_000),
             quote = BigDecimal.valueOf(1_000),
             amountSaved = BigDecimal.valueOf(2_000),
             monthsLeft = 3,
-            active = 1,
+            active = true,
             create = LocalDate.now().minusMonths(1).minusDays(5),
             end = LocalDate.now().plusMonths(3).minusDays(5)
         ))
@@ -278,12 +283,12 @@ private fun getViewModelList(): ProjectionListViewModel {
         ProjectionDTO(
             id = 0,
             name = "prueba3",
-            type= "",
+            type= KindPaymentsEnums.MONTHLY,
             value= BigDecimal.valueOf(5_000),
             quote = BigDecimal.valueOf(1_000),
             amountSaved = BigDecimal.valueOf(2_000),
             monthsLeft = 3,
-            active = 1,
+            active = true,
             create = LocalDate.now().minusMonths(1).minusDays(5),
             end = LocalDate.now().plusMonths(4).minusDays(5).plusYears(1)
         ))
@@ -291,12 +296,12 @@ private fun getViewModelList(): ProjectionListViewModel {
         ProjectionDTO(
             id = 0,
             name = "prueba4",
-            type= "",
+            type= KindPaymentsEnums.MONTHLY,
             value= BigDecimal.valueOf(5_000),
             quote = BigDecimal.valueOf(1_000),
             amountSaved = BigDecimal.valueOf(2_000),
             monthsLeft = 3,
-            active = 1,
+            active = true,
             create = LocalDate.now().minusMonths(1).minusDays(5),
             end = LocalDate.now().plusMonths(2).minusDays(2).plusYears(1)
         ))

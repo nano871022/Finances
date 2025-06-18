@@ -9,4 +9,5 @@ object  Dimensions {
      val PADDING_SHORT = 5.dp
      val PADDING_SPACE_BETWEEN_FIELD_RIGHT = 5.dp
      val PADDING_BOTTOM_CAROUSEL_SPACE = 13.dp
+     val PADDING_VIEW_SPACE = 8.dp
 }
