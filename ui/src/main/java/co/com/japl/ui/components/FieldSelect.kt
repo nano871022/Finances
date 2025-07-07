@@ -109,7 +109,14 @@ fun FieldSelect(title:String,value:String?,list:List<IMoreOptions>?,isError:Muta
 }
 
 @Composable
-fun FieldSelect(title: String, value:String, @StringRes cleanTitle:Int = R.string.clear, isError:MutableState<Boolean> = mutableStateOf(false), list:List<Pair<Int,String>>?, modifier: Modifier, callable:(Pair<Int,String>?)->Unit){
+fun FieldSelect(
+        title: String,
+        value:String,
+        @StringRes cleanTitle:Int = R.string.clear,
+        isError:MutableState<Boolean> = mutableStateOf(false),
+        list:List<Pair<Int,String>>?,
+        modifier: Modifier,
+        callable:(Pair<Int,String>?)->Unit){
     val context = LocalContext.current
     val state = remember { mutableStateOf(false) }
     val stateValue = remember { mutableStateOf("") }

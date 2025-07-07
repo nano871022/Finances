@@ -3,4 +3,13 @@
     <string name="duplicate">Duplicar</string>
     <string name="toast_successful_cloned">Se realizo la clonación correctamente</string>
     <string name="toast_dont_successful_cloned">No se realizar la clonación</string>
+    <string name="credit_value">Valor del Crédito</string>
+    <string name="kind_credit_rate">Tipo de Tasa</string>
+    <string name="clear">Limpiar</string>
+    <string name="values_first_quote">Valores Primera Cuota</string>
+    <string name="calculate">Calcular</string>
+    <string name="amortization">Ver Amortización</string>
+    <string name="save_success">Guardado Simulador Correctamente</string>
+    <string name="save_unsuccess">No se logró crear el registro</string>
+    <string name="calculation_error">Se presento error en el calculo, revise los valores ingresados</string>
 </resources>
