@@ -57,7 +57,9 @@ fun Carousel(size:Int,delayMills:Long=20_000,modifier:Modifier=Modifier,pagerSiz
 
         Box {
             HorizontalPager(
-                state = state, pageSize = pagerSize, modifier = modifier
+                state = state,
+                pageSize = pagerSize,
+                modifier = modifier
             ) {
 
                 components.invoke(it)

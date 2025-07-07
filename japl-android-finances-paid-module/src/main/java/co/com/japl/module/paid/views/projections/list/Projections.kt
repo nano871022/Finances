@@ -19,6 +19,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.ui.unit.dp
 import co.com.japl.finances.iports.dtos.ProjectionRecap
 import co.com.japl.module.paid.R
@@ -34,6 +35,7 @@ import co.japl.android.myapplication.utils.NumbersUtil
 import java.math.BigDecimal
 import java.time.LocalDate
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun Projections(viewModel: ProjectionsViewModel){
     val progressStatus = remember { viewModel.loadingStatus }
@@ -56,6 +58,7 @@ private fun Scafold(viewModel: ProjectionsViewModel){
     }
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun Body(viewModel: ProjectionsViewModel,modifier: Modifier){
     val list = remember { viewModel.projectionsList }

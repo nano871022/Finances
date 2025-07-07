@@ -9,7 +9,7 @@ plugins {
 
 android {
     namespace = "co.japl.android.finances.services"
-    compileSdk = 34
+    compileSdk = 36
 
     defaultConfig {
         minSdk = 26
@@ -31,13 +31,10 @@ android {
         viewBinding = true
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
+        sourceCompatibility = JavaVersion.VERSION_21
+        targetCompatibility = JavaVersion.VERSION_21
     }
 
-    kotlinOptions {
-        jvmTarget = "17"
-    }
 }
 
 dependencies {
@@ -55,8 +52,8 @@ dependencies {
     implementation("com.squareup.okio:okio:3.6.0")
 
 
-    implementation("androidx.core:core-ktx:1.13.1")//manage version android 14
-    implementation(platform("org.jetbrains.kotlin:kotlin-bom:1.9.24"))
+    implementation("androidx.core:core-ktx:1.13.1")
+    implementation(platform("org.jetbrains.kotlin:kotlin-bom:2.0.0"))
     implementation("androidx.appcompat:appcompat:1.7.0")
     implementation("com.google.android.material:material:1.12.0")
     testImplementation("junit:junit:4.13.2")
