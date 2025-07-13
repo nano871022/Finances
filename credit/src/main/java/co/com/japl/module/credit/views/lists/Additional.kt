@@ -112,8 +112,7 @@ private fun Header(viewModel: AdditionalViewModel) {
 @Composable
 private fun ListBody(viewModel: AdditionalViewModel){
     val list = remember { viewModel.list}
-    DataTable(
-        listHeader =  arrayListOf(Header(
+    val listHeaders = arrayListOf(Header(
             title = stringResource(R.string.title_name_additional_list),
             tooltip = stringResource(R.string.tooltip_name_additional_list),
             weight = 1f
@@ -121,10 +120,12 @@ private fun ListBody(viewModel: AdditionalViewModel){
             title = stringResource(R.string.title_value_additional_list),
             tooltip = stringResource(R.string.tooltip_value_additional_list),
             weight = 1f
-        ))  ,
+        )) 
+    DataTable(
+        listHeader =  { _-> listHeaders} ,
         sizeBody = list.size,
-        footer = { RowFooter(viewModel) },
-        listBody = { RowListBody(it, viewModel) }
+        footer = { _ -> RowFooter(viewModel) },
+        listBody = { pos,_->RowListBody(pos, viewModel) }
     )
 }
 

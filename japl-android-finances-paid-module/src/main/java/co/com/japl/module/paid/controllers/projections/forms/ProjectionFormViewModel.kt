@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.compose.material.SnackbarDuration
 import androidx.compose.material.SnackbarHostState
 import androidx.compose.runtime.mutableStateOf
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
@@ -23,7 +24,12 @@ import java.time.LocalDate
 import javax.inject.Inject
 
 @HiltViewModel
-class ProjectionFormViewModel @Inject constructor(private val context: Context, private val id:Int?=null, private val projectionSvc: IProjectionFormPort?=null,private val navController: NavController?=null): ViewModel(){
+class ProjectionFormViewModel @Inject constructor(
+    private val context: Context,
+    private val saveStateHandler: SavedStateHandle?=null,
+    private val id:Int?=null,
+    private val projectionSvc: IProjectionFormPort?=null,
+    private val navController: NavController?=null): ViewModel(){
     val loaderStatus = mutableStateOf(false)
     val disableSaveStatus = mutableStateOf(true)
     private val periodsOpt = KindPaymentsEnums.entries.map{ Pair(it.month,context.getString(it.title) ) }
@@ -40,6 +46,8 @@ class ProjectionFormViewModel @Inject constructor(private val context: Context, 
     ))
 
     val datePayment = initialFieldState<LocalDate>(
+        saveStateHandler!!,
+        "FORM_DATE_PAYMENT",
         initialValue = LocalDate.now(),
         formatter = {
             if(it.isNotBlank()) {
@@ -55,6 +63,8 @@ class ProjectionFormViewModel @Inject constructor(private val context: Context, 
         }}
     )
     val period = initialFieldState<Pair<Int,String>>(
+        saveStateHandler!!,
+        "FORM_PERIOD",
         initialValue = periodsOpt.first(),
         validator = { KindPaymentsEnums.existIndex( it.first ) },
         list = periodsOpt,
@@ -64,6 +74,8 @@ class ProjectionFormViewModel @Inject constructor(private val context: Context, 
             }
         })
     val name = initialFieldState<String>(
+        saveStateHandler!!,
+        "FORM_NAME",
         initialValue = "",
         validator = { it.isNotBlank() },
         onValueChangeCallBack = {
@@ -72,6 +84,8 @@ class ProjectionFormViewModel @Inject constructor(private val context: Context, 
             }
         })
     val value = initialFieldState<BigDecimal>(
+        saveStateHandler!!,
+        "FORM_VALUE",
         initialValue = BigDecimal.ZERO,
         formatter = { if(NumbersUtil.isNumber(it)) BigDecimal(it) else BigDecimal.ZERO },
         validator = { it > BigDecimal.ZERO },
@@ -83,6 +97,8 @@ class ProjectionFormViewModel @Inject constructor(private val context: Context, 
         it.onValueChangeStr("")
     }
     val quote = initialFieldState<BigDecimal>(
+        saveStateHandler!!,
+        "FORM_QUOTE",
         initialValue = BigDecimal.ZERO,
         formatter = { if(NumbersUtil.isNumber(it)) BigDecimal(it) else BigDecimal.ZERO },
         validator = { it > BigDecimal.ZERO },
@@ -193,7 +209,7 @@ class ProjectionFormViewModel @Inject constructor(private val context: Context, 
     private fun quoteCalculation()= viewModelScope.launch {
         loaderStatus.value = true
         projectionSvc?.let{
-            it.calculateQuote(KindPaymentsEnums.findByIndex(period.value.first),datePayment.value,value.value).let(quote::onValueChange)
+            it.calculateQuote(KindPaymentsEnums.findByIndex(period.value.value.first),datePayment.value.value,value.value.value).let(quote::onValueChange)
         }
         loaderStatus.value = false
     }

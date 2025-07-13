@@ -6,6 +6,9 @@ interface ISimulatorCreditVariablePort {
 
     fun calculate(dto: SimulatorCreditDTO): SimulatorCreditDTO
 
-    fun save(dto: SimulatorCreditDTO):Boolean
+    fun save(dto: SimulatorCreditDTO,cache:Boolean=false):Long
 
+    fun update(dto:SimulatorCreditDTO,cache:Boolean):Boolean
+
+    fun setSimulation(dto:SimulatorCreditDTO):Boolean
 }

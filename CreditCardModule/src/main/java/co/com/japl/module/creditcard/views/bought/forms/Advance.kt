@@ -18,6 +18,7 @@ import androidx.compose.material.icons.rounded.Edit
 import androidx.compose.material.icons.rounded.Save
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -89,19 +90,29 @@ private fun FloatingButtons(viewModel: AdvanceViewModel) {
 @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
 @Composable
 private fun Body(viewModel: AdvanceViewModel,modifier:Modifier){
+    val creditCardName = viewModel.creditCardName.value.collectAsState()
+    val dateBought = viewModel.dateBought.value.collectAsState()
+    val nameProduct = viewModel.nameProduct.value.collectAsState()
+    val valueProduct = viewModel.valueProduct.value.collectAsState()
+    val months = viewModel.monthProduct.value.collectAsState()
+    val creditRate = viewModel.creditRate.value.collectAsState()
+    val creditKindRate = viewModel.creditRateKind.value.collectAsState()
+    val capitalValue = viewModel.capitalValue.value.collectAsState()
+    val interestValue = viewModel.interestValue.value.collectAsState()
+    val quoteValue = viewModel.quoteValue.value.collectAsState()
 
     Column(modifier= Modifier
         .padding(Dimensions.PADDING_SHORT)
         .verticalScroll(rememberScrollState())) {
         FieldView(
             name = R.string.credit_card,
-            value = viewModel.creditCardName.value,
+            value = creditCardName.value,
             modifier = ModifiersCustom.FieldFillMAxWidhtAndPaddingShort(),
             isMoney = false
         )
 
         FieldDatePicker(title = androidx.compose.material3.R.string.m3c_date_picker_headline
-            ,value = viewModel.dateBought.value
+            ,value = dateBought.value
             , callable = viewModel.dateBought::onValueChange
             , isError = viewModel.dateBought.error
             , validation = {viewModel.validate()}
@@ -110,7 +121,7 @@ private fun Body(viewModel: AdvanceViewModel,modifier:Modifier){
                 .padding(5.dp))
 
         FieldText(title = stringResource(id = R.string.name_product),
-            value= viewModel.nameProduct.value,
+            value= nameProduct.value,
             icon= Icons.Rounded.Cancel,
             hasErrorState = viewModel.nameProduct.error,
             validation = {viewModel.validate()},
@@ -118,9 +129,9 @@ private fun Body(viewModel: AdvanceViewModel,modifier:Modifier){
             modifier= ModifiersCustom.FieldFillMAxWidhtAndPaddingShort())
 
         FieldText(title = stringResource(id = R.string.value_product),
-            value=viewModel.valueProduct.value,
+            value=valueProduct.value,
             icon= Icons.Rounded.Cancel,
-            hasErrorState = viewModel.valueProduct.error,
+            hasErrorState = viewModel.valueProduct.error.value,
             validation = {viewModel.validate()},
             callback = viewModel.valueProduct::onValueChange,
             keyboardType = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Decimal),
@@ -128,14 +139,14 @@ private fun Body(viewModel: AdvanceViewModel,modifier:Modifier){
             modifier=ModifiersCustom.FieldFillMAxWidhtAndPaddingShort())
 
         FieldView(name = stringResource(id = R.string.months),
-            value=viewModel.nameProduct.value,
+            value=months.value,
             modifier=ModifiersCustom.FieldFillMAxWidhtAndPaddingShort()
             ,isMoney = false)
 
         Row {
             FieldView(
                 name = R.string.credit_rate,
-                value = (viewModel.creditRate.value?.takeIf { it.isNotBlank() }?.let { "$it %" }
+                value = (creditRate.value?.takeIf { it.isNotBlank() }?.let { "$it %" }
                     ?: "").toString(),
                 modifier = Modifier.weight(2f),
                 isMoney = false
@@ -143,7 +154,7 @@ private fun Body(viewModel: AdvanceViewModel,modifier:Modifier){
 
             FieldView(
                 name = R.string.credit_rate,
-                value = viewModel.creditRateKind.value,
+                value = creditKindRate.value,
                 modifier = Modifier.weight(1f),
                 isMoney = false
             )
@@ -151,21 +162,21 @@ private fun Body(viewModel: AdvanceViewModel,modifier:Modifier){
 
         FieldView(
             name = R.string.capital_value,
-            value = viewModel.capitalValue.value,
+            value = capitalValue.value,
             modifier = ModifiersCustom.FieldFillMAxWidhtAndPaddingShort(),
             isMoney = false
         )
 
         FieldView(
             name = R.string.interest_value,
-            value = viewModel.interestValue.value,
+            value = interestValue.value,
             modifier = ModifiersCustom.FieldFillMAxWidhtAndPaddingShort(),
             isMoney = false
         )
 
         FieldView(
             name = R.string.quote_value,
-            value = viewModel.quoteValue.value,
+            value = quoteValue.value,
             modifier = ModifiersCustom.FieldFillMAxWidhtAndPaddingShort(),
             isMoney = false
         )
@@ -197,7 +208,7 @@ internal fun AdvancePreview(){
 @Composable
 private fun viweModel():AdvanceViewModel{
     val prefs = Prefs(LocalContext.current)
-    val viewModel = AdvanceViewModel(0,0, LocalDateTime.now(),null,null,null,null,prefs)
+    val viewModel = AdvanceViewModel(null,0,0, LocalDateTime.now(),null,null,null,null,prefs)
     viewModel.loading.value = false
     return viewModel
 }

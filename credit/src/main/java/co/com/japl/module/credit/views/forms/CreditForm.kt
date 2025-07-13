@@ -18,6 +18,8 @@ import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -76,6 +78,14 @@ private fun Body(viewModel: CreditFormViewModel) {
 @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
 @Composable
 private fun Form(viewModel: CreditFormViewModel, modifier: Modifier) {
+    val kindPayment = viewModel.kindPayment.value.collectAsState()
+    val creditDate = viewModel.creditDate.value.collectAsState()
+    val name = viewModel.name.value.collectAsState()
+    val value = viewModel.value.value.collectAsState()
+    val rate = viewModel.rate.value.collectAsState()
+    val kindRate = viewModel.kindRate.value.collectAsState()
+    val month = viewModel.month.value.collectAsState()
+    val quoteCredit = viewModel.quoteCredit.value.collectAsState()
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -83,7 +93,7 @@ private fun Form(viewModel: CreditFormViewModel, modifier: Modifier) {
     ) {
         FieldSelect(
             title = stringResource(R.string.kind_payment),
-            value = viewModel.kindPayment.value?.second?:"",
+            value = kindPayment.value?.second?:"",
             cleanTitle = R.string.clean_credit,
             list = viewModel.kindPayment.list.map{Pair (it?.first?:0,it?.second?:"")},
             modifier = Modifier.padding(bottom = Dimensions.PADDING_BOTTOM),
@@ -93,7 +103,7 @@ private fun Form(viewModel: CreditFormViewModel, modifier: Modifier) {
 
         FieldDatePicker(
             title = R.string.date_credit,
-            value = DateUtils.localDateToStringDate(viewModel.creditDate.value),
+            value = DateUtils.localDateToStringDate(creditDate.value),
             validation = viewModel::validate,
             isError = viewModel.creditDate.error,
             callable = { viewModel.creditDate.onValueChange(DateUtils.toLocalDate(it)) },
@@ -103,7 +113,7 @@ private fun Form(viewModel: CreditFormViewModel, modifier: Modifier) {
         )
         FieldText(
             title = stringResource(R.string.name_credit),
-            value = viewModel.name.value,
+            value = name.value,
             clearTitle = R.string.clean_credit,
             callback = viewModel.name::onValueChange,
             validation = viewModel::validate,
@@ -116,7 +126,7 @@ private fun Form(viewModel: CreditFormViewModel, modifier: Modifier) {
 
         FieldText(
             title = stringResource(R.string.value_credit),
-            value = viewModel.value.valueStr,
+            value = value.value,
             clearTitle = R.string.clean_credit,
             placeHolder = viewModel.value.valueStr,
             currency = true,
@@ -124,7 +134,7 @@ private fun Form(viewModel: CreditFormViewModel, modifier: Modifier) {
                 .fillMaxWidth()
                 .padding(bottom = Dimensions.PADDING_BOTTOM),
             validation = viewModel::validate,
-            hasErrorState = viewModel.value.error,
+            hasErrorState = viewModel.value.error.value,
             keyboardType = KeyboardOptions.Default.copy( keyboardType = KeyboardType.Decimal),
             icon= Icons.Rounded.Cancel,
             callback = { viewModel.value.onValueChange(it) }
@@ -137,12 +147,12 @@ private fun Form(viewModel: CreditFormViewModel, modifier: Modifier) {
         ) {
             FieldText(
                 title = stringResource(R.string.rate_credit),
-                value = viewModel.rate.valueStr,
+                value = rate.value,
                 placeHolder = viewModel.rate.valueStr,
                 clearTitle = R.string.clean_credit,
                 callback = { viewModel.rate.onValueChange(it) },
                 validation = viewModel::validate,
-                hasErrorState = viewModel.rate.error,
+                hasErrorState = viewModel.rate.error.value,
                 formatDecimal = NumbersUtil.format8Decimal,
                 icon= Icons.Rounded.Cancel,
                 suffixValue = "%",
@@ -155,7 +165,7 @@ private fun Form(viewModel: CreditFormViewModel, modifier: Modifier) {
 
             FieldSelect(
                 title = stringResource(R.string.kind_rate),
-                value = viewModel.kindRate.value?.third?.getName()?:"",
+                value = kindRate.value?.third?.getName()?:"",
                 list = viewModel.kindRate.list.map { Pair(it?.first?:0,it?.second?:"")  },
                 isError = viewModel.kindRate.error,
                 modifier = Modifier
@@ -168,13 +178,13 @@ private fun Form(viewModel: CreditFormViewModel, modifier: Modifier) {
 
         FieldText(
             title = stringResource(R.string.periods_credit),
-            value = viewModel.month.valueStr,
+            value = month.value,
             placeHolder = viewModel.month.valueStr,
             clearTitle = R.string.clean_credit,
             callback = { viewModel.month.onValueChange(it) },
             validation = viewModel::validate,
             decimal = true,
-            hasErrorState = viewModel.month.error,
+            hasErrorState = viewModel.month.error.value,
             icon= Icons.Rounded.Cancel,
             keyboardType = KeyboardOptions(keyboardType = KeyboardType.Number),
             modifier = Modifier
@@ -184,7 +194,7 @@ private fun Form(viewModel: CreditFormViewModel, modifier: Modifier) {
 
         FieldView(
             name = R.string.quote_credit,
-            value = viewModel.quoteCredit.valueStr,
+            value = quoteCredit.value,
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(bottom = Dimensions.PADDING_BOTTOM)
@@ -236,5 +246,5 @@ fun PreviewNight() {
 }
 
 fun creditViewModel(): CreditFormViewModel {
-    return CreditFormViewModel(null, null,null, null)
+    return CreditFormViewModel(null,null, null,null, null)
 }

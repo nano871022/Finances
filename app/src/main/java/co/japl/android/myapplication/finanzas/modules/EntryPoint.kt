@@ -4,6 +4,7 @@ import android.app.Activity
 import android.app.Application
 import co.com.japl.finances.iports.inbounds.common.IDifferQuotesPort
 import co.com.japl.finances.iports.inbounds.creditcard.ICreditCardPort
+import co.com.japl.finances.iports.inbounds.creditcard.ISimulatorCreditVariablePort
 import co.com.japl.finances.iports.inbounds.creditcard.ITaxPort
 import co.com.japl.finances.iports.inbounds.creditcard.bought.IBoughtPort
 import co.com.japl.finances.iports.inbounds.creditcard.bought.lists.IBoughtListPort
@@ -33,4 +34,5 @@ interface EntryPoint {
     fun getDifferInstallmentSvc():IDifferQuotesPort
 
    // fun getAllImplementationSMSSubscriber():Set<ISMSObserver>
+   fun getSimulatorVariablePort(): ISimulatorCreditVariablePort
 }

@@ -181,18 +181,19 @@ private fun StatsSpace(viewModel:GoogleAuthBackupRestoreViewModel){
     val color = MaterialTheme.colorScheme.onBackground
     val columnNameWeight = 2f
     val columnCountWeight = 1f
+    val listHeader = listOf(
+            Header(title = "Nombre", tooltip = "Nombre de la tabla", weight = columnNameWeight),
+            Header(title = "Cantidad", tooltip = "Cantidad de registros en la tabla",weight = columnCountWeight)
+            )
 
     viewModel.onload()
 
     if(progress) {
         LinearProgressIndicator()
     }else {
-        DataTable(listHeader = listOf(
-            Header(title = "Nombre", tooltip = "Nombre de la tabla", weight = columnNameWeight),
-            Header(title = "Cantidad", tooltip = "Cantidad de registros en la tabla",weight = columnCountWeight)
-            ),
+        DataTable(listHeader = {_->listHeader},
             sizeBody = stateStats.size,
-            footer = {
+            footer = {_->
                 Text(
                     text = "Total Registros",
                     color = color,
@@ -206,7 +207,7 @@ private fun StatsSpace(viewModel:GoogleAuthBackupRestoreViewModel){
                     textAlign = TextAlign.End,
                     modifier = Modifier.weight(columnCountWeight)
                 )
-            }) { index ->
+            }) { index,_ ->
             Text(
                 text = stateStats[index].first,
                 color = color,

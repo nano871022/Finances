@@ -163,7 +163,7 @@ private fun Body(viewModel: CreateRateViewModel,modifier:Modifier){
                 validation = { viewModel.validate() },
                 keyboardType = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
                 decimal = true,
-                hasErrorState = rateError,
+                hasErrorState = rateError.value,
                 modifier = Weight1f().padding(end=Dimensions.PADDING_SHORT))
 
 

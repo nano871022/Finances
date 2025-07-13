@@ -3,6 +3,7 @@ package co.com.japl.module.creditcard.controllers.bought.forms
 import android.widget.Toast
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.navigation.NavController
 import co.com.japl.finances.iports.dtos.CreditCardBoughtDTO
@@ -17,12 +18,11 @@ import co.com.japl.ui.Prefs
 import co.com.japl.ui.utils.DateUtils
 import co.com.japl.ui.utils.initialFieldState
 import co.japl.android.myapplication.utils.NumbersUtil
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.runBlocking
 import java.time.LocalDate
 import java.time.LocalDateTime
 
-class WalletViewModel constructor(private val codeCreditCard:Int,private val codeBought:Int,private val period:LocalDateTime,private val boughtSvc:IBoughtPort?,private val creditRateSvc:ITaxPort?,private val creditCardSvc:ICreditCardPort?,private val navController: NavController?,private val prefs:Prefs) : ViewModel(){
+class WalletViewModel constructor(private val savedStateHolder: SavedStateHandle?=null,private val codeCreditCard:Int, private val codeBought:Int, private val period:LocalDateTime, private val boughtSvc:IBoughtPort?, private val creditRateSvc:ITaxPort?, private val creditCardSvc:ICreditCardPort?, private val navController: NavController?, private val prefs:Prefs) : ViewModel(){
 
     private var cutOffDate:LocalDateTime? = null
     private var bought:CreditCardBoughtDTO? = null
@@ -35,54 +35,74 @@ class WalletViewModel constructor(private val codeCreditCard:Int,private val cod
     val isNew = mutableStateOf(true)
 
     val creditCardName = initialFieldState(
+        savedStateHolder!!,
+        "FORM_CREDIT_CARD_NAME",
         initialValue = "",
         validator = {it.isNotBlank()},
         onValueChangeCallBack = { bought?.nameCreditCard = it }
     )
 
     val nameProduct = initialFieldState(
+        savedStateHolder!!,
+        "FORM_NAME_PRODUCT",
         initialValue = "",
         validator = {it.isNotBlank()},
         onValueChangeCallBack = { bought?.nameItem = it; validate() }
     )
 
     val valueProduct = initialFieldState(
+        savedStateHolder!!,
+        "FORM_VALUE_PRODUCT",
         initialValue = "",
         validator = {it.isNotBlank() && NumbersUtil.isNumber(it)},
         onValueChangeCallBack = { bought?.valueItem = NumbersUtil.toBigDecimal(it); validate() }
     )
     val monthProduct = initialFieldState(
+        savedStateHolder!!,
+        "FORM_MONTH_PRODUCT",
         initialValue = "",
         validator = {it.isNotBlank() && NumbersUtil.isNumber(it) && it.toInt() > 0},
         onValueChangeCallBack = { bought?.month = it.toInt(); validate() }
     )
     val creditRate = initialFieldState(
+        savedStateHolder!!,
+        "FORM_CREDIT_RATE",
         initialValue = "",
         validator = {it.isNotBlank() && NumbersUtil.isNumber(it)},
         onValueChangeCallBack = { bought?.interest = NumbersUtil.toBigDecimal(it).toDouble() }
     )
     val capitalValue = initialFieldState(
+        savedStateHolder!!,
+        "FORM_CAPITAL_VALUE",
         initialValue = "",
         validator = {it.isNotBlank() && NumbersUtil.isNumber(it)},
         onValueChangeCallBack = { }
     )
     val dateBought = initialFieldState(
+        savedStateHolder!!,
+        "FORM_DATE_BOUGHT",
         initialValue = "",
         validator = {it.isNotBlank() && DateUtils.isDateValid(it)},
         onValueChangeCallBack = { bought?.boughtDate = DateUtils.toLocalDateTime2(it) }
     )
     val quoteValue = initialFieldState(
+        savedStateHolder!!,
+        "FORM_QUOTE_VALUE",
         initialValue = "",
         validator = {it.isNotBlank() && NumbersUtil.isNumber(it)},
         onValueChangeCallBack = { }
     )
 
     val interestValue = initialFieldState(
+        savedStateHolder!!,
+        "FORM_INTEREST_VALUE",
         initialValue = "",
         validator = {it.isNotBlank() && NumbersUtil.isNumber(it)},
         onValueChangeCallBack = { }
     )
     val creditRateKind = initialFieldState(
+        savedStateHolder!!,
+        "FORM_CREDIT_RATE_KIND",
         initialValue = "",
         validator = {it.isNotBlank()},
         onValueChangeCallBack = { }
@@ -186,8 +206,8 @@ class WalletViewModel constructor(private val codeCreditCard:Int,private val cod
 
     private fun calculateValues(month:Boolean,value: Boolean) {
         if (month && value) {
-            val month = NumbersUtil.toLong(monthProduct.value).toInt()
-            val value = NumbersUtil.toBigDecimal(valueProduct.value)
+            val month = NumbersUtil.toLong(monthProduct.value.value).toInt()
+            val value = NumbersUtil.toBigDecimal(valueProduct.value.value)
             boughtSvc?.let {
                 taxDto?.let { taxDto ->
                     val quoteBought = it.quoteValue(
@@ -225,17 +245,17 @@ class WalletViewModel constructor(private val codeCreditCard:Int,private val cod
             bought = CreditCardBoughtDTO(
                 codeCreditCard = codeCreditCard,
                 id = codeBought,
-                nameItem = nameProduct.value,
-                valueItem = NumbersUtil.toBigDecimal(valueProduct.value),
-                month = NumbersUtil.toLong(monthProduct.value).toInt(),
-                boughtDate = DateUtils.toLocalDateTime2(dateBought.value),
+                nameItem = nameProduct.value.value,
+                valueItem = NumbersUtil.toBigDecimal(valueProduct.value.value),
+                month = NumbersUtil.toLong(monthProduct.value.value).toInt(),
+                boughtDate = DateUtils.toLocalDateTime2(dateBought.value.value),
                 createDate = LocalDateTime.now(),
                 endDate = LocalDateTime.MAX,
                 cutOutDate = period,
-                interest = NumbersUtil.toBigDecimal(creditRate.value).toDouble(),
+                interest = NumbersUtil.toBigDecimal(creditRate.value.value).toDouble(),
                 kind = KindInterestRateEnum.WALLET_BUY,
                 kindOfTax = taxDto?.kindOfTax!!,
-                nameCreditCard = creditCardName.value,
+                nameCreditCard = creditCardName.value.value,
                 recurrent = 0
             )
         }

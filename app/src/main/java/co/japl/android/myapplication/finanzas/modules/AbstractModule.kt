@@ -9,9 +9,11 @@ import co.com.japl.finances.iports.inbounds.credit.IAdditionalFormPort
 import co.com.japl.finances.iports.inbounds.credit.ICreditFormPort
 import co.com.japl.finances.iports.inbounds.credit.IPeriodCreditPort
 import co.com.japl.finances.iports.inbounds.credit.IPeriodGracePort
+import co.com.japl.finances.iports.inbounds.creditcard.IAmortizationTablePort
 import co.com.japl.finances.iports.inbounds.creditcard.IBuyCreditCardSettingPort
 import co.com.japl.finances.iports.inbounds.creditcard.ICreditCardSettingPort
 import co.com.japl.finances.iports.inbounds.creditcard.ISMSCreditCardPort
+import co.com.japl.finances.iports.inbounds.creditcard.ISimulatorCreditVariablePort
 import co.com.japl.finances.iports.inbounds.creditcard.ITagPort
 import co.com.japl.finances.iports.inbounds.creditcard.ITaxPort
 import co.com.japl.finances.iports.inbounds.creditcard.bought.IBoughtPort
@@ -78,6 +80,7 @@ import co.japl.android.myapplication.finanzas.bussiness.interfaces.IQuoteCreditC
 import co.com.japl.finances.iports.inbounds.recap.IRecapPort
 import co.com.japl.finances.iports.outbounds.IAdditionalPort
 import co.com.japl.finances.iports.outbounds.ICreditPort
+import co.com.japl.finances.iports.outbounds.ISimulatorCreditPort
 import co.com.japl.ui.impls.SMSObservable
 import co.com.japl.ui.interfaces.ISMSObservablePublicher
 import co.com.japl.ui.interfaces.ISMSObservableSubscriber
@@ -85,13 +88,16 @@ import co.japl.android.finances.services.dao.interfaces.IAdditionalCreditDAO
 import co.japl.android.finances.services.dao.interfaces.ICheckCreditDAO
 import co.japl.android.finances.services.dao.interfaces.ICheckQuoteDAO
 import co.japl.android.finances.services.dao.interfaces.IGracePeriodDAO
+import co.japl.android.finances.services.dao.interfaces.ISimulatorCreditDAO
 import co.japl.android.myapplication.finanzas.controller.SMS
 import co.japl.finances.core.adapters.inbound.implement.common.CheckPaymentsImpl
 import co.japl.finances.core.adapters.inbound.implement.credit.AdditionalPort
 import co.japl.finances.core.adapters.inbound.implement.credit.CreditImpl
 import co.japl.finances.core.adapters.inbound.implement.credit.PeriodCreditImpl
 import co.japl.finances.core.adapters.inbound.implement.credit.PeriodGraceImpl
+import co.japl.finances.core.adapters.inbound.implement.creditCard.AmortizationTableImpl
 import co.japl.finances.core.adapters.inbound.implement.creditCard.SMSCreditCardImpl
+import co.japl.finances.core.adapters.inbound.implement.creditCard.SimulatorImpl
 import co.japl.finances.core.adapters.inbound.implement.creditcard.bought.BoughtImpl
 import co.japl.finances.core.adapters.inbound.implement.creditcard.bought.lists.ListImpl
 import co.japl.finances.core.adapters.inbound.implement.paid.PeriodImpl
@@ -101,6 +107,7 @@ import co.japl.finances.core.adapters.inbound.implement.recap.RecapImp
 import co.japl.finances.core.usercases.implement.common.DifferQuoteImpl
 import co.japl.finances.core.usercases.implement.common.PaidImp
 import co.japl.finances.core.usercases.implement.common.QuoteCreditCardImpl
+import co.japl.finances.core.usercases.implement.common.SimulatorCreditImpl
 import co.japl.finances.core.usercases.implement.credit.AdditionalImpl
 import co.japl.finances.core.usercases.implement.credit.PeriodCredit
 import co.japl.finances.core.usercases.implement.creditcard.bought.BoughtSmsImpl
@@ -115,9 +122,11 @@ import co.japl.finances.core.usercases.interfaces.common.IInput
 import co.japl.finances.core.usercases.interfaces.common.IPaid
 import co.japl.finances.core.usercases.interfaces.common.IProjections
 import co.japl.finances.core.usercases.interfaces.common.IQuoteCreditCard
+import co.japl.finances.core.usercases.interfaces.common.ISimulatorCredit
 import co.japl.finances.core.usercases.interfaces.credit.ICredit
 import co.japl.finances.core.usercases.interfaces.credit.IPeriodCredit
 import co.japl.finances.core.usercases.interfaces.credit.IPeriodGrace
+import co.japl.finances.core.usercases.interfaces.creditcard.IAmortizationTable
 import co.japl.finances.core.usercases.interfaces.creditcard.IBuyCreditCardSetting
 import co.japl.finances.core.usercases.interfaces.creditcard.ICreditCardSetting
 import co.japl.finances.core.usercases.interfaces.creditcard.ISMSCreditCard
@@ -521,4 +530,17 @@ abstract class AbstractModule {
     abstract fun bindInpboundProjectionList(impl: ProjectionImpl): IProjectionListPort
     @Binds
     abstract fun bindInboundProjectionForm(impl:ProjectionImpl): IProjectionFormPort
+
+    @Binds
+    abstract fun bindInboundSimulatorCreditVariablePort(impl: SimulatorImpl): ISimulatorCreditVariablePort
+    @Binds
+    abstract fun bindUserCaseSimulator(impl: SimulatorCreditImpl): ISimulatorCredit
+    @Binds
+    abstract fun binOutboundSimulator(impl: co.japl.android.finances.services.core.SimulatorCreditImpl): ISimulatorCreditPort
+    @Binds
+    abstract fun binDAOSimulator(impl: co.japl.android.finances.services.dao.implement.SimulatorCreditImpl): ISimulatorCreditDAO
+    @Binds
+    abstract fun bindInboundAmortizationVariablePort(impl: AmortizationTableImpl): IAmortizationTablePort
+    @Binds
+    abstract fun bindUserCaseAmortization(impl: co.japl.finances.core.usercases.implement.creditcard.AmortizationTableImpl): IAmortizationTable
 }

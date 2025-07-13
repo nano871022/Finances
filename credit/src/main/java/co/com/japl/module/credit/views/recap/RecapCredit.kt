@@ -56,15 +56,22 @@ fun Recap(viewModel:RecapViewModel){
             progress = { progression.floatValue },
             modifier = Modifier.fillMaxWidth(),
         )
-    }else if(viewModel.listCredits.isEmpty()){
-        Column {
-            Text(text = stringResource(R.string.no_data),
-                modifier = Modifier.fillMaxWidth())
-        }
     }else{
-        Scaffold(floatingActionButton = {
-            Buttons(viewModel)
-        }) {
+        Body(viewModel)
+    }
+}
+
+@Composable
+private fun Body(viewModel:RecapViewModel){
+    Scaffold(floatingActionButton = {
+        Buttons(viewModel)
+    }) {
+        if(viewModel.listCredits.isEmpty()){
+            Column {
+                Text(text = stringResource(R.string.no_data),
+                modifier = Modifier.fillMaxWidth())
+            }
+    }else{
             List(viewModel.listCredits, yearMonth = viewModel.yearMonth)
         }
     }
@@ -73,16 +80,17 @@ fun Recap(viewModel:RecapViewModel){
  @Composable
  private fun Buttons(viewModel:RecapViewModel){
      Column {
-         FloatButton(
-             imageVector = Icons.Rounded.CalendarMonth,
-             descriptionIcon = R.string.check_periods,
-             onClick = { viewModel.periodCredits() })
+         if(viewModel.listCredits.isNotEmpty()) {
+             FloatButton(
+                 imageVector = Icons.Rounded.CalendarMonth,
+                 descriptionIcon = R.string.check_periods,
+                 onClick = { viewModel.periodCredits() })
 
-         FloatButton(
-             imageVector = Icons.Rounded.RemoveRedEye,
-             descriptionIcon = R.string.detail_credits,
-             onClick = { viewModel.detailCredits() })
-
+             FloatButton(
+                 imageVector = Icons.Rounded.RemoveRedEye,
+                 descriptionIcon = R.string.detail_credits,
+                 onClick = { viewModel.detailCredits() })
+         }
          FloatButton(
              imageVector = Icons.Rounded.Add,
              descriptionIcon = R.string.add_credit,
@@ -201,6 +209,18 @@ fun RecapPreview(){
 fun RecapPreviewDark(){
     MaterialThemeComposeUI {
         Recap(viewModel())
+    }
+}
+
+@RequiresApi(Build.VERSION_CODES.S)
+@Composable
+@Preview(showBackground = true, showSystemUi = true, backgroundColor = 0xffffff, uiMode = Configuration.UI_MODE_NIGHT_YES)
+fun RecapEmptyPreviewDark(){
+    val viewModel = viewModel()
+    viewModel.listCredits.clear()
+
+    MaterialThemeComposeUI {
+        Recap(viewModel)
     }
 }
 

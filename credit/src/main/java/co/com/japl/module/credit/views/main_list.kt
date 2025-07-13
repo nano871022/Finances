@@ -60,7 +60,11 @@ fun CreditList(viewModel:ListViewModel) {
 @Composable
 private fun Credit(viewModel:ListViewModel){
     val list = remember {viewModel.list}
-
+    val listHeader = arrayListOf(
+            Header(title= stringResource(id = R.string.quote_payment_date_short), tooltip = stringResource(id = R.string.quote_payment_date),weight=1f),
+            Header(title=stringResource(id = R.string.quote_payment_name_short), tooltip = stringResource(id = R.string.quote_payment_name),weight=1f) ,
+            Header(title=stringResource(id = R.string.quote_payment_value_short), tooltip = stringResource(id = R.string.quote_payment_value),weight=1f)
+        )
 
 
     Column (modifier = Modifier.padding(10.dp)){
@@ -82,14 +86,10 @@ private fun Credit(viewModel:ListViewModel){
                       modifier = Modifier.weight(2f))
         }
 
-        DataTable(listHeader = arrayListOf(
-            Header(title= stringResource(id = R.string.quote_payment_date_short), tooltip = stringResource(id = R.string.quote_payment_date),1f),
-            Header(title=stringResource(id = R.string.quote_payment_name_short), tooltip = stringResource(id = R.string.quote_payment_name),1f) ,
-            Header(title=stringResource(id = R.string.quote_payment_value_short), tooltip = stringResource(id = R.string.quote_payment_value),1f)
-        ),
+        DataTable(listHeader = {_->  listHeader },
             sizeBody = list.size,
-            footer = {}) {
-            Item(dto = list[it],
+            footer = {_->}) {pos,_->
+            Item(dto = list[pos],
                 delete = {viewModel.delete(it)},
                 amortization = {viewModel.amortization(it)},
                 periodGrace = {id,period,date-> viewModel.periodGrace(id,period,date,date.plusMonths(period.toLong()))},

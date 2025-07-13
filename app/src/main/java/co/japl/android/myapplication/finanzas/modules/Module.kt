@@ -18,6 +18,8 @@ import co.com.japl.ui.interfaces.ISMSObservablePublicher
 import co.com.japl.ui.interfaces.ISMSObservableSubscriber
 import co.com.japl.ui.interfaces.ISMSObserver
 import co.japl.android.finances.services.cache.impl.QuoteCreditCardCache
+import co.japl.android.finances.services.cache.impl.SimulatorCreditCache
+import co.japl.android.finances.services.cache.interfaces.ISimulatorCreditCache
 import co.japl.android.finances.services.dao.interfaces.IQuoteCreditCardDAO
 import co.japl.android.myapplication.bussiness.DB.connections.ConnectDB
 import co.japl.android.myapplication.bussiness.impl.CreditCardImpl
@@ -74,6 +76,13 @@ object Module {
     @Provides
     fun getDAOBoughtcache(implement:IQuoteCreditCardDAO):co.japl.android.finances.services.cache.interfaces.IQuoteCreditCardCache{
         return QuoteCreditCardCache(implement)
+    }
+
+
+    @Singleton
+    @Provides
+    fun getDAOSimulatorCache(): ISimulatorCreditCache{
+        return SimulatorCreditCache()
     }
 
     @IntoMap

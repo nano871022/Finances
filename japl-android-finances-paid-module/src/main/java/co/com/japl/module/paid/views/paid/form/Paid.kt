@@ -148,7 +148,7 @@ Column (modifier=Modifier.padding(Dimensions.PADDING_SHORT)) {
         icon= Icons.Rounded.Cancel,
         currency = true,
         keyboardType = KeyboardOptions.Companion.Default.copy (keyboardType = KeyboardType.Decimal),
-        hasErrorState = errorValueItemState,
+        hasErrorState = errorValueItemState.value,
         callback = {valueItemState.value = it},
         modifier = Modifier
             .fillMaxWidth().padding(bottom = Dimensions.PADDING_SHORT)

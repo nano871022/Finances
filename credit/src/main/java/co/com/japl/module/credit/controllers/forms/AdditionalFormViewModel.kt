@@ -5,6 +5,7 @@ import android.util.Log
 import androidx.compose.material.SnackbarDuration
 import androidx.compose.material.SnackbarHostState
 import androidx.compose.runtime.mutableStateOf
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
@@ -23,7 +24,7 @@ import java.time.LocalDate
 import javax.inject.Inject
 
 @HiltViewModel
-class AdditionalFormViewModel @Inject constructor(private val context: Context, private val id:Int=-1, private val codeCredit:Int, private val additionalSvc: IAdditionalFormPort?, private val navController: NavController?) : ViewModel(){
+class AdditionalFormViewModel @Inject constructor(private val context: Context, private val savedStateHandle: SavedStateHandle?=null, private val id:Int=-1, private val codeCredit:Int, private val additionalSvc: IAdditionalFormPort?, private val navController: NavController?) : ViewModel(){
     private val _dto = MutableStateFlow<AdditionalCreditDTO>(AdditionalCreditDTO(
         id=id,
         creditCode = codeCredit.toLong(),
@@ -35,6 +36,8 @@ class AdditionalFormViewModel @Inject constructor(private val context: Context, 
     val hostState: SnackbarHostState = SnackbarHostState()
     val loading = mutableStateOf(false)
     val name = initialFieldState(
+        savedStateHandle!!,
+        "FORM_NAME",
         initialValue = "",
         validator = { it.isNotBlank()},
         onValueChangeCallBack = {name->_dto.update{
@@ -42,6 +45,8 @@ class AdditionalFormViewModel @Inject constructor(private val context: Context, 
         }}
     )
     val value = initialFieldState<BigDecimal>(
+        savedStateHandle!!,
+        "FORM_VALUE",
         initialValue = BigDecimal.ZERO,
         formatter = { if(it.isNotBlank() && NumbersUtil.isNumber(it)) NumbersUtil.toBigDecimal(it) else BigDecimal.ZERO  },
         validator = { BigDecimal.ZERO < it },
@@ -54,6 +59,8 @@ class AdditionalFormViewModel @Inject constructor(private val context: Context, 
         it.onValueChangeStr("")
     }
     val startDate = initialFieldState(
+        savedStateHandle!!,
+        "FORM_START_DATE",
         initialValue = LocalDate.now(),
         validator = { it.isAfter(LocalDate.now().withYear(2000))},
         onValueChangeCallBack = { date->

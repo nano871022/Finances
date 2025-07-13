@@ -2,6 +2,7 @@ package co.com.japl.module.paid.controllers.projections.list
 
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
@@ -13,18 +14,23 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import java.math.BigDecimal
+import java.util.logging.Handler
 import javax.inject.Inject
 
 @HiltViewModel
-class ProjectionsViewModel @Inject constructor(private val projectionSvc: IProjectionsPort?=null, private val navController: NavController?=null) : ViewModel() {
+class ProjectionsViewModel @Inject constructor(private val savedStateHandler: SavedStateHandle?=null,private val projectionSvc: IProjectionsPort?=null, private val navController: NavController?=null) : ViewModel() {
 
     val loadingStatus = mutableStateOf(false)
     val projectionsList = mutableStateListOf<ProjectionRecap>()
 
     val totalCount = initialFieldState(
+        savedStateHandler!!,
+        "FORM_TOTAL_COUNT",
         initialValue = 0
     )
     val totalSaved = initialFieldState(
+        savedStateHandler!!,
+        "FORM_TOTAL_SAVED",
         initialValue = BigDecimal.ZERO
     )
 

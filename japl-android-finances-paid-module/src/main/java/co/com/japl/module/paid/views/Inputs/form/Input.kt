@@ -116,7 +116,7 @@ private fun Body(viewModel: InputViewModel, modifier: Modifier) {
             ,value = stateValue.value
             , validation = {viewModel.validation()}
             , callback = {stateValue.value = it}
-            , hasErrorState = stateErrorValue
+            , hasErrorState = stateErrorValue.value
             , currency = true
             , icon = Icons.Rounded.Cancel
             , modifier = Modifier

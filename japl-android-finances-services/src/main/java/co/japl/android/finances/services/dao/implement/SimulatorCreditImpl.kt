@@ -1,4 +1,4 @@
-package co.japl.android.finances.services.implement
+package co.japl.android.finances.services.dao.implement
 
 import android.database.sqlite.SQLiteOpenHelper
 import android.os.Build
@@ -6,27 +6,28 @@ import android.provider.BaseColumns
 import androidx.annotation.RequiresApi
 import co.japl.android.finances.services.dto.CalcDB
 import co.japl.android.finances.services.dto.CalcDTO
+import co.japl.android.finances.services.dao.interfaces.ISimulatorCreditDAO
 import co.japl.android.finances.services.mapping.CalcMap
-import co.japl.android.finances.services.interfaces.ICalcSvc
 import co.japl.android.finances.services.utils.DatabaseConstants
 import com.google.gson.Gson
 import java.nio.charset.Charset
 import java.nio.file.Files
 import java.nio.file.Paths
-import java.util.*
+import java.util.Optional
 import javax.inject.Inject
 
-class SaveImpl @Inject constructor(override var dbConnect: SQLiteOpenHelper) : ICalcSvc {
-    private val COLUMNS_CALC = arrayOf(BaseColumns._ID
-        ,CalcDB.CalcEntry.COLUMN_ALIAS
-        ,CalcDB.CalcEntry.COLUMN_TYPE
-        ,CalcDB.CalcEntry.COLUMN_INTEREST
-        ,CalcDB.CalcEntry.COLUMN_PERIOD
-        ,CalcDB.CalcEntry.COLUMN_QUOTE_CREDIT
-        ,CalcDB.CalcEntry.COLUMN_VALUE_CREDIT
-        ,CalcDB.CalcEntry.COLUMN_INTEREST_VALUE
-        ,CalcDB.CalcEntry.COLUMN_CAPITAL_VALUE
-        ,CalcDB.CalcEntry.COLUMN_KIND_OF_TAX)
+class SimulatorCreditImpl @Inject constructor(override var dbConnect: SQLiteOpenHelper) : ISimulatorCreditDAO {
+    private val COLUMNS_CALC = arrayOf(
+        BaseColumns._ID
+        , CalcDB.CalcEntry.COLUMN_ALIAS
+        , CalcDB.CalcEntry.COLUMN_TYPE
+        , CalcDB.CalcEntry.COLUMN_INTEREST
+        , CalcDB.CalcEntry.COLUMN_PERIOD
+        , CalcDB.CalcEntry.COLUMN_QUOTE_CREDIT
+        , CalcDB.CalcEntry.COLUMN_VALUE_CREDIT
+        , CalcDB.CalcEntry.COLUMN_INTEREST_VALUE
+        , CalcDB.CalcEntry.COLUMN_CAPITAL_VALUE
+        , CalcDB.CalcEntry.COLUMN_KIND_OF_TAX)
 
     override fun save(calc: CalcDTO): Long {
         val db = dbConnect.writableDatabase

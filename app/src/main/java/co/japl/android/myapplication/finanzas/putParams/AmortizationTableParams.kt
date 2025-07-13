@@ -1,13 +1,20 @@
 package co.japl.android.myapplication.finanzas.putParams
 
+import android.content.Intent
 import android.os.Bundle
+import android.util.Base64
+import android.util.Log
+import androidx.core.net.toUri
 import androidx.core.os.bundleOf
 import androidx.navigation.NavController
 import co.japl.android.myapplication.R
 import co.japl.android.myapplication.bussiness.DTO.CalcDTO
 import co.japl.android.myapplication.bussiness.interfaces.Calc
 import co.japl.android.myapplication.finanzas.enums.AmortizationKindOfEnum
+import co.japl.android.myapplication.finanzas.putParams.AdditionalCreditParams.Params
 import com.google.gson.Gson
+import java.net.URLDecoder
+import java.nio.charset.Charset
 
 class AmortizationTableParams {
 
@@ -53,16 +60,27 @@ class AmortizationTableParams {
             navController.navigate(R.id.action_list_bought_to_amortizationTableFragment,parameters)
         }
 
+        fun newInstanceQuotes(code:Long,navController:NavController){
+            val parameters = bundleOf("CODE" to code)
+            navController.navigate(R.id.action_list_bought_to_amortizationTableFragment,parameters)
+        }
+
         fun download(argument: Bundle):Map<String,Any>{
             argument.let {
-                return mapOf(params.ARG_PARAM_CREDIT_VALUE to Gson().fromJson(it.get(params.ARG_PARAM_CREDIT_VALUE) as String,CalcDTO::class.java)
-                ,params.ARG_PARAM_QUOTE_PAID to it.getLong(params.ARG_PARAM_QUOTE_PAID)
-                ,params.ARG_PARAM_QUOTE1_NOT_PAID to (it.getBoolean(params.ARG_PARAM_QUOTE1_NOT_PAID)?:false)
-                ,params.ARG_PARAM_HAS_DIFFER_INSTALLMENT to (it.getBoolean(params.ARG_PARAM_HAS_DIFFER_INSTALLMENT)?:false)
-                ,params.ARG_PARAM_BOUGHT_ID to it.getLong(params.ARG_PARAM_BOUGHT_ID)
-                ,params.ARG_PARAM_MONTHS_CALC to it.getLong(params.ARG_PARAM_MONTHS_CALC)
-                ,params.ARG_PARAM_KIND_OF_AMORTIZATION to it.get(params.ARG_PARAM_KIND_OF_AMORTIZATION) as AmortizationKindOfEnum)
+                if( it.containsKey(Params.PARAM_DEEPLINK) ){
+                    val intent = (it.get(Params.PARAM_DEEPLINK) as Intent).dataString?.toUri()
+
+                    return@download mapOf<String,Any>(
+                        "CODE" to (intent?.getQueryParameter("code")?.toLong()?:0.toLong())
+                    )
+                }else{
+                    val code = it.getLong("CODE")
+                    return@download mapOf<String,Any>(
+                        "CODE" to code
+                    )
+                }
             }
+            return mapOf()
         }
         fun toBack(navController: NavController){
             navController.popBackStack()

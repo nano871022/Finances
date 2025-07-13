@@ -76,7 +76,7 @@ private fun Body(viewModel: ProjectionFormViewModel,modifier:Modifier){
 
         FieldSelect(
             title = stringResource(id = R.string.period_projection),
-            value = viewModel.period.value.second,
+            value = viewModel.period.value.value.second,
             list = viewModel.period.list,
             cleanTitle = R.string.clean_period,
             isError = viewModel.period.error,
@@ -89,7 +89,7 @@ private fun Body(viewModel: ProjectionFormViewModel,modifier:Modifier){
 
         FieldText(
             title = stringResource(id = R.string.name_projection),
-            value = viewModel.name.value,
+            value = viewModel.name.value.value,
             clearTitle = R.string.clean_period,
             icon= Icons.Rounded.Cancel,
             hasErrorState = viewModel.name.error,
@@ -105,7 +105,7 @@ private fun Body(viewModel: ProjectionFormViewModel,modifier:Modifier){
             currency = true,
             clearTitle = R.string.clean_period,
             icon= Icons.Rounded.Cancel,
-            hasErrorState = viewModel.value.error,
+            hasErrorState = viewModel.value.error.value,
             validation = {viewModel.validate()},
             callback = {viewModel.value.onValueChangeStr(it)},
             modifier = modifier.fillMaxWidth().padding(bottom = Dimensions.PADDING_BOTTOM)
@@ -113,7 +113,7 @@ private fun Body(viewModel: ProjectionFormViewModel,modifier:Modifier){
 
         FieldView(
             title = stringResource(id = R.string.quote_projection),
-            value = NumbersUtil.COPtoString(viewModel.quote.value),
+            value = NumbersUtil.COPtoString(viewModel.quote.value.value),
             modifier = Modifier.fillMaxWidth()
         )
 

@@ -35,6 +35,7 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.snapshots.SnapshotStateList
+import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -131,19 +132,35 @@ private fun FloatingButtons(viewModel: QuoteViewModel) {
 private fun Body(viewModel: QuoteViewModel,modifier:Modifier){
      val tagPopupState = remember { mutableStateOf(false) }
     val settingNameShowState = remember { mutableStateOf(viewModel.settingName.value?.let{true}?:false) }
+    val creditCardName = viewModel.creditCardName.value.collectAsState()
+    val dateBought = viewModel.dateBought.value.collectAsState()
+    val nameProduct = viewModel.nameProduct.value.collectAsState()
+    val valueProduct = viewModel.valueProduct.value.collectAsState()
+    val interestValue = viewModel.interestValue.value.collectAsState()
+    val quoteValue = viewModel.quoteValue.value.collectAsState()
+    val capitalValue = viewModel.capitalValue.value.collectAsState()
+    val monthProduct = viewModel.monthProduct.value.collectAsState()
+    val creditRate = viewModel.creditRate.value.collectAsState()
+    val creditRateKind = viewModel.creditRateKind.value.collectAsState()
+    val recurrent = viewModel.recurrent.value.collectAsState()
+    val tagSelected = viewModel.tagSelected.value.collectAsState()
+    val settingKind = viewModel.settingKind.value.collectAsState()
+    val settingName = viewModel.settingName.value.collectAsState()
+    val settingKindList = remember {viewModel.settingKind.list}
+    val settingNameList = remember {viewModel.settingName.list}
 
     Column(modifier= Modifier
         .padding(Dimensions.PADDING_SHORT)
         .verticalScroll(rememberScrollState())) {
         FieldView(
             name = R.string.credit_card,
-            value = viewModel.creditCardName.value,
+            value = creditCardName.value,
             modifier = ModifiersCustom.FieldFillMAxWidhtAndPaddingShort(),
             isMoney = false
         )
 
         FieldDatePicker(title = androidx.compose.material3.R.string.m3c_date_picker_headline
-            ,value = viewModel.dateBought.value
+            ,value = dateBought.value
             , callable = {viewModel.dateBought.onValueChange(it)}
             , isError = viewModel.dateBought.error
             , validation = {viewModel.validate()}
@@ -152,7 +169,7 @@ private fun Body(viewModel: QuoteViewModel,modifier:Modifier){
                 .padding(5.dp))
 
         FieldText(title = stringResource(id = R.string.name_product),
-            value=viewModel.nameProduct.value,
+            value=nameProduct.value,
             icon= Icons.Rounded.Cancel,
             hasErrorState = viewModel.nameProduct.error,
             validation = {viewModel.validate()},
@@ -160,9 +177,9 @@ private fun Body(viewModel: QuoteViewModel,modifier:Modifier){
             modifier= ModifiersCustom.FieldFillMAxWidhtAndPaddingShort())
 
         FieldText(title = stringResource(id = R.string.value_product),
-            value=viewModel.valueProduct.value,
+            value=valueProduct.value,
             icon= Icons.Rounded.Cancel,
-            hasErrorState = viewModel.valueProduct.error,
+            hasErrorState = viewModel.valueProduct.error.value,
             validation = {viewModel.validate()},
             callback = {viewModel.valueProduct.onValueChange(it)},
             keyboardType = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Decimal),
@@ -170,7 +187,7 @@ private fun Body(viewModel: QuoteViewModel,modifier:Modifier){
             modifier=ModifiersCustom.FieldFillMAxWidhtAndPaddingShort())
 
         FieldText(title = stringResource(id = R.string.months),
-            value=viewModel.monthProduct.value,
+            value=monthProduct.value,
             icon= Icons.Rounded.Cancel,
             hasErrorState = viewModel.monthProduct.error,
             validation = {viewModel.validate()},
@@ -179,7 +196,7 @@ private fun Body(viewModel: QuoteViewModel,modifier:Modifier){
             modifier=ModifiersCustom.FieldFillMAxWidhtAndPaddingShort())
 
         FieldView(name = R.string.tag,
-            value = viewModel.tagSelected.value?.name?:"",
+            value = tagSelected.value?.name?:"",
             onClick = {tagPopupState.value = true},
             isMoney=false,
             modifier = ModifiersCustom.FieldFillMAxWidhtAndPaddingShort())
@@ -187,8 +204,8 @@ private fun Body(viewModel: QuoteViewModel,modifier:Modifier){
         if(viewModel.settingKind.list.isEmpty().not()) {
             FieldSelect(
                 title = stringResource(id = R.string.setting_kind),
-                value = viewModel.settingKind.value?.second ?: "",
-                list = viewModel.settingKind.list as SnapshotStateList<Pair<Int, String>>,
+                value = settingKind.value?.second ?: "",
+                list = settingKindList.toMutableStateList() as SnapshotStateList<Pair<Int, String>> ,
                 modifier = ModifiersCustom.FieldFillMAxWidhtAndPaddingShort(),
                 callAble = {
                     it?.let {
@@ -204,22 +221,22 @@ private fun Body(viewModel: QuoteViewModel,modifier:Modifier){
         }
         if(settingNameShowState.value) {
             FieldSelect(title = stringResource(id = R.string.setting_name),
-                value = viewModel.settingName.value?.second ?: "",
-                list = viewModel.settingName.list as SnapshotStateList<Pair<Int, String>>,
+                value = settingName.value?.second ?: "",
+                list = settingNameList.toMutableStateList() as SnapshotStateList<Pair<Int, String>>,
                 modifier = ModifiersCustom.FieldFillMAxWidhtAndPaddingShort(),
                 callAble = viewModel.settingName::onValueChange
                 )
         }
 
         CheckBoxField(title = stringResource(id = R.string.recurrent),
-            value = viewModel.recurrent.value,
+            value = recurrent.value,
             callback = viewModel.recurrent::onValueChange,
             modifier = ModifiersCustom.FieldFillMAxWidhtAndPaddingShort())
 
         Row {
             FieldView(
                 name = R.string.credit_rate,
-                value = (viewModel.creditRate.value?.takeIf { it.isNotBlank() }?.let { "$it %" }
+                value = (creditRate.value?.takeIf { it.isNotBlank() }?.let { "$it %" }
                     ?: "").toString(),
                 modifier = Modifier.weight(2f),
                 isMoney = false
@@ -227,7 +244,7 @@ private fun Body(viewModel: QuoteViewModel,modifier:Modifier){
 
             FieldView(
                 name = R.string.credit_rate,
-                value = viewModel.creditRateKind.value,
+                value = creditRateKind.value,
                 modifier = Modifier.weight(1f),
                 isMoney = false
             )
@@ -235,21 +252,21 @@ private fun Body(viewModel: QuoteViewModel,modifier:Modifier){
 
         FieldView(
             name = R.string.capital_value,
-            value = viewModel.capitalValue.value,
+            value = capitalValue.value,
             modifier = ModifiersCustom.FieldFillMAxWidhtAndPaddingShort(),
             isMoney = false
         )
 
         FieldView(
             name = R.string.interest_value,
-            value = viewModel.interestValue.value,
+            value = interestValue.value,
             modifier = ModifiersCustom.FieldFillMAxWidhtAndPaddingShort(),
             isMoney = false
         )
 
         FieldView(
             name = R.string.quote_value,
-            value = viewModel.quoteValue.value,
+            value = quoteValue.value,
             modifier = ModifiersCustom.FieldFillMAxWidhtAndPaddingShort(),
             isMoney = false
         )
@@ -348,7 +365,8 @@ internal fun QuotePreview(){
 @Composable
 private fun viweModel():QuoteViewModel{
     val prefs = Prefs(LocalContext.current)
-    val viewModel = QuoteViewModel(0,0, LocalDateTime.now(),null,null,null,null,null,null,null,prefs)
+    val viewModel = QuoteViewModel(
+        0,null,0, LocalDateTime.now(),null,null,null,null,null,null,null,prefs)
     viewModel.loading.value = false
     return viewModel
 }

@@ -247,6 +247,7 @@
         <action
             android:id="@+id/action_amortizationTableFragment_to_extraValueListController"
             app:destination="@id/extraValueListController" />
+        <deepLink app:uri="android-app://co.com.japl.finanzas.module.app/amortization"/>
     </fragment>
     <fragment
         android:id="@+id/additionalCreditFragment"

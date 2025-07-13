@@ -152,23 +152,19 @@ fun FieldText( title:String
                , placeHolder:String=""
                , suffixValue:String=""
                ,validation:()->Unit = {}
-               ,hasErrorState:MutableState<Boolean> = mutableStateOf(false)
+               ,hasErrorState:Boolean = false
                ,callback:(String)->Unit={}){
-    val valueState = remember { mutableStateOf("") }
-    value?.takeIf { value.isNotEmpty() }?.let{valueState.value = it}
 
-    TextField(value = valueState.value , onValueChange = {
-        valueState.value = it
+    TextField(value = value , onValueChange = {
         callback.invoke(it)
         validation.invoke()
-    }, isError = hasErrorState.value,
+    }, isError = hasErrorState,
         label = {
         Text(text = title)
     },  trailingIcon = {
-        valueState.value.takeIf { it.isNotEmpty() }?.let {
+        value.takeIf { it.isNotEmpty() }?.let {
             IconButton(onClick = {
-                valueState.value= ""
-                callback.invoke(valueState.value)
+                callback.invoke("")
             }) {
                 icon?.let {
                     Icon(
@@ -182,7 +178,7 @@ fun FieldText( title:String
     }, modifier = modifier
         , visualTransformation = CurrencyVisualTransformation(formatDecimal,currency,decimal)
         , prefix = {
-            if (valueState.value.isNotEmpty() && currency)
+            if (value.isNotEmpty() && currency)
                 Text(text = "$")
         }, suffix = {
             if(suffixValue.isNotBlank()){
@@ -204,7 +200,7 @@ fun FieldTextPreview(){
     MaterialThemeComposeUI {
         FieldText("Title Test"
             , value=value.value
-            ,hasErrorState=hasError
+            ,hasErrorState=hasError.value
             , callback = {value.value = it}
             , currency = true
             ,validation = { hasError.value = true}
@@ -225,7 +221,7 @@ fun FieldTextPreviewDark(){
     MaterialThemeComposeUI {
         FieldText("Title Test"
             , value=value.value
-            ,hasErrorState=hasError
+            ,hasErrorState=hasError.value
             , callback = {value.value = it}
             , currency = true
             ,validation = { hasError.value = true}

@@ -9,17 +9,17 @@ import androidx.navigation.NavController
 import co.com.japl.finances.iports.dtos.CreditCardBoughtItemDTO
 import co.com.japl.finances.iports.dtos.CreditCardDTO
 import co.com.japl.finances.iports.dtos.DifferInstallmentDTO
+import co.com.japl.finances.iports.dtos.SimulatorCreditDTO
 import co.com.japl.finances.iports.enums.KindInterestRateEnum
+import co.com.japl.finances.iports.inbounds.creditcard.ISimulatorCreditVariablePort
 import co.com.japl.finances.iports.inbounds.creditcard.bought.lists.IBoughtListPort
 import co.com.japl.ui.Prefs
+import co.com.japl.ui.utils.DateUtils
 import co.japl.android.myapplication.R
-import co.japl.android.myapplication.bussiness.mapping.CalcMap
-import co.japl.android.myapplication.finanzas.enums.KindOfTaxEnum
 import co.japl.android.myapplication.finanzas.enums.MoreOptionsItemsCreditCard
 import co.japl.android.myapplication.finanzas.modules.EntryPoint
 import co.japl.android.myapplication.finanzas.putParams.AmortizationTableParams
 import co.japl.android.myapplication.finanzas.putParams.CreditCardQuotesParams
-import co.com.japl.ui.utils.DateUtils
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.EntryPoints
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -38,6 +38,7 @@ class BoughtViewModel @Inject constructor(
         val cache = mutableStateOf(prefs.simulator)
 
     private val boughtCreditCardSvc:IBoughtListPort = EntryPoints.get(application, EntryPoint::class.java).getBoughtCreditCardSvc()
+    private val simulatorSvc: ISimulatorCreditVariablePort = EntryPoints.get(application,EntryPoint::class.java).getSimulatorVariablePort()
     private lateinit var _bought:CreditCardBoughtItemDTO
     private lateinit var _differQuotes:List<DifferInstallmentDTO>
     private lateinit var _creditCard:CreditCardDTO
@@ -158,24 +159,35 @@ class BoughtViewModel @Inject constructor(
         }
     }
 
-    private fun goToAmortization(){
-        val hasDifferInstallment = _differQuotes.firstOrNull{ it.cdBoughtCreditCard.toInt() == bought.id }?.let {true}?:false
-        val monthsCalc:Long = if( bought.endDate.toLocalDate() != LocalDate.of(9999,12,31)){
-            DateUtils.getMonths(bought.boughtDate,bought.endDate)
-        }else{ bought.month.toLong() }
+    private fun goToAmortization() {
+        val hasDifferInstallment =
+            _differQuotes.firstOrNull { it.cdBoughtCreditCard.toInt() == bought.id }?.let { true }
+                ?: false
+        val monthsCalc: Long = if (bought.endDate.toLocalDate() != LocalDate.of(9999, 12, 31)) {
+            DateUtils.getMonths(bought.boughtDate, bought.endDate)
+        } else {
+            bought.month.toLong()
+        }
+        simulatorSvc?.setSimulation(createSimulatorDto())?.let {
         AmortizationTableParams.newInstanceQuotes(
-            CalcMap().mapping(
-                bought,
-                bought.quoteValue.toBigDecimal(),
-                bought.interestValue.toBigDecimal(),
-                bought.capitalValue.toBigDecimal(),
-                KindOfTaxEnum.valueOf(bought.kindOfTax.getName())
-            ), bought.id.toLong()
-            ,bought.monthPaid
-            ,_creditCard.interest1NotQuote
-            ,hasDifferInstallment
-            , monthsCalc
-            ,navController
+            code = bought.id.toLong(),
+            navController = navController
+        )
+    }
+    }
+
+    private fun createSimulatorDto(): SimulatorCreditDTO{
+        return SimulatorCreditDTO(
+            code = bought.id,
+            name = bought.nameItem,
+            value = bought.valueItem.toBigDecimal(),
+            periods = bought.month.toShort(),
+            tax = bought.interest,
+            kindOfTax = bought.kindOfTax,
+            isCreditVariable = true,
+            interestValue = bought.interestValue.toBigDecimal(),
+            capitalValue = bought.capitalValue.toBigDecimal(),
+            quoteValue = bought.quoteValue.toBigDecimal()
         )
     }
 

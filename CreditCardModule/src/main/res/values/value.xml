@@ -66,6 +66,8 @@
     <string name="quote_value">Valor Cuota</string>
     <string name="total_value">Valor total</string>
     <string name="total_quote">Total cuota</string>
+    <string name="capital">Capital</string>
+    <string name="quote">Cuota</string>
 
     <string name="credit_card_setting_type">Tipo</string>
     <string name="save">Guardar</string>
@@ -113,6 +115,7 @@
     <string name="navigate_bought_wallet">android-app://co.com.japl.finanzas.module.app/boughtWalletBought?cod_credit_card=%d</string>
     <string name="navigate_form_sms_credit_rate">android-app://co.com.japl.finanzas.modulo.app/sms_credit_card</string>
     <string name="navigate_form_sms_credit_rate_edit">android-app://co.com.japl.finanzas.modulo.app/sms_credit_card?code_sms_credit_Card=%d</string>
+    <string name="navigate_form_simulator_amortization">android-app://co.com.japl.finanzas.module.app/amortization?code=%d</string>
 
     <string name="wiki_bought_url">https://github.com/nano871022/Finances/wiki/Cr%C3%A9ditos</string>
     <string name="help_bought_description">Información acerca de pagos</string>

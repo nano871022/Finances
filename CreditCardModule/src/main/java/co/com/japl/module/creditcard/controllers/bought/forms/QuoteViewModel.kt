@@ -3,6 +3,7 @@ package co.com.japl.module.creditcard.controllers.bought.forms
 import android.widget.Toast
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -36,6 +37,7 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 
 class QuoteViewModel constructor(private val codeCreditCard:Int,
+                                 private val savedStateHandle: SavedStateHandle?=null,
                                  private val codeBought:Int,
                                  private val period:LocalDateTime,
                                  private val boughtSvc:IBoughtPort?,
@@ -63,61 +65,83 @@ class QuoteViewModel constructor(private val codeCreditCard:Int,
     val isNew = mutableStateOf(true)
 
     val creditCardName = initialFieldState(
+        savedStateHandle!!,
+        "FORM_CREDIT_CARD_NAME",
         initialValue = "",
         validator = {it.isNotBlank()},
         onValueChangeCallBack = { bought?.nameCreditCard = it }
     )
 
     val nameProduct = initialFieldState(
+        savedStateHandle!!,
+        "FORM_NAME_PRODUCT",
         initialValue = "",
         validator = {it.isNotBlank()},
         onValueChangeCallBack = { bought?.nameItem = it; validate() }
     )
 
     val valueProduct = initialFieldState(
+        savedStateHandle!!,
+        "FORM_VALUE_PRODUCT",
         initialValue = "",
         validator = {it.isNotBlank() && NumbersUtil.isNumber(it)},
         onValueChangeCallBack = { bought?.valueItem = NumbersUtil.toBigDecimal(it); validate() }
     )
     val monthProduct = initialFieldState(
+        savedStateHandle!!,
+        "FORM_MONTH_PRODUCT",
         initialValue = "",
         validator = {it.isNotBlank() && NumbersUtil.isNumber(it.trim()) && it.toInt() > 0},
         onValueChangeCallBack = { bought?.month = it.trim().toInt(); validate() }
     )
 
     val creditRate = initialFieldState(
+        savedStateHandle!!,
+        "FORM_CREDIT_RATE",
         initialValue = "",
         validator = {it.isNotBlank() && NumbersUtil.isNumber(it)},
         onValueChangeCallBack = { bought?.interest = NumbersUtil.toBigDecimal(it).toDouble() }
     )
     val capitalValue = initialFieldState(
+        savedStateHandle!!,
+        "FORM_CAPITAL_VALUE",
         initialValue = "",
         validator = {it.isNotBlank() && NumbersUtil.isNumber(it)},
         onValueChangeCallBack = { }
     )
     val dateBought = initialFieldState(
+        savedStateHandle!!,
+        "FORM_DATE_BOUGHT",
         initialValue = "",
         validator = {it.isNotBlank() && DateUtils.isDateValid(it)},
         onValueChangeCallBack = { bought?.boughtDate = DateUtils.toLocalDateTime2(it) }
     )
     val quoteValue = initialFieldState(
+        savedStateHandle!!,
+        "FORM_QUOTE_VALUE",
         initialValue = "",
         validator = {it.isNotBlank() && NumbersUtil.isNumber(it)},
         onValueChangeCallBack = { }
     )
 
     val interestValue = initialFieldState(
+        savedStateHandle!!,
+        "FORM_INTEREST_VALUE",
         initialValue = "",
         validator = {it.isNotBlank() && NumbersUtil.isNumber(it)},
         onValueChangeCallBack = { }
     )
     val creditRateKind = initialFieldState(
+        savedStateHandle!!,
+        "FORM_CREDIT_RATE_KIND",
         initialValue = "",
         validator = {it.isNotBlank()},
         onValueChangeCallBack = { }
     )
 
     val tagSelected = initialFieldState<TagDTO?>(
+        savedStateHandle!!,
+        "FORM_TAG_SELECTED",
         initialValue = null,
         list = arrayListOf(),
         validator = {it != null},
@@ -125,12 +149,16 @@ class QuoteViewModel constructor(private val codeCreditCard:Int,
     )
 
     val settingKind = initialFieldState<Pair<Int,String>?>(
+        savedStateHandle!!,
+        "FORM_SETTING_KIND",
         initialValue = null,
         list = arrayListOf(),
         validator = {it != null},
         onValueChangeCallBack = {}
     )
     val settingName = initialFieldState<Pair<Int,String>?>(
+        savedStateHandle!!,
+        "FORM_SETTING_NAME",
         initialValue = null,
         list = arrayListOf(),
         validator = {it != null},
@@ -138,6 +166,8 @@ class QuoteViewModel constructor(private val codeCreditCard:Int,
     )
 
     val recurrent = initialFieldState(
+        savedStateHandle!!,
+        "FORM_RECURRENT",
         initialValue = false,
         validator = {true},
         onValueChangeCallBack = {bought?.recurrent = if(it) 1 else 0}
@@ -194,11 +224,11 @@ class QuoteViewModel constructor(private val codeCreditCard:Int,
                 val id = it.create(bought!!,prefs.simulator)
                 if(id > 0) {
                     buyCreditCardSettingSvc?.let{svc->
-                        settingName.value?.let{svc.createOrUpdate(getBuyCreditCardSetting(id,it.first))
+                        settingName.value?.let{svc.createOrUpdate(getBuyCreditCardSetting(id,it.value?.first!!))
                         }?:buySetting?.let {svc.delete(it.id)}
                     }
                     tagSvc?.let { svc ->
-                        tagSelected.value?.let{svc.createOrUpdate(it.id,id)}
+                        tagSelected.value?.let{svc.createOrUpdate(it.value?.id?:0,id)}
                     }
                     navController?.let { navController ->
                         Toast.makeText(
@@ -227,11 +257,11 @@ class QuoteViewModel constructor(private val codeCreditCard:Int,
                 val id = it.create(bought!!,prefs.simulator)
                 if(id > 0) {
                     buyCreditCardSettingSvc?.let{svc->
-                        settingName.value?.let{svc.createOrUpdate(getBuyCreditCardSetting(id,it.first))
+                        settingName.value?.let{svc.createOrUpdate(getBuyCreditCardSetting(id,it.value?.first!!))
                         }?:buySetting?.let {svc.delete(it.id)}
                     }
                     tagSvc?.let { svc ->
-                        tagSelected.value?.let{svc.createOrUpdate(it.id,id)}
+                        tagSelected.value?.let{svc.createOrUpdate(it.value?.id!!,id)}
                     }
                     navController?.let { navController ->
                         Toast.makeText(
@@ -259,11 +289,11 @@ class QuoteViewModel constructor(private val codeCreditCard:Int,
             boughtSvc?.let {
                 if(it.update(bought!!,prefs.simulator)) {
                     buyCreditCardSettingSvc?.let{svc->
-                        settingName.value?.let{bought?.let{dto->svc.createOrUpdate(getBuyCreditCardSetting(dto.id,it.first))}
+                        settingName.value?.let{bought?.let{dto->svc.createOrUpdate(getBuyCreditCardSetting(dto.id,it.value?.first!!))}
                         }?:buySetting?.let {svc.delete(it.id)}
                     }
                     tagSvc?.let { svc ->
-                        tagSelected.value?.let{svc.createOrUpdate(it.id,codeBought)}
+                        tagSelected.value?.let{svc.createOrUpdate(it.value?.id!!,codeBought)}
                     }
                     navController?.let { navController ->
                         Toast.makeText(
@@ -299,7 +329,9 @@ class QuoteViewModel constructor(private val codeCreditCard:Int,
 
         fun settingName(codeSettingKind:Int){
             settingName.list.clear()
-            settingList.filter { it.type == settingKind.value?.second }?.map { Pair(it.id,it.name) }?.forEach(settingName.list::add)
+            settingList.filter { it.type == settingKind.value.value?.second }?.map { Pair(it.id,it.name) }?.forEach{
+                settingName.list.add(it)
+            }
         }
 
 
@@ -347,21 +379,21 @@ class QuoteViewModel constructor(private val codeCreditCard:Int,
             bought = CreditCardBoughtDTO(
                 codeCreditCard = codeCreditCard,
                 id = codeBought,
-                nameItem = nameProduct.value,
-                valueItem = NumbersUtil.toBigDecimal(valueProduct.value),
-                month = NumbersUtil.toLong(monthProduct.value).toInt(),
-                boughtDate = DateUtils.toLocalDateTime2(dateBought.value),
+                nameItem = nameProduct.value.value,
+                valueItem = NumbersUtil.toBigDecimal(valueProduct.value.value),
+                month = NumbersUtil.toLong(monthProduct.value.value).toInt(),
+                boughtDate = DateUtils.toLocalDateTime2(dateBought.value.value),
                 createDate = LocalDateTime.now(),
                 endDate = LocalDateTime.MAX,
                 cutOutDate = period,
-                interest = NumbersUtil.toBigDecimal(creditRate.value).toDouble(),
+                interest = NumbersUtil.toBigDecimal(creditRate.value.value).toDouble(),
                 kind = KindInterestRateEnum.CREDIT_CARD,
                 kindOfTax = taxDto?.kindOfTax!!,
-                nameCreditCard = creditCardName.value,
-                recurrent = if(recurrent.value) 1 else 0
+                nameCreditCard = creditCardName.value.value,
+                recurrent = if(recurrent.value.value) 1 else 0
             )
 
-            settingName.value?.let{
+            settingName.value.value?.let{
                 buySetting = BuyCreditCardSettingDTO(
                     id = buySetting?.id?:0,
                     codeBuyCreditCard = codeBought,
@@ -375,8 +407,8 @@ class QuoteViewModel constructor(private val codeCreditCard:Int,
 
     private fun calculateValues(month:Boolean,value: Boolean){
         if(month && value){
-            val month = NumbersUtil.toLong(monthProduct.value).toInt()
-            val value = NumbersUtil.toBigDecimal(valueProduct.value)
+            val month = NumbersUtil.toLong(monthProduct.value.value).toInt()
+            val value = NumbersUtil.toBigDecimal(valueProduct.value.value)
             boughtSvc?.let {
                 taxDto?.let {taxDto->
                     val quoteBought = it.quoteValue(

@@ -15,6 +15,8 @@ import androidx.compose.material.icons.rounded.Clear
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -59,6 +61,7 @@ private fun ScafoldBody(viewModel: AdditionalFormViewModel ){
 @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
 @Composable
 private fun Body(viewModel: AdditionalFormViewModel ,modifier: Modifier){
+    val formName  by viewModel.name.value.collectAsState()
 
     Column(modifier = modifier.fillMaxWidth().padding(Dimensions.PADDING_SHORT)){
         FieldDatePicker(
@@ -75,13 +78,12 @@ private fun Body(viewModel: AdditionalFormViewModel ,modifier: Modifier){
         )
         FieldText(
             title = stringResource( R.string.name ),
-            value = viewModel.name.value,
+            value = formName,
             icon = Icons.Rounded.Clear,
             validation = {viewModel.name.validate()},
             hasErrorState = viewModel.name.error,
-            callback = {
-                viewModel.name.onValueChange(it)
-            }, modifier =  Modifier.fillMaxWidth().padding(bottom = Dimensions.PADDING_SHORT)
+            callback = {viewModel.name.onValueChange(it)},
+            modifier =  Modifier.fillMaxWidth().padding(bottom = Dimensions.PADDING_SHORT)
         )
 
         FieldText(
@@ -91,10 +93,9 @@ private fun Body(viewModel: AdditionalFormViewModel ,modifier: Modifier){
             validation = {viewModel.value.validate()},
             currency = true,
             keyboardType = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Decimal),
-            hasErrorState = viewModel.value.error,
-            callback = {
-                viewModel.value.onValueChangeStr(it)
-            }, modifier =  Modifier.fillMaxWidth().padding(bottom = Dimensions.PADDING_SHORT)
+            hasErrorState = viewModel.value.error.value,
+            callback = {viewModel.value.onValueChangeStr(it)},
+            modifier =  Modifier.fillMaxWidth().padding(bottom = Dimensions.PADDING_SHORT)
         )
     }
 }
