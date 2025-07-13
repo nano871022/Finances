@@ -543,4 +543,7 @@ abstract class AbstractModule {
     abstract fun bindInboundAmortizationVariablePort(impl: AmortizationTableImpl): IAmortizationTablePort
     @Binds
     abstract fun bindUserCaseAmortization(impl: co.japl.finances.core.usercases.implement.creditcard.AmortizationTableImpl): IAmortizationTable
+
+    @Binds
+    abstract fun bindInboundSimulatorCreditFixPort(impl: co.japl.finances.core.inbounds.implement.credit.SimulatorCreditFixImpl): co.com.japl.finances.iports.inbounds.credit.ISimulatorCreditFixPort
 }
