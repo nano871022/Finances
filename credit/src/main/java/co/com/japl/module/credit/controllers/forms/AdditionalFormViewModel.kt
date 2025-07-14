@@ -14,17 +14,16 @@ import co.com.japl.finances.iports.inbounds.credit.IAdditionalFormPort
 import co.com.japl.module.credit.R
 import co.com.japl.ui.utils.initialFieldState
 import co.japl.android.myapplication.utils.NumbersUtil
-import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.scopes.ViewModelScoped
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import java.math.BigDecimal
 import java.time.LocalDate
-import javax.inject.Inject
 
-@HiltViewModel
-class AdditionalFormViewModel @Inject constructor(private val context: Context, private val savedStateHandle: SavedStateHandle?=null, private val id:Int=-1, private val codeCredit:Int, private val additionalSvc: IAdditionalFormPort?, private val navController: NavController?) : ViewModel(){
+@ViewModelScoped
+class AdditionalFormViewModel constructor(private val context: Context, private val savedStateHandle: SavedStateHandle?=null, private val id:Int=-1, private val codeCredit:Int=0, private val additionalSvc: IAdditionalFormPort?, private val navController: NavController?) : ViewModel(){
     private val _dto = MutableStateFlow<AdditionalCreditDTO>(AdditionalCreditDTO(
         id=id,
         creditCode = codeCredit.toLong(),

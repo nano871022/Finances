@@ -54,6 +54,11 @@ private fun Body(viewModel:AmortizationViewModel){
 	Scaffold(
 		floatingActionButton = {
 			FloatButton(viewModel)
+		},topBar={
+			androidx.compose.material3.Text(
+				text = stringResource(R.string.amortization_quote_variable),
+				modifier = Modifier.fillMaxWidth()
+			)
 		}
 		, modifier = Modifier.padding(Dimensions.PADDING_SHORT)
 	){

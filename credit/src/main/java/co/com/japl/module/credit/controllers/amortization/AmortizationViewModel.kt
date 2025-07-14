@@ -1,25 +1,25 @@
-package co.com.japl.credit.controller.amortization
+package co.com.japl.module.credit.controllers.amortization
 
+import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import co.com.japl.finances.iports.dtos.AmortizationRowDTO
 import co.com.japl.finances.iports.enums.KindAmortization
-import co.com.japl.finances.iports.inbounds.credit.ISimulatorCreditFixPort
-import dagger.hilt.android.lifecycle.HiltViewModel
+import co.com.japl.finances.iports.inbounds.credit.IAmortizationTablePort
+import dagger.hilt.android.scopes.ViewModelScoped
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
-@HiltViewModel
-class AmortizationViewModel @Inject constructor(
-    private val savedStateHandle: SavedStateHandle,
-    private val amortizationSvc: ISimulatorCreditFixPort
+@ViewModelScoped
+class AmortizationViewModel constructor(
+    private val savedStateHandle: SavedStateHandle?=null,
+    private val code:Int=0,
+    private val amortizationSvc: IAmortizationTablePort?=null
 ) : ViewModel() {
     private val _state = MutableStateFlow(AmortizationState())
     val state = _state.asStateFlow()
-    private val id: Int = savedStateHandle.get<Int>("id") ?: 0
 
     init {
         getAmortization()
@@ -28,11 +28,12 @@ class AmortizationViewModel @Inject constructor(
     private fun getAmortization() {
         viewModelScope.launch {
             _state.value = _state.value.copy(isLoading = true)
-            val amortization = amortizationSvc.getAmortization(id, KindAmortization.FIX_QUOTE_SIMULATOR, true)
-            _state.value = _state.value.copy(
-                amortization = amortization,
-                isLoading = false
-            )
+            amortizationSvc?.getAmortization(code, KindAmortization.FIXED_QUOTE_SIMULATOR, true)?.let {
+                _state.value = _state.value.copy(
+                    amortization = it,
+                    isLoading = false
+                )
+            }
         }
     }
 }

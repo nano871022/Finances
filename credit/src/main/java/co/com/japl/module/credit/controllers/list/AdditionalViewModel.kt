@@ -12,14 +12,15 @@ import co.com.japl.finances.iports.inbounds.credit.IAdditional
 import co.com.japl.module.credit.R
 import co.com.japl.module.credit.navigations.AdditionalList
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.scopes.ViewModelScoped
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
-@HiltViewModel
-class AdditionalViewModel @Inject constructor(private val context: Context,private val code:Int, private val additionalSvc: IAdditional?, private val navController: NavController? ): ViewModel(){
+@ViewModelScoped
+class AdditionalViewModel constructor(private val context: Context,private val code:Int=0, private val additionalSvc: IAdditional?, private val navController: NavController? ): ViewModel(){
 
     val list = mutableStateListOf<AdditionalCreditDTO>()
     private val _loading = MutableStateFlow<Boolean>(false)

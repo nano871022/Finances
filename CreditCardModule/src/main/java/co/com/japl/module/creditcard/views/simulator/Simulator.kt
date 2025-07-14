@@ -61,7 +61,10 @@ private fun Body(viewModel: FormViewModel){
     val snackbar = remember { viewModel.snackbar }
     Scaffold( floatingActionButton = {
         FloatButton(viewModel)
-    }, snackbarHost = { snackbar.value }
+    }, snackbarHost = { snackbar.value },
+        topBar={
+            Text(text=stringResource(R.string.simulator_quote_variable),modifier=Modifier.fillMaxWidth())
+        }
     ){
         Column (modifier = Modifier.padding(it)){
             FormHeader(viewModel)

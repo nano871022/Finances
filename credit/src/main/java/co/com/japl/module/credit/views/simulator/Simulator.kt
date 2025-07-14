@@ -1,4 +1,4 @@
-package co.com.japl.credit.view.simulator
+package co.com.japl.module.credit.views.simulator
 
 import android.content.res.Configuration
 import android.os.Build
@@ -22,13 +22,12 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import co.com.japl.credit.controller.simulator.QuoteCreditViewModel
+import co.com.japl.module.credit.controllers.simulator.SimulatorFixViewModel
 import co.com.japl.finances.iports.enums.KindOfTaxEnum
 import co.com.japl.module.credit.R
 import co.com.japl.ui.components.FieldSelect
@@ -42,7 +41,7 @@ import co.japl.android.graphs.utils.NumbersUtil
 import java.math.BigDecimal
 
 @Composable
-fun QuoteCreditScreen(viewModel: QuoteCreditViewModel){
+fun Simulator(viewModel: SimulatorFixViewModel){
     val hasProgress = remember { viewModel.hasProgress }
 
     if(hasProgress.value){
@@ -54,11 +53,14 @@ fun QuoteCreditScreen(viewModel: QuoteCreditViewModel){
 }
 
 @Composable
-private fun Body(viewModel: QuoteCreditViewModel){
+private fun Body(viewModel: SimulatorFixViewModel){
     val snackbar = remember { viewModel.snackbar }
     Scaffold( floatingActionButton = {
         FloatButton(viewModel)
-    }, snackbarHost = { snackbar.value }
+    }, snackbarHost = { snackbar.value },
+        topBar={
+            Text(text=stringResource(R.string.simulator_quote_fix),modifier=Modifier.fillMaxWidth())
+        }
     ){
         Column (modifier = Modifier.padding(it)){
             FormHeader(viewModel)
@@ -69,7 +71,7 @@ private fun Body(viewModel: QuoteCreditViewModel){
 }
 
 @Composable
-private fun PopupSave(viewModel: QuoteCreditViewModel){
+private fun PopupSave(viewModel: SimulatorFixViewModel){
     val formName = viewModel.name.value.collectAsState()
     val statePopupSave = remember { viewModel.statePopup }
     Popup(
@@ -118,7 +120,7 @@ private fun PopupSave(viewModel: QuoteCreditViewModel){
 }
 
 @Composable
-private fun FloatButton(viewModel: QuoteCreditViewModel){
+private fun FloatButton(viewModel: SimulatorFixViewModel){
     val stateCalculation = remember { viewModel.showCalculation }
     Column{
         FloatButton  (
@@ -154,7 +156,7 @@ private fun FloatButton(viewModel: QuoteCreditViewModel){
 }
 
 @Composable
-private fun FormHeader(viewModel: QuoteCreditViewModel){
+private fun FormHeader(viewModel: SimulatorFixViewModel){
     val formCreditValue by viewModel.creditValue.value.collectAsState()
     val formCreditRate by viewModel.creditRate.value.collectAsState()
     val formCreditKindRate by viewModel.creditKindRate.value.collectAsState()
@@ -212,7 +214,7 @@ private fun FormHeader(viewModel: QuoteCreditViewModel){
 }
 
 @Composable
-private fun BodyCalc(viewModel: QuoteCreditViewModel){
+private fun BodyCalc(viewModel: SimulatorFixViewModel){
     val simulator = viewModel.simulator.collectAsState()
     val state = remember { viewModel.stateCalculation }
     if(state.value) {
@@ -242,7 +244,7 @@ private fun BodyCalc(viewModel: QuoteCreditViewModel){
 @Preview(showBackground = true, showSystemUi = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
 private fun SimulatorPreviewLight(){
     MaterialThemeComposeUI {
-        QuoteCreditScreen(getViewModel())
+        Simulator(getViewModel())
     }
 }
 
@@ -251,12 +253,13 @@ private fun SimulatorPreviewLight(){
 @Preview(showBackground = true, showSystemUi = true, uiMode = Configuration.UI_MODE_NIGHT_YES, backgroundColor = 0xFF000000)
 private fun SimulatorPreviewDark(){
     MaterialThemeComposeUI {
-        QuoteCreditScreen(getViewModel())
+        Simulator(getViewModel())
     }
 }
 
-private fun getViewModel():QuoteCreditViewModel{
-    return QuoteCreditViewModel().also {
+private fun getViewModel():SimulatorFixViewModel{
+
+    return SimulatorFixViewModel().also {
         it.month.onValueChange(12)
         it.creditRate.onValueChange(13.0)
         it.creditValue.onValueChange(BigDecimal.valueOf(1000000))

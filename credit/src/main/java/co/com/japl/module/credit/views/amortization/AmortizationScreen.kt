@@ -1,4 +1,4 @@
-package co.com.japl.credit.view.amortization
+package co.com.japl.module.credit.views.amortization
 
 import android.annotation.SuppressLint
 import android.content.res.Configuration
@@ -26,8 +26,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
-import co.com.japl.credit.controller.amortization.AmortizationViewModel
+import co.com.japl.module.credit.controllers.amortization.AmortizationViewModel
 import co.com.japl.finances.iports.dtos.AmortizationRowDTO
 import co.com.japl.finances.iports.enums.KindOfTaxEnum
 import co.com.japl.module.credit.R
@@ -41,7 +40,7 @@ import co.japl.android.myapplication.utils.NumbersUtil
 import java.math.BigDecimal
 
 @Composable
-fun AmortizationScreen(viewModel: AmortizationViewModel = hiltViewModel()) {
+fun AmortizationScreen(viewModel: AmortizationViewModel) {
     val state by viewModel.state.collectAsState()
 
     if (state.isLoading) {
@@ -157,7 +156,7 @@ private fun Table(amortization: List<AmortizationRowDTO>) {
     DataTable(
         listHeader = {
             val isCompact = WindowWidthSize.MEDIUM.isEqualTo(it)
-            listHeader.filter { (isCompact && it.id != 2) or !isCompact }
+            listHeader.filter { (isCompact && it.id != 4) or !isCompact }
         },
         splitPos = if (list.size > monthsPerYear) monthsPerYear else 0,
         split = { pos, width ->
@@ -240,7 +239,7 @@ private fun RowScope.Footer(list: List<AmortizationRowDTO>, isCompact: Boolean) 
             .weight(3f)
             .align(alignment = Alignment.CenterVertically)
     )
-    if (isCompact.not()) {
+
         Text(
             text = NumbersUtil.COPtoString(list.sumOf { it.capitalValue }),
             color = MaterialTheme.colorScheme.onBackground,
@@ -249,7 +248,7 @@ private fun RowScope.Footer(list: List<AmortizationRowDTO>, isCompact: Boolean) 
                 .weight(3f)
                 .align(alignment = Alignment.CenterVertically)
         )
-    }
+
     Text(
         text = NumbersUtil.COPtoString(list.sumOf { it.interestValue }),
         color = MaterialTheme.colorScheme.onBackground,
@@ -258,14 +257,16 @@ private fun RowScope.Footer(list: List<AmortizationRowDTO>, isCompact: Boolean) 
             .weight(3f)
             .align(alignment = Alignment.CenterVertically)
     )
-    Text(
-        text = NumbersUtil.COPtoString(list.sumOf { it.quoteValue }),
-        color = MaterialTheme.colorScheme.onBackground,
-        textAlign = TextAlign.Right,
-        modifier = Modifier
-            .weight(3f)
-            .align(alignment = Alignment.CenterVertically)
-    )
+    if (isCompact.not()) {
+        Text(
+            text = NumbersUtil.COPtoString(list.sumOf { it.quoteValue }),
+            color = MaterialTheme.colorScheme.onBackground,
+            textAlign = TextAlign.Right,
+            modifier = Modifier
+                .weight(3f)
+                .align(alignment = Alignment.CenterVertically)
+        )
+    }
 }
 
 @Composable
@@ -278,7 +279,7 @@ private fun RowScope.Row(row: AmortizationRowDTO, isCompact: Boolean) {
             .weight(3f)
             .align(alignment = Alignment.CenterVertically)
     )
-    if (isCompact.not()) {
+
         Text(
             text = NumbersUtil.COPtoString(row.capitalValue),
             color = MaterialTheme.colorScheme.onBackground,
@@ -287,7 +288,7 @@ private fun RowScope.Row(row: AmortizationRowDTO, isCompact: Boolean) {
                 .weight(3f)
                 .align(alignment = Alignment.CenterVertically)
         )
-    }
+
     Text(
         text = NumbersUtil.COPtoString(row.interestValue),
         color = MaterialTheme.colorScheme.onBackground,
@@ -296,6 +297,7 @@ private fun RowScope.Row(row: AmortizationRowDTO, isCompact: Boolean) {
             .weight(3f)
             .align(alignment = Alignment.CenterVertically)
     )
+if (isCompact.not()) {
     Text(
         text = NumbersUtil.COPtoString(row.quoteValue),
         color = MaterialTheme.colorScheme.onBackground,
@@ -304,6 +306,7 @@ private fun RowScope.Row(row: AmortizationRowDTO, isCompact: Boolean) {
             .weight(3f)
             .align(alignment = Alignment.CenterVertically)
     )
+}
 }
 
 @RequiresApi(Build.VERSION_CODES.S)

@@ -1,4 +1,4 @@
-package co.com.japl.credit.controller.simulator
+package co.com.japl.module.credit.controllers.simulator
 
 import android.content.Context
 import android.util.Log
@@ -10,23 +10,23 @@ import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import co.com.japl.finances.iports.dtos.SimulatorCreditDTO
 import co.com.japl.finances.iports.enums.KindOfTaxEnum
-import co.com.japl.finances.iports.inbounds.creditcard.ISimulatorCreditVariablePort
+import co.com.japl.finances.iports.inbounds.credit.ISimulatorCreditFixPort
 import co.com.japl.module.credit.R
+import co.com.japl.module.credit.navigations.Simulator
+import co.com.japl.module.credit.views.simulator.Simulator
 import co.com.japl.ui.utils.initialFieldState
 import co.japl.android.graphs.utils.NumbersUtil
-import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.scopes.ViewModelScoped
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.math.BigDecimal
-import javax.inject.Inject
-import kotlin.compareTo
 
-@HiltViewModel
-class QuoteCreditViewModel @Inject constructor(
+@ViewModelScoped
+class SimulatorFixViewModel constructor(
     private val context: Context?=null,
-    private val simuladorSvc: ISimulatorCreditVariablePort?=null,
+    private val simuladorSvc: ISimulatorCreditFixPort?=null,
     private val savedStateHandler: SavedStateHandle?=null,
     private val navigator: NavController?=null) : ViewModel(){
 
@@ -149,7 +149,7 @@ class QuoteCreditViewModel @Inject constructor(
         navigator?.let{
             simuladorSvc?.save(_simulator.value.copy(code=0,name="In simulator"),true)?.let {
                 Log.d("FORM","Amortization:: $it")
-                //FIXME Go to amortization screen
+                Simulator.navigate(it.toInt(),navigator)
             }
         }
     }

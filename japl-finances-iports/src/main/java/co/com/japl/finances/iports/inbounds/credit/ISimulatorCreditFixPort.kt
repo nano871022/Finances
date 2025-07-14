@@ -15,5 +15,4 @@ interface ISimulatorCreditFixPort {
 
     fun setSimulation(dto:SimulatorCreditDTO):Boolean
 
-    fun getAmortization(id: Int, kind: KindAmortization, cache: Boolean): List<AmortizationRowDTO>
 }
