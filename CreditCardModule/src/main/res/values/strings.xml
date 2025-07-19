@@ -17,4 +17,6 @@
     <string name="amortization_value">Valor de Amortizado</string>
     <string name="interest">Interes</string>
     <string name="total">Total</string>
+    <string name="simulator_quote_variable">Simulador Cuota Variable</string>
+    <string name="amortization_quote_variable">Amortización Cuota Variable</string>
 </resources>

@@ -44,16 +44,17 @@
             app:destination="@id/taxes" />
     </fragment>
     <fragment
-        android:id="@+id/item_menu_side_quoteCredit"
-        android:name="co.japl.android.myapplication.finanzas.controller.simulators.fix.QuoteCredit"
+        android:id="@+id/item_menu_side_simulatorCredit"
+        android:name="co.japl.android.myapplication.finanzas.controller.simulators.fix.SimulatorCredit"
         android:label="@string/quote_credit"
-        tools:layout="@layout/quote_credit">
+        tools:layout="@layout/fragment_simulator_credit">
         <action
             android:id="@+id/action_save_credit_card"
             app:destination="@id/quoteCreditSave" />
         <action
-            android:id="@+id/action_item_menu_side_quoteCredit_to_amortizationTableFragment"
-            app:destination="@id/amortizationTableFragment" />
+            android:id="@+id/action_item_menu_side_simulatorCredit_to_amortizationTableFixFragment"
+            app:destination="@id/amortizationTableFixFragment" />
+        <deepLink app:uri="android-app://co.com.japl.finanzas.module.app/simulator/fix/credit"/>
     </fragment>
 
 
@@ -247,7 +248,14 @@
         <action
             android:id="@+id/action_amortizationTableFragment_to_extraValueListController"
             app:destination="@id/extraValueListController" />
-        <deepLink app:uri="android-app://co.com.japl.finanzas.module.app/amortization"/>
+        <deepLink app:uri="android-app://co.com.japl.finanzas.module.app/simulator/variable/amortization"/>
+    </fragment>
+    <fragment
+        android:id="@+id/amortizationTableFixFragment"
+        android:name="co.japl.android.myapplication.finanzas.controller.creditfix.AmortizationTableFragment"
+        android:label="@string/amortization_table"
+        tools:layout="@layout/fragment_amortization_fix_table" >
+        <deepLink app:uri="android-app://co.com.japl.finanzas.module.app/simulator/fix/amortization"/>
     </fragment>
     <fragment
         android:id="@+id/additionalCreditFragment"

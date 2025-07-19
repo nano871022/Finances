@@ -85,6 +85,23 @@
     <string name="error_record_success">Se produjo un error al crear el registro</string>
     <string name="update_record_success">Se actualizo el registro correctamente</string>
     <string name="error_upd_record_success">Error al actualizar el registro</string>
+    <string name="calculation_error">"Se presento un error en el calculo "</string>
+    <string name="save_unsuccess">"No se logro guardar "</string>
+    <string name="credit_value">Valor Credito</string>
+    <string name="months">Meses</string>
+    <string name="interest">Tasa Interes</string>
+    <string name="capital">Capital</string>
+    <string name="quote">Cuota</string>
+    <string name="year">Año</string>
+    <string name="total">Total</string>
+    <string name="amortization_value">Amortización</string>
+    <string name="saving">Guardando</string>
+    <string name="clear">Limpiar</string>
+    <string name="calculate">Calcular</string>
+    <string name="credit_rate">Tasa Interes</string>
+    <string name="kind_credit_rate">Tipo Tasa Interes</string>
+    <string name="navigate_form_simulator_amortization_fix">android-app://co.com.japl.finanzas.module.app/simulator/fix/amortization?code=%d</string>
+    <string name="simulator_quote_fix">Simulador Cuota Fija</string>
 
     <string-array name="months">
         <item>--- Seleccionar --- </item>

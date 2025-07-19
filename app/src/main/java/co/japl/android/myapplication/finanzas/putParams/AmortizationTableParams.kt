@@ -36,7 +36,7 @@ class AmortizationTableParams {
 
         fun newInstanceFix(creditValue:CalcDTO,navController: NavController){
             val parameters = bundleOf(params.ARG_PARAM_CREDIT_VALUE to Gson().toJson(creditValue),params.ARG_PARAM_KIND_OF_AMORTIZATION to AmortizationKindOfEnum.EXTRA_VALUE_AMORTIZATION)
-            navController.navigate(R.id.action_item_menu_side_quoteCredit_to_amortizationTableFragment,parameters)
+            navController.navigate(R.id.action_item_menu_side_simulatorCredit_to_amortizationTableFixFragment,parameters)
         }
 
         fun newInstanceVariable(creditValue:CalcDTO,navController: NavController){
@@ -82,6 +82,7 @@ class AmortizationTableParams {
             }
             return mapOf()
         }
+
         fun toBack(navController: NavController){
             navController.popBackStack()
         }

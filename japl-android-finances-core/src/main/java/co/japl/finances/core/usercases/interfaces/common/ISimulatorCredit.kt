@@ -15,4 +15,6 @@ interface ISimulatorCredit {
     fun delete(code:Int):Boolean
 
     fun calculateQuote(valueCredit: BigDecimal,creditRate:Double,kindOfRate: KindOfTaxEnum,monthPaid:Int,months:Int,quoteNum:Int): Triple<BigDecimal,BigDecimal,BigDecimal>
+
+    fun calculateFixQuote(valueCredit: BigDecimal,creditRate:Double,kindOfRate: KindOfTaxEnum,monthPaid:Int,months:Int,quoteNum:Int): Triple<BigDecimal,BigDecimal,Pair<BigDecimal,BigDecimal>>
 }

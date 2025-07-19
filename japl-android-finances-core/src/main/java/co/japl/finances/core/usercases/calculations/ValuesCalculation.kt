@@ -7,6 +7,7 @@ import co.japl.finances.core.utils.DateUtils
 import java.time.LocalDateTime
 import java.time.LocalTime
 import javax.inject.Inject
+import kotlin.math.pow
 
 class ValuesCalculation @Inject constructor(){
 
@@ -43,8 +44,25 @@ class ValuesCalculation @Inject constructor(){
     }
 
     internal fun calculateQuoteCredit(value:Double,rateEM:Double,months:Short):Double{
-        val step1 = (value) * ( ( rateEM / 100 ) * Math.pow( 1 + (rateEM / 100),months.toDouble()))
-        val step2 = Math.pow( 1 + ( rateEM / 100 ),months.toDouble()) - 1
-        return step1 / step2
+        val interest = rateEM
+        val step1 = 1 + interest
+        val step1PowPeriods = step1.pow(months.toDouble())
+        val step2 =   interest * step1PowPeriods
+        val step3 = step1PowPeriods - 1
+        return ((value) * (step2 / step3))
+    }
+
+    internal fun calculatePendingCapital(taxNM:Double,totalPeriods:Short,quoteValue:Double,monthPaid:Short):Double{
+        val interest = (taxNM)
+        val firstStep = 1 + interest
+
+        val secondStep = firstStep.pow(-(totalPeriods.toDouble() - monthPaid))
+        val thirdStep = 1 - secondStep
+
+        val fourthStep = thirdStep / interest
+        return (quoteValue * fourthStep).also {
+            Log.d(javaClass.simpleName," $quoteValue $it")
+
+        }
     }
 }

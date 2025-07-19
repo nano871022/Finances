@@ -95,6 +95,7 @@ import co.japl.finances.core.adapters.inbound.implement.credit.AdditionalPort
 import co.japl.finances.core.adapters.inbound.implement.credit.CreditImpl
 import co.japl.finances.core.adapters.inbound.implement.credit.PeriodCreditImpl
 import co.japl.finances.core.adapters.inbound.implement.credit.PeriodGraceImpl
+import co.japl.finances.core.adapters.inbound.implement.credit.SimulatorCreditFixImpl
 import co.japl.finances.core.adapters.inbound.implement.creditCard.AmortizationTableImpl
 import co.japl.finances.core.adapters.inbound.implement.creditCard.SMSCreditCardImpl
 import co.japl.finances.core.adapters.inbound.implement.creditCard.SimulatorImpl
@@ -543,4 +544,11 @@ abstract class AbstractModule {
     abstract fun bindInboundAmortizationVariablePort(impl: AmortizationTableImpl): IAmortizationTablePort
     @Binds
     abstract fun bindUserCaseAmortization(impl: co.japl.finances.core.usercases.implement.creditcard.AmortizationTableImpl): IAmortizationTable
+
+    @Binds
+    abstract fun bindInboundSimulatorCreditFixPort(impl: SimulatorCreditFixImpl): co.com.japl.finances.iports.inbounds.credit.ISimulatorCreditFixPort
+    @Binds
+    abstract fun bindInboundAmortizationFixPort(impl: co.japl.finances.core.adapters.inbound.implement.credit.AmortizationTableImpl): co.com.japl.finances.iports.inbounds.credit.IAmortizationTablePort
+    @Binds
+    abstract fun bindUserCaseAmortizationCredit(impl: co.japl.finances.core.usercases.implement.credit.AmortizationTableImpl): co.japl.finances.core.usercases.interfaces.credit.IAmortizationTable
 }

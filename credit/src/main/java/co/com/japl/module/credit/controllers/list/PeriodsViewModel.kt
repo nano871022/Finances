@@ -7,6 +7,7 @@ import co.com.japl.finances.iports.dtos.PeriodCreditDTO
 import co.com.japl.finances.iports.inbounds.credit.IPeriodCreditPort
 import co.com.japl.ui.utils.FormUIState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.scopes.ViewModelScoped
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -15,8 +16,8 @@ import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
 
-@HiltViewModel
-class PeriodsViewModel @Inject constructor(private val periodSvc: IPeriodCreditPort?): ViewModel(){
+@ViewModelScoped
+class PeriodsViewModel constructor(private val periodSvc: IPeriodCreditPort?): ViewModel(){
     val records  = mutableStateListOf<PeriodCreditDTO>()
     private val _uiState = MutableStateFlow<FormUIState>(FormUIState.Loading)
     val viewState: StateFlow<FormUIState> = _uiState.asStateFlow()
