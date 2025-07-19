@@ -131,11 +131,7 @@
         android:id="@+id/item_menu_side_listsave"
         android:name="co.japl.android.myapplication.finanzas.controller.simulators.ListSave"
         android:label="@string/list_save"
-        tools:layout="@layout/fragment_list_save" >
-        <action
-            android:id="@+id/action_item_menu_side_listsave_to_amortizationTableFragment"
-            app:destination="@id/amortizationTableFragment" />
-    </fragment>
+        tools:layout="@layout/fragment_list_save" />
 
     <fragment
         android:id="@+id/buy_credit_card"
