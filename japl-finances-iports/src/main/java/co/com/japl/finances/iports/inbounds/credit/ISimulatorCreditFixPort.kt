@@ -15,4 +15,5 @@ interface ISimulatorCreditFixPort {
 
     fun setSimulation(dto:SimulatorCreditDTO):Boolean
 
+    fun getList():List<SimulatorCreditDTO>
 }

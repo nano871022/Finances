@@ -11,4 +11,6 @@ interface ISimulatorCreditVariablePort {
     fun update(dto:SimulatorCreditDTO,cache:Boolean):Boolean
 
     fun setSimulation(dto:SimulatorCreditDTO):Boolean
+
+    fun getList():List<SimulatorCreditDTO>
 }

@@ -6,7 +6,7 @@ interface ISimulatorCreditPort {
 
     fun save(dto: SimulatorCreditDTO,cache:Boolean): Long
 
-    fun getAll():List<SimulatorCreditDTO>
+    fun getAll(isVariable:Boolean):List<SimulatorCreditDTO>
 
     fun delete(code:Int):Boolean
 

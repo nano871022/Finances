@@ -1,5 +1,6 @@
 package co.japl.android.myapplication.finanzas.view.creditcard.bought.list
 
+import android.annotation.SuppressLint
 import android.app.Application
 import android.os.Build
 import android.util.Log
@@ -90,6 +91,7 @@ internal fun RecordBoughtCreditCard(bought: CreditCardBoughtItemDTO, creditCard:
     }
 }
 
+@SuppressLint("UnusedBoxWithConstraintsScope")
 @Composable
 private fun Content(model:BoughtViewModel){
     BoxWithConstraints {
@@ -205,6 +207,7 @@ private fun ContentCompact(model:BoughtViewModel,paddingEnd:Dp=10.dp){
     }
 }
 
+@SuppressLint("UnusedBoxWithConstraintsScope")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun MainRow(model:BoughtViewModel){

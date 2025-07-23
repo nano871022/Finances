@@ -50,4 +50,8 @@ class SimulatorCreditFixImpl @Inject constructor(private val simulator: ISimulat
         val resp =  simulator.save(dto,true)
         return resp == dto.code.toLong()
     }
+
+    override fun getList(): List<SimulatorCreditDTO> {
+        return simulator.getAll(false)
+    }
 }

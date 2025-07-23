@@ -40,6 +40,7 @@
     <string name="month_payment">Mes de Pago</string>
     <string name="no_data">No hay data que mostrar</string>
     <string name="quote_value">Valor de la Cuota</string>
+    <string name="quote_value_short">Valor Cuota</string>
     <string name="additional_value">Valor Adicional</string>
     <string name="pending_payment">Pendiente por Pagar</string>
     <string name="interest_value">Valor Intereses</string>
@@ -90,6 +91,7 @@
     <string name="credit_value">Valor Credito</string>
     <string name="months">Meses</string>
     <string name="interest">Tasa Interes</string>
+    <string name="interest_short">Interes</string>
     <string name="capital">Capital</string>
     <string name="quote">Cuota</string>
     <string name="year">Año</string>
@@ -102,6 +104,8 @@
     <string name="kind_credit_rate">Tipo Tasa Interes</string>
     <string name="navigate_form_simulator_amortization_fix">android-app://co.com.japl.finanzas.module.app/simulator/fix/amortization?code=%d</string>
     <string name="simulator_quote_fix">Simulador Cuota Fija</string>
+    <string name="first_capital">Primer Capital</string>
+    <string name="first_interest">Primer Interes</string>
 
     <string-array name="months">
         <item>--- Seleccionar --- </item>

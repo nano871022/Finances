@@ -83,8 +83,8 @@ class SimulatorCreditImpl @Inject constructor(private val simulatorCreditSvc: IS
         return simulatorCreditSvc.save(dto,cache)
     }
 
-    override fun getAll(): List<SimulatorCreditDTO> {
-        return simulatorCreditSvc.getAll()
+    override fun getAll(isVariable:Boolean): List<SimulatorCreditDTO> {
+        return simulatorCreditSvc.getAll(isVariable)
     }
 
     override fun delete(code: Int): Boolean {

@@ -6,6 +6,7 @@ import co.com.japl.finances.iports.outbounds.ISimulatorCreditPort
 import co.japl.android.finances.services.cache.interfaces.ISimulatorCreditCache
 import co.japl.android.finances.services.core.mapper.SimulatorCreditMapper
 import co.japl.android.finances.services.dao.interfaces.ISimulatorCreditDAO
+import co.japl.android.finances.services.enums.CalcEnum
 import javax.inject.Inject
 import kotlin.jvm.optionals.getOrNull
 
@@ -21,8 +22,12 @@ class SimulatorCreditImpl @Inject constructor(private val simulatorSvc: ISimulat
         }
     }
 
-    override fun getAll(): List<SimulatorCreditDTO> {
-        return simulatorSvc.getAll().map { SimulatorCreditMapper.mapper(it) }
+    override fun getAll(isVariable:Boolean): List<SimulatorCreditDTO> {
+        if(isVariable) {
+            return simulatorSvc.getByVariable().map { SimulatorCreditMapper.mapper(it) }
+        }else {
+            return simulatorSvc.getByFix().map { SimulatorCreditMapper.mapper(it) }
+        }
     }
 
     override fun delete(code: Int): Boolean {
