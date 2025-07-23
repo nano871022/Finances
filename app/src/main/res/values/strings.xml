@@ -489,4 +489,5 @@
     <string name="ending_recurrent_restore_payment_successfull">Se restauro correctamente</string>
     <string name="dont_restore_payment_successfull">No se logro restaurar correctamente</string>
     <string name="do_you_want_to_restore_this_record">¿Desea restaurar este registro al valor original?</string>
+    <string name="no_records">No se encontraron registros</string>
 </resources>

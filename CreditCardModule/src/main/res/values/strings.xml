@@ -19,4 +19,7 @@
     <string name="total">Total</string>
     <string name="simulator_quote_variable">Simulador Cuota Variable</string>
     <string name="amortization_quote_variable">Amortización Cuota Variable</string>
+    <string name="first_quote_value">Primera Cuota</string>
+    <string name="first_interest">Primer Interes</string>
+    <string name="options">Opciones</string>
 </resources>

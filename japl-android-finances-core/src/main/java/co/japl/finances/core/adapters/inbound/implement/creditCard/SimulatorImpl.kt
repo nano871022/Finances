@@ -64,5 +64,9 @@ class SimulatorImpl @Inject constructor(private val simulatorSvc: ISimulatorCred
         return resp == dto.code.toLong()
     }
 
+    override fun getList(): List<SimulatorCreditDTO> {
+        return simulatorSvc.getAll(true)
+    }
+
 
 }

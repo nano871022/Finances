@@ -7,6 +7,7 @@ import androidx.annotation.RequiresApi
 import co.japl.android.finances.services.dto.CalcDB
 import co.japl.android.finances.services.dto.CalcDTO
 import co.japl.android.finances.services.dao.interfaces.ISimulatorCreditDAO
+import co.japl.android.finances.services.enums.CalcEnum
 import co.japl.android.finances.services.mapping.CalcMap
 import co.japl.android.finances.services.utils.DatabaseConstants
 import com.google.gson.Gson
@@ -88,5 +89,47 @@ class SimulatorCreditImpl @Inject constructor(override var dbConnect: SQLiteOpen
         val path = Paths.get(pathFile)
         val list = Files.newBufferedReader(path, Charset.defaultCharset()).use { Gson().fromJson(it,List::class.java) } as List<CalcDTO>
         list.forEach(this::save)
+    }
+
+    override fun getByVariable(): List<CalcDTO> {
+        val db = dbConnect.readableDatabase
+
+        val items = mutableListOf<CalcDTO>()
+        db.query(CalcDB.CalcEntry.TABLE_NAME,
+            COLUMNS_CALC,
+            "${CalcDB.CalcEntry.COLUMN_TYPE} = ?",
+            arrayOf(CalcEnum.VARIABLE.name),
+            null,
+            null,
+            "${BaseColumns._ID} desc")
+            ?.use { cursor ->
+                with(cursor) {
+                    while (moveToNext()) {
+                        items.add(CalcMap().mapping(this))
+                    }
+                }
+            }
+        return items
+    }
+
+    override fun getByFix(): List<CalcDTO> {
+        val db = dbConnect.readableDatabase
+
+        val items = mutableListOf<CalcDTO>()
+        db.query(CalcDB.CalcEntry.TABLE_NAME,
+            COLUMNS_CALC,
+            "${CalcDB.CalcEntry.COLUMN_TYPE} = ?",
+            arrayOf(CalcEnum.FIX.name),
+            null,
+            null,
+            "${BaseColumns._ID} desc")
+            ?.use { cursor ->
+                with(cursor) {
+                    while (moveToNext()) {
+                        items.add(CalcMap().mapping(this))
+                    }
+                }
+            }
+        return items
     }
 }

@@ -21,15 +21,6 @@ class QuoteCreditParams {
     }
 
     companion object{
-        @JvmStatic
-        fun newInstance(creditValue:BigDecimal,interest:Double,period:Long,quoteValue:BigDecimal,kindOfTax:String,navController:NavController){
-            val parameters = bundleOf("creditValue" to creditValue.toString()
-                ,"interest" to interest.toString()
-                ,"period" to period.toString()
-                ,"quoteValue" to quoteValue.toString(),
-            Params.ARG_KIND_OF_TAX to kindOfTax)
-            navController.navigate(R.id.action_save_credit_card,parameters)
-        }
 
         @RequiresApi(Build.VERSION_CODES.N)
         fun download(arguments:Bundle):Optional<QuoteCreditCard>{
