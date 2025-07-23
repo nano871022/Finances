@@ -1,15 +1,8 @@
 package co.com.japl.module.credit.controllers.creditamortization
 
-import androidx.lifecycle.ViewModel
-import co.com.japl.finances.iports.inbounds.credit.IAdditional
-import co.com.japl.finances.iports.inbounds.credit.ICreditPort
-import co.com.japl.finances.iports.inbounds.credit.IPeriodGracePort
-import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import co.com.japl.finances.iports.domain.Credit
 import co.com.japl.finances.iports.dtos.AdditionalCreditDTO
 import co.com.japl.finances.iports.dtos.CreditDTO
 import co.com.japl.finances.iports.dtos.GracePeriodDTO
@@ -27,6 +20,8 @@ import javax.inject.Inject
 import co.com.japl.finances.iports.dtos.AmortizationRowDTO
 import co.com.japl.finances.iports.enums.KindAmortization
 import co.com.japl.finances.iports.inbounds.credit.IAmortizationTablePort
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 
 @HiltViewModel
 class CreditAmortizationViewModel @Inject constructor(
@@ -63,11 +58,4 @@ class CreditAmortizationViewModel @Inject constructor(
 
 }
 
-data class CreditAmortizationState(
-    val credit:CreditDTO? = null,
-    val additional:BigDecimal? = null,
-    val gracePeriod:Short? = null,
-    val quotesPaid:Int? = null,
-    val amortization:List<AmortizationRowDTO>? = null,
-    val isLoading:Boolean = false
-)
+import co.com.japl.module.credit.model.CreditAmortizationState

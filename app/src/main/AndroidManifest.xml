@@ -43,11 +43,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name="co.com.japl.module.credit.views.creditamortization.CreditAmortizationActivity"
-            android:exported="false"
-            android:label="@string/title_activity_credit_amortization"
-            android:theme="@style/Theme.JaplAndroidFinanzas" />
     </application>
 
 </manifest>
