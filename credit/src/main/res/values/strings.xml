@@ -16,7 +16,7 @@
     <string name="period_grace">Periodo de Gracia</string>
     <string name="delete">Eliminar</string>
     <string name="do_you_want_to_delete_this_record">¿Desea eliminar este registro?</string>
-    <string name="navigate_amortization">android-app://co.com.japl.finanzas.module.app/amortization_credit?CREDIT=%s&amp;DATE_BILL=%s&amp;DATE_LAST=%s</string>
+    <string name="navigate_amortization">android-app://co.com.japl.finanzas.module.app/amortization_credit?creditCode=%d&amp;lastDate=%s</string>
     <string name="navigate_additional">android-app://co.com.japl.finanzas.module.app/additionals_credit?CREDIT_CODE=%d</string>
     <string name="navigate_add_credit">android-app://co.com.japl.finanzas.module.app/add_credit_fix</string>
     <string name="navigate_detail_credits">android-app://co.com.japl.finanzas.module.app/monthly_credit_list</string>
@@ -106,6 +106,7 @@
     <string name="simulator_quote_fix">Simulador Cuota Fija</string>
     <string name="first_capital">Primer Capital</string>
     <string name="first_interest">Primer Interes</string>
+    <string name="title_activity_credit_amortization">CreditAmortizationActivity</string>
 
     <string-array name="months">
         <item>--- Seleccionar --- </item>

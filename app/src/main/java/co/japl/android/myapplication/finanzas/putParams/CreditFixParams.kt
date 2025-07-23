@@ -39,45 +39,14 @@ class CreditFixParams {
 
         @RequiresApi(Build.VERSION_CODES.O)
         fun newInstanceAmortizationList(credit:CreditDTO, date:LocalDate,navController: NavController){
-            val parameters = bundleOf( Params.PARAMS_CREDIT to Gson().toJson(credit),Params.PARAMS_DATE_BILL to DateUtils.localDateToString(credit.date),Params.PARAMS_LAST_DATE to DateUtils.localDateToString(date))
-            navController.navigate(R.id.action_creditFixFragment_to_amortizationCreditFragment,parameters)
+            val uri = Uri.parse("android-app://co.com.japl.finanzas.module.app/amortization_credit?creditCode=${credit.id}&lastDate=${DateUtils.localDateToString(date)}")
+            navController.navigate(uri)
         }
 
         @RequiresApi(Build.VERSION_CODES.O)
         fun newInstanceAmortizationMonthlyList(credit:CreditDTO, date:LocalDate, navController: NavController){
-            val parameters = bundleOf( Params.PARAMS_CREDIT to Gson().toJson(credit),Params.PARAMS_DATE_BILL to DateUtils.localDateToString(credit.date))
-            navController.navigate(R.id.action_monthlyCreditListFragment_to_amortizationCreditFragment,parameters)
-        }
-
-        @RequiresApi(Build.VERSION_CODES.O)
-        fun downloadAmortizationList(arguments:Bundle):Pair<CreditDTO,LocalDate>{
-            if(arguments?.containsKey(Params.PARAM_DEEPLINK)?:false) {
-                val intent = arguments?.get(Params.PARAM_DEEPLINK) as Intent
-                val date = Uri.parse(intent.dataString).getQueryParameter(Params.PARAMS_DATE_BILL)?.let{
-                    DateUtils.toLocalDate(it as String)
-                }?:LocalDate.now()
-                val dateCurrent = Uri.parse(intent.dataString).getQueryParameter(Params.PARAMS_LAST_DATE)?.let{
-                    DateUtils.toLocalDate(it as String)
-                }?: LocalDate.now()
-                val value = Uri.parse(intent.dataString).getQueryParameter(Params.PARAMS_CREDIT)?.let {
-                    Log.d("deserialize",it)
-                    GsonBuilder()
-                        .registerTypeAdapter(BigDecimal::class.java, BigDecimalDeserializer())
-                        .create().fromJson(it as String, CreditDTO::class.java)
-                }
-                value?.date = date
-                return Pair(value!!,dateCurrent)
-            }else {
-                val date = DateUtils.toLocalDate(arguments.get(Params.PARAMS_DATE_BILL) as String)
-                val dateCurrent = arguments.get(Params.PARAMS_LAST_DATE)
-                    ?.let { DateUtils.toLocalDate(it as String) } ?: LocalDate.now()
-                val value = Gson().fromJson(
-                    arguments.get(Params.PARAMS_CREDIT) as String,
-                    CreditDTO::class.java
-                )
-                value.date = date
-                return Pair(value,dateCurrent)
-            }
+            val uri = Uri.parse("android-app://co.com.japl.finanzas.module.app/amortization_credit?creditCode=${credit.id}&lastDate=${DateUtils.localDateToString(date)}")
+            navController.navigate(uri)
         }
 
         fun downloadAdditionalList(arguments:Bundle):Long{

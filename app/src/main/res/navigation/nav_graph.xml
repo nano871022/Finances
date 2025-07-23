@@ -266,19 +266,13 @@
             app:destination="@id/amortizationCreditFragment" />
         <deepLink app:uri="android-app://co.com.japl.finanzas.module.app/add_credit_fix"/>
     </fragment>
-    <fragment
+    <activity
         android:id="@+id/amortizationCreditFragment"
-        android:name="co.japl.android.myapplication.finanzas.controller.AmortizationCreditFragment"
+        android:name="co.com.japl.module.credit.views.creditamortization.CreditAmortizationActivity"
         android:label="@string/amortization_table"
         tools:layout="@layout/fragment_amortization_credit" >
-        <action
-            android:id="@+id/action_amortizationCreditFragment_to_additionalListFragment"
-            app:destination="@id/additionalListFragment" />
-        <action
-            android:id="@+id/action_amortizationCreditFragment_to_extraValueListController"
-            app:destination="@id/extraValueListController" />
         <deepLink app:uri="android-app://co.com.japl.finanzas.module.app/amortization_credit"/>
-    </fragment>
+    </activity>
     <fragment
         android:id="@+id/creditListFragment"
         android:name="co.japl.android.myapplication.finanzas.controller.creditfix.CreditListFragment"
