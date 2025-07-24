@@ -37,17 +37,6 @@ class CreditFixParams {
             navController.navigate(R.id.action_amortizationCreditFragment_to_additionalListFragment,arguments)
         }
 
-        @RequiresApi(Build.VERSION_CODES.O)
-        fun newInstanceAmortizationList(credit:CreditDTO, date:LocalDate,navController: NavController){
-            val uri = Uri.parse(navController.context.getString(R.string.navigate_amortization, credit.id, DateUtils.localDateToString(date)))
-            navController.navigate(uri)
-        }
-
-        @RequiresApi(Build.VERSION_CODES.O)
-        fun newInstanceAmortizationMonthlyList(credit:CreditDTO, date:LocalDate, navController: NavController){
-            val uri = Uri.parse(navController.context.getString(R.string.navigate_amortization, credit.id, DateUtils.localDateToString(date)))
-            navController.navigate(uri)
-        }
 
         @RequiresApi(Build.VERSION_CODES.O)
         fun downloadAmortizationList(arguments:Bundle):Pair<CreditDTO,LocalDate>{
