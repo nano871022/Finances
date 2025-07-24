@@ -154,7 +154,10 @@ private fun RowScope.HeaderRow(
     listHeader:List<Header>,
     tooltipStateName: MutableList<TooltipState>,
     tooltipPosition: MutableList<PopupPositionProvider>){
-    Text(text = "#", color = textColor, modifier = Modifier.padding(5.dp))
+    Text(text = "#",
+        color = textColor,
+        modifier = Modifier.padding(5.dp)
+            .align (alignment = Alignment.CenterVertically))
 
     listHeader.forEachIndexed { index, it ->
 
@@ -164,6 +167,7 @@ private fun RowScope.HeaderRow(
                 color = textColor,
                 textAlign = TextAlign.Center,
                 modifier = Modifier.weight(1f)
+                    .align (alignment = Alignment.CenterVertically)
             )
             TooltipBox(
                 positionProvider = tooltipPosition[index],
@@ -175,7 +179,8 @@ private fun RowScope.HeaderRow(
                         )
                     }
                 },
-                state = tooltipStateName[index]
+                state = tooltipStateName[index],
+                modifier = Modifier.align (alignment = Alignment.CenterVertically)
             ) {
                 Icon(
                     imageVector = Icons.Rounded.Info,

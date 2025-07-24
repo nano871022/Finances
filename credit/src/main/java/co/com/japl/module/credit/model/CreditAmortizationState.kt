@@ -5,10 +5,10 @@ import co.com.japl.finances.iports.dtos.CreditDTO
 import java.math.BigDecimal
 
 data class CreditAmortizationState(
-    val credit:CreditDTO? = null,
-    val additional:BigDecimal? = null,
-    val gracePeriod:Short? = null,
-    val quotesPaid:Int? = null,
-    val amortization:List<AmortizationRowDTO>? = null,
-    val isLoading:Boolean = false
+    var credit:CreditDTO? = null,
+    var additional:BigDecimal? = null,
+    var gracePeriod:Short? = null,
+    var quotesPaid:Int? = null,
+    var amortization:List<AmortizationRowDTO>? = null,
+    var isLoading:Boolean = false
 )

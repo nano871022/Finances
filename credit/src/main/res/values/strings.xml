@@ -45,6 +45,7 @@
     <string name="pending_payment">Pendiente por Pagar</string>
     <string name="interest_value">Valor Intereses</string>
     <string name="capital_value">Valor a Capital</string>
+    <string name="capital_value_short">Capital</string>
     <string name="add_credit">Agregar Credito</string>
     <string name="check_periods">Periodos</string>
     <string name="detail_credits">Detalle</string>
@@ -106,6 +107,11 @@
     <string name="simulator_quote_fix">Simulador Cuota Fija</string>
     <string name="first_capital">Primer Capital</string>
     <string name="first_interest">Primer Interes</string>
+    <string name="extra_value_list">Valor extra</string>
+    <string name="additional_to_pay">Adicional a Pagar</string>
+    <string name="additional_monthly">Adicional Mensual</string>
+    <string name="interest_to_pay_value">Interes a Pagar</string>
+    <string name="interest_value_short">interes</string>
 
     <string-array name="months">
         <item>--- Seleccionar --- </item>

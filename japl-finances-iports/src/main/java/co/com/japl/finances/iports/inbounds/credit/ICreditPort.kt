@@ -12,4 +12,5 @@ interface ICreditPort {
 
     fun getCreditsEnables(period:YearMonth):List<RecapCreditDTO>
 
+    fun getCredit(code:Int):CreditDTO?
 }
