@@ -18,6 +18,7 @@ import co.com.japl.module.credit.controllers.creditamortization.CreditAmortizati
 import co.com.japl.module.credit.views.creditamortization.CreditAmortizationScreen
 import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.japl.android.myapplication.databinding.FragmentAmortizationCreditBinding
+import co.japl.android.myapplication.finanzas.putParams.AmortizationCreditParams
 import dagger.hilt.android.AndroidEntryPoint
 import java.time.LocalDate
 import javax.inject.Inject
@@ -35,9 +36,10 @@ class AmortizationCreditFragment : Fragment() {
             owner = this,
             viewModelClass= CreditAmortizationViewModel::class.java,
             build = {
+                val map = arguments?.let{AmortizationCreditParams.download(it)}
                 CreditAmortizationViewModel(
-                    creditCode = 1,
-                    lastDate = LocalDate.now(),
+                    creditCode = ((map?.get("CREDIT_CODE") as Long)?:0.toLong()).toInt(),
+                    lastDate = (map?.get("LAST_DATE") as LocalDate)?:LocalDate.now(),
                     creditSvc = creditSvc,
                     additionalSvc = additionalSvc,
                     gracePeriodSvc = gracePeriodSvc,

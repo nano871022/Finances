@@ -39,10 +39,10 @@ class CreditImpl @Inject constructor(private val creditSvc:ICreditPort, private 
         kindRate: KindOfTaxEnum,
         month: Int
     ): BigDecimal {
-        val rateEM = InterestRateCalculation.getEM(rate, kindRate)
+        val rateNM = InterestRateCalculation.getNM(rate, kindRate)
         val quote = valuesCalculation.calculateQuoteCredit(
             value = value.toDouble(),
-            rateEM = rateEM,
+            rateEM = rateNM,
             months = month.toShort()
         )
         return if(quote.isNaN().not()) quote.toBigDecimal() else BigDecimal.ZERO
@@ -76,7 +76,7 @@ class CreditImpl @Inject constructor(private val creditSvc:ICreditPort, private 
             capitalValue = capitalValue,
             differQuotes = null
         )
-        val kindOfRate = KindOfTaxEnum.findByValue(creditDTO.kindOfTax)
+        val kindOfRate = creditDTO.kindOfTax
         val tax = InterestRateCalculation.getNM(creditDTO.tax, kindOfRate)
         val interestValue = interestCalculation.getInterestValue(
             month = creditDTO.date.monthValue.toShort(),

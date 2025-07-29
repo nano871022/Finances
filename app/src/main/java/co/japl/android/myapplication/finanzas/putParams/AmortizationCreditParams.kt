@@ -18,24 +18,9 @@ import java.net.URLDecoder
 import java.nio.charset.Charset
 import java.time.LocalDate
 
-class AmortizationTableParams {
-
-    object params{
-        val ARG_PARAM_CREDIT_VALUE = "credit_value"
-        val ARG_PARAM_KIND_OF_AMORTIZATION = "kind_of_amortization"
-    }
+class AmortizationCreditParams {
 
     companion object{
-        fun newInstance(creditValue:CalcDTO,navController: NavController){
-            val parameters = bundleOf(params.ARG_PARAM_CREDIT_VALUE to Gson().toJson(creditValue),params.ARG_PARAM_KIND_OF_AMORTIZATION to AmortizationKindOfEnum.EXTRA_VALUE_AMORTIZATION)
-            navController.navigate(R.id.action_item_menu_side_listsave_to_amortizationTableFragment,parameters)
-        }
-
-        fun newInstanceQuotes(code:Long,navController:NavController){
-            val parameters = bundleOf("CODE" to code)
-            navController.navigate(R.id.action_list_bought_to_amortizationTableFragment,parameters)
-        }
-
         fun download(argument: Bundle):Map<String,Any>{
             argument.let {
                 if( it.containsKey(Params.PARAM_DEEPLINK) ){

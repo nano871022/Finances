@@ -271,19 +271,13 @@
         android:name="co.japl.android.myapplication.finanzas.controller.AmortizationCreditFragment"
         android:label="@string/amortization_table"
         tools:layout="@layout/fragment_amortization_credit" >
-        <argument
-            android:name="creditId"
-            app:argType="integer" />
-        <argument
-            android:name="lastDate"
-            app:argType="string" />
         <action
             android:id="@+id/action_amortizationCreditFragment_to_additionalListFragment"
             app:destination="@id/additionalListFragment" />
         <action
             android:id="@+id/action_amortizationCreditFragment_to_extraValueListController"
             app:destination="@id/extraValueListController" />
-        <deepLink app:uri="android-app://co.com.japl.finanzas.module.app/amortization_credit/{creditId}/{lastDate}"/>
+        <deepLink app:uri="android-app://co.com.japl.finanzas.module.app/amortization_credit"/>
     </fragment>
     <fragment
         android:id="@+id/creditListFragment"

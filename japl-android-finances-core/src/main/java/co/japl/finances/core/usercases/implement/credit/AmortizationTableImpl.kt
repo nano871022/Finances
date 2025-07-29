@@ -3,12 +3,19 @@ package co.japl.finances.core.usercases.implement.credit
 import android.util.Log
 import co.com.japl.finances.iports.dtos.AmortizationRowDTO
 import co.com.japl.finances.iports.enums.KindAmortization
+import co.com.japl.finances.iports.enums.KindOfTaxEnum
+import co.com.japl.finances.iports.outbounds.ICreditPort
 import co.com.japl.finances.iports.outbounds.ISimulatorCreditPort
 import co.japl.finances.core.usercases.interfaces.common.ISimulatorCredit
 import co.japl.finances.core.usercases.interfaces.credit.IAmortizationTable
+import java.math.BigDecimal
 import javax.inject.Inject
 
-class AmortizationTableImpl @Inject constructor(private val simulatorSvc: ISimulatorCreditPort,private val simulatorCredit: ISimulatorCredit): IAmortizationTable {
+class AmortizationTableImpl @Inject constructor(
+    private val simulatorSvc: ISimulatorCreditPort,
+    private val simulatorCredit: ISimulatorCredit,
+    private val creditSvc: ICreditPort
+): IAmortizationTable {
 
     override fun getAmortization(
         code: Int,
@@ -24,7 +31,30 @@ class AmortizationTableImpl @Inject constructor(private val simulatorSvc: ISimul
     }
 
     private fun getFixedQuote(code:Int,cache:Boolean):List<AmortizationRowDTO>{
-        return listOf()
+        val credit = creditSvc.getById(code)
+        return Array(credit?.periods?:0){
+            val kindOfTax = credit?.kindOfTax ?: KindOfTaxEnum.ANUAL_EFFECTIVE
+            val creditValue = credit?.value?: BigDecimal.ZERO
+            val (interest,capital,quoteAndPending)  = simulatorCredit.calculateFixQuote(
+                creditValue,
+                credit?.tax?:0.0,
+                kindOfTax,
+                it,
+                credit?.periods?:0,
+                it)
+            val (quote, pending) = quoteAndPending
+            AmortizationRowDTO(
+                (it + 1).toShort(),
+                credit?.periods?.toShort()?:0.toShort(),
+                credit?.tax?:0.0,
+                kindOfTax,
+                creditValue,
+                pending,
+                capital,
+                interest,
+                quote
+            )
+        }.toList()
     }
     private fun getVariableQuote(code:Int,cache:Boolean):List<AmortizationRowDTO>{
         return listOf()

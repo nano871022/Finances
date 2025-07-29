@@ -37,11 +37,13 @@ import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import co.com.japl.finances.iports.dtos.CreditDTO
 import co.com.japl.finances.iports.enums.KindOfTaxEnum
+import co.com.japl.finances.iports.enums.KindPaymentsEnums
 import co.com.japl.ui.components.FloatButton
 import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.com.japl.ui.utils.WindowWidthSize
 import co.japl.android.myapplication.utils.NumbersUtil
 import java.time.LocalDate
+import java.time.YearMonth
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
@@ -58,11 +60,16 @@ fun CreditAmortizationScreen(viewModel: CreditAmortizationViewModel){
 @Composable
 private fun Body(viewModel: CreditAmortizationViewModel) {
     val state by viewModel.state.collectAsState()
+    val dateCredit = state.credit?.date?:LocalDate.now()
+    val yearMonth = YearMonth.of(dateCredit.year,dateCredit.month)
     Scaffold (floatingActionButton = {FloatButtons(viewModel)},
         modifier = Modifier.padding(Dimensions.PADDING_SHORT)) {
         Column(modifier = Modifier.fillMaxWidth().padding(it)) {
             Header(viewModel)
-            Table(state.amortization ?: emptyList())
+            Table(viewModel.state.value.quotesPaid?:0,
+                state.amortization ?: emptyList(),
+                yearMonth
+                )
         }
     }
 }
@@ -82,13 +89,13 @@ private fun Header(viewModel: CreditAmortizationViewModel) {
 
             Row(modifier = Modifier.fillMaxWidth()) {
                 FieldView(
-                    title = stringResource(id = R.string.interest_value_short),
-                    value = state.credit?.tax.toString(),
+                    title = stringResource(id = R.string.periods),
+                    value = state.credit?.periods.toString(),
                     modifier = Modifier.weight(1f)
                 )
                 FieldView(
-                    title = stringResource(id = R.string.periods),
-                    value = state.credit?.periods.toString(),
+                    title = stringResource(id = R.string.interest_value_short),
+                    value = "${state.credit?.tax} ${state.credit?.kindOfTax}",
                     modifier = Modifier.weight(1f)
                 )
             }
@@ -135,7 +142,7 @@ private fun FloatButtons(viewModel: CreditAmortizationViewModel) {
 }
 
 @Composable
-private fun Table(amortization: List<AmortizationRowDTO>) {
+private fun Table(quotesPaid:Int,amortization: List<AmortizationRowDTO>,yearMonth: YearMonth) {
     val titleValor = stringResource(id = R.string.value)
     val titleCapital = stringResource(id = R.string.capital_value_short)
     val titleInterest = stringResource(id = R.string.interest_value_short)
@@ -159,6 +166,15 @@ private fun Table(amortization: List<AmortizationRowDTO>) {
             listHeader.filter { (size == WindowWidthSize.COMPACT && it.id != 5) || size != WindowWidthSize.COMPACT}
                      },
         sizeBody = amortization.size,
+        splitPos = 12,
+        highlightPos = quotesPaid,
+        split = { pos,size ->
+            val year =  yearMonth.plusMonths(pos.toLong()).year
+            val record = amortization.subList(pos,pos+12)
+            val interest = record.sumOf { it.interestValue }
+            val capital = record.sumOf{ it.capitalValue }
+            Split(year,capital,interest, WindowWidthSize.fromDp(size))
+        },
         footer={
             val size = WindowWidthSize.fromDp(it)
             Footer(amortization,size)
@@ -167,6 +183,32 @@ private fun Table(amortization: List<AmortizationRowDTO>) {
         val size = WindowWidthSize.fromDp(width)
         val record = amortization[pos]
         Row(record,size)
+    }
+}
+
+@Composable
+private fun Split(year:Int,capital:BigDecimal,interest:BigDecimal,size: WindowWidthSize){
+    Row{
+        Text(text="$year",
+            color=MaterialTheme.colorScheme.onSurface,
+            textAlign = TextAlign.Left,
+            modifier=Modifier.weight(0.5f).align(alignment = Alignment.CenterVertically))
+        Text(text=stringResource(R.string.capital_value),
+            color=MaterialTheme.colorScheme.onSurface,
+            textAlign = TextAlign.Right,
+            modifier=Modifier.weight(1f).align(alignment = Alignment.CenterVertically))
+        Text(text=NumbersUtil.COPtoString(capital),
+            color=MaterialTheme.colorScheme.onSurface,
+            textAlign = TextAlign.Right,
+            modifier=Modifier.weight(1f).align(alignment = Alignment.CenterVertically))
+        Text(text=stringResource(R.string.interest_value),
+            color=MaterialTheme.colorScheme.onSurface,
+            textAlign = TextAlign.Right,
+            modifier=Modifier.weight(1f).align(alignment = Alignment.CenterVertically))
+        Text(text=NumbersUtil.COPtoString(interest),
+            color=MaterialTheme.colorScheme.onSurface,
+            textAlign = TextAlign.Right,
+            modifier=Modifier.weight(1f).align(alignment = Alignment.CenterVertically))
     }
 }
 
@@ -284,8 +326,8 @@ private fun getViewModel():CreditAmortizationViewModel{
         periods = 6,
         value = 10000.toBigDecimal(),
         quoteValue = 800.toBigDecimal(),
-        kindOf = "AS",
-        kindOfTax = "AE"
+        kindOf = KindPaymentsEnums.ANNUAL,
+        kindOfTax = KindOfTaxEnum.ANUAL_EFFECTIVE
     )
     viewModel.state.value.additional = 100.toBigDecimal()
     viewModel.state.value.amortization = listOf(

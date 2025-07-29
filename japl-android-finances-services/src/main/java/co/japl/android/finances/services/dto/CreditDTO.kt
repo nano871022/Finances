@@ -1,5 +1,7 @@
 package co.japl.android.finances.services.dto
 
+import co.japl.android.finances.services.enums.KindOfPayListEnum
+import co.japl.android.finances.services.enums.KindOfTaxEnum
 import java.math.BigDecimal
 import java.time.LocalDate
 
@@ -11,8 +13,8 @@ data class CreditDTO(
     var periods:Int,
     var value:BigDecimal,
     var quoteValue:BigDecimal,
-    var kindOf:String,
-    var kindOfTax:String
+    var kindOf: KindOfPayListEnum,
+    var kindOfTax: KindOfTaxEnum
 )
 
 object CreditDB{

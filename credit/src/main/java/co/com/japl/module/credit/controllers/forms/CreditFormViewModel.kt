@@ -19,6 +19,9 @@ import co.japl.android.myapplication.utils.NumbersUtil
 import dagger.hilt.android.scopes.ViewModelScoped
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 
@@ -27,6 +30,18 @@ class CreditFormViewModel constructor(private val savedStateHandle: SavedStateHa
     var progress = mutableFloatStateOf(0f)
     var showProgress = mutableStateOf(false)
     val snackbarHostState = SnackbarHostState()
+    private val _creditDto =  MutableStateFlow<CreditDTO>(CreditDTO(
+        id = 0,
+        name = "",
+        date = LocalDate.now(),
+        tax = 0.0,
+        periods = 0,
+        value = 0.toBigDecimal(),
+        quoteValue = 0.toBigDecimal(),
+        kindOf = KindPaymentsEnums.ANNUAL,
+        kindOfTax = KindOfTaxEnum.ANUAL_EFFECTIVE
+    ))
+    private val creditDTO = _creditDto.asStateFlow()
 
     val kindPayment = initialFieldState<Triple<Int,String, KindPaymentsEnums?>?>(
         savedStateHandle!!,
@@ -34,7 +49,10 @@ class CreditFormViewModel constructor(private val savedStateHandle: SavedStateHa
         initialValue = Triple( KindPaymentsEnums.MONTHLY.ordinal,  context?.resources?.getString(KindPaymentsEnums.MONTHLY.title)?:"", KindPaymentsEnums.MONTHLY),
         list=KindPaymentsEnums.entries.map{ Triple(it.month,context?.resources?.getString(it.title)?:"Invalid",it)},
         validator = { it != null },
-        onValueChangeCallBack = {  }
+        onValueChangeCallBack = { kind ->
+            _creditDto.update {
+            it.copy(kindOf = kind?.third?: KindPaymentsEnums.ANNUAL)
+        } }
     )
 
     val creditDate = initialFieldState<LocalDate>(
@@ -42,7 +60,11 @@ class CreditFormViewModel constructor(private val savedStateHandle: SavedStateHa
         "FORM_CREDIT_DATE",
         initialValue = LocalDate.now(),
         validator = {it != null},
-        onValueChangeCallBack = {  }
+        onValueChangeCallBack = { date ->
+            _creditDto.update {
+                it.copy(date = date)
+            }
+        }
     )
 
     val name = initialFieldState<String>(
@@ -50,7 +72,11 @@ class CreditFormViewModel constructor(private val savedStateHandle: SavedStateHa
         "FORM_NAME",
         initialValue = "",
         validator = {it.isNotBlank()},
-        onValueChangeCallBack = {  }
+        onValueChangeCallBack = { name ->
+            _creditDto.update {
+                it.copy(name = name)
+            }
+        }
     )
 
     val value = initialFieldState(
@@ -58,7 +84,11 @@ class CreditFormViewModel constructor(private val savedStateHandle: SavedStateHa
         "FORM_VALUE",
         initialValue = "",
         validator = { it.isNotBlank() && NumbersUtil.isNumber(it) },
-        onValueChangeCallBack = {  }
+        onValueChangeCallBack = { value ->
+            _creditDto.update {
+                it.copy(value = NumbersUtil.toBigDecimal(value))
+            }
+        }
     )
 
     val rate = initialFieldState(
@@ -66,7 +96,11 @@ class CreditFormViewModel constructor(private val savedStateHandle: SavedStateHa
         "FORM_RATE",
         initialValue = "",
         validator = {it.isNotBlank() && NumbersUtil.isNumber(it)},
-        onValueChangeCallBack = {  }
+        onValueChangeCallBack = { rate ->
+            _creditDto.update {
+                it.copy(tax = NumbersUtil.toDouble(rate))
+            }
+        }
     )
 
     val kindRate = initialFieldState<Triple<Int,String, KindOfTaxEnum>?>(
@@ -75,7 +109,11 @@ class CreditFormViewModel constructor(private val savedStateHandle: SavedStateHa
         initialValue = Triple(KindOfTaxEnum.ANUAL_EFFECTIVE.ordinal,context?.resources?.getString(KindOfTaxEnum.ANUAL_EFFECTIVE.title)?:"",KindOfTaxEnum.ANUAL_EFFECTIVE),
         list = KindOfTaxEnum.entries.map{ Triple(it.ordinal,context?.resources?.getString(it.title)?:"Invalid",it) },
         validator = {it != null},
-        onValueChangeCallBack = {  }
+        onValueChangeCallBack = { kind ->
+            _creditDto.update {
+                it.copy( kindOfTax = kind?.third?: KindOfTaxEnum.ANUAL_EFFECTIVE)
+            }
+        }
     )
 
     val month = initialFieldState(
@@ -83,7 +121,11 @@ class CreditFormViewModel constructor(private val savedStateHandle: SavedStateHa
         "FORM_MONTH",
         initialValue = "",
         validator = {it.isNotBlank() && NumbersUtil.isNumber(it)},
-        onValueChangeCallBack = {  }
+        onValueChangeCallBack = { month ->
+            _creditDto.update {
+                it.copy(periods = month.toInt())
+            }
+        }
     )
 
     val quoteCredit = initialFieldState(
@@ -91,12 +133,20 @@ class CreditFormViewModel constructor(private val savedStateHandle: SavedStateHa
         "FORM_QUOTE_CREDIT",
         initialValue = "",
         validator = {it.isNotBlank() && NumbersUtil.isNumber(it)},
-        onValueChangeCallBack = {  }
+        onValueChangeCallBack = { quote ->
+            _creditDto.update {
+                it.copy(quoteValue = NumbersUtil.toBigDecimal(quote))
+            }
+
+        }
     )
 
 
     init{
         id?.takeIf{it > 0}?.let {
+            _creditDto.update {
+                it.copy(id = id?:0)
+            }
             execute()
         }?:{
             showProgress.value = false
@@ -135,10 +185,13 @@ class CreditFormViewModel constructor(private val savedStateHandle: SavedStateHa
     }
 
     suspend fun saveRunning(){
-        creditSvc?.save(getCreateCreditDTO())?.takeIf{it > 0}.let {
-            id = it
+        creditSvc?.save(creditDTO.value)?.takeIf{it > 0}?.let { code ->
+            _creditDto.update {
+                it.copy(id = code)
+            }
             showProgress.value = false
         }?.also {
+            showProgress.value = false
             snackbarHostState.showSnackbar(
                 message = context?.resources?.getString(R.string.save_success) ?: "Invalid"
             )
@@ -158,9 +211,9 @@ class CreditFormViewModel constructor(private val savedStateHandle: SavedStateHa
                 progress.floatValue = 0.4f
                 credit?.let{
                     progress.floatValue = 0.7f
-                    val kindPaymentEnum:KindPaymentsEnums = KindPaymentsEnums.findByValue(credit.kindOf)
+                    val kindPaymentEnum:KindPaymentsEnums = credit.kindOf
                     val kindOfTaxPair = kindPayment.list.firstOrNull{ it?.first == kindPaymentEnum.month}
-                    val kindRateEnum = KindOfTaxEnum.findByValue(credit.kindOfTax)
+                    val kindRateEnum = credit.kindOfTax
                     val kindRatePair = kindRate.list[kindRateEnum.ordinal]
 
                     kindPayment.onValueChange(Triple(kindOfTaxPair?.first?:0,kindOfTaxPair?.second?:"",kindPaymentEnum))
@@ -169,7 +222,7 @@ class CreditFormViewModel constructor(private val savedStateHandle: SavedStateHa
                     value.onValueChange(NumbersUtil.toString(credit.value))
                     rate.onValueChange(NumbersUtil.toString(credit.tax))
                     kindRate.onValueChange(Triple(kindRatePair?.first?:0,kindRatePair?.second?:"",kindRateEnum))
-                    month.onValueChange("credit.periods")
+                    month.onValueChange(credit.periods.toString())
                 }
 
                 progress.floatValue = 0.8f
@@ -194,7 +247,7 @@ class CreditFormViewModel constructor(private val savedStateHandle: SavedStateHa
     }
 
     fun amortization(){
-        if(id == 0 || id == null) {
+        if(_creditDto.value.id <= 0 || id == null) {
             viewModelScope.launch {
                 snackbarHostState.showSnackbar(
                     message = context?.resources?.getString(R.string.invalid_option_amortization)?:"Invalid",
@@ -203,23 +256,9 @@ class CreditFormViewModel constructor(private val savedStateHandle: SavedStateHa
             }
         }else{
             navController?.let {
-                CreditList.amortization(getCreateCreditDTO(), creditDate.value.value, it)
+                CreditList.amortization(creditDTO.value, creditDTO.value.date, it)
             }
         }
-    }
-
-    fun getCreateCreditDTO():CreditDTO{
-        return CreditDTO(
-            id = id?:0,
-            name = name.value.value,
-            date = creditDate.value.value,
-            tax = NumbersUtil.toDouble(rate.value.value),
-            periods = month.value.value.toInt(),
-            value = NumbersUtil.toBigDecimal(value.value.value),
-            quoteValue = NumbersUtil.toBigDecimal(quoteCredit.value.value),
-            kindOf = kindPayment.value.value?.second?: KindPaymentsEnums.MONTHLY.name,
-            kindOfTax = kindRate.value.value?.second?: KindOfTaxEnum.ANUAL_EFFECTIVE.name
-        )
     }
 
     fun executeCalculateQuote() = CoroutineScope(Dispatchers.IO).launch {
@@ -228,10 +267,10 @@ class CreditFormViewModel constructor(private val savedStateHandle: SavedStateHa
 
     suspend fun calculateQuote(){
         creditSvc?.calculateQuoteCredit(
-            value = NumbersUtil.toBigDecimal(value.value.value),
-            rate = NumbersUtil.toDouble(rate.value.value),
-            kindRate = kindRate.value.value?.third?:KindOfTaxEnum.ANUAL_EFFECTIVE,
-            month = month.value.value.toInt()
+            value = creditDTO.value.value,
+            rate = creditDTO.value.tax,
+            kindRate = creditDTO.value.kindOfTax,
+            month = creditDTO.value.periods
         )?.let { quote ->
             quoteCredit.onValueChange(NumbersUtil.toString(quote))
         }
