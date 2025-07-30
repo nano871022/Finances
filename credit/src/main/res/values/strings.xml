@@ -112,6 +112,10 @@
     <string name="additional_monthly">Adicional Mensual</string>
     <string name="interest_to_pay_value">Interes a Pagar</string>
     <string name="interest_value_short">interes</string>
+    <string name="extra_values">Extra Values</string>
+    <string name="add_extra_value">Add Extra Value</string>
+    <string name="number_of_quotes">Number of Quotes</string>
+    <string name="value">Value</string>
 
     <string-array name="months">
         <item>--- Seleccionar --- </item>
