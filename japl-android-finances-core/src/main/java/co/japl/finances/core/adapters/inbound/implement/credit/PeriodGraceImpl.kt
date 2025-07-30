@@ -35,4 +35,9 @@ class PeriodGraceImpl @Inject constructor(private val periodGraceSvc: IPeriodGra
         }
         return periodGraceSvc.hasGracePeriod(codeCredit)
     }
+
+    override fun get(codeCredit: Int): List<GracePeriodDTO> {
+        require(codeCredit > 0){"Code is not valid, it should be more than Zero"}
+        return periodGraceSvc.getList(codeCredit)
+    }
 }

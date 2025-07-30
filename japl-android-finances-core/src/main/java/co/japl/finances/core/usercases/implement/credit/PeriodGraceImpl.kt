@@ -18,4 +18,8 @@ class PeriodGraceImpl @Inject constructor(private val periodGraceSvc: IPeriodGra
         return periodGraceSvc.hasGracePeriod(codeCredit)
     }
 
+    override fun getList(codeCredit: Int): List<GracePeriodDTO> {
+        return periodGraceSvc.getList(codeCredit)
+    }
+
 }

@@ -5,6 +5,7 @@ import android.database.sqlite.SQLiteOpenHelper
 import android.os.Build
 import android.provider.BaseColumns
 import androidx.annotation.RequiresApi
+import co.com.japl.finances.iports.enums.KindPaymentsEnums
 import co.japl.android.finances.services.dto.*
 import co.japl.android.finances.services.dao.interfaces.IAdditionalCreditDAO
 import co.japl.android.finances.services.dao.interfaces.ICreditDAO
@@ -13,6 +14,7 @@ import co.japl.android.finances.services.interfaces.IGraph
 import co.japl.android.finances.services.interfaces.ISaveSvc
 import co.japl.android.finances.services.mapping.CreditMap
 import co.japl.android.finances.services.dto.GraphValuesResp
+import co.japl.android.finances.services.enums.KindOfPayListEnum
 import co.japl.android.finances.services.enums.KindOfTaxEnum
 import co.japl.android.finances.services.implement.KindOfTaxImpl
 import co.japl.android.finances.services.implement.QuoteCredit
@@ -149,8 +151,8 @@ class CreditFixImpl @Inject constructor(override var dbConnect: SQLiteOpenHelper
         val period = 0
         val value = BigDecimal.ZERO
         val quote = BigDecimal.ZERO
-        val kindOf = ""
-        val kindOfTax = ""
+        val kindOf = KindOfPayListEnum.Annual
+        val kindOfTax = KindOfTaxEnum.EA
         return CreditDTO(id, name ,date,tax,period,value,quote,kindOf,kindOfTax)
     }
 
@@ -167,7 +169,7 @@ class CreditFixImpl @Inject constructor(override var dbConnect: SQLiteOpenHelper
             val periodPaid = ChronoUnit.MONTHS.between(date, it.date).toInt() - gracePeriods
             calc.getInterest(
                     it.value, it.tax, it.periods, it.quoteValue, periodPaid,
-                    KindOfTaxEnum.valueOf(it.kindOfTax)
+                    it.kindOfTax
                 )
         }.reduceOrNull{acc,bigDecimal->acc+bigDecimal} ?: BigDecimal.ZERO
     }
@@ -180,7 +182,7 @@ class CreditFixImpl @Inject constructor(override var dbConnect: SQLiteOpenHelper
             val gracePeriods = getCountGracePeriods(it.id)
             val periodPaid =  ChronoUnit.MONTHS.between(date,it.date).toInt() - gracePeriods
             it.quoteValue - calc.getInterest(it.value,it.tax,it.periods,it.quoteValue,periodPaid,
-                KindOfTaxEnum.valueOf(it.kindOfTax))
+                it.kindOfTax)
         }.reduceOrNull{acc,bigDecimal->acc+bigDecimal} ?: BigDecimal.ZERO
     }
 
@@ -215,7 +217,13 @@ class CreditFixImpl @Inject constructor(override var dbConnect: SQLiteOpenHelper
         return get(getCredit(date)).map {
             val gracePeriods = getCountGracePeriods(it.id)
             val periodPaid = ChronoUnit.MONTHS.between(it.date,date).toInt() - gracePeriods
-            it.value - calc.getCreditValue(it.value,it.tax,periodPaid,it.periods,it.quoteValue, KindOfTaxEnum.valueOf(it.kindOfTax))
+            it.value - calc.getCreditValue(
+                creditValue = it.value,
+                tax = it.tax,
+                periodPaid = periodPaid,
+                period = it.periods,
+                quote = it.quoteValue,
+                kindOfTax = it.kindOfTax)
         }.reduceOrNull{ acc, bigDecimal->acc+bigDecimal} ?: BigDecimal.ZERO
     }
 

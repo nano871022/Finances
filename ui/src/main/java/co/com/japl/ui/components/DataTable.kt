@@ -6,6 +6,7 @@ import android.icu.text.DecimalFormat
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
@@ -54,6 +55,7 @@ fun DataTable(
     listHeader: (Dp) -> List<Header>?,
     sizeBody: Int,
     splitPos: Int = 0,
+    highlightPos:Int = -1,
     footer: @Composable RowScope.(Dp) -> Unit?,
     split: @Composable (Int,Dp) -> Unit? = {_,_->},
     listBody: @Composable RowScope.(Int, Dp) -> Unit
@@ -63,7 +65,7 @@ fun DataTable(
         val width = maxWidth
         Column {
             Header(textColor, listHeader(width))
-            Body(textColor, sizeBody, width, splitPos,footer, split,listBody)
+            Body(textColor, sizeBody, width, splitPos,highlightPos,footer, split,listBody)
         }
     }
 }
@@ -74,6 +76,7 @@ private fun Body(
         sizeBody: Int,
         maxWidth:Dp,
         splitPos: Int,
+        highlightPos:Int,
         footer: @Composable RowScope.(Dp) -> Unit?,
         splitView: @Composable (Int,Dp) -> Unit?,
         listBody: @Composable RowScope.(Int,Dp) -> Unit){
@@ -91,7 +94,7 @@ private fun Body(
                     splitView(index, maxWidth)
                 }
             }
-            BodyRow(index,textColor,maxWidth,listBody)
+            BodyRow(index,textColor,maxWidth,highlightPos,listBody)
         }
         item {
             Row(modifier = Modifier.fillMaxWidth().padding(bottom=Dimensions.PADDING_BOTTOM)) {
@@ -102,11 +105,12 @@ private fun Body(
 }
 
 @Composable
-private fun BodyRow( index:Int,textColor: Color,maxWidth:Dp,listBody: @Composable RowScope.(Int,Dp) -> Unit){
+private fun BodyRow( index:Int,textColor: Color,maxWidth:Dp,highlightPos:Int,listBody: @Composable RowScope.(Int,Dp) -> Unit){
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .padding(5.dp)
+            .background(color=if(index == highlightPos) MaterialTheme.colorScheme.surfaceContainer else Color.Transparent)
     ) {
         Text(
             text = "${index + 1}",
@@ -154,7 +158,10 @@ private fun RowScope.HeaderRow(
     listHeader:List<Header>,
     tooltipStateName: MutableList<TooltipState>,
     tooltipPosition: MutableList<PopupPositionProvider>){
-    Text(text = "#", color = textColor, modifier = Modifier.padding(5.dp))
+    Text(text = "#",
+        color = textColor,
+        modifier = Modifier.padding(5.dp)
+            .align (alignment = Alignment.CenterVertically))
 
     listHeader.forEachIndexed { index, it ->
 
@@ -164,6 +171,7 @@ private fun RowScope.HeaderRow(
                 color = textColor,
                 textAlign = TextAlign.Center,
                 modifier = Modifier.weight(1f)
+                    .align (alignment = Alignment.CenterVertically)
             )
             TooltipBox(
                 positionProvider = tooltipPosition[index],
@@ -175,7 +183,8 @@ private fun RowScope.HeaderRow(
                         )
                     }
                 },
-                state = tooltipStateName[index]
+                state = tooltipStateName[index],
+                modifier = Modifier.align (alignment = Alignment.CenterVertically)
             ) {
                 Icon(
                     imageVector = Icons.Rounded.Info,

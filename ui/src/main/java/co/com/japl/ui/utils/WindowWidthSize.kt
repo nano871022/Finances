@@ -13,7 +13,7 @@ enum class WindowWidthSize(private val size: Dp?) {
     EXPANDED(null);
 
     fun isEqualTo(size: Dp): Boolean {
-        return if(this.size?.compareTo(size)!! >= 0) true else false
+        return if(this.size == null || this.size?.compareTo(size)!! >= 0) true else false
     }
 
 
@@ -27,7 +27,7 @@ enum class WindowWidthSize(private val size: Dp?) {
                 LARGE.isEqualTo(dp) -> LARGE
                 EXPANDED.isEqualTo(dp) -> EXPANDED
                 else -> COMPACT
-            }.also { Log.w("fromDp","== fromDP $dp == $it") }
+            }
         }
     }
 }

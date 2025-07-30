@@ -29,4 +29,9 @@ class CreditImpl @Inject constructor(private val creditSvc:ICredit):ICreditPort 
         return creditSvc.getCreditsEnables(period)
     }
 
+    override fun getCredit(code: Int): CreditDTO? {
+        require(code > 0){"Code is not valid, it should be more than Zero"}
+        return creditSvc.findCreditById(code)
+    }
+
 }

@@ -11,11 +11,13 @@ import dagger.hilt.android.scopes.ViewModelScoped
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import java.time.LocalDate
 
 @ViewModelScoped
 class AmortizationViewModel constructor(
     private val savedStateHandle: SavedStateHandle?=null,
     private val code:Int=0,
+    private val lastDate: LocalDate = LocalDate.now(),
     private val amortizationSvc: IAmortizationTablePort?=null
 ) : ViewModel() {
     private val _state = MutableStateFlow(AmortizationState())

@@ -27,6 +27,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import co.com.japl.finances.iports.dtos.CreditDTO
+import co.com.japl.finances.iports.enums.KindOfTaxEnum
+import co.com.japl.finances.iports.enums.KindPaymentsEnums
 import co.com.japl.module.credit.R
 import co.com.japl.module.credit.controllers.list.ListViewModel
 import co.com.japl.module.credit.enums.MoreOptionsItemCreditsEnum
@@ -185,9 +187,11 @@ private fun Options(dto:CreditPeriodGraceDTO,state:MutableState<Boolean>,delete:
     @Composable
     fun getViewModel():ListViewModel{
         return ListViewModel(YearMonth.now(),null,null,null).apply {
-            list.add(CreditPeriodGraceDTO(CreditDTO(1,"test",LocalDate.now(),1.2,36,(1500000).toBigDecimal(),(50000).toBigDecimal(),"EM","EM"),false))
-            list.add(CreditPeriodGraceDTO(CreditDTO(2,"test",LocalDate.now(),1.2,36,(1400000).toBigDecimal(),(60000).toBigDecimal(),"EM","EM"),false))
-            list.add(CreditPeriodGraceDTO(CreditDTO(3,"test",LocalDate.now(),1.2,36,(1700000).toBigDecimal(),(70000).toBigDecimal(),"EM","EM"),false))
+            list.add(CreditPeriodGraceDTO(CreditDTO(1,"test",LocalDate.now(),1.2,36,(1500000).toBigDecimal(),(50000).toBigDecimal(),
+                KindPaymentsEnums.MONTHLY,
+                KindOfTaxEnum.MONTHLY_EFFECTIVE),false))
+            list.add(CreditPeriodGraceDTO(CreditDTO(2,"test",LocalDate.now(),1.2,36,(1400000).toBigDecimal(),(60000).toBigDecimal(),KindPaymentsEnums.MONTHLY,KindOfTaxEnum.MONTHLY_EFFECTIVE),false))
+            list.add(CreditPeriodGraceDTO(CreditDTO(3,"test",LocalDate.now(),1.2,36,(1700000).toBigDecimal(),(70000).toBigDecimal(),KindPaymentsEnums.MONTHLY,KindOfTaxEnum.MONTHLY_EFFECTIVE),false))
         }
     }
 

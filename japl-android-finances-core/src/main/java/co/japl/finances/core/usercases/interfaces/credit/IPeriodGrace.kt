@@ -10,4 +10,6 @@ interface IPeriodGrace {
     fun delete(codeCredit: Int): Boolean
 
     fun hasGracePeriod(codeCredit: Int):Boolean
+
+    fun getList(codeCredit: Int):List<GracePeriodDTO>
 }

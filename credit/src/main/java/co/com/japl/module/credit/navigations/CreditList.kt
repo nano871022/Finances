@@ -15,10 +15,9 @@ import java.time.LocalDate
 
 object CreditList {
     fun amortization(credit:CreditDTO,date:LocalDate,navController: NavController){
-        val json = GsonBuilder().registerTypeAdapter(BigDecimal::class.java, BigDecimalSerializer()).create().toJson(credit)
-        val dateBill = DateUtils.localDateToString(credit.date)
         val dateLast = DateUtils.localDateToString(date)
-        val request = NavDeepLinkRequest.Builder.fromUri(navController.context.getString(R.string.navigate_amortization,json,dateBill,dateLast).toUri()).build()
+        val uri = navController.context.getString(R.string.navigate_amortization,credit.id,dateLast).toUri()
+        val request = NavDeepLinkRequest.Builder.fromUri(uri).build()
         navController.navigate(request)
     }
 

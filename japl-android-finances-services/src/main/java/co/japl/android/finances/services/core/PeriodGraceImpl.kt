@@ -1,6 +1,5 @@
 package co.japl.android.finances.services.core
 
-import android.util.Log
 import co.com.japl.finances.iports.dtos.GracePeriodDTO
 import co.com.japl.finances.iports.outbounds.IPeriodGracePort
 import co.japl.android.finances.services.core.mapper.GracePeriodMapper
@@ -27,5 +26,9 @@ class PeriodGraceImpl @Inject constructor(private val dao:IGracePeriodDAO) : IPe
         return dao.get(codeCredit.toLong()).any{
             currentDate.isAfter(it.create.withDayOfMonth(1)) && currentDate.isBefore(it.end.plusMonths(1).withDayOfMonth(1).minusDays(1))
         }
+    }
+
+    override fun getList(codeCredit: Int): List<GracePeriodDTO> {
+        return dao.get(codeCredit.toLong()).map(GracePeriodMapper::mapper)
     }
 }
