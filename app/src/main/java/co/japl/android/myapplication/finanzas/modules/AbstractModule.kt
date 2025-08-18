@@ -7,6 +7,7 @@ import co.com.japl.finances.iports.inbounds.common.ISMSRead
 import co.com.japl.finances.iports.inbounds.credit.IAdditional
 import co.com.japl.finances.iports.inbounds.credit.IAdditionalFormPort
 import co.com.japl.finances.iports.inbounds.credit.ICreditFormPort
+import co.com.japl.finances.iports.inbounds.credit.IExtraValueAmortizationCreditPort
 import co.com.japl.finances.iports.inbounds.credit.IPeriodCreditPort
 import co.com.japl.finances.iports.inbounds.credit.IPeriodGracePort
 import co.com.japl.finances.iports.inbounds.creditcard.IAmortizationTablePort
@@ -34,24 +35,22 @@ import co.japl.android.myapplication.bussiness.interfaces.ITaxSvc
 import co.japl.android.myapplication.finanzas.bussiness.impl.AddAmortizationImpl
 import co.japl.android.myapplication.finanzas.bussiness.impl.AdditionalCreditImpl
 import co.japl.android.myapplication.finanzas.bussiness.impl.CreditFixImpl
-import co.japl.android.myapplication.finanzas.bussiness.impl.ExtraValueAmortizationCreditImpl
-import co.japl.android.myapplication.finanzas.bussiness.impl.ExtraValueAmortizationQuoteCreditCardImpl
 import co.japl.android.myapplication.finanzas.bussiness.impl.GracePeriodImpl
 import co.japl.android.myapplication.finanzas.bussiness.impl.KindOfTaxImpl
 import co.japl.android.myapplication.finanzas.bussiness.interfaces.IAddAmortizationSvc
 import co.japl.android.myapplication.finanzas.bussiness.interfaces.IAdditionalCreditSvc
 import co.japl.android.myapplication.finanzas.bussiness.interfaces.ICreditFix
-import co.japl.android.myapplication.finanzas.bussiness.interfaces.IExtraValueAmortizationCreditSvc
-import co.japl.android.myapplication.finanzas.bussiness.interfaces.IExtraValueAmortizationQuoteCreditCardSvc
 import co.japl.android.myapplication.finanzas.bussiness.interfaces.IGracePeriod
 import co.japl.android.myapplication.finanzas.bussiness.interfaces.IKindOfTaxSvc
 import co.com.japl.finances.iports.inbounds.recap.IRecapPort
+import co.com.japl.finances.iports.outbounds.IExtraValueAmortizationPort
 import co.com.japl.finances.iports.outbounds.IAdditionalPort
 import co.com.japl.finances.iports.outbounds.ICreditPort
 import co.com.japl.finances.iports.outbounds.ISimulatorCreditPort
 import co.com.japl.ui.impls.SMSObservable
 import co.com.japl.ui.interfaces.ISMSObservablePublicher
 import co.com.japl.ui.interfaces.ISMSObservableSubscriber
+import co.japl.android.finances.services.dao.interfaces.IAddAmortizationDAO
 import co.japl.android.finances.services.dao.interfaces.IAdditionalCreditDAO
 import co.japl.android.finances.services.dao.interfaces.ICheckCreditDAO
 import co.japl.android.finances.services.dao.interfaces.ICheckQuoteDAO
@@ -77,6 +76,7 @@ import co.japl.finances.core.usercases.implement.common.DifferQuoteImpl
 import co.japl.finances.core.usercases.implement.common.PaidImp
 import co.japl.finances.core.usercases.implement.common.QuoteCreditCardImpl
 import co.japl.finances.core.usercases.implement.common.SimulatorCreditImpl
+import co.japl.finances.core.usercases.implement.credit.ExtraValueAmortizationImpl
 import co.japl.finances.core.usercases.implement.credit.AdditionalImpl
 import co.japl.finances.core.usercases.implement.credit.PeriodCredit
 import co.japl.finances.core.usercases.implement.creditcard.bought.BoughtSmsImpl
@@ -92,6 +92,7 @@ import co.japl.finances.core.usercases.interfaces.common.IPaid
 import co.japl.finances.core.usercases.interfaces.common.IProjections
 import co.japl.finances.core.usercases.interfaces.common.IQuoteCreditCard
 import co.japl.finances.core.usercases.interfaces.common.ISimulatorCredit
+import co.japl.finances.core.usercases.interfaces.credit.IExtraValueAmortization
 import co.japl.finances.core.usercases.interfaces.credit.ICredit
 import co.japl.finances.core.usercases.interfaces.credit.IPeriodCredit
 import co.japl.finances.core.usercases.interfaces.credit.IPeriodGrace
@@ -139,12 +140,6 @@ abstract class AbstractModule {
 
     @Binds
     abstract fun bindIKindOfTaxSvc(implement: KindOfTaxImpl): IKindOfTaxSvc
-
-    @Binds
-    abstract fun bindIExtraValueAmortizationCreditSvc(implement: ExtraValueAmortizationCreditImpl): IExtraValueAmortizationCreditSvc
-
-    @Binds
-    abstract fun bindIExtraValueAmortizationQuoteCreditCardSvc(implement: ExtraValueAmortizationQuoteCreditCardImpl): IExtraValueAmortizationQuoteCreditCardSvc
 
     @Binds
     abstract fun bindUserCaseCreditFix(implement: co.japl.finances.core.usercases.implement.common.CreditFixImpl): co.japl.finances.core.usercases.interfaces.common.ICreditFix
@@ -477,4 +472,13 @@ abstract class AbstractModule {
     abstract fun bindInboundAmortizationFixPort(impl: co.japl.finances.core.adapters.inbound.implement.credit.AmortizationTableImpl): co.com.japl.finances.iports.inbounds.credit.IAmortizationTablePort
     @Binds
     abstract fun bindUserCaseAmortizationCredit(impl: co.japl.finances.core.usercases.implement.credit.AmortizationTableImpl): co.japl.finances.core.usercases.interfaces.credit.IAmortizationTable
+
+    @Binds
+    abstract fun bindInboundExtraValueAmortizationCredit(impl: co.japl.finances.core.adapters.inbound.implement.credit.ExtraValueAmortizationCreditImpl): IExtraValueAmortizationCreditPort
+    @Binds
+    abstract fun bindUserCaseAddAdditionalValue(impl: ExtraValueAmortizationImpl ): IExtraValueAmortization
+    @Binds
+    abstract fun bindOutputAddAdditionalValue(impl: co.japl.android.finances.services.core.ExtraValueAmortizationImpl): IExtraValueAmortizationPort
+    @Binds
+    abstract fun bindDAOAddAmortization(impl: co.japl.android.finances.services.dao.implement.AddAmortizationImpl): IAddAmortizationDAO
 }

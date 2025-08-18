@@ -13,6 +13,8 @@ import java.time.temporal.ChronoUnit
 import co.com.japl.finances.iports.enums.KindAmortization
 import co.com.japl.finances.iports.inbounds.credit.IAmortizationTablePort
 import co.com.japl.module.credit.model.CreditAmortizationState
+import co.com.japl.module.credit.navigations.CreditList
+import co.com.japl.module.credit.navigations.ExtraValueList
 import java.time.LocalDate
 
 class CreditAmortizationViewModel constructor(
@@ -35,12 +37,12 @@ class CreditAmortizationViewModel constructor(
 
     fun goToExtraValues() {
         navController?.let{
-
+            ExtraValueList.list(creditCode,it)
         }
     }
     fun goToAdditional() {
         navController?.let{
-
+            CreditList.additional(creditCode,it)
         }
     }
 

@@ -82,8 +82,4 @@ object Module {
     fun getSMSObserverCreditCardModule( smsSvc: ISMSCreditCardPort,subscriber: ISMSObservableSubscriber,ccSvc:ICreditCardPort,msmSvc:ISMSCreditCardPort,svc:IBoughtSmsPort):ISMSObserver{
         return SMSObserver(smsSvc,subscriber,ccSvc,svc,msmSvc)
     }
-
-
-
-
 }

@@ -82,7 +82,7 @@
     <string name="clear_additiona_credit_form">Limpiar formulario</string>
     <string name="add_additiona_credit">Agregar credito adicional</string>
     <string name="name">Nombre</string>
-    <string name="value">Valor</string>
+
     <string name="create_record_success">Registro Creado Correctamente</string>
     <string name="error_record_success">Se produjo un error al crear el registro</string>
     <string name="update_record_success">Se actualizo el registro correctamente</string>
@@ -104,6 +104,7 @@
     <string name="credit_rate">Tasa Interes</string>
     <string name="kind_credit_rate">Tipo Tasa Interes</string>
     <string name="navigate_form_simulator_amortization_fix">android-app://co.com.japl.finanzas.module.app/simulator/fix/amortization?code=%d</string>
+    <string name="navigate_list_extra_amortization">android-app://co.com.japl.finanzas.module.creditfix/extraValue?CREDIT_CODE=%d</string>
     <string name="simulator_quote_fix">Simulador Cuota Fija</string>
     <string name="first_capital">Primer Capital</string>
     <string name="first_interest">Primer Interes</string>
@@ -112,10 +113,11 @@
     <string name="additional_monthly">Adicional Mensual</string>
     <string name="interest_to_pay_value">Interes a Pagar</string>
     <string name="interest_value_short">interes</string>
-    <string name="extra_values">Extra Values</string>
+    <string name="extra_values">Valores Extras</string>
     <string name="add_extra_value">Add Extra Value</string>
     <string name="number_of_quotes">Number of Quotes</string>
     <string name="value">Value</string>
+    <string name="quote_num">Numero Cuota</string>
 
     <string-array name="months">
         <item>--- Seleccionar --- </item>

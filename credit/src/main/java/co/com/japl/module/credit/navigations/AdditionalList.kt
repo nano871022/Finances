@@ -8,7 +8,8 @@ import co.com.japl.module.credit.R
 object AdditionalList {
 
     fun navigateForm(codeCredit:Int,navController: NavController){
-        val request = NavDeepLinkRequest.Builder.fromUri(navController.context.getString(R.string.navigate_add_additional,codeCredit).toUri()).build()
+        val uri = navController.context.getString(R.string.navigate_add_additional,codeCredit).toUri()
+        val request = NavDeepLinkRequest.Builder.fromUri(uri).build()
         navController.navigate(request)
     }
     fun navigateForm(id:Int,codeCredit:Int,navController: NavController){

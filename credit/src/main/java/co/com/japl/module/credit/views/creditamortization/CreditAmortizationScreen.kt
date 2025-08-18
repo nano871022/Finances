@@ -91,7 +91,7 @@ private fun Header(viewModel: CreditAmortizationViewModel) {
                 FieldView(
                     title = stringResource(id = R.string.periods),
                     value = state.credit?.periods.toString(),
-                    modifier = Modifier.weight(1f)
+                    modifier = Modifier.weight(1f).align(alignment = Alignment.CenterVertically)
                 )
                 FieldView(
                     title = stringResource(id = R.string.interest_value_short),
