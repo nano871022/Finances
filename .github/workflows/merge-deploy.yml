@@ -35,6 +35,15 @@ jobs:
         with:
           repository: ${{ github.actor }}/japl-android-about-module
           path: ./about-module
+
+      - name: Install Java
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: 17
+
+      - name: Setup Gradle and Validations
+        uses: gradle/actions/setup-gradle@v4
       
       - name: Build and Scan
         continue-on-error: true
