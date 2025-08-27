@@ -24,6 +24,17 @@ jobs:
               VERSION_NAME=$(grep -m 1 'versionName' app/build.gradle | awk -F '"' '{print $2}')
               echo "VersionCode=$VERSION_CODE" >> $GITHUB_OUTPUT
               echo "VersionName=$VERSION_NAME" >> $GITHUB_OUTPUT
+
+      - name: Remove Android Folder
+        run: |
+              rm -rf about-module
+        shell: bash
+        
+      - name: Get About Module
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ github.actor }}/japl-android-about-module
+          path: ./about-module
       
       - name: Build and Scan
         continue-on-error: true
