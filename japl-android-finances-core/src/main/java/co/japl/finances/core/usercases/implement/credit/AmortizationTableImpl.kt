@@ -7,14 +7,19 @@ import co.com.japl.finances.iports.enums.KindOfTaxEnum
 import co.com.japl.finances.iports.outbounds.ICreditPort
 import co.com.japl.finances.iports.outbounds.ISimulatorCreditPort
 import co.japl.finances.core.usercases.interfaces.common.ISimulatorCredit
+import co.japl.finances.core.usercases.interfaces.credit.IAdditional
 import co.japl.finances.core.usercases.interfaces.credit.IAmortizationTable
+import co.japl.finances.core.usercases.interfaces.credit.IExtraValueAmortization
 import java.math.BigDecimal
+import java.time.LocalDate
 import javax.inject.Inject
 
 class AmortizationTableImpl @Inject constructor(
     private val simulatorSvc: ISimulatorCreditPort,
     private val simulatorCredit: ISimulatorCredit,
-    private val creditSvc: ICreditPort
+    private val creditSvc: ICreditPort,
+    private val extraValueSvc: IExtraValueAmortization,
+    private val additionalSvc: IAdditional
 ): IAmortizationTable {
 
     override fun getAmortization(
@@ -32,6 +37,12 @@ class AmortizationTableImpl @Inject constructor(
 
     private fun getFixedQuote(code:Int,cache:Boolean):List<AmortizationRowDTO>{
         val credit = creditSvc.getById(code)
+        val listExtraValue = extraValueSvc.getByCodeCredit(code)
+        val additionalQuoteValue = additionalSvc.getAdditional(code)
+                .filter{ it.startDate >= LocalDate.now()
+                        && it.endDate <= LocalDate.now()
+                }.sumOf { it.value }
+
         return Array(credit?.periods?:0){
             val kindOfTax = credit?.kindOfTax ?: KindOfTaxEnum.ANUAL_EFFECTIVE
             val creditValue = credit?.value?: BigDecimal.ZERO
@@ -50,9 +61,9 @@ class AmortizationTableImpl @Inject constructor(
                 kindOfTax,
                 creditValue,
                 pending,
-                capital,
+                (capital.toDouble() + listExtraValue.filter{ extra->extra.numQuote.toInt() == it + 1  }.sumOf { extra->extra.value }).toBigDecimal(),
                 interest,
-                quote
+                quote + additionalQuoteValue
             )
         }.toList()
     }

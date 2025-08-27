@@ -9,10 +9,10 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.LinearProgressIndicator
-import androidx.compose.material.Scaffold
+import androidx.compose.material3.LinearProgressIndicator
+import androidx.compose.material3.Scaffold
 import androidx.compose.material.SnackbarHost
-import androidx.compose.material.Text
+import androidx.compose.material3.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.MoreVert
@@ -72,40 +72,7 @@ private fun ScaffoldBody(viewModel: AdditionalViewModel ){
 @Composable
 private fun Body(viewModel: AdditionalViewModel ,modifier:Modifier = Modifier){
     Column (modifier=Modifier.padding(Dimensions.PADDING_SHORT)){
-        Header(viewModel=viewModel)
         ListBody(viewModel=viewModel)
-    }
-}
-
-@Composable
-private fun Header(viewModel: AdditionalViewModel) {
-    Row(modifier = Modifier.fillMaxWidth()
-        .background(color = MaterialTheme.colorScheme.onBackground)
-        .padding(Dimensions.PADDING_SHORT)) {
-        Text(
-            text = stringResource(R.string.count),
-            color = MaterialTheme.colorScheme.background,
-            modifier = Modifier.weight(1f)
-        )
-
-        Text(
-            text = "${viewModel.list.count()}",
-            color = MaterialTheme.colorScheme.background,
-            modifier = Modifier.weight(1f)
-        )
-
-        Text(
-            text = stringResource(R.string.total_value),
-            color = MaterialTheme.colorScheme.background,
-            modifier = Modifier.weight(1f)
-        )
-
-        Text(
-            text = NumbersUtil.COPtoString(viewModel.list.sumOf { it.value }),
-            textAlign = TextAlign.Right,
-            color = MaterialTheme.colorScheme.background,
-            modifier = Modifier.weight(2f)
-        )
     }
 }
 
@@ -191,6 +158,25 @@ private  fun RowScope.RowListBody(index:Int,viewModel: AdditionalViewModel) {
 @Composable
 private fun RowScope.RowFooter(viewModel: AdditionalViewModel){
 
+    Text(
+        text = "${viewModel.list.count()}",
+        color = MaterialTheme.colorScheme.onBackground,
+        modifier = Modifier
+    )
+
+    Text(
+        text = stringResource(R.string.total_value),
+        color = MaterialTheme.colorScheme.onBackground,
+        textAlign = TextAlign.Right,
+        modifier = Modifier.weight(1f)
+    )
+
+    Text(
+        text = NumbersUtil.COPtoString(viewModel.list.sumOf { it.value }),
+        textAlign = TextAlign.Right,
+        color = MaterialTheme.colorScheme.onBackground,
+        modifier = Modifier.weight(1.3f)
+    )
 }
 
 @Composable
@@ -205,7 +191,7 @@ private fun ButtonsFloating(viewModel: AdditionalViewModel ){
 
 @RequiresApi(Build.VERSION_CODES.S)
 @Composable
-@Preview(showBackground = true, showSystemUi = true,  backgroundColor = 0xFFFFFFFF, uiMode = Configuration.UI_MODE_NIGHT_NO)
+@Preview(showBackground = true, showSystemUi = true,  backgroundColor = 0x000000, uiMode = Configuration.UI_MODE_NIGHT_NO)
 private fun AdditionalPreview(){
     val vm = getViewModel()
     MaterialThemeComposeUI {
@@ -215,7 +201,7 @@ private fun AdditionalPreview(){
 
 @RequiresApi(Build.VERSION_CODES.S)
 @Composable
-@Preview(showBackground = true, showSystemUi = true, backgroundColor = 0x000000, uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Preview(showBackground = true, showSystemUi = true, backgroundColor = 0xffffff, uiMode = Configuration.UI_MODE_NIGHT_YES)
 private fun AdditionalPreviewNight(){
     val vm = getViewModel()
     MaterialThemeComposeUI {

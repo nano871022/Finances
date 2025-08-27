@@ -118,6 +118,7 @@ private fun RowScope.Item(dto:CreditPeriodGraceDTO,delete:(Int)->Unit,amortizati
         modifier = Modifier.weight(1f).align(alignment = Alignment.CenterVertically))
     IconButton(onClick = { states.value = true }) {
         Icon( imageVector = Icons.Rounded.MoreVert,
+            tint=MaterialTheme .colorScheme.onBackground,
             contentDescription = "More")
     }
     if(states.value){

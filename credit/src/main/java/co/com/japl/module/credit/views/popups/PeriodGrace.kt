@@ -1,24 +1,19 @@
 package co.com.japl.module.credit.views.popups
 
 import android.os.Build
-import android.text.Layout.Alignment
 import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.annotation.StringRes
-import androidx.collection.mutableIntSetOf
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.Button
-import androidx.compose.material.RadioButton
-import androidx.compose.material.Text
-import androidx.compose.material3.BasicAlertDialog
+import androidx.compose.material3.Button
+import androidx.compose.material3.RadioButton
+import androidx.compose.material3.Text
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
@@ -29,10 +24,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.Dialog
 import androidx.core.text.isDigitsOnly
 import co.com.japl.module.credit.R
-import co.com.japl.ui.components.FieldDatePicker
 import co.com.japl.ui.components.FieldText
 import co.com.japl.ui.components.Popup
 import co.com.japl.ui.theme.MaterialThemeComposeUI
@@ -159,6 +152,7 @@ fun PeriodGrace(popUpState: MutableState<Boolean>, onClick:(Int,LocalDate)->Unit
 private fun RowScope.OptRadioButton(@StringRes name:Int,selected:MutableState<Boolean>,onClick:()->Unit){
     RadioButton(selected = selected.value, onClick = onClick)
     Text(text = stringResource(id = name),
+        color = MaterialTheme.colorScheme.onBackground,
         modifier= Modifier
             .align(alignment = androidx.compose.ui.Alignment.CenterVertically)
             .clickable {

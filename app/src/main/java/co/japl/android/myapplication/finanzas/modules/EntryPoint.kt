@@ -33,6 +33,5 @@ interface EntryPoint {
 
     fun getDifferInstallmentSvc():IDifferQuotesPort
 
-   // fun getAllImplementationSMSSubscriber():Set<ISMSObserver>
    fun getSimulatorVariablePort(): ISimulatorCreditVariablePort
 }

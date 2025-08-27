@@ -448,6 +448,7 @@
         android:name="co.japl.android.myapplication.finanzas.controller.ExtraValueListController"
         android:layout="@layout/fragment_extra_value_list"
         android:label="ExtraValueListController" >
+        <deepLink app:uri="android-app://co.com.japl.finanzas.module.creditfix/extraValue"/>
     </fragment>
     <fragment
         android:id="@+id/sms_list_credit_card"

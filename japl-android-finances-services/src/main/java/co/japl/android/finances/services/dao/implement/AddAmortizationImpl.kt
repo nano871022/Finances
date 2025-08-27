@@ -1,21 +1,20 @@
-package co.japl.android.myapplication.finanzas.bussiness.impl
+package co.japl.android.finances.services.dao.implement
 
 import android.database.sqlite.SQLiteOpenHelper
 import android.os.Build
 import android.provider.BaseColumns
 import android.util.Log
 import androidx.annotation.RequiresApi
-import co.japl.android.myapplication.finanzas.bussiness.DTO.AddAmortizationDB
-import co.japl.android.myapplication.finanzas.bussiness.DTO.ExtraValueAmortizationCreditDTO
-import co.japl.android.myapplication.finanzas.bussiness.DTO.AdditionalCreditDB
-import co.japl.android.myapplication.finanzas.bussiness.interfaces.IAddAmortizationSvc
-import co.japl.android.myapplication.finanzas.bussiness.interfaces.IExtraValueAmortizationCreditSvc
-import co.japl.android.myapplication.finanzas.bussiness.mapping.ExtraValueAmortizationCreditMap
+import co.japl.android.finances.services.dao.interfaces.IAddAmortizationDAO
+import co.japl.android.finances.services.dto.AddAmortizationDB
+import co.japl.android.finances.services.dto.AddAmortizationDTO
+import co.japl.android.finances.services.mapping.AddAmortizationMap
 import java.time.LocalDate
 import java.util.Optional
 import javax.inject.Inject
 
-class ExtraValueAmortizationCreditImpl @Inject constructor(override var dbConnect: SQLiteOpenHelper) : IExtraValueAmortizationCreditSvc {
+class AddAmortizationImpl @Inject constructor(override var dbConnect: SQLiteOpenHelper) :
+    IAddAmortizationDAO {
     val COLUMNS = arrayOf(
         BaseColumns._ID,
         AddAmortizationDB.Entry.COLUMN_CODE,
@@ -26,7 +25,7 @@ class ExtraValueAmortizationCreditImpl @Inject constructor(override var dbConnec
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun createNew(code: Int, nbrQuote: Long, value: Double): Boolean {
-        val dto = ExtraValueAmortizationCreditDTO(
+        val dto = AddAmortizationDTO(
             0,
             LocalDate.now(),
             code,
@@ -37,9 +36,10 @@ class ExtraValueAmortizationCreditImpl @Inject constructor(override var dbConnec
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    override fun getAll(code: Int): List<ExtraValueAmortizationCreditDTO> {
+    override fun getAll(code: Int): List<AddAmortizationDTO> {
         val db = dbConnect.readableDatabase
-        val cursor = db.query(
+        val list = mutableListOf<AddAmortizationDTO>()
+        db.query(
             AddAmortizationDB.Entry.TABLE_NAME,
             COLUMNS,
             "${AddAmortizationDB.Entry.COLUMN_CODE}=?",
@@ -47,25 +47,26 @@ class ExtraValueAmortizationCreditImpl @Inject constructor(override var dbConnec
             null,
             null,
             null
-        )
-        val list = mutableListOf<ExtraValueAmortizationCreditDTO>()
-        while (cursor.moveToNext()){
-            list.add(ExtraValueAmortizationCreditMap().mapping(cursor))
+        )?.use { cursor ->
+            while (cursor.moveToNext()) {
+                list.add(AddAmortizationMap().mapping(cursor))
+            }
         }
         return list.also { Log.d(javaClass.name, "<<<=== FINISH::getAll Code: $code Response: $list") }
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    override fun save(dto: ExtraValueAmortizationCreditDTO): Long {
+    override fun save(dto: AddAmortizationDTO): Long {
         val db = dbConnect.writableDatabase
-        val values = ExtraValueAmortizationCreditMap().mapping(dto)
+        val values = AddAmortizationMap().mapping(dto)
         return db.insert(AddAmortizationDB.Entry.TABLE_NAME, null, values)
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    override fun getAll(): List<ExtraValueAmortizationCreditDTO> {
+    override fun getAll(): List<AddAmortizationDTO> {
         val db = dbConnect.readableDatabase
-        val cursor = db.query(
+        val list = mutableListOf<AddAmortizationDTO>()
+        db.query(
             AddAmortizationDB.Entry.TABLE_NAME,
             COLUMNS,
             null,
@@ -73,10 +74,10 @@ class ExtraValueAmortizationCreditImpl @Inject constructor(override var dbConnec
             null,
             null,
             null
-        )
-        val list = mutableListOf<ExtraValueAmortizationCreditDTO>()
-        while (cursor.moveToNext()) {
-            list.add(ExtraValueAmortizationCreditMap().mapping(cursor))
+        )?.use { cursor ->
+            while (cursor.moveToNext()) {
+                list.add(AddAmortizationMap().mapping(cursor))
+            }
         }
         return list.also { Log.d(javaClass.name, "getAll: $list") }
     }
@@ -87,9 +88,9 @@ class ExtraValueAmortizationCreditImpl @Inject constructor(override var dbConnec
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    override fun get(id: Int): Optional<ExtraValueAmortizationCreditDTO> {
+    override fun get(id: Int): Optional<AddAmortizationDTO> {
         val db = dbConnect.readableDatabase
-        val cursor = db.query(
+        db.query(
             AddAmortizationDB.Entry.TABLE_NAME,
             COLUMNS,
             "${BaseColumns._ID}=?",
@@ -97,9 +98,10 @@ class ExtraValueAmortizationCreditImpl @Inject constructor(override var dbConnec
             null,
             null,
             null
-        )
-        while (cursor.moveToNext()){
-            return Optional.of(ExtraValueAmortizationCreditMap().mapping(cursor))
+        )?.use { cursor ->
+            while (cursor.moveToNext()) {
+                return@get Optional.of(AddAmortizationMap().mapping(cursor))
+            }
         }
         return Optional.empty()
     }
