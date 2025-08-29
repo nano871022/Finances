@@ -41,6 +41,7 @@ jobs:
         with:
           repository: ${{ github.actor }}/japl-properties
           path: ./properties
+          ref: main
 
       - name: Install Java
         uses: actions/setup-java@v3
