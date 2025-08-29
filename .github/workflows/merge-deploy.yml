@@ -36,6 +36,12 @@ jobs:
           repository: ${{ github.actor }}/japl-android-about-module
           path: ./about-module
 
+      - name: Get Properties
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ github.actor }}/japl-properties
+          path: ./properties
+
       - name: Install Java
         uses: actions/setup-java@v3
         with:
@@ -47,4 +53,9 @@ jobs:
       
       - name: Build and Scan
         continue-on-error: true
-        run: ./gradlew bundleRelease --no-daemon --no-parallel --info
+        run: |
+            ./gradlew bundleRelease 
+            -PsignPksPath="/.properties/finanzas/finanzas-same-plus-dot.pks" 
+            --no-daemon 
+            --no-parallel 
+            --info
