@@ -14,10 +14,10 @@ plugins {
 android {
     signingConfigs {
         prod {
-            storeFile file('/home/alejo/finanzas-same-plus-dot.pks')
-            storePassword 'Nano871022.'
-            keyAlias 'alejo871022'
-            keyPassword 'Nano871022.'
+            storeFile file(signPksPath)
+            storePassword signPksPassword
+            keyAlias signKeyAlias
+            keyPassword signKeyPassword
         }
     }
     compileSdk 36
@@ -25,7 +25,7 @@ android {
     defaultConfig {
         applicationId "co.japl.android.myapplication"
         minSdk 33
-        versionCode 4_05_25_134
+        versionCode 4_05_25_13
         versionName "V 4.05.25 build 135 Migration Projection view and additional credit"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
