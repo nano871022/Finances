@@ -6,6 +6,10 @@ runs:
     - name: Checkout main repository
       uses: actions/checkout@v4
 
+    - name: Clean older folder to download new one
+      run: rm -rf ./about-module
+      shell: bash
+
     - name: Checkout about-module
       uses: actions/checkout@v4
       with:
