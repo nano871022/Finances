@@ -14,6 +14,7 @@ runs:
       uses: actions/checkout@v4
       with:
         repository: ${{ github.actor }}/japl-android-about-module
+        ref: feature/update-versions
         path: ./about-module
 
     - name: Setup Java
