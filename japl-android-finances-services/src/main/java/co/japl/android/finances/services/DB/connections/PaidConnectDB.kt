@@ -40,4 +40,8 @@ class PaidConnectDB: DBRestore(), IConnectDB {
     override fun onRestore(currentDB:SQLiteDatabase?,fromRestoreDB:SQLiteDatabase?){
         onRestore(currentDB,fromRestoreDB,"PaidConnectDB",PaidDB.Entry.TABLE_NAME,PaidMap()::restore)
     }
+
+    override fun onStats(connectionDB: SQLiteDatabase?): Pair<String, Long> {
+        return onStats(connectionDB, PaidDB.Entry.TABLE_NAME)
+    }
 }

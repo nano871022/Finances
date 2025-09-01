@@ -52,5 +52,7 @@ class TagConnectDB: DBRestore(), IConnectDB{
     override fun onRestore(currentDB: SQLiteDatabase?, fromRestoreDB: SQLiteDatabase?) {
         onRestore(currentDB,fromRestoreDB,javaClass.simpleName,TagDB.Entry.TABLE_NAME,TagMap()::restore)
     }
-
+    override fun onStats(connectionDB: SQLiteDatabase?): Pair<String, Long> {
+        return onStats(connectionDB, TagDB.Entry.TABLE_NAME)
+    }
 }

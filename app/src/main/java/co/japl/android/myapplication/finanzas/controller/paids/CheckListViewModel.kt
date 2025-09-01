@@ -6,10 +6,14 @@ import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import co.com.japl.finances.iports.dtos.CheckPaymentDTO
 import co.com.japl.finances.iports.inbounds.common.ICheckPaymentPort
 import co.japl.android.myapplication.R
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import java.time.LocalDate
+import java.time.LocalDateTime
 import java.time.YearMonth
 
 class CheckListViewModel constructor(private val period:YearMonth,private val svc:ICheckPaymentPort?): ViewModel() {
@@ -34,6 +38,16 @@ class CheckListViewModel constructor(private val period:YearMonth,private val sv
         }
 
     }
+
+    fun remove(dto:CheckPaymentDTO){
+            svc?.delete(dto)?.takeIf { it }?.let {
+                loaderStatus.value = true
+                loaderProgressStatus.value = true
+                main()
+                loaderProgressStatus.value = false
+            }
+    }
+    
     fun main() = runBlocking {
         progression.floatValue = 0.1f
         execute()
@@ -41,12 +55,29 @@ class CheckListViewModel constructor(private val period:YearMonth,private val sv
     }
 
     suspend fun execute(){
+        val currentDate = LocalDateTime.now()
         progression.floatValue = 0.1f
         svc?.getCheckPayments(period)?.takeIf { it.isNotEmpty() }?.let {
-            progression.floatValue = 0.6f
+            progression.floatValue = 0.5f
             listState.clear()
-            progression.floatValue = 0.7f
+            progression.floatValue = 0.6f
             listState.addAll(it)
+            progression.floatValue = 0.7f
+            listState.forEach {
+                val day = it.date?.dayOfMonth ?: 1
+                it.date = currentDate
+                if (day > 28) {
+                    val dayOfMonth =
+                        LocalDate.now().withDayOfMonth(1).plusMonths(1).minusDays(1).dayOfMonth
+                    if (dayOfMonth > day) {
+                        it.date = it.date?.withDayOfMonth(day)
+                    } else {
+                        it.date = it.date?.withDayOfMonth(dayOfMonth)
+                    }
+                }else{
+                    it.date = it.date?.withDayOfMonth(day)
+                }
+            }
             progression.floatValue = 0.8f
         }
         loaderStatus.value = false

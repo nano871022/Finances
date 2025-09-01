@@ -1,0 +1,4 @@
+[versiones]
+kotlin = "1.8.20"
+compose = "1.4.0"
+androidx.core = "1.10.0"

@@ -5,6 +5,8 @@ import co.com.japl.finances.iports.enums.KindInterestRateEnum
 import co.com.japl.finances.iports.outbounds.ITaxPort
 import co.japl.finances.core.usercases.interfaces.creditcard.ITax
 import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.Period
 import javax.inject.Inject
 
 class TaxImpl @Inject constructor(private val service:ITaxPort): ITax {
@@ -55,5 +57,13 @@ class TaxImpl @Inject constructor(private val service:ITaxPort): ITax {
         return service.getByCreditCard(codeCreditCard)?.filter {
             it.kind == kind
         }?.maxByOrNull { it.create }
+    }
+
+    override fun clone(code: Int): Boolean {
+        return service.getById(code)?.let{
+            val currentDate = LocalDateTime.now()
+            val copy = it.copy(id = 0 , year = currentDate.year, month = currentDate.monthValue.toShort(), create = currentDate)
+            return service.create(copy)
+        }?:false
     }
 }

@@ -7,8 +7,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Cancel
+import androidx.compose.material3.BasicAlertDialog
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -92,34 +94,47 @@ private fun DeleteConfirm(stateDeleteDialog:MutableState<Boolean>,onDismiss:()->
 @Composable
 private fun UpdateValueDialog(onDismiss: () -> Unit, onClick: (Double) -> Unit) {
     var text by remember { mutableStateOf("") }
-    androidx.compose.material3.AlertDialog(
-        onDismissRequest = onDismiss){
-        Surface{
-            Column(modifier = Modifier.fillMaxWidth()
-                , horizontalAlignment = Alignment.CenterHorizontally) {
-                Text(text = stringResource(id = R.string.update_input_value), modifier = Modifier.padding(5.dp), fontSize = 18.sp)
-                Divider()
-                TextField(value = text
-                    , onValueChange = {
-                                        text = NumbersUtil.toString(NumbersUtil.toDouble(it)).toString()
-                                      }
-                    , label = { Text(text = stringResource(id = R.string.value)) }
-                        , trailingIcon = {
-                            IconButton(onClick = {
-                                text = ""
-                            }){
-                                Icon(imageVector = Icons.Rounded.Cancel, contentDescription = "close")
-                            }
+    BasicAlertDialog(onDismissRequest = onDismiss) {
+        Surface {
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(
+                    text = stringResource(id = R.string.update_input_value),
+                    modifier = Modifier.padding(5.dp),
+                    fontSize = 18.sp
+                )
+                HorizontalDivider()
+                TextField(
+                    value = text,
+                    onValueChange = {
+                        text = NumbersUtil.toString(NumbersUtil.toDouble(it)).toString()
+                    },
+                    label = { Text(text = stringResource(id = R.string.value)) },
+                    trailingIcon = {
+                        IconButton(onClick = {
+                            text = ""
+                        }) {
+                            Icon(imageVector = Icons.Rounded.Cancel, contentDescription = "close")
                         }
-                    , keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal)
-                    , prefix = { Text(text = "$") })
+                    },
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
+                    prefix = { Text(text = "$") })
 
-                Row{
+                Row {
                     TextButton(onClick = { onDismiss.invoke() }) {
-                        Text(text = stringResource(id = R.string.cancel),color= MaterialTheme.colorScheme.onSurface) }
+                        Text(
+                            text = stringResource(id = R.string.cancel),
+                            color = MaterialTheme.colorScheme.onSurface
+                        )
+                    }
 
                     TextButton(onClick = { onClick.invoke(NumbersUtil.toDouble(text)) }) {
-                        Text(text = stringResource(id = R.string.update_value_paymnet),color= MaterialTheme.colorScheme.onSurface)
+                        Text(
+                            text = stringResource(id = R.string.update_value_paymnet),
+                            color = MaterialTheme.colorScheme.onSurface
+                        )
 
                     }
                 }

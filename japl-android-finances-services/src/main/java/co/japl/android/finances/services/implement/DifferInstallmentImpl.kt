@@ -6,6 +6,7 @@ import android.os.Build
 import android.provider.BaseColumns
 import android.util.Log
 import androidx.annotation.RequiresApi
+import co.japl.android.finances.services.core.Caching
 import co.japl.android.finances.services.dto.*
 import co.japl.android.finances.services.interfaces.IDifferInstallment
 import co.japl.android.finances.services.mapping.DifferInstallmentMap
@@ -15,7 +16,8 @@ import java.time.LocalDate
 import java.util.*
 import javax.inject.Inject
 
-class DifferInstallmentImpl @Inject constructor( override var dbConnect: SQLiteOpenHelper) : IDifferInstallment{
+class DifferInstallmentImpl @Inject constructor(override var dbConnect: SQLiteOpenHelper) :
+    IDifferInstallment {
     val COLUMNS = arrayOf(
         BaseColumns._ID,
         DifferInstallmentDB.Entry.COLUMN_DATE_CREATE,
@@ -30,9 +32,14 @@ class DifferInstallmentImpl @Inject constructor( override var dbConnect: SQLiteO
     override fun save(dto: DifferInstallmentDTO): Long {
         val db = dbConnect.writableDatabase
         val content: ContentValues? = DifferInstallmentMap().mapping(dto)
-        return if(dto.id > 0){
-            db?.update(DifferInstallmentDB.Entry.TABLE_NAME,content,"${BaseColumns._ID}=?", arrayOf(dto.id.toString()))?.toLong() ?: 0
-        }else {
+        return if (dto.id > 0) {
+            db?.update(
+                DifferInstallmentDB.Entry.TABLE_NAME,
+                content,
+                "${BaseColumns._ID}=?",
+                arrayOf(dto.id.toString())
+            )?.toLong() ?: 0
+        } else {
             db?.insert(DifferInstallmentDB.Entry.TABLE_NAME, null, content) ?: 0
         }
     }
@@ -40,35 +47,39 @@ class DifferInstallmentImpl @Inject constructor( override var dbConnect: SQLiteO
     @RequiresApi(Build.VERSION_CODES.O)
     override fun getAll(): List<DifferInstallmentDTO> {
         val db = dbConnect.readableDatabase
-        val cursor = db.query(DifferInstallmentDB.Entry.TABLE_NAME,COLUMNS,null,null,null,null,null)
         val items = mutableListOf<DifferInstallmentDTO>()
         val mapper = DifferInstallmentMap()
-        with(cursor){
-            while(moveToNext()){
-                items.add(mapper.mapping(cursor))
+        db.query(DifferInstallmentDB.Entry.TABLE_NAME, COLUMNS, null, null, null, null, null)
+            ?.use { cursor ->
+                with(cursor) {
+                    while (moveToNext()) {
+                        items.add(mapper.mapping(cursor))
+                    }
+                }
             }
-        }
         return items
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    override fun get(cutOff:LocalDate):List<DifferInstallmentDTO>{
+    override fun get(cutOff: LocalDate): List<DifferInstallmentDTO> {
         val items = mutableListOf<DifferInstallmentDTO>()
         val db = dbConnect.readableDatabase
         val formatDate = DateUtils.localDateToStringDate(cutOff)
-        val cursor = db.query(DifferInstallmentDB.Entry.TABLE_NAME,COLUMNS
-            ,"${DifferInstallmentDB.Entry.COLUMN_DATE_CREATE} <= ?"
-            , arrayOf(formatDate)
-            ,null,null,null)
-        try {
-            val mapper = DifferInstallmentMap()
+        val mapper = DifferInstallmentMap()
+        db.query(
+            DifferInstallmentDB.Entry.TABLE_NAME,
+            COLUMNS,
+            "${DifferInstallmentDB.Entry.COLUMN_DATE_CREATE} <= ?",
+            arrayOf(formatDate),
+            null,
+            null,
+            null
+        )?.use { cursor ->
             with(cursor) {
                 while (moveToNext()) {
                     items.add(mapper.mapping(cursor))
                 }
             }
-        }catch(e: RuntimeException){
-            Log.e(javaClass.name,e?.message!!)
         }
         return items
     }
@@ -77,23 +88,31 @@ class DifferInstallmentImpl @Inject constructor( override var dbConnect: SQLiteO
         val db = dbConnect.writableDatabase
         return db.delete(
             DifferInstallmentDB.Entry.TABLE_NAME, DatabaseConstants.SQL_DELETE_CALC_ID,
-            arrayOf(id.toString())) > 0
+            arrayOf(id.toString())
+        ) > 0
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    override fun get(id: Int): Optional<DifferInstallmentDTO> {
+    override fun get(id: Int): Optional<DifferInstallmentDTO> = Caching("Differ|get|$id") {
         val db = dbConnect.readableDatabase
 
-        val cursor = db.query(
-            DifferInstallmentDB.Entry.TABLE_NAME,COLUMNS,"${DifferInstallmentDB.Entry.COLUMN_CODE_QUOTE} = ?",
-            arrayOf(id.toString()),null,null,null)
         val mapper = DifferInstallmentMap()
-        with(cursor){
-            while(moveToNext()){
-                return Optional.ofNullable(mapper.mapping(cursor))
+        db.query(
+            DifferInstallmentDB.Entry.TABLE_NAME,
+            COLUMNS,
+            "${DifferInstallmentDB.Entry.COLUMN_CODE_QUOTE} = ?",
+            arrayOf(id.toString()),
+            null,
+            null,
+            null
+        )?.use { cursor ->
+            with(cursor) {
+                if (moveToFirst()) {
+                    return@Caching Optional.ofNullable(mapper.mapping(cursor))
+                }
             }
         }
-        return Optional.empty()
+        return@Caching Optional.empty()
     }
 
     override fun backup(path: String) {

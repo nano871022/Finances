@@ -35,14 +35,16 @@ class TagsImpl @Inject constructor(override var dbConnect: SQLiteOpenHelper): IT
     @RequiresApi(Build.VERSION_CODES.O)
     override fun getAll(): List<TagDTO> {
         val dbConnect = dbConnect.readableDatabase
-        val cursor = dbConnect.query(TagDB.Entry.TABLE_NAME,COLUMNS,null,null,null,null,null)
         val list = mutableListOf<TagDTO>()
         val mapper = TagMap()
-        with(cursor){
-            while(moveToNext()){
-                list.add(mapper.mapping(this))
+        dbConnect.query(TagDB.Entry.TABLE_NAME,COLUMNS,null,null,null,null,null)
+            ?.use { cursor ->
+                with(cursor) {
+                    while (moveToNext()) {
+                        list.add(mapper.mapping(this))
+                    }
+                }
             }
-        }
         return list
     }
 
@@ -54,14 +56,16 @@ class TagsImpl @Inject constructor(override var dbConnect: SQLiteOpenHelper): IT
     @RequiresApi(Build.VERSION_CODES.O)
     override fun get(id: Int): Optional<TagDTO> {
         val dbConnect = dbConnect.readableDatabase
-        val cursor = dbConnect.query(TagDB.Entry.TABLE_NAME,COLUMNS,"${BaseColumns._ID} = ?",
-            arrayOf(id.toString()),null,null,null)
         val mapper = TagMap()
-        with(cursor){
-            while(moveToNext()){
-                return Optional.ofNullable(mapper.mapping(this))
+        dbConnect.query(TagDB.Entry.TABLE_NAME,COLUMNS,"${BaseColumns._ID} = ?",
+            arrayOf(id.toString()),null,null,null)
+            ?.use { cursor ->
+                with(cursor) {
+                    while (moveToNext()) {
+                        return@get Optional.ofNullable(mapper.mapping(this))
+                    }
+                }
             }
-        }
         return Optional.empty()
     }
 

@@ -27,9 +27,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+//import co.com.alameda181.ui.R
+//import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.com.japl.ui.R
 import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.com.japl.ui.utils.CurrencyVisualTransformation
+import co.japl.android.myapplication.utils.NumbersUtil
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -141,26 +144,27 @@ fun FieldText( title:String
                ,value:String=""
                ,@StringRes clearTitle:Int = R.string.clear
                ,icon:ImageVector? = null
-               ,keyboardType: KeyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text)
+               ,keyboardType: KeyboardOptions = KeyboardOptions.Default
                , currency:Boolean = false
+               , decimal:Boolean = false
                ,modifier:Modifier=Modifier
+               ,formatDecimal:String=NumbersUtil.formatDecimal
+               , placeHolder:String=""
+               , suffixValue:String=""
                ,validation:()->Unit = {}
-               ,hasErrorState:MutableState<Boolean> = mutableStateOf(false)
+               ,hasErrorState:Boolean = false
                ,callback:(String)->Unit={}){
-    val valueState = remember { mutableStateOf("") }
-    value?.takeIf { value.isNotEmpty() }?.let{valueState.value = it}
 
-    TextField(value = valueState.value , onValueChange = {
-        valueState.value = it
+    TextField(value = value , onValueChange = {
         callback.invoke(it)
         validation.invoke()
-    }, isError = hasErrorState.value, label = {
+    }, isError = hasErrorState,
+        label = {
         Text(text = title)
-    }, trailingIcon = {
-        valueState.value.takeIf { it.isNotEmpty() }?.let {
+    },  trailingIcon = {
+        value.takeIf { it.isNotEmpty() }?.let {
             IconButton(onClick = {
-                valueState.value= ""
-                callback.invoke(valueState.value)
+                callback.invoke("")
             }) {
                 icon?.let {
                     Icon(
@@ -172,12 +176,18 @@ fun FieldText( title:String
             }
         }
     }, modifier = modifier
-        , visualTransformation = CurrencyVisualTransformation(valueState.value)
+        , visualTransformation = CurrencyVisualTransformation(formatDecimal,currency,decimal)
         , prefix = {
-            if (valueState.value.isNotEmpty() && currency)
+            if (value.isNotEmpty() && currency)
                 Text(text = "$")
+        }, suffix = {
+            if(suffixValue.isNotBlank()){
+                Text(text = suffixValue)
+            }
+        }, keyboardOptions = keyboardType
+        , placeholder = {
+            Text(text = placeHolder)
         }
-        , keyboardOptions = keyboardType
     )
 }
 
@@ -190,7 +200,7 @@ fun FieldTextPreview(){
     MaterialThemeComposeUI {
         FieldText("Title Test"
             , value=value.value
-            ,hasErrorState=hasError
+            ,hasErrorState=hasError.value
             , callback = {value.value = it}
             , currency = true
             ,validation = { hasError.value = true}
@@ -211,7 +221,7 @@ fun FieldTextPreviewDark(){
     MaterialThemeComposeUI {
         FieldText("Title Test"
             , value=value.value
-            ,hasErrorState=hasError
+            ,hasErrorState=hasError.value
             , callback = {value.value = it}
             , currency = true
             ,validation = { hasError.value = true}

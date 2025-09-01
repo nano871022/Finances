@@ -39,7 +39,9 @@ fun AccountForm(viewModel: AccountViewModel){
     }
 
     if(stateLoader.value) {
-        LinearProgressIndicator(      progress = stateProgress.value)
+        LinearProgressIndicator(
+            progress = { stateProgress.value },
+        )
     }else {
         Scaffold(
             floatingActionButton = {

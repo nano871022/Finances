@@ -40,7 +40,9 @@ fun PaidList(viewModel: BoughtCreditCardViewModel){
     }
 
     if(loader.value.not() ){
-        LinearProgressIndicator( progress = loaderState.floatValue)
+        LinearProgressIndicator(
+            progress = { loaderState.floatValue },
+        )
     }else {
         Yearly(viewModel = viewModel)
     }

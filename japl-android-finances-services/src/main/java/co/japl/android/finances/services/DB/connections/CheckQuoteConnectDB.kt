@@ -54,5 +54,7 @@ class CheckQuoteConnectDB: DBRestore(),IConnectDB{
     override fun onRestore(currentDB: SQLiteDatabase?, fromRestoreDB: SQLiteDatabase?) {
         onRestore(currentDB,fromRestoreDB,javaClass.simpleName,CheckQuoteDB.Entry.TABLE_NAME,CheckQuoteMap()::restore)
     }
-
+    override fun onStats(connectionDB: SQLiteDatabase?): Pair<String, Long> {
+        return onStats(connectionDB, CheckQuoteDB.Entry.TABLE_NAME)
+    }
 }

@@ -54,4 +54,8 @@ class SmsPaidConnectDB: DBRestore(), IConnectDB{
         onRestore(currentDB,fromRestoreDB,javaClass.simpleName,SmsPaidDB.Entry.TABLE_NAME,SmsPaidMap()::restore)
             }
 
+    override fun onStats(connectionDB: SQLiteDatabase?): Pair<String, Long> {
+        return onStats(connectionDB, SmsPaidDB.Entry.TABLE_NAME)
+    }
+
 }

@@ -30,6 +30,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+//import co.com.alameda181.ui.R
+//import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.com.japl.ui.R
 import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.com.japl.ui.theme.values.Dimensions
@@ -55,7 +57,9 @@ fun Carousel(size:Int,delayMills:Long=20_000,modifier:Modifier=Modifier,pagerSiz
 
         Box {
             HorizontalPager(
-                state = state, pageSize = pagerSize, modifier = modifier
+                state = state,
+                pageSize = pagerSize,
+                modifier = modifier
             ) {
 
                 components.invoke(it)

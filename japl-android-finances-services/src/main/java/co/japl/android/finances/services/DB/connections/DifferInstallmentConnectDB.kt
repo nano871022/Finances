@@ -34,4 +34,7 @@ class DifferInstallmentConnectDB: DBRestore(), IConnectDB {
     override fun onRestore(currentDB: SQLiteDatabase?, fromRestoreDB: SQLiteDatabase?) {
         onRestore(currentDB,fromRestoreDB,javaClass.simpleName,DifferInstallmentDB.Entry.TABLE_NAME,DifferInstallmentMap()::restore)
     }
+    override fun onStats(connectionDB: SQLiteDatabase?): Pair<String, Long> {
+        return onStats(connectionDB, DifferInstallmentDB.Entry.TABLE_NAME)
+    }
 }

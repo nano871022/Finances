@@ -25,6 +25,8 @@ interface IQuoteCreditCardPort {
 
     fun endingRecurrentPayment(key:Int,cutOff:LocalDateTime):Boolean
 
+    fun endingPayment(key:Int,message:String,cutOff:LocalDateTime):Boolean
+
     fun create(bought:CreditCardBoughtDTO,cache:Boolean):Int
 
     fun update(bought:CreditCardBoughtDTO,cache:Boolean):Boolean
@@ -32,5 +34,7 @@ interface IQuoteCreditCardPort {
     fun getBoughtPeriodList(idCreditCard: Int): List<LocalDateTime>?
 
     fun findByNameAndBoughtDateAndValue(name:String,boughtDate:LocalDateTime,amount:BigDecimal):CreditCardBoughtDTO?
+
+    fun fixDataProcess()
 
 }

@@ -3,6 +3,7 @@ package co.japl.android.finances.services.DB.connections
 import android.database.sqlite.SQLiteDatabase
 import android.util.Log
 import co.japl.android.finances.services.DB.connections.abstracs.DBRestore
+import co.japl.android.finances.services.dto.CalcDB
 import co.japl.android.finances.services.dto.CreditCardDB
 import co.japl.android.finances.services.interfaces.IConnectDB
 import co.japl.android.finances.services.mapping.CreditCardMap
@@ -42,5 +43,7 @@ class CreditCardConnectDB: DBRestore(), IConnectDB {
         onRestore(currentDB,fromRestoreDB,javaClass.simpleName,CreditCardDB.CreditCardEntry.TABLE_NAME,CreditCardMap()::restore)
     }
 
-
+    override fun onStats(connectionDB: SQLiteDatabase?): Pair<String, Long> {
+        return onStats(connectionDB, CreditCardDB.CreditCardEntry.TABLE_NAME)
+    }
 }

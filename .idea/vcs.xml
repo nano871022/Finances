@@ -6,5 +6,6 @@
   <component name="VcsDirectoryMappings">
     <mapping directory="$PROJECT_DIR$" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/about-module" vcs="Git" />
+    <mapping directory="$USER_HOME$/git/japl-android-about-module" vcs="Git" />
   </component>
 </project>

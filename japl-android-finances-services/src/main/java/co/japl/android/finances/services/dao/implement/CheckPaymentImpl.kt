@@ -29,7 +29,7 @@ class CheckPaymentImpl @Inject constructor(override var dbConnect: SQLiteOpenHel
     @RequiresApi(Build.VERSION_CODES.O)
     override fun getCheckPayment(codPaid: Int, period: String): Optional<CheckPaymentsDTO> {
         val db = dbConnect.writableDatabase
-        val cursor = db.query(
+        db.query(
             CheckPaymentsDB.Entry.TABLE_NAME,
             COLUMNS,
             " ${CheckPaymentsDB.Entry.COLUMN_COD_PAID} = ? AND ${CheckPaymentsDB.Entry.COLUMN_PERIOD} = ?",
@@ -37,10 +37,11 @@ class CheckPaymentImpl @Inject constructor(override var dbConnect: SQLiteOpenHel
             null,
             null,
             null
-        )
-        with(cursor) {
-            while (moveToNext()) {
-                return Optional.ofNullable(mapper.mapping(this))
+        )?.use { cursor ->
+            with(cursor) {
+                while (moveToNext()) {
+                    return@getCheckPayment Optional.ofNullable(mapper.mapping(this))
+                }
             }
         }
         return Optional.empty()
@@ -57,13 +58,13 @@ class CheckPaymentImpl @Inject constructor(override var dbConnect: SQLiteOpenHel
             
             GROUP BY ${CheckPaymentsDB.Entry.COLUMN_PERIOD}
             """
-        val cursor = db.rawQuery(sql, arrayOf()
-        )
-        while(cursor.moveToNext()){
-            val period = cursor.getString(0)
-            val paid = cursor.getDouble(1)
-            val count = cursor.getLong(2)
-            list.add(PeriodCheckPaymentsPOJO(period,paid,0.0,count))
+        db.rawQuery(sql, arrayOf())?.use { cursor ->
+            while (cursor.moveToNext()) {
+                val period = cursor.getString(0)
+                val paid = cursor.getDouble(1)
+                val count = cursor.getLong(2)
+                list.add(PeriodCheckPaymentsPOJO(period, paid, 0.0, count))
+            }
         }
         return list.also { Log.d(javaClass.name,"<<== Get Periods Payment $it ${it.size}") }
     }
@@ -84,7 +85,7 @@ class CheckPaymentImpl @Inject constructor(override var dbConnect: SQLiteOpenHel
         val list = mutableListOf<CheckPaymentsDTO>()
         try {
             val db = dbConnect.writableDatabase
-            val cursor = db.query(
+            db.query(
                 CheckPaymentsDB.Entry.TABLE_NAME,
                 COLUMNS,
                 null,
@@ -92,10 +93,11 @@ class CheckPaymentImpl @Inject constructor(override var dbConnect: SQLiteOpenHel
                 null,
                 null,
                 null
-            )
-            with(cursor) {
-                while (moveToNext()) {
-                    list.add(mapper.mapping(this))
+            )?.use { cursor ->
+                with(cursor) {
+                    while (moveToNext()) {
+                        list.add(mapper.mapping(this))
+                    }
                 }
             }
             return list
@@ -116,7 +118,7 @@ class CheckPaymentImpl @Inject constructor(override var dbConnect: SQLiteOpenHel
     @RequiresApi(Build.VERSION_CODES.O)
     override fun get(id: Int): Optional<CheckPaymentsDTO> {
         val db = dbConnect.writableDatabase
-        val cursor = db.query(
+        db.query(
             CheckPaymentsDB.Entry.TABLE_NAME,
             COLUMNS,
             " ${BaseColumns._ID} = ?",
@@ -124,10 +126,11 @@ class CheckPaymentImpl @Inject constructor(override var dbConnect: SQLiteOpenHel
             null,
             null,
             null
-        )
-        with(cursor) {
-            while (moveToNext()) {
-                return Optional.ofNullable(mapper.mapping(this))
+        )?.use { cursor ->
+            with(cursor) {
+                while (moveToNext()) {
+                    return@get Optional.ofNullable(mapper.mapping(this))
+                }
             }
         }
         return Optional.empty()
@@ -143,18 +146,23 @@ class CheckPaymentImpl @Inject constructor(override var dbConnect: SQLiteOpenHel
             select = " ${CheckPaymentsDB.Entry.COLUMN_PERIOD} = ?"
             selectArgs.add(values.period)
         }
-        val cursor = db.query(
+        try{
+        db.query(
             CheckPaymentsDB.Entry.TABLE_NAME,
             COLUMNS,
             select,
             selectArgs.toTypedArray(),
             null,
             null,
-            null)
-        with(cursor){
-            while(moveToNext()){
-                mapper.mapping(cursor).let(list::add)
+            null)?.use { cursor ->
+            with(cursor) {
+                while (moveToNext()) {
+                    mapper.mapping(cursor).let(list::add)
+                }
             }
+        }
+    }catch(e:SQLiteException) {
+            Log.e(this.javaClass.name, e.message, e)
         }
         return list.also {
             Log.d(javaClass.name,"<<== Get $it ")

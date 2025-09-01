@@ -48,7 +48,9 @@ fun CreditCardSetting(viewModel: CreditCardSettingViewModel){
     }
     
     if(stateProgres.value){
-        LinearProgressIndicator(progress=progress.value )
+        LinearProgressIndicator(
+            progress = { progress.value },
+        )
     }else{
         Scaffold (
             floatingActionButton = {

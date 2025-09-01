@@ -41,7 +41,7 @@ class CreditCardSettingImpl @Inject constructor(override var dbConnect: SQLiteOp
         val list = mutableListOf<CreditCardSettingDTO>()
         try {
             val db = dbConnect.writableDatabase
-            val cursor = db.query(
+            db.query(
                 CreditCardSettingDB.CreditCardEntry.TABLE_NAME,
                 COLUMNS,
                 null,
@@ -49,10 +49,11 @@ class CreditCardSettingImpl @Inject constructor(override var dbConnect: SQLiteOp
                 null,
                 null,
                 null
-            )
-            with(cursor) {
-                while (moveToNext()) {
-                    mapper.mapping(this).ifPresent(list::add)
+            )?.use { cursor ->
+                with(cursor) {
+                    while (moveToNext()) {
+                        mapper.mapping(this).ifPresent(list::add)
+                    }
                 }
             }
             return list
@@ -70,7 +71,7 @@ class CreditCardSettingImpl @Inject constructor(override var dbConnect: SQLiteOp
         val list = mutableListOf<CreditCardSettingDTO>()
         try {
             val db = dbConnect.writableDatabase
-            val cursor = db.query(
+            db.query(
                 CreditCardSettingDB.CreditCardEntry.TABLE_NAME,
                 COLUMNS,
                 "${CreditCardSettingDB.CreditCardEntry.COLUMN_COD_CREDIT_CARD} = ?",
@@ -78,10 +79,11 @@ class CreditCardSettingImpl @Inject constructor(override var dbConnect: SQLiteOp
                 null,
                 null,
                 null
-            )
-            with(cursor) {
-                while (moveToNext()) {
-                    mapper.mapping(this).ifPresent(list::add)
+            )?.use { cursor ->
+                with(cursor) {
+                    while (moveToNext()) {
+                        mapper.mapping(this).ifPresent(list::add)
+                    }
                 }
             }
             return list.also { Log.d(this.javaClass.name, "<<<=== getAll - End CodeCreditCard $codeCC Size: ${it.size}") }
@@ -100,7 +102,7 @@ class CreditCardSettingImpl @Inject constructor(override var dbConnect: SQLiteOp
     @RequiresApi(Build.VERSION_CODES.O)
     override fun get(id: Int): Optional<CreditCardSettingDTO> {
         val db = dbConnect.writableDatabase
-        val cursor = db.query(
+        db.query(
             CreditCardSettingDB.CreditCardEntry.TABLE_NAME,
             COLUMNS,
             " ${BaseColumns._ID} = ?",
@@ -108,10 +110,11 @@ class CreditCardSettingImpl @Inject constructor(override var dbConnect: SQLiteOp
             null,
             null,
             null
-        )
-        with(cursor) {
-            if (moveToNext()) {
-                return mapper.mapping(this)
+        )?.use { cursor ->
+            with(cursor) {
+                if (moveToNext()) {
+                    return@get mapper.mapping(this)
+                }
             }
         }
         return Optional.empty()

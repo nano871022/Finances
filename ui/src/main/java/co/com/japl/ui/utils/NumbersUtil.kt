@@ -9,8 +9,9 @@ import java.text.DecimalFormat
 class NumbersUtil {
 
     companion object  {
-        private  val formatDecimalMoneyCO = "$ #,###.00"
-        private val formatDecimal = "#,###.00"
+        val formatDecimalMoneyCO = "$ #,###.00"
+        val formatDecimal = "#,###.00"
+        val format8Decimal = "#,###.00######"
 
         fun COPtoString(value: BigDecimal): String {
             return DecimalFormat(formatDecimalMoneyCO).format(value)
@@ -96,6 +97,15 @@ class NumbersUtil {
             if(value.isEmpty()) return false
             try{
                 toBigDecimal(value).toDouble()
+                return true
+            }catch(e:NumberFormatException){
+                return false
+            }
+        }
+        fun isIntNumber(value:String):Boolean{
+            if(value.isEmpty()) return false
+            try{
+                value.toInt()
                 return true
             }catch(e:NumberFormatException){
                 return false

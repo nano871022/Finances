@@ -4,6 +4,7 @@ import android.database.sqlite.SQLiteDatabase
 import android.util.Log
 import co.japl.android.finances.services.DB.connections.abstracs.DBRestore
 import co.japl.android.finances.services.dto.AddToCapitalCreditDB
+import co.japl.android.finances.services.dto.CalcDB
 import co.japl.android.finances.services.interfaces.IConnectDB
 import co.japl.android.finances.services.queries.AddToCapitalQuery
 
@@ -32,5 +33,9 @@ class AddToCapitalConnectDB: DBRestore(), IConnectDB {
 
     override fun onRestore(currentDB: SQLiteDatabase?, fromRestoreDB: SQLiteDatabase?) {
 
+    }
+
+    override fun onStats(connectionDB: SQLiteDatabase?): Pair<String, Long> {
+        return onStats(connectionDB, AddToCapitalCreditDB.Entry.TABLE_NAME)
     }
 }

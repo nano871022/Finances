@@ -1,5 +1,7 @@
 package co.japl.android.myapplication.finanzas.putParams
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import androidx.annotation.RequiresApi
@@ -9,37 +11,33 @@ import co.japl.android.myapplication.R
 import co.japl.android.myapplication.finanzas.bussiness.DTO.AdditionalCreditDTO
 import co.com.japl.ui.utils.DateUtils
 import com.google.gson.Gson
+import androidx.core.net.toUri
 
 class AdditionalCreditParams {
     object Params{
-        const val PARAMS_ADDITIONAL = "ADDITIONAL_CREDIT_PARAM"
-        const val PARAMS_START_DATE = "START_DATE"
-        const val PARAMS_END_DATE = "END_DATE"
-        const val PARAMS_VIEW = "VIEW"
+        const val PARAM_CREDIT_CODE = "CREDIT_CODE"
+        const val PARAM_ID_ADDITIONAL_CREDIT = "id"
+        const val PARAM_DEEPLINK = "android-support-nav:controller:deepLinkIntent"
     }
 
     companion object{
-        @RequiresApi(Build.VERSION_CODES.O)
-        fun newInstance(additional:AdditionalCreditDTO,view:Boolean, navController: NavController){
-            val parameters = bundleOf(Params.PARAMS_ADDITIONAL to Gson().toJson(additional)
-                ,Params.PARAMS_START_DATE to DateUtils.localDateToString(additional.startDate)
-                ,Params.PARAMS_END_DATE to DateUtils.localDateToString(additional.endDate)
-                ,Params.PARAMS_VIEW to view)
-            navController.navigate(R.id.action_additionalListFragment_to_additionalCreditFragment,parameters)
-        }
 
         @RequiresApi(Build.VERSION_CODES.O)
-        fun download(argument:Bundle):Pair<AdditionalCreditDTO?,Boolean> {
-            return argument.let {
-                val value = Gson().fromJson(it.getString(Params.PARAMS_ADDITIONAL),AdditionalCreditDTO::class.java)
-                it.getString(Params.PARAMS_START_DATE)?.let{value.startDate = DateUtils.toLocalDate(it)}
-                it.getString(Params.PARAMS_END_DATE)?.let{value.endDate = DateUtils.toLocalDate(it)}
-                val view = it.getBoolean(Params.PARAMS_VIEW)
-                return Pair(value,view)
+        fun download(argument:Bundle):Pair<Int,Int> {
+            argument.let {
+                if( it.containsKey(Params.PARAM_DEEPLINK) ){
+                    val intent = it.get(Params.PARAM_DEEPLINK) as Intent
+                    val codeCredit = intent.dataString?.toUri()?.getQueryParameter(Params.PARAM_CREDIT_CODE)?.let{
+                        it.toInt()
+                    }?:0
+                    val id = intent.dataString?.toUri()?.getQueryParameter(Params.PARAM_ID_ADDITIONAL_CREDIT)?.let{
+                        it.toInt()
+                    }?:0
+                    return Pair(id,codeCredit)
+                }
             }
+            return Pair(0,0)
         }
 
-
-        fun toBack(navController: NavController) = navController.popBackStack()
     }
 }

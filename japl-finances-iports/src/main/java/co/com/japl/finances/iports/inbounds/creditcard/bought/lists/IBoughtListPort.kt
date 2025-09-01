@@ -14,7 +14,11 @@ interface IBoughtListPort {
 
     fun delete(codeBought:Int,cache:Boolean):Boolean
 
+    fun restore(codeBought:Int,cache:Boolean):Boolean
+
     fun endingRecurrentPayment(codeBought: Int, cutOff:LocalDateTime):Boolean
+
+    fun endingPayment(codeBought: Int, message:String, cutOff:LocalDateTime):Boolean
 
     fun updateRecurrentValue(codeBought:Int, value:Double, cutOff:LocalDateTime, cache:Boolean):Boolean
 

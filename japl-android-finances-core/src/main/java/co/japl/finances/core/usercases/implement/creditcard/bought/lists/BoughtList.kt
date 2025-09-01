@@ -1,6 +1,8 @@
 package co.japl.finances.core.usercases.implement.creditcard.bought.lists
 
+import android.os.Build
 import android.util.Log
+import androidx.annotation.RequiresApi
 import co.com.japl.finances.iports.dtos.CreditCardBoughtListDTO
 import co.com.japl.finances.iports.dtos.RecapCreditCardBoughtListDTO
 import co.com.japl.finances.iports.dtos.TagDTO
@@ -56,8 +58,29 @@ class BoughtList @Inject constructor(
         return quoteCCSvc.delete(codeBought,cache)
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
+    override fun restore(codeBought: Int, cache: Boolean): Boolean {
+        return quoteCCSvc.get(codeBought,cache)?.let {
+            Regex("\\((\\d+)\\. [\\d\\.]+\\)").find(it.nameItem)
+                ?.takeIf { it.groupValues.size > 1 }?.let {
+                    val id = it.groupValues[1].toInt()
+                    quoteCCSvc.get(id,cache)?.let{
+                        quoteCCSvc.update(it.copy(endDate = it.createDate.plusMonths((it.month + 1).toLong())),cache)
+                            .takeIf { it}
+                            ?.let {
+                            quoteCCSvc.delete(codeBought,cache)
+                        }
+                    }
+                }
+        }?:false
+    }
+
     override fun endingRecurrentPayment(codeBought: Int, cutoff: LocalDateTime): Boolean {
         return quoteCCSvc.endingRecurrentPayment(codeBought,cutoff)
+    }
+
+    override fun endingPayment(codeBought: Int, message:String, cutoff: LocalDateTime): Boolean {
+        return quoteCCSvc.endingPayment(codeBought,message,cutoff)
     }
 
     override fun updateRecurrentValue(codeBought: Int, value: Double, cutOff: LocalDateTime, cache: Boolean): Boolean {
@@ -87,15 +110,20 @@ class BoughtList @Inject constructor(
             val creditCard = creditCardSvc.get(it.codeCreditCard)
             val dayOfMonth:Short = creditCard?.cutOffDay ?:it.cutOutDate.dayOfMonth.toShort()
             val months = DateUtils.getMonths(it.boughtDate,cutOff)
-
+            val date = if(it.boughtDate.dayOfMonth <= dayOfMonth){
+                DateUtils.withDayOfMonth(LocalDateTime.now(),it.boughtDate.dayOfMonth)
+            }else{
+                DateUtils.withDayOfMonth(LocalDateTime.now(),dayOfMonth.toInt()).minusDays(2)
+            }
             val differBought =  it.copy(month = (value).toInt()
                 , createDate = LocalDateTime.now()
                 , endDate =  DateUtils.cutOffAddMonth(dayOfMonth, cutOff, value)
-                , boughtDate =  LocalDateTime.now().withDayOfMonth(it.boughtDate.dayOfMonth)
+                , boughtDate =  date
                 , valueItem = (it.valueItem.toDouble() - ((it.valueItem.toDouble() / it.month) * months)).toBigDecimal()
                 , nameItem = it.nameItem.plus(" (${it.id}. ${it.valueItem.toDouble()})")
                 , id = 0)
             val origin = it.copy(endDate = DateUtils.cutOffLastMonth(dayOfMonth,cutOff))
+            Log.d("differinstallmentquote","$differBought $origin")
             return quoteCCSvc.create(differBought,cache).takeIf { response->response > 0}?.let{id->
                     if(quoteCCSvc.update(origin,cache)){
                         return true

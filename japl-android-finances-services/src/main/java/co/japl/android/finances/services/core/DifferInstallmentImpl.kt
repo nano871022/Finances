@@ -8,15 +8,16 @@ import java.time.LocalDate
 import javax.inject.Inject
 
 class DifferInstallmentImpl @Inject constructor(private val differInstallmentSvc:IDifferInstallment):IDifferInstallmentRecapPort {
+
     override fun get(cutOff: LocalDate): List<DifferInstallmentDTO> {
         return differInstallmentSvc.get(cutOff).map (DifferInstallmentMapper::mapper)
     }
 
     override fun get(id: Int): DifferInstallmentDTO? {
         val differ = differInstallmentSvc.get(id)
-            if (differ.isPresent) {
+        if (differ.isPresent) {
              return DifferInstallmentMapper.mapper(differ.get())
-            }
+        }
         return null
     }
 }

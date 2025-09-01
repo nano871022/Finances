@@ -165,7 +165,7 @@ private fun DialogStart(model:RecapViewModel){
 fun PreviewRecap() {
     val prefs = Prefs(LocalContext.current)
 
-    val model = RecapViewModel(null,prefs,null)
+    val model = RecapViewModel(null,null,prefs,null)
     val recap = RecapDTO(
       projectionSaved = 20000.0,
      projectionNext = 30000.0,
@@ -187,7 +187,7 @@ fun PreviewRecap() {
 fun PreviewRecapDark() {
     val prefs = Prefs(LocalContext.current)
 
-    val model = RecapViewModel(null,prefs,null)
+    val model = RecapViewModel(null,null,prefs,null)
     val recap = RecapDTO(
         projectionSaved = 20000.0,
         projectionNext = 30000.0,

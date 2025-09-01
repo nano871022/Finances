@@ -58,7 +58,9 @@ fun InputList(modelView: InputListModelView){
         }
     }
         if(stateLoader.value) {
-            LinearProgressIndicator(      progress = stateProgress.value)
+            LinearProgressIndicator(
+                progress = { stateProgress.value },
+            )
         }else {
             Scaffold (
                 floatingActionButton = {

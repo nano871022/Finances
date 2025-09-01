@@ -1,41 +1,33 @@
-name: Merge and Deploy App
-description: Pull code, Merge it, prepared app and deploy into Play Store
+name: Lint, Test, and Deploy App
+description: Run lint, tests, then pull code, merge it, prepare app, and deploy to Play Store
 
 on:
+  push:
+    branches:
+      - main
+      - master
   workflow_dispatch:
 
 jobs:
+  lint:
+    uses: ./.github/workflows/lint.yml
 
-  prepared_project:
-    environment: PROD
-    runs-on: ubuntu-latest
-    outputs:
-      VersionCode: ${{ steps.getVersion.outputs.VersionCode }}
-      VersionName: ${{ steps.getVersion.outputs.VersionName }}
+  test:
+    needs: [lint]
+    uses: ./.github/workflows/test.yml
 
-    steps:
+  build:
+    needs: [test]
+    uses: ./.github/workflows/build.yml
+    secrets:
+      SECRET_TOKEN: ${{ secrets.SECRET_TOKEN }}
 
-      - uses: actions/checkout@v4
-
-      - name: Get Version Code and Name of App
-        id: getVersion
-        run: |
-              VERSION_CODE=$(grep -m 1 'versionCode' app/build.gradle | awk '{print $2}')
-              VERSION_NAME=$(grep -m 1 'versionName' app/build.gradle | awk -F '"' '{print $2}')
-              echo "VersionCode=$VERSION_CODE" >> $GITHUB_OUTPUT
-              echo "VersionName=$VERSION_NAME" >> $GITHUB_OUTPUT
-
-      - name: Remove Android Folder
-        run: |
-              rm -rf about-module
-        shell: bash
-        
-      - name: Get About Module
-        uses: actions/checkout@v4
-        with:
-          repository: ${{ github.actor }}/japl-android-about-module
-          path: ./about-module
-      
-      - name: Build and Scan
-        continue-on-error: true
-        run: ./gradlew bundleRelease --no-daemon --no-parallel --info
+  deploy:
+    needs: [build]
+    uses: ./.github/workflows/deploy.yml
+    secrets:
+      GOOGLE_PLAY_SERVICE_ACCOUNT: ${{ secrets.GOOGLE_PLAY_SERVICE_ACCOUNT }}
+    with:
+      VersionCode: ${{ needs.build.outputs.VersionCode }}
+      VersionName: ${{ needs.build.outputs.VersionName }}
+      CleanVersion: ${{ needs.build.outputs.CleanVersion }}

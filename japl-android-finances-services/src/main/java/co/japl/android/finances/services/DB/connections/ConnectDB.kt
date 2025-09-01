@@ -70,4 +70,13 @@ class ConnectDB(context: Context):SQLiteOpenHelper(context,
         Log.i(this.javaClass.name,"<<<=== onRestore - End")
     }
 
+    fun onStats(connectionDB: SQLiteDatabase?):List<Pair<String,Long>>{
+        Log.i(this.javaClass.name,"<<<=== onRestore - Start ")
+        return list.map {
+            it.onStats(connectionDB)
+        }.also {
+            Log.i(this.javaClass.name, "<<<=== onRestore - End")
+        }
+    }
+
 }

@@ -15,4 +15,6 @@ interface ICheckPaymentPort {
 
     fun save(check: CheckPaymentDTO): CheckPaymentDTO
 
+    fun delete(check: CheckPaymentDTO): Boolean
+
 }

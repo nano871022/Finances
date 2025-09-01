@@ -23,18 +23,6 @@ class QuoteCreditVariablesParams {
     }
 
     companion object{
-        @JvmStatic
-        fun newInstance(creditValue:BigDecimal,interest:Double,period:Long,quoteValue:BigDecimal,interestValue:BigDecimal,capitalValue:BigDecimal,kindOfTax:String,navController:NavController){
-            val parameters = bundleOf(
-                Params.ARG_CREDIT_VALUE to creditValue.toString()
-                , Params.ARG_TAX_VALUE to interest.toString()
-                , Params.ARG_PERIOD_VALUE to period.toString()
-                , Params.ARG_QUOTE_VALUE to quoteValue.toString()
-                , Params.ARG_INTEREST_VALUE to interestValue.toString()
-                , Params.ARG_CAPITAL_VALUE to capitalValue.toString()
-                , Params.ARG_KIND_OF_TAX to kindOfTax)
-            navController.navigate(R.id.action_save_quote_credit_variable,parameters)
-        }
 
         @RequiresApi(Build.VERSION_CODES.N)
         fun download(arguments:Bundle):Optional<QuoteCreditCard>{

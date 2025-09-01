@@ -43,7 +43,10 @@ fun InputForm(viewModel: InputViewModel){
     }
 
     if(stateLoader.value) {
-        LinearProgressIndicator(      progress = stateProcess.value,modifier=Modifier.fillMaxWidth())
+        LinearProgressIndicator(
+            progress = { stateProcess.value },
+            modifier = Modifier.fillMaxWidth(),
+        )
     }else {
         Scaffold(
             floatingActionButton = {
@@ -113,7 +116,7 @@ private fun Body(viewModel: InputViewModel, modifier: Modifier) {
             ,value = stateValue.value
             , validation = {viewModel.validation()}
             , callback = {stateValue.value = it}
-            , hasErrorState = stateErrorValue
+            , hasErrorState = stateErrorValue.value
             , currency = true
             , icon = Icons.Rounded.Cancel
             , modifier = Modifier

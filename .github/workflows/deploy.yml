@@ -1,0 +1,48 @@
+name: Deploy Workflow
+on:
+  workflow_call:
+    secrets:
+      GOOGLE_PLAY_SERVICE_ACCOUNT:
+        required: true
+    inputs:
+      VersionCode:
+        required: true
+        type: string
+      VersionName:
+        required: true
+        type: string
+      CleanVersion:
+        required: true
+        type: string
+
+jobs:
+  deploy:
+    name: Deploy to Play Store
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout main repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Download aab
+        uses: actions/download-artifact@v4
+        with:
+          name: aab-file
+
+      - name: Upload to Play Store
+        if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
+        uses: r0adkll/upload-google-play@v1
+        with:
+          serviceAccountJsonPlainText: ${{ secrets.GOOGLE_PLAY_SERVICE_ACCOUNT }}
+          packageName: co.japl.android.myapplication
+          releaseFiles: app-release.bundle
+          track: test
+
+      - name: Create and Push Tag
+        if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+          git tag "v${{ inputs.CleanVersion }}" -m "Release v${{ inputs.CleanVersion }}"
+          git push origin "v${{ inputs.CleanVersion }}"

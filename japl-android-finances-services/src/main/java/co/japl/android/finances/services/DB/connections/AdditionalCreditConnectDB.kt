@@ -35,5 +35,7 @@ class AdditionalCreditConnectDB: DBRestore(), IConnectDB {
     override fun onRestore(currentDB: SQLiteDatabase?, fromRestoreDB: SQLiteDatabase?) {
         onRestore(currentDB,fromRestoreDB,javaClass.simpleName,AdditionalCreditDB.Entry.TABLE_NAME,AdditionalMap()::restore)
     }
-
+    override fun onStats(connectionDB: SQLiteDatabase?): Pair<String, Long> {
+        return onStats(connectionDB, AdditionalCreditDB.Entry.TABLE_NAME)
+    }
 }

@@ -4,6 +4,7 @@ import android.database.sqlite.SQLiteDatabase
 import android.util.Log
 import co.japl.android.finances.services.DB.connections.abstracs.DBRestore
 import co.japl.android.finances.services.dto.AccountDB
+import co.japl.android.finances.services.dto.CalcDB
 import co.japl.android.finances.services.interfaces.IConnectDB
 import co.japl.android.finances.services.mapping.AccountMap
 import co.japl.android.finances.services.queries.AccountQuery
@@ -34,5 +35,7 @@ class AccountConnectDB: DBRestore(), IConnectDB {
     override fun onRestore(currentDB: SQLiteDatabase?, fromRestoreDB: SQLiteDatabase?) {
         onRestore(currentDB,fromRestoreDB,javaClass.simpleName,AccountDB.Entry.TABLE_NAME,AccountMap()::restore)
     }
-
+    override fun onStats(connectionDB: SQLiteDatabase?): Pair<String, Long> {
+        return onStats(connectionDB, AccountDB.Entry.TABLE_NAME)
+    }
 }

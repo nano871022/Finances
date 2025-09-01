@@ -54,5 +54,8 @@ class CheckPaymentConnectDB: DBRestore(),IConnectDB{
     override fun onRestore(currentDB: SQLiteDatabase?, fromRestoreDB: SQLiteDatabase?) {
         onRestore(currentDB,fromRestoreDB,javaClass.simpleName,CheckPaymentsDB.Entry.TABLE_NAME,CheckPaymentsMap()::restore)
     }
+    override fun onStats(connectionDB: SQLiteDatabase?): Pair<String, Long> {
+        return onStats(connectionDB, CheckPaymentsDB.Entry.TABLE_NAME)
+    }
 
 }

@@ -23,6 +23,19 @@ class GoogleDriveImpl constructor(private val context:Context,private val dbConn
     companion object {
         const val PARAMETER_FOLDER = "appDataFolder"
     }
+
+    override suspend fun stats(): List<Pair<String, Long>> {
+        try {
+            return getFileDB()?.let { file ->
+                val db = SQLiteDatabase.openDatabase(file.absolutePath, null, SQLiteDatabase.OPEN_READONLY)
+                return co.japl.android.finances.services.DB.connections.ConnectDB(context).onStats(db)
+            }?: emptyList()
+
+        }catch(e:Exception){
+            return emptyList()
+        }
+    }
+
     override suspend fun restore(account: GoogleSignInAccount?): String? {
         return getDrive(account)?.let{drive->
             getFiles(drive).takeIf { it.isNotEmpty() }
@@ -53,7 +66,7 @@ class GoogleDriveImpl constructor(private val context:Context,private val dbConn
         return drive.files().list()
             .setSpaces(PARAMETER_FOLDER)
             .setFields("nextPageToken, files(id, name, version, modifiedTime)")
-            .execute().files
+            .execute()?.files?: emptyList()
     }
     private fun getDrive(account: GoogleSignInAccount?):Drive?{
         return account?.let {

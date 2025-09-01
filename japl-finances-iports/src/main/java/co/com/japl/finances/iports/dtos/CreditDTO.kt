@@ -1,5 +1,7 @@
 package co.com.japl.finances.iports.dtos
 
+import co.com.japl.finances.iports.enums.KindOfTaxEnum
+import co.com.japl.finances.iports.enums.KindPaymentsEnums
 import java.math.BigDecimal
 import java.time.LocalDate
 
@@ -11,7 +13,7 @@ data class CreditDTO(
     var periods:Int,
     var value:BigDecimal,
     var quoteValue:BigDecimal,
-    var kindOf:String,
-    var kindOfTax:String
+    var kindOf: KindPaymentsEnums,
+    var kindOfTax: KindOfTaxEnum
 )
 

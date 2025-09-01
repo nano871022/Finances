@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="total_due">Deuda Total</string>
+    <string name="credit_cnt">Cantidad de Créditos</string>
+    <string name="total_quote">Cuota Total</string>
+    <string name="credit_cnt_short">Cantidad</string>
+    <string name="quote_date">Fecha Cuota Pago</string>
+    <string name="quote_payment_date_short">Fecha</string>
+    <string name="quote_payment_name_short">Nombre</string>
+    <string name="quote_payment_value_short">Cuota</string>
+    <string name="quote_payment_date">Fecha de Pago de la Cuota</string>
+    <string name="quote_payment_name">Nombre del Crédito</string>
+    <string name="quote_payment_value">Valor de la Cuota</string>
+    <string name="additional">Adicionar Cobro</string>
+    <string name="amortization">Tabla Amortización</string>
+    <string name="period_grace">Periodo de Gracia</string>
+    <string name="delete">Eliminar</string>
+    <string name="do_you_want_to_delete_this_record">¿Desea eliminar este registro?</string>
+    <string name="navigate_amortization">android-app://co.com.japl.finanzas.module.app/amortization_credit?credit_code=%d&amp;last_date=%s</string>
+    <string name="navigate_additional">android-app://co.com.japl.finanzas.module.app/additionals_credit?CREDIT_CODE=%d</string>
+    <string name="navigate_add_credit">android-app://co.com.japl.finanzas.module.app/add_credit_fix</string>
+    <string name="navigate_detail_credits">android-app://co.com.japl.finanzas.module.app/monthly_credit_list</string>
+    <string name="navigate_period_credits">android-app://co.com.japl.finanzas.module.app/period_credits</string>
+    <string name="delete_period_grace">Eliminar Periodo de Gracia</string>
+    <string name="do_you_want_to_delete_period_grace">¿Desea eliminar el periodo de gracia?</string>
+    <string name="periods">Periodos</string>
+    <string name="last_month">Mes Anterior</string>
+    <string name="current_month">Mes Actual</string>
+    <string name="next_month">Mes Siguiente</string>
+    <string name="start_date">Fecha Inicio</string>
+    <string name="end_date">Fecha Fin</string>
+    <string name="cancel">Cancelar</string>
+    <string name="save">Guardar</string>
+    <string name="toast_successful_deleted">El registro fue eliminado con exito</string>
+    <string name="toast_dont_successful_deleted">No se logro eliminar el registro</string>
+    <string name="toast_period_grace_successful_deleted">El periodo de gracia fue eliminado con exito</string>
+    <string name="toast_period_grace_dont_successful_deleted">No se elmino el periodo de gracia</string>
+    <string name="toast_period_grace_successful_added">Periodo de gracia agregado con exito</string>
+    <string name="toast_period_grace_dont_successful_added">Periodo de gracia no fue agregado</string>
+    <string name="month_payment">Mes de Pago</string>
+    <string name="no_data">No hay data que mostrar</string>
+    <string name="quote_value">Valor de la Cuota</string>
+    <string name="quote_value_short">Valor Cuota</string>
+    <string name="additional_value">Valor Adicional</string>
+    <string name="pending_payment">Pendiente por Pagar</string>
+    <string name="interest_value">Valor Intereses</string>
+    <string name="capital_value">Valor a Capital</string>
+    <string name="capital_value_short">Capital</string>
+    <string name="add_credit">Agregar Credito</string>
+    <string name="check_periods">Periodos</string>
+    <string name="detail_credits">Detalle</string>
+    <string name="num_credits">Cantidad</string>
+    <string name="clean_credit">Limpiar</string>
+    <string name="kind_payment">Tipo de Pago</string>
+    <string name="name_credit">Nombre</string>
+    <string name="value_credit">Valor</string>
+    <string name="rate_credit">Tasa</string>
+    <string name="periods_credit">Meses</string>
+    <string name="quote_credit">Valor de la Cuota</string>
+    <string name="date_credit">Fecha del Crédito</string>
+    <string name="type_payment_credit">Tipo de Pago</string>
+    <string name="kind_rate">Tipo de Tasa</string>
+    <string name="back_view">Ir Página Anterior</string>
+    <string name="invalid_option_amortization">Necesita crear el credito antes de entrar en esta opción</string>
+    <string name="invalid_form">Alguno de los campos no se ha llenado correctamente.</string>
+    <string name="save_success">Se guardo el crédito correctamente</string>
+    <string name="Add">Agregar</string>
+    <string name="title_name_additional_list">Nombre</string>
+    <string name="tooltip_name_additional_list">Nombre del valor adicional</string>
+    <string name="title_value_additional_list">Valor</string>
+    <string name="tooltip_value_additional_list">Valor adicional</string>
+    <string name="count">Cantidad</string>
+    <string name="total_value">Valor Total</string>
+    <string name="see_more">Ver Más</string>
+    <string name="edit">Editar</string>
+    <string name="do_you_want_to_delete_additional">¿Deseas eliminar el registro?</string>
+    <string name="delete_record">Registro eliminado correctamente</string>
+    <string name="close">Cerrar</string>
+    <string name="error_delete_record">No se logro eliminar el registro</string>
+    <string name="navigate_add_additional">android-app://co.com.japl.finanzas.module.app/additional_credit_form?CREDIT_CODE=%d</string>
+    <string name="navigate_edit_additional">android-app://co.com.japl.finanzas.module.app/additional_credit_form?id=%d&amp;CREDIT_CODE=%d</string>
+    <string name="clear_additiona_credit_form">Limpiar formulario</string>
+    <string name="add_additiona_credit">Agregar credito adicional</string>
+    <string name="name">Nombre</string>
+
+    <string name="create_record_success">Registro Creado Correctamente</string>
+    <string name="error_record_success">Se produjo un error al crear el registro</string>
+    <string name="update_record_success">Se actualizo el registro correctamente</string>
+    <string name="error_upd_record_success">Error al actualizar el registro</string>
+    <string name="calculation_error">"Se presento un error en el calculo "</string>
+    <string name="save_unsuccess">"No se logro guardar "</string>
+    <string name="credit_value">Valor Credito</string>
+    <string name="months">Meses</string>
+    <string name="interest">Tasa Interes</string>
+    <string name="interest_short">Interes</string>
+    <string name="capital">Capital</string>
+    <string name="quote">Cuota</string>
+    <string name="year">Año</string>
+    <string name="total">Total</string>
+    <string name="amortization_value">Amortización</string>
+    <string name="saving">Guardando</string>
+    <string name="clear">Limpiar</string>
+    <string name="calculate">Calcular</string>
+    <string name="credit_rate">Tasa Interes</string>
+    <string name="kind_credit_rate">Tipo Tasa Interes</string>
+    <string name="navigate_form_simulator_amortization_fix">android-app://co.com.japl.finanzas.module.app/simulator/fix/amortization?code=%d</string>
+    <string name="navigate_list_extra_amortization">android-app://co.com.japl.finanzas.module.creditfix/extraValue?CREDIT_CODE=%d</string>
+    <string name="simulator_quote_fix">Simulador Cuota Fija</string>
+    <string name="first_capital">Primer Capital</string>
+    <string name="first_interest">Primer Interes</string>
+    <string name="extra_value_list">Valor extra</string>
+    <string name="additional_to_pay">Adicional a Pagar</string>
+    <string name="additional_monthly">Adicional Mensual</string>
+    <string name="interest_to_pay_value">Interes a Pagar</string>
+    <string name="interest_value_short">interes</string>
+    <string name="extra_values">Valores Extras</string>
+    <string name="add_extra_value">Add Extra Value</string>
+    <string name="number_of_quotes">Number of Quotes</string>
+    <string name="value">Value</string>
+    <string name="quote_num">Numero Cuota</string>
+
+    <string-array name="months">
+        <item>--- Seleccionar --- </item>
+        <item>Enero</item>
+        <item>Febrero</item>
+        <item>Marzo</item>
+        <item>Abril</item>
+        <item>Mayo</item>
+        <item>Junio</item>
+        <item>Julio</item>
+        <item>Agosto</item>
+        <item>Septiembre</item>
+        <item>Octubre</item>
+        <item>Noviembre</item>
+        <item>Diciembre</item>
+    </string-array>
+</resources>

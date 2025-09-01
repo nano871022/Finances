@@ -74,13 +74,19 @@ class SmsCreditCardViewModel constructor(private val codeSMSCC:Int?,private val 
 
     }
 
-    fun validatePatternWithMessages(){
-        smsCreditCard?.let {dto->
-            svc?.let{
+    fun validatePatternWithMessages() {
+        smsCreditCard?.let { dto ->
+            svc?.let {
                 validationResult.value = ""
-                it.validateMessagePattern(dto)?.takeIf { it.isNotEmpty() }?.forEach{
-                    validationResult.value += it+"\n\n"
-                }?:validationResult.let{it.value = "Not found sms"}
+                runCatching {
+                    it.validateMessagePattern(dto)
+                }.onFailure {
+                    validationResult.value = "Error: ${it.message}"
+                }.onSuccess {
+                    it?.takeIf { it.isNotEmpty() }?.forEach {
+                        validationResult.value += it + "\n\n"
+                    } ?: validationResult.let { it.value = "Not found sms" }
+                }
             }
         }
     }

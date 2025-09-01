@@ -54,6 +54,20 @@ class CreditRateListViewModel constructor(private val context:Context?,private v
         }
     }
 
+    fun clone(code:Int){
+        creditRateSvc?.let {
+            if (creditRateSvc.clone(code)) {
+                Toast.makeText(context, R.string.toast_successful_cloned, Toast.LENGTH_SHORT)
+                    .show().also {
+                        showProgress.value = true
+                    }
+            } else {
+                Toast.makeText(context, R.string.toast_dont_successful_cloned, Toast.LENGTH_SHORT)
+                    .show()
+            }
+        }
+    }
+
     fun enable(code:Int){
         creditRateSvc?.let {
 

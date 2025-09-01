@@ -133,7 +133,7 @@ private fun Body(viewModel: CreditCardViewModel, modifier:Modifier=Modifier){
             keyboardType = KeyboardOptions(keyboardType = KeyboardType.Decimal),
             icon=Icons.Rounded.Cancel,
             currency = true,
-            hasErrorState = hasErrorWarningState,
+            hasErrorState = hasErrorWarningState.value,
             callback = {warningValueState.value = it},
             validation = { viewModel.validate() },
             modifier = Modifier

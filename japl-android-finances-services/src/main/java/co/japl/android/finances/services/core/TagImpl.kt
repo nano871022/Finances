@@ -15,7 +15,7 @@ class TagImpl @Inject constructor(private val tagSvc:ITagSvc):ITagPort {
         return tagSvc.delete(codeTag)
     }
 
-    override fun getAll(): List<TagDTO> {
-        return tagSvc.getAll().map ( TagMapper::mapper )
+    override fun getAll(): List<TagDTO> = Caching("getAllTags") {
+        return@Caching tagSvc.getAll().map ( TagMapper::mapper )
     }
 }

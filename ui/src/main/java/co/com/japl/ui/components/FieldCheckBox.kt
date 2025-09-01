@@ -3,8 +3,8 @@ package co.com.japl.ui.components
 import android.content.res.Configuration
 import android.os.Build
 import androidx.annotation.RequiresApi
-import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Column
+
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -18,10 +18,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
-import co.com.japl.ui.R
 import co.com.japl.ui.theme.MaterialThemeComposeUI
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -45,18 +43,18 @@ fun CheckBoxField(title:String, value:Boolean,callback:(Boolean)->Unit, modifier
 }
 
 @Composable
-fun CheckBoxField(title:@Composable() (RowScope.(color:Color,modifier:Modifier) -> Unit),
+fun CheckBoxField(customTitle:@Composable() (RowScope.(color: Color, modifier: Modifier) -> Unit),
                   description:@Composable() (Color,Modifier)->Unit = {color,modifier->},
                   value: Boolean,callback:(Boolean)->Unit,
-                  color:Color = MaterialTheme.colorScheme.onBackground,
-                  modifier:Modifier = Modifier){
+                  customColor:Color = MaterialTheme.colorScheme.onBackground,
+                  customModifier:Modifier = Modifier){
     val state = remember { mutableStateOf(false) }
     value.let{
         state.value = value
     }
     Column (modifier = Modifier.fillMaxWidth()){
-        Row (modifier = modifier, verticalAlignment = Alignment.CenterVertically) {
-            title(color=color,modifier=modifier)
+        Row (modifier = customModifier, verticalAlignment = Alignment.CenterVertically) {
+            customTitle(customColor,customModifier)
 
             Checkbox(checked = state.value,
                 onCheckedChange = {
@@ -65,7 +63,7 @@ fun CheckBoxField(title:@Composable() (RowScope.(color:Color,modifier:Modifier) 
             })
         }
 
-       description(color,modifier)
+       description(customColor,customModifier)
     }
 }
 
@@ -96,7 +94,7 @@ internal fun CheckBoxFieldPreview(){
         mutableStateOf(true)
     }
     MaterialThemeComposeUI {
-        CheckBoxField(title = { color, modifier ->
+        CheckBoxField(customTitle = { color: Color, modifier: Modifier ->
             Row (modifier = Modifier
                 .fillMaxWidth()
                 .weight(1f),
@@ -105,9 +103,7 @@ internal fun CheckBoxFieldPreview(){
 
                 Text(text = "$ 100.506.500,00", textAlign = TextAlign.End, modifier = modifier, color = color)
             }
-        }, value =state.value , callback = {
-            state.value = it
-        }, modifier=Modifier)
+        } , value = state.value, callback = {state.value = it}, customModifier=Modifier)
     }
 
 }
@@ -120,7 +116,7 @@ internal fun CheckBoxFieldPreviewDark(){
         mutableStateOf(true)
     }
     MaterialThemeComposeUI {
-        CheckBoxField(title = {color,modifier->
+        CheckBoxField(customTitle = {color,modifier->
             Row (modifier = Modifier
                 .fillMaxWidth()
                 .weight(1f),
@@ -134,7 +130,7 @@ internal fun CheckBoxFieldPreviewDark(){
         }, description = { color,modifier->
             Text(text = "Description Test", modifier = modifier, color = color)
         },
-            modifier=Modifier
+            customModifier=Modifier
         )
     }
 
@@ -146,7 +142,7 @@ internal fun CheckBoxFieldPreviewDark(){
 internal fun CheckBoxFieldPreviewDark2(){
     val state= remember {mutableStateOf(false)}
     MaterialThemeComposeUI {
-        CheckBoxField(title = {color,modifier->
+        CheckBoxField(customTitle = {color,modifier->
             Row (modifier = Modifier
                 .fillMaxWidth()
                 .weight(1f),
@@ -160,7 +156,7 @@ internal fun CheckBoxFieldPreviewDark2(){
         }, description = { color,modifier->
             Text(text = "Description Test", modifier = modifier, color = color)
         },
-            modifier=Modifier
+            customModifier=Modifier
         )
     }
 

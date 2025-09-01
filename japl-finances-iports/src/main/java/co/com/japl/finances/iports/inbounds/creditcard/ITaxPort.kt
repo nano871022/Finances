@@ -23,4 +23,6 @@ interface ITaxPort {
     fun create(dto:TaxDTO):Boolean
 
     fun update(dto: TaxDTO):Boolean
+
+    fun clone(code:Int):Boolean
 }

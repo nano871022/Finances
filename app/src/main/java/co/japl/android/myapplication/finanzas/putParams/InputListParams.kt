@@ -12,6 +12,7 @@ import co.japl.android.myapplication.R
 class InputListParams {
     object PARAMS {
         const val PARAM_ACCOUNT_CODE = "account_code"
+        const val PARAM_CREDIT_CODE = "CREDIT_CODE"
         const val ARG_DEEPLINK = "android-support-nav:controller:deepLinkIntent"
     }
         companion object {
@@ -29,9 +30,9 @@ class InputListParams {
             fun download(parameters: Bundle):Int {
                 parameters.let{
                     if(it.containsKey(PARAMS.ARG_DEEPLINK)) {
-                        val intent = it.get(PARAMS.ARG_DEEPLINK) as Intent
-                        if(Uri.parse(intent.dataString).getQueryParameter(PARAMS.PARAM_ACCOUNT_CODE) != null){
-                            return Uri.parse(intent.dataString).getQueryParameter(PARAMS.PARAM_ACCOUNT_CODE)!!.toInt()
+                        val intent = it[PARAMS.ARG_DEEPLINK] as Intent
+                        if(intent.dataString?.toUri()?.getQueryParameter(PARAMS.PARAM_CREDIT_CODE) != null){
+                            return intent.dataString?.toUri()?.getQueryParameter(PARAMS.PARAM_CREDIT_CODE)!!.toInt()
                         }
                     }
                     return parameters.getInt(PARAMS.PARAM_ACCOUNT_CODE)

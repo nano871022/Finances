@@ -24,9 +24,11 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
-import androidx.compose.material3.PlainTooltipBox
+import androidx.compose.material3.PlainTooltip
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.TooltipBoxScope
+import androidx.compose.material3.TooltipBox
+import androidx.compose.material3.TooltipDefaults
+import androidx.compose.material3.rememberTooltipState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
@@ -172,10 +174,11 @@ private fun MainCompact(data:BoughtCreditCard,popupState: MutableState<Boolean>,
                 )
             }
 
-            PlainTooltipBox(
+            TooltipBox(
                 tooltip = {
                     Text(text = stringResource(id = R.string.settings_credit_card_boughts))
-                }
+                }, state = rememberTooltipState()
+                , positionProvider = TooltipDefaults.rememberPlainTooltipPositionProvider()
             ) {
                 IconButton(onClick = { settingState.value = true }) {
                     Icon(

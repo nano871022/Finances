@@ -15,7 +15,11 @@ interface IBoughtList {
 
     fun delete(codeBought:Int,cache:Boolean):Boolean
 
+    fun restore(codeBought: Int,cache: Boolean):Boolean
+
     fun endingRecurrentPayment(codeBought:Int,cutoff:LocalDateTime):Boolean
+
+    fun endingPayment(codeBought:Int,message:String,cutoff:LocalDateTime):Boolean
 
     fun updateRecurrentValue(codeBought:Int,value:Double, cutoff: LocalDateTime, cache: Boolean):Boolean
 

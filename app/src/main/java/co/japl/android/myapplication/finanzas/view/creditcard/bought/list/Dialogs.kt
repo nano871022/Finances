@@ -16,8 +16,10 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Cancel
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.BasicAlertDialog
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -40,6 +42,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import co.com.japl.ui.components.AlertDialogInputValue
 import co.japl.android.myapplication.R
 import co.japl.android.myapplication.finanzas.enums.MoreOptionsItemsCreditCard
 import co.com.japl.ui.components.AlertDialogOkCancel
@@ -49,11 +52,12 @@ import co.japl.android.myapplication.utils.NumbersUtil
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MoreOptionsDialog(valueToPay:Double, creditRate:Double,listOptions:List<MoreOptionsItemsCreditCard>, onDismiss:()->Unit, onClick:(MoreOptionsItemsCreditCard,Double) -> Unit) {
+fun MoreOptionsDialog(valueToPay:Double,isRecurrent:Boolean, creditRate:Double,listOptions:List<MoreOptionsItemsCreditCard>, onDismiss:()->Unit, onClick:(MoreOptionsItemsCreditCard,Double,String) -> Unit) {
     val stateDeleteDialog = remember { mutableStateOf(false) }
     val stateEndingDialog = remember { mutableStateOf(false) }
     val stateUpdateDialog = remember { mutableStateOf(false) }
     val stateDifferDialog = remember { mutableStateOf(false) }
+    val stateRestoreDialog = remember { mutableStateOf(false) }
     when{
         stateDeleteDialog.value -> {
             AlertDialogOkCancel (
@@ -61,21 +65,36 @@ fun MoreOptionsDialog(valueToPay:Double, creditRate:Double,listOptions:List<More
                 ,onDismiss = {
                     stateDeleteDialog.value = false
                     onDismiss.invoke()
-                },onClick = { onClick.invoke(MoreOptionsItemsCreditCard.DELETE,0.0)
+                },onClick = { onClick.invoke(MoreOptionsItemsCreditCard.DELETE,0.0,"")
                     stateDeleteDialog.value = false
                     onDismiss.invoke()
                 })
         }
         stateEndingDialog.value -> {
-            AlertDialogOkCancel (
-                R.string.do_you_want_to_ending_recurrent_payment, R.string.ending
-                ,onDismiss = {
+            if(isRecurrent) {
+                AlertDialogOkCancel(
+                    R.string.do_you_want_to_ending_recurrent_payment, R.string.ending, onDismiss = {
+                        stateEndingDialog.value = false
+                        onDismiss.invoke()
+                    }, onClick = {
+                        onClick.invoke(MoreOptionsItemsCreditCard.ENDING, 0.0,"")
+                        stateEndingDialog.value = false
+                        onDismiss.invoke()
+                    })
+            }else{
+            AlertDialogInputValue(
+                title = R.string.do_you_want_to_ending_payment,
+                confirmNameButton = R.string.ending,
+                message = R.string.message_finish_message,
+                onDismiss = {
                     stateEndingDialog.value = false
                     onDismiss.invoke()
-                },onClick = { onClick.invoke(MoreOptionsItemsCreditCard.ENDING,0.0)
+                }, onClick = {
+                    onClick.invoke(MoreOptionsItemsCreditCard.ENDING, 0.0,it)
                     stateEndingDialog.value = false
                     onDismiss.invoke()
                 })
+        }
         }
         stateUpdateDialog.value -> {
             UpdateValueDialog(
@@ -84,45 +103,71 @@ fun MoreOptionsDialog(valueToPay:Double, creditRate:Double,listOptions:List<More
                     onDismiss.invoke()
                 },
                 onClick = {
-                    onClick.invoke(MoreOptionsItemsCreditCard.UPDATE_VALUE,it)
+                    onClick.invoke(MoreOptionsItemsCreditCard.UPDATE_VALUE,it,"")
                     stateUpdateDialog.value = false
                     onDismiss.invoke()
                 }
             )
         }
+
         stateDifferDialog.value -> {
             DifferInstallmentDialog(
                   value = valueToPay,
                 creditRate = creditRate
                 , onDismiss = {  stateDifferDialog.value = false}
                 , onClick = {
-                    onClick.invoke( MoreOptionsItemsCreditCard.DIFFER_INSTALLMENT, it.toDouble())
+                    onClick.invoke( MoreOptionsItemsCreditCard.DIFFER_INSTALLMENT, it.toDouble(),"")
                     stateDifferDialog.value = false
                     onDismiss.invoke()
                 }
             )
         }
+        stateRestoreDialog.value -> {
+            AlertDialogOkCancel (
+                R.string.do_you_want_to_restore_this_record, R.string.restore
+                ,onDismiss = {
+                    stateRestoreDialog.value = false
+                    onDismiss.invoke()
+                },onClick = { onClick.invoke(MoreOptionsItemsCreditCard.RESTORE,0.0,"")
+                    stateRestoreDialog.value = false
+                    onDismiss.invoke()
+                })
+        }
     }
-    androidx.compose.material3.AlertDialog(
-        onDismissRequest = onDismiss){
-        Surface{
-            Column(modifier = Modifier.fillMaxWidth()
-                , horizontalAlignment = Alignment.CenterHorizontally) {
-                Text(text = stringResource(id = R.string.see_more), modifier = Modifier.padding(5.dp), fontSize = 18.sp)
-                Divider()
-                for ( item in listOptions) {
+    BasicAlertDialog(onDismissRequest = onDismiss) {
+        Surface {
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(
+                    text = stringResource(id = R.string.see_more),
+                    modifier = Modifier.padding(5.dp),
+                    fontSize = 18.sp
+                )
+                HorizontalDivider()
+                for (item in listOptions) {
                     TextButton(onClick = {
-                        when(item){
+                        when (item) {
                             MoreOptionsItemsCreditCard.DELETE -> stateDeleteDialog.value = true
                             MoreOptionsItemsCreditCard.ENDING -> stateEndingDialog.value = true
-                            MoreOptionsItemsCreditCard.UPDATE_VALUE -> stateUpdateDialog.value = true
-                            MoreOptionsItemsCreditCard.DIFFER_INSTALLMENT -> stateDifferDialog.value = true
-                            else->onClick.invoke(item,0.0)
+                            MoreOptionsItemsCreditCard.UPDATE_VALUE -> stateUpdateDialog.value =
+                                true
+
+                            MoreOptionsItemsCreditCard.DIFFER_INSTALLMENT -> stateDifferDialog.value =
+                                true
+
+                            MoreOptionsItemsCreditCard.RESTORE -> stateRestoreDialog.value = true
+                            else -> onClick.invoke(item, 0.0,"")
                         }
 
-                    },modifier= Modifier.fillMaxWidth()) {
-                        Text(text = stringResource(id = item.title),color= MaterialTheme.colorScheme.onSurface) }
-                    Divider()
+                    }, modifier = Modifier.fillMaxWidth()) {
+                        Text(
+                            text = stringResource(id = item.title),
+                            color = MaterialTheme.colorScheme.onSurface
+                        )
+                    }
+                    HorizontalDivider()
                 }
             }
         }
@@ -139,7 +184,7 @@ private fun UpdateValueDialog(onDismiss: () -> Unit, onClick: (Double) -> Unit) 
             Column(modifier = Modifier.fillMaxWidth()
                 , horizontalAlignment = Alignment.CenterHorizontally) {
                 Text(text = stringResource(id = R.string.update_value_recurrent_paymner), modifier = Modifier.padding(5.dp), fontSize = 18.sp)
-                Divider()
+                HorizontalDivider()
                 TextField(value = NumbersUtil.toString(text)
                     , onValueChange = { text = NumbersUtil.toDouble(it) }
                     , label = { Text(text = stringResource(id = R.string.value)) }
@@ -165,8 +210,7 @@ private fun DifferInstallmentDialog(value:Double,creditRate: Double,onDismiss: (
     val stateInstallment = remember { mutableStateOf("") }
     val newValueInstallment = remember { mutableDoubleStateOf(0.0) }
     val interest = remember {mutableDoubleStateOf(0.0)}
-    androidx.compose.material3.AlertDialog(
-        onDismissRequest = onDismiss) {
+    BasicAlertDialog(onDismissRequest = onDismiss) {
         Surface {
             Column(
                 modifier = Modifier.fillMaxWidth(),
@@ -193,15 +237,17 @@ private fun DifferInstallmentDialog(value:Double,creditRate: Double,onDismiss: (
                         newValueInstallment.doubleValue = value / NumbersUtil.toDouble(it)
                         interest.doubleValue = value * creditRate
                     },
-                    placeholder = { Text(text = "0")},
+                    placeholder = { Text(text = "0") },
                     label = { Text(text = stringResource(id = R.string.periods)) },
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                     trailingIcon = {
                         IconButton(onClick = {
                             stateInstallment.value = ""
-                        }){
-                            Icon(imageVector = Icons.Rounded.Cancel,
-                                contentDescription = stringResource(id = R.string.cancel))
+                        }) {
+                            Icon(
+                                imageVector = Icons.Rounded.Cancel,
+                                contentDescription = stringResource(id = R.string.cancel)
+                            )
                         }
                     }
 
@@ -236,11 +282,21 @@ private fun DifferInstallmentDialog(value:Double,creditRate: Double,onDismiss: (
 
                 Row {
                     TextButton(onClick = { onDismiss.invoke() }) {
-                        Text(text = stringResource(id = R.string.cancel), color = MaterialTheme.colorScheme.onSurface)
+                        Text(
+                            text = stringResource(id = R.string.cancel),
+                            color = MaterialTheme.colorScheme.onSurface
+                        )
                     }
 
-                    TextButton(onClick = { onClick.invoke(stateInstallment.value?.toLong()?:0) }) {
-                        Text(text = stringResource(id = R.string.ccio_differ_quotes), color = MaterialTheme.colorScheme.onSurface)
+                    TextButton(onClick = {
+                        onClick.invoke(
+                            stateInstallment.value?.toLong() ?: 0
+                        )
+                    }) {
+                        Text(
+                            text = stringResource(id = R.string.ccio_differ_quotes),
+                            color = MaterialTheme.colorScheme.onSurface
+                        )
 
                     }
                 }
