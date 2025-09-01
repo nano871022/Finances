@@ -10,90 +10,24 @@ on:
 
 jobs:
   lint:
-    name: Lint Code
-    runs-on: ubuntu-latest
-    steps:
-      - name: Setup Environment
-        uses: ./.github/actions/setup
-
-      - name: Run Lint
-        run: ./gradlew lintDebug --no-daemon --no-parallel --stacktrace
-
-      - name: Upload Lint Report
-        uses: actions/upload-artifact@v4
-        with:
-          name: lint-report
-          path: app/build/reports/lint-results-debug.html
+    uses: ./.github/workflows/lint.yml
 
   test:
-    name: Run Unit Tests
-    runs-on: ubuntu-latest
-    steps:
-      - name: Setup Environment
-        uses: ./.github/actions/setup
+    needs: [lint]
+    uses: ./.github/workflows/test.yml
 
-      - name: Run Unit Tests
-        run: ./gradlew testDebugUnitTest --no-daemon --no-parallel --stacktrace
+  build:
+    needs: [test]
+    uses: ./.github/workflows/build.yml
+    secrets:
+      SECRET_TOKEN: ${{ secrets.SECRET_TOKEN }}
 
-      - name: Upload Test Report
-        uses: actions/upload-artifact@v4
-        with:
-          name: test-report
-          path: app/build/reports/tests/testDebugUnitTest/
-
-  prepared_project:
-    name: Prepare and Build Release
-    needs: [lint, test]
-    environment: PROD
-    runs-on: ubuntu-latest
-    outputs:
-      VersionCode: ${{ steps.getVersion.outputs.VersionCode }}
-      VersionName: ${{ steps.getVersion.outputs.VersionName }}
-      CleanVersion: ${{ steps.getVersion.outputs.CleanVersion }}
-
-    steps:
-      - name: Setup Environment
-        uses: ./.github/actions/setup
-
-      - name: Get Version Code and Name of App
-        id: getVersion
-        run: |
-          VERSION_CODE=$(grep -m 1 'versionCode' app/build.gradle | awk '{print $2}')
-          VERSION_NAME=$(grep -m 1 'versionName' app/build.gradle | awk -F '"' '{print $2}')
-          CLEAN_VERSION=$(echo "$VERSION_NAME" | awk '{print $2}')
-          echo "VersionCode=$VERSION_CODE" >> $GITHUB_OUTPUT
-          echo "VersionName=$VERSION_NAME" >> $GITHUB_OUTPUT
-          echo "CleanVersion=$CLEAN_VERSION" >> $GITHUB_OUTPUT
-        
-      - name: Checkout properties
-        uses: actions/checkout@v4
-        with:
-          repository: ${{ github.actor }}/japl-properties
-          path: ./properties
-          ref: main
-          token: ${{ secrets.SECRET_TOKEN }}
-      
-      - name: Build Release AAB
-        run: |
-          ./gradlew bundleRelease \
-            -PsignPksPath="/.properties/finanzas/finanzas-same-plus-dot.pks" \
-            --no-daemon \
-            --no-parallel \
-            --info
-
-      - name: Upload to Play Store
-        if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
-        uses: r0adkll/upload-google-play@v1
-        with:
-          serviceAccountJsonPlainText: ${{ secrets.GOOGLE_PLAY_SERVICE_ACCOUNT }}
-          packageName: co.japl.android.myapplication
-          releaseFiles: app/build/outputs/bundle/release/app-release.bundle
-          track: test
-
-      - name: Create and Push Tag
-        if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
-        run: |
-          git config --global user.name 'github-actions[bot]'
-          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
-          git tag "v${{ steps.getVersion.outputs.CleanVersion }}" -m "Release v${{ steps.getVersion.outputs.CleanVersion }}"
-          git push origin "v${{ steps.getVersion.outputs.CleanVersion }}"
+  deploy:
+    needs: [build]
+    uses: ./.github/workflows/deploy.yml
+    secrets:
+      GOOGLE_PLAY_SERVICE_ACCOUNT: ${{ secrets.GOOGLE_PLAY_SERVICE_ACCOUNT }}
+    with:
+      VersionCode: ${{ needs.build.outputs.VersionCode }}
+      VersionName: ${{ needs.build.outputs.VersionName }}
+      CleanVersion: ${{ needs.build.outputs.CleanVersion }}
