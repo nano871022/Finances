@@ -9,6 +9,8 @@ on:
   workflow_dispatch:
 
 jobs:
+  lint:
+    uses: ./.github/workflows/lint.yml
 
   lint:
     uses: ./.github/workflows/lint.yml
