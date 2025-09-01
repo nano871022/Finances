@@ -1,0 +1,20 @@
+name: Lint Workflow
+on:
+  workflow_call:
+
+jobs:
+  lint:
+    name: Lint Code
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup Environment
+        uses: ./.github/actions/setup
+
+      - name: Run Lint
+        run: ./gradlew lintDebug --no-daemon --no-parallel --stacktrace
+
+      - name: Upload Lint Report
+        uses: actions/upload-artifact@v4
+        with:
+          name: lint-report
+          path: app/build/reports/lint-results-debug.html
