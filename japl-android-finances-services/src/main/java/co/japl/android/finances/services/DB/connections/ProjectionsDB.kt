@@ -36,4 +36,8 @@ class ProjectionsDB: DBRestore(), IConnectDB{
         onRestore(currentDB,fromRestoreDB,javaClass.simpleName,ProjectionDB.Entry.TABLE_NAME,ProjectionMap()::restore)
     }
 
+    override fun onStats(connectionDB: SQLiteDatabase?): Pair<String, Long> {
+        return onStats(connectionDB, ProjectionDB.Entry.TABLE_NAME)
+    }
+
 }

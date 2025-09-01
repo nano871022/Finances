@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Cancel
 import androidx.compose.material3.Divider
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -34,6 +35,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+//import co.com.alameda181.ui.R
+//import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.com.japl.ui.R
 import co.com.japl.ui.enums.IMoreOptions
 import co.com.japl.ui.theme.MaterialThemeComposeUI
@@ -86,7 +89,7 @@ fun FieldSelect(title:String,value:String?,list:List<IMoreOptions>?,isError:Muta
             }
         }
         if(stateClean.value) {
-            Divider(
+            HorizontalDivider(
                 modifier = Modifier.padding(top = 60.dp),
                 color = if (isError.value) {
                     MaterialTheme.colorScheme.error
@@ -106,7 +109,14 @@ fun FieldSelect(title:String,value:String?,list:List<IMoreOptions>?,isError:Muta
 }
 
 @Composable
-fun FieldSelect(title: String,value:String,  @StringRes cleanTitle:Int = R.string.clear, isError:MutableState<Boolean> = mutableStateOf(false),list:List<Pair<Int,String>>?,modifier: Modifier,callable:(Pair<Int,String>?)->Unit){
+fun FieldSelect(
+        title: String,
+        value:String,
+        @StringRes cleanTitle:Int = R.string.clear,
+        isError:MutableState<Boolean> = mutableStateOf(false),
+        list:List<Pair<Int,String>>?,
+        modifier: Modifier,
+        callable:(Pair<Int,String>?)->Unit){
     val context = LocalContext.current
     val state = remember { mutableStateOf(false) }
     val stateValue = remember { mutableStateOf("") }
@@ -154,7 +164,7 @@ fun FieldSelect(title: String,value:String,  @StringRes cleanTitle:Int = R.strin
             }
         }
         if(stateClean.value) {
-            Divider(
+            HorizontalDivider(
                 modifier = Modifier.padding(top = 60.dp),
                 color = if (isError.value) {
                     MaterialTheme.colorScheme.error
@@ -228,7 +238,7 @@ fun FieldSelect(title: String,
             }
         }
         if(stateClean.value) {
-            Divider(
+            HorizontalDivider(
                 modifier = Modifier.padding(top = 60.dp),
                 color = if (isError.value) {
                     MaterialTheme.colorScheme.error

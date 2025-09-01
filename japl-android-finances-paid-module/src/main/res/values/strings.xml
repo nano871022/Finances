@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="products_count">#</string>
+    <string name="products_cost">Total ahorrar</string>
+    <string name="list_projection">Proyecciones</string>
+    <string name="add_projection">Crear Proyección</string>
+    <string name="limite_date">Fecha Limite</string>
+    <string name="months_left_to_pay">Meses Faltantes</string>
+    <string name="saved_cash">Dinero Guardado</string>
+    <string name="projection_closed">Cercano</string>
+    <string name="projection_far">Lejano</string>
+    <string name="create_projection">Crear Proyección</string>
+    <string name="count_projection">Total Proyecciones</string>
+    <string name="total_saved">Total Ahorrado</string>
+    <string name="options_projection">Opciones</string>
+    <string name="not_record_available">No hay datos que mostrar</string>
+    <string name="do_you_want_remove_this_projection">¿Deseas eliminar esta proyección?</string>
+    <string name="record_was_remove_success">Fue eliminado el registro correctamente</string>
+    <string name="record_was_remove_error">No se logro eliminar el registro</string>
+    <string name="close">Cerrar</string>
+    <string name="quote_value">Valor Cuota</string>
+    <string name="months_left_to_pay_short">Faltantes</string>
+    <string name="clean_form">Limpiar</string>
+    <string name="date_of_projection">Fecha de Pago</string>
+    <string name="period_projection">Periodo Ahorro</string>
+    <string name="name_projection">Nombre</string>
+    <string name="value_projection">Valor a Ahorrar</string>
+    <string name="quote_projection">Valor Cuota de la Proyección</string>
+    <string name="save_project_success">Registro Creado Correctamente</string>
+    <string name="save_project_error">Error al crear la proyección</string>
+    <string name="update_project_error">No se logro actualizar la proyección</string>
+    <string name="update_project_success">Se logró actualizar la proyección</string>
+    <string name="clean_period">Limpiar periodo</string>
+</resources>

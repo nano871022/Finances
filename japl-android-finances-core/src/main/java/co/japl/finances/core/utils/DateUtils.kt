@@ -134,6 +134,15 @@ class DateUtils {
             return value.toLong()
         }
 
+        fun withDayOfMonth(date:LocalDateTime,day:Int):LocalDateTime{
+            val maxDayOfMonth = date.plusMonths(1).withMonth(1).minusDays(1).dayOfMonth
+            return if(maxDayOfMonth >= day){
+                date.withDayOfMonth(day)
+            }else{
+                date.plusDays((day  - date.dayOfMonth).toLong())
+            }
+        }
+
         @RequiresApi(Build.VERSION_CODES.O)
         fun getMonths(startDate: LocalDate, endDate: LocalDateTime): Long {
             val period = Period.between(startDate, endDate.toLocalDate())
@@ -202,7 +211,7 @@ class DateUtils {
         @RequiresApi(Build.VERSION_CODES.O)
         fun cutOffLastMonth(cutOffDay: Short, cutOff: LocalDateTime): LocalDateTime {
 
-            val cutOffEndMonth = cutOff.withDayOfMonth(1).minusDays(1)
+            val cutOffEndMonth = cutOff.withDayOfMonth(1).minusDays(1)// last day of before month over date provided
             var cutOffResponse = if (cutOffEndMonth.dayOfMonth < cutOffDay) {
                 cutOffEndMonth
             } else {

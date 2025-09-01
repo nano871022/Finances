@@ -1,5 +1,6 @@
 package co.japl.android.myapplication.finanzas.view.creditcard.bought.list
 
+import android.annotation.SuppressLint
 import android.app.Application
 import android.os.Build
 import android.util.Log
@@ -17,9 +18,10 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.PlainTooltipBox
-import androidx.compose.material3.PlainTooltipState
+import androidx.compose.material3.TooltipBox
 import androidx.compose.material3.Text
+import androidx.compose.material3.TooltipDefaults
+import androidx.compose.material3.rememberTooltipState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
@@ -89,6 +91,7 @@ internal fun RecordBoughtCreditCard(bought: CreditCardBoughtItemDTO, creditCard:
     }
 }
 
+@SuppressLint("UnusedBoxWithConstraintsScope")
 @Composable
 private fun Content(model:BoughtViewModel){
     BoxWithConstraints {
@@ -204,10 +207,11 @@ private fun ContentCompact(model:BoughtViewModel,paddingEnd:Dp=10.dp){
     }
 }
 
+@SuppressLint("UnusedBoxWithConstraintsScope")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun MainRow(model:BoughtViewModel){
-    val stateTooltip = remember { PlainTooltipState() }
+    val tooltip = rememberTooltipState()
     val scope = rememberCoroutineScope()
     val stateDialogOptionsMore = remember { mutableStateOf(false) }
     when{
@@ -216,16 +220,22 @@ private fun MainRow(model:BoughtViewModel){
             if(rediferirValue > model.bought.valueItem){
                rediferirValue =model.bought.valueItem
             }
-            MoreOptionsDialog(rediferirValue,model.bought.interest,model.getMoreOptionsList(),onDismiss = { stateDialogOptionsMore.value = false }, onClick = model::moreOption)
+            MoreOptionsDialog(rediferirValue,
+                model.bought.recurrent,
+                model.bought.interest,
+                model.getMoreOptionsList(),
+                onDismiss = { stateDialogOptionsMore.value = false },
+                onClick = model::moreOption)
         }
     }
     Row(modifier = Modifier.fillMaxWidth()
         , verticalAlignment = Alignment.CenterVertically) {
         if(model.bought.tagName.isNotBlank()) {
-            PlainTooltipBox(tooltip = {
+            TooltipBox(tooltip = {
                 Text(text = model.bought.tagName)
-            }, tooltipState = stateTooltip) {
-                IconButton(onClick={scope.launch{stateTooltip.show()}}
+            }, state = tooltip
+            , positionProvider = TooltipDefaults.rememberPlainTooltipPositionProvider()) {
+                IconButton(onClick={scope.launch{tooltip.show()}}
                 ) {
                     Icon(   painter = painterResource(id = R.drawable.baseline_location_on_24),
                         contentDescription = model.bought.tagName)

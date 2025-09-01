@@ -53,7 +53,8 @@ fun Monthly(viewModel:MonthlyViewModel) {
     }
 
     if(loaderState.value){
-        LinearProgressIndicator(progress = progressStatus.value,modifier=Modifier.fillMaxWidth())
+        LinearProgressIndicator(modifier = Modifier.fillMaxWidth(),
+        )
     }else{
         Body(viewModel)
     }

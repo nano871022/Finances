@@ -24,7 +24,7 @@ class SmsPaidImpl @Inject constructor(override var dbConnect: SQLiteOpenHelper) 
     ): List<SmsPaid> {
         val list = mutableListOf<SmsPaid>()
         val db = dbConnect.readableDatabase
-        val cursor = db.query(
+        db.query(
             SmsPaidDB.Entry.TABLE_NAME,
             COLUMNS,
             "${SmsPaidDB.Entry.COLUMN_CODE_ACCOUNT}=? AND ${SmsPaidDB.Entry.COLUMN_ACTIVE}=1",
@@ -32,10 +32,11 @@ class SmsPaidImpl @Inject constructor(override var dbConnect: SQLiteOpenHelper) 
             null,
             null,
             null
-        )
-        with(cursor){
-            while (moveToNext()){
-                list.add(SmsPaidMap().mapping(cursor))
+        )?.use { cursor ->
+            with(cursor) {
+                while (moveToNext()) {
+                    list.add(SmsPaidMap().mapping(cursor))
+                }
             }
         }
         return list
@@ -53,12 +54,14 @@ class SmsPaidImpl @Inject constructor(override var dbConnect: SQLiteOpenHelper) 
         val list = mutableListOf<SmsPaid>()
         val mapper = SmsPaidMap()
         val db = dbConnect.readableDatabase
-        val cursor = db.query(SmsPaidDB.Entry.TABLE_NAME,COLUMNS,null,null,null,null,null)
-        with(cursor){
-            while (moveToPrevious()){
-                mapper.mapping(cursor).let(list::add)
+        db.query(SmsPaidDB.Entry.TABLE_NAME, COLUMNS, null, null, null, null, null)
+            ?.use { cursor ->
+                with(cursor) {
+                    while (moveToPrevious()) {
+                        mapper.mapping(cursor).let(list::add)
+                    }
+                }
             }
-        }
         return list
     }
 
@@ -72,13 +75,14 @@ class SmsPaidImpl @Inject constructor(override var dbConnect: SQLiteOpenHelper) 
         require(id > 0){"Id must be > 0"}
         val mapper = SmsPaidMap()
         val db = dbConnect.readableDatabase
-        val cursor = db.query(
+        db.query(
             SmsPaidDB.Entry.TABLE_NAME,COLUMNS,"${BaseColumns._ID} = ?",
             arrayOf(id.toString()),null,null,null
-        )
-        with(cursor){
-            while(moveToNext()){
-                mapper.mapping(cursor).let { return Optional.of(it) }
+        )?.use { cursor ->
+            with(cursor) {
+                while (moveToNext()) {
+                    mapper.mapping(cursor).let { return Optional.of(it) }
+                }
             }
         }
         return Optional.empty()
@@ -88,12 +92,13 @@ class SmsPaidImpl @Inject constructor(override var dbConnect: SQLiteOpenHelper) 
         val list = mutableListOf<SmsPaid>()
         val mapper = SmsPaidMap()
         val db = dbConnect.readableDatabase
-        val cursor = db.query(SmsPaidDB.Entry.TABLE_NAME,COLUMNS,
+        db.query(SmsPaidDB.Entry.TABLE_NAME,COLUMNS,
             "${SmsPaidDB.Entry.COLUMN_CODE_ACCOUNT} =?",
-            arrayOf(values.codeAccount.toString()),null,null,null)
-        with(cursor){
-            while (moveToNext()){
-                mapper.mapping(cursor).let(list::add)
+            arrayOf(values.codeAccount.toString()),null,null,null)?.use { cursor ->
+            with(cursor) {
+                while (moveToNext()) {
+                    mapper.mapping(cursor).let(list::add)
+                }
             }
         }
         return list

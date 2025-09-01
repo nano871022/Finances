@@ -4,6 +4,7 @@
   <component name="GradleSettings">
     <option name="linkedExternalProjectsSettings">
       <GradleProjectSettings>
+        <option name="testRunner" value="CHOOSE_PER_TEST" />
         <option name="externalProjectPath" value="$PROJECT_DIR$" />
         <option name="gradleJvm" value="#GRADLE_LOCAL_JAVA_HOME" />
         <option name="modules">
@@ -12,6 +13,7 @@
             <option value="$PROJECT_DIR$/CreditCardModule" />
             <option value="$PROJECT_DIR$/about-module" />
             <option value="$PROJECT_DIR$/app" />
+            <option value="$PROJECT_DIR$/credit" />
             <option value="$PROJECT_DIR$/japl-android-finances-core" />
             <option value="$PROJECT_DIR$/japl-android-finances-paid-module" />
             <option value="$PROJECT_DIR$/japl-android-finances-services" />
@@ -20,8 +22,8 @@
             <option value="$PROJECT_DIR$/ui" />
           </set>
         </option>
-        <option name="resolveExternalAnnotations" value="false" />
       </GradleProjectSettings>
     </option>
+    <option name="parallelModelFetch" value="true" />
   </component>
 </project>

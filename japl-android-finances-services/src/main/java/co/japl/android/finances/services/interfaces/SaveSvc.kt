@@ -11,7 +11,7 @@ interface SaveSvc<T>  {
 
     fun getAll():List<T>
 
-    fun delete(id:Int):Boolean
+        fun delete(id:Int):Boolean
 
     fun get(id:Int):Optional<T>
 

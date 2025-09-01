@@ -13,16 +13,3 @@ data class InputDTO(
     val dateStart: LocalDate,
     val dateEnd: LocalDate
 )
-
-object InputDB{
-    object Entry{
-        const val TABLE_NAME = "TB_INPUT"
-        const val COLUMN_DATE_INPUT = "dt_input"
-        const val COLUMN_ACCOUNT_CODE = "cd_account"
-        const val COLUMN_KIND_OF = "cd_kindof"
-        const val COLUMN_NAME = "str_name"
-        const val COLUMN_VALUE = "nbr_value"
-        const val COLUMN_START_DATE = "dt_start"
-        const val COLUMN_END_DATE = "dt_end"
-    }
-}

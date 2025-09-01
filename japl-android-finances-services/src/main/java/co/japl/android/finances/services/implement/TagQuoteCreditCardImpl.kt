@@ -31,7 +31,8 @@ class TagQuoteCreditCardImpl @Inject constructor(override var dbConnect: SQLiteO
         val list = mutableListOf<TagDTO>()
         try {
             val db = dbConnect.readableDatabase
-            val cursor = db.query(
+            val mapper = TagQuoteCreditCardMap()
+            db.query(
                 TagsQuoteCreditCardDB.Entry.TABLE_NAME,
                 COLUMNS,
                 "${TagsQuoteCreditCardDB.Entry.COLUMN_CODE_QUOTE_CREDIT_CARD} = ?",
@@ -39,13 +40,13 @@ class TagQuoteCreditCardImpl @Inject constructor(override var dbConnect: SQLiteO
                 null,
                 null,
                 null
-            )
-            val mapper = TagQuoteCreditCardMap()
-            with(cursor) {
-                while (moveToNext()) {
-                    mapper.mapping(this).let {
-                        tagSvc.get(it.codTag).takeIf { it.isPresent }?.let {
-                            list.add(it.get())
+            )?.use { cursor ->
+                with(cursor) {
+                    while (moveToNext()) {
+                        mapper.mapping(this).let {
+                            tagSvc.get(it.codTag).takeIf { it.isPresent }?.let {
+                                list.add(it.get())
+                            }
                         }
                     }
                 }
@@ -72,7 +73,9 @@ class TagQuoteCreditCardImpl @Inject constructor(override var dbConnect: SQLiteO
     @RequiresApi(Build.VERSION_CODES.O)
     override fun getAll(): List<TagsQuoteCreditCardDTO> {
         val db = dbConnect.readableDatabase
-        val cursor = db.query(
+        val mapper = TagQuoteCreditCardMap()
+        val list = mutableListOf<TagsQuoteCreditCardDTO>()
+        db.query(
             TagsQuoteCreditCardDB.Entry.TABLE_NAME,
             COLUMNS,
             null,
@@ -80,13 +83,12 @@ class TagQuoteCreditCardImpl @Inject constructor(override var dbConnect: SQLiteO
             null,
             null,
             null
-        )
-        val mapper = TagQuoteCreditCardMap()
-        val list = mutableListOf<TagsQuoteCreditCardDTO>()
-        with(cursor) {
-            while (moveToNext()) {
-                mapper.mapping(this).let {
-                    list.add(it)
+        )?.use { cursor ->
+            with(cursor) {
+                while (moveToNext()) {
+                    mapper.mapping(this).let {
+                        list.add(it)
+                    }
                 }
             }
         }
@@ -101,7 +103,8 @@ class TagQuoteCreditCardImpl @Inject constructor(override var dbConnect: SQLiteO
     @RequiresApi(Build.VERSION_CODES.O)
     override fun get(id: Int): Optional<TagsQuoteCreditCardDTO> {
         val db = dbConnect.readableDatabase
-        val cursor = db.query(
+        val mapper = TagQuoteCreditCardMap()
+        db.query(
             TagsQuoteCreditCardDB.Entry.TABLE_NAME,
             COLUMNS,
             "${TagsQuoteCreditCardDB.Entry.COLUMN_CODE_QUOTE_CREDIT_CARD} = ?",
@@ -109,11 +112,11 @@ class TagQuoteCreditCardImpl @Inject constructor(override var dbConnect: SQLiteO
             null,
             null,
             null
-        )
-        val mapper = TagQuoteCreditCardMap()
-        with(cursor) {
-            while (moveToNext()) {
-                return Optional.ofNullable(mapper.mapping(this))
+        )?.use { cursor ->
+            with(cursor) {
+                while (moveToNext()) {
+                    return@get Optional.ofNullable(mapper.mapping(this))
+                }
             }
         }
         return Optional.empty()

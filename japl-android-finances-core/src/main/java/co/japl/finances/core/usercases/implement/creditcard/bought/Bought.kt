@@ -137,6 +137,10 @@ class Bought @Inject constructor(private val boughtSvc:IQuoteCreditCardPort,priv
         return boughtSvc.get(codeBought,cache)
     }
 
+    override fun fixDataProcess() {
+        boughtSvc.fixDataProcess()
+    }
+
     private fun getCurrentRecap(creditCard:CreditCard,cutOffDate:LocalDateTime,cache: Boolean):RecapCurrentMonthly?{
         return service.getBoughtList(creditCard,cutOffDate,cache)?.let{
             val capitalValue = it.list?.sumOf { it.capitalValue }?:0.0

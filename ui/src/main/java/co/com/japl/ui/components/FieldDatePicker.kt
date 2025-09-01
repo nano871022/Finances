@@ -17,7 +17,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Cancel
 import androidx.compose.material3.DatePicker
-import androidx.compose.material3.DatePickerDefaults
 import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -44,7 +43,7 @@ import co.com.japl.ui.utils.DateUtils
 @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun FieldDatePicker(@StringRes title:Int,value:String,isError:MutableState<Boolean> = mutableStateOf(false),validation:()->Unit,callable:(String)->Unit,modifier:Modifier = Modifier) {
+fun FieldDatePicker(@StringRes title:Int,value:String,isEnablePicker:MutableState<Boolean> = mutableStateOf(true),isError:MutableState<Boolean> = mutableStateOf(false),validation:()->Unit,callable:(String)->Unit,modifier:Modifier = Modifier) {
     val state = rememberDatePickerState()
     val stateDatePicker = remember { mutableStateOf(false) }
     val stateValue = remember { mutableStateOf(value) }
@@ -53,7 +52,9 @@ fun FieldDatePicker(@StringRes title:Int,value:String,isError:MutableState<Boole
         .background(color = androidx.compose.material3.MaterialTheme.colorScheme.surfaceVariant)
         .border(1.dp, Color.Unspecified, shape = ShapeDefaults.ExtraLarge)
         .clickable {
-            stateDatePicker.value = true
+            if(isEnablePicker.value) {
+                stateDatePicker.value = true
+            }
         }) {
         Column {
 
@@ -76,7 +77,8 @@ fun FieldDatePicker(@StringRes title:Int,value:String,isError:MutableState<Boole
                             MaterialTheme.colorScheme.onSurface}
                         ,modifier = modifier
                             .weight(1f)
-                            .align(alignment = Alignment.CenterVertically))
+                           .align(alignment = Alignment.CenterVertically)
+                    )
 
                     IconButton(onClick = { stateValue.value = "" }) {
                         Icon(imageVector = Icons.Rounded.Cancel, contentDescription = "Clear",
@@ -127,10 +129,10 @@ fun FieldDatePicker(@StringRes title:Int,value:String,isError:MutableState<Boole
 @Preview(showSystemUi = true, showBackground = true)
 fun FieldDatePickerPreview(){
     MaterialThemeComposeUI {
-        FieldDatePicker(title = androidx.compose.material3.R.string.date_picker_headline
+        FieldDatePicker(title = androidx.compose.material3.R.string.m3c_date_picker_headline
             ,value = "2022-10-01"
             , callable = {}
-            , isError = mutableStateOf(true)
+            , isError = remember{mutableStateOf(true)}
             , validation = {}
             , modifier = Modifier
                 .fillMaxWidth()
@@ -143,10 +145,10 @@ fun FieldDatePickerPreview(){
 @Preview(showSystemUi = true, showBackground = true)
 fun FieldDatePickerPreviewNotError(){
     MaterialThemeComposeUI {
-        FieldDatePicker(title = androidx.compose.material3.R.string.date_picker_headline
+        FieldDatePicker(title = androidx.compose.material3.R.string.m3c_date_picker_headline
             ,value = "2022-10-01"
             , callable = {}
-            , isError = mutableStateOf(false)
+            , isError = remember{mutableStateOf(false)}
             , validation = {}
             , modifier = Modifier
                 .fillMaxWidth()
@@ -159,10 +161,10 @@ fun FieldDatePickerPreviewNotError(){
 @Preview(showSystemUi = true, showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
 fun FieldDatePickerPreviewDark(){
     MaterialThemeComposeUI {
-        FieldDatePicker(title = androidx.compose.material3.R.string.date_picker_headline
+        FieldDatePicker(title = androidx.compose.material3.R.string.m3c_date_picker_headline
             ,value = "2022-10-01"
             , callable = {}
-            , isError = mutableStateOf(true)
+            , isError = remember{mutableStateOf(true)}
             , validation = {}
             , modifier = Modifier
                 .fillMaxWidth()
@@ -175,10 +177,10 @@ fun FieldDatePickerPreviewDark(){
 @Preview(showSystemUi = true, showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
 fun FieldDatePickerPreviewNotErrorDark(){
     MaterialThemeComposeUI {
-        FieldDatePicker(title = androidx.compose.material3.R.string.date_picker_headline
+        FieldDatePicker(title = androidx.compose.material3.R.string.m3c_date_picker_headline
             ,value = "2022-10-01"
             , callable = {}
-            , isError = mutableStateOf(false)
+            , isError = remember{mutableStateOf(false)}
             , validation = {}
             , modifier = Modifier
                 .fillMaxWidth()

@@ -2,9 +2,11 @@ package co.com.japl.finances.iports.dtos
 
 import java.math.BigDecimal
 import java.time.LocalDate
+import java.time.Period
+import java.time.YearMonth
 
 data class PeriodCreditDTO (
-    var date:LocalDate,
-    var count:Int,
-    var value:BigDecimal
-        )
+    val date: YearMonth,
+    val count:Int,
+    val value:BigDecimal
+)

@@ -1,0 +1,60 @@
+name: Build Workflow
+on:
+  workflow_call:
+    secrets:
+      SECRET_TOKEN:
+        required: true
+    outputs:
+      VersionCode:
+        description: "The version code of the app"
+        value: ${{ jobs.build.outputs.VersionCode }}
+      VersionName:
+        description: "The version name of the app"
+        value: ${{ jobs.build.outputs.VersionName }}
+      CleanVersion:
+        description: "The clean version name of the app"
+        value: ${{ jobs.build.outputs.CleanVersion }}
+
+jobs:
+  build:
+    name: Prepare and Build Release
+    runs-on: ubuntu-latest
+    outputs:
+      VersionCode: ${{ steps.getVersion.outputs.VersionCode }}
+      VersionName: ${{ steps.getVersion.outputs.VersionName }}
+      CleanVersion: ${{ steps.getVersion.outputs.CleanVersion }}
+    steps:
+      - name: Setup Environment
+        uses: ./.github/actions/setup
+
+      - name: Get Version Code and Name of App
+        id: getVersion
+        run: |
+          VERSION_CODE=$(grep -m 1 'versionCode' app/build.gradle | awk '{print $2}')
+          VERSION_NAME=$(grep -m 1 'versionName' app/build.gradle | awk -F '"' '{print $2}')
+          CLEAN_VERSION=$(echo "$VERSION_NAME" | awk '{print $2}')
+          echo "VersionCode=$VERSION_CODE" >> $GITHUB_OUTPUT
+          echo "VersionName=$VERSION_NAME" >> $GITHUB_OUTPUT
+          echo "CleanVersion=$CLEAN_VERSION" >> $GITHUB_OUTPUT
+
+      - name: Checkout properties
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ github.actor }}/japl-properties
+          path: ./properties
+          ref: main
+          token: ${{ secrets.SECRET_TOKEN }}
+
+      - name: Build Release AAB
+        run: |
+          ./gradlew bundleRelease \
+            -PsignPksPath="./properties/finanzas/finanzas-same-plus-dot.pks" \
+            --no-daemon \
+            --no-parallel \
+            --info
+
+      - name: Upload aab
+        uses: actions/upload-artifact@v4
+        with:
+            name: aab-file
+            path: app/build/outputs/bundle/release/app-release.bundle

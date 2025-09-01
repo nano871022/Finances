@@ -27,7 +27,7 @@ class SmsCreditCardImpl @Inject constructor(override var dbConnect: SQLiteOpenHe
     ): List<SmsCreditCard> {
         val list = mutableListOf<SmsCreditCard>()
         val db = dbConnect.readableDatabase
-        val cursor = db.query(
+        db.query(
             SmsCreditCardDB.Entry.TABLE_NAME,
             COLUMNS,
             "${SmsCreditCardDB.Entry.COLUMN_CODE_CREDIT_CARD}=? AND ${SmsCreditCardDB.Entry.COLUMN_KIND_INTEREST_RATE}=? AND ${SmsCreditCardDB.Entry.COLUMN_ACTIVE}=1",
@@ -35,10 +35,11 @@ class SmsCreditCardImpl @Inject constructor(override var dbConnect: SQLiteOpenHe
             null,
             null,
             null
-        )
-        with(cursor){
-            while (moveToNext()){
-                list.add(SmsCreditCardMap().mapping(cursor))
+        )?.use { cursor ->
+            with(cursor) {
+                while (moveToNext()) {
+                    list.add(SmsCreditCardMap().mapping(cursor))
+                }
             }
         }
         return list
@@ -56,12 +57,13 @@ class SmsCreditCardImpl @Inject constructor(override var dbConnect: SQLiteOpenHe
         val list = mutableListOf<SmsCreditCard>()
         val mapper = SmsCreditCardMap()
         val db = dbConnect.readableDatabase
-        val cursor = db.query(SmsCreditCardDB.Entry.TABLE_NAME,COLUMNS,null,null,null,null,null)
-        with(cursor){
+        db.query(SmsCreditCardDB.Entry.TABLE_NAME,COLUMNS,null,null,null,null,null)
+            ?.use { cursor ->with(cursor){
             while (moveToPrevious()){
                 mapper.mapping(cursor).let(list::add)
             }
         }
+                }
         return list
     }
 
@@ -75,13 +77,14 @@ class SmsCreditCardImpl @Inject constructor(override var dbConnect: SQLiteOpenHe
         require(id > 0){"Id must be > 0"}
         val mapper = SmsCreditCardMap()
         val db = dbConnect.readableDatabase
-        val cursor = db.query(
+        db.query(
             SmsCreditCardDB.Entry.TABLE_NAME,COLUMNS,"${BaseColumns._ID} = ?",
             arrayOf(id.toString()),null,null,null
-        )
-        with(cursor){
-            while(moveToNext()){
-                mapper.mapping(cursor).let { return Optional.of(it) }
+        )?.use { cursor ->
+            with(cursor) {
+                while (moveToNext()) {
+                    mapper.mapping(cursor).let { return Optional.of(it) }
+                }
             }
         }
         return Optional.empty()
@@ -91,14 +94,16 @@ class SmsCreditCardImpl @Inject constructor(override var dbConnect: SQLiteOpenHe
         val list = mutableListOf<SmsCreditCard>()
         val mapper = SmsCreditCardMap()
         val db = dbConnect.readableDatabase
-        val cursor = db.query(SmsCreditCardDB.Entry.TABLE_NAME,COLUMNS,
+        db.query(SmsCreditCardDB.Entry.TABLE_NAME,COLUMNS,
             "${SmsCreditCardDB.Entry.COLUMN_CODE_CREDIT_CARD} =?",
             arrayOf(values.codeCreditCard.toString()),null,null,null)
-        with(cursor){
-            while (moveToNext()){
-                mapper.mapping(cursor).let(list::add)
+            ?.use { cursor ->
+                with(cursor) {
+                    while (moveToNext()) {
+                        mapper.mapping(cursor).let(list::add)
+                    }
+                }
             }
-        }
         return list
     }
 

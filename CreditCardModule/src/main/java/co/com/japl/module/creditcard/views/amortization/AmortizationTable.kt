@@ -1,0 +1,403 @@
+package co.com.japl.module.creditcard.views.amortization
+
+import android.annotation.SuppressLint
+import android.content.res.Configuration
+import android.os.Build
+import android.util.Log
+import androidx.annotation.RequiresApi
+import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Scaffold
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.material.LinearProgressIndicator
+import androidx.compose.material.Text
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
+import co.com.japl.finances.iports.dtos.AmortizationRowDTO
+import co.com.japl.finances.iports.enums.KindOfTaxEnum
+import co.com.japl.module.creditcard.R
+import co.com.japl.module.creditcard.controllers.amortization.AmortizationViewModel
+import co.com.japl.ui.components.DataTable
+import co.com.japl.ui.components.FieldView
+import co.com.japl.ui.model.datatable.Header
+import co.com.japl.ui.theme.MaterialThemeComposeUI
+import co.com.japl.ui.theme.values.Dimensions
+import co.com.japl.ui.utils.WindowWidthSize
+import co.japl.android.myapplication.utils.NumbersUtil
+import java.math.BigDecimal
+
+@Composable
+fun  AmortizationTable (viewModel:AmortizationViewModel){
+	val progressState = remember { mutableStateOf(false) } 
+
+	if(progressState.value){
+		LinearProgressIndicator()
+	}else{
+		Body(viewModel)
+	}
+}
+
+@Composable
+private fun Body(viewModel:AmortizationViewModel){
+	Scaffold(
+		floatingActionButton = {
+			FloatButton(viewModel)
+		},topBar={
+			androidx.compose.material3.Text(
+				text = stringResource(R.string.amortization_quote_variable),
+				modifier = Modifier.fillMaxWidth()
+			)
+		}
+		, modifier = Modifier.padding(Dimensions.PADDING_SHORT)
+	){
+		Column(modifier= Modifier.padding(it)){
+			Header(viewModel)
+			Table(viewModel)
+		}	
+	}
+}
+
+@Composable
+private fun FloatButton(viewModel:AmortizationViewModel){
+	Column{
+	}
+}
+
+@SuppressLint("UnusedBoxWithConstraintsScope")
+@Composable
+private fun Header(viewModel:AmortizationViewModel){
+	BoxWithConstraints {
+		val isCompact = WindowWidthSize.MEDIUM.isEqualTo(maxWidth)
+		Column {
+			if (isCompact) {
+				HeaderCompact(viewModel)
+			} else {
+				HeaderLarge(viewModel)
+			}
+		}
+	}
+
+}
+@Composable
+private fun HeaderCompact(viewModel:AmortizationViewModel){
+	FieldView(
+		title= stringResource(R.string.credit_value),
+		NumbersUtil.COPtoString(viewModel.list.firstOrNull()?.creditValue?: BigDecimal.ZERO),
+		modifier = Modifier
+			.fillMaxWidth()
+			.padding(bottom = Dimensions.PADDING_SHORT)
+	)
+	Row {
+		FieldView(
+			title = stringResource(R.string.months),
+			"${viewModel.list.firstOrNull()?.periods}" ,
+			modifier = Modifier
+				.fillMaxWidth()
+				.weight(1f)
+				.padding(end = Dimensions.PADDING_TOP)
+		)
+		FieldView(
+			title = stringResource(R.string.interest),
+			"${viewModel.list.firstOrNull()?.creditRate} % ${viewModel.list.firstOrNull()?.kindRate?.value}",
+			modifier = Modifier
+				.fillMaxWidth()
+				.weight(1f)
+		)
+	}
+	FieldView(
+		title= stringResource(R.string.capital_value),
+		NumbersUtil.COPtoString(viewModel.list.firstOrNull()?.capitalValue?: BigDecimal.ZERO),
+		modifier = Modifier
+			.fillMaxWidth()
+			.padding(top = Dimensions.PADDING_SHORT)
+	)
+}
+@Composable
+private fun HeaderLarge(viewModel:AmortizationViewModel){
+	Row {
+		FieldView(
+			title= stringResource(R.string.credit_value),
+			NumbersUtil.COPtoString(viewModel.list.firstOrNull()?.creditValue?: BigDecimal.ZERO),
+			modifier = Modifier
+				.fillMaxWidth()
+				.weight(2f)
+				.padding(end = Dimensions.PADDING_TOP)
+		)
+		FieldView(
+			title = stringResource(R.string.months),
+			"${viewModel.list.firstOrNull()?.periods}" ,
+			modifier = Modifier
+				.fillMaxWidth()
+				.weight(1f)
+				.padding(end = Dimensions.PADDING_TOP)
+		)
+		FieldView(
+			title = stringResource(R.string.interest),
+			"${viewModel.list.firstOrNull()?.creditRate} % ${viewModel.list.firstOrNull()?.kindRate?.value}",
+			modifier = Modifier
+				.fillMaxWidth()
+				.weight(1f)
+		)
+	}
+}
+
+@Composable
+private fun Table(viewModel:AmortizationViewModel){
+	val monthsPerYear = 12
+	val list = remember { viewModel.list }
+	Log.d("Table","<<<=== Table:: $list")
+	val listHeader = listOf(
+		Header(id=1,title=stringResource(R.string.value),tooltip=stringResource(R.string.amortization_value),weight=3f),
+		Header(id=2,title=stringResource(R.string.capital),tooltip=stringResource(R.string.capital_value),weight=3f),
+		Header(id=3,title=stringResource(R.string.interest),tooltip=stringResource(R.string.interest_value),weight=3f),
+		Header(id=4,title = stringResource(R.string.quote), tooltip = stringResource(R.string.quote_value), weight = 3f)
+	)
+
+		DataTable(
+			listHeader = {
+				val isCompact = WindowWidthSize.MEDIUM.isEqualTo(it)
+				listHeader.filter { (isCompact && it.id != 2) or !isCompact }
+						 },
+			splitPos = if(list.size > monthsPerYear) monthsPerYear else 0,
+			split = { pos, width ->
+				Row {
+					SplitterYearly(	monthsPerYear,pos,width,list)
+				}
+			},
+			sizeBody = list.size,
+			footer={ maxWidth -> Footer(list,WindowWidthSize.MEDIUM.isEqualTo(maxWidth))}
+		) { pos,maxWidth ->
+			val isCompact = WindowWidthSize.MEDIUM.isEqualTo(maxWidth)
+			val records = list.first { it.id.toInt() == pos + 1 }
+				Row(records,isCompact)
+		}
+}
+
+@Composable
+private fun RowScope.SplitterYearly(monthsPerYear:Int,pos:Int, width: Dp, list:List<AmortizationRowDTO>){
+	val isCompact = WindowWidthSize.MEDIUM.isEqualTo(width)
+	val listSeg = list.takeIf { it.size > pos + monthsPerYear  }?.let{list.subList(pos,pos+monthsPerYear)}?:list.subList(pos,list.size)
+	Text(text=stringResource(R.string.year),
+		color= MaterialTheme.colorScheme.onBackground,
+		modifier=Modifier)
+	Text(text=" ${(pos/monthsPerYear)+ 1 }    ",
+		color= MaterialTheme.colorScheme.onBackground,
+		modifier=Modifier)
+	Text(text= stringResource(R.string.capital),
+		color= MaterialTheme.colorScheme.onBackground,
+		modifier=Modifier.weight(1f))
+	Text(text=NumbersUtil.COPtoString(listSeg.sumOf { it.capitalValue }),
+		color= MaterialTheme.colorScheme.onBackground,
+		textAlign=TextAlign.Right,
+		modifier=Modifier
+			.weight(1f)
+			.padding(end = Dimensions.PADDING_SHORT))
+	Text(text = stringResource(R.string.interest),
+		color= MaterialTheme.colorScheme.onBackground,
+		modifier=Modifier.weight(1f))
+	Text(text= NumbersUtil.COPtoString(listSeg.sumOf { it.interestValue }),
+		color= MaterialTheme.colorScheme.onBackground,
+		textAlign = TextAlign.Right,
+		modifier=Modifier.weight(1f))
+	if(!isCompact) {
+		Text(
+			text = stringResource(R.string.quote),
+			color = MaterialTheme.colorScheme.onBackground,
+			modifier = Modifier
+				.weight(1f)
+				.padding(start = Dimensions.PADDING_SHORT)
+		)
+		Text(
+			text = NumbersUtil.COPtoString(listSeg.sumOf { it.quoteValue }),
+			color = MaterialTheme.colorScheme.onBackground,
+			textAlign = TextAlign.Right,
+			modifier = Modifier.weight(1f)
+		)
+	}
+}
+
+@Composable
+private fun RowScope.Footer(list: MutableList<AmortizationRowDTO>, isCompact:Boolean){
+	Text(text = " ",modifier=Modifier.padding(7.dp))
+	Text(
+		text = stringResource(R.string.total),
+		color= MaterialTheme.colorScheme.onBackground,
+		textAlign = TextAlign.Right,
+		modifier=Modifier
+			.weight(3f)
+			.align(alignment = Alignment.CenterVertically)
+	)
+	if(isCompact.not()) {
+		Text(
+			text = NumbersUtil.COPtoString(list.sumOf { it.capitalValue }),
+			color= MaterialTheme.colorScheme.onBackground,
+			textAlign = TextAlign.Right,
+			modifier = Modifier
+				.weight(3f)
+				.align(alignment = Alignment.CenterVertically)
+		)
+	}
+	Text(
+		text = NumbersUtil.COPtoString(list.sumOf { it.interestValue }),
+		color= MaterialTheme.colorScheme.onBackground,
+		textAlign = TextAlign.Right,
+		modifier=Modifier
+			.weight(3f)
+			.align(alignment = Alignment.CenterVertically)
+	)
+	Text(
+		text = NumbersUtil.COPtoString(list.sumOf { it.quoteValue }),
+		color= MaterialTheme.colorScheme.onBackground,
+		textAlign = TextAlign.Right,
+		modifier=Modifier
+			.weight(3f)
+			.align(alignment = Alignment.CenterVertically)
+	)
+}
+
+@Composable
+private fun RowScope.Row(row: AmortizationRowDTO,isCompact:Boolean){
+	Text(
+		text = NumbersUtil.COPtoString(row.amortizatedValue),
+		color= MaterialTheme.colorScheme.onBackground,
+		textAlign = TextAlign.Right,
+		modifier=Modifier
+			.weight(3f)
+			.align(alignment = Alignment.CenterVertically)
+	)
+	if(isCompact.not()) {
+		Text(
+			text = NumbersUtil.COPtoString(row.capitalValue),
+			color= MaterialTheme.colorScheme.onBackground,
+			textAlign = TextAlign.Right,
+			modifier = Modifier
+				.weight(3f)
+				.align(alignment = Alignment.CenterVertically)
+		)
+	}
+	Text(
+		text = NumbersUtil.COPtoString(row.interestValue),
+		color= MaterialTheme.colorScheme.onBackground,
+		textAlign = TextAlign.Right,
+		modifier=Modifier
+			.weight(3f)
+			.align(alignment = Alignment.CenterVertically)
+	)
+	Text(
+		text = NumbersUtil.COPtoString(row.quoteValue),
+		color= MaterialTheme.colorScheme.onBackground,
+		textAlign = TextAlign.Right,
+		modifier=Modifier
+			.weight(3f)
+			.align(alignment = Alignment.CenterVertically)
+	)
+}
+
+@RequiresApi(Build.VERSION_CODES.S)
+@Composable
+@Preview(showBackground = true, showSystemUi = true, backgroundColor = 0xFFFFFFFF, uiMode = Configuration.UI_MODE_NIGHT_NO)
+private fun AmortizationLight(){
+	val viewModel = getViewModel()
+	MaterialThemeComposeUI {
+		AmortizationTable(viewModel)
+	}
+}
+
+@RequiresApi(Build.VERSION_CODES.S)
+@Composable
+@Preview(showBackground = true, showSystemUi = true, backgroundColor = 0x00000000, uiMode = Configuration.UI_MODE_NIGHT_YES)
+private fun AmortizationDark(){
+	val viewModel = getViewModel()
+	MaterialThemeComposeUI {
+		AmortizationTable(viewModel)
+	}
+}
+
+@RequiresApi(Build.VERSION_CODES.S)
+@Composable
+@Preview(showBackground = true, showSystemUi = true, device = "spec:width=821dp,height=421dp" , backgroundColor = 0xFFFFFFFF, uiMode = Configuration.UI_MODE_NIGHT_NO)
+private fun AmortizationLightVertical(){
+	val viewModel = getViewModel()
+	MaterialThemeComposeUI {
+		AmortizationTable(viewModel)
+	}
+}
+
+@RequiresApi(Build.VERSION_CODES.S)
+@Composable
+@Preview(showBackground = true, showSystemUi = true, device = "spec:width=821dp,height=421dp" , backgroundColor = 0x00000000, uiMode = Configuration.UI_MODE_NIGHT_YES)
+private fun AmortizationDarkVertical(){
+	val viewModel = getViewModel()
+	MaterialThemeComposeUI {
+		AmortizationTable(viewModel)
+	}
+}
+
+private fun getViewModel(): AmortizationViewModel{
+	return AmortizationViewModel(2).also {
+		it.list.add(
+			AmortizationRowDTO(
+				id=1,
+				periods = 4,
+				creditRate = 13.0,
+				kindRate = KindOfTaxEnum.ANUAL_EFFECTIVE,
+				creditValue = 1_000_000.toBigDecimal(),
+				amortizatedValue = 1_000_000.toBigDecimal(),
+				capitalValue = 250_000.toBigDecimal(),
+				interestValue = 10_000.toBigDecimal(),
+				quoteValue = 260_000.toBigDecimal()
+			)
+		)
+		it.list.add(
+			AmortizationRowDTO(
+				id=2,
+				periods = 4,
+				creditRate = 13.0,
+				kindRate = KindOfTaxEnum.ANUAL_EFFECTIVE,
+				creditValue = 1_000_000.toBigDecimal(),
+				amortizatedValue = 750_000.toBigDecimal(),
+				capitalValue = 250_000.toBigDecimal(),
+				interestValue = 7_500.toBigDecimal(),
+				quoteValue = 257_500.toBigDecimal()
+			)
+		)
+		it.list.add(
+			AmortizationRowDTO(
+				id=3,
+				periods = 4,
+				creditRate = 13.0,
+				kindRate = KindOfTaxEnum.ANUAL_EFFECTIVE,
+				creditValue = 1_000_000.toBigDecimal(),
+				amortizatedValue = 500_000.toBigDecimal(),
+				capitalValue = 250_000.toBigDecimal(),
+				interestValue = 5_000.toBigDecimal(),
+				quoteValue = 255_000.toBigDecimal()
+			)
+		)
+		it.list.add(
+			AmortizationRowDTO(
+				id=4,
+				periods = 4,
+				creditRate = 13.0,
+				kindRate = KindOfTaxEnum.ANUAL_EFFECTIVE,
+				creditValue = 1_000_000.toBigDecimal(),
+				amortizatedValue = 250_000.toBigDecimal(),
+				capitalValue = 250_000.toBigDecimal(),
+				interestValue = 2_500.toBigDecimal(),
+				quoteValue = 252_500.toBigDecimal()
+			)
+		)
+	}
+}

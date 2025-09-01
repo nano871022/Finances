@@ -8,7 +8,8 @@ enum class MoreOptionsItemCreditRate (@StringRes val title: Int) : IMoreOptions{
     DELETE(R.string.delete)
     , DISABLED(R.string.disabled)
     , ENABLED(R.string.enabled)
-    , EDIT(R.string.edit);
+    , EDIT(R.string.edit)
+    ,CLONE(R.string.duplicate);
 
     override fun getName()=title
 }

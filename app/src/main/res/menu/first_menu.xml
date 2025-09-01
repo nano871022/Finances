@@ -15,7 +15,7 @@
 
     <group>
     <item
-        android:id="@+id/item_menu_side_quoteCredit"
+        android:id="@+id/item_menu_side_simulatorCredit"
         android:icon="@drawable/ic_baseline_permanent"
         android:titleCondensed="@string/quote_credit"
         android:title="@string/quote_credit" />

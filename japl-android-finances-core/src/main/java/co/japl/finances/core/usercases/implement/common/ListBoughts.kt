@@ -12,6 +12,7 @@ import co.japl.finances.core.usercases.calculations.ValuesCalculation
 import co.japl.finances.core.usercases.mapper.CreditCardBoughtItemMapper
 import co.japl.finances.core.utils.DateUtils
 import org.intellij.lang.annotations.RegExp
+import java.time.LocalDate
 import java.time.LocalDateTime
 import javax.inject.Inject
 
@@ -54,14 +55,27 @@ class ListBoughts @Inject constructor(
 
         var month = dto.month
         var monthPaid = dto.monthPaid
+        var monthDifer:Long? = null
+        var originDate:LocalDateTime? = null
 
         val differ = dto.nameItem.contains("\\([0-9]+\\. [0-9]+\\.[0-9]+\\)".toRegex())
         differ.takeIf { it }?.let {
+            var boughtDateDiffer:LocalDateTime? = null
+            quoteCCSvc.get(dto.id,false)?.let{
+                month = it.month
+                boughtDateDiffer = it.boughtDate
+                DateUtils.getMonths(it.boughtDate,cutoff)?.let{
+                    monthPaid = it + 1
+                }
+            }
             "\\(([0-9]+)\\. [0-9]+\\.[0-9]+\\)".toRegex().find(dto.nameItem)?.let{
                 quoteCCSvc.get(it.groupValues[1].toInt(),false)?.let{
-                    DateUtils.getMonths(it.boughtDate,cutoff).takeIf { it == "1".toLong() }?.let{
-                        monthPaid = it
-                        month = 2
+                    monthDifer = DateUtils.getMonths(it.boughtDate,boughtDateDiffer!!)
+                    originDate = it.boughtDate
+                    DateUtils.getMonths(it.boughtDate,cutoff)?.let{
+                        if ( it == "1".toLong() ) {
+                            monthPaid = it
+                        }
                     }
                 }
             }
@@ -72,9 +86,9 @@ class ListBoughts @Inject constructor(
             dto.kindOfTax = it.kind
         }
 
-        valuesCalculation.getCapital(dto.id,dto.valueItem,dto.month.toShort(),differQuotes).let { dto.capitalValue = it}
+        valuesCalculation.getCapital(dto.id,dto.valueItem,month.toShort(),differQuotes).let { dto.capitalValue = it}
 
-        valuesCalculation.getPendingToPay(dto.id,dto.month.toShort(),dto.monthPaid.toShort(),dto.valueItem,dto.capitalValue,differQuotes).let { dto.pendingToPay = it}
+        valuesCalculation.getPendingToPay(dto.id,month.toShort(),monthPaid.toShort(),dto.valueItem,dto.capitalValue,differQuotes).let { dto.pendingToPay = it}
 
         interestCalculation.getInterestValue(month.toShort(),
             monthPaid.toShort(),
@@ -88,6 +102,10 @@ class ListBoughts @Inject constructor(
             differ).let { dto.interestValue = it}
 
         dto.quoteValue = (dto.interestValue?:0.0) + (dto.capitalValue?:0.0)
+
+        dto.month += monthDifer?.toInt()?:0
+        dto.monthPaid += monthDifer?.toInt()?:0
+        originDate?.let{dto.boughtDate = it}
 
         Log.w(javaClass.name,"=== getBoughtList id: ${dto.id} toPay: ${dto.pendingToPay} Tax: ${dto.interest} ${dto.kindOfTax} interest: ${dto.interestValue}")
         return dto

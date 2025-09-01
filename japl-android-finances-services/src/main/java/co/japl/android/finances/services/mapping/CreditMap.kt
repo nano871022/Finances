@@ -7,6 +7,8 @@ import android.provider.BaseColumns
 import androidx.annotation.RequiresApi
 import co.japl.android.finances.services.dto.CreditDB
 import co.japl.android.finances.services.dto.CreditDTO
+import co.japl.android.finances.services.enums.KindOfPayListEnum
+import co.japl.android.finances.services.enums.KindOfTaxEnum
 import co.japl.android.finances.services.utils.DateUtils
 
 class CreditMap {
@@ -22,7 +24,15 @@ class CreditMap {
         val quote = cursor.getString(6).toBigDecimal()
         val date = DateUtils.toLocalDate(cursor.getString(7))
         val kindOfTax = cursor.getString(8)
-        return CreditDTO(id,name,date,taxs,periods,value,quote,kindOf,kindOfTax)
+        return CreditDTO(id,
+            name = name,
+            date = date,
+            tax= taxs,
+            periods = periods,
+            value = value,
+            quoteValue = quote,
+            kindOf = KindOfPayListEnum.actions.findByMonthStr(kindOf),
+            kindOfTax = KindOfTaxEnum.valueOf(kindOfTax))
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -30,13 +40,12 @@ class CreditMap {
         return ContentValues().apply {
             put(CreditDB.Entry.COLUMN_NAME,dto.name)
             put(CreditDB.Entry.COLUMN_VALUE,dto.value.toDouble())
-            put(CreditDB.Entry.COLUMN_KIND_OF,dto.kindOf)
             put(CreditDB.Entry.COLUMN_DATE,DateUtils.localDateToString(dto.date))
             put(CreditDB.Entry.COLUMN_QUOTE,dto.quoteValue.toDouble())
             put(CreditDB.Entry.COLUMN_PERIODS,dto.periods)
             put(CreditDB.Entry.COLUMN_TAX,dto.tax)
-            put(CreditDB.Entry.COLUMN_KIND_OF,dto.kindOf)
-            put(CreditDB.Entry.COLUMN_KIND_OF_TAX,dto.kindOfTax)
+            put(CreditDB.Entry.COLUMN_KIND_OF,dto.kindOf.getMonthStr())
+            put(CreditDB.Entry.COLUMN_KIND_OF_TAX,dto.kindOfTax.name)
         }
     }
 

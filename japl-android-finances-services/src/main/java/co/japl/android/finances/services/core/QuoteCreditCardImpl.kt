@@ -13,13 +13,17 @@ import co.japl.android.finances.services.interfaces.ICreditCardSvc
 import co.japl.android.finances.services.utils.DateUtils
 import java.math.BigDecimal
 import java.time.LocalDateTime
+import java.time.Period
+import java.time.YearMonth
 import javax.inject.Inject
 
 class QuoteCreditCardImpl @Inject constructor(private val quoteCCSvc: IQuoteCreditCardDAO,
                                               private val creditcardSvc:ICreditCardSvc,
                                               private val quoteCreditCardCache:IQuoteCreditCardCache): IQuoteCreditCardPort {
-    override fun getRecurrentBuys(key: Int, cutOff: LocalDateTime): List<CreditCardBoughtDTO> {
-        return quoteCCSvc.getRecurrentBuys(key,cutOff).map (CreditCardBoughtMapper::mapper)
+
+    val EXPREG_DIFFER = "\\((\\d{1,4}\\.) (\\d*\\.\\d{1,2})\\)".toRegex()
+    override fun getRecurrentBuys(key: Int, cutOff: LocalDateTime): List<CreditCardBoughtDTO> = Caching("QCC|GetRecurrentBuys|$key|$cutOff") {
+        return@Caching quoteCCSvc.getRecurrentBuys(key,cutOff).map (CreditCardBoughtMapper::mapper)
     }
 
     override fun getToDate(
@@ -27,9 +31,29 @@ class QuoteCreditCardImpl @Inject constructor(private val quoteCCSvc: IQuoteCred
         startDate: LocalDateTime,
         cutOffDate: LocalDateTime,
         cache: Boolean
-    ): List<CreditCardBoughtDTO> {
-        return if(cache.not()){quoteCCSvc.getToDate(key,startDate,cutOffDate).map (CreditCardBoughtMapper::mapper)}
+    ): List<CreditCardBoughtDTO> = Caching("QCC|GetToData|$key|$startDate|$cutOffDate") {
+
+        val result = if(cache.not()){quoteCCSvc.getToDate(key,startDate,cutOffDate).map (CreditCardBoughtMapper::mapper)}
         else{quoteCreditCardCache.getToDate(key,startDate,cutOffDate).map (CreditCardBoughtMapper::mapper)}
+        val list = result.filter{
+            !EXPREG_DIFFER.containsMatchIn(it.nameItem)
+        }.toMutableList()
+
+        result.filter {
+            EXPREG_DIFFER.containsMatchIn(it.nameItem)
+        }.map{
+            EXPREG_DIFFER.find(it.nameItem)?.let{match->
+                val id = match.groupValues[1]?.replace(".", "")?.toInt() ?: 0
+                quoteCCSvc.get(id).takeIf { it.isPresent }?.let {find->
+                    val months = Period.between(find.get().boughtDate.toLocalDate(),it.boughtDate.toLocalDate()).toTotalMonths()
+                    Log.d(javaClass.name,"Month ${it.month} ${find.get().month} differ: $months ${it.boughtDate} ${find.get().boughtDate}")
+                     it.boughtDate = find.get().boughtDate
+                    it.month += months.toInt()
+                    list.add(it)
+                }
+            }
+        }
+        return@Caching list
     }
 
     override fun getCapitalPendingQuotes(
@@ -55,8 +79,8 @@ class QuoteCreditCardImpl @Inject constructor(private val quoteCCSvc: IQuoteCred
         startDate: LocalDateTime,
         cutoffCurrent: LocalDateTime
         ,cache:Boolean
-    ): List<CreditCardBoughtDTO> {
-        return if(cache.not()){quoteCCSvc.getPendingQuotes(key,startDate,cutoffCurrent).map (CreditCardBoughtMapper::mapper)}
+    ): List<CreditCardBoughtDTO> = Caching("QCC|GetPendingQuotes|$key|$startDate|$cutoffCurrent") {
+        return@Caching if(cache.not()){quoteCCSvc.getPendingQuotes(key,startDate,cutoffCurrent).map (CreditCardBoughtMapper::mapper)}
         else{quoteCreditCardCache.getPendingQuotes(key,startDate,cutoffCurrent).map (CreditCardBoughtMapper::mapper)}
     }
 
@@ -64,8 +88,8 @@ class QuoteCreditCardImpl @Inject constructor(private val quoteCCSvc: IQuoteCred
         key: Int,
         cutOff: LocalDateTime
         ,cache:Boolean
-    ): List<CreditCardBoughtDTO> {
-        return if(cache.not()){quoteCCSvc.getRecurrentPendingQuotes(key, cutOff).map(CreditCardBoughtMapper::mapper)}
+    ): List<CreditCardBoughtDTO> = Caching("QCC|GetRecurrentPendingQuotes|$key|$cutOff") {
+        return@Caching if(cache.not()){quoteCCSvc.getRecurrentPendingQuotes(key, cutOff).map(CreditCardBoughtMapper::mapper)}
         else{quoteCreditCardCache.getRecurrentPendingQuotes(key, cutOff).map(CreditCardBoughtMapper::mapper)}
     }
 
@@ -80,6 +104,10 @@ class QuoteCreditCardImpl @Inject constructor(private val quoteCCSvc: IQuoteCred
 
     override fun endingRecurrentPayment(key: Int, cutOff: LocalDateTime): Boolean {
         return quoteCCSvc.endingRecurrentPayment(key,cutOff)
+    }
+
+    override fun endingPayment(key: Int,message:String, cutOff: LocalDateTime): Boolean {
+        return quoteCCSvc.endingPayment(key,message,cutOff)
     }
 
     override fun create(bought: CreditCardBoughtDTO,cache:Boolean): Int {
@@ -113,6 +141,10 @@ class QuoteCreditCardImpl @Inject constructor(private val quoteCCSvc: IQuoteCred
         amount: BigDecimal
     ): CreditCardBoughtDTO? {
         return quoteCCSvc.findByNameAndBoughtDateAndValue(name,boughtDate,amount)?.let(CreditCardBoughtMapper::mapper)
+    }
+
+    override fun fixDataProcess() {
+        quoteCCSvc.fixDataProcess()
     }
 
 }

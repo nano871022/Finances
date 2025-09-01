@@ -91,6 +91,9 @@
     <string name="navigate_monthly">android-app://co.com.japl.finanzas.module.app/paid/monthly?period=%s</string>
     <string name="navigate_sms_form">android-app://co.com.japl.finanzas.module.app/paid/sms</string>
     <string name="navigate_sms_form_code">android-app://co.com.japl.finanzas.module.app/paid/sms?code_sms_paid=%d</string>
+    <string name="navigate_projection_list">android-app://co.com.japl.finanzas.module.app/paid/projection/list</string>
+    <string name="navigate_projection_form">android-app://co.com.japl.finanzas.module.app/paid/projection/form</string>
+    <string name="navigate_projection_form_edit">android-app://co.com.japl.finanzas.module.app/paid/projection/form?id=%d</string>
 
     <string name="dialog_delete">¿Desea eliminar el registro?</string>
 

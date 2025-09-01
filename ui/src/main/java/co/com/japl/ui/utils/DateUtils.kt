@@ -10,12 +10,10 @@ import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
-import java.time.Month
 import java.time.Period
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.time.format.DateTimeParseException
-import java.time.temporal.TemporalAccessor
 
 class DateUtils {
     companion object {
@@ -113,7 +111,7 @@ class DateUtils {
 
         @RequiresApi(Build.VERSION_CODES.O)
         fun toLocalDate(value: String, default: LocalDate): LocalDate {
-            if (value == null || value == "") {
+            if ( value.isBlank() ) {
                 return default
             }
             val date = value.split("/")
@@ -232,8 +230,11 @@ class DateUtils {
             }
         }
 
-        fun cutOff(cutOffDay: Short, date: LocalDate): LocalDateTime {
+        fun cutOff(cutOffDay: Short, date: LocalDate,repeat:Int=0): LocalDateTime {
             var dateTime = LocalDateTime.of(date, LocalTime.MAX)
+            if( repeat > 3 || cutOffDay <= 0){
+                return dateTime
+            }
             try {
                 if (date.dayOfMonth <= cutOffDay) {
                     dateTime = LocalDateTime.of(

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="monthly">Mensual</string>
+    <string name="quarterly">Trimestral</string>
+    <string name="semiannual">Semestral</string>
+    <string name="annual">Anual</string>
+    <string name="bimonthly">Bi-Mensual</string>
+    <string name="four_months_period">Cuatrimestral</string>
+    <string name="anual_effective">Efectivo Anual</string>
+    <string name="monthly_effective">Efectivo Mensual</string>
+    <string name="anual_nominal">Nominal Anual</string>
+    <string name="monthly_nominal">Nominal Mensual</string>
+</resources>

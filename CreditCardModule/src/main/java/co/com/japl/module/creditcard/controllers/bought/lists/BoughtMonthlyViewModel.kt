@@ -18,6 +18,7 @@ import co.com.japl.finances.iports.inbounds.creditcard.bought.IBoughtPort
 import co.com.japl.finances.iports.inbounds.creditcard.bought.IBoughtSmsPort
 import co.com.japl.finances.iports.inbounds.creditcard.bought.lists.IBoughtListPort
 import co.com.japl.module.creditcard.navigations.Bought
+import co.com.japl.module.creditcard.navigations.ListCreditRate
 import co.com.japl.ui.Prefs
 import co.com.japl.ui.utils.DateUtils
 import kotlinx.coroutines.runBlocking
@@ -70,6 +71,7 @@ class BoughtMonthlyViewModel constructor(
     val showBought = mutableStateOf(false)
     val showAdvance = mutableStateOf(false)
     val showWallet = mutableStateOf(false)
+    val showCreditRate = mutableStateOf(false)
 
     fun goToPaidList(){
        navController?.let{ Bought.navigate(creditCardSelected?.id!!,creditCardSelected?.cutOffDay!!,cutOff.value,it)}
@@ -89,6 +91,12 @@ class BoughtMonthlyViewModel constructor(
 
     fun goToAddAdvance(){
         navController?.let{ Bought.navigateAddAdvance(creditCardSelected?.id?.toShort()!!,it)}
+    }
+
+    fun goToAddCreditRate(){
+        navController?.let{
+            ListCreditRate.navigate_list(it)
+        }
     }
 
     fun clear(){
@@ -113,6 +121,7 @@ class BoughtMonthlyViewModel constructor(
         showList.value = false
         showAdvance.value = false
         showWallet.value = false
+        showCreditRate.value = false
     }
 
     fun mainCreditCard()= runBlocking {
@@ -230,7 +239,9 @@ class BoughtMonthlyViewModel constructor(
                         showWallet.value = true
                         progress.floatValue = 0.95f
                     }
-
+                    if(showWallet.value.not() and showAdvance.value.not() and showBought.value.not()){
+                        showCreditRate.value = true
+                    }
                     progress.floatValue = 100f
                 }
             }

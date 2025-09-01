@@ -10,6 +10,6 @@ data class AdditionalCreditDTO (
     var creditCode:Long,
     var startDate:LocalDate,
     var endDate:LocalDate
-        )
+)
 
 

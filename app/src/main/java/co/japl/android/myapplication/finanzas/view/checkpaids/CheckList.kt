@@ -3,12 +3,17 @@ package co.japl.android.myapplication.finanzas.view.checkpaids
 import android.content.res.Configuration
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.DeleteForever
 import androidx.compose.material.icons.rounded.Save
+import androidx.compose.material3.Button
+import androidx.compose.material3.Icon
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -24,6 +29,7 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
 import co.com.japl.finances.iports.dtos.CheckPaymentDTO
 import co.com.japl.finances.iports.enums.CheckPaymentsEnum
+import co.com.japl.ui.components.AlertDialogOkCancel
 import co.com.japl.ui.components.CheckBoxField
 import co.com.japl.ui.components.FieldView
 import co.com.japl.ui.components.FloatButton
@@ -36,7 +42,9 @@ import co.japl.finances.core.utils.DateUtils
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.time.LocalDate
 import java.time.LocalDateTime
+import java.time.Period
 import java.time.YearMonth
 
 @RequiresApi(Build.VERSION_CODES.Q)
@@ -75,21 +83,35 @@ private fun Body(viewModel: CheckListViewModel){
         LazyColumn(modifier = Modifier.padding(it)) {
             val list = listState.sortedBy { it.date }
             items(list.size) { item ->
-                Item(list[item])
+                Item(list[item],viewModel::remove)
             }
         }
     }
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @RequiresApi(Build.VERSION_CODES.Q)
 @Composable
-private fun Item(item:CheckPaymentDTO){
+private fun Item(item:CheckPaymentDTO,delete: (CheckPaymentDTO) -> Unit = {}){
     val status = remember { mutableStateOf(item.check) }
-    CheckBoxField(title = {color, modifier ->
+    val statusDelete = remember { mutableStateOf(false) }
+    val stateDelete = remember { mutableStateOf(false) }
+    CheckBoxField(customTitle = {color, modifier ->
                 Row (modifier= modifier
                     .fillMaxWidth()
                     .padding(start = Dimensions.PADDING_SHORT)
-                    .weight(1f)) {
+                    .weight(1f).combinedClickable(
+                        onLongClick = {
+                            statusDelete.value = !statusDelete.value
+                        }
+                         , onClick = {}
+                    )){
+                    if(statusDelete.value){
+                        Button(onClick = { stateDelete.value = true; statusDelete.value = false}) {
+                            Icon(imageVector = Icons.Rounded.DeleteForever, contentDescription = "save")
+                        }
+                    }
+
                     Text(text = item.name, modifier = modifier.weight(1f), color = color,
                             textDecoration = if(item.check) TextDecoration.LineThrough else TextDecoration.None)
 
@@ -99,7 +121,7 @@ private fun Item(item:CheckPaymentDTO){
             }, value = status.value,
                 description = { color, modifier ->
                     item.date?.let{
-                        Text(text = DateUtils.localDateTimeToString(it),
+                        Text(text = "${DateUtils.localDateTimeToString(it)} - ${Period.between(LocalDate.now(),it.toLocalDate()).days}",
                             modifier = modifier.padding(start = Dimensions.PADDING_TOP),
                             fontSize = TextUnit(12f, TextUnitType.Sp),
                             color = MaterialTheme.colorScheme.error)
@@ -111,8 +133,20 @@ private fun Item(item:CheckPaymentDTO){
                     item.check = status.value
                     item.update = true
                            },
-                modifier = Modifier
+        customModifier = Modifier
     )
+
+    if (stateDelete.value) {
+        AlertDialogOkCancel(
+            title = co.com.japl.module.paid.R.string.toast_do_you_want_to_delete_this_record,
+            confirmNameButton = co.com.japl.module.paid.R.string.delete,
+            onDismiss = { stateDelete.value = false }) {
+            CoroutineScope(Dispatchers.IO).launch {
+                delete(item)
+            }
+            stateDelete.value = false
+        }
+    }
 }
 
 @Composable
@@ -154,17 +188,29 @@ internal fun CheckListPreviewDark(){
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.S)
+@Composable
+@Preview(showSystemUi = true, showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
+internal fun CheckListPreviewDarkV2(){
+    val viewModel = getViewModel()
+    viewModel.loaderStatus.value = true
+    MaterialThemeComposeUI {
+        CheckList(viewModel = viewModel)
+    }
+}
+
 @Composable
 private fun getViewModel():CheckListViewModel{
     val viewModel = CheckListViewModel(YearMonth.now(),null)
     viewModel.loaderStatus.value = false
+    viewModel.loaderProgressStatus.value = false
     viewModel.listState.add(
         CheckPaymentDTO(
         id = 0,
         codPaid = 0,
         name = "Semanal",
         period = YearMonth.now(),
-        date = LocalDateTime.now(),
+        date = LocalDateTime.now().minusYears(2),
         amount = 1000.00,
         check = true,
         type = CheckPaymentsEnum.CREDITS

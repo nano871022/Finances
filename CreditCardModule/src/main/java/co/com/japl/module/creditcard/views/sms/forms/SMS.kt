@@ -13,6 +13,7 @@ import androidx.compose.material.icons.rounded.Save
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.Scaffold
 import androidx.compose.material.Text
+import androidx.compose.material.icons.automirrored.rounded.DirectionsRun
 import androidx.compose.material.icons.rounded.Cancel
 import androidx.compose.material.icons.rounded.DirectionsRun
 import androidx.compose.material3.MaterialTheme
@@ -48,7 +49,10 @@ fun Sms(viewModel:SmsCreditCardViewModel){
         viewModel.main()
     }
     if(load){
-        LinearProgressIndicator( progress = progress, modifier = Modifier.fillMaxWidth())
+        LinearProgressIndicator(
+            progress = { progress },
+            modifier = Modifier.fillMaxWidth(),
+        )
     }else{
         Form(viewModel = viewModel)
     }
@@ -134,7 +138,7 @@ private fun Body(viewModel: SmsCreditCardViewModel,modifier:Modifier){
       OutlinedButton(onClick = { viewModel.validatePatternWithMessages() },
           modifier = modifier.align(alignment = Alignment.End)) {
 
-          Icon(imageVector = Icons.Rounded.DirectionsRun,
+          Icon(imageVector = Icons.AutoMirrored.Rounded.DirectionsRun,
               contentDescription = stringResource(id = R.string.validate)
               , tint = MaterialTheme.colorScheme.onPrimary
           )

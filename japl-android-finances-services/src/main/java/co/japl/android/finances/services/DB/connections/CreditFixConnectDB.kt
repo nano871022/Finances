@@ -34,4 +34,8 @@ class CreditFixConnectDB: DBRestore(), IConnectDB {
     override fun onRestore(currentDB: SQLiteDatabase?, fromRestoreDB: SQLiteDatabase?) {
         onRestore(currentDB,fromRestoreDB,javaClass.simpleName,CreditDB.Entry.TABLE_NAME,CreditMap()::restore)
     }
+
+    override fun onStats(connectionDB: SQLiteDatabase?): Pair<String, Long> {
+        return onStats(connectionDB, CreditDB.Entry.TABLE_NAME)
+    }
 }

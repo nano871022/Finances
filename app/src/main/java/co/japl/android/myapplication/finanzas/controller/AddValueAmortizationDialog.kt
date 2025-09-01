@@ -7,7 +7,6 @@ import android.os.Handler
 import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.OnClickListener
@@ -19,7 +18,6 @@ import co.japl.android.myapplication.bussiness.DB.connections.ConnectDB
 import co.japl.android.myapplication.finanzas.bussiness.impl.AddAmortizationImpl
 import co.japl.android.myapplication.finanzas.bussiness.interfaces.IAddAmortizationSvc
 import co.japl.android.myapplication.finanzas.holders.validations.firstInvalid
-import co.japl.android.myapplication.finanzas.holders.validations.COPToBigDecimal
 import co.japl.android.myapplication.finanzas.holders.validations.COPtoBigDecimal
 import co.japl.android.myapplication.finanzas.holders.validations.notNull
 import co.japl.android.myapplication.finanzas.holders.validations.set

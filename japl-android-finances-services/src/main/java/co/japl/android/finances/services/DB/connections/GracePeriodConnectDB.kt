@@ -34,4 +34,8 @@ class GracePeriodConnectDB: DBRestore(), IConnectDB {
     override fun onRestore(currentDB: SQLiteDatabase?, fromRestoreDB: SQLiteDatabase?) {
         onRestore(currentDB,fromRestoreDB,javaClass.simpleName,GracePeriodDB.Entry.TABLE_NAME,GracePeriodMap()::restore)
     }
+
+    override fun onStats(connectionDB: SQLiteDatabase?): Pair<String, Long> {
+        return onStats(connectionDB, GracePeriodDB.Entry.TABLE_NAME)
+    }
 }

@@ -8,14 +8,17 @@ import androidx.compose.material.FloatingActionButton
 import androidx.compose.material.FloatingActionButtonDefaults
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.rounded.HelpOutline
 import androidx.compose.material.icons.rounded.HelpOutline
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.PlainTooltipBox
-import androidx.compose.material3.PlainTooltipState
+import androidx.compose.material3.TooltipBox
+import androidx.compose.material3.TooltipDefaults
+import androidx.compose.material3.rememberTooltipState
+
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -31,9 +34,9 @@ import co.com.japl.ui.theme.values.Dimensions
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FloatButton(imageVector:ImageVector,@StringRes descriptionIcon: Int,onClick: () -> Unit) {
-    PlainTooltipBox(tooltip = {
+    TooltipBox(tooltip = {
         Text(text = stringResource(id = descriptionIcon))
-    }) {
+    },state = rememberTooltipState(), positionProvider = TooltipDefaults.rememberPlainTooltipPositionProvider()) {
         FloatingActionButton(
             onClick = onClick,
             elevation = FloatingActionButtonDefaults.elevation(10.dp),
@@ -52,9 +55,10 @@ fun FloatButton(imageVector:ImageVector,@StringRes descriptionIcon: Int,onClick:
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun IconButton(imageVector:ImageVector,@StringRes descriptionContent:Int , onClick:()->Unit,modifier:Modifier=Modifier){
-    PlainTooltipBox(tooltip = {
+    TooltipBox(tooltip = {
         Text(text = stringResource(id = descriptionContent))
-    },tooltipState = PlainTooltipState()
+    },state = rememberTooltipState()
+        , positionProvider = TooltipDefaults.rememberPlainTooltipPositionProvider()
         ) {
         IconButton(
             onClick = onClick,
@@ -74,9 +78,10 @@ fun IconButton(imageVector:ImageVector,@StringRes descriptionContent:Int , onCli
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun IconButton(@DrawableRes painter:Int,@StringRes descriptionContent:Int , onClick:()->Unit,modifier:Modifier=Modifier){
-    PlainTooltipBox(tooltip = {
+    TooltipBox(tooltip = {
         Text(text = stringResource(id = descriptionContent))
-    },tooltipState = PlainTooltipState()
+    },state = rememberTooltipState()
+        , positionProvider = TooltipDefaults.rememberPlainTooltipPositionProvider()
     ) {
         IconButton(
             onClick = onClick,
@@ -100,6 +105,6 @@ fun HelpWikiButton(@StringRes wikiUrl:Int,@StringRes descriptionContent:Int,tint
         val intent = Intent(Intent.ACTION_VIEW, wikiUrl)
         ContextCompat.startActivity(context,intent,null)
     }) {
-        Icon(imageVector = Icons.Rounded.HelpOutline, contentDescription = stringResource(id = descriptionContent),tint=tint)
+        Icon(imageVector = Icons.AutoMirrored.Rounded.HelpOutline, contentDescription = stringResource(id = descriptionContent),tint=tint)
     }
 }

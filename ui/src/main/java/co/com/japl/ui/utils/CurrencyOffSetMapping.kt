@@ -1,32 +1,59 @@
 package co.com.japl.ui.utils
 
+import android.util.Log
 import androidx.compose.ui.text.input.OffsetMapping
 
-class CurrencyOffSetMapping constructor(private val originalText:String, private val formattedText:String): OffsetMapping {
-    private val indexes = findDigitIndexes(originalText,formattedText)
+class CurrencyOffSetMapping constructor(private val originalText:String,
+                                        private val formattedText:String,
+                                        private val decimalSeparator: Char = '.',
+                                        private val groupingSeparator: Char = ','): OffsetMapping {
+
+
     override fun originalToTransformed(offset: Int): Int {
-        if(offset >= originalText.length){
-            return indexes.last() + 1
+        var offsetEnd = offset
+        val charO = if(originalText.length > offset) {
+            originalText[offset]
+        }else{
+            ""
         }
-        return indexes[offset]
+        val charF = if(formattedText.length > offset) {
+            formattedText[offset]
+        }else{
+            ""
+        }
+        if(charO != charF && formattedText.length > offset){
+            val count = formattedText.substring(0,offset).count { it == groupingSeparator || it == decimalSeparator }
+            offsetEnd = offset + count
+        }
+        if(formattedText.length <= offsetEnd){
+            offsetEnd = formattedText.length
+        }
+        return offsetEnd
     }
 
     override fun transformedToOriginal(offset: Int): Int {
-        return indexes.indexOfFirst { it > offset }.takeIf { it != -1 } ?: originalText.length
+        var offsetEnd = offset
+        val char = if(originalText.length > offset) {
+            originalText[offset]
+        }else{
+            ""
+        }
+        val chart = if(formattedText.length > offset) {
+            formattedText[offset]
+        }else{
+            ""
+        }
+        if(char != chart){
+            val count = formattedText.substring(0,offset).count { it == groupingSeparator || it == decimalSeparator }
+            offsetEnd = offset + count
+        }
+        if(originalText.length <= offsetEnd){
+            offsetEnd = originalText.length
+        }
+        return offsetEnd
     }
 
-    private fun findDigitIndexes(firstString:String,secondString:String):List<Int>{
-        val digitIndexes = mutableListOf<Int>()
-        var currentIndex = 0
-        for(digit in firstString){
-            val index = secondString.indexOf(digit,currentIndex)
-            if(index != -1){
-                digitIndexes.add(index)
-                currentIndex = index + 1
-            }else{
-                return emptyList()
-            }
-        }
-        return digitIndexes
-    }
+
+
+
 }

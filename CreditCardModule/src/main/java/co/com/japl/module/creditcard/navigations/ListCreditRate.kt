@@ -11,6 +11,11 @@ object ListCreditRate {
         navigate.navigate(request)
     }
 
+    fun navigate_list(navigate:NavController){
+        val request = NavDeepLinkRequest.Builder.fromUri(navigate.context.getString(R.string.navigate_list_credit_rates).toUri()).build()
+        navigate.navigate(request)
+    }
+
     fun navigate(codeCreditCard:Int,navigate:NavController){
         val request = NavDeepLinkRequest.Builder.fromUri(navigate.context.getString(R.string.navigate_list_credit_rate_with_code_credit_card,codeCreditCard).toUri()).build()
         navigate.navigate(request)

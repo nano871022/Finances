@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="duplicate">Duplicar</string>
+    <string name="toast_successful_cloned">Se realizo la clonación correctamente</string>
+    <string name="toast_dont_successful_cloned">No se realizar la clonación</string>
+    <string name="credit_value">Valor del Crédito</string>
+    <string name="kind_credit_rate">Tipo de Tasa</string>
+    <string name="clear">Limpiar</string>
+    <string name="saving">Guardando Simulación</string>
+    <string name="values_first_quote">Valores Primera Cuota</string>
+    <string name="calculate">Calcular</string>
+    <string name="amortization">Ver Amortización</string>
+    <string name="save_success">Guardado Simulador Correctamente</string>
+    <string name="save_unsuccess">No se logró crear el registro</string>
+    <string name="calculation_error">Se presento error en el calculo, revise los valores ingresados</string>
+    <string name="cancel">Cancelar</string>
+    <string name="amortization_value">Valor de Amortizado</string>
+    <string name="interest">Interes</string>
+    <string name="total">Total</string>
+    <string name="simulator_quote_variable">Simulador Cuota Variable</string>
+    <string name="amortization_quote_variable">Amortización Cuota Variable</string>
+    <string name="first_quote_value">Primera Cuota</string>
+    <string name="first_interest">Primer Interes</string>
+    <string name="options">Opciones</string>
+</resources>

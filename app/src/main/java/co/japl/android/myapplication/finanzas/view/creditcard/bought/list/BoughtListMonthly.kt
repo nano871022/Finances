@@ -1,5 +1,6 @@
 package co.japl.android.myapplication.finanzas.view.creditcard.bought.list
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -17,6 +18,7 @@ import co.com.japl.ui.utils.WindowWidthSize
 import java.time.YearMonth
 import java.time.format.DateTimeFormatter
 
+@SuppressLint("UnusedBoxWithConstraintsScope")
 @Composable
 internal fun HeaderMonthly(key: YearMonth, list:List<CreditCardBoughtItemDTO>, monthlyState:BoughtMonthlyViewModel) {
     BoxWithConstraints {

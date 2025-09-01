@@ -21,6 +21,7 @@ class RecapImpl @Inject constructor(
     private val creditCardSvc: ICreditCard
 ): IRecap {
     override fun getTotalValues(cutOff:LocalDate,cache:Boolean): RecapDTO {
+
         val projection = projectionSvc.getTotalSavedAndQuote()
         val totalQuoteCredit = creditSvc.getTotalQuote(LocalDate.now())
         val totalPaid = paidSvc.getTotalPaid()

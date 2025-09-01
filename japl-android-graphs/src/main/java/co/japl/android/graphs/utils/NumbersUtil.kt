@@ -58,7 +58,10 @@ class NumbersUtil {
         }
 
         fun toBigDecimal(field:String):BigDecimal{
-            return field?.takeIf { it.isNotBlank() }?.let { it.toString().replace("$", "").replace(",", "").trim().toBigDecimal() }?:BigDecimal.ZERO
+            return field?.takeIf { it.isNotBlank() }?.let {
+                val valueClean = it.toString().replace("$", "").replace(",", "").trim()
+                BigDecimal.valueOf(valueClean.toDouble())
+            }?:BigDecimal.ZERO
         }
         fun toBigDecimal(field:TextView):BigDecimal{
             return if(field.text?.isNotBlank() == true) {

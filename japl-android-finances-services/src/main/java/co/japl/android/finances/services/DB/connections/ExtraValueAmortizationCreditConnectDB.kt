@@ -34,4 +34,7 @@ class ExtraValueAmortizationCreditConnectDB: DBRestore(), IConnectDB {
     override fun onRestore(currentDB: SQLiteDatabase?, fromRestoreDB: SQLiteDatabase?) {
         onRestore(currentDB,fromRestoreDB,javaClass.simpleName,ExtraValueAmortizationCreditDB.Entry.TABLE_NAME,ExtraValueAmortizationCreditMap()::restore)
     }
+    override fun onStats(connectionDB: SQLiteDatabase?): Pair<String, Long> {
+        return onStats(connectionDB, ExtraValueAmortizationCreditDB.Entry.TABLE_NAME)
+    }
 }

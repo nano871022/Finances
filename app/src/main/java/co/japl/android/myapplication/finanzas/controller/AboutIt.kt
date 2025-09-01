@@ -7,7 +7,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.compose.ui.platform.ViewCompositionStrategy
-import co.com.alameda181.unidadresidencialalameda181.about.UI.About
+import co.com.japl.homeconnect.about.ui.About
+import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.japl.android.myapplication.BuildConfig
 import co.japl.android.myapplication.R
 import co.japl.android.myapplication.databinding.FragmentAboutItBinding
@@ -29,8 +30,8 @@ class AboutIt : Fragment() {
         bind.firstCardCompose.apply {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
-                co.com.japl.ui.theme.MaterialThemeComposeUI {
-                    About(versionDetail = BuildConfig.VERSION_NAME)
+                MaterialThemeComposeUI {
+                    About(versionDetail = BuildConfig.VERSION_NAME, applicationId = BuildConfig.APPLICATION_ID)
                 }
             }
         }

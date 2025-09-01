@@ -146,13 +146,10 @@ Column (modifier=Modifier.padding(Dimensions.PADDING_SHORT)) {
         value = valueItemState.value,
         validation = { viewModel.validate() },
         icon= Icons.Rounded.Cancel,
-        keyboardType = KeyboardOptions(keyboardType = KeyboardType.Decimal),
-        hasErrorState = errorValueItemState,
-        callback = {
-            it.takeIf { it.isNotBlank() }?.let{
-                valueItemState.value = NumbersUtil.toString(NumbersUtil.toDouble(it))
-            }?:valueItemState.let{it.value = ""}
-        },
+        currency = true,
+        keyboardType = KeyboardOptions.Companion.Default.copy (keyboardType = KeyboardType.Decimal),
+        hasErrorState = errorValueItemState.value,
+        callback = {valueItemState.value = it},
         modifier = Modifier
             .fillMaxWidth().padding(bottom = Dimensions.PADDING_SHORT)
     )

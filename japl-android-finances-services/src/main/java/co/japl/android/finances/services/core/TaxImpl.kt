@@ -13,7 +13,7 @@ import javax.inject.Inject
 
 class TaxImpl @Inject constructor(private val  taxSvc: ITaxDAO): ITaxPort {
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
-    override fun get(codCreditCard: Int, month: Int, year: Int, kind: KindInterestRateEnum): TaxDTO? {
+    override fun get(codCreditCard: Int, month: Int, year: Int, kind: KindInterestRateEnum): TaxDTO? = Caching("Tax|get|$codCreditCard|$month|$year|$kind") {
         try {
             val kindOfTax = when(kind) {
                 KindInterestRateEnum.CASH_ADVANCE -> co.japl.android.finances.services.enums.TaxEnum.CASH_ADVANCE
@@ -27,12 +27,12 @@ class TaxImpl @Inject constructor(private val  taxSvc: ITaxDAO): ITaxPort {
                 kindOfTax
             )
             if (tax.isPresent) {
-                return TaxMapper.mapper(tax.get())
+                return@Caching TaxMapper.mapper(tax.get())
             }
         }catch(e: CursorWindowAllocationException){
             Log.e(javaClass.name,e.message,e)
         }
-        return null
+        return@Caching null
 
     }
 

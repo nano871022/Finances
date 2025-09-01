@@ -82,7 +82,7 @@ class MainActivity : AppCompatActivity(){
     }
 
     override fun onRequestPermissionsResult(
-        requestCode: Int, permissions: Array<String?>,
+        requestCode: Int, permissions: Array<out String>,
         grantResults: IntArray
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
@@ -107,10 +107,18 @@ class MainActivity : AppCompatActivity(){
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if(!isTablet()) {
-            findViewById<DrawerLayout>(R.id.draw_layout).setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
+        try {
+            if (!isTablet()) {
+                findViewById<DrawerLayout>(R.id.draw_layout).setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
+            }
+            return NavigationUI.onNavDestinationSelected(
+                item,
+                navController
+            ) || super.onOptionsItemSelected(item)
+        }catch(e:Exception){
+            Log.e(this.javaClass.name,"on options item selected $e")
+            return false
         }
-        return NavigationUI.onNavDestinationSelected(item,navController) || super.onOptionsItemSelected(item)
     }
 
     private fun isTablet():Boolean{

@@ -27,14 +27,16 @@ class AccountImpl @Inject constructor(override var dbConnect: SQLiteOpenHelper,v
     @RequiresApi(Build.VERSION_CODES.O)
     override fun get(values: AccountDTO): List<AccountDTO> {
         val db = dbConnect.readableDatabase
-        val cursor = db.query(AccountDB.Entry.TABLE_NAME,COLUMNS,"",arrayOf(),null,null,null,null)
         val items = mutableListOf<AccountDTO>()
         val mapper = AccountMap()
-        with(cursor){
-            while(moveToNext()){
-                items.add(mapper.mapping(cursor))
+        db.query(AccountDB.Entry.TABLE_NAME,COLUMNS,"",arrayOf(),null,null,null,null)
+            ?.use { cursor ->
+                with(cursor) {
+                    while (moveToNext()) {
+                        items.add(mapper.mapping(cursor))
+                    }
+                }
             }
-        }
         return items
     }
 
@@ -52,14 +54,16 @@ class AccountImpl @Inject constructor(override var dbConnect: SQLiteOpenHelper,v
     @RequiresApi(Build.VERSION_CODES.O)
     override fun getAll(): List<AccountDTO> {
         val db = dbConnect.readableDatabase
-        val cursor = db.query(AccountDB.Entry.TABLE_NAME,COLUMNS,null,null,null,null,null)
         val items = mutableListOf<AccountDTO>()
         val mapper = AccountMap()
-        with(cursor){
-            while(moveToNext()){
-                items.add(mapper.mapping(cursor))
+        db.query(AccountDB.Entry.TABLE_NAME,COLUMNS,null,null,null,null,null)
+            ?.use { cursor ->
+                with(cursor) {
+                    while (moveToNext()) {
+                        items.add(mapper.mapping(cursor))
+                    }
+                }
             }
-        }
         return items
     }
 
@@ -90,15 +94,17 @@ class AccountImpl @Inject constructor(override var dbConnect: SQLiteOpenHelper,v
     override fun get(id: Int): Optional<AccountDTO> {
         val db = dbConnect.readableDatabase
 
-        val cursor = db.query(
+        val mapper = AccountMap()
+        db.query(
             AccountDB.Entry.TABLE_NAME,COLUMNS,"_id = ?",
             arrayOf(id.toString()),null,null,null)
-        val mapper = AccountMap()
-        with(cursor){
-            while(moveToNext()){
-                return Optional.ofNullable(mapper.mapping(cursor))
+            ?.use { cursor ->
+                with(cursor) {
+                    while (moveToNext()) {
+                        return@get Optional.ofNullable(mapper.mapping(cursor))
+                    }
+                }
             }
-        }
         return Optional.empty()
     }
 

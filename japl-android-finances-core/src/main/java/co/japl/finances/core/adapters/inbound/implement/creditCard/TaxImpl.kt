@@ -49,4 +49,9 @@ class TaxImpl  @Inject constructor(val taxSvc:ITax): ITaxPort {
         return taxSvc.update(dto)
     }
 
+    override fun clone(code: Int): Boolean {
+        if(code < 0) return false
+        return taxSvc.clone(code)
+    }
+
 }

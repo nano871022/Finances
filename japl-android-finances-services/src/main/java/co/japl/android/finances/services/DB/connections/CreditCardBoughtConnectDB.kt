@@ -52,5 +52,7 @@ class CreditCardBoughtConnectDB: DBRestore(), IConnectDB {
         onRestore(currentDB,fromRestoreDB,javaClass.simpleName,CreditCardBoughtDB.CreditCardBoughtEntry.TABLE_NAME,CreditCardBoughtMap()::restore)
     }
 
-
+    override fun onStats(connectionDB: SQLiteDatabase?): Pair<String, Long> {
+        return onStats(connectionDB, CreditCardBoughtDB.CreditCardBoughtEntry.TABLE_NAME)
+    }
 }

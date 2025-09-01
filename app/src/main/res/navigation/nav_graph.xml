@@ -44,16 +44,14 @@
             app:destination="@id/taxes" />
     </fragment>
     <fragment
-        android:id="@+id/item_menu_side_quoteCredit"
-        android:name="co.japl.android.myapplication.finanzas.controller.simulators.fix.QuoteCredit"
+        android:id="@+id/item_menu_side_simulatorCredit"
+        android:name="co.japl.android.myapplication.finanzas.controller.simulators.fix.SimulatorCredit"
         android:label="@string/quote_credit"
-        tools:layout="@layout/quote_credit">
+        tools:layout="@layout/fragment_simulator_credit">
         <action
-            android:id="@+id/action_save_credit_card"
-            app:destination="@id/quoteCreditSave" />
-        <action
-            android:id="@+id/action_item_menu_side_quoteCredit_to_amortizationTableFragment"
-            app:destination="@id/amortizationTableFragment" />
+            android:id="@+id/action_item_menu_side_simulatorCredit_to_amortizationTableFixFragment"
+            app:destination="@id/amortizationTableFixFragment" />
+        <deepLink app:uri="android-app://co.com.japl.finanzas.module.app/simulator/fix/credit"/>
     </fragment>
 
 
@@ -63,13 +61,6 @@
         android:label="@string/quote_credit_variable"
         tools:layout="@layout/quote_credit_variable">
 
-
-        <action
-            android:id="@+id/action_save_quote_credit_variable"
-            app:enterAnim="@android:anim/fade_in"
-            app:exitAnim="@android:anim/fade_out"
-            app:destination="@id/quoteCreditSaveVariable"
-            app:popUpToInclusive="true"/>
         <action
             android:id="@+id/action_item_menu_side_quoteCreditVariable_to_amortizationTableFragment"
             app:destination="@id/amortizationTableFragment" />
@@ -114,19 +105,6 @@
     </fragment>
 
     <fragment
-        android:id="@+id/quoteCreditSave"
-        android:name="co.japl.android.myapplication.finanzas.controller.simulators.fix.QuoteCreditSave"
-        android:label="@string/quote_credit_save"
-        tools:layout="@layout/quote_credit_save"/>
-
-    <fragment
-        android:id="@+id/quoteCreditSaveVariable"
-        android:name="co.japl.android.myapplication.finanzas.controller.simulators.variable.QuoteCreditSaveVariable"
-        android:label="@string/quote_credit_save_variable"
-        tools:layout="@layout/quote_credit_save_variable"/>
-
-
-    <fragment
         android:id="@+id/item_menu_side_listsave"
         android:name="co.japl.android.myapplication.finanzas.controller.simulators.ListSave"
         android:label="@string/list_save"
@@ -135,6 +113,8 @@
             android:id="@+id/action_item_menu_side_listsave_to_amortizationTableFragment"
             app:destination="@id/amortizationTableFragment" />
     </fragment>
+
+
 
     <fragment
         android:id="@+id/buy_credit_card"
@@ -188,6 +168,7 @@
             app:exitAnim="@android:anim/fade_out"
             app:destination="@id/taxes"
             app:popUpToInclusive="true"/>
+        <deepLink app:uri="android-app://co.com.japl.finanzas.modulo.app/credit_rates"/>
     </fragment>
     <fragment
         android:id="@+id/taxes"
@@ -246,12 +227,22 @@
         <action
             android:id="@+id/action_amortizationTableFragment_to_extraValueListController"
             app:destination="@id/extraValueListController" />
+        <deepLink app:uri="android-app://co.com.japl.finanzas.module.app/simulator/variable/amortization"/>
+    </fragment>
+    <fragment
+        android:id="@+id/amortizationTableFixFragment"
+        android:name="co.japl.android.myapplication.finanzas.controller.creditfix.AmortizationTableFragment"
+        android:label="@string/amortization_table"
+        tools:layout="@layout/fragment_amortization_fix_table" >
+        <deepLink app:uri="android-app://co.com.japl.finanzas.module.app/simulator/fix/amortization"/>
     </fragment>
     <fragment
         android:id="@+id/additionalCreditFragment"
         android:name="co.japl.android.myapplication.finanzas.controller.creditfix.AdditionalCreditFragment"
         android:label="@string/aditional"
-        tools:layout="@layout/fragment_additional_credit" />
+        tools:layout="@layout/fragment_additional_credit" >
+        <deepLink app:uri="android-app://co.com.japl.finanzas.module.app/additional_credit_form"/>
+    </fragment>
     <fragment
         android:id="@+id/additionalListFragment"
         android:name="co.japl.android.myapplication.finanzas.controller.creditfix.AdditionalListFragment"
@@ -260,6 +251,7 @@
         <action
             android:id="@+id/action_additionalListFragment_to_additionalCreditFragment"
             app:destination="@id/additionalCreditFragment" />
+        <deepLink app:uri="android-app://co.com.japl.finanzas.module.app/additionals_credit"/>
     </fragment>
     <fragment
         android:id="@+id/creditFixFragment"
@@ -272,6 +264,7 @@
         <action
             android:id="@+id/action_creditFixFragment_to_amortizationCreditFragment"
             app:destination="@id/amortizationCreditFragment" />
+        <deepLink app:uri="android-app://co.com.japl.finanzas.module.app/add_credit_fix"/>
     </fragment>
     <fragment
         android:id="@+id/amortizationCreditFragment"
@@ -284,6 +277,7 @@
         <action
             android:id="@+id/action_amortizationCreditFragment_to_extraValueListController"
             app:destination="@id/extraValueListController" />
+        <deepLink app:uri="android-app://co.com.japl.finanzas.module.app/amortization_credit"/>
     </fragment>
     <fragment
         android:id="@+id/creditListFragment"
@@ -311,6 +305,7 @@
         <action
             android:id="@+id/action_monthlyCreditListFragment_to_additionalListFragment"
             app:destination="@id/additionalListFragment" />
+        <deepLink app:uri="android-app://co.com.japl.finanzas.module.app/monthly_credit_list"/>
     </fragment>
     <fragment
         android:id="@+id/periodCreditListFragment"
@@ -320,6 +315,7 @@
         <action
             android:id="@+id/action_periodCreditListFragment_to_monthlyCreditListFragment"
             app:destination="@id/monthlyCreditListFragment" />
+        <deepLink app:uri="android-app://co.com.japl.finanzas.module.app/period_credits"/>
     </fragment>
     <fragment
         android:id="@+id/item_menu_setting_account"
@@ -413,6 +409,7 @@
         <action
             android:id="@+id/action_menu_projections_to_projectionFragment"
             app:destination="@id/projectionFragment" />
+        <deepLink app:uri="android-app://co.com.japl.finanzas.module.app/paid/projections"/>
     </fragment>
     <fragment
         android:id="@+id/listProjectFragment"
@@ -422,12 +419,15 @@
         <action
             android:id="@+id/action_listProjectFragment_to_projectionFragment"
             app:destination="@id/projectionFragment" />
+        <deepLink app:uri="android-app://co.com.japl.finanzas.module.app/paid/projection/list"/>
     </fragment>
     <fragment
         android:id="@+id/projectionFragment"
         android:name="co.japl.android.myapplication.finanzas.controller.projections.ProjectionFragment"
         android:label="@string/projection"
-        tools:layout="@layout/fragment_projection" />
+        tools:layout="@layout/fragment_projection" >
+        <deepLink app:uri="android-app://co.com.japl.finanzas.module.app/paid/projection/form"/>
+    </fragment>
     <fragment
         android:id="@+id/item_menu_side_recap"
         android:name="co.japl.android.myapplication.finanzas.controller.RecapFragment"
@@ -446,7 +446,10 @@
     <fragment
         android:id="@+id/extraValueListController"
         android:name="co.japl.android.myapplication.finanzas.controller.ExtraValueListController"
-        android:label="ExtraValueListController" />
+        android:layout="@layout/fragment_extra_value_list"
+        android:label="ExtraValueListController" >
+        <deepLink app:uri="android-app://co.com.japl.finanzas.module.creditfix/extraValue"/>
+    </fragment>
     <fragment
         android:id="@+id/sms_list_credit_card"
         android:name="co.japl.android.myapplication.finanzas.controller.boughtcreditcard.SmsListFragment"
