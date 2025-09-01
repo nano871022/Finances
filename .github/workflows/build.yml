@@ -24,6 +24,9 @@ jobs:
       VersionName: ${{ steps.getVersion.outputs.VersionName }}
       CleanVersion: ${{ steps.getVersion.outputs.CleanVersion }}
     steps:
+
+      - uses: actions/checkout@v4
+    
       - name: Setup Environment
         uses: ./.github/actions/setup
 
