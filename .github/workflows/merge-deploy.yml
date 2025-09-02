@@ -12,9 +12,6 @@ jobs:
   lint:
     uses: ./.github/workflows/lint.yml
 
-  lint:
-    uses: ./.github/workflows/lint.yml
-
   test:
     needs: [lint]
     if: always()
