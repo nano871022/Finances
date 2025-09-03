@@ -31,7 +31,11 @@ jobs:
       - name: Download aab
         uses: actions/download-artifact@v4
         with:
+          path: ./
           name: aab-file
+
+      - name: Check Files
+        run: ls -lnR
 
       - name: Upload to Play Store
         if: github.ref == 'refs/heads/master'
