@@ -1,0 +1,33 @@
+name: Create TAG
+
+on:
+  workflow_call:
+    inputs:
+      VersionCode:
+        required: true
+        type: string
+      VersionName:
+        required: true
+        type: string
+      CleanVersion:
+        required: true
+        type: string
+
+jobs:
+
+  CreateTAG:
+    name: Create Tag of Version
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - uses: actions/checkout@v4
+
+      - name: Create and Push Tag
+        if: github.ref == 'refs/heads/master'
+        run: |
+          git config --local user.name "Action Finances"
+          git config --local user.email "actions-finances@japl.dev"
+          git tag "v${{ inputs.VersionCode }}" -m "Release v${{ inputs.VersionName }}"
+          git push origin "v${{ inputs.VersionCode }}"
+ 
