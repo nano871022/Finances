@@ -33,12 +33,13 @@ jobs:
   deploy:
     needs: [build]
     uses: ./.github/workflows/deploy.yml
-    secrets:
-      GOOGLE_PLAY_SERVICE_ACCOUNT: ${{ secrets.GOOGLE_PLAY_SERVICE_ACCOUNT }}
     with:
+      environment: PROD
       VersionCode: ${{ needs.build.outputs.VersionCode }}
       VersionName: ${{ needs.build.outputs.VersionName }}
       CleanVersion: ${{ needs.build.outputs.CleanVersion }}
+    secrets:
+      GOOGLE_PLAY_SERVICE_ACCOUNT: ${{ secrets.GOOGLE_PLAY_SERVICE_ACCOUNT }}
 
   createtag:
     needs: [deploy]
