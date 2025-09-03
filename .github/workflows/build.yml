@@ -4,6 +4,12 @@ on:
     secrets:
       SECRET_TOKEN:
         required: true
+      SIGNING_STORE_PASSWORD:
+        required: true
+      SIGNING_KEY_ALIAS:
+        required: true
+      SIGNING_KEY_PASSWORD:
+        required: true
     inputs:
       environment:
         required: true
