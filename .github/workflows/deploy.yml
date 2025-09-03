@@ -5,6 +5,9 @@ on:
       GOOGLE_PLAY_SERVICE_ACCOUNT:
         required: true
     inputs:
+      environment:
+        required: true
+        type: string
       VersionCode:
         required: true
         type: string
