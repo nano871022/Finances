@@ -56,7 +56,7 @@ jobs:
       - name: Build Release AAB
         run: |
           ./gradlew bundleRelease \
-            -PsignPksPath="./properties/finanzas/finanzas-same-plus-dot.pks" \
+            -PsignPksPath="../properties/finanzas/finanzas-same-plus-dot.pks" \
             --no-daemon \
             --no-parallel \
             --info
