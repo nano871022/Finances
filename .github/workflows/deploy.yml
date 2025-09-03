@@ -34,18 +34,12 @@ jobs:
           name: aab-file
 
       - name: Upload to Play Store
-        if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
-        uses: r0adkll/upload-google-play@v1
+        if: github.ref == 'refs/heads/master'
+        uses: r0adkll/upload-google-play@v1.1.3
         with:
           serviceAccountJsonPlainText: ${{ secrets.GOOGLE_PLAY_SERVICE_ACCOUNT }}
           packageName: co.japl.android.myapplication
-          releaseFiles: app-release.bundle
-          track: test
-
-      - name: Create and Push Tag
-        if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
-        run: |
-          git config --global user.name 'github-actions[bot]'
-          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
-          git tag "v${{ inputs.CleanVersion }}" -m "Release v${{ inputs.CleanVersion }}"
-          git push origin "v${{ inputs.CleanVersion }}"
+          releaseFiles: ./app-release.aab
+          track: internal
+          inAppUpdatePriority: 0
+          status: completed
