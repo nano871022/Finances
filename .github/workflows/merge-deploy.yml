@@ -22,6 +22,8 @@ jobs:
   build:
     needs: [test]
     uses: ./.github/workflows/build.yml
+    with:
+      environment: PROD
     secrets:
       SECRET_TOKEN: ${{ secrets.SECRET_TOKEN }}
 
