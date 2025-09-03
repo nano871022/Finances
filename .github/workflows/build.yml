@@ -57,6 +57,7 @@ jobs:
         run: |
           ./gradlew bundleRelease \
             -PsignPksPath="../properties/finanzas/finanzas-same-plus-dot-v2.pks" \
+            -PsignKeyAlias="Finanzas 2.0"
             --no-daemon \
             --no-parallel \
             --info
