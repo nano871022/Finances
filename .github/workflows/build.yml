@@ -4,6 +4,10 @@ on:
     secrets:
       SECRET_TOKEN:
         required: true
+    inputs:
+      environment:
+        required: true
+        type: string
     outputs:
       VersionCode:
         description: "The version code of the app"
@@ -19,6 +23,7 @@ jobs:
   build:
     name: Prepare and Build Release
     runs-on: ubuntu-latest
+    environment: ${{ inputs.environment }}
     outputs:
       VersionCode: ${{ steps.getVersion.outputs.VersionCode }}
       VersionName: ${{ steps.getVersion.outputs.VersionName }}
