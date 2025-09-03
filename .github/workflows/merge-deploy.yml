@@ -26,6 +26,9 @@ jobs:
       environment: PROD
     secrets:
       SECRET_TOKEN: ${{ secrets.SECRET_TOKEN }}
+      SIGNING_STORE_PASSWORD: ${{ secrets.SIGNING_STORE_PASSWORD }}
+      SIGNING_KEY_PASSWORD: ${{ secrets.SIGNING_KEY_PASSWORD }}
+      SIGNING_KEY_ALIAS: ${{ secrets.SIGNING_KEY_ALIAS }}
 
   deploy:
     needs: [build]
