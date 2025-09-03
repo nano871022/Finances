@@ -21,4 +21,17 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: lint-report
-          path: app/build/reports/lint-results-debug.html
+          path:  |
+                ./app/build/reports/
+                ./build/reports
+                ./japl-android-about-module/build/reports
+                ./ui/build/intermediates/lint_intermediate_text_report/debug
+                ./japl-android-finances-services/build/reports
+                ./model/build/reports
+                ./japl-android-graphs/build/reports
+                ./japl-finances-iport/build/reports
+                ./japl-android-finances-core/build/reports
+                ./japl-android-finances-paid-module/build/reports
+                ./japl-android-finances-inputs/build/reports
+                ./credit/build/reports
+                ./CreditCardModule/build/reports
