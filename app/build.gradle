@@ -12,14 +12,6 @@ plugins {
 }
 
 android {
-    signingConfigs {
-        prod {
-            storeFile file(signPksPath)
-            storePassword signPksPassword
-            keyAlias signKeyAlias
-            keyPassword signKeyPassword
-        }
-    }
     compileSdk 36
 
     defaultConfig {
