@@ -14,8 +14,6 @@ jobs:
     uses: ./.github/workflows/lint.yml
 
   test:
-    needs: [lint]
-    if: always()
     uses: ./.github/workflows/test.yml
 
   build:
