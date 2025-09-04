@@ -1,21 +1,7 @@
 name: Create TAG
 
 on:
-  workflow_dispatch:
   workflow_call:
-    inputs:
-      VersionCode:
-        required: true
-        type: string
-      VersionName:
-        required: true
-        type: string
-      CleanVersion:
-        required: true
-        type: string
-concurrency:
-  group: ${{ github.workflow }}-${{ github.event }}-${{ github.ref }}
-  cancel-in-progress: true        
 
 jobs:
 
