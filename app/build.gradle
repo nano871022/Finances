@@ -17,8 +17,8 @@ android {
     defaultConfig {
         applicationId "co.japl.android.myapplication"
         minSdk 35
-        versionCode 4_05_25_140
-        versionName "V 4.05.25 build 140 Migration Projection view and additional credit"
+        versionCode 4_05_25_141
+        versionName "V 4.05.25 build 141 Migration Projection view and additional credit"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
