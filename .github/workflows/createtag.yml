@@ -23,11 +23,21 @@ jobs:
 
       - uses: actions/checkout@v4
 
+      - name: Get Version Code and Name of App
+        id: getVersion
+        run: |
+          VERSION_CODE=$(grep -m 1 'versionCode' app/build.gradle | awk '{print $2}')
+          VERSION_NAME=$(grep -m 1 'versionName' app/build.gradle | awk -F '"' '{print $2}')
+          CLEAN_VERSION=$(echo "$VERSION_NAME" | awk '{print $2}')
+          echo "VersionCode=$VERSION_CODE" >> $GITHUB_OUTPUT
+          echo "VersionName=$VERSION_NAME" >> $GITHUB_OUTPUT
+          echo "CleanVersion=$CLEAN_VERSION" >> $GITHUB_OUTPUT
+
       - name: Create and Push Tag
         if: github.ref == 'refs/heads/master'
         run: |
           git config --local user.name "Action Finances"
           git config --local user.email "actions-finances@japl.dev"
-          git tag "v${{ inputs.VersionCode }}" -m "Release v${{ inputs.VersionName }}"
-          git push origin "v${{ inputs.VersionCode }}"
+          git tag "v$VersionCode" -m "Release v$VersionName"
+          git push origin "v$CleanVersion"
  
