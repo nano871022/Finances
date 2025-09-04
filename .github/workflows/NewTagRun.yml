@@ -10,7 +10,3 @@ jobs:
 
   createtag:
     uses: ./.github/workflows/createtag.yml
-    with:
-      VersionCode: "N/A"
-      VersionName: "N/A"
-      CleanVersion: "N/A"
