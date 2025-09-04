@@ -1,0 +1,12 @@
+name: New TAG Run
+
+on:
+  workflow_dispatch:
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event }}-${{ github.ref }}
+  cancel-in-progress: true        
+
+jobs:
+
+  createtag:
+    uses: ./.github/workflows/createtag.yml

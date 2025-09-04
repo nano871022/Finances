@@ -44,7 +44,3 @@ jobs:
   createtag:
     needs: [deploy]
     uses: ./.github/workflows/createtag.yml
-    with:
-      VersionCode: ${{ needs.build.outputs.VersionCode }}
-      VersionName: ${{ needs.build.outputs.VersionName }}
-      CleanVersion: ${{ needs.build.outputs.CleanVersion }}
