@@ -51,4 +51,4 @@ jobs:
           track: internal
           inAppUpdatePriority: 0
           status: completed
-          changesNotSentForReview: true
+          #changesNotSentForReview: true
