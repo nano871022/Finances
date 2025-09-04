@@ -28,6 +28,6 @@ jobs:
         run: |
           git config --local user.name "Action Finances"
           git config --local user.email "actions-finances@japl.dev"
-          git tag "v${{ steps.getVersion.outputs.VersionCode }}" -m "Release v${{ steps.getVersion.outputs.VersionName }}"
-          git push origin "v${{ steps.getVersion.outputs.CleanVersion }}"
+          git tag "v${{ steps.getVersion.outputs.VersionCode }}" -m "Release ${{ steps.getVersion.outputs.VersionName }}"
+          git push origin "v${{ steps.getVersion.outputs.VersionCode }}"
  
