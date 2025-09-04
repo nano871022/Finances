@@ -1,6 +1,7 @@
 name: Create TAG
 
 on:
+  workflow_dispatch:
   workflow_call:
     inputs:
       VersionCode:
@@ -12,6 +13,9 @@ on:
       CleanVersion:
         required: true
         type: string
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event }}-${{ github.ref }}
+  cancel-in-progress: true        
 
 jobs:
 
@@ -38,6 +42,6 @@ jobs:
         run: |
           git config --local user.name "Action Finances"
           git config --local user.email "actions-finances@japl.dev"
-          git tag "v$VersionCode" -m "Release v$VersionName"
-          git push origin "v$CleanVersion"
+          git tag "v${{ steps.getVersion.outputs.VersionCode }}" -m "Release v${{ steps.getVersion.outputs.VersionName }}"
+          git push origin "v${{ steps.getVersion.outputs.CleanVersion }}"
  
