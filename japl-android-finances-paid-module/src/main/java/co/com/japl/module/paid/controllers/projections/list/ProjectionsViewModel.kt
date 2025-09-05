@@ -14,22 +14,21 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import java.math.BigDecimal
-import java.util.logging.Handler
 import javax.inject.Inject
 
 @HiltViewModel
-class ProjectionsViewModel @Inject constructor(private val savedStateHandler: SavedStateHandle?=null,private val projectionSvc: IProjectionsPort?=null, private val navController: NavController?=null) : ViewModel() {
+class ProjectionsViewModel @Inject constructor(private val savedStateHandler: SavedStateHandle,private val projectionSvc: IProjectionsPort) : ViewModel() {
 
     val loadingStatus = mutableStateOf(false)
     val projectionsList = mutableStateListOf<ProjectionRecap>()
 
     val totalCount = initialFieldState(
-        savedStateHandler!!,
+        savedStateHandler,
         "FORM_TOTAL_COUNT",
         initialValue = 0
     )
     val totalSaved = initialFieldState(
-        savedStateHandler!!,
+        savedStateHandler,
         "FORM_TOTAL_SAVED",
         initialValue = BigDecimal.ZERO
     )
@@ -40,16 +39,12 @@ class ProjectionsViewModel @Inject constructor(private val savedStateHandler: Sa
         }
     }
 
-    fun goToList(){
-        navController?.let {
-            Projections.listNavigate(it)
-        }
+    fun goToList(navController: NavController){
+        Projections.listNavigate(navController)
     }
 
-    fun goToCreate(){
-        navController?.let {
-            Projections.formNavigate(it)
-        }
+    fun goToCreate(navController: NavController){
+        Projections.formNavigate(navController)
     }
 
     fun main() = runBlocking {
@@ -58,7 +53,7 @@ class ProjectionsViewModel @Inject constructor(private val savedStateHandler: Sa
     }
 
     suspend fun execute(){
-        projectionSvc?.let{
+        projectionSvc.let{
             it.getProjectionRecap().let{
                 it.first.let(totalCount::onValueChange)
                 it.second.let(totalSaved::onValueChange)

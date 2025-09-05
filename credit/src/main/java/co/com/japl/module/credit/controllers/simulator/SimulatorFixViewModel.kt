@@ -13,22 +13,23 @@ import co.com.japl.finances.iports.enums.KindOfTaxEnum
 import co.com.japl.finances.iports.inbounds.credit.ISimulatorCreditFixPort
 import co.com.japl.module.credit.R
 import co.com.japl.module.credit.navigations.Simulator
-import co.com.japl.module.credit.views.simulator.Simulator
+import co.com.japl.ui.utils.NumbersUtil
 import co.com.japl.ui.utils.initialFieldState
-import co.japl.android.graphs.utils.NumbersUtil
-import dagger.hilt.android.scopes.ViewModelScoped
+import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.math.BigDecimal
+import javax.inject.Inject
 
-@ViewModelScoped
-class SimulatorFixViewModel constructor(
-    private val context: Context?=null,
-    private val simuladorSvc: ISimulatorCreditFixPort?=null,
-    private val savedStateHandler: SavedStateHandle?=null,
-    private val navigator: NavController?=null) : ViewModel(){
+@HiltViewModel
+class SimulatorFixViewModel @Inject constructor(
+    @ApplicationContext private val context: Context,
+    private val simuladorSvc: ISimulatorCreditFixPort,
+    private val savedStateHandler: SavedStateHandle,
+) : ViewModel(){
 
     val stateCalculation = mutableStateOf(false)
     val showCalculation = mutableStateOf(false)
@@ -37,7 +38,7 @@ class SimulatorFixViewModel constructor(
     val hasProgress = mutableStateOf(false)
 
     val name = initialFieldState(
-        savedStateHandler!!,
+        savedStateHandler,
         key="FORM_NAME",
         initialValue = "",
         validator = { it.isNotEmpty() },
@@ -48,7 +49,7 @@ class SimulatorFixViewModel constructor(
         }
     )
 
-    val kindTaxList = KindOfTaxEnum.entries.map{ Pair(it.ordinal, context?.getString( it.title)?:it.value) }
+    val kindTaxList = KindOfTaxEnum.entries.map{ Pair(it.ordinal, context.getString( it.title)) }
 
     var _simulator = MutableStateFlow(SimulatorCreditDTO(
         value = BigDecimal.ZERO,
@@ -61,7 +62,7 @@ class SimulatorFixViewModel constructor(
     val simulator = _simulator.asStateFlow()
 
     val creditValue = initialFieldState(
-        savedStateHandler!!,
+        savedStateHandler,
         key="FORM_CREDIT_VALUE",
         initialValue = BigDecimal.ZERO,
         validator = { it > BigDecimal.ZERO },
@@ -75,7 +76,7 @@ class SimulatorFixViewModel constructor(
     )
 
     val creditRate = initialFieldState<Double>(
-        savedStateHandler!!,
+        savedStateHandler,
         key="FORM_CREDIT_RATE",
         initialValue = 0.0,
         validator = { it > 0.0 },
@@ -89,7 +90,7 @@ class SimulatorFixViewModel constructor(
     )
 
     val creditKindRate = initialFieldState<KindOfTaxEnum>(
-        savedStateHandler!!,
+        savedStateHandler,
         key="FORM_CREDIT_KIND_RATE",
         initialValue = KindOfTaxEnum.ANUAL_EFFECTIVE,
         validator = { it != null },
@@ -103,7 +104,7 @@ class SimulatorFixViewModel constructor(
     )
 
     val month = initialFieldState(
-        savedStateHandler!!,
+        savedStateHandler,
         key="FORM_MONTH",
         initialValue = 0,
         validator = { it > 0 },
@@ -130,7 +131,7 @@ class SimulatorFixViewModel constructor(
     }
 
     fun calculate() = viewModelScope.launch{
-        simuladorSvc?.calculate(_simulator.value)?.let{ calc->
+        simuladorSvc.calculate(_simulator.value)?.let{ calc->
             _simulator.update {
                 it.copy(
                     capitalValue = calc.capitalValue,
@@ -141,34 +142,32 @@ class SimulatorFixViewModel constructor(
             stateCalculation.value = true
         }?:snackbar.value
             .showSnackbar(
-                message = context?.getString( R.string.calculation_error)?:""
+                message = context.getString( R.string.calculation_error)
             )
     }
 
-    fun amortization(){
-        navigator?.let{
-            simuladorSvc?.save(_simulator.value.copy(code=0,name="In simulator"),true)?.let {
-                Log.d("FORM","Amortization:: $it")
-                Simulator.navigate(it.toInt(),navigator)
-            }
+    fun amortization(navigator: NavController){
+        simuladorSvc.save(_simulator.value.copy(code=0,name="In simulator"),true).let {
+            Log.d("FORM","Amortization:: $it")
+            Simulator.navigate(it.toInt(),navigator)
         }
     }
 
     fun save() = viewModelScope.launch{
         if(isValid() && name.validate()) {
-            simuladorSvc?.save(_simulator.value,false)?.takeIf { (it ?: (0.toLong())) > 0.toLong() }
+            simuladorSvc.save(_simulator.value,false).takeIf { (it ) > 0L }
                 ?.let { code ->
                     _simulator.update {
                         it.copy(code = code.toInt())
                     }
                     snackbar.value
                         .showSnackbar(
-                            message = context?.getString(R.string.save_success) ?: ""
+                            message = context.getString(R.string.save_success)
                         )
 
                 } ?: snackbar.value
                 .showSnackbar(
-                    message = context?.getString(R.string.save_unsuccess) ?: ""
+                    message = context.getString(R.string.save_unsuccess)
                 )
         }else{
             snackbar.value.showSnackbar("Error los datos no estan completos")
