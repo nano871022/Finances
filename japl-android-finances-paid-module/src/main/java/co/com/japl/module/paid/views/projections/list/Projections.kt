@@ -32,27 +32,27 @@ import co.com.japl.ui.components.FloatButton
 import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.com.japl.ui.theme.values.Dimensions
 import co.com.japl.ui.utils.DateUtils
-import co.japl.android.myapplication.utils.NumbersUtil
+import co.com.japl.ui.utils.NumbersUtil
 import java.math.BigDecimal
 import java.time.LocalDate
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun Projections(viewModel: ProjectionsViewModel){
+fun Projections(viewModel: ProjectionsViewModel, navController: NavController){
     val progressStatus = remember { viewModel.loadingStatus }
 
     if (progressStatus.value) {
         LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
     }else {
-        Scafold(viewModel=viewModel)
+        Scafold(viewModel=viewModel, navController = navController)
     }
 }
 
 @Composable
-private fun Scafold(viewModel: ProjectionsViewModel){
+private fun Scafold(viewModel: ProjectionsViewModel, navController: NavController){
     Scaffold (
         floatingActionButton = {
-            FloatButton(viewModel)
+            FloatButton(viewModel, navController)
         }
     ) {
         Body(viewModel=viewModel,modifier = Modifier.padding(it))
@@ -130,20 +130,20 @@ private fun Header(viewModel: ProjectionsViewModel){
 }
 
 @Composable
-private fun FloatButton(viewModel: ProjectionsViewModel){
+private fun FloatButton(viewModel: ProjectionsViewModel, navController: NavController){
     Column(){
         FloatButton(
             imageVector = Icons.Rounded.RemoveRedEye,
             descriptionIcon = R.string.list_projection
         ) {
-            viewModel.goToList()
+            viewModel.goToList(navController)
         }
 
         FloatButton(
             imageVector = Icons.Rounded.Add,
             descriptionIcon = R.string.add_projection
         ) {
-            viewModel.goToCreate()
+            viewModel.goToCreate(navController)
         }
     }
 }
@@ -153,7 +153,7 @@ private fun FloatButton(viewModel: ProjectionsViewModel){
 @Preview(showBackground = true, showSystemUi = true, uiMode = Configuration.UI_MODE_NIGHT_NO, backgroundColor = 0x000000)
 fun PreviewLight(){
     MaterialThemeComposeUI {
-        Projections(getViewModel())
+        Projections(getViewModel(), NavController(LocalContext.current))
     }
 }
 
@@ -162,25 +162,33 @@ fun PreviewLight(){
 @Preview(showBackground = true, showSystemUi = true, uiMode = Configuration.UI_MODE_NIGHT_YES, backgroundColor = 0xffffff)
 fun PreviewDark(){
     MaterialThemeComposeUI {
-        Projections(getViewModel())
+        Projections(getViewModel(), NavController(LocalContext.current))
     }
 }
 
 @Composable
 fun getViewModel(): ProjectionsViewModel{
-    val vm =  ProjectionsViewModel()
-    vm.projectionsList.add(ProjectionRecap(
-        limitDate = LocalDate.now(),
-        savedCash = BigDecimal.TEN,
-        monthsLeft = 10
-    ))
-    vm.projectionsList.add(ProjectionRecap(
-        limitDate = LocalDate.now().minusMonths(1),
-        savedCash = BigDecimal.valueOf(500_000),
-        monthsLeft = 5
-    ))
-    vm.totalCount.onValueChange(10)
-    vm.totalSaved.onValueChange(BigDecimal.valueOf(1_000_000))
-
+    val savedStateHandle = SavedStateHandle()
+    val projectionSvc = object : IProjectionsPort {
+        override fun getProjectionRecap(): Triple<Long, BigDecimal, List<ProjectionRecap>> {
+            return Triple(
+                10,
+                BigDecimal.valueOf(1_000_000),
+                listOf(
+                    ProjectionRecap(
+                        limitDate = LocalDate.now(),
+                        savedCash = BigDecimal.TEN,
+                        monthsLeft = 10
+                    ),
+                    ProjectionRecap(
+                        limitDate = LocalDate.now().minusMonths(1),
+                        savedCash = BigDecimal.valueOf(500_000),
+                        monthsLeft = 5
+                    )
+                )
+            )
+        }
+    }
+    val vm =  ProjectionsViewModel(savedStateHandle, projectionSvc)
     return vm
 }

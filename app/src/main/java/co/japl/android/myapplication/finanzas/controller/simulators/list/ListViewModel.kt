@@ -1,6 +1,5 @@
 package co.japl.android.myapplication.finanzas.controller.simulators.list
 
-import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -8,12 +7,14 @@ import androidx.navigation.NavController
 import co.com.japl.finances.iports.dtos.SimulatorCreditDTO
 import co.com.japl.finances.iports.inbounds.credit.ISimulatorCreditFixPort
 import co.com.japl.finances.iports.inbounds.creditcard.ISimulatorCreditVariablePort
-import co.com.japl.module.creditcard.controllers.simulator.SimulatorListItemViewModel
-import co.com.japl.module.credit.controllers.simulator.SimulatorListItemViewModel as SimulatorListItemViewModelCredit
+import co.com.japl.module.credit.controllers.simulator.SimulatorListItemViewModel
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import javax.inject.Inject
+import co.com.japl.module.credit.controllers.simulator.SimulatorListItemViewModel as SimulatorListItemViewModelCredit
 
-
-class ListViewModel  constructor(private val simulatorVariableSvc: ISimulatorCreditVariablePort?=null,private val simulatorFixSvc: ISimulatorCreditFixPort?=null, private val navController: NavController?=null):ViewModel() {
+@HiltViewModel
+class ListViewModel  @Inject constructor(private val simulatorVariableSvc: ISimulatorCreditVariablePort,private val simulatorFixSvc: ISimulatorCreditFixPort):ViewModel() {
     val progres = mutableStateOf(false)
     val list = mutableListOf<SimulatorCreditDTO>()
 
@@ -21,15 +22,15 @@ class ListViewModel  constructor(private val simulatorVariableSvc: ISimulatorCre
         execute()
     }
 
-    fun createViewModelQuoteVariable(dto: SimulatorCreditDTO): SimulatorListItemViewModel{
-        return SimulatorListItemViewModel(
+    fun createViewModelQuoteVariable(dto: SimulatorCreditDTO, navController: NavController): co.com.japl.module.creditcard.controllers.simulator.SimulatorListItemViewModel {
+        return co.com.japl.module.creditcard.controllers.simulator.SimulatorListItemViewModel(
             dto,
             simulatorVariableSvc,
             navController
         )
     }
 
-    fun createViewModelQuoteFix(dto: SimulatorCreditDTO): SimulatorListItemViewModelCredit{
+    fun createViewModelQuoteFix(dto: SimulatorCreditDTO, navController: NavController): SimulatorListItemViewModelCredit{
         return SimulatorListItemViewModelCredit(
             dto,
             simulatorFixSvc,
@@ -44,10 +45,10 @@ class ListViewModel  constructor(private val simulatorVariableSvc: ISimulatorCre
     }
 
     suspend fun running(){
-        simulatorFixSvc?.let{
+        simulatorFixSvc.let{
             list.addAll(it.getList())
         }
-        simulatorVariableSvc?.let{
+        simulatorVariableSvc.let{
             list.addAll(it.getList())
         }
     }

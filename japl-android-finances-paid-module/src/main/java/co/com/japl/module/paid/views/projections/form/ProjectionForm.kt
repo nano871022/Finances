@@ -15,14 +15,17 @@ import androidx.compose.material.icons.rounded.Cancel
 import androidx.compose.material.icons.rounded.CleaningServices
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.SavedStateHandle
+import androidx.navigation.NavController
+import co.com.japl.finances.iports.dtos.ProjectionDTO
 import co.com.japl.finances.iports.enums.KindPaymentsEnums
+import co.com.japl.finances.iports.inbounds.paid.IProjectionFormPort
 import co.com.japl.module.paid.R
 import co.com.japl.module.paid.controllers.projections.forms.ProjectionFormViewModel
 import co.com.japl.ui.components.FieldDatePicker
@@ -32,30 +35,30 @@ import co.com.japl.ui.components.FieldView
 import co.com.japl.ui.components.FloatButton
 import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.com.japl.ui.theme.values.Dimensions
-import co.japl.android.myapplication.utils.NumbersUtil
+import co.com.japl.ui.utils.NumbersUtil
 import java.math.BigDecimal
 import java.time.LocalDate
 
 @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
 @Composable
-fun ProjectionForm(viewModel: ProjectionFormViewModel){
+fun ProjectionForm(viewModel: ProjectionFormViewModel, navController: NavController){
     val loading = remember { viewModel.loaderStatus }
 
     if(loading.value){
         LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
     }else{
-        Scafold(viewModel=viewModel)
+        Scafold(viewModel=viewModel, navController = navController)
     }
 }
 
 @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
 @Composable
-private fun Scafold(viewModel: ProjectionFormViewModel){
+private fun Scafold(viewModel: ProjectionFormViewModel, navController: NavController){
     val snackhost = remember {viewModel.hostState}
     Scaffold (
         snackbarHost = {SnackbarHost(hostState = snackhost)},
         floatingActionButton = {
-            FloatButton(viewModel=viewModel)
+            FloatButton(viewModel=viewModel, navController = navController)
         }){
         Body(viewModel=viewModel,modifier = Modifier.padding(it))
     }
@@ -121,7 +124,7 @@ private fun Body(viewModel: ProjectionFormViewModel,modifier:Modifier){
 }
 
 @Composable
-private fun FloatButton(viewModel: ProjectionFormViewModel){
+private fun FloatButton(viewModel: ProjectionFormViewModel, navController: NavController){
     val disableStatus = remember { viewModel.disableSaveStatus }
     Column{
         FloatButton(
@@ -135,7 +138,7 @@ private fun FloatButton(viewModel: ProjectionFormViewModel){
                 imageVector = Icons.Rounded.Add,
                 descriptionIcon = R.string.add_projection
             ) {
-                viewModel.save()
+                viewModel.save(navController)
             }
         }
     }
@@ -147,13 +150,40 @@ private fun FloatButton(viewModel: ProjectionFormViewModel){
 @Preview(showBackground = true, showSystemUi = true, uiMode = Configuration.UI_MODE_NIGHT_NO, backgroundColor = 0xFFFFFFFF)
 private fun ProjectionFormPreviewLight(){
     MaterialThemeComposeUI{
-        ProjectionForm(getViewModel())
+        ProjectionForm(getViewModel(), NavController(LocalContext.current))
     }
 }
 
 @Composable
 private fun getViewModel(): ProjectionFormViewModel{
-    val vm = ProjectionFormViewModel(context= LocalContext.current)
+    val context = LocalContext.current
+    val savedStateHandle = SavedStateHandle()
+    val projectionSvc = object : IProjectionFormPort {
+        override fun findById(id: Int): ProjectionDTO? {
+            return null
+        }
+
+        override fun getAll(): List<ProjectionDTO> {
+            return emptyList()
+        }
+
+        override fun save(dto: ProjectionDTO): Boolean {
+            return true
+        }
+
+        override fun delete(id: Int): Boolean {
+            return true
+        }
+
+        override fun calculateQuote(
+            kindOf: KindPaymentsEnums,
+            date: LocalDate,
+            value: BigDecimal
+        ): BigDecimal {
+            return BigDecimal.ZERO
+        }
+    }
+    val vm = ProjectionFormViewModel(context, savedStateHandle, projectionSvc)
     vm.datePayment.onValueChange(LocalDate.now())
     vm.period.onValueChange(Pair(KindPaymentsEnums.MONTHLY.month,KindPaymentsEnums.MONTHLY.name))
     vm.name.onValueChange("Salario")

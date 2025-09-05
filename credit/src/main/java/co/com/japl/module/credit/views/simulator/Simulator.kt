@@ -1,5 +1,6 @@
 package co.com.japl.module.credit.views.simulator
 
+import android.content.Context
 import android.content.res.Configuration
 import android.os.Build
 import androidx.annotation.RequiresApi
@@ -9,15 +10,15 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Calculate
+import androidx.compose.material.icons.rounded.Cancel
 import androidx.compose.material.icons.rounded.CleaningServices
 import androidx.compose.material.icons.rounded.Clear
-import androidx.compose.material.icons.rounded.TableChart
 import androidx.compose.material.icons.rounded.Save
-import androidx.compose.material.icons.rounded.Cancel
-import androidx.compose.material3.LinearProgressIndicator
-import androidx.compose.material3.Scaffold
+import androidx.compose.material.icons.rounded.TableChart
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
+import androidx.compose.material3.LinearProgressIndicator
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -25,11 +26,16 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import co.com.japl.module.credit.controllers.simulator.SimulatorFixViewModel
+import androidx.lifecycle.SavedStateHandle
+import androidx.navigation.NavController
+import co.com.japl.finances.iports.dtos.SimulatorCreditDTO
 import co.com.japl.finances.iports.enums.KindOfTaxEnum
+import co.com.japl.finances.iports.inbounds.credit.ISimulatorCreditFixPort
 import co.com.japl.module.credit.R
+import co.com.japl.module.credit.controllers.simulator.SimulatorFixViewModel
 import co.com.japl.ui.components.FieldSelect
 import co.com.japl.ui.components.FieldText
 import co.com.japl.ui.components.FieldView
@@ -37,26 +43,26 @@ import co.com.japl.ui.components.FloatButton
 import co.com.japl.ui.components.Popup
 import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.com.japl.ui.theme.values.Dimensions
-import co.japl.android.graphs.utils.NumbersUtil
+import co.com.japl.ui.utils.NumbersUtil
 import java.math.BigDecimal
 
 @Composable
-fun Simulator(viewModel: SimulatorFixViewModel){
+fun Simulator(viewModel: SimulatorFixViewModel, navController: NavController){
     val hasProgress = remember { viewModel.hasProgress }
 
     if(hasProgress.value){
         LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
     }else{
-        Body(viewModel)
+        Body(viewModel, navController)
     }
 
 }
 
 @Composable
-private fun Body(viewModel: SimulatorFixViewModel){
+private fun Body(viewModel: SimulatorFixViewModel, navController: NavController){
     val snackbar = remember { viewModel.snackbar }
     Scaffold( floatingActionButton = {
-        FloatButton(viewModel)
+        FloatButton(viewModel, navController)
     }, snackbarHost = { snackbar.value },
         topBar={
             Text(text=stringResource(R.string.simulator_quote_fix),modifier=Modifier.fillMaxWidth())
@@ -120,7 +126,7 @@ private fun PopupSave(viewModel: SimulatorFixViewModel){
 }
 
 @Composable
-private fun FloatButton(viewModel: SimulatorFixViewModel){
+private fun FloatButton(viewModel: SimulatorFixViewModel, navController: NavController){
     val stateCalculation = remember { viewModel.showCalculation }
     Column{
         FloatButton  (
@@ -143,7 +149,7 @@ private fun FloatButton(viewModel: SimulatorFixViewModel){
                 imageVector = Icons.Rounded.TableChart,
                 descriptionIcon = R.string.amortization,
             ){
-                viewModel.amortization()
+                viewModel.amortization(navController)
             }
             FloatButton(
                 imageVector = Icons.Rounded.Save,
@@ -244,7 +250,7 @@ private fun BodyCalc(viewModel: SimulatorFixViewModel){
 @Preview(showBackground = true, showSystemUi = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
 private fun SimulatorPreviewLight(){
     MaterialThemeComposeUI {
-        Simulator(getViewModel())
+        Simulator(getViewModel(), NavController(LocalContext.current))
     }
 }
 
@@ -253,13 +259,37 @@ private fun SimulatorPreviewLight(){
 @Preview(showBackground = true, showSystemUi = true, uiMode = Configuration.UI_MODE_NIGHT_YES, backgroundColor = 0xFF000000)
 private fun SimulatorPreviewDark(){
     MaterialThemeComposeUI {
-        Simulator(getViewModel())
+        Simulator(getViewModel(), NavController(LocalContext.current))
     }
 }
 
+@Composable
 private fun getViewModel():SimulatorFixViewModel{
+    val context = LocalContext.current
+    val savedStateHandle = SavedStateHandle()
+    val simulatorSvc = object : ISimulatorCreditFixPort {
+        override fun calculate(dto: SimulatorCreditDTO): SimulatorCreditDTO? {
+            return dto.copy(
+                capitalValue = BigDecimal.valueOf(200000),
+                interestValue = BigDecimal.valueOf(100000),
+                quoteValue = BigDecimal.valueOf(300000)
+            )
+        }
 
-    return SimulatorFixViewModel().also {
+        override fun save(dto: SimulatorCreditDTO, cache: Boolean): Long {
+            return 1
+        }
+
+        override fun getList(): List<SimulatorCreditDTO> {
+            return emptyList()
+        }
+
+        override fun delete(code: Int): Boolean {
+            return true
+        }
+    }
+
+    return SimulatorFixViewModel(context, simulatorSvc, savedStateHandle).also {
         it.month.onValueChange(12)
         it.creditRate.onValueChange(13.0)
         it.creditValue.onValueChange(BigDecimal.valueOf(1000000))

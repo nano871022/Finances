@@ -37,6 +37,7 @@ import co.com.japl.ui.components.FieldText
 import co.com.japl.ui.components.FieldView
 import co.com.japl.ui.components.FloatButton
 import co.com.japl.ui.theme.MaterialThemeComposeUI
+import androidx.navigation.NavController
 import co.com.japl.ui.theme.values.Dimensions
 import co.com.japl.ui.theme.values.ModifiersCustom
 import kotlinx.coroutines.CoroutineDispatcher
@@ -47,18 +48,18 @@ import java.time.LocalDateTime
 
 @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
 @Composable
-fun Wallet (viewModel:WalletViewModel){
+fun Wallet (viewModel:WalletViewModel, navController: NavController){
     val isLoadingState = remember {viewModel.loading}
     val loadingState = remember { viewModel.progress }
 
     if(isLoadingState.value){
         LinearProgressIndicator(progress = loadingState.floatValue,modifier=Modifier.fillMaxWidth())
     }else {
-        viewModel.creditRateEmpty()
+        viewModel.creditRateEmpty(navController)
         Scaffold(
             floatingActionButton = {
 
-                FloatingButtons(viewModel)
+                FloatingButtons(viewModel, navController)
 
             }
         ) {
@@ -68,7 +69,7 @@ fun Wallet (viewModel:WalletViewModel){
 }
 
 @Composable
-private fun FloatingButtons(viewModel: WalletViewModel) {
+private fun FloatingButtons(viewModel: WalletViewModel, navController: NavController) {
     val isNewState = remember { viewModel.isNew }
     Column {
         FloatButton(
@@ -81,14 +82,14 @@ private fun FloatingButtons(viewModel: WalletViewModel) {
             FloatButton(
                 imageVector = Icons.Rounded.Save,
                 descriptionIcon = R.string.save,
-                onClick = {viewModel.create()}
+                onClick = {viewModel.create(navController)}
             )
         }else {
 
             FloatButton(
                 imageVector = Icons.Rounded.Edit,
                 descriptionIcon = R.string.edit,
-                onClick = { viewModel.update() }
+                onClick = { viewModel.update(navController) }
             )
         }
     }
@@ -201,7 +202,7 @@ private fun Body(viewModel: WalletViewModel,modifier:Modifier){
 fun WalletPreviewDark(){
     val viewModel = viweModel()
     MaterialThemeComposeUI {
-        Wallet(viewModel)
+        Wallet(viewModel, NavController(LocalContext.current))
     }
 }
 
@@ -211,14 +212,130 @@ fun WalletPreviewDark(){
 fun WalletPreview(){
     val viewModel = viweModel()
     MaterialThemeComposeUI {
-        Wallet(viewModel)
+        Wallet(viewModel, NavController(LocalContext.current))
     }
 }
 
 @Composable
 private fun viweModel():WalletViewModel{
-    val prefs = Prefs(LocalContext.current)
-    val viewModel = WalletViewModel(null,0,0, LocalDateTime.now(),null,null,null,null,prefs)
+    val context = LocalContext.current
+    val prefs = Prefs(context)
+    val savedStateHandle = SavedStateHandle()
+    val boughtSvc = object : IBoughtPort {
+        override fun get(codeCreditCard: Int, period: LocalDateTime): List<CreditCardBoughtDTO> {
+            return emptyList()
+        }
+
+        override fun getById(code: Int, cache: Boolean): CreditCardBoughtDTO? {
+            return null
+        }
+
+        override fun get(codeBought: Int): List<CreditCardBoughtDTO> {
+            return emptyList()
+        }
+
+        override fun getRecurrent(codeCreditCard: Int): List<CreditCardBoughtDTO> {
+            return emptyList()
+        }
+
+        override fun getPendingToPay(codeCreditCard: Int): List<CreditCardBoughtDTO> {
+            return emptyList()
+        }
+
+        override fun create(creditCardBought: CreditCardBoughtDTO, cache: Boolean): Int {
+            return 1
+        }
+
+        override fun update(creditCardBought: CreditCardBoughtDTO, cache: Boolean): Boolean {
+            return true
+        }
+
+        override fun delete(code: Int, cache: Boolean): Boolean {
+            return true
+        }
+
+        override fun quoteValue(
+            idCreditRate: Int,
+            quotes: Short,
+            value: Double,
+            kind: KindOfTaxEnum,
+            interest: KindInterestRateEnum
+        ): BigDecimal {
+            return BigDecimal.ZERO
+        }
+
+        override fun interestValue(
+            idCreditRate: Int,
+            quotes: Short,
+            value: Double,
+            kind: KindOfTaxEnum,
+            interest: KindInterestRateEnum
+        ): BigDecimal {
+            return BigDecimal.ZERO
+        }
+
+        override fun capitalValue(
+            idCreditRate: Int,
+            quotes: Short,
+            value: Double,
+            kind: KindOfTaxEnum,
+            interest: KindInterestRateEnum
+        ): BigDecimal {
+            return BigDecimal.ZERO
+        }
+    }
+    val creditRateSvc = object : ITaxPort {
+        override fun get(
+            codeCreditCard: Int,
+            month: Int,
+            year: Int,
+            kind: KindInterestRateEnum
+        ): TaxDTO? {
+            return null
+        }
+
+        override fun get(codeCreditRate: Int): TaxDTO? {
+            return null
+        }
+
+        override fun get(codeCreditCard: Int): List<TaxDTO> {
+            return emptyList()
+        }
+
+        override fun create(tax: TaxDTO): Boolean {
+            return true
+        }
+
+        override fun update(tax: TaxDTO): Boolean {
+            return true
+        }
+
+        override fun delete(code: Int): Boolean {
+            return true
+        }
+    }
+    val creditCardSvc = object : ICreditCardPort {
+        override fun getCreditCards(): List<CreditCardDTO> {
+            return emptyList()
+        }
+
+        override fun getCreditCard(code: Int): CreditCardDTO? {
+            return null
+        }
+
+        override fun create(creditCard: CreditCardDTO): Boolean {
+            return true
+        }
+
+        override fun update(creditCard: CreditCardDTO): Boolean {
+            return true
+        }
+
+        override fun delete(code: Int): Boolean {
+            return true
+        }
+    }
+    val viewModel = WalletViewModel(savedStateHandle, boughtSvc, creditRateSvc, creditCardSvc, prefs, context)
     viewModel.loading.value = false
     return viewModel
 }

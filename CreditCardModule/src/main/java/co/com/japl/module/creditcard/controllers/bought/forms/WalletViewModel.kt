@@ -1,5 +1,6 @@
 package co.com.japl.module.creditcard.controllers.bought.forms
 
+import android.content.Context
 import android.widget.Toast
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -16,18 +17,34 @@ import co.com.japl.finances.iports.inbounds.creditcard.bought.IBoughtPort
 import co.com.japl.module.creditcard.R
 import co.com.japl.ui.Prefs
 import co.com.japl.ui.utils.DateUtils
+import co.com.japl.ui.utils.NumbersUtil
 import co.com.japl.ui.utils.initialFieldState
-import co.japl.android.myapplication.utils.NumbersUtil
+import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.runBlocking
 import java.time.LocalDate
 import java.time.LocalDateTime
+import javax.inject.Inject
 
-class WalletViewModel constructor(private val savedStateHolder: SavedStateHandle?=null,private val codeCreditCard:Int, private val codeBought:Int, private val period:LocalDateTime, private val boughtSvc:IBoughtPort?, private val creditRateSvc:ITaxPort?, private val creditCardSvc:ICreditCardPort?, private val navController: NavController?, private val prefs:Prefs) : ViewModel(){
+@HiltViewModel
+class WalletViewModel @Inject constructor(
+    private val savedStateHolder: SavedStateHandle,
+    private val boughtSvc:IBoughtPort,
+    private val creditRateSvc:ITaxPort,
+    private val creditCardSvc:ICreditCardPort,
+    private val prefs:Prefs,
+    @ApplicationContext private val context:Context
+) : ViewModel(){
 
     private var cutOffDate:LocalDateTime? = null
     private var bought:CreditCardBoughtDTO? = null
     private var validate = false
     private var taxDto:TaxDTO? = null
+
+    private var codeCreditCard:Int = 0
+    private var codeBought:Int = 0
+    private var period:LocalDateTime = LocalDateTime.now()
+
 
     val loading = mutableStateOf(true)
     val progress = mutableFloatStateOf(0.0f)
@@ -35,7 +52,7 @@ class WalletViewModel constructor(private val savedStateHolder: SavedStateHandle
     val isNew = mutableStateOf(true)
 
     val creditCardName = initialFieldState(
-        savedStateHolder!!,
+        savedStateHolder,
         "FORM_CREDIT_CARD_NAME",
         initialValue = "",
         validator = {it.isNotBlank()},
@@ -43,7 +60,7 @@ class WalletViewModel constructor(private val savedStateHolder: SavedStateHandle
     )
 
     val nameProduct = initialFieldState(
-        savedStateHolder!!,
+        savedStateHolder,
         "FORM_NAME_PRODUCT",
         initialValue = "",
         validator = {it.isNotBlank()},
@@ -51,42 +68,42 @@ class WalletViewModel constructor(private val savedStateHolder: SavedStateHandle
     )
 
     val valueProduct = initialFieldState(
-        savedStateHolder!!,
+        savedStateHolder,
         "FORM_VALUE_PRODUCT",
         initialValue = "",
         validator = {it.isNotBlank() && NumbersUtil.isNumber(it)},
         onValueChangeCallBack = { bought?.valueItem = NumbersUtil.toBigDecimal(it); validate() }
     )
     val monthProduct = initialFieldState(
-        savedStateHolder!!,
+        savedStateHolder,
         "FORM_MONTH_PRODUCT",
         initialValue = "",
         validator = {it.isNotBlank() && NumbersUtil.isNumber(it) && it.toInt() > 0},
         onValueChangeCallBack = { bought?.month = it.toInt(); validate() }
     )
     val creditRate = initialFieldState(
-        savedStateHolder!!,
+        savedStateHolder,
         "FORM_CREDIT_RATE",
         initialValue = "",
         validator = {it.isNotBlank() && NumbersUtil.isNumber(it)},
         onValueChangeCallBack = { bought?.interest = NumbersUtil.toBigDecimal(it).toDouble() }
     )
     val capitalValue = initialFieldState(
-        savedStateHolder!!,
+        savedStateHolder,
         "FORM_CAPITAL_VALUE",
         initialValue = "",
         validator = {it.isNotBlank() && NumbersUtil.isNumber(it)},
         onValueChangeCallBack = { }
     )
     val dateBought = initialFieldState(
-        savedStateHolder!!,
+        savedStateHolder,
         "FORM_DATE_BOUGHT",
         initialValue = "",
         validator = {it.isNotBlank() && DateUtils.isDateValid(it)},
         onValueChangeCallBack = { bought?.boughtDate = DateUtils.toLocalDateTime2(it) }
     )
     val quoteValue = initialFieldState(
-        savedStateHolder!!,
+        savedStateHolder,
         "FORM_QUOTE_VALUE",
         initialValue = "",
         validator = {it.isNotBlank() && NumbersUtil.isNumber(it)},
@@ -94,14 +111,14 @@ class WalletViewModel constructor(private val savedStateHolder: SavedStateHandle
     )
 
     val interestValue = initialFieldState(
-        savedStateHolder!!,
+        savedStateHolder,
         "FORM_INTEREST_VALUE",
         initialValue = "",
         validator = {it.isNotBlank() && NumbersUtil.isNumber(it)},
         onValueChangeCallBack = { }
     )
     val creditRateKind = initialFieldState(
-        savedStateHolder!!,
+        savedStateHolder,
         "FORM_CREDIT_RATE_KIND",
         initialValue = "",
         validator = {it.isNotBlank()},
@@ -109,6 +126,9 @@ class WalletViewModel constructor(private val savedStateHolder: SavedStateHandle
     )
 
     init{
+        savedStateHolder.get<Int>("codeCreditCard")?.let{ codeCreditCard = it }
+        savedStateHolder.get<Int>("codeBought")?.let{ codeBought = it }
+
         main()
     }
 
@@ -125,22 +145,20 @@ class WalletViewModel constructor(private val savedStateHolder: SavedStateHandle
 
     }
 
-    fun create(){
+    fun create(navController: NavController){
         if(validate) {
-            boughtSvc?.let {
+            boughtSvc.let {
                 if(it.create(bought!!,prefs.simulator)>0) {
-                    navController?.let { navController ->
-                        Toast.makeText(
-                            navController.context,
-                            R.string.toast_successful_insert,
-                            Toast.LENGTH_SHORT
-                        ).show().also {
-                            navController.popBackStack()
-                        }
+                    Toast.makeText(
+                        navController.context,
+                        R.string.toast_successful_insert,
+                        Toast.LENGTH_SHORT
+                    ).show().also {
+                        navController.popBackStack()
                     }
                 }else {
                     Toast.makeText(
-                        navController?.context,
+                        navController.context,
                         R.string.toast_unsuccessful_insert,
                         Toast.LENGTH_SHORT
                     ).show()
@@ -149,22 +167,20 @@ class WalletViewModel constructor(private val savedStateHolder: SavedStateHandle
         }
     }
 
-    fun update(){
+    fun update(navController: NavController){
         if(validate) {
-            boughtSvc?.let {
+            boughtSvc.let {
                 if(it.update(bought!!,prefs.simulator)) {
-                    navController?.let { navController ->
-                        Toast.makeText(
-                            navController.context,
-                            R.string.toast_successful_update,
-                            Toast.LENGTH_SHORT
-                        ).show().also {
-                            navController.popBackStack()
-                        }
+                    Toast.makeText(
+                        navController.context,
+                        R.string.toast_successful_update,
+                        Toast.LENGTH_SHORT
+                    ).show().also {
+                        navController.popBackStack()
                     }
                 }else {
                     Toast.makeText(
-                        navController?.context,
+                        navController.context,
                         R.string.toast_dont_successful_update,
                         Toast.LENGTH_SHORT
                     ).show()
@@ -173,12 +189,10 @@ class WalletViewModel constructor(private val savedStateHolder: SavedStateHandle
         }
     }
 
-    fun creditRateEmpty(){
+    fun creditRateEmpty(navController: NavController){
         if(taxDto == null){
-            navController?.let {navController->
-                Toast.makeText(navController.context,R.string.toast_credit_rate_is_not_setting,Toast.LENGTH_SHORT).show().also {
-                    navController.popBackStack()
-                }
+            Toast.makeText(navController.context,R.string.toast_credit_rate_is_not_setting,Toast.LENGTH_SHORT).show().also {
+                navController.popBackStack()
             }
         }
     }
@@ -208,28 +222,28 @@ class WalletViewModel constructor(private val savedStateHolder: SavedStateHandle
         if (month && value) {
             val month = NumbersUtil.toLong(monthProduct.value.value).toInt()
             val value = NumbersUtil.toBigDecimal(valueProduct.value.value)
-            boughtSvc?.let {
+            boughtSvc.let {
                 taxDto?.let { taxDto ->
                     val quoteBought = it.quoteValue(
-                        taxDto?.id!!,
+                        taxDto.id,
                         month.toShort(),
                         value.toDouble(),
-                        taxDto?.kindOfTax!!,
-                        taxDto?.kind!!
+                        taxDto.kindOfTax,
+                        taxDto.kind
                     )
                     val interestBought = it.interestValue(
-                        taxDto?.id!!,
+                        taxDto.id,
                         month.toShort(),
                         value.toDouble(),
-                        taxDto?.kindOfTax!!,
-                        taxDto?.kind!!
+                        taxDto.kindOfTax,
+                        taxDto.kind
                     )
                     val capitalBought = it.capitalValue(
-                        taxDto?.id!!,
+                        taxDto.id,
                         month.toShort(),
                         value.toDouble(),
-                        taxDto?.kindOfTax!!,
-                        taxDto?.kind!!
+                        taxDto.kindOfTax,
+                        taxDto.kind
                     )
                     quoteValue.onValueChange(NumbersUtil.COPtoString(quoteBought))
                     interestValue.onValueChange(NumbersUtil.COPtoString(interestBought))
@@ -272,7 +286,7 @@ class WalletViewModel constructor(private val savedStateHolder: SavedStateHandle
         progress.floatValue = 0.2f
         dateBought.onValueChange(DateUtils.localDateToStringDate(LocalDate.now()))
         progress.floatValue = 0.3f
-        creditCardSvc?.let {
+        creditCardSvc.let {
             it.getCreditCard(codeCreditCard)?.let {
                 creditCardName.onValueChange(it.name)
                 DateUtils.cutOff(it.cutOffDay, period.toLocalDate())?.let {
@@ -282,19 +296,17 @@ class WalletViewModel constructor(private val savedStateHolder: SavedStateHandle
             }
         }
 
-        creditRateSvc?.let {
+        creditRateSvc.let {
             it.get(codeCreditCard,cutOffDate?.monthValue!!,cutOffDate?.year!!,KindInterestRateEnum.WALLET_BUY)?.let {
                 taxDto = it
                 creditRate.onValueChange(it.value.toString())
-                creditRateKind.onValueChange(it.kindOfTax?.getName()?: KindOfTaxEnum.MONTHLY_EFFECTIVE.value)
-                navController?.let {
-                    nameProduct.onValueChange(it.context.getString(R.string.WALLET_BUY))
-                }
+                creditRateKind.onValueChange(it.kindOfTax.getName())
+                nameProduct.onValueChange(context.getString(R.string.WALLET_BUY))
                 progress.floatValue = 0.8f
             }
         }
 
-        boughtSvc?.let {
+        boughtSvc.let {
             if(codeBought > 0) {
                 it.getById(codeBought, prefs.simulator)?.let {
                     bought = it

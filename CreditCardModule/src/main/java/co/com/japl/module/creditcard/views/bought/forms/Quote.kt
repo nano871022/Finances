@@ -60,9 +60,23 @@ import co.com.japl.ui.components.IconButton
 import co.com.japl.ui.components.Popup
 import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.com.japl.ui.theme.values.Dimensions
+import androidx.lifecycle.SavedStateHandle
+import androidx.navigation.NavController
+import co.com.japl.finances.iports.dtos.CreditCardBoughtDTO
+import co.com.japl.finances.iports.dtos.CreditCardDTO
+import co.com.japl.finances.iports.dtos.TaxDTO
+import co.com.japl.finances.iports.enums.KindInterestRateEnum
+import co.com.japl.finances.iports.enums.KindOfTaxEnum
+import co.com.japl.finances.iports.inbounds.creditcard.IBuyCreditCardSettingPort
+import co.com.japl.finances.iports.inbounds.creditcard.ICreditCardPort
+import co.com.japl.finances.iports.inbounds.creditcard.ICreditCardSettingPort
+import co.com.japl.finances.iports.inbounds.creditcard.ITagPort
+import co.com.japl.finances.iports.inbounds.creditcard.ITaxPort
+import co.com.japl.finances.iports.inbounds.creditcard.bought.IBoughtPort
 import co.com.japl.ui.theme.values.ModifiersCustom
-import co.japl.android.graphs.utils.NumbersUtil
+import co.com.japl.ui.utils.NumbersUtil
 import kotlinx.coroutines.CoroutineDispatcher
+import java.math.BigDecimal
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -71,7 +85,7 @@ import java.time.LocalDateTime
 
 @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
 @Composable
-fun Quote (viewModel:QuoteViewModel){
+fun Quote (viewModel:QuoteViewModel, navController: NavController){
 
     val isLoadingState = remember {viewModel.loading}
     val loadingState = remember { viewModel.progress }
@@ -79,11 +93,11 @@ fun Quote (viewModel:QuoteViewModel){
     if(isLoadingState.value){
         LinearProgressIndicator(progress = loadingState.floatValue,modifier=Modifier.fillMaxWidth())
     }else {
-        viewModel.creditRateEmpty()
+        viewModel.creditRateEmpty(navController)
         Scaffold(
             floatingActionButton = {
 
-                FloatingButtons(viewModel)
+                FloatingButtons(viewModel, navController)
 
             }
         ) {
@@ -92,8 +106,215 @@ fun Quote (viewModel:QuoteViewModel){
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.S)
 @Composable
-private fun FloatingButtons(viewModel: QuoteViewModel) {
+@Preview(showBackground = true, showSystemUi = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
+internal fun QuotePreviewDark(){
+    val viewModel = viweModel()
+    MaterialThemeComposeUI {
+        Quote(viewModel, NavController(LocalContext.current))
+    }
+}
+
+@RequiresApi(Build.VERSION_CODES.S)
+@Composable
+@Preview(showBackground = true, showSystemUi = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
+internal fun QuotePreview(){
+    val viewModel = viweModel()
+    MaterialThemeComposeUI {
+        Quote(viewModel, NavController(LocalContext.current))
+    }
+}
+
+@Composable
+private fun viweModel():QuoteViewModel{
+    val context = LocalContext.current
+    val prefs = Prefs(context)
+    val savedStateHandle = SavedStateHandle()
+    val boughtSvc = object : IBoughtPort {
+        override fun get(codeCreditCard: Int, period: LocalDateTime): List<CreditCardBoughtDTO> {
+            return emptyList()
+        }
+
+        override fun getById(code: Int, cache: Boolean): CreditCardBoughtDTO? {
+            return null
+        }
+
+        override fun get(codeBought: Int): List<CreditCardBoughtDTO> {
+            return emptyList()
+        }
+
+        override fun getRecurrent(codeCreditCard: Int): List<CreditCardBoughtDTO> {
+            return emptyList()
+        }
+
+        override fun getPendingToPay(codeCreditCard: Int): List<CreditCardBoughtDTO> {
+            return emptyList()
+        }
+
+        override fun create(creditCardBought: CreditCardBoughtDTO, cache: Boolean): Int {
+            return 1
+        }
+
+        override fun update(creditCardBought: CreditCardBoughtDTO, cache: Boolean): Boolean {
+            return true
+        }
+
+        override fun delete(code: Int, cache: Boolean): Boolean {
+            return true
+        }
+
+        override fun quoteValue(
+            idCreditRate: Int,
+            quotes: Short,
+            value: Double,
+            kind: KindOfTaxEnum,
+            interest: KindInterestRateEnum
+        ): BigDecimal {
+            return BigDecimal.ZERO
+        }
+
+        override fun interestValue(
+            idCreditRate: Int,
+            quotes: Short,
+            value: Double,
+            kind: KindOfTaxEnum,
+            interest: KindInterestRateEnum
+        ): BigDecimal {
+            return BigDecimal.ZERO
+        }
+
+        override fun capitalValue(
+            idCreditRate: Int,
+            quotes: Short,
+            value: Double,
+            kind: KindOfTaxEnum,
+            interest: KindInterestRateEnum
+        ): BigDecimal {
+            return BigDecimal.ZERO
+        }
+    }
+    val creditRateSvc = object : ITaxPort {
+        override fun get(
+            codeCreditCard: Int,
+            month: Int,
+            year: Int,
+            kind: KindInterestRateEnum
+        ): TaxDTO? {
+            return null
+        }
+
+        override fun get(codeCreditRate: Int): TaxDTO? {
+            return null
+        }
+
+        override fun get(codeCreditCard: Int): List<TaxDTO> {
+            return emptyList()
+        }
+
+        override fun create(tax: TaxDTO): Boolean {
+            return true
+        }
+
+        override fun update(tax: TaxDTO): Boolean {
+            return true
+        }
+
+        override fun delete(code: Int): Boolean {
+            return true
+        }
+    }
+    val creditCardSvc = object : ICreditCardPort {
+        override fun getCreditCards(): List<CreditCardDTO> {
+            return emptyList()
+        }
+
+        override fun getCreditCard(code: Int): CreditCardDTO? {
+            return null
+        }
+
+        override fun create(creditCard: CreditCardDTO): Boolean {
+            return true
+        }
+
+        override fun update(creditCard: CreditCardDTO): Boolean {
+            return true
+        }
+
+        override fun delete(code: Int): Boolean {
+            return true
+        }
+    }
+    val tagSvc = object : ITagPort {
+        override fun getAll(): List<TagDTO> {
+            return emptyList()
+        }
+
+        override fun get(id: Int): TagDTO? {
+            return null
+        }
+
+        override fun create(tag: TagDTO): Int {
+            return 1
+        }
+
+        override fun update(tag: TagDTO): Boolean {
+            return true
+        }
+
+        override fun delete(id: Int): Boolean {
+            return true
+        }
+
+        override fun createOrUpdate(idTag: Int, idBought: Int): Boolean {
+            return true
+        }
+    }
+    val creditCardSettingSvc = object : ICreditCardSettingPort {
+        override fun getAll(codeCreditCard: Int): List<co.com.japl.finances.iports.dtos.CreditCardSettingDTO> {
+            return emptyList()
+        }
+
+        override fun get(code: Int): co.com.japl.finances.iports.dtos.CreditCardSettingDTO? {
+            return null
+        }
+
+        override fun delete(code: Int): Boolean {
+            return true
+        }
+
+        override fun save(dto: co.com.japl.finances.iports.dtos.CreditCardSettingDTO): Boolean {
+            return true
+        }
+    }
+    val buyCreditCardSettingSvc = object : IBuyCreditCardSettingPort {
+        override fun get(codeBought: Int): co.com.japl.finances.iports.dtos.BuyCreditCardSettingDTO? {
+            return null
+        }
+
+        override fun create(dto: co.com.japl.finances.iports.dtos.BuyCreditCardSettingDTO): Boolean {
+            return true
+        }
+
+        override fun update(dto: co.com.japl.finances.iports.dtos.BuyCreditCardSettingDTO): Boolean {
+            return true
+        }
+
+        override fun delete(id: Int): Boolean {
+            return true
+        }
+
+        override fun createOrUpdate(dto: co.com.japl.finances.iports.dtos.BuyCreditCardSettingDTO): Boolean {
+            return true
+        }
+    }
+    val viewModel = QuoteViewModel(savedStateHandle, boughtSvc, creditRateSvc, creditCardSvc, tagSvc, creditCardSettingSvc, buyCreditCardSettingSvc, prefs, context)
+    viewModel.loading.value = false
+    return viewModel
+}
+
+@Composable
+private fun FloatingButtons(viewModel: QuoteViewModel, navController: NavController) {
     val uiState = viewModel.uiState.collectAsState()
     val isNewState = remember { viewModel.isNew }
     Column {
@@ -107,7 +328,7 @@ private fun FloatingButtons(viewModel: QuoteViewModel) {
             FloatButton(
                 imageVector = Icons.Rounded.Save,
                 descriptionIcon = R.string.save,
-                onClick = {viewModel.create()}
+                onClick = {viewModel.create(navController)}
             )
 
             FloatButton(
@@ -120,7 +341,7 @@ private fun FloatingButtons(viewModel: QuoteViewModel) {
             FloatButton(
                 imageVector = Icons.Rounded.Edit,
                 descriptionIcon = R.string.edit,
-                onClick = { viewModel.update() }
+                onClick = { viewModel.update(navController) }
             )
         }
     }
@@ -340,33 +561,4 @@ private fun PopupTags(tagPopupState:MutableState<Boolean>,viewModel: QuoteViewMo
             }
         }
     }
-}
-
-@RequiresApi(Build.VERSION_CODES.S)
-@Composable
-@Preview(showBackground = true, showSystemUi = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
-internal fun QuotePreviewDark(){
-    val viewModel = viweModel()
-    MaterialThemeComposeUI {
-        Quote(viewModel)
-    }
-}
-
-@RequiresApi(Build.VERSION_CODES.S)
-@Composable
-@Preview(showBackground = true, showSystemUi = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
-internal fun QuotePreview(){
-    val viewModel = viweModel()
-    MaterialThemeComposeUI {
-        Quote(viewModel)
-    }
-}
-
-@Composable
-private fun viweModel():QuoteViewModel{
-    val prefs = Prefs(LocalContext.current)
-    val viewModel = QuoteViewModel(
-        0,null,0, LocalDateTime.now(),null,null,null,null,null,null,null,prefs)
-    viewModel.loading.value = false
-    return viewModel
 }
