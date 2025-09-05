@@ -221,21 +221,21 @@ class AdvanceViewModel @Inject constructor(
                         taxDto.id,
                         month.toShort(),
                         value.toDouble(),
-                        taxDto.kindOfTax,
+                        taxDto.kindOfTax!!,
                         taxDto.kind
                     )
                     val interestBought = it.interestValue(
                         taxDto.id,
                         month.toShort(),
                         value.toDouble(),
-                        taxDto.kindOfTax,
+                        taxDto.kindOfTax!!,
                         taxDto.kind
                     )
                     val capitalBought = it.capitalValue(
                         taxDto.id,
                         month.toShort(),
                         value.toDouble(),
-                        taxDto.kindOfTax,
+                        taxDto.kindOfTax!!,
                         taxDto.kind
                     )
                     quoteValue.onValueChange(NumbersUtil.COPtoString(quoteBought))
@@ -294,7 +294,7 @@ class AdvanceViewModel @Inject constructor(
             it.get(codeCreditCard,cutOffDate?.monthValue?:period.monthValue,cutOffDate?.year?:period.year,KindInterestRateEnum.CASH_ADVANCE)?.let {
                 taxDto = it
                 creditRate.onValueChange(it.value.toString())
-                creditRateKind.onValueChange(it.kindOfTax.getName())
+                creditRateKind.onValueChange(it.kindOfTax?.getName()?:"")
                 monthProduct.onValueChange(it.period.toString())
                 nameProduct.onValueChange(context.getString(R.string.CASH_ADVANCE))
                 progress.floatValue = 0.8f

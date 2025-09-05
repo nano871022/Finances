@@ -228,21 +228,21 @@ class WalletViewModel @Inject constructor(
                         taxDto.id,
                         month.toShort(),
                         value.toDouble(),
-                        taxDto.kindOfTax,
+                        taxDto.kindOfTax!!,
                         taxDto.kind
                     )
                     val interestBought = it.interestValue(
                         taxDto.id,
                         month.toShort(),
                         value.toDouble(),
-                        taxDto.kindOfTax,
+                        taxDto.kindOfTax!!,
                         taxDto.kind
                     )
                     val capitalBought = it.capitalValue(
                         taxDto.id,
                         month.toShort(),
                         value.toDouble(),
-                        taxDto.kindOfTax,
+                        taxDto.kindOfTax!!,
                         taxDto.kind
                     )
                     quoteValue.onValueChange(NumbersUtil.COPtoString(quoteBought))
@@ -300,7 +300,7 @@ class WalletViewModel @Inject constructor(
             it.get(codeCreditCard,cutOffDate?.monthValue!!,cutOffDate?.year!!,KindInterestRateEnum.WALLET_BUY)?.let {
                 taxDto = it
                 creditRate.onValueChange(it.value.toString())
-                creditRateKind.onValueChange(it.kindOfTax.getName())
+                creditRateKind.onValueChange(it.kindOfTax?.getName()?:"")
                 nameProduct.onValueChange(context.getString(R.string.WALLET_BUY))
                 progress.floatValue = 0.8f
             }

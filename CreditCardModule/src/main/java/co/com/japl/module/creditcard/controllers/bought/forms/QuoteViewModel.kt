@@ -413,21 +413,21 @@ class QuoteViewModel @Inject constructor(
                         taxDto.id,
                         month.toShort(),
                         value.toDouble(),
-                        taxDto.kindOfTax,
+                        taxDto.kindOfTax!!,
                         taxDto.kind
                     )
                     val interestBought = it.interestValue(
                         taxDto.id,
                         month.toShort(),
                         value.toDouble(),
-                        taxDto.kindOfTax,
+                        taxDto.kindOfTax!!,
                         taxDto.kind
                     )
                     val capitalBought = it.capitalValue(
                         taxDto.id,
                         month.toShort(),
                         value.toDouble(),
-                        taxDto.kindOfTax,
+                        taxDto.kindOfTax!!,
                         taxDto.kind
                     )
                     quoteValue.onValueChange(NumbersUtil.COPtoString(quoteBought))
@@ -464,7 +464,7 @@ class QuoteViewModel @Inject constructor(
             it.get(codeCreditCard,cutOffDate?.monthValue!!,cutOffDate?.year!!,KindInterestRateEnum.CREDIT_CARD)?.let {
                 taxDto = it
                 creditRate.onValueChange(it.value.toString())
-                creditRateKind.onValueChange( it.kindOfTax.getName())
+                creditRateKind.onValueChange( it.kindOfTax?.getName()?:"")
                 progress.floatValue = 0.5f
             }
         }
@@ -508,7 +508,7 @@ class QuoteViewModel @Inject constructor(
         }
 
         buyCreditCardSettingSvc.let{
-            it.get(codeBought).let{dto->
+            it.get(codeBought)?.let{dto->
                 buySetting = dto
                 settingKind.onValueChange( settingList.filter { it.id == dto.codeCreditCardSetting }.map {setting->
                     settingKind.list.first { it?.second == setting.type }
