@@ -194,91 +194,10 @@ private fun CreditAmortizationScreenPreviewDarkTablet() {
 @Composable
 private fun getViewModel():CreditAmortizationViewModel{
     val savedStateHandle = SavedStateHandle()
-    val creditSvc = object : ICreditPort {
-        override fun get(codeCredit: Long): List<CreditDTO> {
-            return emptyList()
-        }
-
-        override fun get(codeCredit: Int): CreditDTO? {
-            return CreditDTO(
-                id = 1,
-                name = "Test",
-                date = LocalDate.now(),
-                tax = 25.2,
-                periods = 6,
-                value = 10000.toBigDecimal(),
-                quoteValue = 800.toBigDecimal(),
-                kindOf = KindPaymentsEnums.ANNUAL,
-                kindOfTax = KindOfTaxEnum.ANUAL_EFFECTIVE
-            )
-        }
-
-        override fun getCredits(): List<CreditDTO> {
-            return emptyList()
-        }
-
-        override fun delete(codeCredit: Int): Boolean {
-            return true
-        }
-
-        override fun save(credit: CreditDTO): Boolean {
-            return true
-        }
-    }
-    val additionalSvc = object : IAdditional {
-        override fun getAdditional(codeCredit: Int): List<co.com.japl.finances.iports.dtos.AdditionalCreditDTO> {
-            return emptyList()
-        }
-    }
-    val gracePeriodSvc = object : IPeriodGracePort {
-        override fun get(id: Int): List<GracePeriodDTO> {
-            return emptyList()
-        }
-
-        override fun create(gracePeriod: GracePeriodDTO): Boolean {
-            return true
-        }
-
-        override fun update(gracePeriod: GracePeriodDTO): Boolean {
-            return true
-        }
-
-        override fun delete(id: Int): Boolean {
-            return true
-        }
-    }
-    val amortizationSvc = object : IAmortizationTablePort {
-        override fun getAmortization(
-            codeCredit: Int,
-            kind: KindAmortization,
-            cache: Boolean
-        ): List<AmortizationRowDTO> {
-            return listOf(
-                AmortizationRowDTO(
-                    id = 1,
-                    periods = 6,
-                    creditRate = 25.5,
-                    kindRate = KindOfTaxEnum.ANUAL_EFFECTIVE,
-                    creditValue = 10_000.toBigDecimal(),
-                    amortizatedValue = 10_000.toBigDecimal(),
-                    capitalValue = 800.toBigDecimal(),
-                    interestValue = 20.toBigDecimal(),
-                    quoteValue = 820.toBigDecimal()
-                ),
-                AmortizationRowDTO(
-                    id = 2,
-                    periods = 6,
-                    creditRate = 25.5,
-                    kindRate = KindOfTaxEnum.ANUAL_EFFECTIVE,
-                    creditValue = 10_000.toBigDecimal(),
-                    amortizatedValue = 9_200.toBigDecimal(),
-                    capitalValue = 802.toBigDecimal(),
-                    interestValue = 18.toBigDecimal(),
-                    quoteValue = 820.toBigDecimal()
-                )
-            )
-        }
-    }
+    val creditSvc = FakeCreditPort()
+    val additionalSvc = FakeAdditional()
+    val gracePeriodSvc = FakePeriodGracePort()
+    val amortizationSvc = FakeAmortizationTablePort()
     val viewModel = CreditAmortizationViewModel(creditSvc, additionalSvc, gracePeriodSvc, amortizationSvc, savedStateHandle)
     viewModel.state.value.isLoading=false
     return viewModel

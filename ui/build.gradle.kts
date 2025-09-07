@@ -39,7 +39,6 @@ android {
 dependencies {
     implementation(project(":japl-finances-iports"))
     implementation(project(":japl-android-utils"))
-    implementation(project(":japl-android-graphs"))
 
     implementation("androidx.compose.material:material-icons-extended")
     implementation("androidx.compose.material:material-icons-core")

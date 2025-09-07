@@ -257,24 +257,6 @@ fun PreviewNight() {
 private fun creditViewModel(): CreditFormViewModel {
     val context = LocalContext.current
     val savedStateHandle = SavedStateHandle()
-    val creditSvc = object : ICreditFormPort {
-        override fun findCreditById(id: Int): CreditDTO? {
-            return null
-        }
-
-        override fun save(dto: CreditDTO): Int {
-            return 1
-        }
-
-        override fun calculateQuoteCredit(
-            value: BigDecimal,
-            rate: Double,
-            month: Int,
-            kindRate: KindOfTaxEnum
-        ): BigDecimal {
-            return BigDecimal.ZERO
-        }
-    }
+    val creditSvc = FakeCreditFormSvc()
     return CreditFormViewModel(savedStateHandle, creditSvc, context)
 }
-

@@ -134,27 +134,7 @@ private fun getViewModel(): AdditionalFormViewModel{
     val context = LocalContext.current
     val navController = NavController(context)
     val savedStateHandle = SavedStateHandle()
-    val additionalSvc = object : IAdditionalFormPort {
-        override fun get(id: Int): AdditionalCreditDTO? {
-            return null
-        }
-
-        override fun create(dto: AdditionalCreditDTO): Boolean {
-            return true
-        }
-
-        override fun update(dto: AdditionalCreditDTO): Boolean {
-            return true
-        }
-
-        override fun delete(id: Int): Boolean {
-            return true
-        }
-
-        override fun getAll(codeCredit: Long): List<AdditionalCreditDTO> {
-            return emptyList()
-        }
-    }
+    val additionalSvc = FakeAdditionalFormSvc()
     val viewModel = AdditionalFormViewModel(context, savedStateHandle, additionalSvc)
     viewModel.loading.value = false
     return viewModel
