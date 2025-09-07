@@ -13,7 +13,7 @@ import co.com.japl.finances.iports.enums.KindOfTaxEnum
 import co.com.japl.finances.iports.inbounds.creditcard.ICreditCardPort
 import co.com.japl.finances.iports.inbounds.creditcard.ITaxPort
 import co.com.japl.module.creditcard.R
-import co.japl.android.myapplication.utils.NumbersUtil
+import co.japl.android.graphs.utils.NumbersUtil
 import kotlinx.coroutines.runBlocking
 import java.time.LocalDate
 import java.time.LocalDateTime
