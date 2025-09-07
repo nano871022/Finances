@@ -40,7 +40,7 @@ import co.com.japl.ui.theme.MaterialThemeComposeUI
 import androidx.navigation.NavController
 import co.com.japl.ui.theme.values.Dimensions
 import co.com.japl.ui.theme.values.ModifiersCustom
-import co.com.japl.ui.utils.NumbersUtil
+import co.com.japl.utils.NumbersUtil
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

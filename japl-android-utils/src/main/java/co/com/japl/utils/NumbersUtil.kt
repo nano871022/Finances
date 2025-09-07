@@ -1,4 +1,4 @@
-package co.com.japl.ui.utils
+package co.com.japl.utils
 
 import java.math.BigDecimal
 import java.text.DecimalFormat
