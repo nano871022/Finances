@@ -41,7 +41,7 @@ import co.com.japl.ui.components.FieldView
 import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.com.japl.ui.theme.values.Dimensions
 import co.com.japl.ui.theme.values.ModifiersCustom.Weight1f
-import co.japl.android.myapplication.utils.NumbersUtil
+import co.com.japl.utils.NumbersUtil
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext

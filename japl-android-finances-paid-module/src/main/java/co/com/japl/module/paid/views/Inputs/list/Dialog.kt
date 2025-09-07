@@ -36,7 +36,7 @@ import co.com.japl.ui.enums.IMoreOptions
 import co.com.japl.module.paid.enums.MoreOptionsItemsInput
 import co.com.japl.ui.components.AlertDialogOkCancel
 import co.com.japl.ui.components.MoreOptionsDialog
-import co.japl.android.myapplication.utils.NumbersUtil
+import co.com.japl.utils.NumbersUtil
 
 @Composable
 fun MoreOptionsItemsInputList(mutableStateId: MutableState<Int>,modelView: InputListModelView){

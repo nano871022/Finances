@@ -10,7 +10,7 @@ import co.com.japl.finances.iports.dtos.CreditCardDTO
 import co.com.japl.finances.iports.inbounds.creditcard.ICreditCardPort
 import co.com.japl.module.creditcard.R
 import co.com.japl.module.creditcard.navigations.ListCreditCardSettings
-import co.japl.android.myapplication.utils.NumbersUtil
+import co.com.japl.utils.NumbersUtil
 import kotlinx.coroutines.runBlocking
 import java.math.BigDecimal
 import java.time.LocalDateTime

@@ -5,7 +5,7 @@ import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.input.OffsetMapping
 import androidx.compose.ui.text.input.TransformedText
 import androidx.compose.ui.text.input.VisualTransformation
-import co.japl.android.myapplication.utils.NumbersUtil
+import co.com.japl.utils.NumbersUtil
 
 class CurrencyVisualTransformation (private val formatDecimal:String = NumbersUtil.formatDecimal, private val currencyForce:Boolean = false,private val decimalForce:Boolean = false):VisualTransformation {
 

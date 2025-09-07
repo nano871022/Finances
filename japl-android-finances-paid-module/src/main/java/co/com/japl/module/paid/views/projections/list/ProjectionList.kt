@@ -43,7 +43,7 @@ import co.com.japl.ui.components.IconButton
 import co.com.japl.ui.components.MoreOptionsDialogPair
 import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.com.japl.ui.theme.values.Dimensions
-import co.japl.android.myapplication.utils.NumbersUtil
+import co.com.japl.utils.NumbersUtil
 import java.math.BigDecimal
 import java.text.DateFormat
 import java.time.LocalDate
