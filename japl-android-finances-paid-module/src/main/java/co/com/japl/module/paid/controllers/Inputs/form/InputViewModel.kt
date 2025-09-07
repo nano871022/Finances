@@ -10,7 +10,7 @@ import co.com.japl.finances.iports.inbounds.inputs.IInputPort
 import co.com.japl.module.paid.R
 import co.com.japl.module.paid.enums.MoreOptionsKindPaymentInput
 import co.com.japl.ui.utils.DateUtils
-import co.japl.android.myapplication.utils.NumbersUtil
+import co.japl.android.graphs.utils.NumbersUtil
 import kotlinx.coroutines.runBlocking
 import java.time.LocalDate
 

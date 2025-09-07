@@ -32,7 +32,7 @@ import co.com.japl.ui.components.FloatButton
 import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.com.japl.ui.theme.values.Dimensions
 import co.com.japl.ui.utils.DateUtils
-import co.com.japl.ui.utils.NumbersUtil
+import co.japl.android.graphs.utils.NumbersUtil
 import java.math.BigDecimal
 import java.time.LocalDate
 

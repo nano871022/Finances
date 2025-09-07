@@ -16,7 +16,7 @@ import co.japl.android.graphs.colors.Colors
 import co.japl.android.graphs.interfaces.IGraph
 import co.japl.android.graphs.pieceofpie.calculations.Calculate
 import co.japl.android.graphs.pojo.PiecePie
-import co.com.japl.utils.NumbersUtil
+import co.japl.android.graphs.utils.NumbersUtil
 import java.math.BigDecimal
 import java.math.MathContext
 import java.text.DecimalFormat

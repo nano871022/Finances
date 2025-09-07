@@ -13,7 +13,7 @@ import co.com.japl.finances.iports.enums.KindOfTaxEnum
 import co.com.japl.finances.iports.inbounds.creditcard.ISimulatorCreditVariablePort
 import co.com.japl.module.creditcard.R
 import co.com.japl.module.creditcard.navigations.Simulator
-import co.com.japl.ui.utils.NumbersUtil
+import co.japl.android.graphs.utils.NumbersUtil
 import co.com.japl.ui.utils.initialFieldState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext

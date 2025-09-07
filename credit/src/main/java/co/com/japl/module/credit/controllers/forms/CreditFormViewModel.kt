@@ -15,7 +15,7 @@ import co.com.japl.finances.iports.inbounds.credit.ICreditFormPort
 import co.com.japl.module.credit.R
 import co.com.japl.module.credit.navigations.CreditList
 import co.com.japl.ui.utils.initialFieldState
-import co.com.japl.ui.utils.NumbersUtil
+import co.japl.android.graphs.utils.NumbersUtil
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineScope

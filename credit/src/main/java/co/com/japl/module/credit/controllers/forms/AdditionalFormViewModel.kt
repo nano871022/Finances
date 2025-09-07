@@ -12,7 +12,7 @@ import androidx.navigation.NavController
 import co.com.japl.finances.iports.dtos.AdditionalCreditDTO
 import co.com.japl.finances.iports.inbounds.credit.IAdditionalFormPort
 import co.com.japl.module.credit.R
-import co.com.japl.ui.utils.NumbersUtil
+import co.japl.android.graphs.utils.NumbersUtil
 import co.com.japl.ui.utils.initialFieldState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext

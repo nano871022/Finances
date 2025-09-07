@@ -25,7 +25,7 @@ import co.com.japl.module.creditcard.R
 import co.com.japl.ui.Prefs
 import co.com.japl.ui.utils.DateUtils
 import co.com.japl.ui.utils.FormUIState
-import co.com.japl.ui.utils.NumbersUtil
+import co.japl.android.graphs.utils.NumbersUtil
 import co.com.japl.ui.utils.initialFieldState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext

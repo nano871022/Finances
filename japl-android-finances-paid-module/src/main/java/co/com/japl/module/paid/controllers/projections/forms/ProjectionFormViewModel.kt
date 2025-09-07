@@ -13,7 +13,7 @@ import co.com.japl.finances.iports.enums.KindPaymentsEnums
 import co.com.japl.finances.iports.inbounds.paid.IProjectionFormPort
 import co.com.japl.module.paid.R
 import co.com.japl.ui.utils.DateUtils
-import co.com.japl.ui.utils.NumbersUtil
+import co.japl.android.graphs.utils.NumbersUtil
 import co.com.japl.ui.utils.initialFieldState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext

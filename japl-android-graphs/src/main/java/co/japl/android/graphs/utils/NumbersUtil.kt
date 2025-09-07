@@ -1,4 +1,4 @@
-package co.com.japl.utils
+package co.japl.android.graphs.utils
 
 import java.math.BigDecimal
 import java.text.DecimalFormat
