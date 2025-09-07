@@ -33,7 +33,7 @@ import co.com.japl.ui.components.HelpWikiButton
 import co.com.japl.ui.components.PiecePieGraph
 import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.com.japl.ui.theme.values.Dimensions
-import co.com.japl.utils.NumbersUtil
+import co.japl.android.graphs.utils.NumbersUtil
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
