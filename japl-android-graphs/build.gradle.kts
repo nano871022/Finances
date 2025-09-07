@@ -30,7 +30,7 @@ android {
 }
 
 dependencies {
-
+    implementation(project(":ui"))
     implementation("androidx.core:core-ktx:1.13.1")
     implementation(platform("org.jetbrains.kotlin:kotlin-bom:2.0.0"))
     implementation("androidx.appcompat:appcompat:1.7.0")
