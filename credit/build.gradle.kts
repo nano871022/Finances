@@ -2,6 +2,7 @@ plugins {
     id("com.android.library")
     id("org.jetbrains.kotlin.android")
     id("org.jetbrains.kotlin.plugin.compose")
+    id("dagger.hilt.android.plugin")
     id("kotlin-kapt")
     id("com.google.dagger.hilt.android")
 }
@@ -48,6 +49,7 @@ dependencies {
     implementation(project(":ui"))
     implementation(project(":japl-finances-iports"))
     implementation(project(":japl-android-graphs"))
+    implementation(project(":japl-android-utils"))
 
     implementation("androidx.core:core-ktx:1.13.1")
     implementation("androidx.core:core-splashscreen:1.0.1")
