@@ -42,6 +42,7 @@ android {
     composeOptions{
         kotlinCompilerExtensionVersion = "1.5.14"
     }
+
 }
 
 dependencies {
@@ -71,8 +72,6 @@ dependencies {
     implementation("com.google.dagger:hilt-android:2.52")
     kapt("com.google.dagger:hilt-compiler:2.52")
 
-
-
     implementation("androidx.compose.material:material-icons-extended:1.6.7")
     implementation("androidx.compose.material:material-icons-core:1.6.7")
     implementation("androidx.compose.material3:material3-window-size-class:1.2.1")
@@ -86,12 +85,13 @@ dependencies {
     implementation("androidx.compose.ui:ui-graphics")
     implementation("androidx.compose.material:material:1.6.7")
 
-
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.2.1")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.6.1")
+
     androidTestImplementation(platform("androidx.compose:compose-bom:2024.06.00"))
     androidTestImplementation("androidx.compose.ui:ui-test-junit4")
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
+
 }
