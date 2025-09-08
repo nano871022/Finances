@@ -29,6 +29,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.SavedStateHandle
 import co.com.japl.module.creditcard.R
 import co.com.japl.module.creditcard.controllers.bought.forms.WalletViewModel
 import co.com.japl.ui.Prefs
@@ -37,8 +38,10 @@ import co.com.japl.ui.components.FieldText
 import co.com.japl.ui.components.FieldView
 import co.com.japl.ui.components.FloatButton
 import co.com.japl.ui.theme.MaterialThemeComposeUI
+import androidx.navigation.NavController
 import co.com.japl.ui.theme.values.Dimensions
 import co.com.japl.ui.theme.values.ModifiersCustom
+import co.com.japl.utils.NumbersUtil
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -47,18 +50,18 @@ import java.time.LocalDateTime
 
 @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
 @Composable
-fun Wallet (viewModel:WalletViewModel){
+fun Wallet (viewModel:WalletViewModel, navController: NavController){
     val isLoadingState = remember {viewModel.loading}
     val loadingState = remember { viewModel.progress }
 
     if(isLoadingState.value){
         LinearProgressIndicator(progress = loadingState.floatValue,modifier=Modifier.fillMaxWidth())
     }else {
-        viewModel.creditRateEmpty()
+        viewModel.creditRateEmpty(navController)
         Scaffold(
             floatingActionButton = {
 
-                FloatingButtons(viewModel)
+                FloatingButtons(viewModel, navController)
 
             }
         ) {
@@ -68,7 +71,7 @@ fun Wallet (viewModel:WalletViewModel){
 }
 
 @Composable
-private fun FloatingButtons(viewModel: WalletViewModel) {
+private fun FloatingButtons(viewModel: WalletViewModel, navController: NavController) {
     val isNewState = remember { viewModel.isNew }
     Column {
         FloatButton(
@@ -81,14 +84,14 @@ private fun FloatingButtons(viewModel: WalletViewModel) {
             FloatButton(
                 imageVector = Icons.Rounded.Save,
                 descriptionIcon = R.string.save,
-                onClick = {viewModel.create()}
+                onClick = {viewModel.create(navController)}
             )
         }else {
 
             FloatButton(
                 imageVector = Icons.Rounded.Edit,
                 descriptionIcon = R.string.edit,
-                onClick = { viewModel.update() }
+                onClick = { viewModel.update(navController) }
             )
         }
     }
@@ -201,7 +204,7 @@ private fun Body(viewModel: WalletViewModel,modifier:Modifier){
 fun WalletPreviewDark(){
     val viewModel = viweModel()
     MaterialThemeComposeUI {
-        Wallet(viewModel)
+        Wallet(viewModel, NavController(LocalContext.current))
     }
 }
 
@@ -211,14 +214,19 @@ fun WalletPreviewDark(){
 fun WalletPreview(){
     val viewModel = viweModel()
     MaterialThemeComposeUI {
-        Wallet(viewModel)
+        Wallet(viewModel, NavController(LocalContext.current))
     }
 }
 
 @Composable
 private fun viweModel():WalletViewModel{
-    val prefs = Prefs(LocalContext.current)
-    val viewModel = WalletViewModel(null,0,0, LocalDateTime.now(),null,null,null,null,prefs)
+    val context = LocalContext.current
+    val prefs = Prefs(context)
+    val savedStateHandle = SavedStateHandle()
+    val boughtSvc = FakeBoughtPort()
+    val creditRateSvc = FakeTaxPort()
+    val creditCardSvc = FakeCreditCardPort()
+    val viewModel = WalletViewModel(savedStateHandle, boughtSvc, creditRateSvc, creditCardSvc, prefs, context)
     viewModel.loading.value = false
     return viewModel
 }

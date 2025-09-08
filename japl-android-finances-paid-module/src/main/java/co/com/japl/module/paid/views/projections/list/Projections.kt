@@ -21,10 +21,14 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.runtime.collectAsState
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.SavedStateHandle
+import androidx.navigation.NavController
 import co.com.japl.finances.iports.dtos.ProjectionRecap
 import co.com.japl.module.paid.R
 import co.com.japl.module.paid.controllers.projections.list.ProjectionsViewModel
+import co.com.japl.module.paid.views.fakeSvc.ProjectionsFake
 import co.com.japl.ui.components.CardValues
 import co.com.japl.ui.components.Carousel
 import co.com.japl.ui.components.FieldView
@@ -32,27 +36,27 @@ import co.com.japl.ui.components.FloatButton
 import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.com.japl.ui.theme.values.Dimensions
 import co.com.japl.ui.utils.DateUtils
-import co.japl.android.myapplication.utils.NumbersUtil
+import co.japl.android.graphs.utils.NumbersUtil
 import java.math.BigDecimal
 import java.time.LocalDate
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun Projections(viewModel: ProjectionsViewModel){
+fun Projections(viewModel: ProjectionsViewModel, navController: NavController){
     val progressStatus = remember { viewModel.loadingStatus }
 
     if (progressStatus.value) {
         LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
     }else {
-        Scafold(viewModel=viewModel)
+        Scafold(viewModel=viewModel, navController = navController)
     }
 }
 
 @Composable
-private fun Scafold(viewModel: ProjectionsViewModel){
+private fun Scafold(viewModel: ProjectionsViewModel, navController: NavController){
     Scaffold (
         floatingActionButton = {
-            FloatButton(viewModel)
+            FloatButton(viewModel, navController)
         }
     ) {
         Body(viewModel=viewModel,modifier = Modifier.padding(it))
@@ -130,20 +134,20 @@ private fun Header(viewModel: ProjectionsViewModel){
 }
 
 @Composable
-private fun FloatButton(viewModel: ProjectionsViewModel){
+private fun FloatButton(viewModel: ProjectionsViewModel, navController: NavController){
     Column(){
         FloatButton(
             imageVector = Icons.Rounded.RemoveRedEye,
             descriptionIcon = R.string.list_projection
         ) {
-            viewModel.goToList()
+            viewModel.goToList(navController)
         }
 
         FloatButton(
             imageVector = Icons.Rounded.Add,
             descriptionIcon = R.string.add_projection
         ) {
-            viewModel.goToCreate()
+            viewModel.goToCreate(navController)
         }
     }
 }
@@ -153,7 +157,7 @@ private fun FloatButton(viewModel: ProjectionsViewModel){
 @Preview(showBackground = true, showSystemUi = true, uiMode = Configuration.UI_MODE_NIGHT_NO, backgroundColor = 0x000000)
 fun PreviewLight(){
     MaterialThemeComposeUI {
-        Projections(getViewModel())
+        Projections(getViewModel(), NavController(LocalContext.current))
     }
 }
 
@@ -162,25 +166,14 @@ fun PreviewLight(){
 @Preview(showBackground = true, showSystemUi = true, uiMode = Configuration.UI_MODE_NIGHT_YES, backgroundColor = 0xffffff)
 fun PreviewDark(){
     MaterialThemeComposeUI {
-        Projections(getViewModel())
+        Projections(getViewModel(), NavController(LocalContext.current))
     }
 }
 
 @Composable
 fun getViewModel(): ProjectionsViewModel{
-    val vm =  ProjectionsViewModel()
-    vm.projectionsList.add(ProjectionRecap(
-        limitDate = LocalDate.now(),
-        savedCash = BigDecimal.TEN,
-        monthsLeft = 10
-    ))
-    vm.projectionsList.add(ProjectionRecap(
-        limitDate = LocalDate.now().minusMonths(1),
-        savedCash = BigDecimal.valueOf(500_000),
-        monthsLeft = 5
-    ))
-    vm.totalCount.onValueChange(10)
-    vm.totalSaved.onValueChange(BigDecimal.valueOf(1_000_000))
-
+    val savedStateHandle = SavedStateHandle()
+    val projectionSvc = ProjectionsFake()
+    val vm =  ProjectionsViewModel(savedStateHandle, projectionSvc)
     return vm
 }

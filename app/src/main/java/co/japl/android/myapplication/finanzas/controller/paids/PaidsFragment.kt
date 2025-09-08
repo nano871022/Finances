@@ -16,6 +16,7 @@ import co.com.japl.finances.iports.inbounds.paid.ISMSPaidPort
 import co.com.japl.finances.iports.inbounds.paid.ISmsPort
 import co.com.japl.module.paid.controllers.monthly.list.MonthlyViewModel
 import co.com.japl.module.paid.views.monthly.list.Monthly
+import co.com.japl.ui.Prefs
 import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.japl.android.myapplication.databinding.FragmentPaidsBinding
 import co.japl.android.myapplication.finanzas.ApplicationInitial
@@ -35,6 +36,7 @@ class PaidsFragment : Fragment() {
     lateinit var incomesSvc: IInputPort
     @Inject lateinit var paidSmsSvc:ISmsPort
     @Inject lateinit var smsSvc:ISMSPaidPort
+    @Inject lateinit var prefs : Prefs
 
 
     @RequiresApi(Build.VERSION_CODES.S)
@@ -50,7 +52,7 @@ class PaidsFragment : Fragment() {
             incomesSvc = incomesSvc,
             period = period?:YearMonth.now(),
             paidSmsSvc = paidSmsSvc,
-            prefs = ApplicationInitial.prefs,
+            prefs = prefs,
             smsSvc = smsSvc,
             navController = findNavController()
         )

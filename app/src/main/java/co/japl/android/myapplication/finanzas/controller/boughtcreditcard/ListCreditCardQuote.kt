@@ -18,6 +18,7 @@ import co.com.japl.finances.iports.inbounds.creditcard.bought.IBoughtPort
 import co.com.japl.finances.iports.inbounds.creditcard.bought.IBoughtSmsPort
 import co.com.japl.module.creditcard.controllers.bought.lists.BoughtMonthlyViewModel
 import co.com.japl.module.creditcard.views.bought.BoughtMonthly
+import co.com.japl.ui.Prefs
 import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.japl.android.myapplication.databinding.ListCreditCardQuoteBinding
 import co.japl.android.myapplication.finanzas.ApplicationInitial
@@ -31,6 +32,7 @@ class ListCreditCardQuote : Fragment(){
     @Inject lateinit var creditRateSvc:ITaxPort
     @Inject lateinit var msmSvc: ISMSCreditCardPort
     @Inject lateinit var svc: IBoughtSmsPort
+    @Inject lateinit var prefs : Prefs
 
     lateinit var _binding:ListCreditCardQuoteBinding
     @RequiresApi(Build.VERSION_CODES.S)
@@ -44,7 +46,7 @@ class ListCreditCardQuote : Fragment(){
                 creditCardPort,
                 boughtSvc,
                 navController = findNavController(),
-                ApplicationInitial.prefs,
+                prefs,
                 msmSvc,
                 svc
             )

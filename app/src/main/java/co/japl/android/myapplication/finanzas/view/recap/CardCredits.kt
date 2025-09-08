@@ -10,7 +10,7 @@ import androidx.compose.ui.res.stringResource
 import co.japl.android.myapplication.R
 import co.com.japl.ui.components.CardValues
 import co.com.japl.ui.components.FieldView
-import co.japl.android.myapplication.utils.NumbersUtil
+import co.com.japl.utils.NumbersUtil
 
 @Composable
 fun CardCredits(title:String, totalCC:Double,warningValue:Double){

@@ -48,7 +48,7 @@ import co.com.japl.ui.utils.WindowWidthSize
 import co.com.japl.ui.components.AlertDialogOkCancel
 import co.com.japl.ui.components.HelpWikiButton
 import co.com.japl.ui.components.MoreOptionsDialog
-import co.japl.android.myapplication.utils.NumbersUtil
+import co.com.japl.utils.NumbersUtil
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

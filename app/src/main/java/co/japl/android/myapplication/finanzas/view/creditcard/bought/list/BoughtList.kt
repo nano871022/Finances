@@ -29,7 +29,7 @@ import co.com.japl.finances.iports.enums.KindInterestRateEnum
 import co.com.japl.ui.Prefs
 import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.japl.android.myapplication.finanzas.pojo.BoughtCreditCard
-import co.japl.android.myapplication.utils.NumbersUtil
+import co.com.japl.utils.NumbersUtil
 import java.time.LocalDateTime
 import java.time.YearMonth
 

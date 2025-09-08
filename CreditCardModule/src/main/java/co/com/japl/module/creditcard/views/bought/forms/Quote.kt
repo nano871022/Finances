@@ -60,9 +60,23 @@ import co.com.japl.ui.components.IconButton
 import co.com.japl.ui.components.Popup
 import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.com.japl.ui.theme.values.Dimensions
+import androidx.lifecycle.SavedStateHandle
+import androidx.navigation.NavController
+import co.com.japl.finances.iports.dtos.CreditCardBoughtDTO
+import co.com.japl.finances.iports.dtos.CreditCardDTO
+import co.com.japl.finances.iports.dtos.TaxDTO
+import co.com.japl.finances.iports.enums.KindInterestRateEnum
+import co.com.japl.finances.iports.enums.KindOfTaxEnum
+import co.com.japl.finances.iports.inbounds.creditcard.IBuyCreditCardSettingPort
+import co.com.japl.finances.iports.inbounds.creditcard.ICreditCardPort
+import co.com.japl.finances.iports.inbounds.creditcard.ICreditCardSettingPort
+import co.com.japl.finances.iports.inbounds.creditcard.ITagPort
+import co.com.japl.finances.iports.inbounds.creditcard.ITaxPort
+import co.com.japl.finances.iports.inbounds.creditcard.bought.IBoughtPort
 import co.com.japl.ui.theme.values.ModifiersCustom
-import co.japl.android.graphs.utils.NumbersUtil
+import co.com.japl.utils.NumbersUtil
 import kotlinx.coroutines.CoroutineDispatcher
+import java.math.BigDecimal
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -71,7 +85,7 @@ import java.time.LocalDateTime
 
 @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
 @Composable
-fun Quote (viewModel:QuoteViewModel){
+fun Quote (viewModel:QuoteViewModel, navController: NavController){
 
     val isLoadingState = remember {viewModel.loading}
     val loadingState = remember { viewModel.progress }
@@ -79,11 +93,11 @@ fun Quote (viewModel:QuoteViewModel){
     if(isLoadingState.value){
         LinearProgressIndicator(progress = loadingState.floatValue,modifier=Modifier.fillMaxWidth())
     }else {
-        viewModel.creditRateEmpty()
+        viewModel.creditRateEmpty(navController)
         Scaffold(
             floatingActionButton = {
 
-                FloatingButtons(viewModel)
+                FloatingButtons(viewModel, navController)
 
             }
         ) {
@@ -92,8 +106,44 @@ fun Quote (viewModel:QuoteViewModel){
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.S)
 @Composable
-private fun FloatingButtons(viewModel: QuoteViewModel) {
+@Preview(showBackground = true, showSystemUi = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
+internal fun QuotePreviewDark(){
+    val viewModel = viweModel()
+    MaterialThemeComposeUI {
+        Quote(viewModel, NavController(LocalContext.current))
+    }
+}
+
+@RequiresApi(Build.VERSION_CODES.S)
+@Composable
+@Preview(showBackground = true, showSystemUi = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
+internal fun QuotePreview(){
+    val viewModel = viweModel()
+    MaterialThemeComposeUI {
+        Quote(viewModel, NavController(LocalContext.current))
+    }
+}
+
+@Composable
+private fun viweModel():QuoteViewModel{
+    val context = LocalContext.current
+    val prefs = Prefs(context)
+    val savedStateHandle = SavedStateHandle()
+    val boughtSvc = FakeBoughtPort()
+    val creditRateSvc = FakeTaxPort()
+    val creditCardSvc = FakeCreditCardPort()
+    val tagSvc = FakeTagPort()
+    val creditCardSettingSvc = FakeCreditCardSettingPort()
+    val buyCreditCardSettingSvc = FakeBuyCreditCardSettingPort()
+    val viewModel = QuoteViewModel(savedStateHandle, boughtSvc, creditRateSvc, creditCardSvc, tagSvc, creditCardSettingSvc, buyCreditCardSettingSvc, prefs, context)
+    viewModel.loading.value = false
+    return viewModel
+}
+
+@Composable
+private fun FloatingButtons(viewModel: QuoteViewModel, navController: NavController) {
     val uiState = viewModel.uiState.collectAsState()
     val isNewState = remember { viewModel.isNew }
     Column {
@@ -107,7 +157,7 @@ private fun FloatingButtons(viewModel: QuoteViewModel) {
             FloatButton(
                 imageVector = Icons.Rounded.Save,
                 descriptionIcon = R.string.save,
-                onClick = {viewModel.create()}
+                onClick = {viewModel.create(navController)}
             )
 
             FloatButton(
@@ -120,7 +170,7 @@ private fun FloatingButtons(viewModel: QuoteViewModel) {
             FloatButton(
                 imageVector = Icons.Rounded.Edit,
                 descriptionIcon = R.string.edit,
-                onClick = { viewModel.update() }
+                onClick = { viewModel.update(navController) }
             )
         }
     }
@@ -340,33 +390,4 @@ private fun PopupTags(tagPopupState:MutableState<Boolean>,viewModel: QuoteViewMo
             }
         }
     }
-}
-
-@RequiresApi(Build.VERSION_CODES.S)
-@Composable
-@Preview(showBackground = true, showSystemUi = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
-internal fun QuotePreviewDark(){
-    val viewModel = viweModel()
-    MaterialThemeComposeUI {
-        Quote(viewModel)
-    }
-}
-
-@RequiresApi(Build.VERSION_CODES.S)
-@Composable
-@Preview(showBackground = true, showSystemUi = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
-internal fun QuotePreview(){
-    val viewModel = viweModel()
-    MaterialThemeComposeUI {
-        Quote(viewModel)
-    }
-}
-
-@Composable
-private fun viweModel():QuoteViewModel{
-    val prefs = Prefs(LocalContext.current)
-    val viewModel = QuoteViewModel(
-        0,null,0, LocalDateTime.now(),null,null,null,null,null,null,null,prefs)
-    viewModel.loading.value = false
-    return viewModel
 }

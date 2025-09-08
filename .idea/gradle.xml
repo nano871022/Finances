@@ -18,6 +18,7 @@
             <option value="$PROJECT_DIR$/japl-android-finances-paid-module" />
             <option value="$PROJECT_DIR$/japl-android-finances-services" />
             <option value="$PROJECT_DIR$/japl-android-graphs" />
+            <option value="$PROJECT_DIR$/japl-android-utils" />
             <option value="$PROJECT_DIR$/japl-finances-iports" />
             <option value="$PROJECT_DIR$/ui" />
           </set>

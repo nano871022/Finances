@@ -1,5 +1,6 @@
 package co.com.japl.module.credit.controllers.creditamortization
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
@@ -15,35 +16,41 @@ import co.com.japl.finances.iports.inbounds.credit.IAmortizationTablePort
 import co.com.japl.module.credit.model.CreditAmortizationState
 import co.com.japl.module.credit.navigations.CreditList
 import co.com.japl.module.credit.navigations.ExtraValueList
+import dagger.hilt.android.lifecycle.HiltViewModel
 import java.time.LocalDate
+import javax.inject.Inject
 
-class CreditAmortizationViewModel constructor(
-    private val creditCode: Int,
-    private val lastDate: LocalDate,
-    private val creditSvc: ICreditPort?=null,
-    private val additionalSvc: IAdditional?=null,
-    private val gracePeriodSvc: IPeriodGracePort?=null,
-    private val amortizationSvc: IAmortizationTablePort?=null,
-    private val navController: NavController?=null
+@HiltViewModel
+class CreditAmortizationViewModel @Inject constructor(
+    private val creditSvc: ICreditPort,
+    private val additionalSvc: IAdditional,
+    private val gracePeriodSvc: IPeriodGracePort,
+    private val amortizationSvc: IAmortizationTablePort,
+    private val savedStateHandle: SavedStateHandle
 ): ViewModel() {
 
     private val _state = MutableStateFlow(CreditAmortizationState())
     val state = _state.asStateFlow()
 
+    private var creditCode: Int = 0
+    private lateinit var lastDate: LocalDate
+
     init{
+        savedStateHandle.get<Int>("creditCode")?.let{
+            creditCode = it
+        }
+        savedStateHandle.get<LocalDate>("lastDate")?.let{
+            lastDate = it
+        }
         execute()
     }
 
 
-    fun goToExtraValues() {
-        navController?.let{
-            ExtraValueList.list(creditCode,it)
-        }
+    fun goToExtraValues(navController: NavController) {
+        ExtraValueList.list(creditCode,navController)
     }
-    fun goToAdditional() {
-        navController?.let{
-            CreditList.additional(creditCode,it)
-        }
+    fun goToAdditional(navController: NavController) {
+        CreditList.additional(creditCode,navController)
     }
 
 
@@ -53,10 +60,10 @@ class CreditAmortizationViewModel constructor(
 
     suspend fun loadData(){
         _state.value = _state.value.copy(isLoading = true)
-        val credit = creditSvc?.getCredit(creditCode)
-        val additionalList = additionalSvc?.getAdditional(creditCode)
-        val gracePeriodList = gracePeriodSvc?.get(creditCode)
-        val amortizationTable = amortizationSvc?.getAmortization(creditCode, KindAmortization.FIXED_QUOTE, false)
+        val credit = creditSvc.getCredit(creditCode)
+        val additionalList = additionalSvc.getAdditional(creditCode)
+        val gracePeriodList = gracePeriodSvc.get(creditCode)
+        val amortizationTable = amortizationSvc.getAmortization(creditCode, KindAmortization.FIXED_QUOTE, false)
         val additional = additionalList?.sumOf { it.value }
         val gracePeriods = gracePeriodList?.filter { it.create > lastDate || it.end < lastDate }.takeIf { it?.isNotEmpty() == true }?.sumOf{it.periods.toInt()}
         val months = ChronoUnit.MONTHS.between(credit?.date, lastDate)
@@ -71,5 +78,3 @@ class CreditAmortizationViewModel constructor(
     }
 
 }
-
-

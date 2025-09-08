@@ -12,21 +12,29 @@ import androidx.navigation.NavController
 import co.com.japl.finances.iports.dtos.AdditionalCreditDTO
 import co.com.japl.finances.iports.inbounds.credit.IAdditionalFormPort
 import co.com.japl.module.credit.R
+import co.japl.android.graphs.utils.NumbersUtil
 import co.com.japl.ui.utils.initialFieldState
-import co.japl.android.myapplication.utils.NumbersUtil
-import dagger.hilt.android.scopes.ViewModelScoped
+import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import java.math.BigDecimal
 import java.time.LocalDate
+import javax.inject.Inject
 
-@ViewModelScoped
-class AdditionalFormViewModel constructor(private val context: Context, private val savedStateHandle: SavedStateHandle?=null, private val id:Int=-1, private val codeCredit:Int=0, private val additionalSvc: IAdditionalFormPort?, private val navController: NavController?) : ViewModel(){
+@HiltViewModel
+class AdditionalFormViewModel @Inject constructor(
+    @ApplicationContext private val context: Context,
+    private val savedStateHandle: SavedStateHandle,
+    private val additionalSvc: IAdditionalFormPort
+) : ViewModel(){
+    private var id:Int=-1
+    private var codeCredit:Int=0
     private val _dto = MutableStateFlow<AdditionalCreditDTO>(AdditionalCreditDTO(
-        id=id,
-        creditCode = codeCredit.toLong(),
+        id=0,
+        creditCode = 0,
         name = "",
         value = BigDecimal.ZERO,
         startDate = LocalDate.now(),
@@ -35,7 +43,7 @@ class AdditionalFormViewModel constructor(private val context: Context, private 
     val hostState: SnackbarHostState = SnackbarHostState()
     val loading = mutableStateOf(false)
     val name = initialFieldState(
-        savedStateHandle!!,
+        savedStateHandle,
         "FORM_NAME",
         initialValue = "",
         validator = { it.isNotBlank()},
@@ -44,7 +52,7 @@ class AdditionalFormViewModel constructor(private val context: Context, private 
         }}
     )
     val value = initialFieldState<BigDecimal>(
-        savedStateHandle!!,
+        savedStateHandle,
         "FORM_VALUE",
         initialValue = BigDecimal.ZERO,
         formatter = { if(it.isNotBlank() && NumbersUtil.isNumber(it)) NumbersUtil.toBigDecimal(it) else BigDecimal.ZERO  },
@@ -58,7 +66,7 @@ class AdditionalFormViewModel constructor(private val context: Context, private 
         it.onValueChangeStr("")
     }
     val startDate = initialFieldState(
-        savedStateHandle!!,
+        savedStateHandle,
         "FORM_START_DATE",
         initialValue = LocalDate.now(),
         validator = { it.isAfter(LocalDate.now().withYear(2000))},
@@ -70,12 +78,15 @@ class AdditionalFormViewModel constructor(private val context: Context, private 
     )
 
     init{
+        savedStateHandle.get<Int>("id")?.let{ id = it }
+        savedStateHandle.get<Int>("codeCredit")?.let{ codeCredit = it }
+        _dto.update { it.copy(id=id,creditCode = codeCredit.toLong()) }
         main()
     }
 
-    fun create(){
+    fun create(navController: NavController){
         if(validation()) {
-            additionalSvc?.let {
+            additionalSvc.let {
                 try {
                     if (_dto.value.id <= 0) {
                         if (it.create(_dto.value)) {
@@ -85,7 +96,7 @@ class AdditionalFormViewModel constructor(private val context: Context, private 
                                     actionLabel = context.getString(R.string.close),
                                     duration = SnackbarDuration.Short
                                 ).also {
-                                    navController?.popBackStack()
+                                    navController.popBackStack()
                                 }
                             }
                         } else {
@@ -105,7 +116,7 @@ class AdditionalFormViewModel constructor(private val context: Context, private 
                                     actionLabel = context.getString(R.string.close),
                                     duration = SnackbarDuration.Short
                                 ).also {
-                                    navController?.popBackStack()
+                                    navController.popBackStack()
                                 }
                             }
                         } else {
@@ -158,7 +169,7 @@ class AdditionalFormViewModel constructor(private val context: Context, private 
     }
 
     suspend fun execute(){
-        additionalSvc?.let{ svc ->
+        additionalSvc.let{ svc ->
             id.takeIf { it > 0 }?.let {
                 svc.get(id)?.let{
                     Log.d(this.javaClass.name,"<<<=== Execute:List $id $codeCredit $it")

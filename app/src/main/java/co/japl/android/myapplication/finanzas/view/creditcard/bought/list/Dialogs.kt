@@ -48,7 +48,7 @@ import co.japl.android.myapplication.finanzas.enums.MoreOptionsItemsCreditCard
 import co.com.japl.ui.components.AlertDialogOkCancel
 import co.com.japl.ui.components.FieldView
 import co.com.japl.ui.theme.MaterialThemeComposeUI
-import co.japl.android.myapplication.utils.NumbersUtil
+import co.com.japl.utils.NumbersUtil
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

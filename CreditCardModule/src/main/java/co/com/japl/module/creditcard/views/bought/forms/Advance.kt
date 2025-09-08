@@ -34,24 +34,36 @@ import co.com.japl.ui.components.FieldText
 import co.com.japl.ui.components.FieldView
 import co.com.japl.ui.components.FloatButton
 import co.com.japl.ui.theme.MaterialThemeComposeUI
+import androidx.lifecycle.SavedStateHandle
+import androidx.navigation.NavController
+import co.com.japl.finances.iports.dtos.CreditCardBoughtDTO
+import co.com.japl.finances.iports.dtos.CreditCardDTO
+import co.com.japl.finances.iports.dtos.TaxDTO
+import co.com.japl.finances.iports.enums.KindInterestRateEnum
+import co.com.japl.finances.iports.enums.KindOfTaxEnum
+import co.com.japl.finances.iports.inbounds.creditcard.ICreditCardPort
+import co.com.japl.finances.iports.inbounds.creditcard.ITaxPort
+import co.com.japl.finances.iports.inbounds.creditcard.bought.IBoughtPort
 import co.com.japl.ui.theme.values.Dimensions
 import co.com.japl.ui.theme.values.ModifiersCustom
+import co.com.japl.utils.NumbersUtil
+import java.math.BigDecimal
 import java.time.LocalDateTime
 
 @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
 @Composable
-fun Advance (viewModel:AdvanceViewModel){
+fun Advance (viewModel:AdvanceViewModel, navController: NavController){
     val isLoadingState = remember {viewModel.loading}
     val loadingState = remember { viewModel.progress }
 
     if(isLoadingState.value){
         LinearProgressIndicator(progress = loadingState.floatValue,modifier=Modifier.fillMaxWidth())
     }else {
-        viewModel.creditRateEmpty()
+        viewModel.creditRateEmpty(navController)
         Scaffold(
             floatingActionButton = {
 
-                FloatingButtons(viewModel)
+                FloatingButtons(viewModel, navController)
 
             }
         ) {
@@ -61,7 +73,7 @@ fun Advance (viewModel:AdvanceViewModel){
 }
 
 @Composable
-private fun FloatingButtons(viewModel: AdvanceViewModel) {
+private fun FloatingButtons(viewModel: AdvanceViewModel, navController: NavController) {
     val isNewState = remember { viewModel.isNew }
     Column {
         FloatButton(
@@ -74,14 +86,14 @@ private fun FloatingButtons(viewModel: AdvanceViewModel) {
             FloatButton(
                 imageVector = Icons.Rounded.Save,
                 descriptionIcon = R.string.save,
-                onClick = {viewModel.create()}
+                onClick = {viewModel.create(navController)}
             )
         }else {
 
             FloatButton(
                 imageVector = Icons.Rounded.Edit,
                 descriptionIcon = R.string.edit,
-                onClick = { viewModel.update() }
+                onClick = { viewModel.update(navController) }
             )
         }
     }
@@ -191,7 +203,7 @@ private fun Body(viewModel: AdvanceViewModel,modifier:Modifier){
 internal fun AdvancePreviewDark(){
     val viewModel = viweModel()
     MaterialThemeComposeUI {
-        Advance(viewModel)
+        Advance(viewModel, NavController(LocalContext.current))
     }
 }
 
@@ -201,14 +213,19 @@ internal fun AdvancePreviewDark(){
 internal fun AdvancePreview(){
     val viewModel = viweModel()
     MaterialThemeComposeUI {
-        Advance(viewModel)
+        Advance(viewModel, NavController(LocalContext.current))
     }
 }
 
 @Composable
 private fun viweModel():AdvanceViewModel{
-    val prefs = Prefs(LocalContext.current)
-    val viewModel = AdvanceViewModel(null,0,0, LocalDateTime.now(),null,null,null,null,prefs)
+    val context = LocalContext.current
+    val prefs = Prefs(context)
+    val savedStateHandle = SavedStateHandle()
+    val boughtSvc = FakeBoughtPort()
+    val creditRateSvc = FakeTaxPort()
+    val creditCardSvc = FakeCreditCardPort()
+    val viewModel = AdvanceViewModel(savedStateHandle, boughtSvc, creditRateSvc, creditCardSvc, prefs, context)
     viewModel.loading.value = false
     return viewModel
 }

@@ -68,7 +68,7 @@ import co.com.japl.ui.utils.DateUtils
 import co.com.japl.ui.utils.WindowWidthSize
 import co.japl.android.graphs.interfaces.IGraph
 import co.japl.android.graphs.pieceofpie.PieceOfPie
-import co.japl.android.myapplication.utils.NumbersUtil
+import co.com.japl.utils.NumbersUtil
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

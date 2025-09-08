@@ -10,6 +10,7 @@ import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import co.com.japl.finances.iports.inbounds.recap.IRecapPort
+import co.com.japl.ui.Prefs
 import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.japl.android.myapplication.databinding.FragmentRecapBinding
 import co.japl.android.myapplication.finanzas.ApplicationInitial
@@ -22,9 +23,10 @@ import javax.inject.Inject
 class RecapFragment @Inject constructor() : Fragment() {
     @Inject lateinit var recapSvc:IRecapPort
     @Inject lateinit var boughtCreditCardSvc : IBought
+    @Inject lateinit var prefs : Prefs
 
     private var _binding: FragmentRecapBinding? = null
-    private val recapViewModel by lazy {RecapViewModel(recapSvc,boughtCreditCardSvc,ApplicationInitial.prefs,findNavController())}
+    private val recapViewModel by lazy {RecapViewModel(recapSvc,boughtCreditCardSvc,prefs,findNavController())}
 
     @RequiresApi(Build.VERSION_CODES.S)
     override fun onCreateView(

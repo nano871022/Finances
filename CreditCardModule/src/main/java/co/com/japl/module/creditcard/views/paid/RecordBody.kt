@@ -21,7 +21,7 @@ import androidx.compose.ui.unit.dp
 import co.com.japl.module.creditcard.R
 import co.com.japl.ui.components.FieldView
 import co.com.japl.ui.utils.WindowWidthSize
-import co.japl.android.myapplication.utils.NumbersUtil
+import co.com.japl.utils.NumbersUtil
 
 @Composable
 internal fun RecordBody(dateStart:String,dateEnd:String, capital:Double, interest:Double, moreOptionsStatus: MutableState<Boolean>) {

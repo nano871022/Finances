@@ -22,9 +22,11 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.SavedStateHandle
 import co.com.japl.finances.iports.dtos.ExtraValueAmortizationDTO
 import co.com.japl.module.credit.R
 import co.com.japl.module.credit.controllers.extravalue.ExtraValueListViewModel
+import co.com.japl.module.credit.views.fakesSvc.ExtraValueAmortizationCreditFake
 import co.com.japl.ui.components.DataTable
 import co.com.japl.ui.components.FloatButton
 import co.com.japl.ui.model.datatable.Header
@@ -127,7 +129,8 @@ private fun PreviewViewDark(){
 @Composable
 private fun getViewModel():ExtraValueListViewModel{
     val id = 0
-    val viewModel = ExtraValueListViewModel(id)
+    val saveStateBundle = SavedStateHandle()
+    val viewModel = ExtraValueListViewModel(ExtraValueAmortizationCreditFake(),saveStateBundle)
     viewModel._extraValues.update {
         listOf(
             ExtraValueAmortizationDTO(

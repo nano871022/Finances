@@ -1,7 +1,6 @@
 package co.com.japl.module.credit.views.creditamortization
 
 import android.annotation.SuppressLint
-import android.content.res.Configuration
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -33,36 +32,46 @@ import java.math.BigDecimal
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.text.style.TextAlign
+import androidx.navigation.NavController
+import co.com.japl.ui.components.FloatButton
+import android.content.res.Configuration
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.SavedStateHandle
 import co.com.japl.finances.iports.dtos.CreditDTO
+import co.com.japl.finances.iports.dtos.GracePeriodDTO
+import co.com.japl.finances.iports.enums.KindAmortization
 import co.com.japl.finances.iports.enums.KindOfTaxEnum
 import co.com.japl.finances.iports.enums.KindPaymentsEnums
-import co.com.japl.ui.components.FloatButton
+import co.com.japl.finances.iports.inbounds.credit.IAdditional
+import co.com.japl.finances.iports.inbounds.credit.IAmortizationTablePort
+import co.com.japl.finances.iports.inbounds.credit.ICreditPort
+import co.com.japl.finances.iports.inbounds.credit.IPeriodGracePort
 import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.com.japl.ui.utils.WindowWidthSize
-import co.japl.android.myapplication.utils.NumbersUtil
+import co.com.japl.utils.NumbersUtil
 import java.time.LocalDate
 import java.time.YearMonth
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun CreditAmortizationScreen(viewModel: CreditAmortizationViewModel){
+fun CreditAmortizationScreen(viewModel: CreditAmortizationViewModel, navController: NavController){
     val state by viewModel.state.collectAsState()
 
     if(state.isLoading){
         LinearProgressIndicator(modifier=Modifier.fillMaxWidth())
     }else {
-        Body(viewModel )
+        Body(viewModel, navController)
     }
 }
 
 @Composable
-private fun Body(viewModel: CreditAmortizationViewModel) {
+private fun Body(viewModel: CreditAmortizationViewModel, navController: NavController) {
     val state by viewModel.state.collectAsState()
     val dateCredit = state.credit?.date?:LocalDate.now()
     val yearMonth = YearMonth.of(dateCredit.year,dateCredit.month)
-    Scaffold (floatingActionButton = {FloatButtons(viewModel)},
+    Scaffold (floatingActionButton = {FloatButtons(viewModel, navController)},
         modifier = Modifier.padding(Dimensions.PADDING_SHORT)) {
         Column(modifier = Modifier.fillMaxWidth().padding(it)) {
             Header(viewModel)
@@ -125,20 +134,73 @@ private fun Header(viewModel: CreditAmortizationViewModel) {
 }
 
 @Composable
-private fun FloatButtons(viewModel: CreditAmortizationViewModel) {
+private fun FloatButtons(viewModel: CreditAmortizationViewModel, navController: NavController) {
     Column(modifier = Modifier) {
 
         FloatButton(
             descriptionIcon =  R.string.extra_value_list,
             imageVector= Icons.Rounded.PlusOne,
-            onClick = { viewModel.goToExtraValues() },
+            onClick = { viewModel.goToExtraValues(navController) },
         )
         FloatButton(
             imageVector = Icons.Rounded.Addchart,
             descriptionIcon =  R.string.additional_to_pay,
-            onClick = { viewModel.goToAdditional() },
+            onClick = { viewModel.goToAdditional(navController) },
         )
     }
+}
+
+
+@RequiresApi(Build.VERSION_CODES.S)
+@Preview(showBackground = true, showSystemUi = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
+@Composable
+private fun CreditAmortizationScreenPreviewLight() {
+    val viewModel = getViewModel()
+    MaterialThemeComposeUI {
+        CreditAmortizationScreen(viewModel, NavController(LocalContext.current))
+    }
+}
+
+@RequiresApi(Build.VERSION_CODES.S)
+@Preview(showBackground = true, showSystemUi = true, uiMode = Configuration.UI_MODE_NIGHT_NO,device= Devices.FOLDABLE)
+@Composable
+private fun CreditAmortizationScreenPreviewLightFold() {
+    val viewModel = getViewModel()
+    MaterialThemeComposeUI {
+        CreditAmortizationScreen(viewModel, NavController(LocalContext.current))
+    }
+}
+
+@RequiresApi(Build.VERSION_CODES.S)
+@Preview(showBackground = true, showSystemUi = true, uiMode = Configuration.UI_MODE_NIGHT_YES )
+@Composable
+private fun CreditAmortizationScreenPreviewDark() {
+    val viewModel = getViewModel()
+    MaterialThemeComposeUI {
+        CreditAmortizationScreen(viewModel, NavController(LocalContext.current))
+    }
+}
+
+@RequiresApi(Build.VERSION_CODES.S)
+@Preview(showBackground = true, showSystemUi = true, uiMode = Configuration.UI_MODE_NIGHT_YES, device= Devices.PIXEL_TABLET )
+@Composable
+private fun CreditAmortizationScreenPreviewDarkTablet() {
+    val viewModel = getViewModel()
+    MaterialThemeComposeUI {
+        CreditAmortizationScreen(viewModel, NavController(LocalContext.current))
+    }
+}
+
+@Composable
+private fun getViewModel():CreditAmortizationViewModel{
+    val savedStateHandle = SavedStateHandle()
+    val creditSvc = FakeCreditPort()
+    val additionalSvc = FakeAdditional()
+    val gracePeriodSvc = FakePeriodGracePort()
+    val amortizationSvc = FakeAmortizationTablePort()
+    val viewModel = CreditAmortizationViewModel(creditSvc, additionalSvc, gracePeriodSvc, amortizationSvc, savedStateHandle)
+    viewModel.state.value.isLoading=false
+    return viewModel
 }
 
 @Composable
@@ -271,134 +333,4 @@ private fun RowScope.Row(row: AmortizationRowDTO,size:WindowWidthSize) {
             modifier = Modifier.weight(3f)
         )
     }
-}
-
-@RequiresApi(Build.VERSION_CODES.S)
-@Preview(showBackground = true, showSystemUi = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
-@Composable
-private fun CreditAmortizationScreenPreviewLight() {
-    val viewModel = getViewModel()
-    MaterialThemeComposeUI {
-        CreditAmortizationScreen(viewModel)
-    }
-}
-
-@RequiresApi(Build.VERSION_CODES.S)
-@Preview(showBackground = true, showSystemUi = true, uiMode = Configuration.UI_MODE_NIGHT_NO,device=Devices.FOLDABLE)
-@Composable
-private fun CreditAmortizationScreenPreviewLightFold() {
-    val viewModel = getViewModel()
-    MaterialThemeComposeUI {
-        CreditAmortizationScreen(viewModel)
-    }
-}
-
-@RequiresApi(Build.VERSION_CODES.S)
-@Preview(showBackground = true, showSystemUi = true, uiMode = Configuration.UI_MODE_NIGHT_YES )
-@Composable
-private fun CreditAmortizationScreenPreviewDark() {
-    val viewModel = getViewModel()
-    MaterialThemeComposeUI {
-        CreditAmortizationScreen(viewModel)
-    }
-}
-
-@RequiresApi(Build.VERSION_CODES.S)
-@Preview(showBackground = true, showSystemUi = true, uiMode = Configuration.UI_MODE_NIGHT_YES, device= Devices.PIXEL_TABLET )
-@Composable
-private fun CreditAmortizationScreenPreviewDarkTablet() {
-    val viewModel = getViewModel()
-    MaterialThemeComposeUI {
-        CreditAmortizationScreen(viewModel)
-    }
-}
-
-private fun getViewModel():CreditAmortizationViewModel{
-    val creditCode = 1
-    val lastDate = LocalDate.now()
-    val viewModel = CreditAmortizationViewModel(creditCode, lastDate)
-    viewModel.state.value.isLoading=false
-    viewModel.state.value.credit = CreditDTO(
-        id = 1,
-        name = "Test",
-        date = LocalDate.now(),
-        tax = 25.2,
-        periods = 6,
-        value = 10000.toBigDecimal(),
-        quoteValue = 800.toBigDecimal(),
-        kindOf = KindPaymentsEnums.ANNUAL,
-        kindOfTax = KindOfTaxEnum.ANUAL_EFFECTIVE
-    )
-    viewModel.state.value.additional = 100.toBigDecimal()
-    viewModel.state.value.amortization = listOf(
-        AmortizationRowDTO(
-            id = 1,
-            periods = 6,
-            creditRate = 25.5,
-            kindRate = KindOfTaxEnum.ANUAL_EFFECTIVE,
-            creditValue = 10_000.toBigDecimal(),
-            amortizatedValue = 10_000.toBigDecimal(),
-            capitalValue = 800.toBigDecimal(),
-            interestValue = 20.toBigDecimal(),
-            quoteValue = 820.toBigDecimal()
-        ),
-        AmortizationRowDTO(
-            id = 2,
-            periods = 6,
-            creditRate = 25.5,
-            kindRate = KindOfTaxEnum.ANUAL_EFFECTIVE,
-            creditValue = 10_000.toBigDecimal(),
-            amortizatedValue = 9_200.toBigDecimal(),
-            capitalValue = 802.toBigDecimal(),
-            interestValue = 18.toBigDecimal(),
-            quoteValue = 820.toBigDecimal()
-        ),
-        AmortizationRowDTO(
-            id = 3,
-            periods = 6,
-            creditRate = 25.5,
-            kindRate = KindOfTaxEnum.ANUAL_EFFECTIVE,
-            creditValue = 10_000.toBigDecimal(),
-            amortizatedValue = 8_398.toBigDecimal(),
-            capitalValue = 808.toBigDecimal(),
-            interestValue = 16.toBigDecimal(),
-            quoteValue = 820.toBigDecimal()
-        ),
-        AmortizationRowDTO(
-            id = 4,
-            periods = 6,
-            creditRate = 25.5,
-            kindRate = KindOfTaxEnum.ANUAL_EFFECTIVE,
-            creditValue = 10_000.toBigDecimal(),
-            amortizatedValue = 7_390.toBigDecimal(),
-            capitalValue = 810.toBigDecimal(),
-            interestValue = 10.toBigDecimal(),
-            quoteValue = 820.toBigDecimal()
-        ),
-        AmortizationRowDTO(
-            id = 5,
-            periods = 6,
-            creditRate = 25.5,
-            kindRate = KindOfTaxEnum.ANUAL_EFFECTIVE,
-            creditValue = 10_000.toBigDecimal(),
-            amortizatedValue = 6_380.toBigDecimal(),
-            capitalValue = 815.toBigDecimal(),
-            interestValue = 5.toBigDecimal(),
-            quoteValue = 820.toBigDecimal()
-        ),
-        AmortizationRowDTO(
-            id = 6,
-            periods = 6,
-            creditRate = 25.5,
-            kindRate = KindOfTaxEnum.ANUAL_EFFECTIVE,
-            creditValue = 10_000.toBigDecimal(),
-            amortizatedValue = 800.toBigDecimal(),
-            capitalValue = 818.toBigDecimal(),
-            interestValue = 2.toBigDecimal(),
-            quoteValue = 820.toBigDecimal()
-        )
-
-    )
-
-    return viewModel
 }

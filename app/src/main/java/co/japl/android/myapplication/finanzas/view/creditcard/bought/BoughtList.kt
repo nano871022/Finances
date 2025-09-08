@@ -1,9 +1,6 @@
 package co.japl.android.myapplication.finanzas.view.creditcard.bought
 
-import android.content.Context
-import android.os.Build
 import android.util.Log
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -24,7 +21,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
-import androidx.compose.material3.PlainTooltip
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.TooltipBox
 import androidx.compose.material3.TooltipDefaults
@@ -34,27 +30,21 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import co.japl.android.myapplication.R
 import co.japl.android.myapplication.finanzas.controller.boughtcreditcard.ListBoughtViewModel
 import co.japl.android.myapplication.finanzas.pojo.BoughtCreditCard
 import co.com.japl.ui.utils.WindowWidthSize
 import co.com.japl.ui.components.FieldView
-import co.com.japl.ui.theme.MaterialThemeComposeUI
-import co.japl.android.myapplication.finanzas.ApplicationInitial
 import co.japl.android.myapplication.finanzas.view.creditcard.bought.list.BoughList
-import co.japl.android.myapplication.utils.NumbersUtil
+import co.com.japl.utils.NumbersUtil
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 @Composable
-fun BoughtList(listBoughtViewModel:ListBoughtViewModel){
-
-
+fun BoughtList(listBoughtViewModel:ListBoughtViewModel,settingViewModel: SettingsViewModel){
     val isLoad = remember {  listBoughtViewModel.isLoad }
     val progress = remember { listBoughtViewModel.progress }
 
@@ -68,29 +58,30 @@ fun BoughtList(listBoughtViewModel:ListBoughtViewModel){
                 modifier = Modifier.fillMaxWidth()
             )
         }else {
-            ListBought(listBoughtViewModel,isLoad)
+            ListBought(listBoughtViewModel,
+                isLoad,
+                settingViewModel = settingViewModel)
         }
 }
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-private fun ListBought(listBoughtViewModel:ListBoughtViewModel,loader:MutableState<Boolean>){
-
+private fun ListBought(listBoughtViewModel:ListBoughtViewModel,loader:MutableState<Boolean>,settingViewModel: SettingsViewModel){
     val popupState = remember { mutableStateOf(false) }
     Scaffold(
         floatingActionButton = {
            Buttons(listBoughtViewModel = listBoughtViewModel)
         }
     ) {
-
-
         Column(modifier = Modifier
             .fillMaxWidth()
             .padding(it)) {
             BoxWithConstraints {
                 if (WindowWidthSize.MEDIUM.isEqualTo(maxWidth)) {
                     Column {
-                        MainCompact(listBoughtViewModel.boughtCreditCard, popupState)
+                        MainCompact(listBoughtViewModel.boughtCreditCard,
+                            popupState,
+                            settingViewModel = settingViewModel)
                     }
                 } else {
                     Row {
@@ -98,7 +89,8 @@ private fun ListBought(listBoughtViewModel:ListBoughtViewModel,loader:MutableSta
                             listBoughtViewModel.boughtCreditCard,
                             popupState,
                             modifier = Modifier.weight(1f),
-                            modifierHeader = Modifier.weight(2f)
+                            modifierHeader = Modifier.weight(2f),
+                            settingViewModel
                         )
                     }
                 }
@@ -154,7 +146,7 @@ private fun Buttons(listBoughtViewModel:ListBoughtViewModel){
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun MainCompact(data:BoughtCreditCard,popupState: MutableState<Boolean>,modifier:Modifier=Modifier,modifierHeader:Modifier=Modifier,settingViewModel: SettingsViewModel = SettingsViewModel(ApplicationInitial.prefs)){
+private fun MainCompact(data:BoughtCreditCard,popupState: MutableState<Boolean>,modifier:Modifier=Modifier,modifierHeader:Modifier=Modifier,settingViewModel: SettingsViewModel){
     val settingState = remember { settingViewModel.state }
         Header(data.recap.totalCapital, data.recap.totalInterest, data.recap.quoteValue,modifierHeader)
 

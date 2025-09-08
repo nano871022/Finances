@@ -12,6 +12,7 @@ import androidx.navigation.fragment.findNavController
 import co.com.japl.finances.iports.inbounds.paid.IPaidPort
 import co.com.japl.module.paid.controllers.paid.list.PaidViewModel
 import co.com.japl.module.paid.views.paid.list.Paid
+import co.com.japl.ui.Prefs
 import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.japl.android.myapplication.databinding.FragmentPaidListBinding
 import co.japl.android.myapplication.finanzas.ApplicationInitial
@@ -24,7 +25,7 @@ import javax.inject.Inject
 class PaidListFragment : Fragment()  {
 
     @Inject lateinit var paidSvc: IPaidPort
-
+    @Inject lateinit var prefs : Prefs
 
 
     @RequiresApi(Build.VERSION_CODES.S)
@@ -40,7 +41,7 @@ class PaidListFragment : Fragment()  {
             accountCode = codeAccount?:0,
             period= if(date != null) YearMonth.of(date.year,date.monthValue) else YearMonth.now(),
             paidSvc = paidSvc,
-            prefs = ApplicationInitial.prefs,
+            prefs = prefs,
             navController = findNavController()
         )
         root.cvPaidFpl.apply {

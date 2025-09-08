@@ -24,8 +24,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import co.com.japl.finances.iports.enums.KindOfTaxEnum
 import co.com.japl.finances.iports.enums.KindPaymentsEnums
 import co.com.japl.module.credit.R
@@ -36,13 +36,20 @@ import co.com.japl.ui.components.FieldText
 import co.com.japl.ui.components.FieldView
 import co.com.japl.ui.components.FloatButton
 import co.com.japl.ui.theme.MaterialThemeComposeUI
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.SavedStateHandle
+import co.com.japl.finances.iports.dtos.CreditDTO
+import co.com.japl.finances.iports.inbounds.credit.ICreditFormPort
+import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.com.japl.ui.theme.values.Dimensions
 import co.com.japl.ui.utils.DateUtils
-import co.japl.android.myapplication.utils.NumbersUtil
+import co.com.japl.utils.NumbersUtil
+import java.math.BigDecimal
 
 @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
 @Composable
-fun CreditForm(viewModel: CreditFormViewModel = viewModel()) {
+fun CreditForm(viewModel: CreditFormViewModel, navController: NavController) {
     val progress = remember { viewModel.progress }
     val showProgress = remember { viewModel.showProgress }
 
@@ -51,21 +58,21 @@ fun CreditForm(viewModel: CreditFormViewModel = viewModel()) {
             modifier = Modifier.fillMaxWidth(),
         )
     } else {
-        Body(viewModel)
+        Body(viewModel, navController)
     }
 
 }
 
 @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
 @Composable
-private fun Body(viewModel: CreditFormViewModel) {
+private fun Body(viewModel: CreditFormViewModel, navController: NavController) {
     val snackbarHostState = remember { viewModel.snackbarHostState }
     Scaffold(
         floatingActionButton = {
             FloatButton(
-                backView = {viewModel.backView()},
+                backView = {viewModel.backView(navController)},
                 clean = {viewModel.clean()},
-                amortization = {viewModel.amortization()},
+                amortization = {viewModel.amortization(navController)},
                 save = {viewModel.onSubmitFormClicked()}
             )
         }, snackbarHost = {
@@ -233,18 +240,21 @@ private fun FloatButton(save:()->Unit,clean:()->Unit,amortization:()->Unit,backV
     }
 }
 
-
 @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
 @Preview(showBackground = true, showSystemUi = true, uiMode = Configuration.UI_MODE_NIGHT_YES, backgroundColor = 0)
 @Composable
 fun PreviewNight() {
     val viewModel = creditViewModel()
     viewModel.showProgress.value = false
-    MaterialThemeComposeUI() {
-        CreditForm(viewModel = viewModel)
+    MaterialThemeComposeUI {
+        CreditForm(viewModel = viewModel, navController = NavController(LocalContext.current))
     }
 }
 
-fun creditViewModel(): CreditFormViewModel {
-    return CreditFormViewModel(null,null, null,null, null)
+@Composable
+private fun creditViewModel(): CreditFormViewModel {
+    val context = LocalContext.current
+    val savedStateHandle = SavedStateHandle()
+    val creditSvc = FakeCreditFormSvc()
+    return CreditFormViewModel(savedStateHandle, creditSvc, context)
 }

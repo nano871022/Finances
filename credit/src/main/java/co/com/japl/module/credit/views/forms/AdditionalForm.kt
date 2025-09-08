@@ -1,6 +1,5 @@
 package co.com.japl.module.credit.views.forms
 
-import android.content.res.Configuration
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Column
@@ -19,39 +18,42 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.lifecycle.viewmodel.compose.viewModel
-import co.com.japl.ui.components.FloatButton
-import co.com.japl.ui.theme.MaterialThemeComposeUI
+import androidx.navigation.NavController
 import co.com.japl.module.credit.R
 import co.com.japl.module.credit.controllers.forms.AdditionalFormViewModel
 import co.com.japl.ui.components.FieldDatePicker
 import co.com.japl.ui.components.FieldText
+import co.com.japl.ui.components.FloatButton
+import android.content.res.Configuration
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.SavedStateHandle
+import androidx.lifecycle.viewmodel.compose.viewModel
+import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.com.japl.ui.theme.values.Dimensions
 import co.com.japl.ui.utils.DateUtils
 
 @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
 @Composable
-fun AdditionalForm(viewModel: AdditionalFormViewModel = viewModel()){
+fun AdditionalForm(viewModel: AdditionalFormViewModel, navController: NavController){
     val loadingState = remember { viewModel.loading }
     if(loadingState.value) {
         LinearProgressIndicator()
     }else {
-        ScafoldBody(viewModel = viewModel)
+        ScafoldBody(viewModel = viewModel, navController = navController)
     }
 }
 
 @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
 @Composable
-private fun ScafoldBody(viewModel: AdditionalFormViewModel ){
+private fun ScafoldBody(viewModel: AdditionalFormViewModel, navController: NavController ){
     val state = remember{ viewModel.hostState }
     Scaffold (
         snackbarHost = { SnackbarHost(hostState = state) },
         floatingActionButton = {
-            FloatButton(viewModel = viewModel)
+            FloatButton(viewModel = viewModel, navController = navController)
         }
     ){
         Body(viewModel = viewModel, modifier = Modifier.padding(it))
@@ -101,7 +103,7 @@ private fun Body(viewModel: AdditionalFormViewModel ,modifier: Modifier){
 }
 
 @Composable
-private fun FloatButton(viewModel: AdditionalFormViewModel ){
+private fun FloatButton(viewModel: AdditionalFormViewModel, navController: NavController ){
     Column {
         FloatButton(
             imageVector = Icons.Rounded.CleaningServices,
@@ -113,7 +115,7 @@ private fun FloatButton(viewModel: AdditionalFormViewModel ){
             imageVector = Icons.Rounded.Add,
             descriptionIcon = R.string.add_additiona_credit
         ) {
-            viewModel.create()
+            viewModel.create(navController)
         }
     }
 }
@@ -124,14 +126,17 @@ private fun FloatButton(viewModel: AdditionalFormViewModel ){
 private fun AdditionalFormPreview(){
     val viewModel = getViewModel()
     MaterialThemeComposeUI {
-        AdditionalForm(viewModel)
+        AdditionalForm(viewModel, NavController(LocalContext.current))
     }
 }
 
 @Composable
 private fun getViewModel(): AdditionalFormViewModel{
-    val vm = AdditionalFormViewModel(context= LocalContext.current,codeCredit = 0, additionalSvc = null ,navController = null)
-    vm.loading.value = false
-    return vm
+    val context = LocalContext.current
+    val navController = NavController(context)
+    val savedStateHandle = SavedStateHandle()
+    val additionalSvc = FakeAdditionalFormSvc()
+    val viewModel = AdditionalFormViewModel(context, savedStateHandle, additionalSvc)
+    viewModel.loading.value = false
+    return viewModel
 }
-

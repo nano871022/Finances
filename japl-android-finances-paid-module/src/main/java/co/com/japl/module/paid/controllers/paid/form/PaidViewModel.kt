@@ -13,7 +13,7 @@ import co.com.japl.finances.iports.dtos.PaidDTO
 import co.com.japl.finances.iports.inbounds.inputs.IAccountPort
 import co.com.japl.finances.iports.inbounds.paid.IPaidPort
 import co.com.japl.module.paid.R
-import co.japl.android.myapplication.utils.NumbersUtil
+import co.japl.android.graphs.utils.NumbersUtil
 import kotlinx.coroutines.runBlocking
 import java.time.LocalDate
 import java.time.LocalDateTime
