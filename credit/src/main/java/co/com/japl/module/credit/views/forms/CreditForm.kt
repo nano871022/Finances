@@ -24,7 +24,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import co.com.japl.finances.iports.enums.KindOfTaxEnum
@@ -37,7 +36,6 @@ import co.com.japl.ui.components.FieldText
 import co.com.japl.ui.components.FieldView
 import co.com.japl.ui.components.FloatButton
 import co.com.japl.ui.theme.MaterialThemeComposeUI
-import android.content.res.Configuration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.SavedStateHandle
@@ -46,7 +44,7 @@ import co.com.japl.finances.iports.inbounds.credit.ICreditFormPort
 import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.com.japl.ui.theme.values.Dimensions
 import co.com.japl.ui.utils.DateUtils
-import co.com.japl.ui.utils.NumbersUtil
+import co.com.japl.utils.NumbersUtil
 import java.math.BigDecimal
 
 @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)

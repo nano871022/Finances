@@ -28,6 +28,7 @@ import co.com.japl.finances.iports.enums.KindPaymentsEnums
 import co.com.japl.finances.iports.inbounds.paid.IProjectionFormPort
 import co.com.japl.module.paid.R
 import co.com.japl.module.paid.controllers.projections.forms.ProjectionFormViewModel
+import co.com.japl.module.paid.views.fakeSvc.ProjectionFormFake
 import co.com.japl.ui.components.FieldDatePicker
 import co.com.japl.ui.components.FieldSelect
 import co.com.japl.ui.components.FieldText
@@ -158,31 +159,7 @@ private fun ProjectionFormPreviewLight(){
 private fun getViewModel(): ProjectionFormViewModel{
     val context = LocalContext.current
     val savedStateHandle = SavedStateHandle()
-    val projectionSvc = object : IProjectionFormPort {
-        override fun findById(id: Int): ProjectionDTO? {
-            return null
-        }
-
-        override fun getAll(): List<ProjectionDTO> {
-            return emptyList()
-        }
-
-        override fun save(dto: ProjectionDTO): Boolean {
-            return true
-        }
-
-        override fun delete(id: Int): Boolean {
-            return true
-        }
-
-        override fun calculateQuote(
-            kindOf: KindPaymentsEnums,
-            date: LocalDate,
-            value: BigDecimal
-        ): BigDecimal {
-            return BigDecimal.ZERO
-        }
-    }
+    val projectionSvc = ProjectionFormFake()
     val vm = ProjectionFormViewModel(context, savedStateHandle, projectionSvc)
     vm.datePayment.onValueChange(LocalDate.now())
     vm.period.onValueChange(Pair(KindPaymentsEnums.MONTHLY.month,KindPaymentsEnums.MONTHLY.name))

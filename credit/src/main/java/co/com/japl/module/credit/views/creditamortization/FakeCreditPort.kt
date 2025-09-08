@@ -1,39 +1,28 @@
 package co.com.japl.module.credit.views.creditamortization
 
 import co.com.japl.finances.iports.dtos.CreditDTO
+import co.com.japl.finances.iports.dtos.RecapCreditDTO
 import co.com.japl.finances.iports.enums.KindOfTaxEnum
 import co.com.japl.finances.iports.enums.KindPaymentsEnums
 import co.com.japl.finances.iports.inbounds.credit.ICreditPort
 import java.time.LocalDate
+import java.time.YearMonth
 
 class FakeCreditPort : ICreditPort {
-    override fun get(codeCredit: Long): List<CreditDTO> {
-        return emptyList()
+    override fun getCreditEnable(period: YearMonth): List<CreditDTO> {
+        TODO("Not yet implemented")
     }
 
-    override fun get(codeCredit: Int): CreditDTO? {
-        return CreditDTO(
-            id = 1,
-            name = "Test",
-            date = LocalDate.now(),
-            tax = 25.2,
-            periods = 6,
-            value = 10000.toBigDecimal(),
-            quoteValue = 800.toBigDecimal(),
-            kindOf = KindPaymentsEnums.ANNUAL,
-            kindOfTax = KindOfTaxEnum.ANUAL_EFFECTIVE
-        )
+    override fun delete(id: Int): Boolean {
+        TODO("Not yet implemented")
     }
 
-    override fun getCredits(): List<CreditDTO> {
-        return emptyList()
+    override fun getCreditsEnables(period: YearMonth): List<RecapCreditDTO> {
+        TODO("Not yet implemented")
     }
 
-    override fun delete(codeCredit: Int): Boolean {
-        return true
+    override fun getCredit(code: Int): CreditDTO? {
+        TODO("Not yet implemented")
     }
 
-    override fun save(credit: CreditDTO): Boolean {
-        return true
-    }
 }

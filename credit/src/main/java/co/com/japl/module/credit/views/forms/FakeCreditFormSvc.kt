@@ -6,20 +6,21 @@ import co.com.japl.finances.iports.inbounds.credit.ICreditFormPort
 import java.math.BigDecimal
 
 class FakeCreditFormSvc : ICreditFormPort {
-    override fun findCreditById(id: Int): CreditDTO? {
-        return null
-    }
-
-    override fun save(dto: CreditDTO): Int {
-        return 1
+    override fun save(credit: CreditDTO): Int {
+        TODO("Not yet implemented")
     }
 
     override fun calculateQuoteCredit(
         value: BigDecimal,
         rate: Double,
-        month: Int,
-        kindRate: KindOfTaxEnum
+        kindRate: KindOfTaxEnum,
+        month: Int
     ): BigDecimal {
-        return BigDecimal.ZERO
+        TODO("Not yet implemented")
     }
+
+    override fun findCreditById(id: Int): CreditDTO? {
+        TODO("Not yet implemented")
+    }
+
 }

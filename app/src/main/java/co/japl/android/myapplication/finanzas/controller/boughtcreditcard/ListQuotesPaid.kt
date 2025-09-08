@@ -16,6 +16,7 @@ import co.japl.android.myapplication.databinding.FragmentListPeriodsBinding
 import co.japl.android.myapplication.finanzas.putParams.PeriodsParams
 import co.com.japl.module.creditcard.controllers.paid.BoughtCreditCardViewModel
 import co.com.japl.module.creditcard.views.paid.PaidList
+import co.com.japl.ui.Prefs
 import co.japl.android.myapplication.finanzas.ApplicationInitial
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -26,6 +27,7 @@ class ListQuotesPaid : Fragment() {
     var creditCardId by Delegates.notNull<Int>()
 
     @Inject lateinit var port: IBoughtListPort
+    @Inject lateinit var prefs : Prefs
     private lateinit var _binding : FragmentListPeriodsBinding
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -43,7 +45,7 @@ class ListQuotesPaid : Fragment() {
                 setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
                 setContent {
                     MaterialThemeComposeUI {
-                        PaidList(viewModel = BoughtCreditCardViewModel(port,creditCardId,findNavController(),ApplicationInitial.prefs))
+                        PaidList(viewModel = BoughtCreditCardViewModel(port,creditCardId,findNavController(),prefs))
 
                 }
             }

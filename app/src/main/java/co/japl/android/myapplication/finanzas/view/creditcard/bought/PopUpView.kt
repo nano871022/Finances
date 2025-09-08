@@ -40,7 +40,7 @@ import co.japl.android.myapplication.finanzas.ApplicationInitial
 import co.com.japl.ui.Prefs
 import co.com.japl.ui.components.FieldText
 import co.com.japl.ui.components.FloatButton
-import co.japl.android.myapplication.utils.NumbersUtil
+import co.com.japl.utils.NumbersUtil
 
 @Composable
 internal fun Popup(recap: RecapCreditCardBoughtListDTO, popupState: MutableState<Boolean>){
@@ -257,8 +257,8 @@ fun PopupSetting(viewModel: SettingsViewModel,state: MutableState<Boolean>) {
 @Composable
 @Preview(showSystemUi = true, showBackground = true)
 fun PreviewPopUpSetting() {
-    ApplicationInitial.prefs = Prefs(LocalContext.current)
-    val viewModel = SettingsViewModel(ApplicationInitial.prefs)
+    val prefs = Prefs(LocalContext.current)
+    val viewModel = SettingsViewModel(prefs)
     val state = remember { viewModel.state}
     state.value = true
     MaterialThemeComposeUI {

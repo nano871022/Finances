@@ -46,7 +46,7 @@ import co.com.japl.ui.components.FieldView
 import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.japl.android.myapplication.finanzas.ApplicationInitial
 import co.japl.android.myapplication.finanzas.view.creditcard.bought.list.BoughList
-import co.japl.android.myapplication.utils.NumbersUtil
+import co.com.japl.utils.NumbersUtil
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -154,7 +154,7 @@ private fun Buttons(listBoughtViewModel:ListBoughtViewModel){
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun MainCompact(data:BoughtCreditCard,popupState: MutableState<Boolean>,modifier:Modifier=Modifier,modifierHeader:Modifier=Modifier,settingViewModel: SettingsViewModel = SettingsViewModel(ApplicationInitial.prefs)){
+private fun MainCompact(data:BoughtCreditCard,popupState: MutableState<Boolean>,modifier:Modifier=Modifier,modifierHeader:Modifier=Modifier,settingViewModel: SettingsViewModel = SettingsViewModel(prefs)){
     val settingState = remember { settingViewModel.state }
         Header(data.recap.totalCapital, data.recap.totalInterest, data.recap.quoteValue,modifierHeader)
 

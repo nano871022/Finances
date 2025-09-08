@@ -5,18 +5,29 @@ import co.com.japl.finances.iports.inbounds.creditcard.ICreditCardSettingPort
 
 class FakeCreditCardSettingPort : ICreditCardSettingPort {
     override fun getAll(codeCreditCard: Int): List<CreditCardSettingDTO> {
-        return emptyList()
+        TODO("Not yet implemented")
     }
 
-    override fun get(code: Int): CreditCardSettingDTO? {
-        return null
+    override fun get(
+        codeCreditCard: Int,
+        codeCreditCardSetting: Int
+    ): CreditCardSettingDTO? {
+        TODO("Not yet implemented")
     }
 
-    override fun delete(code: Int): Boolean {
-        return true
+    override fun delete(
+        codeCreditCard: Int,
+        codeCreditCardSetting: Int
+    ): Boolean {
+        TODO("Not yet implemented")
     }
 
-    override fun save(dto: CreditCardSettingDTO): Boolean {
-        return true
+    override fun update(dto: CreditCardSettingDTO): Boolean {
+        TODO("Not yet implemented")
     }
+
+    override fun create(dto: CreditCardSettingDTO): Int {
+        TODO("Not yet implemented")
+    }
+
 }

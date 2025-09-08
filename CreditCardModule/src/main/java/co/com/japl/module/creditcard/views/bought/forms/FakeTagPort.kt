@@ -5,26 +5,23 @@ import co.com.japl.finances.iports.inbounds.creditcard.ITagPort
 
 class FakeTagPort : ITagPort {
     override fun getAll(): List<TagDTO> {
-        return emptyList()
+        TODO("Not yet implemented")
     }
 
-    override fun get(id: Int): TagDTO? {
-        return null
+    override fun get(codeBought: Int): TagDTO? {
+        TODO("Not yet implemented")
     }
 
-    override fun create(tag: TagDTO): Int {
-        return 1
+    override fun create(dto: TagDTO): Int {
+        TODO("Not yet implemented")
     }
 
-    override fun update(tag: TagDTO): Boolean {
-        return true
+    override fun delete(codeTag: Int): Boolean {
+        TODO("Not yet implemented")
     }
 
-    override fun delete(id: Int): Boolean {
-        return true
+    override fun createOrUpdate(codeTag: Int, codeBought: Int): Int {
+        TODO("Not yet implemented")
     }
 
-    override fun createOrUpdate(idTag: Int, idBought: Int): Boolean {
-        return true
-    }
 }

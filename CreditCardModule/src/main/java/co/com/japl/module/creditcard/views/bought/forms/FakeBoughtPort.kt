@@ -1,6 +1,8 @@
 package co.com.japl.module.creditcard.views.bought.forms
 
 import co.com.japl.finances.iports.dtos.CreditCardBoughtDTO
+import co.com.japl.finances.iports.dtos.CreditCardDTO
+import co.com.japl.finances.iports.dtos.RecapMonthly
 import co.com.japl.finances.iports.enums.KindInterestRateEnum
 import co.com.japl.finances.iports.enums.KindOfTaxEnum
 import co.com.japl.finances.iports.inbounds.creditcard.bought.IBoughtPort
@@ -8,65 +10,75 @@ import java.math.BigDecimal
 import java.time.LocalDateTime
 
 class FakeBoughtPort : IBoughtPort {
-    override fun get(codeCreditCard: Int, period: LocalDateTime): List<CreditCardBoughtDTO> {
-        return emptyList()
+    override fun getRecap(
+        creditCard: CreditCardDTO,
+        cutOffDate: LocalDateTime,
+        cache: Boolean
+    ): RecapMonthly? {
+        TODO("Not yet implemented")
     }
 
-    override fun getById(code: Int, cache: Boolean): CreditCardBoughtDTO? {
-        return null
+    override fun getBoughtCurrentPeriodList(
+        creditCardDTO: CreditCardDTO,
+        cutOff: LocalDateTime,
+        cache: Boolean
+    ): List<Pair<String, Double>>? {
+        TODO("Not yet implemented")
     }
 
-    override fun get(codeBought: Int): List<CreditCardBoughtDTO> {
-        return emptyList()
+    override fun create(
+        creditCardBoughtDTO: CreditCardBoughtDTO,
+        cache: Boolean
+    ): Int {
+        TODO("Not yet implemented")
     }
 
-    override fun getRecurrent(codeCreditCard: Int): List<CreditCardBoughtDTO> {
-        return emptyList()
-    }
-
-    override fun getPendingToPay(codeCreditCard: Int): List<CreditCardBoughtDTO> {
-        return emptyList()
-    }
-
-    override fun create(creditCardBought: CreditCardBoughtDTO, cache: Boolean): Int {
-        return 1
-    }
-
-    override fun update(creditCardBought: CreditCardBoughtDTO, cache: Boolean): Boolean {
-        return true
-    }
-
-    override fun delete(code: Int, cache: Boolean): Boolean {
-        return true
+    override fun update(
+        creditCardBoughtDTO: CreditCardBoughtDTO,
+        cache: Boolean
+    ): Boolean {
+        TODO("Not yet implemented")
     }
 
     override fun quoteValue(
-        idCreditRate: Int,
-        quotes: Short,
+        codeCreditRate: Int,
+        months: Short,
         value: Double,
-        kind: KindOfTaxEnum,
-        interest: KindInterestRateEnum
-    ): BigDecimal {
-        return BigDecimal.ZERO
-    }
-
-    override fun interestValue(
-        idCreditRate: Int,
-        quotes: Short,
-        value: Double,
-        kind: KindOfTaxEnum,
-        interest: KindInterestRateEnum
-    ): BigDecimal {
-        return BigDecimal.ZERO
+        kindOfTax: KindOfTaxEnum,
+        kindOfInterest: KindInterestRateEnum
+    ): Double {
+        TODO("Not yet implemented")
     }
 
     override fun capitalValue(
-        idCreditRate: Int,
-        quotes: Short,
+        codeCreditRate: Int,
+        months: Short,
         value: Double,
-        kind: KindOfTaxEnum,
-        interest: KindInterestRateEnum
-    ): BigDecimal {
-        return BigDecimal.ZERO
+        kindOfTax: KindOfTaxEnum,
+        kindOfInterest: KindInterestRateEnum
+    ): Double {
+        TODO("Not yet implemented")
     }
+
+    override fun interestValue(
+        codeCreditRate: Int,
+        months: Short,
+        value: Double,
+        kindOfTax: KindOfTaxEnum,
+        kindOfInterest: KindInterestRateEnum
+    ): Double {
+        TODO("Not yet implemented")
+    }
+
+    override fun getById(
+        codeBought: Int,
+        cache: Boolean
+    ): CreditCardBoughtDTO? {
+        TODO("Not yet implemented")
+    }
+
+    override fun fixDataProcess() {
+        TODO("Not yet implemented")
+    }
+
 }

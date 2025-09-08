@@ -37,6 +37,7 @@ import co.com.japl.finances.iports.enums.KindOfTaxEnum
 import co.com.japl.finances.iports.inbounds.creditcard.ISimulatorCreditVariablePort
 import co.com.japl.module.creditcard.R
 import co.com.japl.module.creditcard.controllers.simulator.FormViewModel
+import co.com.japl.module.creditcard.views.fakeSvc.SimulatorCreditVariableFake
 import co.com.japl.ui.components.FieldSelect
 import co.com.japl.ui.components.FieldText
 import co.com.japl.ui.components.FieldView
@@ -288,27 +289,7 @@ private fun SimulatorPreviewDarkPopup(){
 private fun getViewModel():FormViewModel{
     val context = LocalContext.current
     val savedStateHandle = SavedStateHandle()
-    val simulatorSvc = object : ISimulatorCreditVariablePort {
-        override fun calculate(dto: SimulatorCreditDTO): SimulatorCreditDTO? {
-            return dto.copy(
-                capitalValue = BigDecimal.valueOf(200000),
-                interestValue = BigDecimal.valueOf(100000),
-                quoteValue = BigDecimal.valueOf(300000)
-            )
-        }
-
-        override fun save(dto: SimulatorCreditDTO, cache:Boolean): Long {
-            return 1
-        }
-
-        override fun getList(): List<SimulatorCreditDTO> {
-            return emptyList()
-        }
-
-        override fun delete(code: Int): Boolean {
-            return true
-        }
-    }
+    val simulatorSvc = SimulatorCreditVariableFake()
     return FormViewModel(context, simulatorSvc, savedStateHandle).also {
         it.month.onValueChange(12)
         it.creditRate.onValueChange(13.0)

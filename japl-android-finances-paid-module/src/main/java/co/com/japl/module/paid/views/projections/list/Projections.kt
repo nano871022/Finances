@@ -21,10 +21,14 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.runtime.collectAsState
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.SavedStateHandle
+import androidx.navigation.NavController
 import co.com.japl.finances.iports.dtos.ProjectionRecap
 import co.com.japl.module.paid.R
 import co.com.japl.module.paid.controllers.projections.list.ProjectionsViewModel
+import co.com.japl.module.paid.views.fakeSvc.ProjectionsFake
 import co.com.japl.ui.components.CardValues
 import co.com.japl.ui.components.Carousel
 import co.com.japl.ui.components.FieldView
@@ -169,26 +173,7 @@ fun PreviewDark(){
 @Composable
 fun getViewModel(): ProjectionsViewModel{
     val savedStateHandle = SavedStateHandle()
-    val projectionSvc = object : IProjectionsPort {
-        override fun getProjectionRecap(): Triple<Long, BigDecimal, List<ProjectionRecap>> {
-            return Triple(
-                10,
-                BigDecimal.valueOf(1_000_000),
-                listOf(
-                    ProjectionRecap(
-                        limitDate = LocalDate.now(),
-                        savedCash = BigDecimal.TEN,
-                        monthsLeft = 10
-                    ),
-                    ProjectionRecap(
-                        limitDate = LocalDate.now().minusMonths(1),
-                        savedCash = BigDecimal.valueOf(500_000),
-                        monthsLeft = 5
-                    )
-                )
-            )
-        }
-    }
+    val projectionSvc = ProjectionsFake()
     val vm =  ProjectionsViewModel(savedStateHandle, projectionSvc)
     return vm
 }

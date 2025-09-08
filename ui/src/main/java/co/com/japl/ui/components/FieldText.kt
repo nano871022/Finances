@@ -32,7 +32,7 @@ import androidx.compose.ui.unit.dp
 import co.com.japl.ui.R
 import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.com.japl.ui.utils.CurrencyVisualTransformation
-import co.japl.android.graphs.utils.NumbersUtil
+import co.com.japl.utils.NumbersUtil
 
 
 @OptIn(ExperimentalMaterial3Api::class)

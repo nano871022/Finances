@@ -12,6 +12,7 @@ import androidx.navigation.fragment.findNavController
 import co.com.japl.finances.iports.inbounds.creditcard.ICreditCardPort
 import co.com.japl.finances.iports.inbounds.common.IDifferQuotesPort
 import co.com.japl.finances.iports.inbounds.creditcard.bought.lists.IBoughtListPort
+import co.com.japl.ui.Prefs
 import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.japl.android.myapplication.bussiness.interfaces.ITaxSvc
 import co.japl.android.myapplication.databinding.FragmentListBoughtBinding
@@ -28,6 +29,7 @@ class ListBought : Fragment() {
     @Inject lateinit var boughtListSvc:IBoughtListPort
     @Inject lateinit var creditCardSvc:ICreditCardPort
     @Inject lateinit var differInstallmentSvc:IDifferQuotesPort
+    @Inject lateinit var prefs : Prefs
 
     private var _binding:FragmentListBoughtBinding? = null
     private val binding get() = _binding!!
@@ -40,7 +42,7 @@ class ListBought : Fragment() {
         _binding = FragmentListBoughtBinding.inflate(inflater, container, false)
         val rootView = binding.root
         val application = requireActivity().application
-        val data = ListBoughtViewModel(application,findNavController(),ApplicationInitial.prefs)
+        val data = ListBoughtViewModel(application,findNavController(),prefs)
 
         arguments?.let {
             val params = CreditCardQuotesParams.Companion.Historical.download(it)

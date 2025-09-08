@@ -50,7 +50,7 @@ import co.com.japl.finances.iports.inbounds.credit.ICreditPort
 import co.com.japl.finances.iports.inbounds.credit.IPeriodGracePort
 import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.com.japl.ui.utils.WindowWidthSize
-import co.com.japl.ui.utils.NumbersUtil
+import co.com.japl.utils.NumbersUtil
 import java.time.LocalDate
 import java.time.YearMonth
 

@@ -4,19 +4,20 @@ import co.com.japl.finances.iports.dtos.GracePeriodDTO
 import co.com.japl.finances.iports.inbounds.credit.IPeriodGracePort
 
 class FakePeriodGracePort : IPeriodGracePort {
-    override fun get(id: Int): List<GracePeriodDTO> {
-        return emptyList()
+    override fun add(dto: GracePeriodDTO): Boolean {
+        TODO("Not yet implemented")
     }
 
-    override fun create(gracePeriod: GracePeriodDTO): Boolean {
-        return true
+    override fun delete(codeCredit: Int): Boolean {
+        TODO("Not yet implemented")
     }
 
-    override fun update(gracePeriod: GracePeriodDTO): Boolean {
-        return true
+    override fun hasGracePeriod(codeCredit: Int): Boolean {
+        TODO("Not yet implemented")
     }
 
-    override fun delete(id: Int): Boolean {
-        return true
+    override fun get(codeCredit: Int): List<GracePeriodDTO> {
+        TODO("Not yet implemented")
     }
+
 }

@@ -5,22 +5,23 @@ import co.com.japl.finances.iports.inbounds.creditcard.IBuyCreditCardSettingPort
 
 class FakeBuyCreditCardSettingPort : IBuyCreditCardSettingPort {
     override fun get(codeBought: Int): BuyCreditCardSettingDTO? {
-        return null
+        TODO("Not yet implemented")
     }
 
-    override fun create(dto: BuyCreditCardSettingDTO): Boolean {
-        return true
+    override fun create(dto: BuyCreditCardSettingDTO): Int {
+        TODO("Not yet implemented")
+    }
+
+    override fun createOrUpdate(dto: BuyCreditCardSettingDTO): Int {
+        TODO("Not yet implemented")
     }
 
     override fun update(dto: BuyCreditCardSettingDTO): Boolean {
-        return true
+        TODO("Not yet implemented")
     }
 
-    override fun delete(id: Int): Boolean {
-        return true
+    override fun delete(codeSetting: Int): Boolean {
+        TODO("Not yet implemented")
     }
 
-    override fun createOrUpdate(dto: BuyCreditCardSettingDTO): Boolean {
-        return true
-    }
 }

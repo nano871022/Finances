@@ -44,13 +44,6 @@ object Module {
         return mutableStateOf(false)
     }
 
-
-    @Singleton
-    @Provides
-    fun getPrefs():Prefs{
-        return  ApplicationInitial.prefs
-    }
-
     @Singleton
     @Provides
     fun getSMSObserver():SMSObservable{

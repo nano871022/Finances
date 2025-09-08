@@ -16,7 +16,7 @@ import co.com.japl.module.creditcard.R
 import co.com.japl.ui.components.FieldView
 import co.com.japl.ui.theme.values.ModifiersCustom.Weight1f
 import co.com.japl.ui.utils.WindowWidthSize
-import co.japl.android.myapplication.utils.NumbersUtil
+import co.com.japl.utils.NumbersUtil
 
 
 @Composable

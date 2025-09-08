@@ -1,4 +1,4 @@
-package co.japl.android.myapplication.finanzas.controller.simulators.list
+package co.japl.android.myapplication.finanzas.view.simulators
 
 import android.content.res.Configuration
 import android.os.Build
@@ -8,9 +8,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material.LinearProgressIndicator
-import androidx.compose.material.Scaffold
-import androidx.compose.material.Text
+import androidx.compose.material3.LinearProgressIndicator
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -22,15 +22,16 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
 import co.com.japl.finances.iports.dtos.SimulatorCreditDTO
 import co.com.japl.finances.iports.enums.KindOfTaxEnum
-import co.com.japl.finances.iports.inbounds.credit.ISimulatorCreditFixPort
-import co.com.japl.finances.iports.inbounds.creditcard.ISimulatorCreditVariablePort
-import co.com.japl.module.credit.views.simulator.SimulatorList
+import co.com.japl.module.creditcard.views.simulator.SimulatorList
 import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.japl.android.myapplication.R
+import co.japl.android.myapplication.finanzas.controller.simulators.list.ListViewModel
+import co.japl.android.myapplication.finanzas.view.fakeSvc.SimulatorCreditFixFake
+import co.japl.android.myapplication.finanzas.view.fakeSvc.SimulatorCreditVariableFake
 import co.com.japl.module.credit.views.simulator.SimulatorList as SimulatorListCredit
 
 @Composable
-fun ListSimulator(viewModel:ListViewModel, navController: NavController){
+fun ListSimulator(viewModel: ListViewModel, navController: NavController){
     val progres = remember { viewModel.progres }
 
     if(progres.value){
@@ -48,7 +49,7 @@ fun ListSimulator(viewModel:ListViewModel, navController: NavController){
 }
 
 @Composable
-private fun BodyList(viewModel:ListViewModel, navController: NavController){
+private fun BodyList(viewModel: ListViewModel, navController: NavController){
     val list = remember{ viewModel.list.sortedByDescending { it.code } }
     Scaffold (
         modifier = Modifier
@@ -66,7 +67,7 @@ private fun BodyList(viewModel:ListViewModel, navController: NavController){
 }
 
 @Composable
-private fun Body(dto: SimulatorCreditDTO,viewModel:ListViewModel, navController: NavController) {
+private fun Body(dto: SimulatorCreditDTO, viewModel: ListViewModel, navController: NavController) {
     if (dto.isCreditVariable.not()) {
         val viewModel = viewModel.createViewModelQuoteFix(dto, navController)
         SimulatorListCredit(viewModel)
@@ -119,27 +120,11 @@ private fun ListSimulatorPreviewDark(){
 }
 
 @Composable
-private fun getViewModel(): ListViewModel{
-    val simulatorVariableSvc = object : ISimulatorCreditVariablePort {
-        override fun getList(): List<SimulatorCreditDTO> {
-            return emptyList()
-        }
+private fun getViewModel(): ListViewModel {
+    val simulatorVariableSvc = SimulatorCreditVariableFake()
+    val simulatorFixSvc = SimulatorCreditFixFake()
 
-        override fun delete(code: Int): Boolean {
-            return true
-        }
-    }
-    val simulatorFixSvc = object : ISimulatorCreditFixPort {
-        override fun getList(): List<SimulatorCreditDTO> {
-            return emptyList()
-        }
-
-        override fun delete(code: Int): Boolean {
-            return true
-        }
-    }
-
-    val viewModel =  ListViewModel(simulatorVariableSvc, simulatorFixSvc)
+    val viewModel = ListViewModel(simulatorVariableSvc, simulatorFixSvc)
     viewModel.list.add(
         SimulatorCreditDTO(
             code = 1,

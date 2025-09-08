@@ -4,23 +4,16 @@ import co.com.japl.finances.iports.dtos.AdditionalCreditDTO
 import co.com.japl.finances.iports.inbounds.credit.IAdditionalFormPort
 
 class FakeAdditionalFormSvc : IAdditionalFormPort {
-    override fun get(id: Int): AdditionalCreditDTO? {
-        return null
-    }
-
     override fun create(dto: AdditionalCreditDTO): Boolean {
-        return true
+        TODO("Not yet implemented")
     }
 
     override fun update(dto: AdditionalCreditDTO): Boolean {
-        return true
+        TODO("Not yet implemented")
     }
 
-    override fun delete(id: Int): Boolean {
-        return true
+    override fun get(idAdditional: Int): AdditionalCreditDTO? {
+        TODO("Not yet implemented")
     }
 
-    override fun getAll(codeCredit: Long): List<AdditionalCreditDTO> {
-        return emptyList()
-    }
 }

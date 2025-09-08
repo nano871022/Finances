@@ -36,6 +36,7 @@ import co.com.japl.finances.iports.enums.KindOfTaxEnum
 import co.com.japl.finances.iports.inbounds.credit.ISimulatorCreditFixPort
 import co.com.japl.module.credit.R
 import co.com.japl.module.credit.controllers.simulator.SimulatorFixViewModel
+import co.com.japl.module.credit.views.fakesSvc.SimulatorCreditFixFake
 import co.com.japl.ui.components.FieldSelect
 import co.com.japl.ui.components.FieldText
 import co.com.japl.ui.components.FieldView
@@ -43,7 +44,7 @@ import co.com.japl.ui.components.FloatButton
 import co.com.japl.ui.components.Popup
 import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.com.japl.ui.theme.values.Dimensions
-import co.com.japl.ui.utils.NumbersUtil
+import co.com.japl.utils.NumbersUtil
 import java.math.BigDecimal
 
 @Composable
@@ -267,27 +268,7 @@ private fun SimulatorPreviewDark(){
 private fun getViewModel():SimulatorFixViewModel{
     val context = LocalContext.current
     val savedStateHandle = SavedStateHandle()
-    val simulatorSvc = object : ISimulatorCreditFixPort {
-        override fun calculate(dto: SimulatorCreditDTO): SimulatorCreditDTO? {
-            return dto.copy(
-                capitalValue = BigDecimal.valueOf(200000),
-                interestValue = BigDecimal.valueOf(100000),
-                quoteValue = BigDecimal.valueOf(300000)
-            )
-        }
-
-        override fun save(dto: SimulatorCreditDTO, cache: Boolean): Long {
-            return 1
-        }
-
-        override fun getList(): List<SimulatorCreditDTO> {
-            return emptyList()
-        }
-
-        override fun delete(code: Int): Boolean {
-            return true
-        }
-    }
+    val simulatorSvc = SimulatorCreditFixFake()
 
     return SimulatorFixViewModel(context, simulatorSvc, savedStateHandle).also {
         it.month.onValueChange(12)

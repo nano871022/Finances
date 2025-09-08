@@ -39,7 +39,7 @@ import co.com.japl.ui.components.MoreOptionsDialogPair
 import co.com.japl.ui.model.datatable.Header
 import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.com.japl.ui.theme.values.Dimensions
-import co.japl.android.myapplication.utils.NumbersUtil
+import co.com.japl.utils.NumbersUtil
 import java.time.LocalDate
 
 @Composable
