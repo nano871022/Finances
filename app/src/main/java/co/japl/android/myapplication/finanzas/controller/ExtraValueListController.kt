@@ -12,11 +12,14 @@ import co.com.japl.module.credit.controllers.extravalue.ExtraValueListViewModel
 import co.com.japl.module.credit.views.extravalue.ExtraValueListScreen
 import co.japl.android.myapplication.databinding.FragmentExtraValueListBinding
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
+import co.com.japl.finances.iports.inbounds.credit.IExtraValueAmortizationCreditPort
 
 
 @AndroidEntryPoint
 class ExtraValueListController : Fragment() {
-
+    @Inject lateinit var svc: IExtraValueAmortizationCreditPort
+    
     val viewModel:ExtraValueListViewModel  by viewModels {
         ViewModelFactory(
             owner = this,
