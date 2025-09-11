@@ -15,10 +15,12 @@ import co.com.japl.module.paid.views.projections.form.ProjectionForm
 import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.japl.android.myapplication.databinding.FragmentProjectionBinding
 import dagger.hilt.android.AndroidEntryPoint
+import co.com.japl.finances.iports.inbounds.paid.IProjectionFormPort
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class ProjectionFragment : Fragment() {
-
+     @Inject lateinit var svc: IProjectionsPort
     val viewModel : ProjectionFormViewModel by viewModels{
         ViewModelFactory(
             owner = this,
