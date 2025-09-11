@@ -15,10 +15,14 @@ import dagger.hilt.android.AndroidEntryPoint
 import androidx.fragment.app.viewModels
 import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.japl.android.myapplication.databinding.FragmentListSaveBinding
+import javax.inject.Inject
+import co.com.japl.finances.iports.inbounds.credit.ISimulatorCreditFixPort
+import co.com.japl.finances.iports.inbounds.creditcard.ISimulatorCreditVariablePort
 
 @AndroidEntryPoint
 class ListSave : Fragment() {
-
+    @Inject lateinit var simulatorVariableSvc: ISimulatorCreditVariablePort
+    @Inject lateinit var simulatorFixSvc: ISimulatorCreditFixPort
     private val viewModel: ListViewModel by viewModels{
         ViewModelFactory (
             owner = this,
