@@ -19,7 +19,21 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class AmortizationCreditFragment : Fragment() {
 
-    val viewModel: CreditAmortizationViewModel by viewModels ()
+    val viewModel: CreditAmortizationViewModel by viewModels {
+        ViewModelFactory(
+            owner = this,
+            viewModelClass= CreditAmortizationViewModel::class.java,
+            build = {
+                CreditAmortizationViewModel(
+                    creditSvc = creditSvc,
+                    additionalSvc = additionalSvc,
+                    gracePeriodSvc = gracePeriodSvc,
+                    amortizationSvc = amortizationSvc,
+                    navController = findNavController()
+                )
+            }
+        )
+    }
 
     @RequiresApi(Build.VERSION_CODES.S)
     override fun onCreateView(
