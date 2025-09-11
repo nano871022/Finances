@@ -14,10 +14,12 @@ import co.com.japl.module.credit.views.amortization.AmortizationScreen
 import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.japl.android.myapplication.databinding.FragmentAmortizationFixTableBinding
 import dagger.hilt.android.AndroidEntryPoint
+import co.com.japl.finances.iports.inbounds.credit.IAmortizationTablePort
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class AmortizationTableFragment : Fragment(){
-
+    @Inject lateinit var amortizationSvc: IAmortizationTablePort
     val viewModel: AmortizationViewModel by viewModels{
         ViewModelFactory(
             owner = this,
