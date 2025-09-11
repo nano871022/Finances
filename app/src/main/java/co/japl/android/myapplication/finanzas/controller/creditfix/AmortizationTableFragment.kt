@@ -18,7 +18,17 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class AmortizationTableFragment : Fragment(){
 
-    val viewModel: AmortizationViewModel by viewModels()
+    val viewModel: AmortizationViewModel by viewModels{
+        ViewModelFactory(
+            owner = this,
+            viewModelClass = AmortizationViewModel::class.java,
+            build = {
+                AmortizationViewModel(
+                    savedStateHandle=it,
+                    amortizationSvc = amortizationSvc)
+            }
+        )
+    }
 
     @RequiresApi(Build.VERSION_CODES.S)
     override fun onCreateView(
