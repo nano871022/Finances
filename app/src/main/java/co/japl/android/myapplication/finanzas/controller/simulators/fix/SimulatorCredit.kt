@@ -19,7 +19,20 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class SimulatorCredit : Fragment(){
 
-    val viewModel: SimulatorFixViewModel by viewModels ()
+    val viewModel: SimulatorFixViewModel by viewModels {
+        ViewModelFactory(
+            owner = this,
+            viewModelClass = SimulatorFixViewModel::class.java,
+            build = {
+                SimulatorFixViewModel(
+                    context = requireContext(),
+                    simuladorSvc = simulatorSvc,
+                    savedStateHandler = it,
+                    navigator = findNavController()
+                )
+            }
+        )
+    }
 
     @RequiresApi(Build.VERSION_CODES.S)
     override fun onCreateView(
