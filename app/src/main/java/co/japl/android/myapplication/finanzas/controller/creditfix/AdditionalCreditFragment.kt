@@ -27,8 +27,7 @@ class AdditionalCreditFragment : Fragment(){
                 AdditionalFormViewModel(
                     context=context?.applicationContext!!,
                     savedStateHandle = it,
-                    additionalSvc=additionalSvc,
-                    navController = findNavController() )
+                    additionalSvc=additionalSvc)
             }
         )
     }
