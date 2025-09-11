@@ -18,7 +18,25 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class QuoteBought : Fragment(){
 
-    val viewModel:QuoteViewModel by viewModels()
+    val viewModel:QuoteViewModel by viewModels{
+        ViewModelFactory(
+            owner=this,
+            viewModelClass=QuoteViewModel::class.java,
+            build = {
+                QuoteViewModel(
+                    boughtSvc= saveSvc,
+                    creditRateSvc= taxSvc,
+                    creditCardSvc= creditCardSvc,
+                    savedStateHandle = it,
+                    tagSvc= tagSvc,
+                    creditCardSettingSvc= settingCCSvc,
+                    buyCreditCardSettingSvc= buyCCSSvc,
+                    navController=findNavController(),
+                    prefs=ApplicationInitial.prefs
+                )
+            }
+        )
+    }
 
     @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
     override fun onCreateView(
