@@ -15,7 +15,6 @@ import co.com.japl.module.paid.R
 import co.com.japl.ui.utils.DateUtils
 import co.japl.android.graphs.utils.NumbersUtil
 import co.com.japl.ui.utils.initialFieldState
-import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
@@ -24,7 +23,6 @@ import java.math.BigDecimal
 import java.time.LocalDate
 import javax.inject.Inject
 
-@HiltViewModel
 class ProjectionFormViewModel @Inject constructor(
     @ApplicationContext private val context: Context,
     private val saveStateHandler: SavedStateHandle,
