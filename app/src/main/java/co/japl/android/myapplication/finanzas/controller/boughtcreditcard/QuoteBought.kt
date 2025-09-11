@@ -14,10 +14,22 @@ import co.com.japl.module.creditcard.views.bought.forms.Quote
 import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.japl.android.myapplication.databinding.BuysCreditCardBinding
 import dagger.hilt.android.AndroidEntryPoint
+import co.com.japl.finances.iports.inbounds.creditcard.IBuyCreditCardSettingPort
+import co.com.japl.finances.iports.inbounds.creditcard.ICreditCardPort
+import co.com.japl.finances.iports.inbounds.creditcard.ICreditCardSettingPort
+import co.com.japl.finances.iports.inbounds.creditcard.ITagPort
+import co.com.japl.finances.iports.inbounds.creditcard.ITaxPort
+import co.com.japl.finances.iports.inbounds.creditcard.bought.IBoughtPort
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class QuoteBought : Fragment(){
-
+    @Inject lateinit var taxSvc: ITaxPort
+    @Inject lateinit var creditCardSvc:ICreditCardPort
+    @Inject lateinit var saveSvc: IBoughtPort
+    @Inject lateinit var buyCCSSvc: IBuyCreditCardSettingPort
+    @Inject lateinit var settingCCSvc: ICreditCardSettingPort
+    @Inject lateinit var tagSvc:ITagPort
     val viewModel:QuoteViewModel by viewModels{
         ViewModelFactory(
             owner=this,
