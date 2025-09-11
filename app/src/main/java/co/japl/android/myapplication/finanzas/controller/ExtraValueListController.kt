@@ -17,7 +17,18 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class ExtraValueListController : Fragment() {
 
-    val viewModel:ExtraValueListViewModel  by viewModels ()
+    val viewModel:ExtraValueListViewModel  by viewModels {
+        val params = arguments?.let { ExtraValueListParam.download(it) }
+        val creditId = params?.first ?: 0
+        val kindOf = params?.second
+        ViewModelFactory(
+            owner = this,
+            viewModelClass = ExtraValueListViewModel::class.java,
+            build = { state ->
+                ExtraValueListViewModel(creditId,svc)
+            }
+        )
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
