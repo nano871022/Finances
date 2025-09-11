@@ -19,14 +19,12 @@ import co.com.japl.ui.Prefs
 import co.com.japl.ui.utils.DateUtils
 import co.japl.android.graphs.utils.NumbersUtil
 import co.com.japl.ui.utils.initialFieldState
-import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.runBlocking
 import java.time.LocalDate
 import java.time.LocalDateTime
 import javax.inject.Inject
 
-@HiltViewModel
 class WalletViewModel @Inject constructor(
     private val savedStateHolder: SavedStateHandle,
     private val boughtSvc:IBoughtPort,
