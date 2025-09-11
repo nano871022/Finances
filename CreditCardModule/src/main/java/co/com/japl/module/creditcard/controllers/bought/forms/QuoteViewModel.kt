@@ -27,7 +27,6 @@ import co.com.japl.ui.utils.DateUtils
 import co.com.japl.ui.utils.FormUIState
 import co.japl.android.graphs.utils.NumbersUtil
 import co.com.japl.ui.utils.initialFieldState
-import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -39,7 +38,6 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 import javax.inject.Inject
 
-@HiltViewModel
 class QuoteViewModel @Inject constructor(
     private val savedStateHandle: SavedStateHandle,
     private val boughtSvc:IBoughtPort,
