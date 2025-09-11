@@ -19,7 +19,18 @@ import co.japl.android.myapplication.databinding.FragmentListSaveBinding
 @AndroidEntryPoint
 class ListSave : Fragment() {
 
-    private val viewModel: ListViewModel by viewModels()
+    private val viewModel: ListViewModel by viewModels{
+        ViewModelFactory (
+            owner = this,
+            viewModelClass = ListViewModel::class.java,
+            build = {
+                ListViewModel(
+                    simulatorVariableSvc,
+                    simulatorFixSvc,
+                    navController = findNavController())
+            }
+        )
+    }
 
     @RequiresApi(Build.VERSION_CODES.S)
     override fun onCreateView(
