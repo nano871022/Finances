@@ -16,7 +16,6 @@ import co.com.japl.module.credit.R
 import co.com.japl.module.credit.navigations.CreditList
 import co.com.japl.ui.utils.initialFieldState
 import co.japl.android.graphs.utils.NumbersUtil
-import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -27,7 +26,6 @@ import kotlinx.coroutines.launch
 import java.time.LocalDate
 import javax.inject.Inject
 
-@HiltViewModel
 class CreditFormViewModel @Inject constructor(
     private val savedStateHandle: SavedStateHandle,
     private val creditSvc: ICreditFormPort,
