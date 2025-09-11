@@ -6,14 +6,12 @@ import androidx.lifecycle.viewModelScope
 import co.com.japl.finances.iports.dtos.AmortizationRowDTO
 import co.com.japl.finances.iports.enums.KindAmortization
 import co.com.japl.finances.iports.inbounds.credit.IAmortizationTablePort
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import javax.inject.Inject
 
-@HiltViewModel
 class AmortizationViewModel @Inject constructor(
     private val savedStateHandle: SavedStateHandle,
     private val amortizationSvc: IAmortizationTablePort
