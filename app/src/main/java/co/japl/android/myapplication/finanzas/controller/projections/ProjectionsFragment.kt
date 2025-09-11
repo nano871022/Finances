@@ -15,10 +15,11 @@ import co.com.japl.module.paid.views.projections.list.Projections
 import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.japl.android.myapplication.databinding.FragmentProjectionsBinding
 import dagger.hilt.android.AndroidEntryPoint
+import co.com.japl.finances.iports.inbounds.paid.IProjectionsPort
 
 @AndroidEntryPoint
 class ProjectionsFragment : Fragment(){
-
+    @Inject lateinit var svc: IProjectionsPort
     val viewModel : ProjectionsViewModel by viewModels{
         ViewModelFactory(
             owner = this,
