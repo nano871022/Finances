@@ -15,10 +15,19 @@ import co.com.japl.module.credit.views.creditamortization.CreditAmortizationScre
 import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.japl.android.myapplication.databinding.FragmentAmortizationCreditBinding
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
+import co.com.japl.finances.iports.inbounds.credit.IAdditional
+import co.com.japl.finances.iports.inbounds.credit.IAmortizationTablePort
+import co.com.japl.finances.iports.inbounds.credit.ICreditPort
+import co.com.japl.finances.iports.inbounds.credit.IPeriodGracePort
 
 @AndroidEntryPoint
 class AmortizationCreditFragment : Fragment() {
-
+    @Inject lateinit var gracePeriodSvc: IPeriodGracePort
+    @Inject lateinit var creditSvc: ICreditPort
+    @Inject  lateinit var additionalSvc: IAdditional
+    @Inject lateinit var amortizationSvc: IAmortizationTablePort
+    
     val viewModel: CreditAmortizationViewModel by viewModels {
         ViewModelFactory(
             owner = this,
