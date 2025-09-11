@@ -18,7 +18,20 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class QuoteCreditVariable : Fragment(){
 
-    val viewModel : FormViewModel by viewModels()
+    val viewModel : FormViewModel by viewModels{
+        ViewModelFactory(
+            owner = this,
+            viewModelClass=FormViewModel::class.java,
+            build={
+                FormViewModel(
+                    context = requireContext(),
+                    savedStateHandler = it,
+                    simuladorSvc = quoteCreditScv,
+                    navigator = findNavController()
+                )
+            }
+        )
+    }
 
     @RequiresApi(value = 31)
     override fun onCreateView(
