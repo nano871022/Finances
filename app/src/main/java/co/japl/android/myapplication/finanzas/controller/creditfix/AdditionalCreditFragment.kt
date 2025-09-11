@@ -19,7 +19,19 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class AdditionalCreditFragment : Fragment(){
 
-    val viewModel:AdditionalFormViewModel by viewModels()
+    val viewModel:AdditionalFormViewModel by viewModels{
+        ViewModelFactory(
+            owner=this,
+            viewModelClass=AdditionalFormViewModel::class.java,
+            build={
+                AdditionalFormViewModel(
+                    context=context?.applicationContext!!,
+                    savedStateHandle = it,
+                    additionalSvc=additionalSvc,
+                    navController = findNavController() )
+            }
+        )
+    }
 
     @RequiresApi(Build.VERSION_CODES.S)
     override fun onCreateView(
