@@ -19,7 +19,19 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class ProjectionsFragment : Fragment(){
 
-    val viewModel : ProjectionsViewModel by viewModels()
+    val viewModel : ProjectionsViewModel by viewModels{
+        ViewModelFactory(
+            owner = this,
+            viewModelClass = ProjectionsViewModel::class.java,
+            build = {
+                ProjectionsViewModel(
+                    projectionSvc = svc,
+                    savedStateHandler = it,
+                    navController = findNavController()
+                )
+            })
+    }
+
 
     @RequiresApi(Build.VERSION_CODES.S)
     override fun onCreateView(
