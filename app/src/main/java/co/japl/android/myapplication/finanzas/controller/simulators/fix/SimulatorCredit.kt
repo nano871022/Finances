@@ -15,10 +15,12 @@ import co.com.japl.module.credit.views.simulator.Simulator
 import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.japl.android.myapplication.databinding.FragmentSimulatorCreditBinding
 import dagger.hilt.android.AndroidEntryPoint
+import co.com.japl.finances.iports.inbounds.credit.ISimulatorCreditFixPort
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class SimulatorCredit : Fragment(){
-
+    @Inject lateinit var simulatorSvc : ISimulatorCreditFixPort
     val viewModel: SimulatorFixViewModel by viewModels {
         ViewModelFactory(
             owner = this,
