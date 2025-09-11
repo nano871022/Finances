@@ -20,7 +20,7 @@ import javax.inject.Inject
 
 @AndroidEntryPoint
 class ProjectionFragment : Fragment() {
-     @Inject lateinit var svc: IProjectionsPort
+     @Inject lateinit var svc: IProjectionFormPort
     val viewModel : ProjectionFormViewModel by viewModels{
         ViewModelFactory(
             owner = this,
