@@ -29,7 +29,6 @@ class BoughWalletController: Fragment() {
                     creditCardSvc = creditCardSvc,
                     boughtSvc=boughtSvc,
                     creditRateSvc=taxSvc,
-                    navController =  findNavController(),
                     prefs = ApplicationInitial.prefs,
                     context=this.context)
             }
