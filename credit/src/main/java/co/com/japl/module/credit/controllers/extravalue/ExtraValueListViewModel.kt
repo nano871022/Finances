@@ -6,13 +6,12 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import co.com.japl.finances.iports.dtos.ExtraValueAmortizationDTO
 import co.com.japl.finances.iports.inbounds.credit.IExtraValueAmortizationCreditPort
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-@HiltViewModel
+
 class ExtraValueListViewModel @Inject constructor(
     private val extraValueAmortizationCreditSvc: IExtraValueAmortizationCreditPort,
     private val savedStateHandle: SavedStateHandle
