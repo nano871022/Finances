@@ -14,10 +14,16 @@ import co.com.japl.module.creditcard.views.bought.forms.Advance
 import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.japl.android.myapplication.databinding.CashAdvanceCreditCardBinding
 import dagger.hilt.android.AndroidEntryPoint
+import co.com.japl.finances.iports.inbounds.creditcard.ICreditCardPort
+import co.com.japl.finances.iports.inbounds.creditcard.ITaxPort
+import co.com.japl.finances.iports.inbounds.creditcard.bought.IBoughtPort
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class CashAdvanceSave: Fragment() {
-
+    @Inject lateinit var creditCardSvc: ICreditCardPort
+    @Inject lateinit var boughtSvc: IBoughtPort
+    @Inject lateinit var creditRateSvc:ITaxPort
     val viewModel : AdvanceViewModel by viewModels{
         ViewModelFactory(
             owner = this,
