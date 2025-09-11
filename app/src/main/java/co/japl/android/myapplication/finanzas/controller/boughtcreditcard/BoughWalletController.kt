@@ -15,10 +15,16 @@ import co.com.japl.module.creditcard.views.bought.forms.Wallet
 import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.japl.android.myapplication.databinding.BuyWalletCreditCardBinding
 import dagger.hilt.android.AndroidEntryPoint
+import co.com.japl.finances.iports.inbounds.creditcard.ICreditCardPort
+import co.com.japl.finances.iports.inbounds.creditcard.ITaxPort
+import co.com.japl.finances.iports.inbounds.creditcard.bought.IBoughtPort
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class BoughWalletController: Fragment() {
-
+    @Inject lateinit var boughtSvc: IBoughtPort
+    @Inject lateinit var taxSvc:ITaxPort
+    @Inject lateinit var creditCardSvc: ICreditCardPort
     val viewModel : WalletViewModel by viewModels{
         ViewModelFactory(
             owner= this,
