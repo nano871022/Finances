@@ -18,7 +18,22 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class CashAdvanceSave: Fragment() {
 
-    val viewModel : AdvanceViewModel by viewModels()
+    val viewModel : AdvanceViewModel by viewModels{
+        ViewModelFactory(
+            owner = this,
+            viewModelClass = AdvanceViewModel::class.java,
+            build = {
+                AdvanceViewModel(
+                    savedStateHandle = it,
+                    boughtSvc,
+                    creditRateSvc,
+                    creditCardSvc,
+                    navController = findNavController(),
+                    prefs = ApplicationInitial.prefs
+                )
+            }
+        )
+    }
 
     @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
     override fun onCreateView(
