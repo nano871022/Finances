@@ -16,10 +16,12 @@ import co.com.japl.module.credit.views.forms.CreditForm
 import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.japl.android.myapplication.databinding.FragmentCreditFixBinding
 import dagger.hilt.android.AndroidEntryPoint
+import co.com.japl.finances.iports.inbounds.credit.ICreditFormPort
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class CreditFixFragment : Fragment(){
-
+    @Inject lateinit var creditSvc:ICreditFormPort
     val viewModel : CreditFormViewModel by viewModels{
         ViewModelFactory(
             owner = this,
