@@ -28,8 +28,7 @@ class CreditFixFragment : Fragment(){
                 CreditFormViewModel(
                     savedStateHandle = it,
                     creditSvc = creditSvc,
-                    context = context,
-                    navController = findNavController()
+                    context = context
                 )
             }
         )
