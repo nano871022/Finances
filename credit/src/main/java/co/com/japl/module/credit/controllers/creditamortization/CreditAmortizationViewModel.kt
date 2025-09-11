@@ -16,11 +16,9 @@ import co.com.japl.finances.iports.inbounds.credit.IAmortizationTablePort
 import co.com.japl.module.credit.model.CreditAmortizationState
 import co.com.japl.module.credit.navigations.CreditList
 import co.com.japl.module.credit.navigations.ExtraValueList
-import dagger.hilt.android.lifecycle.HiltViewModel
 import java.time.LocalDate
 import javax.inject.Inject
 
-@HiltViewModel
 class CreditAmortizationViewModel @Inject constructor(
     private val creditSvc: ICreditPort,
     private val additionalSvc: IAdditional,
