@@ -10,13 +10,11 @@ import co.com.japl.finances.iports.dtos.ProjectionRecap
 import co.com.japl.finances.iports.inbounds.paid.IProjectionsPort
 import co.com.japl.module.paid.navigations.Projections
 import co.com.japl.ui.utils.initialFieldState
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import java.math.BigDecimal
 import javax.inject.Inject
 
-@HiltViewModel
 class ProjectionsViewModel @Inject constructor(private val savedStateHandler: SavedStateHandle,private val projectionSvc: IProjectionsPort) : ViewModel() {
 
     val loadingStatus = mutableStateOf(false)
