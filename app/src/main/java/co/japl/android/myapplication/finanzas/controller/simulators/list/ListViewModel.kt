@@ -8,12 +8,10 @@ import co.com.japl.finances.iports.dtos.SimulatorCreditDTO
 import co.com.japl.finances.iports.inbounds.credit.ISimulatorCreditFixPort
 import co.com.japl.finances.iports.inbounds.creditcard.ISimulatorCreditVariablePort
 import co.com.japl.module.credit.controllers.simulator.SimulatorListItemViewModel
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import co.com.japl.module.credit.controllers.simulator.SimulatorListItemViewModel as SimulatorListItemViewModelCredit
 
-@HiltViewModel
 class ListViewModel  @Inject constructor(private val simulatorVariableSvc: ISimulatorCreditVariablePort,private val simulatorFixSvc: ISimulatorCreditFixPort):ViewModel() {
     val progres = mutableStateOf(false)
     val list = mutableListOf<SimulatorCreditDTO>()
