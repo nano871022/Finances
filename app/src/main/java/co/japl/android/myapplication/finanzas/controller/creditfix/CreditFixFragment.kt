@@ -20,7 +20,21 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class CreditFixFragment : Fragment(){
 
-    val viewModel : CreditFormViewModel by viewModels()
+    val viewModel : CreditFormViewModel by viewModels{
+        ViewModelFactory(
+            owner = this,
+            viewModelClass = CreditFormViewModel::class.java,
+            build = {
+                CreditFormViewModel(
+                    savedStateHandle = it,
+                    creditSvc = creditSvc,
+                    context = context,
+                    navController = findNavController()
+                )
+            }
+        )
+    }
+
 
     @RequiresApi(Build.VERSION_CODES.VANILLA_ICE_CREAM)
     override fun onCreateView(
