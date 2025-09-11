@@ -19,7 +19,22 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class BoughWalletController: Fragment() {
 
-    val viewModel : WalletViewModel by viewModels()
+    val viewModel : WalletViewModel by viewModels{
+        ViewModelFactory(
+            owner= this,
+            viewModelClass= WalletViewModel::class.java,
+            build={
+                WalletViewModel(
+                    savedStateHolder = it,
+                    creditCardSvc = creditCardSvc,
+                    boughtSvc=boughtSvc,
+                    creditRateSvc=taxSvc,
+                    navController =  findNavController(),
+                    prefs = ApplicationInitial.prefs,
+                    context=this.context)
+            }
+        )
+    }
 
     @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
     override fun onCreateView(
