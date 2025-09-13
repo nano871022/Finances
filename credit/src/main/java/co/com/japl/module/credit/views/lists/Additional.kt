@@ -28,6 +28,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import co.com.japl.finances.iports.dtos.AdditionalCreditDTO
 import co.com.japl.module.credit.R
 import co.com.japl.module.credit.controllers.list.AdditionalViewModel
@@ -43,41 +44,41 @@ import co.com.japl.utils.NumbersUtil
 import java.time.LocalDate
 
 @Composable
-fun Additional(viewModel: AdditionalViewModel = viewModel()){
+fun Additional(viewModel: AdditionalViewModel,navController: NavController){
     val loading = viewModel.loading.collectAsState()
     if(loading.value) {
         LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
     }else {
-        ScaffoldBody(viewModel=viewModel)
+        ScaffoldBody(viewModel=viewModel, navController = navController)
     }
 }
 
 @Composable
-private fun ScaffoldBody(viewModel: AdditionalViewModel ){
+private fun ScaffoldBody(viewModel: AdditionalViewModel,navController: NavController ){
     val state = remember{ viewModel.hostState }
     Scaffold (
         snackbarHost = {
             SnackbarHost(hostState = state)
         },
         floatingActionButton = {
-            ButtonsFloating(viewModel=viewModel)
+            ButtonsFloating(viewModel=viewModel, navController = navController)
         }
     ){
-        Body(viewModel=viewModel,modifier = Modifier.padding(it))
+        Body(viewModel=viewModel,modifier = Modifier.padding(it), navController = navController)
     }
 
 
 }
 
 @Composable
-private fun Body(viewModel: AdditionalViewModel ,modifier:Modifier = Modifier){
+private fun Body(viewModel: AdditionalViewModel ,modifier:Modifier = Modifier,navController: NavController){
     Column (modifier=Modifier.padding(Dimensions.PADDING_SHORT)){
-        ListBody(viewModel=viewModel)
+        ListBody(viewModel=viewModel, navController = navController)
     }
 }
 
 @Composable
-private fun ListBody(viewModel: AdditionalViewModel){
+private fun ListBody(viewModel: AdditionalViewModel,navController: NavController){
     val list = remember { viewModel.list}
     val listHeaders = arrayListOf(Header(
             title = stringResource(R.string.title_name_additional_list),
@@ -87,17 +88,17 @@ private fun ListBody(viewModel: AdditionalViewModel){
             title = stringResource(R.string.title_value_additional_list),
             tooltip = stringResource(R.string.tooltip_value_additional_list),
             weight = 1f
-        )) 
+        ))
     DataTable(
         listHeader =  { _-> listHeaders} ,
         sizeBody = list.size,
         footer = { _ -> RowFooter(viewModel) },
-        listBody = { pos,_->RowListBody(pos, viewModel) }
+        listBody = { pos,_->RowListBody(pos, viewModel, navController) }
     )
 }
 
 @Composable
-private  fun RowScope.RowListBody(index:Int,viewModel: AdditionalViewModel) {
+private  fun RowScope.RowListBody(index:Int,viewModel: AdditionalViewModel,navController: NavController) {
     val moreStatus = remember { mutableStateOf(false) }
     val deleteStatus = remember { mutableStateOf(false) }
     val value = viewModel.list[index]
@@ -133,7 +134,7 @@ private  fun RowScope.RowListBody(index:Int,viewModel: AdditionalViewModel) {
             onDismiss = { moreStatus.value = false}
         ) { optSelected ->
             when(optSelected.first){
-                1 -> viewModel.updateAdditional(value.id)
+                1 -> viewModel.updateAdditional(value.id,navController)
                 2 -> deleteStatus.value = true
                 else -> moreStatus.value = false
             }
@@ -180,11 +181,11 @@ private fun RowScope.RowFooter(viewModel: AdditionalViewModel){
 }
 
 @Composable
-private fun ButtonsFloating(viewModel: AdditionalViewModel ){
+private fun ButtonsFloating(viewModel: AdditionalViewModel,navController: NavController ){
     Column {
         FloatButton(imageVector = Icons.Rounded.Add,
             descriptionIcon = R.string.Add) {
-            viewModel.addAdditional()
+            viewModel.addAdditional(navController)
         }
     }
 }
@@ -195,7 +196,7 @@ private fun ButtonsFloating(viewModel: AdditionalViewModel ){
 private fun AdditionalPreview(){
     val vm = getViewModel()
     MaterialThemeComposeUI {
-        Additional(vm)
+        Additional(vm,navController = NavController(LocalContext.current))
     }
 }
 
@@ -205,13 +206,13 @@ private fun AdditionalPreview(){
 private fun AdditionalPreviewNight(){
     val vm = getViewModel()
     MaterialThemeComposeUI {
-        Additional(vm)
+        Additional(vm,navController = NavController(LocalContext.current))
     }
 }
 
 @Composable
 private fun getViewModel(): AdditionalViewModel{
-    val vm = AdditionalViewModel(LocalContext.current,0,null,null)
+    val vm = AdditionalViewModel(LocalContext.current, SavedStateHandle(),null)
     vm.list.add(AdditionalCreditDTO(
         id = 1,
         name = "Test",

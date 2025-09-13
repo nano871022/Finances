@@ -8,20 +8,24 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.RequiresApi
 import androidx.compose.ui.platform.ViewCompositionStrategy
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import co.com.japl.finances.iports.inbounds.credit.ICreditPort
 import co.com.japl.module.credit.controllers.recap.RecapViewModel
 import co.com.japl.module.credit.views.recap.Recap
-import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.japl.android.myapplication.databinding.FragmentCreditListBinding
+import co.japl.android.myapplication.finanzas.controller.ViewModelFactory
 import dagger.hilt.android.AndroidEntryPoint
-import java.time.YearMonth
 import javax.inject.Inject
 
 @AndroidEntryPoint
 class CreditListFragment : Fragment(){
-    private lateinit var period:YearMonth
     @Inject lateinit var creditList:ICreditPort
+    private val viewModel: RecapViewModel by viewModels {
+        ViewModelFactory(this,RecapViewModel::class.java){
+            RecapViewModel(creditList,it)
+        }
+    }
 
 
     @RequiresApi(Build.VERSION_CODES.S)
@@ -30,13 +34,11 @@ class CreditListFragment : Fragment(){
         savedInstanceState: Bundle?
     ): View {
         val root =  FragmentCreditListBinding. inflate(inflater, container, false)
-        period = YearMonth.now()
-        val viewModel = RecapViewModel(creditList,period,findNavController())
         root.cvComponentCl.apply {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
                 MaterialThemeComposeUI  {
-                    Recap(viewModel)
+                    Recap(viewModel,findNavController())
                 }
             }
         }

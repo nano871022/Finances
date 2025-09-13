@@ -26,6 +26,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import co.com.japl.finances.iports.dtos.CreditDTO
 import co.com.japl.finances.iports.enums.KindOfTaxEnum
 import co.com.japl.finances.iports.enums.KindPaymentsEnums
@@ -47,20 +48,20 @@ import java.time.YearMonth
 
 @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
 @Composable
-fun CreditList(viewModel:ListViewModel) {
+fun CreditList(viewModel:ListViewModel,navController: NavController) {
     val progress by remember { viewModel.progress}
 
     if(progress){
         viewModel.execute()
         LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
     }else {
-        Credit(viewModel)
+        Credit(viewModel,navController)
     }
 }
 
 @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
 @Composable
-private fun Credit(viewModel:ListViewModel){
+private fun Credit(viewModel:ListViewModel,navController: NavController){
     val list = remember {viewModel.list}
     val listHeader = arrayListOf(
             Header(title= stringResource(id = R.string.quote_payment_date_short), tooltip = stringResource(id = R.string.quote_payment_date),weight=1f),
@@ -92,11 +93,11 @@ private fun Credit(viewModel:ListViewModel){
             sizeBody = list.size,
             footer = {_->}) {pos,_->
             Item(dto = list[pos],
-                delete = {viewModel.delete(it)},
-                amortization = {viewModel.amortization(it)},
-                periodGrace = {id,period,date-> viewModel.periodGrace(id,period,date,date.plusMonths(period.toLong()))},
-                additional = {viewModel.additional(it)},
-                deletePeriodGrace = {viewModel.deletePeriodGrace(it)})
+                delete = {viewModel.delete(it,navController)},
+                amortization = {viewModel.amortization(it,navController)},
+                periodGrace = {id,period,date-> viewModel.periodGrace(id,period,date,date.plusMonths(period.toLong()),navController)},
+                additional = {viewModel.additional(it,navController)},
+                deletePeriodGrace = {viewModel.deletePeriodGrace(it,navController)})
         }
     }
 }
@@ -187,7 +188,7 @@ private fun Options(dto:CreditPeriodGraceDTO,state:MutableState<Boolean>,delete:
 
     @Composable
     fun getViewModel():ListViewModel{
-        return ListViewModel(YearMonth.now(),null,null,null).apply {
+        return ListViewModel(SavedStateHandle(),null,null).apply {
             list.add(CreditPeriodGraceDTO(CreditDTO(1,"test",LocalDate.now(),1.2,36,(1500000).toBigDecimal(),(50000).toBigDecimal(),
                 KindPaymentsEnums.MONTHLY,
                 KindOfTaxEnum.MONTHLY_EFFECTIVE),false))
@@ -203,7 +204,7 @@ private fun Options(dto:CreditPeriodGraceDTO,state:MutableState<Boolean>,delete:
         val viewModel = getViewModel()
         viewModel.progress.value = false
         MaterialThemeComposeUI {
-            CreditList(viewModel)
+            CreditList(viewModel,NavController(LocalContext.current))
         }
     }
 
@@ -214,7 +215,7 @@ private fun Options(dto:CreditPeriodGraceDTO,state:MutableState<Boolean>,delete:
         val viewModel = getViewModel()
         viewModel.progress.value = false
         MaterialThemeComposeUI {
-            CreditList(viewModel)
+            CreditList(viewModel,NavController(LocalContext.current))
         }
     }
 
