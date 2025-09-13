@@ -17,6 +17,7 @@ import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.japl.android.myapplication.databinding.FragmentCreditFixBinding
 import dagger.hilt.android.AndroidEntryPoint
 import co.com.japl.finances.iports.inbounds.credit.ICreditFormPort
+import co.japl.android.myapplication.finanzas.controller.ViewModelFactory
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -30,7 +31,7 @@ class CreditFixFragment : Fragment(){
                 CreditFormViewModel(
                     savedStateHandle = it,
                     creditSvc = creditSvc,
-                    context = context
+                    context = context?.applicationContext!!
                 )
             }
         )

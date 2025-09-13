@@ -25,7 +25,9 @@ class ExtraValueListController : Fragment() {
             owner = this,
             viewModelClass = ExtraValueListViewModel::class.java,
             build = { state ->
-                ExtraValueListViewModel(svc)
+                ExtraValueListViewModel(
+                    extraValueAmortizationCreditSvc = svc,
+                    savedStateHandle = state)
             }
         )
     }

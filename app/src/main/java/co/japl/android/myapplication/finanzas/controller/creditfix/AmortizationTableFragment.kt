@@ -15,6 +15,7 @@ import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.japl.android.myapplication.databinding.FragmentAmortizationFixTableBinding
 import dagger.hilt.android.AndroidEntryPoint
 import co.com.japl.finances.iports.inbounds.credit.IAmortizationTablePort
+import co.japl.android.myapplication.finanzas.controller.ViewModelFactory
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -26,8 +27,9 @@ class AmortizationTableFragment : Fragment(){
             viewModelClass = AmortizationViewModel::class.java,
             build = {
                 AmortizationViewModel(
-                    savedStateHandle=it,
-                    amortizationSvc = amortizationSvc)
+                    savedStateHandle = it,
+                    amortizationSvc = amortizationSvc
+                )
             }
         )
     }

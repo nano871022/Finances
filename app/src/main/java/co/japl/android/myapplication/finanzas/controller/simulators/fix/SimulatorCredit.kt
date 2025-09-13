@@ -16,6 +16,7 @@ import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.japl.android.myapplication.databinding.FragmentSimulatorCreditBinding
 import dagger.hilt.android.AndroidEntryPoint
 import co.com.japl.finances.iports.inbounds.credit.ISimulatorCreditFixPort
+import co.japl.android.myapplication.finanzas.controller.ViewModelFactory
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -30,7 +31,6 @@ class SimulatorCredit : Fragment(){
                     context = requireContext(),
                     simuladorSvc = simulatorSvc,
                     savedStateHandler = it,
-                    navigator = findNavController()
                 )
             }
         )

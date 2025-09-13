@@ -16,10 +16,13 @@ import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.japl.android.myapplication.databinding.FragmentProjectionsBinding
 import dagger.hilt.android.AndroidEntryPoint
 import co.com.japl.finances.iports.inbounds.paid.IProjectionsPort
+import co.japl.android.myapplication.finanzas.controller.ViewModelFactory
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class ProjectionsFragment : Fragment(){
-    @Inject lateinit var svc: IProjectionsPort
+    @Inject
+    lateinit var svc: IProjectionsPort
     val viewModel : ProjectionsViewModel by viewModels{
         ViewModelFactory(
             owner = this,
@@ -28,7 +31,6 @@ class ProjectionsFragment : Fragment(){
                 ProjectionsViewModel(
                     projectionSvc = svc,
                     savedStateHandler = it,
-                    navController = findNavController()
                 )
             })
     }

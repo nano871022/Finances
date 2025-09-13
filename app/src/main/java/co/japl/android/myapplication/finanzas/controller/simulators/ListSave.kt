@@ -18,20 +18,21 @@ import co.japl.android.myapplication.databinding.FragmentListSaveBinding
 import javax.inject.Inject
 import co.com.japl.finances.iports.inbounds.credit.ISimulatorCreditFixPort
 import co.com.japl.finances.iports.inbounds.creditcard.ISimulatorCreditVariablePort
+import co.japl.android.myapplication.finanzas.controller.ViewModelFactory
 
 @AndroidEntryPoint
 class ListSave : Fragment() {
     @Inject lateinit var simulatorVariableSvc: ISimulatorCreditVariablePort
     @Inject lateinit var simulatorFixSvc: ISimulatorCreditFixPort
     private val viewModel: ListViewModel by viewModels{
-        ViewModelFactory (
+        ViewModelFactory(
             owner = this,
             viewModelClass = ListViewModel::class.java,
             build = {
                 ListViewModel(
                     simulatorVariableSvc,
-                    simulatorFixSvc,
-                    navController = findNavController())
+                    simulatorFixSvc
+                )
             }
         )
     }

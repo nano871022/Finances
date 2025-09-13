@@ -16,6 +16,7 @@ import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.japl.android.myapplication.databinding.FragmentProjectionBinding
 import dagger.hilt.android.AndroidEntryPoint
 import co.com.japl.finances.iports.inbounds.paid.IProjectionFormPort
+import co.japl.android.myapplication.finanzas.controller.ViewModelFactory
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -29,8 +30,7 @@ class ProjectionFragment : Fragment() {
                 ProjectionFormViewModel(
                     saveStateHandler = it,
                     context = context?.applicationContext!!,
-                    projectionSvc = svc,
-                    navController = findNavController()
+                    projectionSvc = svc
                 )
             })
     }

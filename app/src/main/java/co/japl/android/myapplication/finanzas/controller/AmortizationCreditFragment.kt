@@ -38,7 +38,7 @@ class AmortizationCreditFragment : Fragment() {
                     additionalSvc = additionalSvc,
                     gracePeriodSvc = gracePeriodSvc,
                     amortizationSvc = amortizationSvc,
-                    navController = findNavController()
+                    savedStateHandle = it
                 )
             }
         )

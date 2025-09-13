@@ -15,6 +15,7 @@ import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.japl.android.myapplication.databinding.QuoteCreditVariableBinding
 import dagger.hilt.android.AndroidEntryPoint
 import co.com.japl.finances.iports.inbounds.creditcard.ISimulatorCreditVariablePort
+import co.japl.android.myapplication.finanzas.controller.ViewModelFactory
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -23,13 +24,12 @@ class QuoteCreditVariable : Fragment(){
     val viewModel : FormViewModel by viewModels{
         ViewModelFactory(
             owner = this,
-            viewModelClass=FormViewModel::class.java,
-            build={
+            viewModelClass = FormViewModel::class.java,
+            build = {
                 FormViewModel(
                     context = requireContext(),
                     savedStateHandler = it,
                     simuladorSvc = quoteCreditScv,
-                    navigator = findNavController()
                 )
             }
         )

@@ -17,6 +17,8 @@ import dagger.hilt.android.AndroidEntryPoint
 import co.com.japl.finances.iports.inbounds.creditcard.ICreditCardPort
 import co.com.japl.finances.iports.inbounds.creditcard.ITaxPort
 import co.com.japl.finances.iports.inbounds.creditcard.bought.IBoughtPort
+import co.com.japl.ui.Prefs
+import co.japl.android.myapplication.finanzas.controller.ViewModelFactory
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -24,6 +26,7 @@ class CashAdvanceSave: Fragment() {
     @Inject lateinit var creditCardSvc: ICreditCardPort
     @Inject lateinit var boughtSvc: IBoughtPort
     @Inject lateinit var creditRateSvc:ITaxPort
+    @Inject lateinit var prefs:Prefs
     val viewModel : AdvanceViewModel by viewModels{
         ViewModelFactory(
             owner = this,
@@ -34,8 +37,8 @@ class CashAdvanceSave: Fragment() {
                     boughtSvc,
                     creditRateSvc,
                     creditCardSvc,
-                    navController = findNavController(),
-                    prefs = ApplicationInitial.prefs
+                    prefs = prefs,
+                    context=context?.applicationContext!!
                 )
             }
         )

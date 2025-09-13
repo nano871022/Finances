@@ -18,6 +18,9 @@ import dagger.hilt.android.AndroidEntryPoint
 import co.com.japl.finances.iports.inbounds.creditcard.ICreditCardPort
 import co.com.japl.finances.iports.inbounds.creditcard.ITaxPort
 import co.com.japl.finances.iports.inbounds.creditcard.bought.IBoughtPort
+import co.com.japl.ui.Prefs
+import co.japl.android.myapplication.finanzas.ApplicationInitial
+import co.japl.android.myapplication.finanzas.controller.ViewModelFactory
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -25,18 +28,20 @@ class BoughWalletController: Fragment() {
     @Inject lateinit var boughtSvc: IBoughtPort
     @Inject lateinit var taxSvc:ITaxPort
     @Inject lateinit var creditCardSvc: ICreditCardPort
+    @Inject lateinit var prefs:Prefs
     val viewModel : WalletViewModel by viewModels{
         ViewModelFactory(
-            owner= this,
-            viewModelClass= WalletViewModel::class.java,
-            build={
+            owner = this,
+            viewModelClass = WalletViewModel::class.java,
+            build = {
                 WalletViewModel(
                     savedStateHolder = it,
                     creditCardSvc = creditCardSvc,
-                    boughtSvc=boughtSvc,
-                    creditRateSvc=taxSvc,
-                    prefs = ApplicationInitial.prefs,
-                    context=this.context)
+                    boughtSvc = boughtSvc,
+                    creditRateSvc = taxSvc,
+                    prefs = prefs,
+                    context = context?.applicationContext!!
+                )
             }
         )
     }

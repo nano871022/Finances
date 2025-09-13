@@ -20,6 +20,8 @@ import co.com.japl.finances.iports.inbounds.creditcard.ICreditCardSettingPort
 import co.com.japl.finances.iports.inbounds.creditcard.ITagPort
 import co.com.japl.finances.iports.inbounds.creditcard.ITaxPort
 import co.com.japl.finances.iports.inbounds.creditcard.bought.IBoughtPort
+import co.com.japl.ui.Prefs
+import co.japl.android.myapplication.finanzas.controller.ViewModelFactory
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -30,21 +32,22 @@ class QuoteBought : Fragment(){
     @Inject lateinit var buyCCSSvc: IBuyCreditCardSettingPort
     @Inject lateinit var settingCCSvc: ICreditCardSettingPort
     @Inject lateinit var tagSvc:ITagPort
+    @Inject lateinit var prefs:Prefs
     val viewModel:QuoteViewModel by viewModels{
         ViewModelFactory(
-            owner=this,
-            viewModelClass=QuoteViewModel::class.java,
+            owner = this,
+            viewModelClass = QuoteViewModel::class.java,
             build = {
                 QuoteViewModel(
-                    boughtSvc= saveSvc,
-                    creditRateSvc= taxSvc,
-                    creditCardSvc= creditCardSvc,
+                    boughtSvc = saveSvc,
+                    creditRateSvc = taxSvc,
+                    creditCardSvc = creditCardSvc,
                     savedStateHandle = it,
-                    tagSvc= tagSvc,
-                    creditCardSettingSvc= settingCCSvc,
-                    buyCreditCardSettingSvc= buyCCSSvc,
-                    navController=findNavController(),
-                    prefs=ApplicationInitial.prefs
+                    tagSvc = tagSvc,
+                    creditCardSettingSvc = settingCCSvc,
+                    buyCreditCardSettingSvc = buyCCSSvc,
+                    prefs = prefs,
+                    context = context?.applicationContext!!
                 )
             }
         )

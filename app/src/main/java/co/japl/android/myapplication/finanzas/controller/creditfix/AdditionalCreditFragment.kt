@@ -16,6 +16,7 @@ import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.japl.android.myapplication.databinding.FragmentAdditionalCreditBinding
 import dagger.hilt.android.AndroidEntryPoint
 import co.com.japl.finances.iports.inbounds.credit.IAdditionalFormPort
+import co.japl.android.myapplication.finanzas.controller.ViewModelFactory
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -23,13 +24,14 @@ class AdditionalCreditFragment : Fragment(){
      @Inject lateinit var additionalSvc: IAdditionalFormPort
     val viewModel:AdditionalFormViewModel by viewModels{
         ViewModelFactory(
-            owner=this,
-            viewModelClass=AdditionalFormViewModel::class.java,
-            build={
+            owner = this,
+            viewModelClass = AdditionalFormViewModel::class.java,
+            build = {
                 AdditionalFormViewModel(
-                    context=context?.applicationContext!!,
+                    context = context?.applicationContext!!,
                     savedStateHandle = it,
-                    additionalSvc=additionalSvc)
+                    additionalSvc = additionalSvc
+                )
             }
         )
     }
