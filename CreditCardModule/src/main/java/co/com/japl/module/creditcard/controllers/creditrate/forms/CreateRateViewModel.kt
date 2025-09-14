@@ -4,6 +4,7 @@ import android.util.Log
 import android.widget.Toast
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.navigation.NavController
 import co.com.japl.finances.iports.dtos.CreditCardDTO
@@ -19,8 +20,9 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.YearMonth
 
-class CreateRateViewModel constructor(private val codeCreditCard:Int?,private val codeCreditRate:Int?,private val creditRateSvc:ITaxPort?,private val creditCardSvc:ICreditCardPort?,private val navCompiler: NavController?): ViewModel() {
-
+class CreateRateViewModel constructor(private val creditRateSvc:ITaxPort?,private val creditCardSvc:ICreditCardPort?,private val savedStateHandle: SavedStateHandle): ViewModel() {
+    private var codeCreditCard:Int? = null
+    private var codeCreditRate:Int? = null
     val progress = mutableFloatStateOf(0f)
     val loader = mutableStateOf(true)
 
@@ -48,49 +50,54 @@ class CreateRateViewModel constructor(private val codeCreditCard:Int?,private va
 
     var save = false
 
-    fun save() {
+    init{
+        savedStateHandle.get<Int>("codeCreditCard")?.let { codeCreditCard = it }
+        savedStateHandle.get<Int>("codeCreditRate")?.let { codeCreditRate = it }
+    }
+
+    fun save(navController: NavController) {
         validate()
         _creditRateDto?.let {
             creditRateSvc?.let { svc ->
                 if (save) {
                     if (it.id == 0) {
-                        create(it)
+                        create(it, navController)
                     }else{
-                        update(it)
+                        update(it, navController)
                     }
                 }
             }
         }
     }
 
-        private fun create(rate:TaxDTO){
+        private fun create(rate:TaxDTO, navController: NavController){
             if (creditRateSvc?.create(rate)!!) {
                 Toast.makeText(
-                    navCompiler?.context,
+                    navController.context,
                     R.string.toast_successful_insert,
                     Toast.LENGTH_SHORT
                 ).show()
-                navCompiler?.navigateUp()
+                navController.navigateUp()
             } else {
                 Toast.makeText(
-                    navCompiler?.context,
+                    navController.context,
                     R.string.toast_unsuccessful_insert,
                     Toast.LENGTH_SHORT
                 ).show()
             }
         }
 
-    private fun update(rate:TaxDTO){
+    private fun update(rate:TaxDTO, navController: NavController){
         if (creditRateSvc?.update(rate)!!) {
             Toast.makeText(
-                navCompiler?.context,
+                navController.context,
                 R.string.toast_successful_update,
                 Toast.LENGTH_SHORT
             ).show()
-            navCompiler?.navigateUp()
+            navController.navigateUp()
         } else {
             Toast.makeText(
-                navCompiler?.context,
+                navController.context,
                 R.string.toast_dont_successful_update,
                 Toast.LENGTH_SHORT
             ).show()

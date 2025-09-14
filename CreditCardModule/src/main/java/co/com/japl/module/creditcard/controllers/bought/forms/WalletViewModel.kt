@@ -144,6 +144,7 @@ class WalletViewModel @Inject constructor(
     }
 
     fun create(navController: NavController){
+        validate()
         if(validate) {
             boughtSvc.let {
                 if(it.create(bought!!,prefs.simulator)>0) {
@@ -166,6 +167,7 @@ class WalletViewModel @Inject constructor(
     }
 
     fun update(navController: NavController){
+        validate()
         if(validate) {
             boughtSvc.let {
                 if(it.update(bought!!,prefs.simulator)) {

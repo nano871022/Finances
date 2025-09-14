@@ -26,6 +26,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import co.com.japl.finances.iports.enums.KindInterestRateEnum
 import co.com.japl.finances.iports.enums.KindOfTaxEnum
 import co.com.japl.module.creditcard.R
@@ -41,7 +42,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 @Composable
-fun CreditRate(viewModel:CreateRateViewModel){
+fun CreditRate(viewModel:CreateRateViewModel, navController: NavController){
     var statePogress = remember {
         viewModel.loader
     }
@@ -60,7 +61,7 @@ fun CreditRate(viewModel:CreateRateViewModel){
 
         Scaffold(
             floatingActionButton = {
-                FloatingActionButton(onClick = { viewModel.save() },
+                FloatingActionButton(onClick = { viewModel.save(navController) },
                     elevation=FloatingActionButtonDefaults.elevation(10.dp),
                     backgroundColor= MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.5f)) {
                     Icon(

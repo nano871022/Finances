@@ -1,9 +1,11 @@
 package co.com.japl.module.creditcard.controllers.account
 
+import android.content.Context
 import android.util.Log
 import android.widget.Toast
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.navigation.NavController
 import co.com.japl.finances.iports.dtos.CreditCardDTO
@@ -15,7 +17,8 @@ import kotlinx.coroutines.runBlocking
 import java.math.BigDecimal
 import java.time.LocalDateTime
 
-class CreditCardViewModel constructor(private val codeCreditCard:Int?,private val creditCardSvc:ICreditCardPort, private val navController: NavController):ViewModel() {
+class CreditCardViewModel constructor(private val creditCardSvc:ICreditCardPort, private val savedStateHandle: SavedStateHandle):ViewModel() {
+    private var codeCreditCard:Int? = null
     var showProgress = mutableStateOf(true)
     var progress = mutableFloatStateOf(0f)
     var showButtonUpdate = mutableStateOf(false)
@@ -35,6 +38,12 @@ class CreditCardViewModel constructor(private val codeCreditCard:Int?,private va
     var hasErrorWarning = mutableStateOf(false)
 
     private var _creditCardDto:CreditCardDTO? = CreditCardDTO(id=0,name="", maxQuotes = 0, cutOffDay = 1, warningValue = BigDecimal.ZERO, create = LocalDateTime.now(), status = true, interest1Quote = false, interest1NotQuote = false)
+
+    init{
+        savedStateHandle.get<Int>("codeCreditCard")?.let{
+            codeCreditCard = it
+        }
+    }
 
     fun validate(){
 
@@ -57,20 +66,20 @@ class CreditCardViewModel constructor(private val codeCreditCard:Int?,private va
         }
     }
 
-    fun create(){
+    fun create(context:Context, navController: NavController){
         if(showButtons.value) {
             _creditCardDto?.let {
                 val id = creditCardSvc.create(it)
                 if (id > 0) {
                     Toast.makeText(
-                        navController.context,
+                        context,
                         R.string.toast_successful_insert,
                         Toast.LENGTH_LONG
                     ).show()
                     navController.navigateUp()
                 } else {
                     Toast.makeText(
-                        navController.context,
+                        context,
                         R.string.toast_unsuccessful_insert,
                         Toast.LENGTH_LONG
                     ).show()
@@ -81,20 +90,20 @@ class CreditCardViewModel constructor(private val codeCreditCard:Int?,private va
         }
     }
 
-    fun update(){
+    fun update(context:Context, navController: NavController){
         _creditCardDto?.let{
             if(creditCardSvc.update(_creditCardDto!!)){
-                Toast.makeText(navController.context, R.string.toast_successful_update,Toast.LENGTH_LONG).show()
+                Toast.makeText(context, R.string.toast_successful_update,Toast.LENGTH_LONG).show()
                 navController.navigateUp()
             }else{
-                Toast.makeText(navController.context, R.string.toast_dont_successful_update,Toast.LENGTH_LONG).show()
+                Toast.makeText(context,R.string.toast_dont_successful_update,Toast.LENGTH_LONG).show()
             }
         }
     }
-    fun goSettings(){
-        navController?.let {
+    fun goSettings(navController: NavController){
+        navController.let {
             codeCreditCard?.let {id->
-                ListCreditCardSettings.navigate(codeCreditCard,navController)
+                ListCreditCardSettings.navigate(codeCreditCard!!,navController)
             }
         }
     }
