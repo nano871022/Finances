@@ -32,6 +32,8 @@ import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.SavedStateHandle
+import androidx.navigation.NavController
 import co.com.japl.finances.iports.dtos.RecapCreditDTO
 import co.com.japl.module.credit.R
 import co.com.japl.module.credit.controllers.recap.RecapViewModel
@@ -47,7 +49,7 @@ import co.com.japl.ui.components.FieldView
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun Recap(viewModel:RecapViewModel){
+fun Recap(viewModel:RecapViewModel,navController: NavController){
     val loader = remember { viewModel.loader }
     val progression = remember { viewModel.progress }
     if(loader.value){
@@ -57,14 +59,14 @@ fun Recap(viewModel:RecapViewModel){
             modifier = Modifier.fillMaxWidth(),
         )
     }else{
-        Body(viewModel)
+        Body(viewModel,navController)
     }
 }
 
 @Composable
-private fun Body(viewModel:RecapViewModel){
+private fun Body(viewModel:RecapViewModel,navController: NavController){
     Scaffold(floatingActionButton = {
-        Buttons(viewModel)
+        Buttons(viewModel,navController)
     }) {
         if(viewModel.listCredits.isEmpty()){
             Column {
@@ -78,23 +80,23 @@ private fun Body(viewModel:RecapViewModel){
 }
 
  @Composable
- private fun Buttons(viewModel:RecapViewModel){
+ private fun Buttons(viewModel:RecapViewModel,navController: NavController){
      Column {
          if(viewModel.listCredits.isNotEmpty()) {
              FloatButton(
                  imageVector = Icons.Rounded.CalendarMonth,
                  descriptionIcon = R.string.check_periods,
-                 onClick = { viewModel.periodCredits() })
+                 onClick = { viewModel.periodCredits(navController) })
 
              FloatButton(
                  imageVector = Icons.Rounded.RemoveRedEye,
                  descriptionIcon = R.string.detail_credits,
-                 onClick = { viewModel.detailCredits() })
+                 onClick = { viewModel.detailCredits(navController) })
          }
          FloatButton(
              imageVector = Icons.Rounded.Add,
              descriptionIcon = R.string.add_credit,
-             onClick = { viewModel.addCredit() })
+             onClick = { viewModel.addCredit(navController) })
      }
  }
 
@@ -199,7 +201,7 @@ private fun GraphList(list:List<RecapCreditDTO>){
 @Preview(showBackground = true, showSystemUi = true, backgroundColor = 0x111000)
 fun RecapPreview(){
     MaterialThemeComposeUI {
-        Recap(viewModel())
+        Recap(viewModel(),navController = NavController(LocalContext.current))
     }
 }
 
@@ -208,7 +210,7 @@ fun RecapPreview(){
 @Preview(showBackground = true, showSystemUi = true, backgroundColor = 0xffffff, uiMode = Configuration.UI_MODE_NIGHT_YES)
 fun RecapPreviewDark(){
     MaterialThemeComposeUI {
-        Recap(viewModel())
+        Recap(viewModel(),navController = NavController(LocalContext.current))
     }
 }
 
@@ -220,12 +222,12 @@ fun RecapEmptyPreviewDark(){
     viewModel.listCredits.clear()
 
     MaterialThemeComposeUI {
-        Recap(viewModel)
+        Recap(viewModel,navController = NavController(LocalContext.current))
     }
 }
 
 fun viewModel():RecapViewModel{
-    val viewModel = RecapViewModel(null, YearMonth.now(),null)
+    val viewModel = RecapViewModel(null, SavedStateHandle())
     viewModel.listCredits.add(
         RecapCreditDTO(
             month = 4,

@@ -2,6 +2,7 @@ package co.com.japl.module.credit.controllers.recap
 
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.navigation.NavController
 import co.com.japl.finances.iports.dtos.RecapCreditDTO
@@ -13,21 +14,27 @@ import kotlinx.coroutines.launch
 import java.time.YearMonth
 import javax.inject.Inject
 
-class RecapViewModel @Inject constructor(private val creditsSvc:ICreditPort?, val yearMonth:YearMonth,private val navController: NavController?) : ViewModel() {
+class RecapViewModel @Inject constructor(private val creditsSvc:ICreditPort?, private val savedStateHandle: SavedStateHandle) : ViewModel() {
     val loader = mutableStateOf(true)
     val progress = mutableFloatStateOf(0f)
     val listCredits = mutableListOf<RecapCreditDTO>()
+    var yearMonth:YearMonth = YearMonth.now()
+        private set
 
-    fun addCredit() {
-        navController?.let( CreditList::addCredit)
+    init{
+        savedStateHandle.get<YearMonth>("period")?.let { yearMonth = it }
     }
 
-    fun detailCredits() {
-        navController?.let(CreditList::detailCredits)
+    fun addCredit(navController: NavController) {
+        CreditList.addCredit(navController)
     }
 
-    fun periodCredits() {
-        navController?.let(CreditList::periodCredits)
+    fun detailCredits(navController: NavController) {
+        CreditList.detailCredits(navController)
+    }
+
+    fun periodCredits(navController: NavController) {
+        CreditList.periodCredits(navController)
     }
 
     fun execute() = CoroutineScope(Dispatchers.IO).launch {
