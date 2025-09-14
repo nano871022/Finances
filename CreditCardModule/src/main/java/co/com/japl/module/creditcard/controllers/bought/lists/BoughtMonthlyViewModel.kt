@@ -26,14 +26,16 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.Period
 
+import androidx.lifecycle.SavedStateHandle
+
 class BoughtMonthlyViewModel constructor(
                                         private val creditRate:ITaxPort?,
                                         private val creditCardSvc: ICreditCardPort?,
                                         private val boughtCreditCardSvc: IBoughtPort?,
-                                        private val navController: NavController?,
                                         private val prefs:Prefs,
                                         private val msmSvc: ISMSCreditCardPort?,
-                                        private val svc: IBoughtSmsPort?
+                                        private val svc: IBoughtSmsPort?,
+                                        private val savedStateHandle: SavedStateHandle?
                                         ) : ViewModel(){
 
     val cache = mutableStateOf(prefs.simulator)
@@ -73,30 +75,28 @@ class BoughtMonthlyViewModel constructor(
     val showWallet = mutableStateOf(false)
     val showCreditRate = mutableStateOf(false)
 
-    fun goToPaidList(){
-       navController?.let{ Bought.navigate(creditCardSelected?.id!!,creditCardSelected?.cutOffDay!!,cutOff.value,it)}
+    fun goToPaidList(navController: NavController){
+       Bought.navigate(creditCardSelected?.id!!,creditCardSelected?.cutOffDay!!,cutOff.value,navController)
     }
 
-    fun goToPeriodList(){
-        navController?.let{ Bought.navigatePeriodList(creditCardSelected?.id?.toShort()!!,it)}
+    fun goToPeriodList(navController: NavController){
+        Bought.navigatePeriodList(creditCardSelected?.id?.toShort()!!,navController)
     }
 
-    fun goToAddBought(){
-        navController?.let{ Bought.navigateAddBought(creditCardSelected?.id?.toShort()!!,it)}
+    fun goToAddBought(navController: NavController){
+        Bought.navigateAddBought(creditCardSelected?.id?.toShort()!!,navController)
     }
 
-    fun goToAddBoughtWallet(){
-        navController?.let{ Bought.navigateAddBoughtWallet(creditCardSelected?.id?.toShort()!!,it)}
+    fun goToAddBoughtWallet(navController: NavController){
+        Bought.navigateAddBoughtWallet(creditCardSelected?.id?.toShort()!!,navController)
     }
 
-    fun goToAddAdvance(){
-        navController?.let{ Bought.navigateAddAdvance(creditCardSelected?.id?.toShort()!!,it)}
+    fun goToAddAdvance(navController: NavController){
+        Bought.navigateAddAdvance(creditCardSelected?.id?.toShort()!!,navController)
     }
 
-    fun goToAddCreditRate(){
-        navController?.let{
-            ListCreditRate.navigate_list(it)
-        }
+    fun goToAddCreditRate(navController: NavController){
+        ListCreditRate.navigate_list(navController)
     }
 
     fun clear(){

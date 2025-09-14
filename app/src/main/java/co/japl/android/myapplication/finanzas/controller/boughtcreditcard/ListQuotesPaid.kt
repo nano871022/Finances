@@ -14,10 +14,12 @@ import co.com.japl.finances.iports.inbounds.creditcard.bought.lists.IBoughtListP
 import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.japl.android.myapplication.databinding.FragmentListPeriodsBinding
 import co.japl.android.myapplication.finanzas.putParams.PeriodsParams
+import androidx.fragment.app.viewModels
 import co.com.japl.module.creditcard.controllers.paid.BoughtCreditCardViewModel
 import co.com.japl.module.creditcard.views.paid.PaidList
 import co.com.japl.ui.Prefs
 import co.japl.android.myapplication.finanzas.ApplicationInitial
+import co.japl.android.myapplication.finanzas.controller.ViewModelFactory
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 import kotlin.properties.Delegates
@@ -29,6 +31,11 @@ class ListQuotesPaid : Fragment() {
     @Inject lateinit var port: IBoughtListPort
     @Inject lateinit var prefs : Prefs
     private lateinit var _binding : FragmentListPeriodsBinding
+    private val viewModel:BoughtCreditCardViewModel by viewModels {
+        ViewModelFactory(this,BoughtCreditCardViewModel::class.java){handle->
+            BoughtCreditCardViewModel(port,prefs,handle)
+        }
+    }
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreateView(
@@ -45,7 +52,7 @@ class ListQuotesPaid : Fragment() {
                 setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
                 setContent {
                     MaterialThemeComposeUI {
-                        PaidList(viewModel = BoughtCreditCardViewModel(port,creditCardId,findNavController(),prefs))
+                        PaidList(viewModel = viewModel, navController = findNavController())
 
                 }
             }

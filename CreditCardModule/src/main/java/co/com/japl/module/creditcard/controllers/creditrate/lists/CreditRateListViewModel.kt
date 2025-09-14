@@ -14,22 +14,24 @@ import co.com.japl.module.creditcard.R
 import co.com.japl.module.creditcard.navigations.ListCreditRate
 import kotlinx.coroutines.runBlocking
 
-class CreditRateListViewModel constructor(private val context:Context?,private val creditCardSvc:ICreditCardPort?,private val creditRateSvc:ITaxPort?,private val navController: NavController?):ViewModel() {
+import androidx.lifecycle.SavedStateHandle
+
+class CreditRateListViewModel constructor(private val context:Context?,private val creditCardSvc:ICreditCardPort?,private val creditRateSvc:ITaxPort?,private val savedStateHandle: SavedStateHandle?):ViewModel() {
 
     var progress = mutableFloatStateOf(0f)
     var showProgress = mutableStateOf(true)
 
     var creditCard:MutableMap<CreditCardDTO?,List<TaxDTO>>? = HashMap<CreditCardDTO?,List<TaxDTO>>()
 
-    fun add(){
-        navController?.let { ListCreditRate.navigate(navigate = it)}
+    fun add(navController: NavController){
+        ListCreditRate.navigate(navigate = navController)
     }
 
-    fun add(codeCreditCard:Int?){
+    fun add(codeCreditCard:Int?,navController: NavController){
         if(codeCreditCard == null){
-            add()
+            add(navController)
         }else {
-            navController?.let { ListCreditRate.navigate(codeCreditCard,navigate = it)}
+            ListCreditRate.navigate(codeCreditCard,navigate = navController)
         }
     }
 
@@ -94,8 +96,8 @@ class CreditRateListViewModel constructor(private val context:Context?,private v
         }
     }
 
-    fun edit(codeCreditCard:Int, codeCreditRate:Int){
-        navController?.let { ListCreditRate.navigate(codeCreditCard,codeCreditRate,navigate = navController)}
+    fun edit(codeCreditCard:Int, codeCreditRate:Int,navController: NavController){
+        ListCreditRate.navigate(codeCreditCard,codeCreditRate,navigate = navController)
     }
 
     fun main() = runBlocking {

@@ -40,8 +40,10 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
+import androidx.navigation.NavController
+
 @Composable
-fun Sms(viewModel:SmsCreditCardViewModel){
+fun Sms(viewModel:SmsCreditCardViewModel,navController: NavController){
     val load by remember {viewModel.load}
     var progress  by remember {viewModel.progress}
 
@@ -54,16 +56,16 @@ fun Sms(viewModel:SmsCreditCardViewModel){
             modifier = Modifier.fillMaxWidth(),
         )
     }else{
-        Form(viewModel = viewModel)
+        Form(viewModel = viewModel,navController = navController)
     }
 
 }
 
 @Composable
-private fun Form(viewModel: SmsCreditCardViewModel){
+private fun Form(viewModel: SmsCreditCardViewModel,navController: NavController){
     Scaffold (
         floatingActionButton = {
-            Buttons({viewModel.clean()}, {viewModel.save()})
+            Buttons({viewModel.clean()}, {viewModel.save(navController)})
         }
     ) {
         Body(viewModel = viewModel, modifier = Modifier

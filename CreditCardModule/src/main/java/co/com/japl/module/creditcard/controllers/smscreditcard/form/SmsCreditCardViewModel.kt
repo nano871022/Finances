@@ -5,6 +5,7 @@ import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.SavedStateHandle
 import androidx.navigation.NavController
 import co.com.japl.finances.iports.dtos.CreditCardDTO
 import co.com.japl.finances.iports.dtos.SMSCreditCard
@@ -14,8 +15,9 @@ import co.com.japl.finances.iports.inbounds.creditcard.ISMSCreditCardPort
 import co.com.japl.module.creditcard.R
 import kotlinx.coroutines.runBlocking
 
-class SmsCreditCardViewModel constructor(private val codeSMSCC:Int?,private val svc:ISMSCreditCardPort?,private val creditCardSvc:ICreditCardPort?,private val navController: NavController?): ViewModel() {
+class SmsCreditCardViewModel constructor(private val svc:ISMSCreditCardPort?,private val creditCardSvc:ICreditCardPort?,private val savedStateHandle: SavedStateHandle): ViewModel() {
 
+    private var codeSMSCC:Int? = null
     val  load = mutableStateOf(true)
     val  progress = mutableFloatStateOf(0.0f)
 
@@ -37,23 +39,29 @@ class SmsCreditCardViewModel constructor(private val codeSMSCC:Int?,private val 
 
     val validate = mutableStateOf("")
 
+    init{
+        savedStateHandle.get<Int>("codeSMS")?.let{
+            codeSMSCC = it
+        }
+    }
 
-    fun save(){
+
+    fun save(navController: NavController){
         if(smsCreditCard != null && !errorKindInterestRate.value && !errorPhoneNumber.value && !errorPattern.value) {
             smsCreditCard?.takeIf { it.id == 0 }?.let{
                 svc?.create(it)?.takeIf { it > 0 }?.let{
                     smsCreditCard = smsCreditCard!!.copy(id = it)
-                    navController?.let { Toast.makeText(it.context, R.string.toast_successful_insert, Toast.LENGTH_SHORT).show().also {
+                    Toast.makeText(navController.context, R.string.toast_successful_insert, Toast.LENGTH_SHORT).show().also {
                         navController.popBackStack()
-                    } }
-                }?:navController?.let { Toast.makeText(it.context, R.string.toast_unsuccessful_insert, Toast.LENGTH_SHORT).show() }
+                    }
+                }?:Toast.makeText(navController.context, R.string.toast_unsuccessful_insert, Toast.LENGTH_SHORT).show()
             }
             smsCreditCard?.takeIf { it.id > 0 }?.let{
                 svc?.update(it)?.takeIf { it }?.let{
-                    navController?.let { Toast.makeText(it.context, R.string.toast_successful_update, Toast.LENGTH_SHORT).show().also {
+                    Toast.makeText(navController.context, R.string.toast_successful_update, Toast.LENGTH_SHORT).show().also {
                         navController.popBackStack()
-                    }}
-                }?:navController?.let { Toast.makeText(it.context, R.string.toast_dont_successful_update, Toast.LENGTH_SHORT).show() }
+                    }
+                }?:Toast.makeText(navController.context, R.string.toast_dont_successful_update, Toast.LENGTH_SHORT).show()
             }
         }
     }

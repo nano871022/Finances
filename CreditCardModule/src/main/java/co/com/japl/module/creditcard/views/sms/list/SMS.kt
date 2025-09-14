@@ -43,8 +43,10 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
+import androidx.navigation.NavController
+
 @Composable
-fun SMS(viewModel:SmsCreditCardViewModel) {
+fun SMS(viewModel:SmsCreditCardViewModel,navController: NavController) {
     val loader = remember {viewModel.load}
     val progress = remember {viewModel.progress}
 
@@ -58,27 +60,27 @@ fun SMS(viewModel:SmsCreditCardViewModel) {
             modifier = Modifier.fillMaxWidth(),
         )
     }else{
-        Body(viewModel = viewModel)
+        Body(viewModel = viewModel,navController = navController)
     }
 
 }
 
 @Composable
-private fun Body(viewModel: SmsCreditCardViewModel){
+private fun Body(viewModel: SmsCreditCardViewModel,navController: NavController){
     Scaffold (
         floatingActionButton = {
             Buttons{
-                viewModel.add()
+                viewModel.add(navController)
             }
         }
     ) {
-        Content(viewModel = viewModel, modifier = Modifier.padding(it))
+        Content(viewModel = viewModel, modifier = Modifier.padding(it),navController)
     }
 }
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-private fun Content(viewModel: SmsCreditCardViewModel,modifier: Modifier){
+private fun Content(viewModel: SmsCreditCardViewModel,modifier: Modifier,navController: NavController){
     val list = remember { viewModel.list}
     Column {
         Row (horizontalArrangement = Arrangement.End, modifier=Modifier.fillMaxWidth()) {
@@ -93,7 +95,7 @@ private fun Content(viewModel: SmsCreditCardViewModel,modifier: Modifier){
                     list[it]?.values?.forEach {
                         for (i in it) {
                             Card(sms = i, modifier = Modifier, edit = {
-                                viewModel.edit(it)
+                                viewModel.edit(it,navController)
                             }, delete = {
                                 viewModel.delete(it)
                             }, enable = {

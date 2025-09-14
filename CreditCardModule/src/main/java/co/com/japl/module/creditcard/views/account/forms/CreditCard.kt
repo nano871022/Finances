@@ -16,9 +16,11 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import co.com.japl.module.creditcard.R
 import co.com.japl.module.creditcard.controllers.account.CreditCardViewModel
 import co.com.japl.ui.components.CheckBoxField
@@ -29,13 +31,13 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 @Composable
-fun CreditCard(viewModel: CreditCardViewModel){
+fun CreditCard(viewModel: CreditCardViewModel, navController: NavController){
 
     val progression = remember{viewModel.progress}
     val showProgress = remember{viewModel.showProgress}
 
-    val buttonsState = remember { viewModel.showButtons }
     val buttonUpdateState = remember { viewModel.showButtonUpdate}
+    val context = LocalContext.current
 
     CoroutineScope(Dispatchers.IO).launch {
         viewModel.main()
@@ -53,19 +55,21 @@ fun CreditCard(viewModel: CreditCardViewModel){
                                     imageVector = Icons.Rounded.Settings,
                                     descriptionIcon = R.string.setting_redirect
                                 ) {
-                                    viewModel.goSettings()
+                                    viewModel.goSettings(navController)
                                 }
 
                                 FloatButton(
                                     imageVector = Icons.Rounded.Update,
                                     descriptionIcon = R.string.update
                                 ) {
-                                    viewModel.update()
+                                    viewModel.update(context, navController)
                                 }
                             }
                         }else {
                             FloatButton(imageVector = Icons.Rounded.Create,
-                                descriptionIcon =  R.string.create){ viewModel.create() }
+                                descriptionIcon =  R.string.create){
+                                viewModel.create(context, navController)
+                            }
                         }
                     }
             }

@@ -75,8 +75,10 @@ import kotlinx.coroutines.launch
 import java.time.LocalDate
 
 
+import androidx.navigation.NavController
+
 @Composable
-fun BoughtMonthly(viewModel:BoughtMonthlyViewModel?=null) {
+fun BoughtMonthly(viewModel:BoughtMonthlyViewModel?=null,navController: NavController) {
     var loaderStatus by remember {viewModel!!.loader}
     var progressStatus by remember {viewModel!!.progress}
 
@@ -107,13 +109,13 @@ fun BoughtMonthly(viewModel:BoughtMonthlyViewModel?=null) {
                    modifier = Modifier.fillMaxWidth(),
                )
            }else{
-                Loaded(viewModel = viewModel)
+                Loaded(viewModel = viewModel,navController)
            }
     }
 }
 
 @Composable
-private fun Loaded(viewModel:BoughtMonthlyViewModel){
+private fun Loaded(viewModel:BoughtMonthlyViewModel,navController: NavController){
     val modeWindow = LocalConfiguration.current
     var cutOffDay by remember{ viewModel!!.cutOff }
     var daysLeftCutoff by remember{ viewModel!!.daysLeftCutOff }
@@ -122,7 +124,7 @@ private fun Loaded(viewModel:BoughtMonthlyViewModel){
     Scaffold(
         floatingActionButton = {
             viewModel?.let {
-                FloatButtons(it)
+                FloatButtons(it,navController)
             }
         },
         modifier = Modifier.padding(Dimensions.PADDING_SHORT)
@@ -177,7 +179,7 @@ private fun Loaded(viewModel:BoughtMonthlyViewModel){
 }
 
 @Composable
-private fun FloatButtons(viewModel:BoughtMonthlyViewModel){
+private fun FloatButtons(viewModel:BoughtMonthlyViewModel,navController: NavController){
     var showList by remember { viewModel.showList }
     var showPeriod by remember { viewModel.showPeriodList }
     var showAddBought by remember { viewModel.showBought }
@@ -187,7 +189,7 @@ private fun FloatButtons(viewModel:BoughtMonthlyViewModel){
 
     Column {
         if(showList) {
-            FloatingActionButton(onClick = { viewModel.goToPaidList() },
+            FloatingActionButton(onClick = { viewModel.goToPaidList(navController) },
                 elevation=FloatingActionButtonDefaults.elevation(10.dp),
                 backgroundColor= MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.5f)) {
                 Icon(
@@ -200,7 +202,7 @@ private fun FloatButtons(viewModel:BoughtMonthlyViewModel){
         }
 
         if(showPeriod) {
-            FloatingActionButton(onClick = { viewModel.goToPeriodList() },
+            FloatingActionButton(onClick = { viewModel.goToPeriodList(navController) },
                 elevation=FloatingActionButtonDefaults.elevation(10.dp),
                 backgroundColor= MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.5f)) {
                 Icon(
@@ -213,7 +215,7 @@ private fun FloatButtons(viewModel:BoughtMonthlyViewModel){
         }
 
         if(showAddBought) {
-            FloatingActionButton(onClick = { viewModel.goToAddBought() },
+            FloatingActionButton(onClick = { viewModel.goToAddBought(navController) },
                 elevation=FloatingActionButtonDefaults.elevation(10.dp),
                 backgroundColor= MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.5f)) {
                 Icon(
@@ -226,7 +228,7 @@ private fun FloatButtons(viewModel:BoughtMonthlyViewModel){
         }
 
         if(showAddAdvance) {
-            FloatingActionButton(onClick = { viewModel.goToAddAdvance() },
+            FloatingActionButton(onClick = { viewModel.goToAddAdvance(navController) },
             elevation=FloatingActionButtonDefaults.elevation(10.dp),
                 backgroundColor= MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.5f)) {
                 Icon(
@@ -239,7 +241,7 @@ private fun FloatButtons(viewModel:BoughtMonthlyViewModel){
         }
 
         if(showAddBoughtWallet) {
-            FloatingActionButton(onClick = { viewModel.goToAddBoughtWallet() },
+            FloatingActionButton(onClick = { viewModel.goToAddBoughtWallet(navController) },
                 elevation=FloatingActionButtonDefaults.elevation(10.dp),
                 backgroundColor= MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.5f)) {
                 Icon(
@@ -252,7 +254,7 @@ private fun FloatButtons(viewModel:BoughtMonthlyViewModel){
         }
 
         if(showAddCreditRate) {
-            FloatingActionButton(onClick = { viewModel.goToAddCreditRate() },
+            FloatingActionButton(onClick = { viewModel.goToAddCreditRate(navController) },
                 elevation=FloatingActionButtonDefaults.elevation(10.dp),
                 backgroundColor= MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.5f)) {
                 Icon(
