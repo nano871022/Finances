@@ -22,6 +22,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.SavedStateHandle
 import co.com.japl.finances.iports.dtos.PeriodCreditDTO
 import co.com.japl.module.credit.controllers.list.PeriodsViewModel
 import co.com.japl.ui.theme.MaterialThemeComposeUI
@@ -122,7 +123,7 @@ internal fun previewDark(){
 }
 
 private fun getViewModel(): PeriodsViewModel{
-    val vw = PeriodsViewModel(null)
+    val vw = PeriodsViewModel(SavedStateHandle(),null)
     vw.records.add(PeriodCreditDTO(YearMonth.of(2024,10),1, BigDecimal.TEN))
     vw.records.add(PeriodCreditDTO(YearMonth.of(2024,11),1, BigDecimal.TEN))
     vw.records.add(PeriodCreditDTO(YearMonth.of(2024,12),1, BigDecimal.TEN))

@@ -13,6 +13,7 @@ import androidx.navigation.fragment.findNavController
 import co.com.japl.finances.iports.inbounds.credit.ICreditPort
 import co.com.japl.module.credit.controllers.recap.RecapViewModel
 import co.com.japl.module.credit.views.recap.Recap
+import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.japl.android.myapplication.databinding.FragmentCreditListBinding
 import co.japl.android.myapplication.finanzas.controller.ViewModelFactory
 import dagger.hilt.android.AndroidEntryPoint

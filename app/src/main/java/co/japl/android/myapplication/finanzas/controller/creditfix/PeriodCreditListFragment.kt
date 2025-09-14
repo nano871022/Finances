@@ -12,6 +12,7 @@ import androidx.fragment.app.viewModels
 import co.com.japl.finances.iports.inbounds.credit.IPeriodCreditPort
 import co.com.japl.module.credit.controllers.list.PeriodsViewModel
 import co.com.japl.module.credit.views.lists.Periods
+import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.japl.android.myapplication.databinding.FragmentPeriodCreditListBinding
 import co.japl.android.myapplication.finanzas.controller.ViewModelFactory
 import dagger.hilt.android.AndroidEntryPoint
