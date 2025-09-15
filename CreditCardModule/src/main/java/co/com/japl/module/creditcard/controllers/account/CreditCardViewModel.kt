@@ -1,11 +1,9 @@
 package co.com.japl.module.creditcard.controllers.account
 
-import android.content.Context
 import android.util.Log
 import android.widget.Toast
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.navigation.NavController
 import co.com.japl.finances.iports.dtos.CreditCardDTO
@@ -16,6 +14,8 @@ import co.japl.android.graphs.utils.NumbersUtil
 import kotlinx.coroutines.runBlocking
 import java.math.BigDecimal
 import java.time.LocalDateTime
+
+import androidx.lifecycle.SavedStateHandle
 
 class CreditCardViewModel constructor(private val creditCardSvc:ICreditCardPort, private val savedStateHandle: SavedStateHandle):ViewModel() {
     private var codeCreditCard:Int? = null
@@ -72,14 +72,14 @@ class CreditCardViewModel constructor(private val creditCardSvc:ICreditCardPort,
                 val id = creditCardSvc.create(it)
                 if (id > 0) {
                     Toast.makeText(
-                        context,
+                        navController.context,
                         R.string.toast_successful_insert,
                         Toast.LENGTH_LONG
                     ).show()
                     navController.navigateUp()
                 } else {
                     Toast.makeText(
-                        context,
+                        navController.context,
                         R.string.toast_unsuccessful_insert,
                         Toast.LENGTH_LONG
                     ).show()
@@ -93,17 +93,17 @@ class CreditCardViewModel constructor(private val creditCardSvc:ICreditCardPort,
     fun update(context:Context, navController: NavController){
         _creditCardDto?.let{
             if(creditCardSvc.update(_creditCardDto!!)){
-                Toast.makeText(context, R.string.toast_successful_update,Toast.LENGTH_LONG).show()
+                Toast.makeText(navController.context, R.string.toast_successful_update,Toast.LENGTH_LONG).show()
                 navController.navigateUp()
             }else{
-                Toast.makeText(context,R.string.toast_dont_successful_update,Toast.LENGTH_LONG).show()
+                Toast.makeText(navController.context, R.string.toast_dont_successful_update,Toast.LENGTH_LONG).show()
             }
         }
     }
     fun goSettings(navController: NavController){
-        navController.let {
+        navController?.let {
             codeCreditCard?.let {id->
-                ListCreditCardSettings.navigate(codeCreditCard!!,navController)
+                ListCreditCardSettings.navigate(codeCreditCard,navController)
             }
         }
     }

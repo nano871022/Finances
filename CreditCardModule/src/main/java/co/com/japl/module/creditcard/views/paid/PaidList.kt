@@ -28,10 +28,8 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.time.LocalDateTime
 
-import androidx.navigation.NavController
-
 @Composable
-fun PaidList(viewModel: BoughtCreditCardViewModel,navController: NavController){
+fun PaidList(viewModel: BoughtCreditCardViewModel){
     val loaderState = remember {viewModel.progress}
     val loader = remember {viewModel.loader}
     val scope = rememberCoroutineScope()
@@ -46,24 +44,24 @@ fun PaidList(viewModel: BoughtCreditCardViewModel,navController: NavController){
             progress = { loaderState.floatValue },
         )
     }else {
-        Yearly(viewModel = viewModel,navController = navController)
+        Yearly(viewModel = viewModel)
     }
 
 }
 
 @Composable
-private fun Yearly(viewModel:BoughtCreditCardViewModel,navController: NavController){
+private fun Yearly(viewModel:BoughtCreditCardViewModel){
     LazyColumn(modifier = Modifier.fillMaxWidth()){
         items(viewModel.periodList.size){item->
             val key = viewModel.periodList.keys.toList()[item]
             val list = viewModel.periodList[key]!!
-            Yearly(key = key, list = list, viewModel = viewModel,navController = navController)
+            Yearly(key = key, list = list, viewModel = viewModel)
         }
     }
 }
 
 @Composable
-private fun Yearly(key:Long,list:List<BoughtCreditCardPeriodDTO>,viewModel:BoughtCreditCardViewModel,navController: NavController){
+private fun Yearly(key:Long,list:List<BoughtCreditCardPeriodDTO>,viewModel:BoughtCreditCardViewModel){
     val drowdownState = remember { mutableStateOf(false) }
     Surface(
         border = BorderStroke(1.dp,color= MaterialTheme.colorScheme.onPrimaryContainer),
@@ -75,7 +73,7 @@ private fun Yearly(key:Long,list:List<BoughtCreditCardPeriodDTO>,viewModel:Bough
             YearlyHeader(year = key, list = list)
             if (drowdownState.value) {
                 Monthly(list = list, goto = { cutoffDay, cutoff ->
-                    viewModel.goToListDetail(cutoffDay, cutoff,navController)
+                    viewModel.goToListDetail(cutoffDay, cutoff)
                 })
             }
         }

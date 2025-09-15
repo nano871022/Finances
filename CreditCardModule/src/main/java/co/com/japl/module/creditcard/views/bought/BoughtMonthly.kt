@@ -118,7 +118,7 @@ fun BoughtMonthly(viewModel:BoughtMonthlyViewModel?=null,navController: NavContr
 private fun Loaded(viewModel:BoughtMonthlyViewModel,navController: NavController){
     val modeWindow = LocalConfiguration.current
     var cutOffDay by remember{ viewModel!!.cutOff }
-    var daysLeftCutoff by remember{ viewModel!!.daysLeftCutOff }
+    var daysLeftCutoff by remember{ viewModel!!.daysLeftOff }
     var totalValue by remember{ viewModel!!.totalValue }
     var verticalScrollState = rememberScrollState()
     Scaffold(
@@ -776,7 +776,7 @@ fun BoughtMonthlyPreviewNight(){
     val viewModel = getViewMoel(LocalContext.current)
     MaterialThemeComposeUI {
 
-        BoughtMonthly(viewModel)
+        BoughtMonthly(viewModel, NavController(LocalContext.current))
     }
 }
 
@@ -787,7 +787,7 @@ fun BoughtMonthlyPreview(){
     val viewModel = getViewMoel(LocalContext.current)
     MaterialThemeComposeUI {
 
-        BoughtMonthly(viewModel)
+        BoughtMonthly(viewModel, NavController(LocalContext.current))
     }
 }
 
@@ -800,7 +800,7 @@ fun BoughtMonthlyPreviewLandScape(){
     val viewModel = getViewMoel(LocalContext.current)
     MaterialThemeComposeUI {
 
-        BoughtMonthly(viewModel)
+        BoughtMonthly(viewModel, NavController(LocalContext.current))
     }
 }
 
@@ -813,13 +813,26 @@ fun BoughtMonthlyPreviewFold(){
     val viewModel = getViewMoel(LocalContext.current)
     MaterialThemeComposeUI {
 
-        BoughtMonthly(viewModel)
+        BoughtMonthly(viewModel, NavController(LocalContext.current))
     }
 }
 
+import androidx.lifecycle.SavedStateHandle
+import co.com.japl.module.creditcard.views.fakesSvc.BoughtPortFake
+import co.com.japl.module.creditcard.views.fakesSvc.BoughtSmsPortFake
+import co.com.japl.module.creditcard.views.fakesSvc.CreditCardPortFake
+import co.com.japl.module.creditcard.views.fakesSvc.SMSCreditCardPortFake
+import co.com.japl.module.creditcard.views.fakesSvc.TaxPortFake
+
 private fun getViewMoel(context:Context):BoughtMonthlyViewModel{
     val prefs = Prefs(context)
-    val viewModel = BoughtMonthlyViewModel(null,null,null,null,prefs,null,null)
+    val creditRate = TaxPortFake()
+    val creditCardSvc = CreditCardPortFake()
+    val boughtCreditCardSvc = BoughtPortFake()
+    val msmSvc = SMSCreditCardPortFake()
+    val svc = BoughtSmsPortFake()
+    val savedStateHandle = SavedStateHandle()
+    val viewModel = BoughtMonthlyViewModel(creditRate,creditCardSvc,boughtCreditCardSvc,prefs,msmSvc,svc,savedStateHandle)
     viewModel.loader.value = true
     viewModel.graphList.addAll(arrayListOf(Pair("Issue 1",1000.0),Pair("Issue 2",2000.0)))
     viewModel.graphListPeriod.addAll(arrayListOf(Pair("Issue 3",500.0),Pair("Issue 4",300.0)))

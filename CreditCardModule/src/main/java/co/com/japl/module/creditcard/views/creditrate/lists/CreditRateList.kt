@@ -125,7 +125,7 @@ private fun CreditCard(value:Map.Entry<CreditCardDTO?,List<TaxDTO>>,viewModel: C
                     title = stringResource(id = R.string.credit_card),
                     value = value.key?.name ?: "",
                     modifier = Modifier
-                        .fillMaxWidth()
+                                                .fillMaxWidth()
                         .padding(Dimensions.PADDING_SHORT),
                     suffix = {
                         IconButton(onClick = { viewModel.add(value.key?.id,navController) }) {
@@ -260,7 +260,7 @@ private fun getKindInterestRate(kind:KindInterestRateEnum,context: Context):Stri
 fun CreditRateListPreview(){
     val viewModel = getViewModel()
     MaterialThemeComposeUI {
-        CreditRateList(viewModel)
+        CreditRateList(viewModel, NavController(LocalContext.current))
     }
 }
 
@@ -270,13 +270,15 @@ fun CreditRateListPreview(){
 fun CreditRateListPreviewDark(){
     val viewModel = getViewModel()
     MaterialThemeComposeUI {
-        CreditRateList(viewModel)
+        CreditRateList(viewModel, NavController(LocalContext.current))
     }
 }
 
+import androidx.lifecycle.SavedStateHandle
+
 @Composable
 private fun getViewModel():CreditRateListViewModel{
-    val viewModel = CreditRateListViewModel(LocalContext.current, null,null, null)
+    val viewModel = CreditRateListViewModel(LocalContext.current, CreditCardFake(),TaxPortFake(), SavedStateHandle())
     viewModel.showProgress.value = false
     viewModel.creditCard?.put(CreditCardDTO(0,"credit card 1",24,24,
         BigDecimal.ZERO, LocalDateTime.now(),false,false,false),

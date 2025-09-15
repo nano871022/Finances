@@ -188,9 +188,12 @@ private fun Options(dto:CreditPeriodGraceDTO,state:MutableState<Boolean>,delete:
 }
 
 
+import co.com.japl.module.credit.views.fakesSvc.CreditPortFake
+import co.com.japl.module.credit.views.fakesSvc.PeriodGracePortFake
+
     @Composable
     fun getViewModel():ListViewModel{
-        return ListViewModel(SavedStateHandle(),null,null).apply {
+        return ListViewModel(SavedStateHandle(),CreditPortFake(),PeriodGracePortFake()).apply {
             list.add(CreditPeriodGraceDTO(CreditDTO(1,"test",LocalDate.now(),1.2,36,(1500000).toBigDecimal(),(50000).toBigDecimal(),
                 KindPaymentsEnums.MONTHLY,
                 KindOfTaxEnum.MONTHLY_EFFECTIVE),false))

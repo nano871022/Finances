@@ -16,11 +16,9 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
 import co.com.japl.module.creditcard.R
 import co.com.japl.module.creditcard.controllers.account.CreditCardViewModel
 import co.com.japl.ui.components.CheckBoxField
@@ -29,6 +27,9 @@ import co.com.japl.ui.components.FloatButton
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+
+import androidx.compose.ui.platform.LocalContext
+import androidx.navigation.NavController
 
 @Composable
 fun CreditCard(viewModel: CreditCardViewModel, navController: NavController){
@@ -94,6 +95,12 @@ private fun Body(viewModel: CreditCardViewModel, modifier:Modifier=Modifier){
     val hasErrorQuoteMaxState = remember { viewModel.hasErrorQuoteMax}
     val hasErrorCutOfDayState = remember {viewModel.hasErrorCutOfDay}
     val hasErrorWarningState = remember {viewModel.hasErrorWarning}
+
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.SavedStateHandle
+import co.com.japl.module.creditcard.views.fakesSvc.CreditCardFake
+import co.com.japl.ui.theme.MaterialThemeComposeUI
 
     Column {
 
@@ -173,5 +180,16 @@ private fun Body(viewModel: CreditCardViewModel, modifier:Modifier=Modifier){
             },modifier= Modifier
                 .fillMaxWidth()
                 .padding(5.dp))
+    }
+}
+
+@Preview(showBackground = true, showSystemUi = true)
+@Composable
+fun CreditCardPreview(){
+    val creditCardSvc = CreditCardFake()
+    val savedStateHandle = SavedStateHandle()
+    val viewModel = CreditCardViewModel(creditCardSvc, savedStateHandle)
+    MaterialThemeComposeUI {
+        CreditCard(viewModel, NavController(LocalContext.current))
     }
 }

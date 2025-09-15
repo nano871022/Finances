@@ -27,16 +27,15 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
 import co.com.japl.finances.iports.dtos.CreditCardDTO
 import co.com.japl.module.creditcard.R
 import co.com.japl.module.creditcard.controllers.account.CreditCardListViewModel
+import co.com.japl.module.creditcard.controllers.account.CreditCardViewModel
 import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.com.japl.ui.theme.values.Dimensions
 import co.com.japl.ui.theme.values.ModifiersCustom.AlignCenterVerticalAndPaddingRightSpace
@@ -56,7 +55,7 @@ import kotlinx.coroutines.launch
 
 
 @Composable
-fun CreditCardList(creditCardViewModel:CreditCardListViewModel, navController: NavController){
+fun CreditCardList(creditCardViewModel:CreditCardListViewModel){
     val progress = remember {
         creditCardViewModel.progress
     }
@@ -74,15 +73,15 @@ fun CreditCardList(creditCardViewModel:CreditCardListViewModel, navController: N
             modifier = Modifier.fillMaxWidth(),
         )
     }else {
-        Body(creditCardViewModel = creditCardViewModel, navController = navController)
+        Body(creditCardViewModel = creditCardViewModel)
     }
 }
 
 @Composable
-private fun Body(creditCardViewModel:CreditCardListViewModel, navController: NavController){
+private fun Body(creditCardViewModel:CreditCardListViewModel){
     val listState = remember {creditCardViewModel.list}
     Scaffold(floatingActionButton = {
-        FloatingActionButton(onClick = { creditCardViewModel.onClick(navController) },
+        FloatingActionButton(onClick = { creditCardViewModel.onClick() },
             elevation = FloatingActionButtonDefaults.elevation(8.dp),
             backgroundColor = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.5f)) {
             Icon(
@@ -97,7 +96,7 @@ private fun Body(creditCardViewModel:CreditCardListViewModel, navController: Nav
                     descriptionContent = R.string.wiki_credit_card_description)
             }
         listState.forEach {item->
-                Item(item!!,{creditCardViewModel.edit(it, navController)},{creditCardViewModel.delete(it, navController)},{creditCardViewModel.goToSettings(it, navController)})
+                Item(item!!,{creditCardViewModel.edit(it)},{creditCardViewModel.delete(it)},{creditCardViewModel.goToSettings(it)})
             }
         }
     }

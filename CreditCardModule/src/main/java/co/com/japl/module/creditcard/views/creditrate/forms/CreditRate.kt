@@ -26,7 +26,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
 import co.com.japl.finances.iports.enums.KindInterestRateEnum
 import co.com.japl.finances.iports.enums.KindOfTaxEnum
 import co.com.japl.module.creditcard.R
@@ -218,14 +217,16 @@ private fun getKind(value:String):String{
         else-> value
     }
 }
+import androidx.lifecycle.SavedStateHandle
+
 @RequiresApi(Build.VERSION_CODES.S)
 @Composable
 @Preview(showSystemUi = true, showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
 fun CreditRatePreview(){
-    val viewModel = CreateRateViewModel(null,null,null,null,null)
+    val viewModel = CreateRateViewModel(TaxPortFake(), CreditCardFake(), SavedStateHandle())
     viewModel.loader.value = false
     MaterialThemeComposeUI {
-        CreditRate(viewModel)
+        CreditRate(viewModel, NavController(LocalContext.current))
     }
 }
 
@@ -233,9 +234,9 @@ fun CreditRatePreview(){
 @Composable
 @Preview(showSystemUi = true, showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
 fun CreditRatePreviewDark(){
-    val viewModel = CreateRateViewModel(null,null,null,null,null)
+    val viewModel = CreateRateViewModel(TaxPortFake(), CreditCardFake(), SavedStateHandle())
     viewModel.loader.value = false
     MaterialThemeComposeUI {
-        CreditRate(viewModel)
+        CreditRate(viewModel, NavController(LocalContext.current))
     }
 }

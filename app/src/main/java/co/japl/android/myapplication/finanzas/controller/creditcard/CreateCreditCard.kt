@@ -8,14 +8,15 @@ import android.view.ViewGroup
 import androidx.annotation.RequiresApi
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import co.com.japl.finances.iports.inbounds.creditcard.ICreditCardPort
 import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.japl.android.myapplication.databinding.FragmentCreateCreditCardBinding
+import androidx.fragment.app.viewModels
 import co.com.japl.module.creditcard.controllers.account.CreditCardViewModel
 import co.com.japl.module.creditcard.views.account.forms.CreditCard
 import co.japl.android.myapplication.finanzas.controller.ViewModelFactory
+import co.japl.android.myapplication.putParams.CreditCardParams
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -28,8 +29,8 @@ class CreateCreditCard : Fragment() {
     private val binding get() = _binding!!
 
     val viewModel: CreditCardViewModel by viewModels {
-        ViewModelFactory(this,CreditCardViewModel::class.java){
-            CreditCardViewModel(creditCardSvc,it)
+        ViewModelFactory(this,CreditCardViewModel::class.java){handle->
+            CreditCardViewModel(creditCardSvc,handle)
         }
     }
 

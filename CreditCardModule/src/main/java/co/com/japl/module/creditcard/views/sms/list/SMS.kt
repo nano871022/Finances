@@ -60,7 +60,7 @@ fun SMS(viewModel:SmsCreditCardViewModel,navController: NavController) {
             modifier = Modifier.fillMaxWidth(),
         )
     }else{
-        Body(viewModel = viewModel,navController = navController)
+        Body(viewModel = viewModel,navController)
     }
 
 }
@@ -171,13 +171,16 @@ private fun Buttons(create:()->Unit){
     }
 }
 
+import androidx.compose.ui.platform.LocalContext
+import androidx.navigation.NavController
+
 @RequiresApi(Build.VERSION_CODES.S)
 @Composable
 @Preview(showSystemUi = true, showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
 internal fun SMSPreviewNight(){
     MaterialThemeComposeUI {
 
-        SMS(getViewModel())
+        SMS(getViewModel(), NavController(LocalContext.current))
     }
 }
 
@@ -187,13 +190,15 @@ internal fun SMSPreviewNight(){
 internal fun SMSPreview(){
     MaterialThemeComposeUI {
 
-        SMS(getViewModel())
+        SMS(getViewModel(), NavController(LocalContext.current))
     }
 }
 
+import androidx.lifecycle.SavedStateHandle
+
 @Composable
 private fun getViewModel():SmsCreditCardViewModel {
-  val viewModel = SmsCreditCardViewModel(null,null, null)
+  val viewModel = SmsCreditCardViewModel(SMSCreditCardPortFake(),CreditCardPortFake(), SavedStateHandle())
     viewModel.load.value = false
     listOf(
         SMSCreditCard(

@@ -23,7 +23,7 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class ListTaxCreditCard : Fragment() {
 
-    @Inject lateinit var creditRateSvc: IT_axPort
+    @Inject lateinit var creditRateSvc: ITaxPort
     @Inject lateinit var creditCardSvc2: ICreditCardPort
 
     lateinit var _bind : FragmentListTaxCreditCardBinding

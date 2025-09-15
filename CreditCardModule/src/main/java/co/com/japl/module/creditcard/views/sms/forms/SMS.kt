@@ -184,12 +184,15 @@ private fun Buttons(clean:()->Unit, save:()->Unit){
     }
 }
 
+import androidx.compose.ui.platform.LocalContext
+import androidx.navigation.NavController
+
 @RequiresApi(Build.VERSION_CODES.S)
 @Composable
 @Preview(showBackground = true, showSystemUi = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
 internal fun SmsPreview(){
     MaterialThemeComposeUI {
-        Sms(getViewModel())
+        Sms(getViewModel(), NavController(LocalContext.current))
     }
 }
 
@@ -198,12 +201,16 @@ internal fun SmsPreview(){
 @Preview(showBackground = true, showSystemUi = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
 internal fun SmsPreviewLight(){
     MaterialThemeComposeUI {
-        Sms(getViewModel())
+        Sms(getViewModel(), NavController(LocalContext.current))
     }
 }
+import androidx.lifecycle.SavedStateHandle
+import co.com.japl.module.creditcard.views.fakesSvc.CreditCardPortFake
+import co.com.japl.module.creditcard.views.fakesSvc.SMSCreditCardPortFake
+
 @Composable
 private fun getViewModel():SmsCreditCardViewModel{
-    val viewModel = SmsCreditCardViewModel(null,null,null,null)
+    val viewModel = SmsCreditCardViewModel(SMSCreditCardPortFake(), CreditCardPortFake(), SavedStateHandle())
     viewModel.load.value = false
     return viewModel
 }
