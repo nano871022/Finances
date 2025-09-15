@@ -15,10 +15,7 @@ import kotlinx.coroutines.runBlocking
 import java.math.BigDecimal
 import java.time.LocalDateTime
 
-import androidx.lifecycle.SavedStateHandle
-
-class CreditCardViewModel constructor(private val creditCardSvc:ICreditCardPort, private val savedStateHandle: SavedStateHandle):ViewModel() {
-    private var codeCreditCard:Int? = null
+class CreditCardViewModel constructor(private val codeCreditCard:Int?,private val creditCardSvc:ICreditCardPort, private val navController: NavController):ViewModel() {
     var showProgress = mutableStateOf(true)
     var progress = mutableFloatStateOf(0f)
     var showButtonUpdate = mutableStateOf(false)
@@ -38,12 +35,6 @@ class CreditCardViewModel constructor(private val creditCardSvc:ICreditCardPort,
     var hasErrorWarning = mutableStateOf(false)
 
     private var _creditCardDto:CreditCardDTO? = CreditCardDTO(id=0,name="", maxQuotes = 0, cutOffDay = 1, warningValue = BigDecimal.ZERO, create = LocalDateTime.now(), status = true, interest1Quote = false, interest1NotQuote = false)
-
-    init{
-        savedStateHandle.get<Int>("codeCreditCard")?.let{
-            codeCreditCard = it
-        }
-    }
 
     fun validate(){
 
@@ -66,7 +57,7 @@ class CreditCardViewModel constructor(private val creditCardSvc:ICreditCardPort,
         }
     }
 
-    fun create(context:Context, navController: NavController){
+    fun create(){
         if(showButtons.value) {
             _creditCardDto?.let {
                 val id = creditCardSvc.create(it)
@@ -90,7 +81,7 @@ class CreditCardViewModel constructor(private val creditCardSvc:ICreditCardPort,
         }
     }
 
-    fun update(context:Context, navController: NavController){
+    fun update(){
         _creditCardDto?.let{
             if(creditCardSvc.update(_creditCardDto!!)){
                 Toast.makeText(navController.context, R.string.toast_successful_update,Toast.LENGTH_LONG).show()
@@ -100,7 +91,7 @@ class CreditCardViewModel constructor(private val creditCardSvc:ICreditCardPort,
             }
         }
     }
-    fun goSettings(navController: NavController){
+    fun goSettings(){
         navController?.let {
             codeCreditCard?.let {id->
                 ListCreditCardSettings.navigate(codeCreditCard,navController)

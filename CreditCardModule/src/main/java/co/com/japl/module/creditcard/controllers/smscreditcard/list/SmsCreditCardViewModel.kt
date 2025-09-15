@@ -14,22 +14,22 @@ import co.com.japl.finances.iports.inbounds.creditcard.ISMSCreditCardPort
 import co.com.japl.module.creditcard.R
 import kotlinx.coroutines.runBlocking
 
-import androidx.lifecycle.SavedStateHandle
-
-class SmsCreditCardViewModel constructor(private val svc:ISMSCreditCardPort?,private val creditCardSvc:ICreditCardPort?,private val savedStateHandle: SavedStateHandle?): ViewModel() {
+class SmsCreditCardViewModel constructor(private val svc:ISMSCreditCardPort?,private val creditCardSvc:ICreditCardPort?,private val navController: NavController?): ViewModel() {
 
     val  load = mutableStateOf(true)
     val  progress = mutableFloatStateOf(0.0f)
 
     val list = mutableStateListOf<Map<Int,List<SMSCreditCard>>>()
 
-    fun edit(code:Int,navController: NavController){
+    fun edit(code:Int){
         require(code > 0){"The code must be greater than 0"}
-        co.com.japl.module.creditcard.navigations.SMSCreditCard.navigate(code,navController)
+        navController?.let{
+            co.com.japl.module.creditcard.navigations.SMSCreditCard.navigate(code,navController)
+        }
     }
 
-    fun add(navController: NavController){
-        co.com.japl.module.creditcard.navigations.SMSCreditCard.navigate(navController)
+    fun add(){
+        navController?.let{co.com.japl.module.creditcard.navigations.SMSCreditCard.navigate(navController)}
     }
 
     fun enabled(code:Int){

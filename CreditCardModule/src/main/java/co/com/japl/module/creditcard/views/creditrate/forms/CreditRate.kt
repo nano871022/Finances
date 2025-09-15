@@ -41,7 +41,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 @Composable
-fun CreditRate(viewModel:CreateRateViewModel, navController: NavController){
+fun CreditRate(viewModel:CreateRateViewModel){
     var statePogress = remember {
         viewModel.loader
     }
@@ -60,7 +60,7 @@ fun CreditRate(viewModel:CreateRateViewModel, navController: NavController){
 
         Scaffold(
             floatingActionButton = {
-                FloatingActionButton(onClick = { viewModel.save(navController) },
+                FloatingActionButton(onClick = { viewModel.save() },
                     elevation=FloatingActionButtonDefaults.elevation(10.dp),
                     backgroundColor= MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.5f)) {
                     Icon(
@@ -217,16 +217,14 @@ private fun getKind(value:String):String{
         else-> value
     }
 }
-import androidx.lifecycle.SavedStateHandle
-
 @RequiresApi(Build.VERSION_CODES.S)
 @Composable
 @Preview(showSystemUi = true, showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
 fun CreditRatePreview(){
-    val viewModel = CreateRateViewModel(TaxPortFake(), CreditCardFake(), SavedStateHandle())
+    val viewModel = CreateRateViewModel(null,null,null,null,null)
     viewModel.loader.value = false
     MaterialThemeComposeUI {
-        CreditRate(viewModel, NavController(LocalContext.current))
+        CreditRate(viewModel)
     }
 }
 
@@ -234,9 +232,9 @@ fun CreditRatePreview(){
 @Composable
 @Preview(showSystemUi = true, showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
 fun CreditRatePreviewDark(){
-    val viewModel = CreateRateViewModel(TaxPortFake(), CreditCardFake(), SavedStateHandle())
+    val viewModel = CreateRateViewModel(null,null,null,null,null)
     viewModel.loader.value = false
     MaterialThemeComposeUI {
-        CreditRate(viewModel, NavController(LocalContext.current))
+        CreditRate(viewModel)
     }
 }

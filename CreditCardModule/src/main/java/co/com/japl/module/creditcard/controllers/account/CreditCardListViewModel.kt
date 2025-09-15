@@ -13,7 +13,10 @@ import co.com.japl.module.creditcard.navigations.CreditCard
 import co.com.japl.module.creditcard.navigations.ListCreditCardSettings
 import kotlinx.coroutines.runBlocking
 
-class CreditCardListViewModel constructor(private val creditCardSvc:ICreditCardPort?, private val navController:NavController?) : ViewModel(){
+import androidx.lifecycle.SavedStateHandle
+import android.content.Context
+
+class CreditCardListViewModel constructor(private val creditCardSvc:ICreditCardPort?, private val savedStateHandle: SavedStateHandle?) : ViewModel(){
 
 
     val list = mutableStateListOf<CreditCardDTO?>()
@@ -21,24 +24,24 @@ class CreditCardListViewModel constructor(private val creditCardSvc:ICreditCardP
     var progress = mutableFloatStateOf(0f)
     var showProgress = mutableStateOf(true)
 
-    fun onClick(){
-        navController?.let{CreditCard.navigate(it)}
+    fun onClick(navController: NavController){
+        CreditCard.navigate(navController)
     }
 
-    fun goToSettings(id:Int){
-        navController?.let { ListCreditCardSettings.navigate(id,it) }
+    fun goToSettings(id:Int,navController: NavController){
+        ListCreditCardSettings.navigate(id,navController)
     }
 
-    fun edit(id:Int){
-        navController?.let { CreditCard.navigate(id,it) }
+    fun edit(id:Int,navController: NavController){
+        CreditCard.navigate(id,navController)
     }
 
-    fun delete(id:Int){
+    fun delete(id:Int,context:Context){
         creditCardSvc?.let{
             if(it.delete(id)){
-                Toast.makeText(navController?.context, R.string.toast_successful_deleted,Toast.LENGTH_LONG).show()
+                Toast.makeText(context, R.string.toast_successful_deleted,Toast.LENGTH_LONG).show()
             }else{
-                Toast.makeText(navController?.context, R.string.toast_dont_successful_deleted,Toast.LENGTH_LONG).show()
+                Toast.makeText(context, R.string.toast_dont_successful_deleted,Toast.LENGTH_LONG).show()
             }
         }
     }

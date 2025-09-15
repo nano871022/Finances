@@ -60,10 +60,8 @@ import kotlinx.coroutines.launch
 import java.math.BigDecimal
 import java.time.LocalDateTime
 
-import androidx.navigation.NavController
-
 @Composable
-fun CreditRateList(viewModel: CreditRateListViewModel,navController: NavController){
+fun CreditRateList(viewModel: CreditRateListViewModel){
     val showProgress = remember {
         viewModel.showProgress
     }
@@ -83,14 +81,14 @@ fun CreditRateList(viewModel: CreditRateListViewModel,navController: NavControll
         Scaffold(
             floatingActionButton = {
                 FloatingActionButton(onClick = {
-                    viewModel.add(navController)
+                    viewModel.add()
                 },elevation=FloatingActionButtonDefaults.elevation(10.dp),
                     backgroundColor= MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.5f)) {
                     Icon(imageVector = Icons.Rounded.AddCircleOutline, contentDescription = stringResource(id = R.string.add_credit_rate))
                 }
             }
         ) {
-            Body(viewModel,Modifier.padding(it),navController)
+            Body(viewModel,Modifier.padding(it))
         }
 
     }
@@ -98,7 +96,7 @@ fun CreditRateList(viewModel: CreditRateListViewModel,navController: NavControll
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-private fun Body(viewModel: CreditRateListViewModel,modifier:Modifier=Modifier,navController: NavController){
+private fun Body(viewModel: CreditRateListViewModel,modifier:Modifier=Modifier){
     val mapState = remember {viewModel.creditCard}
     Column {
         Row(horizontalArrangement = Arrangement.End, modifier = Modifier.fillMaxWidth()) {
@@ -107,14 +105,14 @@ private fun Body(viewModel: CreditRateListViewModel,modifier:Modifier=Modifier,n
         mapState?.let { list ->
             Carousel(size = list.size, modifier = Modifier.fillMaxHeight()) {
                 val value = list.entries.toList()[it]
-                CreditCard(value = value, viewModel = viewModel,navController)
+                CreditCard(value = value, viewModel = viewModel)
             }
         }
     }
 }
 
 @Composable
-private fun CreditCard(value:Map.Entry<CreditCardDTO?,List<TaxDTO>>,viewModel: CreditRateListViewModel,navController: NavController){
+private fun CreditCard(value:Map.Entry<CreditCardDTO?,List<TaxDTO>>,viewModel: CreditRateListViewModel){
     val listState = remember{ mutableListOf(value.value) }
 
     OutlinedCard(modifier = Modifier
@@ -125,10 +123,10 @@ private fun CreditCard(value:Map.Entry<CreditCardDTO?,List<TaxDTO>>,viewModel: C
                     title = stringResource(id = R.string.credit_card),
                     value = value.key?.name ?: "",
                     modifier = Modifier
-                                                .fillMaxWidth()
+                        .fillMaxWidth()
                         .padding(Dimensions.PADDING_SHORT),
                     suffix = {
-                        IconButton(onClick = { viewModel.add(value.key?.id,navController) }) {
+                        IconButton(onClick = { viewModel.add(value.key?.id) }) {
                             Icon(
                                 imageVector = Icons.Rounded.AddCircleOutline,
                                 contentDescription = stringResource(id = R.string.add_credit_rate)
@@ -150,8 +148,7 @@ private fun CreditCard(value:Map.Entry<CreditCardDTO?,List<TaxDTO>>,viewModel: C
                                 { codeCreditCard, codeCreditRate ->
                                     viewModel.edit(
                                         codeCreditCard,
-                                        codeCreditRate,
-                                        navController
+                                        codeCreditRate
                                     )
                                 },{ viewModel.clone(it)})
                         }
@@ -260,7 +257,7 @@ private fun getKindInterestRate(kind:KindInterestRateEnum,context: Context):Stri
 fun CreditRateListPreview(){
     val viewModel = getViewModel()
     MaterialThemeComposeUI {
-        CreditRateList(viewModel, NavController(LocalContext.current))
+        CreditRateList(viewModel)
     }
 }
 
@@ -270,15 +267,13 @@ fun CreditRateListPreview(){
 fun CreditRateListPreviewDark(){
     val viewModel = getViewModel()
     MaterialThemeComposeUI {
-        CreditRateList(viewModel, NavController(LocalContext.current))
+        CreditRateList(viewModel)
     }
 }
 
-import androidx.lifecycle.SavedStateHandle
-
 @Composable
 private fun getViewModel():CreditRateListViewModel{
-    val viewModel = CreditRateListViewModel(LocalContext.current, CreditCardFake(),TaxPortFake(), SavedStateHandle())
+    val viewModel = CreditRateListViewModel(LocalContext.current, null,null, null)
     viewModel.showProgress.value = false
     viewModel.creditCard?.put(CreditCardDTO(0,"credit card 1",24,24,
         BigDecimal.ZERO, LocalDateTime.now(),false,false,false),

@@ -40,10 +40,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-import androidx.navigation.NavController
-
 @Composable
-fun Sms(viewModel:SmsCreditCardViewModel,navController: NavController){
+fun Sms(viewModel:SmsCreditCardViewModel){
     val load by remember {viewModel.load}
     var progress  by remember {viewModel.progress}
 
@@ -56,16 +54,16 @@ fun Sms(viewModel:SmsCreditCardViewModel,navController: NavController){
             modifier = Modifier.fillMaxWidth(),
         )
     }else{
-        Form(viewModel = viewModel,navController = navController)
+        Form(viewModel = viewModel)
     }
 
 }
 
 @Composable
-private fun Form(viewModel: SmsCreditCardViewModel,navController: NavController){
+private fun Form(viewModel: SmsCreditCardViewModel){
     Scaffold (
         floatingActionButton = {
-            Buttons({viewModel.clean()}, {viewModel.save(navController)})
+            Buttons({viewModel.clean()}, {viewModel.save()})
         }
     ) {
         Body(viewModel = viewModel, modifier = Modifier
@@ -184,15 +182,12 @@ private fun Buttons(clean:()->Unit, save:()->Unit){
     }
 }
 
-import androidx.compose.ui.platform.LocalContext
-import androidx.navigation.NavController
-
 @RequiresApi(Build.VERSION_CODES.S)
 @Composable
 @Preview(showBackground = true, showSystemUi = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
 internal fun SmsPreview(){
     MaterialThemeComposeUI {
-        Sms(getViewModel(), NavController(LocalContext.current))
+        Sms(getViewModel())
     }
 }
 
@@ -201,16 +196,12 @@ internal fun SmsPreview(){
 @Preview(showBackground = true, showSystemUi = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
 internal fun SmsPreviewLight(){
     MaterialThemeComposeUI {
-        Sms(getViewModel(), NavController(LocalContext.current))
+        Sms(getViewModel())
     }
 }
-import androidx.lifecycle.SavedStateHandle
-import co.com.japl.module.creditcard.views.fakesSvc.CreditCardPortFake
-import co.com.japl.module.creditcard.views.fakesSvc.SMSCreditCardPortFake
-
 @Composable
 private fun getViewModel():SmsCreditCardViewModel{
-    val viewModel = SmsCreditCardViewModel(SMSCreditCardPortFake(), CreditCardPortFake(), SavedStateHandle())
+    val viewModel = SmsCreditCardViewModel(null,null,null,null)
     viewModel.load.value = false
     return viewModel
 }

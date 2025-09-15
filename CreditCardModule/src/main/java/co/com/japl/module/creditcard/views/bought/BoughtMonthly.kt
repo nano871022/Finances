@@ -75,10 +75,8 @@ import kotlinx.coroutines.launch
 import java.time.LocalDate
 
 
-import androidx.navigation.NavController
-
 @Composable
-fun BoughtMonthly(viewModel:BoughtMonthlyViewModel?=null,navController: NavController) {
+fun BoughtMonthly(viewModel:BoughtMonthlyViewModel?=null) {
     var loaderStatus by remember {viewModel!!.loader}
     var progressStatus by remember {viewModel!!.progress}
 
@@ -109,22 +107,22 @@ fun BoughtMonthly(viewModel:BoughtMonthlyViewModel?=null,navController: NavContr
                    modifier = Modifier.fillMaxWidth(),
                )
            }else{
-                Loaded(viewModel = viewModel,navController)
+                Loaded(viewModel = viewModel)
            }
     }
 }
 
 @Composable
-private fun Loaded(viewModel:BoughtMonthlyViewModel,navController: NavController){
+private fun Loaded(viewModel:BoughtMonthlyViewModel){
     val modeWindow = LocalConfiguration.current
     var cutOffDay by remember{ viewModel!!.cutOff }
-    var daysLeftCutoff by remember{ viewModel!!.daysLeftOff }
+    var daysLeftCutoff by remember{ viewModel!!.daysLeftCutOff }
     var totalValue by remember{ viewModel!!.totalValue }
     var verticalScrollState = rememberScrollState()
     Scaffold(
         floatingActionButton = {
             viewModel?.let {
-                FloatButtons(it,navController)
+                FloatButtons(it)
             }
         },
         modifier = Modifier.padding(Dimensions.PADDING_SHORT)
@@ -179,7 +177,7 @@ private fun Loaded(viewModel:BoughtMonthlyViewModel,navController: NavController
 }
 
 @Composable
-private fun FloatButtons(viewModel:BoughtMonthlyViewModel,navController: NavController){
+private fun FloatButtons(viewModel:BoughtMonthlyViewModel){
     var showList by remember { viewModel.showList }
     var showPeriod by remember { viewModel.showPeriodList }
     var showAddBought by remember { viewModel.showBought }
@@ -189,7 +187,7 @@ private fun FloatButtons(viewModel:BoughtMonthlyViewModel,navController: NavCont
 
     Column {
         if(showList) {
-            FloatingActionButton(onClick = { viewModel.goToPaidList(navController) },
+            FloatingActionButton(onClick = { viewModel.goToPaidList() },
                 elevation=FloatingActionButtonDefaults.elevation(10.dp),
                 backgroundColor= MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.5f)) {
                 Icon(
@@ -202,7 +200,7 @@ private fun FloatButtons(viewModel:BoughtMonthlyViewModel,navController: NavCont
         }
 
         if(showPeriod) {
-            FloatingActionButton(onClick = { viewModel.goToPeriodList(navController) },
+            FloatingActionButton(onClick = { viewModel.goToPeriodList() },
                 elevation=FloatingActionButtonDefaults.elevation(10.dp),
                 backgroundColor= MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.5f)) {
                 Icon(
@@ -215,7 +213,7 @@ private fun FloatButtons(viewModel:BoughtMonthlyViewModel,navController: NavCont
         }
 
         if(showAddBought) {
-            FloatingActionButton(onClick = { viewModel.goToAddBought(navController) },
+            FloatingActionButton(onClick = { viewModel.goToAddBought() },
                 elevation=FloatingActionButtonDefaults.elevation(10.dp),
                 backgroundColor= MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.5f)) {
                 Icon(
@@ -228,7 +226,7 @@ private fun FloatButtons(viewModel:BoughtMonthlyViewModel,navController: NavCont
         }
 
         if(showAddAdvance) {
-            FloatingActionButton(onClick = { viewModel.goToAddAdvance(navController) },
+            FloatingActionButton(onClick = { viewModel.goToAddAdvance() },
             elevation=FloatingActionButtonDefaults.elevation(10.dp),
                 backgroundColor= MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.5f)) {
                 Icon(
@@ -241,7 +239,7 @@ private fun FloatButtons(viewModel:BoughtMonthlyViewModel,navController: NavCont
         }
 
         if(showAddBoughtWallet) {
-            FloatingActionButton(onClick = { viewModel.goToAddBoughtWallet(navController) },
+            FloatingActionButton(onClick = { viewModel.goToAddBoughtWallet() },
                 elevation=FloatingActionButtonDefaults.elevation(10.dp),
                 backgroundColor= MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.5f)) {
                 Icon(
@@ -254,7 +252,7 @@ private fun FloatButtons(viewModel:BoughtMonthlyViewModel,navController: NavCont
         }
 
         if(showAddCreditRate) {
-            FloatingActionButton(onClick = { viewModel.goToAddCreditRate(navController) },
+            FloatingActionButton(onClick = { viewModel.goToAddCreditRate() },
                 elevation=FloatingActionButtonDefaults.elevation(10.dp),
                 backgroundColor= MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.5f)) {
                 Icon(
@@ -776,7 +774,7 @@ fun BoughtMonthlyPreviewNight(){
     val viewModel = getViewMoel(LocalContext.current)
     MaterialThemeComposeUI {
 
-        BoughtMonthly(viewModel, NavController(LocalContext.current))
+        BoughtMonthly(viewModel)
     }
 }
 
@@ -787,7 +785,7 @@ fun BoughtMonthlyPreview(){
     val viewModel = getViewMoel(LocalContext.current)
     MaterialThemeComposeUI {
 
-        BoughtMonthly(viewModel, NavController(LocalContext.current))
+        BoughtMonthly(viewModel)
     }
 }
 
@@ -800,7 +798,7 @@ fun BoughtMonthlyPreviewLandScape(){
     val viewModel = getViewMoel(LocalContext.current)
     MaterialThemeComposeUI {
 
-        BoughtMonthly(viewModel, NavController(LocalContext.current))
+        BoughtMonthly(viewModel)
     }
 }
 
@@ -813,26 +811,13 @@ fun BoughtMonthlyPreviewFold(){
     val viewModel = getViewMoel(LocalContext.current)
     MaterialThemeComposeUI {
 
-        BoughtMonthly(viewModel, NavController(LocalContext.current))
+        BoughtMonthly(viewModel)
     }
 }
 
-import androidx.lifecycle.SavedStateHandle
-import co.com.japl.module.creditcard.views.fakesSvc.BoughtPortFake
-import co.com.japl.module.creditcard.views.fakesSvc.BoughtSmsPortFake
-import co.com.japl.module.creditcard.views.fakesSvc.CreditCardPortFake
-import co.com.japl.module.creditcard.views.fakesSvc.SMSCreditCardPortFake
-import co.com.japl.module.creditcard.views.fakesSvc.TaxPortFake
-
 private fun getViewMoel(context:Context):BoughtMonthlyViewModel{
     val prefs = Prefs(context)
-    val creditRate = TaxPortFake()
-    val creditCardSvc = CreditCardPortFake()
-    val boughtCreditCardSvc = BoughtPortFake()
-    val msmSvc = SMSCreditCardPortFake()
-    val svc = BoughtSmsPortFake()
-    val savedStateHandle = SavedStateHandle()
-    val viewModel = BoughtMonthlyViewModel(creditRate,creditCardSvc,boughtCreditCardSvc,prefs,msmSvc,svc,savedStateHandle)
+    val viewModel = BoughtMonthlyViewModel(null,null,null,null,prefs,null,null)
     viewModel.loader.value = true
     viewModel.graphList.addAll(arrayListOf(Pair("Issue 1",1000.0),Pair("Issue 2",2000.0)))
     viewModel.graphListPeriod.addAll(arrayListOf(Pair("Issue 3",500.0),Pair("Issue 4",300.0)))

@@ -20,9 +20,6 @@ import co.com.japl.utils.NumbersUtil
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
-import androidx.fragment.app.viewModels
-import co.japl.android.myapplication.finanzas.controller.ViewModelFactory
-
 @AndroidEntryPoint
 class Taxes : Fragment() {
 
@@ -30,11 +27,8 @@ class Taxes : Fragment() {
     @Inject lateinit var creditCardSvc:ICreditCardPort
 
     private lateinit var _binding : FragmentTaxesBinding
-    private val viewModel: CreateRateViewModel by viewModels {
-        ViewModelFactory(this,CreateRateViewModel::class.java){handle->
-            CreateRateViewModel(service,creditCardSvc,handle)
-        }
-    }
+    private var codeCreditCard:Int? = null
+    private var codeCreditRate:Int? = null
 
 
     @RequiresApi(Build.VERSION_CODES.S)
@@ -43,15 +37,31 @@ class Taxes : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         _binding = FragmentTaxesBinding.inflate(inflater)
+        getParameters()
+        val viewModel = CreateRateViewModel(codeCreditCard,codeCreditRate,service,creditCardSvc,findNavController())
         _binding.cvComponentFts.apply {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
                 MaterialThemeComposeUI {
-                    CreditRate(viewModel = viewModel, findNavController())
+                    CreditRate(viewModel = viewModel)
                 }
             }
         }
         return _binding.root.rootView
+    }
+
+    private fun getParameters(){
+        arguments?.let {
+            val params = TaxesParams.download(it)
+            codeCreditCard = if(NumbersUtil.isNumber(params.first))
+                params.first.toInt()
+            else
+                null
+            codeCreditRate = if(NumbersUtil.isNumber(params.second))
+                params.second.toInt()
+            else
+                null
+        }
     }
 
 }

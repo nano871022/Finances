@@ -14,11 +14,8 @@ import co.com.japl.finances.iports.inbounds.creditcard.ISMSCreditCardPort
 import co.com.japl.module.creditcard.R
 import kotlinx.coroutines.runBlocking
 
-import androidx.lifecycle.SavedStateHandle
+class SmsCreditCardViewModel constructor(private val codeSMSCC:Int?,private val svc:ISMSCreditCardPort?,private val creditCardSvc:ICreditCardPort?,private val navController: NavController?): ViewModel() {
 
-class SmsCreditCardViewModel constructor(private val svc:ISMSCreditCardPort?,private val creditCardSvc:ICreditCardPort?,private val savedStateHandle: SavedStateHandle): ViewModel() {
-
-    private var codeSMSCC:Int? = null
     val  load = mutableStateOf(true)
     val  progress = mutableFloatStateOf(0.0f)
 
@@ -40,29 +37,23 @@ class SmsCreditCardViewModel constructor(private val svc:ISMSCreditCardPort?,pri
 
     val validate = mutableStateOf("")
 
-    init{
-        savedStateHandle.get<Int>("codeSMS")?.let{
-            codeSMSCC = it
-        }
-    }
 
-
-    fun save(navController: NavController){
+    fun save(){
         if(smsCreditCard != null && !errorKindInterestRate.value && !errorPhoneNumber.value && !errorPattern.value) {
             smsCreditCard?.takeIf { it.id == 0 }?.let{
                 svc?.create(it)?.takeIf { it > 0 }?.let{
                     smsCreditCard = smsCreditCard!!.copy(id = it)
-                    Toast.makeText(navController.context, R.string.toast_successful_insert, Toast.LENGTH_SHORT).show().also {
+                    navController?.let { Toast.makeText(it.context, R.string.toast_successful_insert, Toast.LENGTH_SHORT).show().also {
                         navController.popBackStack()
-                    }
-                }?:Toast.makeText(navController.context, R.string.toast_unsuccessful_insert, Toast.LENGTH_SHORT).show()
+                    } }
+                }?:navController?.let { Toast.makeText(it.context, R.string.toast_unsuccessful_insert, Toast.LENGTH_SHORT).show() }
             }
             smsCreditCard?.takeIf { it.id > 0 }?.let{
                 svc?.update(it)?.takeIf { it }?.let{
-                    Toast.makeText(navController.context, R.string.toast_successful_update, Toast.LENGTH_SHORT).show().also {
+                    navController?.let { Toast.makeText(it.context, R.string.toast_successful_update, Toast.LENGTH_SHORT).show().also {
                         navController.popBackStack()
-                    }
-                }?:Toast.makeText(navController.context, R.string.toast_dont_successful_update, Toast.LENGTH_SHORT).show()
+                    }}
+                }?:navController?.let { Toast.makeText(it.context, R.string.toast_dont_successful_update, Toast.LENGTH_SHORT).show() }
             }
         }
     }

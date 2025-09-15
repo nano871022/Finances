@@ -54,8 +54,11 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 
+import androidx.compose.ui.platform.LocalContext
+import androidx.navigation.NavController
+
 @Composable
-fun CreditCardList(creditCardViewModel:CreditCardListViewModel){
+fun CreditCardList(creditCardViewModel:CreditCardListViewModel,navController: NavController){
     val progress = remember {
         creditCardViewModel.progress
     }
@@ -73,15 +76,16 @@ fun CreditCardList(creditCardViewModel:CreditCardListViewModel){
             modifier = Modifier.fillMaxWidth(),
         )
     }else {
-        Body(creditCardViewModel = creditCardViewModel)
+        Body(creditCardViewModel = creditCardViewModel,navController)
     }
 }
 
 @Composable
-private fun Body(creditCardViewModel:CreditCardListViewModel){
+private fun Body(creditCardViewModel:CreditCardListViewModel,navController: NavController){
     val listState = remember {creditCardViewModel.list}
+    val context = LocalContext.current
     Scaffold(floatingActionButton = {
-        FloatingActionButton(onClick = { creditCardViewModel.onClick() },
+        FloatingActionButton(onClick = { creditCardViewModel.onClick(navController) },
             elevation = FloatingActionButtonDefaults.elevation(8.dp),
             backgroundColor = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.5f)) {
             Icon(
@@ -96,7 +100,7 @@ private fun Body(creditCardViewModel:CreditCardListViewModel){
                     descriptionContent = R.string.wiki_credit_card_description)
             }
         listState.forEach {item->
-                Item(item!!,{creditCardViewModel.edit(it)},{creditCardViewModel.delete(it)},{creditCardViewModel.goToSettings(it)})
+                Item(item!!,{creditCardViewModel.edit(it,navController)},{creditCardViewModel.delete(it,context)},{creditCardViewModel.goToSettings(it,navController)})
             }
         }
     }
@@ -213,7 +217,7 @@ private fun ItemLarge(dto:CreditCardDTO,state:MutableState<Boolean>,edit:(Int)->
 fun CreditCardListPreview(){
     val creditCardViewModel = getViewModel()
     MaterialThemeComposeUI {
-        CreditCardList(creditCardViewModel)
+        CreditCardList(creditCardViewModel, NavController(LocalContext.current))
     }
 }
 
@@ -223,12 +227,15 @@ fun CreditCardListPreview(){
 fun CreditCardListPreviewDark(){
     val creditCardViewModel = getViewModel()
     MaterialThemeComposeUI {
-        CreditCardList(creditCardViewModel)
+        CreditCardList(creditCardViewModel, NavController(LocalContext.current))
     }
 }
 
+import androidx.lifecycle.SavedStateHandle
+import co.com.japl.module.creditcard.views.fakesSvc.CreditCardFake
+
 fun getViewModel():CreditCardListViewModel{
- val viewModel = CreditCardListViewModel(creditCardSvc = null,navController = null)
+ val viewModel = CreditCardListViewModel(creditCardSvc = CreditCardFake(),savedStateHandle = SavedStateHandle())
     viewModel.showProgress.value = false
     viewModel.progress.floatValue = 0.7f
     return viewModel

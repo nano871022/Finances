@@ -17,12 +17,20 @@ import co.com.japl.module.creditcard.controllers.account.CreditCardListViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
+import androidx.fragment.app.viewModels
+import co.japl.android.myapplication.finanzas.controller.ViewModelFactory
+
 @AndroidEntryPoint
 class ListCreditCard : Fragment()  {
 
     @Inject lateinit var creditCardSvc:ICreditCardPort
     private lateinit var _binding : FragmentListCreditCardBinding
     private val binding get() = _binding
+    private val viewModel:CreditCardListViewModel by viewModels {
+        ViewModelFactory(this,CreditCardListViewModel::class.java){
+            CreditCardListViewModel(creditCardSvc,it)
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,12 +43,11 @@ class ListCreditCard : Fragment()  {
         savedInstanceState: Bundle?
     ): View? {
         _binding = FragmentListCreditCardBinding.inflate(inflater)
-        val viewModel = CreditCardListViewModel(creditCardSvc,findNavController())
         binding?.listComposeLcc?.apply {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
                 MaterialThemeComposeUI {
-                    CreditCardList(creditCardViewModel = viewModel)
+                    CreditCardList(creditCardViewModel = viewModel, findNavController())
                 }
             }
         }

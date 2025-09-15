@@ -43,10 +43,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-import androidx.navigation.NavController
-
 @Composable
-fun SMS(viewModel:SmsCreditCardViewModel,navController: NavController) {
+fun SMS(viewModel:SmsCreditCardViewModel) {
     val loader = remember {viewModel.load}
     val progress = remember {viewModel.progress}
 
@@ -60,27 +58,27 @@ fun SMS(viewModel:SmsCreditCardViewModel,navController: NavController) {
             modifier = Modifier.fillMaxWidth(),
         )
     }else{
-        Body(viewModel = viewModel,navController)
+        Body(viewModel = viewModel)
     }
 
 }
 
 @Composable
-private fun Body(viewModel: SmsCreditCardViewModel,navController: NavController){
+private fun Body(viewModel: SmsCreditCardViewModel){
     Scaffold (
         floatingActionButton = {
             Buttons{
-                viewModel.add(navController)
+                viewModel.add()
             }
         }
     ) {
-        Content(viewModel = viewModel, modifier = Modifier.padding(it),navController)
+        Content(viewModel = viewModel, modifier = Modifier.padding(it))
     }
 }
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-private fun Content(viewModel: SmsCreditCardViewModel,modifier: Modifier,navController: NavController){
+private fun Content(viewModel: SmsCreditCardViewModel,modifier: Modifier){
     val list = remember { viewModel.list}
     Column {
         Row (horizontalArrangement = Arrangement.End, modifier=Modifier.fillMaxWidth()) {
@@ -95,7 +93,7 @@ private fun Content(viewModel: SmsCreditCardViewModel,modifier: Modifier,navCont
                     list[it]?.values?.forEach {
                         for (i in it) {
                             Card(sms = i, modifier = Modifier, edit = {
-                                viewModel.edit(it,navController)
+                                viewModel.edit(it)
                             }, delete = {
                                 viewModel.delete(it)
                             }, enable = {
@@ -171,16 +169,13 @@ private fun Buttons(create:()->Unit){
     }
 }
 
-import androidx.compose.ui.platform.LocalContext
-import androidx.navigation.NavController
-
 @RequiresApi(Build.VERSION_CODES.S)
 @Composable
 @Preview(showSystemUi = true, showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
 internal fun SMSPreviewNight(){
     MaterialThemeComposeUI {
 
-        SMS(getViewModel(), NavController(LocalContext.current))
+        SMS(getViewModel())
     }
 }
 
@@ -190,15 +185,13 @@ internal fun SMSPreviewNight(){
 internal fun SMSPreview(){
     MaterialThemeComposeUI {
 
-        SMS(getViewModel(), NavController(LocalContext.current))
+        SMS(getViewModel())
     }
 }
 
-import androidx.lifecycle.SavedStateHandle
-
 @Composable
 private fun getViewModel():SmsCreditCardViewModel {
-  val viewModel = SmsCreditCardViewModel(SMSCreditCardPortFake(),CreditCardPortFake(), SavedStateHandle())
+  val viewModel = SmsCreditCardViewModel(null,null, null)
     viewModel.load.value = false
     listOf(
         SMSCreditCard(
