@@ -1,4 +1,4 @@
-package co.com.japl.module.credit.views.creditamortization
+package co.com.japl.module.credit.views.fakes
 
 import co.com.japl.finances.iports.dtos.GracePeriodDTO
 import co.com.japl.finances.iports.inbounds.credit.IPeriodGracePort

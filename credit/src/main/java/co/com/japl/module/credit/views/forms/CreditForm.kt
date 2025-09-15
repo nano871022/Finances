@@ -73,7 +73,7 @@ private fun Body(viewModel: CreditFormViewModel, navController: NavController) {
                 backView = {viewModel.backView(navController)},
                 clean = {viewModel.clean()},
                 amortization = {viewModel.amortization(navController)},
-                save = {viewModel.onSubmitFormClicked()}
+                save = {viewModel.onSubmitFormClicked(navController)}
             )
         }, snackbarHost = {
             SnackbarHost(hostState = snackbarHostState)

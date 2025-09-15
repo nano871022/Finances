@@ -1,4 +1,4 @@
-package co.com.japl.module.credit.views.fakesSvc
+package co.com.japl.module.credit.views.fakes
 
 import co.com.japl.finances.iports.dtos.ExtraValueAmortizationDTO
 import co.com.japl.finances.iports.inbounds.credit.IExtraValueAmortizationCreditPort

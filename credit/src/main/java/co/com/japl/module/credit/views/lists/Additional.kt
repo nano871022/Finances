@@ -149,7 +149,7 @@ private  fun RowScope.RowListBody(index:Int,viewModel: AdditionalViewModel,navCo
             confirmNameButton = R.string.delete,
             onDismiss = { deleteStatus.value = false }
         ) {
-            viewModel.deleteAdditional(value.id)
+            viewModel.deleteAdditional(value.id,navController)
             deleteStatus.value = false
         }
 
@@ -213,7 +213,7 @@ private fun AdditionalPreviewNight(){
 
 @Composable
 private fun getViewModel(): AdditionalViewModel{
-    val vm = AdditionalViewModel(LocalContext.current, SavedStateHandle(),null)
+    val vm = AdditionalViewModel(SavedStateHandle(),null)
     vm.list.add(AdditionalCreditDTO(
         id = 1,
         name = "Test",
