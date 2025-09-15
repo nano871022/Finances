@@ -36,7 +36,7 @@ import co.com.japl.finances.iports.enums.KindOfTaxEnum
 import co.com.japl.finances.iports.inbounds.credit.ISimulatorCreditFixPort
 import co.com.japl.module.credit.R
 import co.com.japl.module.credit.controllers.simulator.SimulatorFixViewModel
-import co.com.japl.module.credit.views.fakesSvc.SimulatorCreditFixFake
+import co.com.japl.module.credit.views.fakes.SimulatorCreditFixFake
 import co.com.japl.ui.components.FieldSelect
 import co.com.japl.ui.components.FieldText
 import co.com.japl.ui.components.FieldView

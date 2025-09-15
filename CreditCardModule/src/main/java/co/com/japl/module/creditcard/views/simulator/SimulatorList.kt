@@ -26,10 +26,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.compose.rememberNavController
 import co.com.japl.finances.iports.dtos.SimulatorCreditDTO
 import co.com.japl.finances.iports.enums.KindOfTaxEnum
 import co.com.japl.module.creditcard.R
 import co.com.japl.module.creditcard.controllers.simulator.SimulatorListItemViewModel
+import co.com.japl.module.creditcard.views.fakeSvc.SimulatorCreditVariableFake
 import co.com.japl.ui.components.MoreOptionsDialogPair
 import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.com.japl.ui.theme.values.Dimensions
@@ -61,6 +63,7 @@ private fun MainBody(viewModel: SimulatorListItemViewModel,size:WindowWidthSize)
 
 @Composable
 private fun Header(viewModel: SimulatorListItemViewModel, size:WindowWidthSize){
+    val navController = rememberNavController()
     val state = remember { viewModel.showOptions }
     Row {
         Text(
@@ -157,7 +160,7 @@ private fun Header(viewModel: SimulatorListItemViewModel, size:WindowWidthSize){
         }
     }
     Options(state=state,actionAmortization={
-      viewModel.gotoAmortization(viewModel.item.get().code)
+      viewModel.gotoAmortization(viewModel.item.get().code,navController)
     })
 }
 
@@ -337,5 +340,8 @@ private fun getViewModel(): SimulatorListItemViewModel{
         quoteValue = 1038978.toBigDecimal(),
         capitalValue = 833333.toBigDecimal()
     )
-    return SimulatorListItemViewModel(itemValue = dto)
+    return SimulatorListItemViewModel(
+        itemValue = dto,
+        simulatorVariableSvc = SimulatorCreditVariableFake()
+    )
 }

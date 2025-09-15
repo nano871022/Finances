@@ -19,6 +19,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import androidx.navigation.compose.rememberNavController
 import co.com.japl.module.creditcard.R
 import co.com.japl.module.creditcard.controllers.account.CreditCardViewModel
 import co.com.japl.ui.components.CheckBoxField
@@ -31,6 +32,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun CreditCard(viewModel: CreditCardViewModel){
 
+    val navController = rememberNavController()
     val progression = remember{viewModel.progress}
     val showProgress = remember{viewModel.showProgress}
 
@@ -53,19 +55,19 @@ fun CreditCard(viewModel: CreditCardViewModel){
                                     imageVector = Icons.Rounded.Settings,
                                     descriptionIcon = R.string.setting_redirect
                                 ) {
-                                    viewModel.goSettings()
+                                    viewModel.goSettings(navController)
                                 }
 
                                 FloatButton(
                                     imageVector = Icons.Rounded.Update,
                                     descriptionIcon = R.string.update
                                 ) {
-                                    viewModel.update()
+                                    viewModel.update(navController)
                                 }
                             }
                         }else {
                             FloatButton(imageVector = Icons.Rounded.Create,
-                                descriptionIcon =  R.string.create){ viewModel.create() }
+                                descriptionIcon =  R.string.create){ viewModel.create(navController) }
                         }
                     }
             }

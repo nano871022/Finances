@@ -4,6 +4,7 @@ import android.util.Log
 import android.widget.Toast
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.navigation.NavController
 import co.com.japl.finances.iports.dtos.CreditCardDTO
@@ -15,7 +16,10 @@ import co.com.japl.utils.NumbersUtil
 import kotlinx.coroutines.runBlocking
 import java.time.LocalDateTime
 
-class CreditCardSettingViewModel constructor(private val codeCreditCard:Int?,private val codeCreditCardSetting:Int?,private val creditCardSvc:ICreditCardPort?,private val creditCardSettingSvc:ICreditCardSettingPort?,private val navController: NavController?) : ViewModel() {
+class CreditCardSettingViewModel constructor(private val savedStateHandle: SavedStateHandle,private val creditCardSvc:ICreditCardPort,private val creditCardSettingSvc:ICreditCardSettingPort) : ViewModel() {
+
+    private var codeCreditCard:Int? = null
+    private var codeCreditCardSetting:Int? = null
 
     var progress = mutableFloatStateOf(0f)
     var showProgress = mutableStateOf(true)
@@ -34,6 +38,12 @@ class CreditCardSettingViewModel constructor(private val codeCreditCard:Int?,pri
     var active = mutableStateOf(false)
     var showButtons = mutableStateOf(false)
 
+    init{
+        codeCreditCard = savedStateHandle.get<Int>("codeCreditCard")
+        codeCreditCardSetting = savedStateHandle.get<Int>("codeSetting")
+
+    }
+
     fun validate(){
         name.value.takeIf { it.isEmpty() }?.let{ nameIsError.value = true}
         name.value.takeIf{it.isNotEmpty()}?.let{nameIsError.value = false}
@@ -44,7 +54,7 @@ class CreditCardSettingViewModel constructor(private val codeCreditCard:Int?,pri
         showButtons.value = !validation()
     }
 
-    fun update(){
+    fun update(navController: NavController){
         dto?.let {
             it.name = name.value
             it.value = value . value
@@ -63,7 +73,7 @@ class CreditCardSettingViewModel constructor(private val codeCreditCard:Int?,pri
         return nameIsError.value || valueIsError.value || typeIsError.value
     }
 
-    fun create(){
+    fun create(navController: NavController){
         Log.d(javaClass.name,"<<<=== Create $dto")
         dto = CreditCardSettingDTO(id = 0, codeCreditCard = codeCreditCard?:0, name = "", value = "", type = "",create=LocalDateTime.now(), active = 1)
         dto?.let {
@@ -75,9 +85,9 @@ class CreditCardSettingViewModel constructor(private val codeCreditCard:Int?,pri
         dto?.let {  dto->
             creditCardSettingSvc?.create(dto)?.let{
                 dto.id = it
-                navController?.navigateUp()
-                Toast.makeText(navController?.context, R.string.toast_successful_insert,Toast.LENGTH_LONG).show()
-            }?:Toast.makeText(navController?.context, R.string.toast_unsuccessful_insert,Toast.LENGTH_LONG).show()
+                navController.navigateUp()
+                Toast.makeText(navController.context, R.string.toast_successful_insert,Toast.LENGTH_LONG).show()
+            }?:Toast.makeText(navController.context, R.string.toast_unsuccessful_insert,Toast.LENGTH_LONG).show()
 
         }
 

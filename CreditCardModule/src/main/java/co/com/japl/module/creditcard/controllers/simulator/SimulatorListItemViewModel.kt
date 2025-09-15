@@ -8,7 +8,7 @@ import co.com.japl.finances.iports.inbounds.creditcard.ISimulatorCreditVariableP
 import co.com.japl.module.creditcard.R
 import java.util.Optional
 
-class SimulatorListItemViewModel constructor(private val itemValue: SimulatorCreditDTO?=null, private val simulatorVariableSvc: ISimulatorCreditVariablePort?=null, private val navController: NavController?=null){
+class SimulatorListItemViewModel constructor(private val itemValue: SimulatorCreditDTO?=null, private val simulatorVariableSvc: ISimulatorCreditVariablePort){
 
     val showOptions = mutableStateOf(false)
     var item: Optional<SimulatorCreditDTO> = Optional.empty()
@@ -20,13 +20,11 @@ class SimulatorListItemViewModel constructor(private val itemValue: SimulatorCre
         }
     }
 
-    fun gotoAmortization(code:Int){
-        navController?.let{
+    fun gotoAmortization(code:Int,navController: NavController){
             simulatorVariableSvc?.let{
                 it.setSimulation(item.get())
             }
             val path = navController.context.getString(R.string.navigate_form_simulator_amortization,code).toUri()
-            it.navigate(path)
-        }
+            navController.navigate(path)
     }
 }

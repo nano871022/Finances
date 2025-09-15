@@ -4,6 +4,7 @@ import android.widget.Toast
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.navigation.NavController
 import co.com.japl.finances.iports.dtos.CreditCardDTO
@@ -14,7 +15,8 @@ import co.com.japl.finances.iports.inbounds.creditcard.ISMSCreditCardPort
 import co.com.japl.module.creditcard.R
 import kotlinx.coroutines.runBlocking
 
-class SmsCreditCardViewModel constructor(private val codeSMSCC:Int?,private val svc:ISMSCreditCardPort?,private val creditCardSvc:ICreditCardPort?,private val navController: NavController?): ViewModel() {
+class SmsCreditCardViewModel constructor(private val savedStateHandle: SavedStateHandle,private val svc:ISMSCreditCardPort,private val creditCardSvc:ICreditCardPort): ViewModel() {
+    private val codeSMSCC:Int?
 
     val  load = mutableStateOf(true)
     val  progress = mutableFloatStateOf(0.0f)
@@ -37,8 +39,11 @@ class SmsCreditCardViewModel constructor(private val codeSMSCC:Int?,private val 
 
     val validate = mutableStateOf("")
 
+    init{
+        codeSMSCC = savedStateHandle.get<Int>("code_sms_credit_Card")
+    }
 
-    fun save(){
+    fun save(navController: NavController){
         if(smsCreditCard != null && !errorKindInterestRate.value && !errorPhoneNumber.value && !errorPattern.value) {
             smsCreditCard?.takeIf { it.id == 0 }?.let{
                 svc?.create(it)?.takeIf { it > 0 }?.let{

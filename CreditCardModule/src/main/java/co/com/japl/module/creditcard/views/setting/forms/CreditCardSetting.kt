@@ -24,10 +24,14 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.SavedStateHandle
+import androidx.navigation.compose.rememberNavController
 import co.com.japl.module.creditcard.R
 import co.com.japl.module.creditcard.controllers.setting.CreditCardSettingViewModel
 import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.com.japl.module.creditcard.enums.MoreOptionsItemsTypeSettings
+import co.com.japl.module.creditcard.views.fakeSvc.CreditCardFake
+import co.com.japl.module.creditcard.views.fakeSvc.CreditCardSettingFake
 import co.com.japl.ui.components.CheckBoxField
 import co.com.japl.ui.components.FieldSelect
 import co.com.japl.ui.components.FieldText
@@ -144,17 +148,18 @@ private fun Body(viewModel: CreditCardSettingViewModel, modifier:Modifier) {
 
 @Composable
 private fun Buttons(viewModel: CreditCardSettingViewModel) {
+    val navController = rememberNavController()
     val state = remember {viewModel.showButtons}
     val newOneState = remember {viewModel.newOne}
         if (!newOneState.value) {
             FloatButton(imageVector = Icons.Rounded.Update,
                 descriptionIcon = R.string.save) {
-                viewModel.update()
+                viewModel.update(navController)
             }
         } else {
             FloatButton(imageVector = Icons.Rounded.Create,
                 descriptionIcon =R.string.save) {
-                viewModel.create()
+                viewModel.create(navController)
             }
         }
 }
@@ -163,7 +168,7 @@ private fun Buttons(viewModel: CreditCardSettingViewModel) {
 @Composable
 @Preview(showBackground = true, showSystemUi = true)
 private fun CreditCardSettingPreview(){
-    val viewModel = CreditCardSettingViewModel(codeCreditCard = null,codeCreditCardSetting = null, creditCardSvc = null,creditCardSettingSvc = null, navController=null)
+    val viewModel = CreditCardSettingViewModel(savedStateHandle = SavedStateHandle(), creditCardSvc = CreditCardFake(),creditCardSettingSvc = CreditCardSettingFake())
     viewModel.showProgress.value = false
     MaterialThemeComposeUI {
         CreditCardSetting(viewModel = viewModel)

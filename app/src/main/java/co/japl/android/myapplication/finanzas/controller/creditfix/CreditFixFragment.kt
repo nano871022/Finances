@@ -30,7 +30,8 @@ class CreditFixFragment : Fragment(){
             build = {
                 CreditFormViewModel(
                     savedStateHandle = it,
-                    creditSvc = creditSvc
+                    creditSvc = creditSvc,
+                    context = context?.applicationContext!!
                 )
             }
         )

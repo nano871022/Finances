@@ -8,12 +8,14 @@ import android.view.ViewGroup
 import androidx.annotation.RequiresApi
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import co.com.japl.finances.iports.inbounds.creditcard.ICreditCardSettingPort
 import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.japl.android.myapplication.databinding.FragmentListCreditCardSettingBinding
 import co.com.japl.module.creditcard.views.setting.lists.CreditCardSettingList
 import co.com.japl.module.creditcard.controllers.setting.CreditCardSettingListViewModel
+import co.japl.android.myapplication.finanzas.controller.ViewModelFactory
 import co.japl.android.myapplication.putParams.ListCreditCardSettingParams
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -27,9 +29,14 @@ class ListCreditCardSetting : Fragment() {
      lateinit var _binding:FragmentListCreditCardSettingBinding
     private val binding get() = _binding
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
+    val viewModel : CreditCardSettingListViewModel by viewModels {
+        ViewModelFactory(
+            owner = this,
+            viewModelClass = CreditCardSettingListViewModel::class.java,
+            build = {
+                CreditCardSettingListViewModel(it,saveSvc)
+            }
+        )
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -38,11 +45,6 @@ class ListCreditCardSetting : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         _binding = FragmentListCreditCardSettingBinding.inflate(inflater)
-        val map = ListCreditCardSettingParams.download(arguments)
-        if(map.containsKey(ListCreditCardSettingParams.Params.ARG_CODE_CREDIT_CARD)) {
-            codeCreditCard = map[ListCreditCardSettingParams.Params.ARG_CODE_CREDIT_CARD]!!
-        }
-        val viewModel = CreditCardSettingListViewModel(codeCreditCard,saveSvc,findNavController())
         binding?.cvComposeLccs?.apply {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {

@@ -1,5 +1,6 @@
 package co.com.japl.module.creditcard.views.account.lists
 
+import android.annotation.SuppressLint
 import android.content.res.Configuration
 import android.os.Build
 import androidx.annotation.RequiresApi
@@ -32,6 +33,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.compose.rememberNavController
 import co.com.japl.finances.iports.dtos.CreditCardDTO
 import co.com.japl.module.creditcard.R
 import co.com.japl.module.creditcard.controllers.account.CreditCardListViewModel
@@ -44,6 +46,7 @@ import co.com.japl.ui.theme.values.ModifiersCustom.Weight1fAndAlightCenterVertic
 import co.com.japl.ui.theme.values.ModifiersCustom.Weight1fAndAlightCenterVerticalAndPaddingRightSpace
 import co.com.japl.ui.theme.values.ModifiersCustom.Weight1fAndPaddintRightSpace
 import co.com.japl.module.creditcard.enums.MoreOptionsItemsCreditCardList
+import co.com.japl.module.creditcard.views.bought.forms.FakeCreditCardPort
 import co.com.japl.ui.utils.WindowWidthSize
 import co.com.japl.ui.components.AlertDialogOkCancel
 import co.com.japl.ui.components.HelpWikiButton
@@ -80,8 +83,9 @@ fun CreditCardList(creditCardViewModel:CreditCardListViewModel){
 @Composable
 private fun Body(creditCardViewModel:CreditCardListViewModel){
     val listState = remember {creditCardViewModel.list}
+    val navController = rememberNavController()
     Scaffold(floatingActionButton = {
-        FloatingActionButton(onClick = { creditCardViewModel.onClick() },
+        FloatingActionButton(onClick = { creditCardViewModel.onClick(navController) },
             elevation = FloatingActionButtonDefaults.elevation(8.dp),
             backgroundColor = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.5f)) {
             Icon(
@@ -96,12 +100,13 @@ private fun Body(creditCardViewModel:CreditCardListViewModel){
                     descriptionContent = R.string.wiki_credit_card_description)
             }
         listState.forEach {item->
-                Item(item!!,{creditCardViewModel.edit(it)},{creditCardViewModel.delete(it)},{creditCardViewModel.goToSettings(it)})
+                Item(item!!,{creditCardViewModel.edit(it,navController)},{creditCardViewModel.delete(it,navController)},{creditCardViewModel.goToSettings(it,navController)})
             }
         }
     }
 }
 
+@SuppressLint("UnusedBoxWithConstraintsScope")
 @Composable
 private fun Item(dto:CreditCardDTO,edit:(Int)->Unit,delete:(Int)->Unit,goToSettings:(Int)->Unit){
     val state = remember{ mutableStateOf(false) }
@@ -228,7 +233,7 @@ fun CreditCardListPreviewDark(){
 }
 
 fun getViewModel():CreditCardListViewModel{
- val viewModel = CreditCardListViewModel(creditCardSvc = null,navController = null)
+ val viewModel = CreditCardListViewModel(creditCardSvc = FakeCreditCardPort())
     viewModel.showProgress.value = false
     viewModel.progress.floatValue = 0.7f
     return viewModel

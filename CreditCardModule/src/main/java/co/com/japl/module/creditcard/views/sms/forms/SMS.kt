@@ -30,7 +30,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.lifecycle.SavedStateHandle
+import androidx.navigation.compose.rememberNavController
 import co.com.japl.module.creditcard.R
+import co.com.japl.module.creditcard.views.fakeSvc.CreditCardFake
+import co.com.japl.module.creditcard.views.fakeSvc.SMSCreditCardFake
 import co.com.japl.ui.components.FieldSelect
 import co.com.japl.ui.components.FieldText
 import co.com.japl.ui.components.FloatButton
@@ -61,9 +65,10 @@ fun Sms(viewModel:SmsCreditCardViewModel){
 
 @Composable
 private fun Form(viewModel: SmsCreditCardViewModel){
+    val navController = rememberNavController()
     Scaffold (
         floatingActionButton = {
-            Buttons({viewModel.clean()}, {viewModel.save()})
+            Buttons({viewModel.clean()}, {viewModel.save(navController)})
         }
     ) {
         Body(viewModel = viewModel, modifier = Modifier
@@ -201,7 +206,7 @@ internal fun SmsPreviewLight(){
 }
 @Composable
 private fun getViewModel():SmsCreditCardViewModel{
-    val viewModel = SmsCreditCardViewModel(null,null,null,null)
+    val viewModel = SmsCreditCardViewModel(SavedStateHandle(), SMSCreditCardFake(), CreditCardFake())
     viewModel.load.value = false
     return viewModel
 }

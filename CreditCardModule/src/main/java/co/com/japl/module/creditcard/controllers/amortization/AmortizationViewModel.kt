@@ -1,6 +1,7 @@
 package co.com.japl.module.creditcard.controllers.amortization;
 
 import androidx.compose.runtime.mutableStateOf
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
@@ -12,12 +13,14 @@ import dagger.hilt.android.scopes.ViewModelScoped
 import kotlinx.coroutines.launch
 
 @HiltViewModel
-class  AmortizationViewModel constructor(private val id:Int, private val svc: IAmortizationTablePort?=null, private val navController: NavController?=null):
+class  AmortizationViewModel constructor(private val savedStateHandle: SavedStateHandle, private val svc: IAmortizationTablePort):
 	ViewModel(){
+	private var id:Int = 0
 	val progressStatus = mutableStateOf(true)
 	val list = mutableListOf<AmortizationRowDTO>()
 
 	init{
+		 id = savedStateHandle.get<Int>("credit_code")?:0
 		execute()	
 	}
 	

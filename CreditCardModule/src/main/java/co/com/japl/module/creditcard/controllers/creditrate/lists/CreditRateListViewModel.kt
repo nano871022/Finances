@@ -14,26 +14,26 @@ import co.com.japl.module.creditcard.R
 import co.com.japl.module.creditcard.navigations.ListCreditRate
 import kotlinx.coroutines.runBlocking
 
-class CreditRateListViewModel constructor(private val context:Context?,private val creditCardSvc:ICreditCardPort?,private val creditRateSvc:ITaxPort?,private val navController: NavController?):ViewModel() {
+class CreditRateListViewModel constructor(private val creditCardSvc:ICreditCardPort?,private val creditRateSvc:ITaxPort?):ViewModel() {
 
     var progress = mutableFloatStateOf(0f)
     var showProgress = mutableStateOf(true)
 
     var creditCard:MutableMap<CreditCardDTO?,List<TaxDTO>>? = HashMap<CreditCardDTO?,List<TaxDTO>>()
 
-    fun add(){
+    fun add(navController: NavController){
         navController?.let { ListCreditRate.navigate(navigate = it)}
     }
 
-    fun add(codeCreditCard:Int?){
+    fun add(codeCreditCard:Int?,navController: NavController){
         if(codeCreditCard == null){
-            add()
+            add(navController)
         }else {
             navController?.let { ListCreditRate.navigate(codeCreditCard,navigate = it)}
         }
     }
 
-    fun delete(code:Int){
+    fun delete(code:Int,context:Context){
         creditRateSvc?.let {
             if (creditRateSvc.delete(code)) {
                 val found =
@@ -54,7 +54,7 @@ class CreditRateListViewModel constructor(private val context:Context?,private v
         }
     }
 
-    fun clone(code:Int){
+    fun clone(code:Int,context:Context){
         creditRateSvc?.let {
             if (creditRateSvc.clone(code)) {
                 Toast.makeText(context, R.string.toast_successful_cloned, Toast.LENGTH_SHORT)
@@ -68,7 +68,7 @@ class CreditRateListViewModel constructor(private val context:Context?,private v
         }
     }
 
-    fun enable(code:Int){
+    fun enable(code:Int,context:Context){
         creditRateSvc?.let {
 
 
@@ -82,7 +82,7 @@ class CreditRateListViewModel constructor(private val context:Context?,private v
         }
     }
 
-    fun disable(code:Int){
+    fun disable(code:Int,context:Context){
         creditRateSvc?.let {
             if (creditRateSvc.disable(code)) {
                 Toast.makeText(context, R.string.toast_successful_disabled, Toast.LENGTH_SHORT)
@@ -94,8 +94,8 @@ class CreditRateListViewModel constructor(private val context:Context?,private v
         }
     }
 
-    fun edit(codeCreditCard:Int, codeCreditRate:Int){
-        navController?.let { ListCreditRate.navigate(codeCreditCard,codeCreditRate,navigate = navController)}
+    fun edit(codeCreditCard:Int, codeCreditRate:Int,navController: NavController){
+        ListCreditRate.navigate(codeCreditCard,codeCreditRate,navigate = navController)
     }
 
     fun main() = runBlocking {

@@ -17,6 +17,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.unit.dp
+import androidx.navigation.compose.rememberNavController
 import co.com.japl.finances.iports.dtos.BoughtCreditCardPeriodDTO
 import co.com.japl.module.creditcard.R
 import co.com.japl.module.creditcard.controllers.paid.BoughtCreditCardViewModel
@@ -63,6 +64,7 @@ private fun Yearly(viewModel:BoughtCreditCardViewModel){
 @Composable
 private fun Yearly(key:Long,list:List<BoughtCreditCardPeriodDTO>,viewModel:BoughtCreditCardViewModel){
     val drowdownState = remember { mutableStateOf(false) }
+    val navController = rememberNavController()
     Surface(
         border = BorderStroke(1.dp,color= MaterialTheme.colorScheme.onPrimaryContainer),
         shadowElevation = 10.dp,
@@ -73,7 +75,7 @@ private fun Yearly(key:Long,list:List<BoughtCreditCardPeriodDTO>,viewModel:Bough
             YearlyHeader(year = key, list = list)
             if (drowdownState.value) {
                 Monthly(list = list, goto = { cutoffDay, cutoff ->
-                    viewModel.goToListDetail(cutoffDay, cutoff)
+                    viewModel.goToListDetail(cutoffDay, cutoff,navController)
                 })
             }
         }
