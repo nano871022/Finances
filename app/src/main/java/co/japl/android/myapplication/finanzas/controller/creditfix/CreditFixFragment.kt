@@ -12,29 +12,19 @@ import androidx.fragment.app.viewModels
 import co.com.japl.module.credit.controllers.forms.CreditFormViewModel
 import co.com.japl.module.credit.views.forms.CreditForm
 import androidx.navigation.fragment.findNavController
+import co.com.japl.module.credit.controllers.forms.CreditFormViewModelFactory
 import co.com.japl.module.credit.views.forms.CreditForm
 import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.japl.android.myapplication.databinding.FragmentCreditFixBinding
 import dagger.hilt.android.AndroidEntryPoint
 import co.com.japl.finances.iports.inbounds.credit.ICreditFormPort
-import co.japl.android.myapplication.finanzas.controller.ViewModelFactory
 import javax.inject.Inject
 
 @AndroidEntryPoint
 class CreditFixFragment : Fragment(){
     @Inject lateinit var creditSvc:ICreditFormPort
     val viewModel : CreditFormViewModel by viewModels{
-        ViewModelFactory(
-            owner = this,
-            viewModelClass = CreditFormViewModel::class.java,
-            build = {
-                CreditFormViewModel(
-                    savedStateHandle = it,
-                    creditSvc = creditSvc,
-                    context = context?.applicationContext!!
-                )
-            }
-        )
+        CreditFormViewModelFactory(this,creditSvc,requireContext())
     }
 
 

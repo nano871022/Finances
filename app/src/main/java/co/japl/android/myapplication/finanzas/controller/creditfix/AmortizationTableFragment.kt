@@ -10,28 +10,19 @@ import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import co.com.japl.module.credit.controllers.amortization.AmortizationViewModel
+import co.com.japl.module.credit.controllers.amortization.AmortizationViewModelFactory
 import co.com.japl.module.credit.views.amortization.AmortizationScreen
 import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.japl.android.myapplication.databinding.FragmentAmortizationFixTableBinding
 import dagger.hilt.android.AndroidEntryPoint
 import co.com.japl.finances.iports.inbounds.credit.IAmortizationTablePort
-import co.japl.android.myapplication.finanzas.controller.ViewModelFactory
 import javax.inject.Inject
 
 @AndroidEntryPoint
 class AmortizationTableFragment : Fragment(){
     @Inject lateinit var amortizationSvc: IAmortizationTablePort
     val viewModel: AmortizationViewModel by viewModels{
-        ViewModelFactory(
-            owner = this,
-            viewModelClass = AmortizationViewModel::class.java,
-            build = {
-                AmortizationViewModel(
-                    savedStateHandle = it,
-                    amortizationSvc = amortizationSvc
-                )
-            }
-        )
+        AmortizationViewModelFactory(this,amortizationSvc)
     }
 
     @RequiresApi(Build.VERSION_CODES.S)

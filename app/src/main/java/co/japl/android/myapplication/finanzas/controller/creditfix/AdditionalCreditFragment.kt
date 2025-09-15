@@ -11,29 +11,19 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import co.com.japl.module.credit.controllers.forms.AdditionalFormViewModel
+import co.com.japl.module.credit.controllers.forms.AdditionalFormViewModelFactory
 import co.com.japl.module.credit.views.forms.AdditionalForm
 import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.japl.android.myapplication.databinding.FragmentAdditionalCreditBinding
 import dagger.hilt.android.AndroidEntryPoint
 import co.com.japl.finances.iports.inbounds.credit.IAdditionalFormPort
-import co.japl.android.myapplication.finanzas.controller.ViewModelFactory
 import javax.inject.Inject
 
 @AndroidEntryPoint
 class AdditionalCreditFragment : Fragment(){
      @Inject lateinit var additionalSvc: IAdditionalFormPort
     val viewModel:AdditionalFormViewModel by viewModels{
-        ViewModelFactory(
-            owner = this,
-            viewModelClass = AdditionalFormViewModel::class.java,
-            build = {
-                AdditionalFormViewModel(
-                    context = context?.applicationContext!!,
-                    savedStateHandle = it,
-                    additionalSvc = additionalSvc
-                )
-            }
-        )
+        AdditionalFormViewModelFactory(this,requireContext(),additionalSvc)
     }
 
     @RequiresApi(Build.VERSION_CODES.S)

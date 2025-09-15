@@ -11,10 +11,10 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import co.com.japl.finances.iports.inbounds.credit.IPeriodCreditPort
 import co.com.japl.module.credit.controllers.list.PeriodsViewModel
+import co.com.japl.module.credit.controllers.list.PeriodsViewModelFactory
 import co.com.japl.module.credit.views.lists.Periods
 import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.japl.android.myapplication.databinding.FragmentPeriodCreditListBinding
-import co.japl.android.myapplication.finanzas.controller.ViewModelFactory
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -22,9 +22,7 @@ import javax.inject.Inject
 class PeriodCreditListFragment : Fragment(){
     @Inject lateinit var periodSvc: IPeriodCreditPort
     private val viewModel: PeriodsViewModel by viewModels {
-        ViewModelFactory(this,PeriodsViewModel::class.java){
-            PeriodsViewModel(it,periodSvc)
-        }
+        PeriodsViewModelFactory(this,periodSvc)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

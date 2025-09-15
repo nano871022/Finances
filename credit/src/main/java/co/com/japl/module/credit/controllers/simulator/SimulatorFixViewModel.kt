@@ -15,16 +15,14 @@ import co.com.japl.module.credit.R
 import co.com.japl.module.credit.navigations.Simulator
 import co.japl.android.graphs.utils.NumbersUtil
 import co.com.japl.ui.utils.initialFieldState
-import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.math.BigDecimal
-import javax.inject.Inject
 
-class SimulatorFixViewModel @Inject constructor(
-    @ApplicationContext private val context: Context,
+class SimulatorFixViewModel constructor(
+    private val context: Context,
     private val simuladorSvc: ISimulatorCreditFixPort,
     private val savedStateHandler: SavedStateHandle,
 ) : ViewModel(){

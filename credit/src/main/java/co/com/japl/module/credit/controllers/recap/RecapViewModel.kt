@@ -12,9 +12,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.time.YearMonth
-import javax.inject.Inject
 
-class RecapViewModel @Inject constructor(private val creditsSvc:ICreditPort?, private val savedStateHandle: SavedStateHandle) : ViewModel() {
+class RecapViewModel constructor(private val creditsSvc:ICreditPort?, private val savedStateHandle: SavedStateHandle) : ViewModel() {
     val loader = mutableStateOf(true)
     val progress = mutableFloatStateOf(0f)
     val listCredits = mutableListOf<RecapCreditDTO>()

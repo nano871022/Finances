@@ -14,17 +14,15 @@ import co.com.japl.finances.iports.inbounds.credit.IAdditionalFormPort
 import co.com.japl.module.credit.R
 import co.japl.android.graphs.utils.NumbersUtil
 import co.com.japl.ui.utils.initialFieldState
-import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import java.math.BigDecimal
 import java.time.LocalDate
-import javax.inject.Inject
 
-class AdditionalFormViewModel @Inject constructor(
-    @ApplicationContext private val context: Context,
+class AdditionalFormViewModel constructor(
+    private val context: Context,
     private val savedStateHandle: SavedStateHandle,
     private val additionalSvc: IAdditionalFormPort
 ) : ViewModel(){

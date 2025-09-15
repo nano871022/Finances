@@ -9,10 +9,9 @@ import co.com.japl.finances.iports.inbounds.credit.IExtraValueAmortizationCredit
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 
-class ExtraValueListViewModel @Inject constructor(
+class ExtraValueListViewModel constructor(
     private val extraValueAmortizationCreditSvc: IExtraValueAmortizationCreditPort,
     private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {

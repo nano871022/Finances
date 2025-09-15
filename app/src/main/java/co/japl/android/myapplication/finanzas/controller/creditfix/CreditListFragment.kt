@@ -12,10 +12,10 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import co.com.japl.finances.iports.inbounds.credit.ICreditPort
 import co.com.japl.module.credit.controllers.recap.RecapViewModel
+import co.com.japl.module.credit.controllers.recap.RecapViewModelFactory
 import co.com.japl.module.credit.views.recap.Recap
 import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.japl.android.myapplication.databinding.FragmentCreditListBinding
-import co.japl.android.myapplication.finanzas.controller.ViewModelFactory
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -23,9 +23,7 @@ import javax.inject.Inject
 class CreditListFragment : Fragment(){
     @Inject lateinit var creditList:ICreditPort
     private val viewModel: RecapViewModel by viewModels {
-        ViewModelFactory(this,RecapViewModel::class.java){
-            RecapViewModel(creditList,it)
-        }
+        RecapViewModelFactory(this,creditList)
     }
 
 

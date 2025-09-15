@@ -16,7 +16,6 @@ import co.com.japl.module.credit.R
 import co.com.japl.module.credit.navigations.CreditList
 import co.com.japl.ui.utils.initialFieldState
 import co.japl.android.graphs.utils.NumbersUtil
-import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -24,12 +23,11 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.time.LocalDate
-import javax.inject.Inject
 
-class CreditFormViewModel @Inject constructor(
+class CreditFormViewModel constructor(
     private val savedStateHandle: SavedStateHandle,
     private val creditSvc: ICreditFormPort,
-    @ApplicationContext private val context:Context
+    private val context:Context
 ): ViewModel() {
     var progress = mutableFloatStateOf(0f)
     var showProgress = mutableStateOf(false)

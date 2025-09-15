@@ -12,13 +12,11 @@ import co.com.japl.finances.iports.dtos.AdditionalCreditDTO
 import co.com.japl.finances.iports.inbounds.credit.IAdditional
 import co.com.japl.module.credit.R
 import co.com.japl.module.credit.navigations.AdditionalList
-import dagger.hilt.android.scopes.ViewModelScoped
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 
-@ViewModelScoped
 class AdditionalViewModel constructor(private val context: Context,private val savedStateHandle: SavedStateHandle, private val additionalSvc: IAdditional?): ViewModel(){
 
     val list = mutableStateListOf<AdditionalCreditDTO>()

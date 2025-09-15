@@ -12,10 +12,10 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import co.com.japl.finances.iports.inbounds.credit.IAdditional
 import co.com.japl.module.credit.controllers.list.AdditionalViewModel
+import co.com.japl.module.credit.controllers.list.AdditionalViewModelFactory
 import co.com.japl.module.credit.views.lists.Additional
 import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.japl.android.myapplication.databinding.FragmentAdditionalListBinding
-import co.japl.android.myapplication.finanzas.controller.ViewModelFactory
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -23,9 +23,7 @@ import javax.inject.Inject
 class AdditionalListFragment : Fragment() {
     @Inject lateinit var additionalSvc : IAdditional
     private val viewModel: AdditionalViewModel by viewModels {
-        ViewModelFactory(this,AdditionalViewModel::class.java){
-            AdditionalViewModel(requireContext(),it,additionalSvc)
-        }
+        AdditionalViewModelFactory(this,requireContext(),additionalSvc)
     }
 
 

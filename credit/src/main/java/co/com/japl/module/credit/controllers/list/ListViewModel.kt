@@ -12,14 +12,12 @@ import co.com.japl.finances.iports.inbounds.credit.IPeriodGracePort
 import co.com.japl.module.credit.R
 import co.com.japl.module.credit.navigations.CreditList
 import co.com.japl.module.credit.pojo.CreditPeriodGraceDTO
-import dagger.hilt.android.scopes.ViewModelScoped
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.YearMonth
 
-@ViewModelScoped
 class ListViewModel constructor(private val savedStateHandle: SavedStateHandle,private val creditSvc:ICreditPort?,val periodGraceSvc:IPeriodGracePort?) : ViewModel() {
 
     val progress = mutableStateOf(true)
