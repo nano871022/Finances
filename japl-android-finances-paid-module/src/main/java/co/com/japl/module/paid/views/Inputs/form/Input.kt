@@ -20,6 +20,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.SavedStateHandle
+import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import co.com.japl.module.paid.R
 import co.com.japl.module.paid.controllers.Inputs.form.InputViewModel
@@ -38,7 +39,7 @@ import kotlinx.coroutines.withContext
 
 @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
 @Composable
-fun InputForm(viewModel: InputViewModel) {
+fun InputForm(viewModel: InputViewModel, navController: NavController) {
     val stateProcess = remember { viewModel.progress }
     val stateLoader = remember { viewModel.loader }
     val scope = rememberCoroutineScope()
@@ -47,7 +48,6 @@ fun InputForm(viewModel: InputViewModel) {
             viewModel.main()
         }
     }
-    val navController = rememberNavController()
     val context = LocalContext.current
 
     if (stateLoader.value) {
@@ -77,7 +77,7 @@ fun InputForm(viewModel: InputViewModel) {
 fun InputFormPreview() {
     val viewModel = getViewModel()
     MaterialThemeComposeUI {
-        InputForm(viewModel = viewModel)
+        InputForm(viewModel = viewModel, navController = rememberNavController())
     }
 }
 
@@ -87,7 +87,7 @@ fun InputFormPreview() {
 fun InputFormPreviewDark() {
     val viewModel = getViewModel()
     MaterialThemeComposeUI {
-        InputForm(viewModel = viewModel)
+        InputForm(viewModel = viewModel, navController = rememberNavController())
     }
 }
 

@@ -40,25 +40,24 @@ import co.japl.android.graphs.utils.NumbersUtil
 import java.math.BigDecimal
 import java.time.LocalDate
 
-import androidx.navigation.compose.rememberNavController
+import androidx.navigation.NavController
 
 @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
 @Composable
-fun ProjectionForm(viewModel: ProjectionFormViewModel) {
+fun ProjectionForm(viewModel: ProjectionFormViewModel, navController: NavController) {
     val loading = remember { viewModel.loaderStatus }
 
     if (loading.value) {
         LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
     } else {
-        Scafold(viewModel = viewModel)
+        Scafold(viewModel = viewModel, navController = navController)
     }
 }
 
 @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
 @Composable
-private fun Scafold(viewModel: ProjectionFormViewModel) {
+private fun Scafold(viewModel: ProjectionFormViewModel, navController: NavController) {
     val snackhost = remember { viewModel.hostState }
-    val navController = rememberNavController()
     Scaffold(
         snackbarHost = { SnackbarHost(hostState = snackhost) },
         floatingActionButton = {

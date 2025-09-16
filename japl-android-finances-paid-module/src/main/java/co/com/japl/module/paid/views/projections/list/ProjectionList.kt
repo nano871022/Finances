@@ -101,20 +101,23 @@ private fun Body(viewModel: ProjectionListViewModel,modifier:Modifier){
 }
 
 @Composable
-private fun Yearly(items: List<ProjectionDTO>, edit:(Int)->Unit, delete:(Int)->Unit){
-    Surface (
-        border= BorderStroke(1.dp, MaterialTheme.colorScheme.onSurface),
-        modifier = Modifier.padding(bottom= Dimensions.PADDING_BOTTOM)) {
-        Column (modifier = Modifier.padding(Dimensions.PADDING_SHORT)){
-            Text(text = items.first().end.format(DateTimeFormatter.ofPattern("yyyy",Locale("es"))),
-                modifier = Modifier.padding(bottom = Dimensions.PADDING_SHORT))
+private fun Yearly(items: List<ProjectionDTO>, edit: (Int) -> Unit, delete: (Int) -> Unit) {
+    Surface(
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.onSurface),
+        modifier = Modifier.padding(bottom = Dimensions.PADDING_BOTTOM)
+    ) {
+        Column(modifier = Modifier.padding(Dimensions.PADDING_SHORT)) {
+            Text(
+                text = items.first().end.format(DateTimeFormatter.ofPattern("yyyy", Locale("es"))),
+                modifier = Modifier.padding(bottom = Dimensions.PADDING_SHORT)
+            )
             Monthly(items, edit, delete)
         }
     }
 }
 
 @Composable
-private fun Monthly(items: List<ProjectionDTO>, edit:(Int)->Unit, delete:(Int)->Unit){
+private fun Monthly(items: List<ProjectionDTO>, edit: (Int) -> Unit, delete: (Int) -> Unit) {
     val mapList = items.sortedBy { it.end }.groupBy { it.end.month }
     mapList.forEach {
         Surface {
@@ -137,14 +140,14 @@ private fun Monthly(items: List<ProjectionDTO>, edit:(Int)->Unit, delete:(Int)->
 }
 
 import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import co.com.japl.module.paid.views.fakeSvc.ProjectionListPortFake
 
 @Composable
-private fun RowBody(item: ProjectionDTO, edit: (Int, NavController) -> Unit, delete: (Int) -> Unit) {
+private fun RowBody(item: ProjectionDTO, edit: (Int, NavController) -> Unit, delete: (Int) -> Unit, navController: NavController) {
     val optionState = remember { mutableStateOf(false) }
     val optionDeleteState = remember { mutableStateOf(false) }
     val showStatus = remember { mutableStateOf(false) }
-    val navController = rememberNavController()
     Card(
         modifier = Modifier
             .fillMaxWidth()

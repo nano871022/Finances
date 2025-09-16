@@ -34,31 +34,31 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
+import androidx.navigation.NavController
+
 @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
 @Composable
-fun Paid(viewModel:PaidViewModel) {
-    val progresStatus  = remember{viewModel.progressStatus}
-    val loaderState = remember {viewModel.loading}
+fun Paid(viewModel: PaidViewModel, navController: NavController) {
+    val progresStatus = remember { viewModel.progressStatus }
+    val loaderState = remember { viewModel.loading }
 
     CoroutineScope(Dispatchers.IO).launch {
         viewModel.main()
     }
 
-    if(loaderState.value){
-        LinearProgressIndicator(progress = progresStatus.value,modifier=Modifier.fillMaxWidth())
-    }else{
-        Body(viewModel = viewModel)
+    if (loaderState.value) {
+        LinearProgressIndicator(progress = progresStatus.value, modifier = Modifier.fillMaxWidth())
+    } else {
+        Body(viewModel = viewModel, navController = navController)
     }
 }
 
 import androidx.compose.ui.platform.LocalContext
-import androidx.navigation.compose.rememberNavController
 
 @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
 @Composable
-private fun Body(viewModel: PaidViewModel) {
+private fun Body(viewModel: PaidViewModel, navController: NavController) {
     val context = LocalContext.current
-    val navController = rememberNavController()
     Scaffold(floatingActionButton = {
         Buttons(add = { viewModel.save(context, navController) }, clear = { viewModel.clean() })
     }) {

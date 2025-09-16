@@ -32,6 +32,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import co.com.japl.finances.iports.dtos.AccountDTO
 import co.com.japl.module.paid.R
@@ -55,7 +56,7 @@ import kotlinx.coroutines.withContext
 import java.time.LocalDate
 
 @Composable
-fun AccountList(viewModel: AccountViewModel) {
+fun AccountList(viewModel: AccountViewModel, navController: NavController) {
     val stateProgress = remember {
         viewModel.progress
     }
@@ -68,7 +69,6 @@ fun AccountList(viewModel: AccountViewModel) {
             viewModel.main()
         }
     }
-    val navController = rememberNavController()
 
     if (stateLoader.value) {
         LinearProgressIndicator(
@@ -93,19 +93,18 @@ fun AccountList(viewModel: AccountViewModel) {
                 }
             }
         ) {
-            Body(viewModel = viewModel, modifier = Modifier.padding(it))
+            Body(viewModel = viewModel, modifier = Modifier.padding(it), navController = navController)
         }
     }
 }
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-private fun Body(viewModel: AccountViewModel, modifier: Modifier) {
+private fun Body(viewModel: AccountViewModel, modifier: Modifier, navController: NavController) {
     val listState = remember { viewModel.list }
     val state = remember { mutableStateOf(false) }
     val stateDelete = remember { mutableStateOf(false) }
     val context = LocalContext.current
-    val navController = rememberNavController()
     Column {
         Row(horizontalArrangement = Arrangement.End, modifier = Modifier.fillMaxWidth()) {
             HelpWikiButton(
@@ -182,7 +181,7 @@ private fun Body(viewModel: AccountViewModel, modifier: Modifier) {
 fun AccountListPreview() {
     val viewModel = getViewModel()
     MaterialThemeComposeUI {
-        AccountList(viewModel = viewModel)
+        AccountList(viewModel = viewModel, navController = rememberNavController())
     }
 }
 
@@ -193,7 +192,7 @@ fun AccountListPreviewNoAccount() {
     val viewModel = getViewModel()
     viewModel.list.clear()
     MaterialThemeComposeUI {
-        AccountList(viewModel = viewModel)
+        AccountList(viewModel = viewModel, navController = rememberNavController())
     }
 }
 
@@ -204,7 +203,7 @@ fun AccountListPreviewDarkNoAccount() {
     val viewModel = getViewModel()
     viewModel.list.clear()
     MaterialThemeComposeUI {
-        AccountList(viewModel = viewModel)
+        AccountList(viewModel = viewModel, navController = rememberNavController())
     }
 }
 
@@ -214,7 +213,7 @@ fun AccountListPreviewDarkNoAccount() {
 fun AccountListPreviewDark() {
     val viewModel = getViewModel()
     MaterialThemeComposeUI {
-        AccountList(viewModel = viewModel)
+        AccountList(viewModel = viewModel, navController = rememberNavController())
     }
 }
 

@@ -24,6 +24,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.SavedStateHandle
+import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import co.com.japl.finances.iports.dtos.AccountDTO
 import co.com.japl.module.paid.R
@@ -48,7 +49,7 @@ import java.time.LocalDate
 import java.time.YearMonth
 
 @Composable
-fun Monthly(viewModel: MonthlyViewModel) {
+fun Monthly(viewModel: MonthlyViewModel, navController: NavController) {
     val loaderState = remember {
         viewModel.loaderState
     }
@@ -65,21 +66,20 @@ fun Monthly(viewModel: MonthlyViewModel) {
             modifier = Modifier.fillMaxWidth(),
         )
     } else {
-        Body(viewModel)
+        Body(viewModel, navController)
     }
 
 }
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-private fun Body(viewModel: MonthlyViewModel) {
+private fun Body(viewModel: MonthlyViewModel, navController: NavController) {
     val accountList = remember {
         viewModel.accountList
     }
     val accountState = remember {
         viewModel.accountState
     }
-    val navController = rememberNavController()
 
     val listGraph = remember {
         viewModel.listGraph

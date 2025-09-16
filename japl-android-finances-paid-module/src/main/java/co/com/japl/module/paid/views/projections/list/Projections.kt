@@ -25,7 +25,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.SavedStateHandle
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import co.com.japl.finances.iports.dtos.ProjectionRecap
 import co.com.japl.module.paid.R
 import co.com.japl.module.paid.controllers.projections.list.ProjectionsViewModel

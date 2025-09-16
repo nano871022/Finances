@@ -28,6 +28,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.SavedStateHandle
+import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import co.com.japl.finances.iports.dtos.SMSPaidDTO
 import co.com.japl.module.paid.R
@@ -49,7 +50,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 @Composable
-fun SMS(viewModel: SmsViewModel) {
+fun SMS(viewModel: SmsViewModel, navController: NavController) {
     val loader = remember { viewModel.load }
     val progress = remember { viewModel.progress }
 
@@ -63,14 +64,13 @@ fun SMS(viewModel: SmsViewModel) {
             modifier = Modifier.fillMaxWidth(),
         )
     } else {
-        Body(viewModel = viewModel)
+        Body(viewModel = viewModel, navController = navController)
     }
 
 }
 
 @Composable
-private fun Body(viewModel: SmsViewModel) {
-    val navController = rememberNavController()
+private fun Body(viewModel: SmsViewModel, navController: NavController) {
     Scaffold(
         floatingActionButton = {
             Buttons {

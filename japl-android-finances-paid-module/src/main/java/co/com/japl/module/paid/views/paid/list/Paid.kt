@@ -83,6 +83,7 @@ fun Paid(viewModel:PaidViewModel) {
     }
 }
 
+import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 
 @Composable
@@ -225,6 +226,7 @@ private fun Buttons(newOne:()->Unit){
 }
 
 import androidx.compose.ui.platform.LocalContext
+import androidx.navigation.compose.rememberNavController
 
 @Composable
 private fun Item(dto: PaidDTO, viewModel: PaidViewModel) {
@@ -329,43 +331,29 @@ internal fun PaidPreviewDark() {
     }
 }
 
-import androidx.lifecycle.SavedStateHandle
-import co.com.japl.module.paid.views.fakeSvc.PaidPortFake
-
 @Composable
-private fun getViewModel(): PaidViewModel {
-    val savedStateHandle = SavedStateHandle()
-    savedStateHandle.set("accountCode", 1)
-    savedStateHandle.set("period", YearMonth.now().toString())
-    val viewModel = PaidViewModel(
-        paidSvc = PaidPortFake(),
-        prefs = null,
-        savedStateHandle = savedStateHandle
-    )
+private fun getViewModel():PaidViewModel{
+    val viewModel = PaidViewModel(paidSvc = null, accountCode = 0 , period = YearMonth.now(),prefs= null,navController = null)
     viewModel.loaderState.value = false
     viewModel.allValues.value = 1000.0
     viewModel.periodOfList.value = "June 2022"
-    viewModel.list[YearMonth.now()] = arrayListOf(
-        PaidDTO(
-            id = 0,
-            itemName = "Item 1",
-            itemValue = 10000.0,
-            datePaid = LocalDateTime.now(),
-            account = 1,
-            recurrent = false,
-            end = LocalDateTime.MAX
-        )
-    )
-    viewModel.list[YearMonth.now().minusMonths(1)] = arrayListOf(
-        PaidDTO(
-            id = 0,
-            itemName = "Item 2",
-            itemValue = 20000.0,
-            datePaid = LocalDateTime.now().minusMonths(1),
-            account = 1,
-            recurrent = false,
-            end = LocalDateTime.MAX
-        )
-    )
+    viewModel.list[YearMonth.now()] = arrayListOf(PaidDTO(
+    id=0,
+    itemName="Item 1",
+    itemValue=10000.0,
+    datePaid = LocalDateTime.now(),
+        account = 1,
+        recurrent = false,
+        end=LocalDateTime.MAX
+))
+    viewModel.list[YearMonth.now().minusMonths(1)] = arrayListOf(PaidDTO(
+        id=0,
+        itemName="Item 2",
+        itemValue=20000.0,
+        datePaid = LocalDateTime.now().minusMonths(1),
+        account = 1,
+        recurrent = false,
+        end=LocalDateTime.MAX
+    ))
     return viewModel
 }
