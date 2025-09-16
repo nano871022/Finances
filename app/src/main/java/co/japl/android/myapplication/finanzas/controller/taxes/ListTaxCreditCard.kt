@@ -51,7 +51,7 @@ class ListTaxCreditCard : Fragment() {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
                 MaterialThemeComposeUI {
-                    CreditRateList(viewModel = viewModel)
+                    CreditRateList(viewModel = viewModel,findNavController())
                 }
             }
         }

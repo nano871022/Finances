@@ -19,6 +19,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import co.com.japl.module.creditcard.R
 import co.com.japl.module.creditcard.controllers.account.CreditCardViewModel
@@ -30,9 +31,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 @Composable
-fun CreditCard(viewModel: CreditCardViewModel){
+fun CreditCard(viewModel: CreditCardViewModel,navController: NavController){
 
-    val navController = rememberNavController()
     val progression = remember{viewModel.progress}
     val showProgress = remember{viewModel.showProgress}
 

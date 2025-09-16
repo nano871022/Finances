@@ -1,4 +1,4 @@
-package co.com.japl.module.creditcard.views.bought.forms
+package co.com.japl.module.creditcard.views.fakeSvc
 
 import co.com.japl.finances.iports.dtos.CreditCardBoughtDTO
 import co.com.japl.finances.iports.dtos.CreditCardDTO
@@ -6,7 +6,6 @@ import co.com.japl.finances.iports.dtos.RecapMonthly
 import co.com.japl.finances.iports.enums.KindInterestRateEnum
 import co.com.japl.finances.iports.enums.KindOfTaxEnum
 import co.com.japl.finances.iports.inbounds.creditcard.bought.IBoughtPort
-import java.math.BigDecimal
 import java.time.LocalDateTime
 
 class FakeBoughtPort : IBoughtPort {

@@ -52,7 +52,7 @@ class CreateCreditCard : Fragment() {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
                 MaterialThemeComposeUI {
-                    CreditCard(viewModel)
+                    CreditCard(viewModel,findNavController())
                 }
             }
         }

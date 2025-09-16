@@ -21,12 +21,14 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.SavedStateHandle
+import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import co.com.japl.finances.iports.enums.KindInterestRateEnum
 import co.com.japl.finances.iports.enums.KindOfTaxEnum
@@ -45,8 +47,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 @Composable
-fun CreditRate(viewModel:CreateRateViewModel){
-    var navController = rememberNavController()
+fun CreditRate(viewModel:CreateRateViewModel,navController: NavController){
     var statePogress = remember {
         viewModel.loader
     }
@@ -229,7 +230,7 @@ fun CreditRatePreview(){
     val viewModel = CreateRateViewModel(SavedStateHandle(), CreditRateFake(), CreditCardFake())
     viewModel.loader.value = false
     MaterialThemeComposeUI {
-        CreditRate(viewModel)
+        CreditRate(viewModel, NavController(LocalContext.current))
     }
 }
 
@@ -240,6 +241,6 @@ fun CreditRatePreviewDark(){
     val viewModel = CreateRateViewModel(SavedStateHandle(), CreditRateFake(), CreditCardFake())
     viewModel.loader.value = false
     MaterialThemeComposeUI {
-        CreditRate(viewModel)
+        CreditRate(viewModel, NavController(LocalContext.current))
     }
 }

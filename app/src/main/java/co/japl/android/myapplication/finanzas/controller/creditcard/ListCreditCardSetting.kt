@@ -49,7 +49,7 @@ class ListCreditCardSetting : Fragment() {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
                 MaterialThemeComposeUI {
-                    CreditCardSettingList(viewModel = viewModel)
+                    CreditCardSettingList(viewModel = viewModel,findNavController())
                 }
             }
         }

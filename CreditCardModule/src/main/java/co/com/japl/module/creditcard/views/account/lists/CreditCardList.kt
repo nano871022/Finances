@@ -14,7 +14,6 @@ import androidx.compose.material.FloatingActionButtonDefaults
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.AddCircleOutline
 import androidx.compose.material3.Card
-import androidx.compose.material3.Divider
 import androidx.compose.material.FloatingActionButton
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -28,16 +27,16 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.navigation.compose.rememberNavController
+import androidx.navigation.NavController
 import co.com.japl.finances.iports.dtos.CreditCardDTO
 import co.com.japl.module.creditcard.R
 import co.com.japl.module.creditcard.controllers.account.CreditCardListViewModel
-import co.com.japl.module.creditcard.controllers.account.CreditCardViewModel
 import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.com.japl.ui.theme.values.Dimensions
 import co.com.japl.ui.theme.values.ModifiersCustom.AlignCenterVerticalAndPaddingRightSpace
@@ -46,7 +45,7 @@ import co.com.japl.ui.theme.values.ModifiersCustom.Weight1fAndAlightCenterVertic
 import co.com.japl.ui.theme.values.ModifiersCustom.Weight1fAndAlightCenterVerticalAndPaddingRightSpace
 import co.com.japl.ui.theme.values.ModifiersCustom.Weight1fAndPaddintRightSpace
 import co.com.japl.module.creditcard.enums.MoreOptionsItemsCreditCardList
-import co.com.japl.module.creditcard.views.bought.forms.FakeCreditCardPort
+import co.com.japl.module.creditcard.views.fakeSvc.FakeCreditCardPort
 import co.com.japl.ui.utils.WindowWidthSize
 import co.com.japl.ui.components.AlertDialogOkCancel
 import co.com.japl.ui.components.HelpWikiButton
@@ -58,7 +57,7 @@ import kotlinx.coroutines.launch
 
 
 @Composable
-fun CreditCardList(creditCardViewModel:CreditCardListViewModel){
+fun CreditCardList(creditCardViewModel:CreditCardListViewModel,navController: NavController){
     val progress = remember {
         creditCardViewModel.progress
     }
@@ -76,14 +75,13 @@ fun CreditCardList(creditCardViewModel:CreditCardListViewModel){
             modifier = Modifier.fillMaxWidth(),
         )
     }else {
-        Body(creditCardViewModel = creditCardViewModel)
+        Body(creditCardViewModel = creditCardViewModel,navController)
     }
 }
 
 @Composable
-private fun Body(creditCardViewModel:CreditCardListViewModel){
+private fun Body(creditCardViewModel:CreditCardListViewModel,navController: NavController){
     val listState = remember {creditCardViewModel.list}
-    val navController = rememberNavController()
     Scaffold(floatingActionButton = {
         FloatingActionButton(onClick = { creditCardViewModel.onClick(navController) },
             elevation = FloatingActionButtonDefaults.elevation(8.dp),
@@ -218,7 +216,7 @@ private fun ItemLarge(dto:CreditCardDTO,state:MutableState<Boolean>,edit:(Int)->
 fun CreditCardListPreview(){
     val creditCardViewModel = getViewModel()
     MaterialThemeComposeUI {
-        CreditCardList(creditCardViewModel)
+        CreditCardList(creditCardViewModel, NavController(LocalContext.current))
     }
 }
 
@@ -228,7 +226,7 @@ fun CreditCardListPreview(){
 fun CreditCardListPreviewDark(){
     val creditCardViewModel = getViewModel()
     MaterialThemeComposeUI {
-        CreditCardList(creditCardViewModel)
+        CreditCardList(creditCardViewModel, NavController(LocalContext.current))
     }
 }
 

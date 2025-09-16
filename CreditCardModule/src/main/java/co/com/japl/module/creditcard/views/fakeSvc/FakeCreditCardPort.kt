@@ -1,4 +1,4 @@
-package co.com.japl.module.creditcard.views.bought.forms
+package co.com.japl.module.creditcard.views.fakeSvc
 
 import co.com.japl.finances.iports.dtos.CreditCardDTO
 import co.com.japl.finances.iports.inbounds.creditcard.ICreditCardPort

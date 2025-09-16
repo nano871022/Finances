@@ -1,6 +1,5 @@
 package co.com.japl.module.creditcard.views.bought.forms
 
-import android.app.Application
 import android.content.res.Configuration
 import android.os.Build
 import androidx.annotation.RequiresApi
@@ -20,11 +19,9 @@ import androidx.compose.material.icons.rounded.Save
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
@@ -39,14 +36,11 @@ import co.com.japl.ui.components.FieldView
 import co.com.japl.ui.components.FloatButton
 import co.com.japl.ui.theme.MaterialThemeComposeUI
 import androidx.navigation.NavController
+import co.com.japl.module.creditcard.views.fakeSvc.FakeBoughtPort
+import co.com.japl.module.creditcard.views.fakeSvc.FakeCreditCardPort
+import co.com.japl.module.creditcard.views.fakeSvc.FakeTaxPort
 import co.com.japl.ui.theme.values.Dimensions
 import co.com.japl.ui.theme.values.ModifiersCustom
-import co.com.japl.utils.NumbersUtil
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import java.time.LocalDateTime
 
 @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
 @Composable

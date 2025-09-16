@@ -46,7 +46,7 @@ class ListCreditCard : Fragment()  {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
                 MaterialThemeComposeUI {
-                    CreditCardList(creditCardViewModel = viewModel)
+                    CreditCardList(creditCardViewModel = viewModel,findNavController())
                 }
             }
         }

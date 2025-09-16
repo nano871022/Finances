@@ -36,19 +36,11 @@ import co.com.japl.ui.components.FloatButton
 import co.com.japl.ui.theme.MaterialThemeComposeUI
 import androidx.lifecycle.SavedStateHandle
 import androidx.navigation.NavController
-import co.com.japl.finances.iports.dtos.CreditCardBoughtDTO
-import co.com.japl.finances.iports.dtos.CreditCardDTO
-import co.com.japl.finances.iports.dtos.TaxDTO
-import co.com.japl.finances.iports.enums.KindInterestRateEnum
-import co.com.japl.finances.iports.enums.KindOfTaxEnum
-import co.com.japl.finances.iports.inbounds.creditcard.ICreditCardPort
-import co.com.japl.finances.iports.inbounds.creditcard.ITaxPort
-import co.com.japl.finances.iports.inbounds.creditcard.bought.IBoughtPort
+import co.com.japl.module.creditcard.views.fakeSvc.FakeBoughtPort
+import co.com.japl.module.creditcard.views.fakeSvc.FakeCreditCardPort
+import co.com.japl.module.creditcard.views.fakeSvc.FakeTaxPort
 import co.com.japl.ui.theme.values.Dimensions
 import co.com.japl.ui.theme.values.ModifiersCustom
-import co.com.japl.utils.NumbersUtil
-import java.math.BigDecimal
-import java.time.LocalDateTime
 
 @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
 @Composable

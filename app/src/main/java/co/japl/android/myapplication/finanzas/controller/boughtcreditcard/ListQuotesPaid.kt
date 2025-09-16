@@ -57,7 +57,7 @@ class ListQuotesPaid : Fragment() {
                 setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
                 setContent {
                     MaterialThemeComposeUI {
-                        PaidList(viewModel = viewModel)
+                        PaidList(viewModel = viewModel,findNavController())
 
                 }
             }

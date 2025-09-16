@@ -29,11 +29,13 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.SavedStateHandle
+import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import co.com.japl.finances.iports.dtos.CreditCardSettingDTO
 import co.com.japl.module.creditcard.R
@@ -53,7 +55,7 @@ import kotlinx.coroutines.launch
 import java.time.LocalDateTime
 
 @Composable
- fun CreditCardSettingList(viewModel: CreditCardSettingListViewModel){
+ fun CreditCardSettingList(viewModel: CreditCardSettingListViewModel,navController: NavController){
     val stateShow = remember {viewModel.showProgress}
     val stateProgress = remember {viewModel.progress}
 
@@ -67,13 +69,12 @@ import java.time.LocalDateTime
             modifier = Modifier.fillMaxWidth(),
         )
     }else {
-        Body(viewModel = viewModel)
+        Body(viewModel = viewModel,navController)
     }
 }
 
 @Composable
-private fun Body(viewModel: CreditCardSettingListViewModel){
-    val navController = rememberNavController()
+private fun Body(viewModel: CreditCardSettingListViewModel,navController: NavController){
     val listState = remember { viewModel.list }
     Scaffold( floatingActionButton = {
         FloatingActionButton(onClick = {
@@ -198,7 +199,7 @@ private fun ItemCompact(item:CreditCardSettingDTO,statusShowOptions:MutableState
 fun CreditCardSettingListPreview(){
     val viewModel = getViewModel()
     MaterialThemeComposeUI {
-        CreditCardSettingList(viewModel)
+        CreditCardSettingList(viewModel, NavController(LocalContext.current))
     }
 }
 
@@ -208,7 +209,7 @@ fun CreditCardSettingListPreview(){
 fun CreditCardSettingListPreviewDARK(){
     val viewModel = getViewModel()
     MaterialThemeComposeUI {
-        CreditCardSettingList(viewModel)
+        CreditCardSettingList(viewModel, NavController(LocalContext.current))
     }
 }
 

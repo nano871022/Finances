@@ -56,7 +56,7 @@ class Taxes : Fragment() {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
                 MaterialThemeComposeUI {
-                    CreditRate(viewModel = viewModel)
+                    CreditRate(viewModel = viewModel,findNavController())
                 }
             }
         }
