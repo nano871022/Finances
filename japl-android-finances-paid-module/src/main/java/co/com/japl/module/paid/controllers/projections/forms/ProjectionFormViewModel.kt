@@ -15,19 +15,17 @@ import co.com.japl.module.paid.R
 import co.com.japl.ui.utils.DateUtils
 import co.japl.android.graphs.utils.NumbersUtil
 import co.com.japl.ui.utils.initialFieldState
-import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.math.BigDecimal
 import java.time.LocalDate
-import javax.inject.Inject
 
-class ProjectionFormViewModel @Inject constructor(
-    @ApplicationContext private val context: Context,
+class ProjectionFormViewModel constructor(
+    private val context: Context,
     private val saveStateHandler: SavedStateHandle,
     private val projectionSvc: IProjectionFormPort,
-): ViewModel(){
+) : ViewModel() {
     val loaderStatus = mutableStateOf(false)
     val disableSaveStatus = mutableStateOf(true)
     private val periodsOpt = KindPaymentsEnums.entries.map{ Pair(it.month,context.getString(it.title) ) }

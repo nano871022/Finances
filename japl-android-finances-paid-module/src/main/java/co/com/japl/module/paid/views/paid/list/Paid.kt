@@ -83,15 +83,18 @@ fun Paid(viewModel:PaidViewModel) {
     }
 }
 
-@Composable
-private fun Body(viewModel: PaidViewModel){
-    Scaffold (floatingActionButton = {
-        Buttons(newOne = {viewModel.newOne()})
-    }){
+import androidx.navigation.compose.rememberNavController
 
-        Column{
+@Composable
+private fun Body(viewModel: PaidViewModel) {
+    val navController = rememberNavController()
+    Scaffold(floatingActionButton = {
+        Buttons(newOne = { viewModel.newOne(navController) })
+    }) {
+
+        Column {
             Header(viewModel)
-            List(viewModel,modifier = Modifier.padding(it))
+            List(viewModel, modifier = Modifier.padding(it))
         }
 
     }
@@ -221,23 +224,34 @@ private fun Buttons(newOne:()->Unit){
     }
 }
 
-@Composable private fun Item(dto:PaidDTO,viewModel:PaidViewModel){
+import androidx.compose.ui.platform.LocalContext
+
+@Composable
+private fun Item(dto: PaidDTO, viewModel: PaidViewModel) {
     val menuState = remember { mutableStateOf(false) }
     val dialogState = remember { mutableStateOf(false) }
+    val context = LocalContext.current
+    val navController = rememberNavController()
 
     Card(
-        border = BorderStroke(1.dp,color= if(dto.recurrent) Color.Red else Color.Unspecified)
-        ,modifier=Modifier.padding(Dimensions.PADDING_SHORT)) {
-        Column (modifier = Modifier.padding(Dimensions.PADDING_SHORT)) {
+        border = BorderStroke(1.dp, color = if (dto.recurrent) Color.Red else Color.Unspecified),
+        modifier = Modifier.padding(Dimensions.PADDING_SHORT)
+    ) {
+        Column(modifier = Modifier.padding(Dimensions.PADDING_SHORT)) {
             Row {
 
-                Text(text = "%02d".format(dto.datePaid.dayOfMonth),
-                    color= MaterialTheme.colorScheme.onPrimaryContainer,
+                Text(
+                    text = "%02d".format(dto.datePaid.dayOfMonth),
+                    color = MaterialTheme.colorScheme.onPrimaryContainer,
                     modifier = Modifier.align(alignment = Alignment.CenterVertically)
                 )
 
-                Text(text = dto.itemName,
-                    modifier = Modifier.weight(2f).padding(start=Dimensions.PADDING_TOP).align(alignment = Alignment.CenterVertically)
+                Text(
+                    text = dto.itemName,
+                    modifier = Modifier
+                        .weight(2f)
+                        .padding(start = Dimensions.PADDING_TOP)
+                        .align(alignment = Alignment.CenterVertically)
                 )
 
                 IconButton(
@@ -251,41 +265,46 @@ private fun Buttons(newOne:()->Unit){
 
 
 
-                FieldViewCards(
-                    name = R.string.value_item,
-                    value = NumbersUtil.COPtoString(dto.itemValue),
-                    modifier = Modifier
-                )
+            FieldViewCards(
+                name = R.string.value_item,
+                value = NumbersUtil.COPtoString(dto.itemValue),
+                modifier = Modifier
+            )
 
         }
     }
 
-    if(menuState.value){
-        MoreOptionsDialog(listOptions = viewModel.listOptions(dto)
-            , onDismiss = { menuState.value = false }) {
+    if (menuState.value) {
+        MoreOptionsDialog(
+            listOptions = viewModel.listOptions(dto),
+            onDismiss = { menuState.value = false }) {
             menuState.value = false
-            when(it){
-                PaidListOptions.EDIT->{
-                    viewModel.edit(dto.id)
+            when (it) {
+                PaidListOptions.EDIT -> {
+                    viewModel.edit(dto.id, navController)
                 }
-                PaidListOptions.DELETE->{
+
+                PaidListOptions.DELETE -> {
                     dialogState.value = true
                 }
-                PaidListOptions.COPY->{
-                    viewModel.copy(dto.id)
+
+                PaidListOptions.COPY -> {
+                    viewModel.copy(dto.id, context)
                 }
-                PaidListOptions.END->{
-                    viewModel.endRecurrent(dto.id)
+
+                PaidListOptions.END -> {
+                    viewModel.endRecurrent(dto.id, context)
                 }
             }
         }
     }
-    if(dialogState.value) {
-        AlertDialogOkCancel(title = R.string.dialog_delete,
+    if (dialogState.value) {
+        AlertDialogOkCancel(
+            title = R.string.dialog_delete,
             confirmNameButton = R.string.delete,
             onDismiss = { dialogState.value = false }) {
             dialogState.value = false
-            viewModel.delete(dto.id)
+            viewModel.delete(dto.id, context)
         }
     }
 }
@@ -310,29 +329,43 @@ internal fun PaidPreviewDark() {
     }
 }
 
+import androidx.lifecycle.SavedStateHandle
+import co.com.japl.module.paid.views.fakeSvc.PaidPortFake
+
 @Composable
-private fun getViewModel():PaidViewModel{
-    val viewModel = PaidViewModel(paidSvc = null, accountCode = 0 , period = YearMonth.now(),prefs= null,navController = null)
+private fun getViewModel(): PaidViewModel {
+    val savedStateHandle = SavedStateHandle()
+    savedStateHandle.set("accountCode", 1)
+    savedStateHandle.set("period", YearMonth.now().toString())
+    val viewModel = PaidViewModel(
+        paidSvc = PaidPortFake(),
+        prefs = null,
+        savedStateHandle = savedStateHandle
+    )
     viewModel.loaderState.value = false
     viewModel.allValues.value = 1000.0
     viewModel.periodOfList.value = "June 2022"
-    viewModel.list[YearMonth.now()] = arrayListOf(PaidDTO(
-    id=0,
-    itemName="Item 1",
-    itemValue=10000.0,
-    datePaid = LocalDateTime.now(),
-        account = 1,
-        recurrent = false,
-        end=LocalDateTime.MAX
-))
-    viewModel.list[YearMonth.now().minusMonths(1)] = arrayListOf(PaidDTO(
-        id=0,
-        itemName="Item 2",
-        itemValue=20000.0,
-        datePaid = LocalDateTime.now().minusMonths(1),
-        account = 1,
-        recurrent = false,
-        end=LocalDateTime.MAX
-    ))
+    viewModel.list[YearMonth.now()] = arrayListOf(
+        PaidDTO(
+            id = 0,
+            itemName = "Item 1",
+            itemValue = 10000.0,
+            datePaid = LocalDateTime.now(),
+            account = 1,
+            recurrent = false,
+            end = LocalDateTime.MAX
+        )
+    )
+    viewModel.list[YearMonth.now().minusMonths(1)] = arrayListOf(
+        PaidDTO(
+            id = 0,
+            itemName = "Item 2",
+            itemValue = 20000.0,
+            datePaid = LocalDateTime.now().minusMonths(1),
+            account = 1,
+            recurrent = false,
+            end = LocalDateTime.MAX
+        )
+    )
     return viewModel
 }

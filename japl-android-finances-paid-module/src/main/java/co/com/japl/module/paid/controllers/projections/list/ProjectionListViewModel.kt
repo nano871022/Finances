@@ -11,16 +11,12 @@ import co.com.japl.finances.iports.dtos.ProjectionDTO
 import co.com.japl.finances.iports.inbounds.paid.IProjectionListPort
 import co.com.japl.module.paid.R
 import co.com.japl.module.paid.navigations.Projections
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
-@HiltViewModel
-class ProjectionListViewModel @Inject constructor(
+class ProjectionListViewModel constructor(
     private val context: Context,
-    private val projectionListPort: IProjectionListPort? = null,
-    private val navController: NavController? = null
-): ViewModel() {
+    private val projectionListPort: IProjectionListPort? = null
+) : ViewModel() {
     val snackbarHost = SnackbarHostState()
     val loader = mutableStateOf(false)
     private val _list = mutableStateListOf<ProjectionDTO>()
@@ -30,16 +26,12 @@ class ProjectionListViewModel @Inject constructor(
         load()
     }
 
-    fun goToCreate() {
-        navController?.let {
-            Projections.formNavigate(it)
-        }
+    fun goToCreate(navController: NavController) {
+        Projections.formNavigate(navController)
     }
 
-    fun edit(id: Int) {
-        navController?.let{
-            Projections.formNavigate(id,it)
-        }
+    fun edit(id: Int, navController: NavController) {
+        Projections.formNavigate(id, navController)
     }
 
     fun delete(id: Int) {

@@ -136,24 +136,43 @@ private fun Monthly(items: List<ProjectionDTO>, edit:(Int)->Unit, delete:(Int)->
     }
 }
 
+import androidx.navigation.NavController
+import co.com.japl.module.paid.views.fakeSvc.ProjectionListPortFake
+
 @Composable
-private fun RowBody(item: ProjectionDTO,edit:(Int)->Unit,delete:(Int)->Unit){
-    val optionState = remember {mutableStateOf(false)}
-    val optionDeleteState = remember {mutableStateOf(false)}
+private fun RowBody(item: ProjectionDTO, edit: (Int, NavController) -> Unit, delete: (Int) -> Unit) {
+    val optionState = remember { mutableStateOf(false) }
+    val optionDeleteState = remember { mutableStateOf(false) }
     val showStatus = remember { mutableStateOf(false) }
-    Card (modifier = Modifier.fillMaxWidth().padding(bottom= Dimensions.PADDING_SHORT),
+    val navController = rememberNavController()
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(bottom = Dimensions.PADDING_SHORT),
         onClick = {
             showStatus.value = !showStatus.value
-        }){
-        Column (modifier = Modifier.padding(Dimensions.PADDING_SHORT)) {
+        }) {
+        Column(modifier = Modifier.padding(Dimensions.PADDING_SHORT)) {
             Row {
-                Text(text = item.end.format(DateTimeFormatter.ofPattern("dd", Locale("es:CO"))),
-                    modifier = Modifier.weight(1f).align(Alignment.CenterVertically))
-                Text(text =item.name,
-                    modifier = Modifier.weight(3f).align(Alignment.CenterVertically))
-                Text(text = NumbersUtil.COPtoString(item.value),
+                Text(
+                    text = item.end.format(DateTimeFormatter.ofPattern("dd", Locale("es:CO"))),
+                    modifier = Modifier
+                        .weight(1f)
+                        .align(Alignment.CenterVertically)
+                )
+                Text(
+                    text = item.name,
+                    modifier = Modifier
+                        .weight(3f)
+                        .align(Alignment.CenterVertically)
+                )
+                Text(
+                    text = NumbersUtil.COPtoString(item.value),
                     textAlign = TextAlign.End,
-                    modifier = Modifier.weight(2f).align(Alignment.CenterVertically))
+                    modifier = Modifier
+                        .weight(2f)
+                        .align(Alignment.CenterVertically)
+                )
                 IconButton(
                     imageVector = Icons.Rounded.MoreVert,
                     descriptionContent = R.string.options_projection,
@@ -163,47 +182,55 @@ private fun RowBody(item: ProjectionDTO,edit:(Int)->Unit,delete:(Int)->Unit){
                     }
                 )
             }
-            if(showStatus.value) {
+            if (showStatus.value) {
                 Row {
                     FieldView(
                         title = stringResource(R.string.months_left_to_pay_short),
                         value = item.monthsLeft.toString(),
-                        modifier = Modifier.weight(1f))
+                        modifier = Modifier.weight(1f)
+                    )
                     FieldView(
                         title = stringResource(R.string.saved_cash),
                         value = NumbersUtil.COPtoString(item.amountSaved),
-                        modifier = Modifier.weight(1f))
+                        modifier = Modifier.weight(1f)
+                    )
                     FieldView(
                         title = stringResource(R.string.quote_value),
                         value = NumbersUtil.COPtoString(item.quote),
-                        modifier = Modifier.weight(1f))
+                        modifier = Modifier.weight(1f)
+                    )
                 }
             }
         }
     }
-    if(optionState.value){
+    if (optionState.value) {
         MoreOptionsDialogPair(
-            listOptions = listOf(Pair(0,stringResource(R.string.edit)),Pair(1,stringResource(R.string.delete))),
+            listOptions = listOf(
+                Pair(0, stringResource(R.string.edit)),
+                Pair(1, stringResource(R.string.delete))
+            ),
             onDismiss = {
                 optionState.value = false
             }) {
-            when(it.first){
+            when (it.first) {
                 0 -> {
-                    edit.invoke(item.id)
+                    edit.invoke(item.id, navController)
                 }
-                1 -> {optionDeleteState.value = true}
+                1 -> {
+                    optionDeleteState.value = true
+                }
             }
             optionState.value = false
         }
     }
-    if(optionDeleteState.value){
-        AlertDialogOkCancel (
+    if (optionDeleteState.value) {
+        AlertDialogOkCancel(
             title = R.string.do_you_want_remove_this_projection,
             confirmNameButton = R.string.delete,
             onDismiss = {
                 optionDeleteState.value = false
 
-            }){
+            }) {
             delete.invoke(item.id)
             optionDeleteState.value = false
 

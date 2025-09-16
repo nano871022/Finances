@@ -23,9 +23,16 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.SavedStateHandle
+import androidx.navigation.compose.rememberNavController
 import co.com.japl.finances.iports.dtos.AccountDTO
 import co.com.japl.module.paid.R
 import co.com.japl.module.paid.controllers.monthly.list.MonthlyViewModel
+import co.com.japl.module.paid.views.fakeSvc.AccountPortFake
+import co.com.japl.module.paid.views.fakeSvc.InputPortFake
+import co.com.japl.module.paid.views.fakeSvc.PaidPortFake
+import co.com.japl.module.paid.views.fakeSvc.SMSPaidPortFake
+import co.com.japl.module.paid.views.fakeSvc.SmsPortFake
 import co.com.japl.ui.components.FieldSelect
 import co.com.japl.ui.components.FieldView
 import co.com.japl.ui.components.FloatButton
@@ -41,21 +48,23 @@ import java.time.LocalDate
 import java.time.YearMonth
 
 @Composable
-fun Monthly(viewModel:MonthlyViewModel) {
+fun Monthly(viewModel: MonthlyViewModel) {
     val loaderState = remember {
-        viewModel.loaderState   }
+        viewModel.loaderState
+    }
     val progressStatus = remember {
         viewModel.progressStatus
     }
 
-    CoroutineScope(Dispatchers.IO).launch{
+    CoroutineScope(Dispatchers.IO).launch {
         viewModel.main()
     }
 
-    if(loaderState.value){
-        LinearProgressIndicator(modifier = Modifier.fillMaxWidth(),
+    if (loaderState.value) {
+        LinearProgressIndicator(
+            modifier = Modifier.fillMaxWidth(),
         )
-    }else{
+    } else {
         Body(viewModel)
     }
 
@@ -63,27 +72,29 @@ fun Monthly(viewModel:MonthlyViewModel) {
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-private fun Body(viewModel: MonthlyViewModel){
+private fun Body(viewModel: MonthlyViewModel) {
     val accountList = remember {
-viewModel.accountList
+        viewModel.accountList
     }
     val accountState = remember {
-        viewModel.accountState    }
+        viewModel.accountState
+    }
+    val navController = rememberNavController()
 
     val listGraph = remember {
         viewModel.listGraph
     }
-    Scaffold (
-       floatingActionButton = {
-           if(accountState.value != null) {
-               Buttons(
-                   gotoList = { viewModel.goToListDetail() },
-                   gotoPeriod = { viewModel.goToListPeriod() },
-                   gotoCreate = { viewModel.goToListCreate() })
-           }
-       },
+    Scaffold(
+        floatingActionButton = {
+            if (accountState.value != null) {
+                Buttons(
+                    gotoList = { viewModel.goToListDetail(navController) },
+                    gotoPeriod = { viewModel.goToListPeriod(navController) },
+                    gotoCreate = { viewModel.goToListCreate(navController) })
+            }
+        },
         modifier = Modifier.padding(Dimensions.PADDING_SHORT)
-    ){
+    ) {
         Column(
             modifier = Modifier
                 .padding(it)
@@ -94,7 +105,9 @@ viewModel.accountList
                 FieldSelect(title = stringResource(id = R.string.account),
                     value = accountState.value?.name ?: "",
                     list = accountList,
-                    modifier = Modifier.padding(bottom = Dimensions.PADDING_SHORT).weight(1f),
+                    modifier = Modifier
+                        .padding(bottom = Dimensions.PADDING_SHORT)
+                        .weight(1f),
                     callAble = { pair ->
                         pair?.let {
                             viewModel.listAccount?.first { it.id == pair.first }?.let {
@@ -104,10 +117,13 @@ viewModel.accountList
                         } ?: accountState?.let { it.value = null }
                     })
 
-                HelpWikiButton(wikiUrl = R.string.wiki_paid_url, descriptionContent = R.string.wiki_paid_description)
+                HelpWikiButton(
+                    wikiUrl = R.string.wiki_paid_url,
+                    descriptionContent = R.string.wiki_paid_description
+                )
             }
 
-            if(accountState.value != null) {
+            if (accountState.value != null) {
                 Accounts(viewModel = viewModel)
 
                 PiecePieGraph(list = listGraph)

@@ -1,11 +1,12 @@
 package co.com.japl.module.paid.controllers.paid.form
 
+import android.content.Context
 import android.util.Log
 import android.widget.Toast
-import androidx.compose.runtime.mutableDoubleStateOf
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.navigation.NavController
 import co.com.japl.finances.iports.dtos.AccountDTO
@@ -19,10 +20,17 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
 
-class PaidViewModel (private val codeAccount:Int?,private val codePaid:Int?,private val accountSvc: IAccountPort?,private val paidSvc: IPaidPort?,private val navController: NavController?) :ViewModel(){
+class PaidViewModel(
+    private val accountSvc: IAccountPort?,
+    private val paidSvc: IPaidPort?,
+    private val savedStateHandle: SavedStateHandle
+) : ViewModel() {
+    private var codeAccount: Int? = null
+    private var codePaid: Int? = null
+
     private var _paid: PaidDTO? = null
-    var accountList :List<AccountDTO>? = null
-    val accountListPair = mutableStateListOf<Pair<Int,String>>()
+    var accountList: List<AccountDTO>? = null
+    val accountListPair = mutableStateListOf<Pair<Int, String>>()
 
 
     val loading = mutableStateOf(true)
@@ -38,29 +46,45 @@ class PaidViewModel (private val codeAccount:Int?,private val codePaid:Int?,priv
     val errorValue = mutableStateOf(false)
     val recurrent = mutableStateOf(false)
 
-    fun save(){
+    init {
+        savedStateHandle.get<Int>("codeAccount")?.let {
+            codeAccount = it
+        }
+        savedStateHandle.get<Int>("codePaid")?.let {
+            codePaid = it
+        }
+    }
+
+    fun save(context: Context, navController: NavController) {
         validate()
-        _paid?.let{paid->
-            paid.id.takeIf { it > 0 }?.let{
+        _paid?.let { paid ->
+            paid.id.takeIf { it > 0 }?.let {
                 paidSvc?.let {
-                    if(it.update(paid)){
-                        navController?.let { Toast.makeText(navController.context, R.string.toast_update_successful,Toast.LENGTH_LONG).show().also {
+                    if (it.update(paid)) {
+                        Toast.makeText(
+                            context,
+                            R.string.toast_update_successful,
+                            Toast.LENGTH_LONG
+                        ).show().also {
                             navController.popBackStack()
-                        }}
-                    }else{
-                        navController?.let { Toast.makeText(navController.context, R.string.toast_update_error,Toast.LENGTH_LONG).show() }
+                        }
+                    } else {
+                        Toast.makeText(context, R.string.toast_update_error, Toast.LENGTH_LONG)
+                            .show()
                     }
                 }
-            }?:paidSvc?.let{svc->
+            } ?: paidSvc?.let { svc ->
                 val response = svc.create(paid)
-                if(response > 0){
-                    navController?.let { Toast.makeText(navController.context, R.string.toast_save_successful,Toast.LENGTH_LONG).show().also {
-                        navController.popBackStack()
-                        _paid = _paid!!.copy(id = response)
+                if (response > 0) {
+                    Toast.makeText(context, R.string.toast_save_successful, Toast.LENGTH_LONG)
+                        .show().also {
+                            navController.popBackStack()
+                            _paid = _paid!!.copy(id = response)
 
-                    }}
-                }else{
-                    navController?.let { Toast.makeText(navController.context, R.string.toast_save_error,Toast.LENGTH_LONG).show() }
+                        }
+                } else {
+                    Toast.makeText(context, R.string.toast_save_error, Toast.LENGTH_LONG)
+                        .show()
                 }
             }
         }

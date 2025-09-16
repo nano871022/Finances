@@ -51,13 +51,17 @@ fun Paid(viewModel:PaidViewModel) {
     }
 }
 
+import androidx.compose.ui.platform.LocalContext
+import androidx.navigation.compose.rememberNavController
+
 @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
 @Composable
-private fun Body(viewModel:PaidViewModel){
-
-    Scaffold (floatingActionButton = {
-        Buttons(add={viewModel.save()}, clear = {viewModel.clean()})
-    }){
+private fun Body(viewModel: PaidViewModel) {
+    val context = LocalContext.current
+    val navController = rememberNavController()
+    Scaffold(floatingActionButton = {
+        Buttons(add = { viewModel.save(context, navController) }, clear = { viewModel.clean() })
+    }) {
         Form(viewModel = viewModel, modifier = Modifier.padding(it))
     }
 
@@ -198,9 +202,20 @@ internal fun PreviewPaidFormDark(){
 
 }
 
+import androidx.lifecycle.SavedStateHandle
+import co.com.japl.module.paid.views.fakeSvc.AccountPortFake
+import co.com.japl.module.paid.views.fakeSvc.PaidPortFake
+
 @Composable
-private fun getViewModel():PaidViewModel{
-    val viewModel = PaidViewModel(paidSvc = null, codeAccount = 0 , codePaid =0, accountSvc = null,navController = null)
+private fun getViewModel(): PaidViewModel {
+    val savedStateHandle = SavedStateHandle()
+    savedStateHandle.set("codeAccount", 1)
+    savedStateHandle.set("codePaid", 1)
+    val viewModel = PaidViewModel(
+        paidSvc = PaidPortFake(),
+        accountSvc = AccountPortFake(),
+        savedStateHandle = savedStateHandle
+    )
     viewModel.loading.value = false
 
 

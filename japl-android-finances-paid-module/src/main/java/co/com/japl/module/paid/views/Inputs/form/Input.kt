@@ -1,5 +1,6 @@
 package co.com.japl.module.paid.views.Inputs.form
 
+import android.content.res.Configuration
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Column
@@ -17,6 +18,9 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.SavedStateHandle
+import androidx.navigation.compose.rememberNavController
 import co.com.japl.module.paid.R
 import co.com.japl.module.paid.controllers.Inputs.form.InputViewModel
 import co.com.japl.ui.components.FieldDatePicker
@@ -26,13 +30,15 @@ import co.com.japl.ui.components.FloatButton
 import co.com.japl.ui.components.MoreOptionsDialog
 import co.com.japl.ui.theme.values.Dimensions
 import co.com.japl.module.paid.enums.MoreOptionsKindPaymentInput
+import co.com.japl.module.paid.views.fakeSvc.InputPortFake
+import co.com.japl.ui.theme.MaterialThemeComposeUI
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
 @Composable
-fun InputForm(viewModel: InputViewModel){
+fun InputForm(viewModel: InputViewModel) {
     val stateProcess = remember { viewModel.progress }
     val stateLoader = remember { viewModel.loader }
     val scope = rememberCoroutineScope()
@@ -41,23 +47,59 @@ fun InputForm(viewModel: InputViewModel){
             viewModel.main()
         }
     }
+    val navController = rememberNavController()
+    val context = LocalContext.current
 
-    if(stateLoader.value) {
+    if (stateLoader.value) {
         LinearProgressIndicator(
             progress = { stateProcess.value },
             modifier = Modifier.fillMaxWidth(),
         )
-    }else {
+    } else {
         Scaffold(
             floatingActionButton = {
-                FloatButton(imageVector = Icons.Rounded.Add, descriptionIcon = R.string.add_account) {
-                    viewModel.save()
+                FloatButton(
+                    imageVector = Icons.Rounded.Add,
+                    descriptionIcon = R.string.add_account
+                ) {
+                    viewModel.save(context, navController)
                 }
             }
         ) {
-            Body(viewModel = viewModel,Modifier.padding(it))
+            Body(viewModel = viewModel, Modifier.padding(it))
         }
     }
+}
+
+@RequiresApi(Build.VERSION_CODES.S)
+@Composable
+@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_NO, showSystemUi = true)
+fun InputFormPreview() {
+    val viewModel = getViewModel()
+    MaterialThemeComposeUI {
+        InputForm(viewModel = viewModel)
+    }
+}
+
+@RequiresApi(Build.VERSION_CODES.S)
+@Composable
+@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES, showSystemUi = true)
+fun InputFormPreviewDark() {
+    val viewModel = getViewModel()
+    MaterialThemeComposeUI {
+        InputForm(viewModel = viewModel)
+    }
+}
+
+private fun getViewModel(): InputViewModel {
+    val savedStateHandle = SavedStateHandle()
+    savedStateHandle.set("codeAccount", 1)
+    val viewModel = InputViewModel(
+        inputSvc = InputPortFake(),
+        savedStateHandle = savedStateHandle
+    )
+    viewModel.loader.value = false
+    return viewModel
 }
 
 @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)

@@ -40,28 +40,31 @@ import co.japl.android.graphs.utils.NumbersUtil
 import java.math.BigDecimal
 import java.time.LocalDate
 
+import androidx.navigation.compose.rememberNavController
+
 @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
 @Composable
-fun ProjectionForm(viewModel: ProjectionFormViewModel, navController: NavController){
+fun ProjectionForm(viewModel: ProjectionFormViewModel) {
     val loading = remember { viewModel.loaderStatus }
 
-    if(loading.value){
+    if (loading.value) {
         LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
-    }else{
-        Scafold(viewModel=viewModel, navController = navController)
+    } else {
+        Scafold(viewModel = viewModel)
     }
 }
 
 @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
 @Composable
-private fun Scafold(viewModel: ProjectionFormViewModel, navController: NavController){
-    val snackhost = remember {viewModel.hostState}
-    Scaffold (
-        snackbarHost = {SnackbarHost(hostState = snackhost)},
+private fun Scafold(viewModel: ProjectionFormViewModel) {
+    val snackhost = remember { viewModel.hostState }
+    val navController = rememberNavController()
+    Scaffold(
+        snackbarHost = { SnackbarHost(hostState = snackhost) },
         floatingActionButton = {
-            FloatButton(viewModel=viewModel, navController = navController)
-        }){
-        Body(viewModel=viewModel,modifier = Modifier.padding(it))
+            FloatButton(viewModel = viewModel, navController = navController)
+        }) {
+        Body(viewModel = viewModel, modifier = Modifier.padding(it))
     }
 }
 
@@ -125,16 +128,16 @@ private fun Body(viewModel: ProjectionFormViewModel,modifier:Modifier){
 }
 
 @Composable
-private fun FloatButton(viewModel: ProjectionFormViewModel, navController: NavController){
+private fun FloatButton(viewModel: ProjectionFormViewModel, navController: NavController) {
     val disableStatus = remember { viewModel.disableSaveStatus }
-    Column{
+    Column {
         FloatButton(
             imageVector = Icons.Rounded.CleaningServices,
             descriptionIcon = R.string.clean_form
-        ){
+        ) {
             viewModel.clear()
         }
-        if(disableStatus.value.not()) {
+        if (disableStatus.value.not()) {
             FloatButton(
                 imageVector = Icons.Rounded.Add,
                 descriptionIcon = R.string.add_projection
@@ -148,10 +151,15 @@ private fun FloatButton(viewModel: ProjectionFormViewModel, navController: NavCo
 
 @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
 @Composable
-@Preview(showBackground = true, showSystemUi = true, uiMode = Configuration.UI_MODE_NIGHT_NO, backgroundColor = 0xFFFFFFFF)
-private fun ProjectionFormPreviewLight(){
-    MaterialThemeComposeUI{
-        ProjectionForm(getViewModel(), NavController(LocalContext.current))
+@Preview(
+    showBackground = true,
+    showSystemUi = true,
+    uiMode = Configuration.UI_MODE_NIGHT_NO,
+    backgroundColor = 0xFFFFFFFF
+)
+private fun ProjectionFormPreviewLight() {
+    MaterialThemeComposeUI {
+        ProjectionForm(getViewModel())
     }
 }
 

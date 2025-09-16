@@ -1,8 +1,10 @@
 package co.com.japl.module.paid.controllers.Inputs.form
 
+import android.content.Context
 import android.widget.Toast
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.navigation.NavController
 import co.com.japl.finances.iports.dtos.InputDTO
@@ -14,11 +16,16 @@ import co.japl.android.graphs.utils.NumbersUtil
 import kotlinx.coroutines.runBlocking
 import java.time.LocalDate
 
-class InputViewModel constructor(private val codeAccount:Int,private val codeInput:Int?,private val inputSvc:IInputPort,private val navController: NavController): ViewModel(){
+class InputViewModel constructor(
+    private val inputSvc: IInputPort,
+    private val savedStateHandle: SavedStateHandle
+) : ViewModel() {
+    private var codeAccount: Int = 0
+    private var codeInput: Int? = null
 
     var loader = mutableStateOf(true)
-    var progress = mutableFloatStateOf( 0f)
-    private var _input:InputDTO? = null
+    var progress = mutableFloatStateOf(0f)
+    private var _input: InputDTO? = null
 
     val date = mutableStateOf("")
     val kindOfPayment = mutableStateOf("")
@@ -32,27 +39,49 @@ class InputViewModel constructor(private val codeAccount:Int,private val codeInp
 
     private var save = false
 
-    fun save(){
-        if(save){
+    init {
+        savedStateHandle.get<Int>("codeAccount")?.let {
+            codeAccount = it
+        }
+        savedStateHandle.get<Int>("codeInput")?.let {
+            codeInput = it
+        }
+    }
+
+    fun save(context: Context, navController: NavController) {
+        if (save) {
             _input?.let {
-                if(it.id == 0){
-                    if(inputSvc.create(it)){
+                if (it.id == 0) {
+                    if (inputSvc.create(it)) {
                         navController.navigateUp()
-                        Toast.makeText(navController.context, R.string.toast_save_successful, Toast.LENGTH_SHORT).show()
-                    }else{
-                        Toast.makeText(navController.context, R.string.toast_save_error, Toast.LENGTH_SHORT).show()
+                        Toast.makeText(
+                            context,
+                            R.string.toast_save_successful,
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    } else {
+                        Toast.makeText(context, R.string.toast_save_error, Toast.LENGTH_SHORT)
+                            .show()
                     }
 
-                }else {
-                    if(inputSvc.update(it)){
+                } else {
+                    if (inputSvc.update(it)) {
                         navController.navigateUp()
-                        Toast.makeText(navController.context, R.string.toast_update_successful, Toast.LENGTH_SHORT).show()
-                    }else{
-                        Toast.makeText(navController.context, R.string.toast_update_error, Toast.LENGTH_SHORT).show()
+                        Toast.makeText(
+                            context,
+                            R.string.toast_update_successful,
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    } else {
+                        Toast.makeText(
+                            context,
+                            R.string.toast_update_error,
+                            Toast.LENGTH_SHORT
+                        ).show()
                     }
                 }
             }
-        }else{
+        } else {
             validation()
         }
     }
