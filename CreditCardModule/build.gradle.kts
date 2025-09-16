@@ -81,6 +81,7 @@ dependencies {
     implementation("androidx.compose.ui:ui:1.6.7")
     implementation("androidx.compose.ui:ui-graphics")
     implementation("androidx.compose.material:material:1.6.7")
+    implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
 
 
     testImplementation("junit:junit:4.13.2")

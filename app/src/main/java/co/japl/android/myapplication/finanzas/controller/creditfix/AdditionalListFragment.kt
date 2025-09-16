@@ -24,7 +24,7 @@ class AdditionalListFragment : Fragment() {
     @Inject lateinit var additionalSvc : IAdditional
     private val viewModel: AdditionalViewModel by viewModels {
         ViewModelFactory(this,AdditionalViewModel::class.java){
-            AdditionalViewModel(requireContext(),it,additionalSvc)
+            AdditionalViewModel(it,additionalSvc)
         }
     }
 

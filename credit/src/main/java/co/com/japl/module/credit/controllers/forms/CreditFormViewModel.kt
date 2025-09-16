@@ -159,13 +159,13 @@ class CreditFormViewModel @Inject constructor(
         }
     }
 
-    fun onSubmitFormClicked(){
+    fun onSubmitFormClicked(navController: NavController){
         if(validate()){
-            executeSave()
+            executeSave(navController)
         }else{
             viewModelScope.launch {
                 snackbarHostState.showSnackbar(
-                    message = context.resources.getString(R.string.invalid_form),
+                    message = navController.context.resources.getString(R.string.invalid_form),
                     withDismissAction = true
                 )
             }
@@ -185,12 +185,12 @@ class CreditFormViewModel @Inject constructor(
         return valid.also { it.takeIf { it }?.let { executeCalculateQuote() } }
     }
 
-    fun executeSave() = CoroutineScope(Dispatchers.IO).launch {
+    fun executeSave(navController: NavController) = CoroutineScope(Dispatchers.IO).launch {
         showProgress.value = true
-        saveRunning()
+        saveRunning(navController)
     }
 
-    suspend fun saveRunning(){
+    suspend fun saveRunning(navController: NavController){
         creditSvc.save(creditDTO.value).takeIf{it > 0}?.let { code ->
             _creditDto.update {
                 it.copy(id = code)
@@ -199,7 +199,7 @@ class CreditFormViewModel @Inject constructor(
         }?.also {
             showProgress.value = false
             snackbarHostState.showSnackbar(
-                message = context.resources.getString(R.string.save_success)
+                message = navController.context.resources.getString(R.string.save_success)
             )
         }
     }
@@ -256,7 +256,7 @@ class CreditFormViewModel @Inject constructor(
         if(_creditDto.value.id <= 0) {
             viewModelScope.launch {
                 snackbarHostState.showSnackbar(
-                    message = context.resources.getString(R.string.invalid_option_amortization),
+                    message = navController.context.resources.getString(R.string.invalid_option_amortization),
                     withDismissAction = true
                 )
             }

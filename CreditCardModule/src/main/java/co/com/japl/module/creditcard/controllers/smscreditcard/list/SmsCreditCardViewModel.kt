@@ -4,6 +4,7 @@ import android.widget.Toast
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.navigation.NavController
 import co.com.japl.finances.iports.dtos.CreditCardDTO
@@ -14,25 +15,25 @@ import co.com.japl.finances.iports.inbounds.creditcard.ISMSCreditCardPort
 import co.com.japl.module.creditcard.R
 import kotlinx.coroutines.runBlocking
 
-class SmsCreditCardViewModel constructor(private val svc:ISMSCreditCardPort?,private val creditCardSvc:ICreditCardPort?,private val navController: NavController?): ViewModel() {
+class SmsCreditCardViewModel constructor(private val svc:ISMSCreditCardPort,private val creditCardSvc:ICreditCardPort): ViewModel() {
 
     val  load = mutableStateOf(true)
     val  progress = mutableFloatStateOf(0.0f)
 
     val list = mutableStateListOf<Map<Int,List<SMSCreditCard>>>()
 
-    fun edit(code:Int){
+    fun edit(code:Int,navController: NavController){
         require(code > 0){"The code must be greater than 0"}
         navController?.let{
             co.com.japl.module.creditcard.navigations.SMSCreditCard.navigate(code,navController)
         }
     }
 
-    fun add(){
+    fun add(navController: NavController){
         navController?.let{co.com.japl.module.creditcard.navigations.SMSCreditCard.navigate(navController)}
     }
 
-    fun enabled(code:Int){
+    fun enabled(code:Int,navController: NavController){
         require(code > 0){"The code must be greater than 0"}
         svc?.enable(code).takeIf { it == true }?.let {
             navController?.let { Toast.makeText(it.context, R.string.toast_successful_enabled, Toast.LENGTH_SHORT).show() }?.also {
@@ -41,7 +42,7 @@ class SmsCreditCardViewModel constructor(private val svc:ISMSCreditCardPort?,pri
         }?:navController?.let { Toast.makeText(it.context, R.string.toast_dont_successful_enabled, Toast.LENGTH_SHORT).show() }
     }
 
-    fun disabled(code:Int){
+    fun disabled(code:Int,navController: NavController){
         require(code > 0){"The code must be greater than 0"}
         svc?.disable(code).takeIf { it == true }?.let {
             navController?.let { Toast.makeText(it.context, R.string.toast_successful_disabled, Toast.LENGTH_SHORT).show() }?.also {
@@ -50,7 +51,7 @@ class SmsCreditCardViewModel constructor(private val svc:ISMSCreditCardPort?,pri
         }?:navController?.let { Toast.makeText(it.context, R.string.toast_dont_successful_disabled, Toast.LENGTH_SHORT).show() }
     }
 
-    fun delete(code:Int){
+    fun delete(code:Int,navController: NavController){
         require(code > 0){"The code must be greater than 0"}
         svc?.delete(code)?.takeIf { it }?.let{
             navController?.let { Toast.makeText(it.context, R.string.toast_successful_deleted, Toast.LENGTH_SHORT).show().also {

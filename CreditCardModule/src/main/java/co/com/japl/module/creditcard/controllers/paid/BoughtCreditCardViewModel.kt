@@ -2,6 +2,7 @@ package co.com.japl.module.creditcard.controllers.paid
 
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.navigation.NavController
 import co.com.japl.finances.iports.dtos.BoughtCreditCardPeriodDTO
@@ -11,12 +12,18 @@ import co.com.japl.ui.Prefs
 import kotlinx.coroutines.runBlocking
 import java.time.LocalDateTime
 
-class BoughtCreditCardViewModel constructor(private val service:IBoughtListPort?,private val idCreditCard:Int,private val navController: NavController,private val prefs:Prefs):ViewModel() {
+class BoughtCreditCardViewModel constructor(private val savedStateHandle: SavedStateHandle,private val service:IBoughtListPort?,private val prefs:Prefs):ViewModel() {
+    private val idCreditCard:Int
+
     val cache = mutableStateOf(prefs.simulator)
     val progress = mutableFloatStateOf(0f)
     val loader = mutableStateOf(false)
     private var _list:Map<Long,List<BoughtCreditCardPeriodDTO>> = mapOf()
     val periodList get() = _list
+
+    init{
+        idCreditCard = savedStateHandle.get<Int>("codeCreditCard")!!
+    }
 
     fun main() = runBlocking {
         progress.floatValue = 0.2f
@@ -32,7 +39,7 @@ class BoughtCreditCardViewModel constructor(private val service:IBoughtListPort?
         loader.value = true
     }
 
-    fun goToListDetail(cutOffDay:Short,cutOff:LocalDateTime){
+    fun goToListDetail(cutOffDay:Short,cutOff:LocalDateTime,navController: NavController){
         Bought.navigate(idCreditCard,cutOffDay,cutOff, navController)
     }
 

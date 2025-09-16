@@ -1,4 +1,4 @@
-package co.com.japl.module.credit.views.forms
+package co.com.japl.module.credit.views.fakes
 
 import co.com.japl.finances.iports.dtos.AdditionalCreditDTO
 import co.com.japl.finances.iports.inbounds.credit.IAdditionalFormPort

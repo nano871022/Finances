@@ -19,7 +19,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 
 @ViewModelScoped
-class AdditionalViewModel constructor(private val context: Context,private val savedStateHandle: SavedStateHandle, private val additionalSvc: IAdditional?): ViewModel(){
+class AdditionalViewModel constructor(private val savedStateHandle: SavedStateHandle, private val additionalSvc: IAdditional?): ViewModel(){
 
     val list = mutableStateListOf<AdditionalCreditDTO>()
     private val _loading = MutableStateFlow<Boolean>(false)
@@ -38,14 +38,14 @@ class AdditionalViewModel constructor(private val context: Context,private val s
         AdditionalList.navigateForm(code,navController)
     }
 
-    fun deleteAdditional(idCode:Int){
+    fun deleteAdditional(idCode:Int, navController: NavController){
         additionalSvc?.let{
             it.delete(idCode).also{ resp ->
                 viewModelScope.launch {
                     when(resp) {
                        true -> hostState.showSnackbar(
-                            message = context.getString(R.string.delete_record),
-                            actionLabel = context.getString(R.string.close),
+                            message = navController.context.getString(R.string.delete_record),
+                            actionLabel = navController.context.getString(R.string.close),
                             duration = SnackbarDuration.Short
                         ).also {
                             viewModelScope.launch {
@@ -53,8 +53,8 @@ class AdditionalViewModel constructor(private val context: Context,private val s
                             }
                        }
                         false -> hostState.showSnackbar(
-                            message = context.getString(R.string.error_delete_record),
-                            actionLabel = context.getString(R.string.close),
+                            message = navController.context.getString(R.string.error_delete_record),
+                            actionLabel = navController.context.getString(R.string.close),
                             duration = SnackbarDuration.Short
                         )
                     }

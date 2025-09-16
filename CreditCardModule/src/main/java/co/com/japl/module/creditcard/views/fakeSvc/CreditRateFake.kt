@@ -1,11 +1,11 @@
-package co.com.japl.module.creditcard.views.bought.forms
+package co.com.japl.module.creditcard.views.fakeSvc
 
 import co.com.japl.finances.iports.dtos.TaxDTO
 import co.com.japl.finances.iports.enums.KindInterestRateEnum
 import co.com.japl.finances.iports.inbounds.creditcard.ITaxPort
 import java.time.LocalDate
 
-class FakeTaxPort : ITaxPort {
+class CreditRateFake : ITaxPort {
     override fun get(
         codCreditCard: Int,
         month: Int,
@@ -53,5 +53,4 @@ class FakeTaxPort : ITaxPort {
     override fun clone(code: Int): Boolean {
         TODO("Not yet implemented")
     }
-
 }

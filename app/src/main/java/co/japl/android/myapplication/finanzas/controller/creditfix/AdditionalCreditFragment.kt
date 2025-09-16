@@ -28,7 +28,6 @@ class AdditionalCreditFragment : Fragment(){
             viewModelClass = AdditionalFormViewModel::class.java,
             build = {
                 AdditionalFormViewModel(
-                    context = context?.applicationContext!!,
                     savedStateHandle = it,
                     additionalSvc = additionalSvc
                 )

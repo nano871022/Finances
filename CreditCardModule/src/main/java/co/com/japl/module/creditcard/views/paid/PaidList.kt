@@ -17,6 +17,8 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import co.com.japl.finances.iports.dtos.BoughtCreditCardPeriodDTO
 import co.com.japl.module.creditcard.R
 import co.com.japl.module.creditcard.controllers.paid.BoughtCreditCardViewModel
@@ -29,7 +31,7 @@ import kotlinx.coroutines.withContext
 import java.time.LocalDateTime
 
 @Composable
-fun PaidList(viewModel: BoughtCreditCardViewModel){
+fun PaidList(viewModel: BoughtCreditCardViewModel,navController: NavController){
     val loaderState = remember {viewModel.progress}
     val loader = remember {viewModel.loader}
     val scope = rememberCoroutineScope()
@@ -44,24 +46,24 @@ fun PaidList(viewModel: BoughtCreditCardViewModel){
             progress = { loaderState.floatValue },
         )
     }else {
-        Yearly(viewModel = viewModel)
+        Yearly(viewModel = viewModel,navController)
     }
 
 }
 
 @Composable
-private fun Yearly(viewModel:BoughtCreditCardViewModel){
+private fun Yearly(viewModel:BoughtCreditCardViewModel,navController: NavController){
     LazyColumn(modifier = Modifier.fillMaxWidth()){
         items(viewModel.periodList.size){item->
             val key = viewModel.periodList.keys.toList()[item]
             val list = viewModel.periodList[key]!!
-            Yearly(key = key, list = list, viewModel = viewModel)
+            Yearly(key = key, list = list, viewModel = viewModel,navController)
         }
     }
 }
 
 @Composable
-private fun Yearly(key:Long,list:List<BoughtCreditCardPeriodDTO>,viewModel:BoughtCreditCardViewModel){
+private fun Yearly(key:Long,list:List<BoughtCreditCardPeriodDTO>,viewModel:BoughtCreditCardViewModel,navController: NavController){
     val drowdownState = remember { mutableStateOf(false) }
     Surface(
         border = BorderStroke(1.dp,color= MaterialTheme.colorScheme.onPrimaryContainer),
@@ -73,7 +75,7 @@ private fun Yearly(key:Long,list:List<BoughtCreditCardPeriodDTO>,viewModel:Bough
             YearlyHeader(year = key, list = list)
             if (drowdownState.value) {
                 Monthly(list = list, goto = { cutoffDay, cutoff ->
-                    viewModel.goToListDetail(cutoffDay, cutoff)
+                    viewModel.goToListDetail(cutoffDay, cutoff,navController)
                 })
             }
         }

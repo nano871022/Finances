@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import androidx.annotation.RequiresApi
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import co.com.japl.finances.iports.inbounds.creditcard.bought.lists.IBoughtListPort
 import co.com.japl.ui.theme.MaterialThemeComposeUI
@@ -18,6 +19,7 @@ import co.com.japl.module.creditcard.controllers.paid.BoughtCreditCardViewModel
 import co.com.japl.module.creditcard.views.paid.PaidList
 import co.com.japl.ui.Prefs
 import co.japl.android.myapplication.finanzas.ApplicationInitial
+import co.japl.android.myapplication.finanzas.controller.ViewModelFactory
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 import kotlin.properties.Delegates
@@ -30,6 +32,20 @@ class ListQuotesPaid : Fragment() {
     @Inject lateinit var prefs : Prefs
     private lateinit var _binding : FragmentListPeriodsBinding
 
+    val viewModel:BoughtCreditCardViewModel by viewModels{
+        ViewModelFactory(
+            owner = this,
+            viewModelClass = BoughtCreditCardViewModel::class.java,
+            build = {
+                BoughtCreditCardViewModel(
+                    savedStateHandle = it,
+                    service = port,
+                    prefs = prefs
+                )
+            }
+        )
+    }
+
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -37,15 +53,11 @@ class ListQuotesPaid : Fragment() {
     ): View? {
         _binding = FragmentListPeriodsBinding.inflate(inflater, container, false)
         val rootView = _binding.root
-        arguments?.let{
-            creditCardId = PeriodsParams.Companion.Historical.download(it)
-        }
-        Log.d(javaClass.name,"=== ListQuotesPaid start")
         _binding.composeViewLp.apply {
                 setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
                 setContent {
                     MaterialThemeComposeUI {
-                        PaidList(viewModel = BoughtCreditCardViewModel(port,creditCardId,findNavController(),prefs))
+                        PaidList(viewModel = viewModel,findNavController())
 
                 }
             }

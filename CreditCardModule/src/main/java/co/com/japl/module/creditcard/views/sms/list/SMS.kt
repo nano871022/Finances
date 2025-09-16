@@ -25,11 +25,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.compose.rememberNavController
 import co.com.japl.finances.iports.dtos.SMSCreditCard
 import co.com.japl.finances.iports.enums.KindInterestRateEnum
 import co.com.japl.module.creditcard.R
 import co.com.japl.module.creditcard.controllers.smscreditcard.list.SmsCreditCardViewModel
 import co.com.japl.module.creditcard.enums.MoreOptionsItemSmsCreditCard
+import co.com.japl.module.creditcard.views.fakeSvc.CreditCardFake
+import co.com.japl.module.creditcard.views.fakeSvc.SMSCreditCardFake
 import co.com.japl.ui.components.AlertDialogOkCancel
 import co.com.japl.ui.components.Carousel
 import co.com.japl.ui.components.FloatButton
@@ -65,10 +68,11 @@ fun SMS(viewModel:SmsCreditCardViewModel) {
 
 @Composable
 private fun Body(viewModel: SmsCreditCardViewModel){
+    val navController = rememberNavController()
     Scaffold (
         floatingActionButton = {
             Buttons{
-                viewModel.add()
+                viewModel.add(navController)
             }
         }
     ) {
@@ -79,6 +83,7 @@ private fun Body(viewModel: SmsCreditCardViewModel){
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun Content(viewModel: SmsCreditCardViewModel,modifier: Modifier){
+    val navController = rememberNavController()
     val list = remember { viewModel.list}
     Column {
         Row (horizontalArrangement = Arrangement.End, modifier=Modifier.fillMaxWidth()) {
@@ -93,13 +98,13 @@ private fun Content(viewModel: SmsCreditCardViewModel,modifier: Modifier){
                     list[it]?.values?.forEach {
                         for (i in it) {
                             Card(sms = i, modifier = Modifier, edit = {
-                                viewModel.edit(it)
+                                viewModel.edit(it,navController)
                             }, delete = {
-                                viewModel.delete(it)
+                                viewModel.delete(it,navController)
                             }, enable = {
-                                viewModel.enabled(it)
+                                viewModel.enabled(it,navController)
                             }, disable = {
-                                viewModel.disabled(it)
+                                viewModel.disabled(it,navController)
                             })
                         }
                     }
@@ -191,7 +196,7 @@ internal fun SMSPreview(){
 
 @Composable
 private fun getViewModel():SmsCreditCardViewModel {
-  val viewModel = SmsCreditCardViewModel(null,null, null)
+  val viewModel = SmsCreditCardViewModel(SMSCreditCardFake(), CreditCardFake())
     viewModel.load.value = false
     listOf(
         SMSCreditCard(

@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.annotation.RequiresApi
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import co.com.japl.finances.iports.inbounds.creditcard.ICreditCardPort
 import co.com.japl.finances.iports.inbounds.creditcard.ITaxPort
@@ -17,6 +18,7 @@ import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.japl.android.myapplication.databinding.FragmentTaxesBinding
 import co.japl.android.myapplication.putParams.TaxesParams
 import co.com.japl.utils.NumbersUtil
+import co.japl.android.myapplication.finanzas.controller.ViewModelFactory
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -30,6 +32,19 @@ class Taxes : Fragment() {
     private var codeCreditCard:Int? = null
     private var codeCreditRate:Int? = null
 
+    val viewModel : CreateRateViewModel by viewModels{
+        ViewModelFactory(
+            owner = this,
+            viewModelClass = CreateRateViewModel::class.java,
+            build = {
+                CreateRateViewModel(it,
+                    service,
+                    creditCardSvc)
+            }
+
+        )
+    }
+
 
     @RequiresApi(Build.VERSION_CODES.S)
     override fun onCreateView(
@@ -37,31 +52,14 @@ class Taxes : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         _binding = FragmentTaxesBinding.inflate(inflater)
-        getParameters()
-        val viewModel = CreateRateViewModel(codeCreditCard,codeCreditRate,service,creditCardSvc,findNavController())
         _binding.cvComponentFts.apply {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
                 MaterialThemeComposeUI {
-                    CreditRate(viewModel = viewModel)
+                    CreditRate(viewModel = viewModel,findNavController())
                 }
             }
         }
         return _binding.root.rootView
     }
-
-    private fun getParameters(){
-        arguments?.let {
-            val params = TaxesParams.download(it)
-            codeCreditCard = if(NumbersUtil.isNumber(params.first))
-                params.first.toInt()
-            else
-                null
-            codeCreditRate = if(NumbersUtil.isNumber(params.second))
-                params.second.toInt()
-            else
-                null
-        }
-    }
-
 }

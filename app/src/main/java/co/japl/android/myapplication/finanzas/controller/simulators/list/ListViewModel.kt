@@ -20,11 +20,10 @@ class ListViewModel  @Inject constructor(private val simulatorVariableSvc: ISimu
         execute()
     }
 
-    fun createViewModelQuoteVariable(dto: SimulatorCreditDTO, navController: NavController): co.com.japl.module.creditcard.controllers.simulator.SimulatorListItemViewModel {
+    fun createViewModelQuoteVariable(dto: SimulatorCreditDTO): co.com.japl.module.creditcard.controllers.simulator.SimulatorListItemViewModel {
         return co.com.japl.module.creditcard.controllers.simulator.SimulatorListItemViewModel(
             dto,
-            simulatorVariableSvc,
-            navController
+            simulatorVariableSvc
         )
     }
 

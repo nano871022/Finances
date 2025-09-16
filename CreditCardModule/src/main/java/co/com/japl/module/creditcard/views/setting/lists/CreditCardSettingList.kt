@@ -1,5 +1,6 @@
 package co.com.japl.module.creditcard.views.setting.lists
 
+import android.annotation.SuppressLint
 import android.content.res.Configuration
 import android.os.Build
 import androidx.annotation.RequiresApi
@@ -28,10 +29,14 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.SavedStateHandle
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import co.com.japl.finances.iports.dtos.CreditCardSettingDTO
 import co.com.japl.module.creditcard.R
 import co.com.japl.module.creditcard.controllers.setting.CreditCardSettingListViewModel
@@ -40,6 +45,7 @@ import co.com.japl.ui.theme.values.Dimensions
 import co.com.japl.ui.theme.values.ModifiersCustom.Weight1f
 import co.com.japl.ui.theme.values.ModifiersCustom.Weight1fAndAlightCenterVertical
 import co.com.japl.module.creditcard.enums.MoreOptionsItemsSettingsCreditCard
+import co.com.japl.module.creditcard.views.fakeSvc.CreditCardSettingFake
 import co.com.japl.ui.utils.WindowWidthSize
 import co.com.japl.ui.components.AlertDialogOkCancel
 import co.com.japl.ui.components.MoreOptionsDialog
@@ -49,7 +55,7 @@ import kotlinx.coroutines.launch
 import java.time.LocalDateTime
 
 @Composable
- fun CreditCardSettingList(viewModel: CreditCardSettingListViewModel){
+ fun CreditCardSettingList(viewModel: CreditCardSettingListViewModel,navController: NavController){
     val stateShow = remember {viewModel.showProgress}
     val stateProgress = remember {viewModel.progress}
 
@@ -63,16 +69,16 @@ import java.time.LocalDateTime
             modifier = Modifier.fillMaxWidth(),
         )
     }else {
-        Body(viewModel = viewModel)
+        Body(viewModel = viewModel,navController)
     }
 }
 
 @Composable
-private fun Body(viewModel: CreditCardSettingListViewModel){
+private fun Body(viewModel: CreditCardSettingListViewModel,navController: NavController){
     val listState = remember { viewModel.list }
     Scaffold( floatingActionButton = {
         FloatingActionButton(onClick = {
-            viewModel.onClick()
+            viewModel.onClick(navController)
         }, elevation = FloatingActionButtonDefaults.elevation(10.dp),
             backgroundColor = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.5f)) {
             Icon(
@@ -85,14 +91,15 @@ private fun Body(viewModel: CreditCardSettingListViewModel){
                 listState.forEach{item->
                     Item(
                         item = item,
-                        edit = { id -> viewModel.edit(id) },
-                        delete = { id -> viewModel.delete(id) })
+                        edit = { id -> viewModel.edit(id,navController) },
+                        delete = { id -> viewModel.delete(id,navController) })
                 }
         }
     }
 
 }
 
+@SuppressLint("UnusedBoxWithConstraintsScope")
 @Composable
 private fun Item(item:CreditCardSettingDTO,edit:(Int)->Unit,delete:(Int)->Unit){
     val stateShowOptions = remember { mutableStateOf(false) }
@@ -192,7 +199,7 @@ private fun ItemCompact(item:CreditCardSettingDTO,statusShowOptions:MutableState
 fun CreditCardSettingListPreview(){
     val viewModel = getViewModel()
     MaterialThemeComposeUI {
-        CreditCardSettingList(viewModel)
+        CreditCardSettingList(viewModel, NavController(LocalContext.current))
     }
 }
 
@@ -202,12 +209,12 @@ fun CreditCardSettingListPreview(){
 fun CreditCardSettingListPreviewDARK(){
     val viewModel = getViewModel()
     MaterialThemeComposeUI {
-        CreditCardSettingList(viewModel)
+        CreditCardSettingList(viewModel, NavController(LocalContext.current))
     }
 }
 
 fun getViewModel():CreditCardSettingListViewModel{
-    val viewModel = CreditCardSettingListViewModel(0, null,null)
+    val viewModel = CreditCardSettingListViewModel(SavedStateHandle(), CreditCardSettingFake())
     viewModel.showProgress.value = false
     viewModel.progress.floatValue = 0.7f
     viewModel.list.add(CreditCardSettingDTO(1,2,"test","test","", LocalDateTime.now(),Short.MIN_VALUE))

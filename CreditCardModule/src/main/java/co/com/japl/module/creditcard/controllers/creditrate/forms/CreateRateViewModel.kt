@@ -4,6 +4,7 @@ import android.util.Log
 import android.widget.Toast
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.navigation.NavController
 import co.com.japl.finances.iports.dtos.CreditCardDTO
@@ -19,7 +20,11 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.YearMonth
 
-class CreateRateViewModel constructor(private val codeCreditCard:Int?,private val codeCreditRate:Int?,private val creditRateSvc:ITaxPort?,private val creditCardSvc:ICreditCardPort?,private val navCompiler: NavController?): ViewModel() {
+class CreateRateViewModel constructor(private val savedStateHandle: SavedStateHandle,private val creditRateSvc:ITaxPort?,private val creditCardSvc:ICreditCardPort?): ViewModel() {
+
+    private var codeCreditCard:Int? = null
+    private var codeCreditRate:Int? = null
+
 
     val progress = mutableFloatStateOf(0f)
     val loader = mutableStateOf(true)
@@ -48,49 +53,54 @@ class CreateRateViewModel constructor(private val codeCreditCard:Int?,private va
 
     var save = false
 
-    fun save() {
+    init{
+        codeCreditCard = savedStateHandle.get<Int>("codeCreditCard")
+        codeCreditRate = savedStateHandle.get<Int>("codeCreditRate")
+    }
+
+    fun save(navController: NavController) {
         validate()
         _creditRateDto?.let {
             creditRateSvc?.let { svc ->
                 if (save) {
                     if (it.id == 0) {
-                        create(it)
+                        create(it,navController)
                     }else{
-                        update(it)
+                        update(it,navController)
                     }
                 }
             }
         }
     }
 
-        private fun create(rate:TaxDTO){
+        private fun create(rate:TaxDTO, navCompiler: NavController){
             if (creditRateSvc?.create(rate)!!) {
                 Toast.makeText(
-                    navCompiler?.context,
+                    navCompiler.context,
                     R.string.toast_successful_insert,
                     Toast.LENGTH_SHORT
                 ).show()
-                navCompiler?.navigateUp()
+                navCompiler.navigateUp()
             } else {
                 Toast.makeText(
-                    navCompiler?.context,
+                    navCompiler.context,
                     R.string.toast_unsuccessful_insert,
                     Toast.LENGTH_SHORT
                 ).show()
             }
         }
 
-    private fun update(rate:TaxDTO){
+    private fun update(rate:TaxDTO, navCompiler: NavController){
         if (creditRateSvc?.update(rate)!!) {
             Toast.makeText(
-                navCompiler?.context,
+                navCompiler.context,
                 R.string.toast_successful_update,
                 Toast.LENGTH_SHORT
             ).show()
-            navCompiler?.navigateUp()
+            navCompiler.navigateUp()
         } else {
             Toast.makeText(
-                navCompiler?.context,
+                navCompiler.context,
                 R.string.toast_dont_successful_update,
                 Toast.LENGTH_SHORT
             ).show()
@@ -136,9 +146,9 @@ class CreateRateViewModel constructor(private val codeCreditCard:Int?,private va
     }
 
     suspend fun execute(){
-        codeCreditCard?.let {
+        codeCreditCard?.let { cdCC ->
             creditCardSvc?.let {
-                it.getCreditCard(codeCreditCard)?.let {
+                it.getCreditCard(cdCC)?.let {
                 _creditCardDto = it
 
                     creditCard.value = it.id.toString()
@@ -159,10 +169,10 @@ class CreateRateViewModel constructor(private val codeCreditCard:Int?,private va
         creditCardKind.value = KindInterestRateEnum.CREDIT_CARD.getCode().toString()
 
         creditRateSvc?.let{svc->
-            codeCreditCard?.let {
+            codeCreditCard?.let { cdCC ->
                 val yearMonth = YearMonth.of(year.value.toInt(), month.value.toInt()).minusMonths(1)
                 svc.get(
-                    codeCreditCard,
+                    cdCC,
                     yearMonth.monthValue,
                     yearMonth.year,
                     kind = KindInterestRateEnum.findByOrdinal(creditCardKind.value?.toShort()?:0))?.let {

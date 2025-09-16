@@ -44,10 +44,10 @@ import co.com.japl.finances.iports.dtos.GracePeriodDTO
 import co.com.japl.finances.iports.enums.KindAmortization
 import co.com.japl.finances.iports.enums.KindOfTaxEnum
 import co.com.japl.finances.iports.enums.KindPaymentsEnums
-import co.com.japl.finances.iports.inbounds.credit.IAdditional
-import co.com.japl.finances.iports.inbounds.credit.IAmortizationTablePort
-import co.com.japl.finances.iports.inbounds.credit.ICreditPort
-import co.com.japl.finances.iports.inbounds.credit.IPeriodGracePort
+import co.com.japl.module.credit.views.fakes.FakeAdditional
+import co.com.japl.module.credit.views.fakes.FakeAmortizationTablePort
+import co.com.japl.module.credit.views.fakes.FakeCreditPort
+import co.com.japl.module.credit.views.fakes.FakePeriodGracePort
 import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.com.japl.ui.utils.WindowWidthSize
 import co.com.japl.utils.NumbersUtil

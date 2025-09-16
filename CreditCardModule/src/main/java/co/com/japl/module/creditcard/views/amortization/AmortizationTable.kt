@@ -25,10 +25,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.SavedStateHandle
 import co.com.japl.finances.iports.dtos.AmortizationRowDTO
 import co.com.japl.finances.iports.enums.KindOfTaxEnum
 import co.com.japl.module.creditcard.R
 import co.com.japl.module.creditcard.controllers.amortization.AmortizationViewModel
+import co.com.japl.module.creditcard.views.fakeSvc.FakeAmortizationTable
 import co.com.japl.ui.components.DataTable
 import co.com.japl.ui.components.FieldView
 import co.com.japl.ui.model.datatable.Header
@@ -346,7 +348,8 @@ private fun AmortizationDarkVertical(){
 }
 
 private fun getViewModel(): AmortizationViewModel{
-	return AmortizationViewModel(2).also {
+	val svc = FakeAmortizationTable()
+	return AmortizationViewModel(savedStateHandle = SavedStateHandle(),svc = svc).also {
 		it.list.add(
 			AmortizationRowDTO(
 				id=1,

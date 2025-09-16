@@ -21,15 +21,21 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.SavedStateHandle
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import co.com.japl.finances.iports.enums.KindInterestRateEnum
 import co.com.japl.finances.iports.enums.KindOfTaxEnum
 import co.com.japl.module.creditcard.R
 import co.com.japl.module.creditcard.controllers.creditrate.forms.CreateRateViewModel
+import co.com.japl.module.creditcard.views.fakeSvc.CreditCardFake
+import co.com.japl.module.creditcard.views.fakeSvc.CreditRateFake
 import co.com.japl.ui.components.CheckBoxField
 import co.com.japl.ui.components.FieldSelect
 import co.com.japl.ui.components.FieldText
@@ -41,7 +47,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 @Composable
-fun CreditRate(viewModel:CreateRateViewModel){
+fun CreditRate(viewModel:CreateRateViewModel,navController: NavController){
     var statePogress = remember {
         viewModel.loader
     }
@@ -60,7 +66,7 @@ fun CreditRate(viewModel:CreateRateViewModel){
 
         Scaffold(
             floatingActionButton = {
-                FloatingActionButton(onClick = { viewModel.save() },
+                FloatingActionButton(onClick = { viewModel.save(navController) },
                     elevation=FloatingActionButtonDefaults.elevation(10.dp),
                     backgroundColor= MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.5f)) {
                     Icon(
@@ -221,10 +227,10 @@ private fun getKind(value:String):String{
 @Composable
 @Preview(showSystemUi = true, showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
 fun CreditRatePreview(){
-    val viewModel = CreateRateViewModel(null,null,null,null,null)
+    val viewModel = CreateRateViewModel(SavedStateHandle(), CreditRateFake(), CreditCardFake())
     viewModel.loader.value = false
     MaterialThemeComposeUI {
-        CreditRate(viewModel)
+        CreditRate(viewModel, NavController(LocalContext.current))
     }
 }
 
@@ -232,9 +238,9 @@ fun CreditRatePreview(){
 @Composable
 @Preview(showSystemUi = true, showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
 fun CreditRatePreviewDark(){
-    val viewModel = CreateRateViewModel(null,null,null,null,null)
+    val viewModel = CreateRateViewModel(SavedStateHandle(), CreditRateFake(), CreditCardFake())
     viewModel.loader.value = false
     MaterialThemeComposeUI {
-        CreditRate(viewModel)
+        CreditRate(viewModel, NavController(LocalContext.current))
     }
 }

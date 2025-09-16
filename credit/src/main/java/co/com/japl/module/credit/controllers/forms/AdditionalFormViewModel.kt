@@ -24,7 +24,6 @@ import java.time.LocalDate
 import javax.inject.Inject
 
 class AdditionalFormViewModel @Inject constructor(
-    @ApplicationContext private val context: Context,
     private val savedStateHandle: SavedStateHandle,
     private val additionalSvc: IAdditionalFormPort
 ) : ViewModel(){
@@ -90,8 +89,8 @@ class AdditionalFormViewModel @Inject constructor(
                         if (it.create(_dto.value)) {
                             viewModelScope.launch {
                                 hostState.showSnackbar(
-                                    message = context.getString(R.string.create_record_success),
-                                    actionLabel = context.getString(R.string.close),
+                                    message = navController.context.getString(R.string.create_record_success),
+                                    actionLabel = navController.context.getString(R.string.close),
                                     duration = SnackbarDuration.Short
                                 ).also {
                                     navController.popBackStack()
@@ -100,8 +99,8 @@ class AdditionalFormViewModel @Inject constructor(
                         } else {
                             viewModelScope.launch {
                                 hostState.showSnackbar(
-                                    message = context.getString(R.string.error_record_success),
-                                    actionLabel = context.getString(R.string.close),
+                                    message = navController.context.getString(R.string.error_record_success),
+                                    actionLabel = navController.context.getString(R.string.close),
                                     duration = SnackbarDuration.Short
                                 )
                             }
@@ -110,8 +109,8 @@ class AdditionalFormViewModel @Inject constructor(
                         if (it.update(_dto.value)) {
                             viewModelScope.launch {
                                 hostState.showSnackbar(
-                                    message = context.getString(R.string.update_record_success),
-                                    actionLabel = context.getString(R.string.close),
+                                    message = navController.context.getString(R.string.update_record_success),
+                                    actionLabel = navController.context.getString(R.string.close),
                                     duration = SnackbarDuration.Short
                                 ).also {
                                     navController.popBackStack()
@@ -120,8 +119,8 @@ class AdditionalFormViewModel @Inject constructor(
                         } else {
                             viewModelScope.launch {
                                 hostState.showSnackbar(
-                                    message = context.getString(R.string.error_upd_record_success),
-                                    actionLabel = context.getString(R.string.close),
+                                    message = navController.context.getString(R.string.error_upd_record_success),
+                                    actionLabel = navController.context.getString(R.string.close),
                                     duration = SnackbarDuration.Short
                                 )
                             }
@@ -131,7 +130,7 @@ class AdditionalFormViewModel @Inject constructor(
                     viewModelScope.launch {
                         hostState.showSnackbar(
                             message = "Error: ${e.message}",
-                            actionLabel = context.getString(R.string.close),
+                            actionLabel = navController.context.getString(R.string.close),
                             duration = SnackbarDuration.Short
                         )
                     }

@@ -72,7 +72,7 @@ private fun Body(dto: SimulatorCreditDTO, viewModel: ListViewModel, navControlle
         val viewModel = viewModel.createViewModelQuoteFix(dto, navController)
         SimulatorListCredit(viewModel)
     } else {
-        val viewModel = viewModel.createViewModelQuoteVariable(dto, navController)
+        val viewModel = viewModel.createViewModelQuoteVariable(dto)
         SimulatorList(viewModel)
     }
 }

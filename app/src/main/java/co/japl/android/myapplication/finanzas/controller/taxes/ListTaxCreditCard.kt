@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.annotation.RequiresApi
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import co.com.japl.finances.iports.inbounds.creditcard.ICreditCardPort
 import co.com.japl.finances.iports.inbounds.creditcard.ITaxPort
@@ -15,6 +16,7 @@ import co.com.japl.module.creditcard.controllers.creditrate.lists.CreditRateList
 import co.com.japl.module.creditcard.views.creditrate.lists.CreditRateList
 import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.japl.android.myapplication.databinding.FragmentListTaxCreditCardBinding
+import co.japl.android.myapplication.finanzas.controller.ViewModelFactory
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -27,9 +29,16 @@ class ListTaxCreditCard : Fragment() {
     lateinit var _bind : FragmentListTaxCreditCardBinding
     val bind get() = _bind
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
+    val viewModel: CreditRateListViewModel by viewModels {
+        ViewModelFactory(
+            owner = this,
+            viewModelClass = CreditRateListViewModel::class.java,
+            build = {
+                CreditRateListViewModel(
+                    creditCardSvc2,
+                    creditRateSvc)
+            }
+        )
     }
 
     @RequiresApi(Build.VERSION_CODES.S)
@@ -38,12 +47,11 @@ class ListTaxCreditCard : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         _bind = FragmentListTaxCreditCardBinding.inflate(inflater)
-        val viewModel = CreditRateListViewModel(requireContext(),creditCardSvc2,creditRateSvc,findNavController())
         bind.cvComposableTcc.apply {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
                 MaterialThemeComposeUI {
-                    CreditRateList(viewModel = viewModel)
+                    CreditRateList(viewModel = viewModel,findNavController())
                 }
             }
         }

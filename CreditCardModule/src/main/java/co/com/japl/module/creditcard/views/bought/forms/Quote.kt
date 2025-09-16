@@ -1,11 +1,9 @@
 package co.com.japl.module.creditcard.views.bought.forms
 
-import android.app.Application
 import android.content.res.Configuration
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -22,16 +20,13 @@ import androidx.compose.material.icons.rounded.Delete
 import androidx.compose.material.icons.rounded.Edit
 import androidx.compose.material.icons.rounded.Save
 import androidx.compose.material.icons.rounded.SaveAs
-import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.TooltipBox
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.snapshots.SnapshotStateList
@@ -39,16 +34,12 @@ import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import co.com.japl.finances.iports.dtos.TagDTO
 import co.com.japl.module.creditcard.R
 import co.com.japl.module.creditcard.controllers.bought.forms.QuoteViewModel
-import co.com.japl.module.creditcard.controllers.bought.forms.WalletViewModel
 import co.com.japl.ui.Prefs
 import co.com.japl.ui.components.CheckBoxField
 import co.com.japl.ui.components.FieldDatePicker
@@ -62,26 +53,13 @@ import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.com.japl.ui.theme.values.Dimensions
 import androidx.lifecycle.SavedStateHandle
 import androidx.navigation.NavController
-import co.com.japl.finances.iports.dtos.CreditCardBoughtDTO
-import co.com.japl.finances.iports.dtos.CreditCardDTO
-import co.com.japl.finances.iports.dtos.TaxDTO
-import co.com.japl.finances.iports.enums.KindInterestRateEnum
-import co.com.japl.finances.iports.enums.KindOfTaxEnum
-import co.com.japl.finances.iports.inbounds.creditcard.IBuyCreditCardSettingPort
-import co.com.japl.finances.iports.inbounds.creditcard.ICreditCardPort
-import co.com.japl.finances.iports.inbounds.creditcard.ICreditCardSettingPort
-import co.com.japl.finances.iports.inbounds.creditcard.ITagPort
-import co.com.japl.finances.iports.inbounds.creditcard.ITaxPort
-import co.com.japl.finances.iports.inbounds.creditcard.bought.IBoughtPort
+import co.com.japl.module.creditcard.views.fakeSvc.FakeBoughtPort
+import co.com.japl.module.creditcard.views.fakeSvc.FakeBuyCreditCardSettingPort
+import co.com.japl.module.creditcard.views.fakeSvc.FakeCreditCardPort
+import co.com.japl.module.creditcard.views.fakeSvc.FakeCreditCardSettingPort
+import co.com.japl.module.creditcard.views.fakeSvc.FakeTagPort
+import co.com.japl.module.creditcard.views.fakeSvc.FakeTaxPort
 import co.com.japl.ui.theme.values.ModifiersCustom
-import co.com.japl.utils.NumbersUtil
-import kotlinx.coroutines.CoroutineDispatcher
-import java.math.BigDecimal
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import java.time.LocalDate
-import java.time.LocalDateTime
 
 @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
 @Composable
