@@ -66,7 +66,6 @@ import java.time.LocalDateTime
 
 @Composable
 fun CreditRateList(viewModel: CreditRateListViewModel,navController: NavController){
-    val navController = rememberNavController()
     val showProgress = remember {
         viewModel.showProgress
     }
