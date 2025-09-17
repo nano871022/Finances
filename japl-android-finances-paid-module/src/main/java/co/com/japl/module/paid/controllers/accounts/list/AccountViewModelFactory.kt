@@ -1,24 +1,21 @@
 package co.com.japl.module.paid.controllers.accounts.list
 
-import android.os.Bundle
-import androidx.lifecycle.AbstractSavedStateViewModelFactory
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
-import androidx.savedstate.SavedStateRegistryOwner
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.createSavedStateHandle
+import androidx.lifecycle.viewmodel.CreationExtras
 import co.com.japl.finances.iports.inbounds.inputs.IAccountPort
 import co.com.japl.finances.iports.inbounds.inputs.IInputPort
 
 class AccountViewModelFactory(
     private val accountSvc: IAccountPort,
-    private val inputSvc: IInputPort,
-    owner: SavedStateRegistryOwner,
-    defaultArgs: Bundle? = null
-) : AbstractSavedStateViewModelFactory(owner, defaultArgs) {
+    private val inputSvc: IInputPort
+) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(
-        key: String,
         modelClass: Class<T>,
-        handle: SavedStateHandle
+        extras: CreationExtras
     ): T {
-        return AccountViewModel(accountSvc, inputSvc, handle) as T
+        val savedStateHandle = extras.createSavedStateHandle()
+        return AccountViewModel(accountSvc, inputSvc, savedStateHandle) as T
     }
 }

@@ -1,22 +1,19 @@
 package co.com.japl.module.paid.controllers.projections.list
 
-import android.os.Bundle
-import androidx.lifecycle.AbstractSavedStateViewModelFactory
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
-import androidx.savedstate.SavedStateRegistryOwner
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.createSavedStateHandle
+import androidx.lifecycle.viewmodel.CreationExtras
 import co.com.japl.finances.iports.inbounds.paid.IProjectionsPort
 
 class ProjectionsViewModelFactory(
-    private val projectionsPort: IProjectionsPort,
-    owner: SavedStateRegistryOwner,
-    defaultArgs: Bundle? = null
-) : AbstractSavedStateViewModelFactory(owner, defaultArgs) {
+    private val projectionsPort: IProjectionsPort
+) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(
-        key: String,
         modelClass: Class<T>,
-        handle: SavedStateHandle
+        extras: CreationExtras
     ): T {
-        return ProjectionsViewModel(handle, projectionsPort) as T
+        val savedStateHandle = extras.createSavedStateHandle()
+        return ProjectionsViewModel(savedStateHandle, projectionsPort) as T
     }
 }

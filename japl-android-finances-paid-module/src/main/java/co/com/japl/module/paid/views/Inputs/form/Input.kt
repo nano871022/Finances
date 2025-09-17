@@ -43,12 +43,12 @@ fun InputForm(viewModel: InputViewModel, navController: NavController) {
     val stateProcess = remember { viewModel.progress }
     val stateLoader = remember { viewModel.loader }
     val scope = rememberCoroutineScope()
+    val context = LocalContext.current
     scope.launch {
         withContext(Dispatchers.IO) {
-            viewModel.main()
+            viewModel.main(context)
         }
     }
-    val context = LocalContext.current
 
     if (stateLoader.value) {
         LinearProgressIndicator(

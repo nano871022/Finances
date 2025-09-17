@@ -33,7 +33,6 @@ class AccountViewModel constructor(
 
     fun delete(codeAccount: Int) {
         accountSvc?.let {
-
             accountSvc.delete(codeAccount)
         }
     }

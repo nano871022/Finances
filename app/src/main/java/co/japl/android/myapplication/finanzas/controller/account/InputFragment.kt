@@ -8,24 +8,42 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.RequiresApi
 import androidx.compose.ui.platform.ViewCompositionStrategy
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewmodel.MutableCreationExtras
 import androidx.navigation.fragment.findNavController
 import co.com.japl.finances.iports.inbounds.inputs.IInputPort
+import co.com.japl.module.paid.controllers.Inputs.form.InputViewModel
+import co.com.japl.module.paid.controllers.Inputs.form.InputViewModelFactory
+import co.com.japl.module.paid.views.Inputs.form.InputForm
 import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.japl.android.myapplication.databinding.FragmentInputBinding
-import co.japl.android.myapplication.finanzas.putParams.InputListParams
-import co.com.japl.module.paid.views.Inputs.form.InputForm
-import co.com.japl.module.paid.controllers.Inputs.form.InputViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class InputFragment : Fragment(){
+class InputFragment : Fragment() {
 
-    private var accountCode:Int = 0
+    @Inject
+    lateinit var service: IInputPort
 
-    @Inject lateinit var service:IInputPort
+    lateinit var _binding: FragmentInputBinding
 
-    lateinit var _binding : FragmentInputBinding
+    private val viewModel: InputViewModel by viewModels(
+        factoryProducer = {
+            InputViewModelFactory(service)
+        },
+        extrasProducer = {
+            val extras = MutableCreationExtras(defaultViewModelCreationExtras)
+            extras.apply {
+                arguments?.let {
+                    set(ViewModelProvider.SavedStateHandleFactory.DEFAULT_ARGS_KEY, it)
+                }
+            }
+            extras
+        }
+    )
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
     }
@@ -35,14 +53,12 @@ class InputFragment : Fragment(){
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding = FragmentInputBinding.inflate(inflater,container,false)
-        accountCode = arguments?.let { InputListParams.download(it) }?:0
-        val viewModel = InputViewModel(accountCode,null,service,findNavController())
+        _binding = FragmentInputBinding.inflate(inflater, container, false)
         _binding.cvComponentFi.apply {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
                 MaterialThemeComposeUI {
-                    InputForm(viewModel = viewModel)
+                    InputForm(viewModel = viewModel, navController = findNavController())
                 }
             }
         }

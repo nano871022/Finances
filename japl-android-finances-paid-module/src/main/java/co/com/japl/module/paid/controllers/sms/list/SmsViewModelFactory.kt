@@ -1,24 +1,21 @@
 package co.com.japl.module.paid.controllers.sms.list
 
-import android.os.Bundle
-import androidx.lifecycle.AbstractSavedStateViewModelFactory
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
-import androidx.savedstate.SavedStateRegistryOwner
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.createSavedStateHandle
+import androidx.lifecycle.viewmodel.CreationExtras
 import co.com.japl.finances.iports.inbounds.inputs.IAccountPort
 import co.com.japl.finances.iports.inbounds.paid.ISMSPaidPort
 
 class SmsViewModelFactory(
     private val smsSvc: ISMSPaidPort,
-    private val accountSvc: IAccountPort,
-    owner: SavedStateRegistryOwner,
-    defaultArgs: Bundle? = null
-) : AbstractSavedStateViewModelFactory(owner, defaultArgs) {
+    private val accountSvc: IAccountPort
+) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(
-        key: String,
         modelClass: Class<T>,
-        handle: SavedStateHandle
+        extras: CreationExtras
     ): T {
-        return SmsViewModel(smsSvc, accountSvc, handle) as T
+        val savedStateHandle = extras.createSavedStateHandle()
+        return SmsViewModel(smsSvc, accountSvc, savedStateHandle) as T
     }
 }

@@ -113,9 +113,9 @@ class InputViewModel constructor(
         progress.value = 1f
     }
 
-    suspend fun execution(){
+    suspend fun execution(context: Context) {
         date.value = DateUtils.localDateToStringDate(LocalDate.now())
-        kindOfPayment.value = navController.context.getString(MoreOptionsKindPaymentInput.MONTHLY.getName())
+        kindOfPayment.value = context.getString(MoreOptionsKindPaymentInput.MONTHLY.getName())
         codeInput?.let {
             inputSvc.getById(codeInput)?.let {
                 _input = it
@@ -127,7 +127,7 @@ class InputViewModel constructor(
             }
         }
 
-            loader.value = false
+        loader.value = false
 
     }
 

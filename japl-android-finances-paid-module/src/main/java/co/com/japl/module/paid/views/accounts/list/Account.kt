@@ -12,9 +12,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.FloatingActionButtonDefaults
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add
+import androidx.compose.material3.Card
 import androidx.compose.material.FloatingActionButton
 import androidx.compose.material.icons.rounded.MoreVert
-import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
@@ -30,19 +30,12 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.SavedStateHandle
-import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import co.com.japl.finances.iports.dtos.AccountDTO
 import co.com.japl.module.paid.R
 import co.com.japl.module.paid.controllers.Inputs.list.InputListModelView
-import co.com.japl.module.paid.controllers.Inputs.list.InputListModelViewFactory
 import co.com.japl.module.paid.controllers.accounts.list.AccountViewModel
 import co.com.japl.module.paid.enums.MoreOptionsItemsAccount
 import co.com.japl.module.paid.views.Inputs.list.InputList
-import co.com.japl.module.paid.views.fakeSvc.AccountPortFake
-import co.com.japl.module.paid.views.fakeSvc.InputPortFake
 import co.com.japl.ui.components.AlertDialogOkCancel
 import co.com.japl.ui.components.Carousel
 import co.com.japl.ui.components.FieldView
@@ -56,7 +49,7 @@ import kotlinx.coroutines.withContext
 import java.time.LocalDate
 
 @Composable
-fun AccountList(viewModel: AccountViewModel, navController: NavController) {
+fun AccountList(viewModel: AccountViewModel) {
     val stateProgress = remember {
         viewModel.progress
     }
@@ -70,22 +63,20 @@ fun AccountList(viewModel: AccountViewModel, navController: NavController) {
         }
     }
 
-    if (stateLoader.value) {
+    if(stateLoader.value) {
         LinearProgressIndicator(
             progress = { stateProgress.value },
             modifier = Modifier.fillMaxWidth(),
         )
-    } else {
+    }else {
 
         Scaffold(
             floatingActionButton = {
-                FloatingActionButton(
-                    onClick = { viewModel.add(navController) },
-                    elevation = FloatingActionButtonDefaults.elevation(
+                FloatingActionButton(onClick = { viewModel.add() },
+                    elevation =  FloatingActionButtonDefaults.elevation(
                         defaultElevation = 10.dp
                     ),
-                    containerColor = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.5f)
-                ) {
+                    backgroundColor =  MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.5f)) {
                     Icon(
                         imageVector = Icons.Rounded.Add,
                         contentDescription = stringResource(id = R.string.create)
@@ -93,10 +84,12 @@ fun AccountList(viewModel: AccountViewModel, navController: NavController) {
                 }
             }
         ) {
-            Body(viewModel = viewModel, modifier = Modifier.padding(it), navController = navController)
+            Body(viewModel = viewModel, modifier = Modifier.padding(it))
         }
     }
 }
+import androidx.navigation.NavController
+import co.com.japl.module.paid.controllers.Inputs.list.InputListModelView
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -138,15 +131,14 @@ private fun Body(viewModel: AccountViewModel, modifier: Modifier, navController:
                 }
 
                 Column {
-                    val inputViewModel: InputListModelView = viewModel(
-                        factory = InputListModelViewFactory(
-                            context = context,
-                            accountCode = item.id,
-                            inputSvc = viewModel.inputSvc
-                        )
+                    val inputViewModel = InputListModelView(
+                        context = context,
+                        accountCode = item.id,
+                        inputSvc = viewModel.inputSvc
                     )
                     InputList(
-                        modelView = inputViewModel
+                        modelView = inputViewModel,
+                        navController = navController
                     )
                 }
                 if (stateDelete.value) {
@@ -173,6 +165,64 @@ private fun Body(viewModel: AccountViewModel, modifier: Modifier, navController:
             }
         }
     }
+}
+
+@RequiresApi(Build.VERSION_CODES.S)
+@Composable
+@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_NO, showSystemUi = true)
+fun AccountListPreview() {
+    val viewModel = getViewModel()
+    MaterialThemeComposeUI {
+        AccountList(viewModel = viewModel)
+    }
+}
+
+@RequiresApi(Build.VERSION_CODES.S)
+@Composable
+@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_NO, showSystemUi = true)
+fun AccountListPreviewNoAccount() {
+    val viewModel = getViewModel()
+    viewModel.list.clear()
+    MaterialThemeComposeUI {
+        AccountList(viewModel = viewModel)
+    }
+}
+
+@RequiresApi(Build.VERSION_CODES.S)
+@Composable
+@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES, showSystemUi = true)
+fun AccountListPreviewDarkNoAccount() {
+    val viewModel = getViewModel()
+    viewModel.list.clear()
+    MaterialThemeComposeUI {
+        AccountList(viewModel = viewModel)
+    }
+}
+
+@RequiresApi(Build.VERSION_CODES.S)
+@Composable
+@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES, showSystemUi = true)
+fun AccountListPreviewDark() {
+    val viewModel = getViewModel()
+    MaterialThemeComposeUI {
+        AccountList(viewModel = viewModel)
+    }
+}
+
+import androidx.lifecycle.SavedStateHandle
+import co.com.japl.module.paid.views.fakeSvc.AccountPortFake
+import co.com.japl.module.paid.views.fakeSvc.InputPortFake
+import androidx.navigation.compose.rememberNavController
+
+fun getViewModel(): AccountViewModel {
+    val viewModel = AccountViewModel(
+        accountSvc = AccountPortFake(),
+        inputSvc = InputPortFake(),
+        savedStateHandle = SavedStateHandle()
+    )
+    viewModel.loading.value = false
+    viewModel.list.add(AccountDTO(1, LocalDate.now(), "", true))
+    return viewModel
 }
 
 @RequiresApi(Build.VERSION_CODES.S)
@@ -215,15 +265,4 @@ fun AccountListPreviewDark() {
     MaterialThemeComposeUI {
         AccountList(viewModel = viewModel, navController = rememberNavController())
     }
-}
-
-fun getViewModel(): AccountViewModel {
-    val viewModel = AccountViewModel(
-        accountSvc = AccountPortFake(),
-        inputSvc = InputPortFake(),
-        savedStateHandle = SavedStateHandle()
-    )
-    viewModel.loading.value = false
-    viewModel.list.add(AccountDTO(1, LocalDate.now(), "", true))
-    return viewModel
 }

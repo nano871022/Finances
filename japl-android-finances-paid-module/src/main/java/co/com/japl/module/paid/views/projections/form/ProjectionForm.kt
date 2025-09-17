@@ -156,9 +156,11 @@ private fun FloatButton(viewModel: ProjectionFormViewModel, navController: NavCo
     uiMode = Configuration.UI_MODE_NIGHT_NO,
     backgroundColor = 0xFFFFFFFF
 )
+import androidx.navigation.compose.rememberNavController
+
 private fun ProjectionFormPreviewLight() {
     MaterialThemeComposeUI {
-        ProjectionForm(getViewModel())
+        ProjectionForm(getViewModel(), rememberNavController())
     }
 }
 

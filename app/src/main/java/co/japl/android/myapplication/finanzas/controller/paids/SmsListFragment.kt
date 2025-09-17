@@ -8,10 +8,14 @@ import android.view.ViewGroup
 import androidx.annotation.RequiresApi
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewmodel.MutableCreationExtras
 import androidx.navigation.fragment.findNavController
 import co.com.japl.finances.iports.inbounds.inputs.IAccountPort
 import co.com.japl.finances.iports.inbounds.paid.ISMSPaidPort
 import co.com.japl.module.paid.controllers.sms.list.SmsViewModel
+import co.com.japl.module.paid.controllers.sms.list.SmsViewModelFactory
 import co.com.japl.module.paid.views.sms.list.SMS
 import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.japl.android.myapplication.databinding.FragmentSmsPaidListBinding
@@ -20,25 +24,38 @@ import javax.inject.Inject
 
 @AndroidEntryPoint
 class SmsListFragment : Fragment() {
-    @Inject lateinit var smsSvc: ISMSPaidPort
-    @Inject lateinit var accountSvc: IAccountPort
+    @Inject
+    lateinit var smsSvc: ISMSPaidPort
+    @Inject
+    lateinit var accountSvc: IAccountPort
+
+    private val viewModel: SmsViewModel by viewModels(
+        factoryProducer = {
+            SmsViewModelFactory(smsSvc, accountSvc)
+        },
+        extrasProducer = {
+            val extras = MutableCreationExtras(defaultViewModelCreationExtras)
+            extras.apply {
+                arguments?.let {
+                    set(ViewModelProvider.SavedStateHandleFactory.DEFAULT_ARGS_KEY, it)
+                }
+            }
+            extras
+        }
+    )
+
     @RequiresApi(Build.VERSION_CODES.S)
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         val root = FragmentSmsPaidListBinding.inflate(inflater)
-        val viewModel = SmsViewModel(
-            svc = smsSvc,
-            accountSvc = accountSvc,
-            navController = findNavController()
-        )
         root.cvComposeFspl.apply {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
                 MaterialThemeComposeUI {
-                    SMS(viewModel = viewModel)
+                    SMS(viewModel = viewModel, navController = findNavController())
                 }
             }
         }
