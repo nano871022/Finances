@@ -8,44 +8,54 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.RequiresApi
 import androidx.compose.ui.platform.ViewCompositionStrategy
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewmodel.MutableCreationExtras
 import androidx.navigation.fragment.findNavController
 import co.com.japl.finances.iports.inbounds.inputs.IAccountPort
 import co.com.japl.finances.iports.inbounds.paid.IPaidPort
 import co.com.japl.module.paid.controllers.paid.form.PaidViewModel
+import co.com.japl.module.paid.controllers.paid.form.PaidViewModelFactory
 import co.com.japl.module.paid.views.paid.form.Paid
 import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.japl.android.myapplication.databinding.FragmentPaidBinding
-import co.japl.android.myapplication.finanzas.putParams.PaidsParams
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
 @AndroidEntryPoint
 class PaidFragment : Fragment() {
 
-    @Inject lateinit var paidSvc:IPaidPort
-    @Inject lateinit var accountSvc:IAccountPort
+    @Inject
+    lateinit var paidSvc: IPaidPort
+    @Inject
+    lateinit var accountSvc: IAccountPort
+
+    private val viewModel: PaidViewModel by viewModels(
+        factoryProducer = {
+            PaidViewModelFactory(accountSvc, paidSvc)
+        },
+        extrasProducer = {
+            val extras = MutableCreationExtras(defaultViewModelCreationExtras)
+            extras.apply {
+                arguments?.let {
+                    set(ViewModelProvider.SavedStateHandleFactory.DEFAULT_ARGS_KEY, it)
+                }
+            }
+            extras
+        }
+    )
 
     @RequiresApi(Build.VERSION_CODES.S)
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val root = FragmentPaidBinding.inflate( inflater)
-        val codeAccount = PaidsParams.downloadCodeAccount(requireArguments())
-        val codePaid = PaidsParams.downloadCodePaid(requireArguments())
-
-        val viewModel = PaidViewModel(
-            codeAccount = codeAccount?:0,
-            codePaid = codePaid?:0,
-            paidSvc=paidSvc,
-            accountSvc = accountSvc,
-            navController = findNavController()
-        )
+        val root = FragmentPaidBinding.inflate(inflater)
         root.cwComposeFp.apply {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
                 MaterialThemeComposeUI {
-                    Paid(viewModel)
+                    Paid(viewModel, findNavController())
                 }
             }
         }

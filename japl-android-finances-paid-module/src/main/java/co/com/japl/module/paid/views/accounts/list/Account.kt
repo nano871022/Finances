@@ -88,16 +88,22 @@ fun AccountList(viewModel: AccountViewModel) {
         }
     }
 }
+import androidx.navigation.NavController
+import co.com.japl.module.paid.controllers.Inputs.list.InputListModelView
+
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-private fun Body(viewModel: AccountViewModel, modifier:Modifier) {
-    val listState = remember { viewModel.list}
+private fun Body(viewModel: AccountViewModel, modifier: Modifier, navController: NavController) {
+    val listState = remember { viewModel.list }
     val state = remember { mutableStateOf(false) }
     val stateDelete = remember { mutableStateOf(false) }
+    val context = LocalContext.current
     Column {
-        Row(horizontalArrangement = Arrangement.End, modifier=Modifier.fillMaxWidth()) {
-            HelpWikiButton(wikiUrl = R.string.wiki_account_url,
-                descriptionContent = R.string.wiki_account_description)
+        Row(horizontalArrangement = Arrangement.End, modifier = Modifier.fillMaxWidth()) {
+            HelpWikiButton(
+                wikiUrl = R.string.wiki_account_url,
+                descriptionContent = R.string.wiki_account_description
+            )
         }
         Carousel(size = listState.size) {
             val item = listState[it]
@@ -125,13 +131,14 @@ private fun Body(viewModel: AccountViewModel, modifier:Modifier) {
                 }
 
                 Column {
+                    val inputViewModel = InputListModelView(
+                        context = context,
+                        accountCode = item.id,
+                        inputSvc = viewModel.inputSvc
+                    )
                     InputList(
-                        modelView = InputListModelView(
-                            LocalContext.current,
-                            item.id,
-                            viewModel.navController,
-                            viewModel.inputSvc
-                        )
+                        modelView = inputViewModel,
+                        navController = navController
                     )
                 }
                 if (stateDelete.value) {
@@ -151,7 +158,7 @@ private fun Body(viewModel: AccountViewModel, modifier:Modifier) {
                     onClick = {
                         when (it) {
                             MoreOptionsItemsAccount.DELETE -> stateDelete.value = true
-                            MoreOptionsItemsAccount.EDIT -> viewModel.edit(item.id)
+                            MoreOptionsItemsAccount.EDIT -> viewModel.edit(item.id, navController)
                         }
                         state.value = false
                     })
@@ -202,9 +209,60 @@ fun AccountListPreviewDark() {
     }
 }
 
+import androidx.lifecycle.SavedStateHandle
+import co.com.japl.module.paid.views.fakeSvc.AccountPortFake
+import co.com.japl.module.paid.views.fakeSvc.InputPortFake
+import androidx.navigation.compose.rememberNavController
+
 fun getViewModel(): AccountViewModel {
-    val viewModel = AccountViewModel(accountSvc = null, inputSvc = null,navController = null)
+    val viewModel = AccountViewModel(
+        accountSvc = AccountPortFake(),
+        inputSvc = InputPortFake(),
+        savedStateHandle = SavedStateHandle()
+    )
     viewModel.loading.value = false
-    viewModel.list.add(AccountDTO(1, LocalDate.now(),"",true))
+    viewModel.list.add(AccountDTO(1, LocalDate.now(), "", true))
     return viewModel
+}
+
+@RequiresApi(Build.VERSION_CODES.S)
+@Composable
+@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_NO, showSystemUi = true)
+fun AccountListPreview() {
+    val viewModel = getViewModel()
+    MaterialThemeComposeUI {
+        AccountList(viewModel = viewModel, navController = rememberNavController())
+    }
+}
+
+@RequiresApi(Build.VERSION_CODES.S)
+@Composable
+@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_NO, showSystemUi = true)
+fun AccountListPreviewNoAccount() {
+    val viewModel = getViewModel()
+    viewModel.list.clear()
+    MaterialThemeComposeUI {
+        AccountList(viewModel = viewModel, navController = rememberNavController())
+    }
+}
+
+@RequiresApi(Build.VERSION_CODES.S)
+@Composable
+@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES, showSystemUi = true)
+fun AccountListPreviewDarkNoAccount() {
+    val viewModel = getViewModel()
+    viewModel.list.clear()
+    MaterialThemeComposeUI {
+        AccountList(viewModel = viewModel, navController = rememberNavController())
+    }
+}
+
+@RequiresApi(Build.VERSION_CODES.S)
+@Composable
+@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES, showSystemUi = true)
+fun AccountListPreviewDark() {
+    val viewModel = getViewModel()
+    MaterialThemeComposeUI {
+        AccountList(viewModel = viewModel, navController = rememberNavController())
+    }
 }

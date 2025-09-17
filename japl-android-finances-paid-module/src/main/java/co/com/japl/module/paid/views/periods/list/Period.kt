@@ -27,10 +27,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.capitalize
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.SavedStateHandle
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import co.com.japl.finances.iports.dtos.PeriodPaidDTO
 import co.com.japl.module.paid.R
 import co.com.japl.module.paid.controllers.period.list.PeriodsViewModel
 import co.com.japl.module.paid.enums.PeriodListOptions
+import co.com.japl.module.paid.views.fakeSvc.PeriodPaidPortFake
 import co.com.japl.ui.components.FieldView
 import co.com.japl.ui.components.FieldViewCards
 import co.com.japl.ui.components.IconButton
@@ -47,7 +51,7 @@ import java.time.format.DateTimeFormatter
 import java.util.Locale
 
 @Composable
-fun Period(viewModel:PeriodsViewModel){
+fun Period(viewModel: PeriodsViewModel, navController: NavController) {
     val progressState = remember {
         viewModel.progress
     }

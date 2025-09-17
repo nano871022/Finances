@@ -14,39 +14,63 @@ import co.com.japl.module.paid.enums.MoreOptionsItemsInput
 import co.com.japl.module.paid.navigations.Input
 import kotlinx.coroutines.runBlocking
 
-class InputListModelView (private val context:Context, val accountCode:Int,private val navController: NavController?,private val inputSvc:IInputPort?) : ViewModel() {
+class InputListModelView(
+    private val context: Context,
+    val accountCode: Int,
+    private val inputSvc: IInputPort?
+) : ViewModel() {
 
     var _items = mutableStateListOf<InputDTO>()
 
     val stateDialogOptionsMore = mutableStateOf(false)
     var stateLoader = mutableStateOf(true)
-    var progress = mutableFloatStateOf( 0f)
+    var progress = mutableFloatStateOf(0f)
 
-    fun optionSelected(id:Int,value:Double = 0.0, option:MoreOptionsItemsInput){
-        when(option){
-            MoreOptionsItemsInput.DELETE ->{deleteInput(id)}
-            MoreOptionsItemsInput.UPDATE_VALUE ->{ updateValue(id,value) }
+    fun optionSelected(id: Int, value: Double = 0.0, option: MoreOptionsItemsInput) {
+        when (option) {
+            MoreOptionsItemsInput.DELETE -> {
+                deleteInput(id)
+            }
+            MoreOptionsItemsInput.UPDATE_VALUE -> {
+                updateValue(id, value)
+            }
         }
     }
 
-    private fun deleteInput(id:Int){
-        if(inputSvc?.deleteRecord(id) == true){
-            Toast.makeText(context,context.resources.getText(R.string.toast_successful_deleted),Toast.LENGTH_SHORT).show()
-        }else{
-            Toast.makeText(context,context.resources.getText(R.string.toast_unsuccessful_deleted),Toast.LENGTH_SHORT).show()
+    private fun deleteInput(id: Int) {
+        if (inputSvc?.deleteRecord(id) == true) {
+            Toast.makeText(
+                context,
+                context.resources.getText(R.string.toast_successful_deleted),
+                Toast.LENGTH_SHORT
+            ).show()
+        } else {
+            Toast.makeText(
+                context,
+                context.resources.getText(R.string.toast_unsuccessful_deleted),
+                Toast.LENGTH_SHORT
+            ).show()
         }
     }
 
-    private fun updateValue(id:Int,value:Double){
-        if(inputSvc?.updateValue(id,value) == true){
-            Toast.makeText(context,context.resources.getText(R.string.toast_update_successful),Toast.LENGTH_SHORT).show()
-        }else{
-            Toast.makeText(context,context.resources.getText(R.string.toast_update_error),Toast.LENGTH_SHORT).show()
+    private fun updateValue(id: Int, value: Double) {
+        if (inputSvc?.updateValue(id, value) == true) {
+            Toast.makeText(
+                context,
+                context.resources.getText(R.string.toast_update_successful),
+                Toast.LENGTH_SHORT
+            ).show()
+        } else {
+            Toast.makeText(
+                context,
+                context.resources.getText(R.string.toast_update_error),
+                Toast.LENGTH_SHORT
+            ).show()
         }
     }
 
-    fun goToInputForm(){
-       navController?.let{Input.navigate(accountCode,navController)}
+    fun goToInputForm(navController: NavController) {
+        Input.navigate(accountCode, navController)
     }
 
     fun main()= runBlocking  {

@@ -13,9 +13,11 @@ import co.com.japl.ui.utils.initialFieldState
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import java.math.BigDecimal
-import javax.inject.Inject
 
-class ProjectionsViewModel @Inject constructor(private val savedStateHandler: SavedStateHandle,private val projectionSvc: IProjectionsPort) : ViewModel() {
+class ProjectionsViewModel constructor(
+    private val savedStateHandler: SavedStateHandle,
+    private val projectionSvc: IProjectionsPort
+) : ViewModel() {
 
     val loadingStatus = mutableStateOf(false)
     val projectionsList = mutableStateListOf<ProjectionRecap>()
