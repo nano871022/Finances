@@ -1,9 +1,11 @@
 package co.com.japl.module.paid.controllers.paid.list
 
+import android.content.Context
 import android.widget.Toast
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.navigation.NavController
 import co.com.japl.finances.iports.dtos.PaidDTO
@@ -18,65 +20,82 @@ import java.time.YearMonth
 import java.time.format.DateTimeFormatter
 import java.util.Locale
 
-class PaidViewModel constructor(private val accountCode:Int, private val period:YearMonth,private val paidSvc:IPaidPort?=null,public val prefs:Prefs?,private val navController: NavController? = null): ViewModel(){
+class PaidViewModel constructor(
+    private val paidSvc: IPaidPort?,
+    public val prefs: Prefs?,
+    private val savedStateHandle: SavedStateHandle
+) : ViewModel() {
+    private var accountCode: Int = 0
+    private var period: YearMonth = YearMonth.now()
 
     val progressStatus = mutableFloatStateOf(0.0f)
     val loaderState = mutableStateOf(true)
 
-    val list = mutableStateMapOf<YearMonth,List<PaidDTO>>()
+    val list = mutableStateMapOf<YearMonth, List<PaidDTO>>()
 
     val periodOfList = mutableStateOf("")
     val allValues = mutableStateOf(0.0)
 
-    fun newOne(){
-        navController?.let {
-            Paid.navigate(accountCode, it)
+    init {
+        savedStateHandle.get<Int>("accountCode")?.let {
+            accountCode = it
+        }
+        savedStateHandle.get<String>("period")?.let {
+            period = YearMonth.parse(it)
         }
     }
 
-    fun delete(id:Int){
+    fun newOne(navController: NavController) {
+        Paid.navigate(accountCode, navController)
+    }
+
+    fun delete(id: Int, context: Context) {
         paidSvc?.let {
-            if(it.delete(id)){
-                navController?.let{
-                    Toast.makeText(it.context, R.string.toast_successful_deleted,Toast.LENGTH_LONG).show()
-                        .also { loaderState.value = true }
-
-                }
-            }else{
-                navController?.let{
-                    Toast.makeText(it.context, R.string.toast_unsuccessful_deleted,Toast.LENGTH_LONG).show()
-                }
+            if (it.delete(id)) {
+                Toast.makeText(context, R.string.toast_successful_deleted, Toast.LENGTH_LONG)
+                    .show()
+                    .also { loaderState.value = true }
+            } else {
+                Toast.makeText(context, R.string.toast_unsuccessful_deleted, Toast.LENGTH_LONG)
+                    .show()
             }
         }
     }
 
-    fun edit(id:Int){
-        navController?.let {
-            Paid.navigate(id,accountCode,it)
-        }
+    fun edit(id: Int, navController: NavController) {
+        Paid.navigate(id, accountCode, navController)
     }
 
-    fun endRecurrent(id:Int){
-        paidSvc?.let{
-            if(it.endRecurrent(id)){
-                        navController?.let{ Toast.makeText(it.context, R.string.toast_successful_end_recurrent,Toast.LENGTH_LONG).show().also {
-                            loaderState.value = true
-                        }}
-            }else{
-                navController?.let{ Toast.makeText(it.context, R.string.toast_unsuccessful_end_recurrent,Toast.LENGTH_LONG).show() }
-            }
-        }
-
-    }
-
-    fun copy(id:Int){
-        paidSvc?.let{
-            if(it.copy(id)){
-                navController?.let{ Toast.makeText(it.context, R.string.toast_successful_copy,Toast.LENGTH_LONG).show().also {
+    fun endRecurrent(id: Int, context: Context) {
+        paidSvc?.let {
+            if (it.endRecurrent(id)) {
+                Toast.makeText(
+                    context,
+                    R.string.toast_successful_end_recurrent,
+                    Toast.LENGTH_LONG
+                ).show().also {
                     loaderState.value = true
-                }}
-            }else{
-                navController?.let{ Toast.makeText(it.context, R.string.toast_unsuccessful_copy,Toast.LENGTH_LONG).show() }
+                }
+            } else {
+                Toast.makeText(
+                    context,
+                    R.string.toast_unsuccessful_end_recurrent,
+                    Toast.LENGTH_LONG
+                ).show()
+            }
+        }
+    }
+
+    fun copy(id: Int, context: Context) {
+        paidSvc?.let {
+            if (it.copy(id)) {
+                Toast.makeText(context, R.string.toast_successful_copy, Toast.LENGTH_LONG)
+                    .show().also {
+                        loaderState.value = true
+                    }
+            } else {
+                Toast.makeText(context, R.string.toast_unsuccessful_copy, Toast.LENGTH_LONG)
+                    .show()
             }
         }
     }

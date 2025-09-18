@@ -1,61 +1,77 @@
 package co.com.japl.module.paid.controllers.sms.list
 
+import android.content.Context
 import android.widget.Toast
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.navigation.NavController
 import co.com.japl.finances.iports.dtos.SMSPaidDTO
-import co.com.japl.finances.iports.inbounds.paid.ISMSPaidPort
 import co.com.japl.finances.iports.inbounds.inputs.IAccountPort
+import co.com.japl.finances.iports.inbounds.paid.ISMSPaidPort
 import co.com.japl.module.paid.R
 import co.com.japl.module.paid.navigations.Sms
 import kotlinx.coroutines.runBlocking
 
-class SmsViewModel constructor(private val svc: ISMSPaidPort?, private val accountSvc:IAccountPort?, private val navController: NavController?): ViewModel() {
+class SmsViewModel constructor(
+    private val svc: ISMSPaidPort?,
+    private val accountSvc: IAccountPort?,
+    private val savedStateHandle: SavedStateHandle
+) : ViewModel() {
 
-    val  load = mutableStateOf(true)
-    val  progress = mutableFloatStateOf(0.0f)
+    val load = mutableStateOf(true)
+    val progress = mutableFloatStateOf(0.0f)
 
-    val list = mutableStateListOf<Map<Int,List<SMSPaidDTO>>>()
+    val list = mutableStateListOf<Map<Int, List<SMSPaidDTO>>>()
 
-    fun edit(code:Int){
-        require(code > 0){"The code must be greater than 0"}
-        navController?.let{
-            Sms.navigate(code,navController)
-        }
+    fun edit(code: Int, navController: NavController) {
+        require(code > 0) { "The code must be greater than 0" }
+        Sms.navigate(code, navController)
     }
 
-    fun add(){
-        navController?.let{Sms.navigate(navController)}
+    fun add(navController: NavController) {
+        Sms.navigate(navController)
     }
 
-    fun enabled(code:Int){
-        require(code > 0){"The code must be greater than 0"}
+    fun enabled(code: Int, context: Context) {
+        require(code > 0) { "The code must be greater than 0" }
         svc?.enable(code).takeIf { it == true }?.let {
-            navController?.let { Toast.makeText(it.context, R.string.toast_successful_enabled, Toast.LENGTH_SHORT).show() }?.also {
-                load.value = true
-            }
-        }?:navController?.let { Toast.makeText(it.context, R.string.toast_dont_successful_enabled, Toast.LENGTH_SHORT).show() }
+            Toast.makeText(context, R.string.toast_successful_enabled, Toast.LENGTH_SHORT).show()
+                .also {
+                    load.value = true
+                }
+        } ?: Toast.makeText(
+            context,
+            R.string.toast_dont_successful_enabled,
+            Toast.LENGTH_SHORT
+        ).show()
     }
 
-    fun disabled(code:Int){
-        require(code > 0){"The code must be greater than 0"}
+    fun disabled(code: Int, context: Context) {
+        require(code > 0) { "The code must be greater than 0" }
         svc?.disable(code).takeIf { it == true }?.let {
-            navController?.let { Toast.makeText(it.context, R.string.toast_successful_disabled, Toast.LENGTH_SHORT).show() }?.also {
-                load.value = true
-            }
-        }?:navController?.let { Toast.makeText(it.context, R.string.toast_dont_successful_disabled, Toast.LENGTH_SHORT).show() }
+            Toast.makeText(context, R.string.toast_successful_disabled, Toast.LENGTH_SHORT)
+                .show().also {
+                    load.value = true
+                }
+        } ?: Toast.makeText(
+            context,
+            R.string.toast_dont_successful_disabled,
+            Toast.LENGTH_SHORT
+        ).show()
     }
 
-    fun delete(code:Int){
-        require(code > 0){"The code must be greater than 0"}
-        svc?.delete(code)?.takeIf { it }?.let{
-            navController?.let { Toast.makeText(it.context, R.string.toast_successful_deleted, Toast.LENGTH_SHORT).show().also {
-                navController.popBackStack()
-            }}
-        }?:navController?.let { Toast.makeText(it.context, R.string.toast_unsuccessful_deleted, Toast.LENGTH_SHORT).show() }
+    fun delete(code: Int, context: Context, navController: NavController) {
+        require(code > 0) { "The code must be greater than 0" }
+        svc?.delete(code)?.takeIf { it }?.let {
+            Toast.makeText(context, R.string.toast_successful_deleted, Toast.LENGTH_SHORT)
+                .show().also {
+                    navController.popBackStack()
+                }
+        } ?: Toast.makeText(context, R.string.toast_unsuccessful_deleted, Toast.LENGTH_SHORT)
+            .show()
     }
 
     fun main() = runBlocking {

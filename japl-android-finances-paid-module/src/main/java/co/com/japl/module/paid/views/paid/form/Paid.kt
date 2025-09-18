@@ -34,30 +34,34 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
+import androidx.navigation.NavController
+
 @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
 @Composable
-fun Paid(viewModel:PaidViewModel) {
-    val progresStatus  = remember{viewModel.progressStatus}
-    val loaderState = remember {viewModel.loading}
+fun Paid(viewModel: PaidViewModel, navController: NavController) {
+    val progresStatus = remember { viewModel.progressStatus }
+    val loaderState = remember { viewModel.loading }
 
     CoroutineScope(Dispatchers.IO).launch {
         viewModel.main()
     }
 
-    if(loaderState.value){
-        LinearProgressIndicator(progress = progresStatus.value,modifier=Modifier.fillMaxWidth())
-    }else{
-        Body(viewModel = viewModel)
+    if (loaderState.value) {
+        LinearProgressIndicator(progress = progresStatus.value, modifier = Modifier.fillMaxWidth())
+    } else {
+        Body(viewModel = viewModel, navController = navController)
     }
 }
 
+import androidx.compose.ui.platform.LocalContext
+
 @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
 @Composable
-private fun Body(viewModel:PaidViewModel){
-
-    Scaffold (floatingActionButton = {
-        Buttons(add={viewModel.save()}, clear = {viewModel.clean()})
-    }){
+private fun Body(viewModel: PaidViewModel, navController: NavController) {
+    val context = LocalContext.current
+    Scaffold(floatingActionButton = {
+        Buttons(add = { viewModel.save(context, navController) }, clear = { viewModel.clean() })
+    }) {
         Form(viewModel = viewModel, modifier = Modifier.padding(it))
     }
 
@@ -198,9 +202,20 @@ internal fun PreviewPaidFormDark(){
 
 }
 
+import androidx.lifecycle.SavedStateHandle
+import co.com.japl.module.paid.views.fakeSvc.AccountPortFake
+import co.com.japl.module.paid.views.fakeSvc.PaidPortFake
+
 @Composable
-private fun getViewModel():PaidViewModel{
-    val viewModel = PaidViewModel(paidSvc = null, codeAccount = 0 , codePaid =0, accountSvc = null,navController = null)
+private fun getViewModel(): PaidViewModel {
+    val savedStateHandle = SavedStateHandle()
+    savedStateHandle.set("codeAccount", 1)
+    savedStateHandle.set("codePaid", 1)
+    val viewModel = PaidViewModel(
+        paidSvc = PaidPortFake(),
+        accountSvc = AccountPortFake(),
+        savedStateHandle = savedStateHandle
+    )
     viewModel.loading.value = false
 
 

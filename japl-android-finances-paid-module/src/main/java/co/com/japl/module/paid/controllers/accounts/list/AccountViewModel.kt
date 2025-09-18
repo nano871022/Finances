@@ -3,6 +3,7 @@ package co.com.japl.module.paid.controllers.accounts.list
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.navigation.NavController
 import co.com.japl.finances.iports.dtos.AccountDTO
@@ -11,28 +12,27 @@ import co.com.japl.finances.iports.inbounds.inputs.IInputPort
 import co.com.japl.module.paid.navigations.Account
 import kotlinx.coroutines.runBlocking
 
-class AccountViewModel constructor(private val accountSvc:IAccountPort?, public val inputSvc:IInputPort?,public val navController: NavController?): ViewModel(){
+class AccountViewModel constructor(
+    private val accountSvc: IAccountPort?,
+    public val inputSvc: IInputPort?,
+    private val savedStateHandle: SavedStateHandle
+) : ViewModel() {
 
     val progress = mutableFloatStateOf(0f)
     val loading = mutableStateOf(true)
     var list = mutableStateListOf<AccountDTO>()
     val save = false
 
-    fun add(){
-        navController?.let {
-            Account.navigate(navController)
-        }
+    fun add(navController: NavController) {
+        Account.navigate(navController)
     }
 
-    fun edit(codeAccount:Int){
-        navController?.let {
-            Account.navigate(codeAccount,navController)
-        }
+    fun edit(codeAccount: Int, navController: NavController) {
+        Account.navigate(codeAccount, navController)
     }
 
-    fun delete(codeAccount:Int){
+    fun delete(codeAccount: Int) {
         accountSvc?.let {
-
             accountSvc.delete(codeAccount)
         }
     }

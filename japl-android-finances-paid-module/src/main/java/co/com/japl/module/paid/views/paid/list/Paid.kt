@@ -83,15 +83,19 @@ fun Paid(viewModel:PaidViewModel) {
     }
 }
 
-@Composable
-private fun Body(viewModel: PaidViewModel){
-    Scaffold (floatingActionButton = {
-        Buttons(newOne = {viewModel.newOne()})
-    }){
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 
-        Column{
+@Composable
+private fun Body(viewModel: PaidViewModel) {
+    val navController = rememberNavController()
+    Scaffold(floatingActionButton = {
+        Buttons(newOne = { viewModel.newOne(navController) })
+    }) {
+
+        Column {
             Header(viewModel)
-            List(viewModel,modifier = Modifier.padding(it))
+            List(viewModel, modifier = Modifier.padding(it))
         }
 
     }
@@ -221,23 +225,35 @@ private fun Buttons(newOne:()->Unit){
     }
 }
 
-@Composable private fun Item(dto:PaidDTO,viewModel:PaidViewModel){
+import androidx.compose.ui.platform.LocalContext
+import androidx.navigation.compose.rememberNavController
+
+@Composable
+private fun Item(dto: PaidDTO, viewModel: PaidViewModel) {
     val menuState = remember { mutableStateOf(false) }
     val dialogState = remember { mutableStateOf(false) }
+    val context = LocalContext.current
+    val navController = rememberNavController()
 
     Card(
-        border = BorderStroke(1.dp,color= if(dto.recurrent) Color.Red else Color.Unspecified)
-        ,modifier=Modifier.padding(Dimensions.PADDING_SHORT)) {
-        Column (modifier = Modifier.padding(Dimensions.PADDING_SHORT)) {
+        border = BorderStroke(1.dp, color = if (dto.recurrent) Color.Red else Color.Unspecified),
+        modifier = Modifier.padding(Dimensions.PADDING_SHORT)
+    ) {
+        Column(modifier = Modifier.padding(Dimensions.PADDING_SHORT)) {
             Row {
 
-                Text(text = "%02d".format(dto.datePaid.dayOfMonth),
-                    color= MaterialTheme.colorScheme.onPrimaryContainer,
+                Text(
+                    text = "%02d".format(dto.datePaid.dayOfMonth),
+                    color = MaterialTheme.colorScheme.onPrimaryContainer,
                     modifier = Modifier.align(alignment = Alignment.CenterVertically)
                 )
 
-                Text(text = dto.itemName,
-                    modifier = Modifier.weight(2f).padding(start=Dimensions.PADDING_TOP).align(alignment = Alignment.CenterVertically)
+                Text(
+                    text = dto.itemName,
+                    modifier = Modifier
+                        .weight(2f)
+                        .padding(start = Dimensions.PADDING_TOP)
+                        .align(alignment = Alignment.CenterVertically)
                 )
 
                 IconButton(
@@ -251,41 +267,46 @@ private fun Buttons(newOne:()->Unit){
 
 
 
-                FieldViewCards(
-                    name = R.string.value_item,
-                    value = NumbersUtil.COPtoString(dto.itemValue),
-                    modifier = Modifier
-                )
+            FieldViewCards(
+                name = R.string.value_item,
+                value = NumbersUtil.COPtoString(dto.itemValue),
+                modifier = Modifier
+            )
 
         }
     }
 
-    if(menuState.value){
-        MoreOptionsDialog(listOptions = viewModel.listOptions(dto)
-            , onDismiss = { menuState.value = false }) {
+    if (menuState.value) {
+        MoreOptionsDialog(
+            listOptions = viewModel.listOptions(dto),
+            onDismiss = { menuState.value = false }) {
             menuState.value = false
-            when(it){
-                PaidListOptions.EDIT->{
-                    viewModel.edit(dto.id)
+            when (it) {
+                PaidListOptions.EDIT -> {
+                    viewModel.edit(dto.id, navController)
                 }
-                PaidListOptions.DELETE->{
+
+                PaidListOptions.DELETE -> {
                     dialogState.value = true
                 }
-                PaidListOptions.COPY->{
-                    viewModel.copy(dto.id)
+
+                PaidListOptions.COPY -> {
+                    viewModel.copy(dto.id, context)
                 }
-                PaidListOptions.END->{
-                    viewModel.endRecurrent(dto.id)
+
+                PaidListOptions.END -> {
+                    viewModel.endRecurrent(dto.id, context)
                 }
             }
         }
     }
-    if(dialogState.value) {
-        AlertDialogOkCancel(title = R.string.dialog_delete,
+    if (dialogState.value) {
+        AlertDialogOkCancel(
+            title = R.string.dialog_delete,
             confirmNameButton = R.string.delete,
             onDismiss = { dialogState.value = false }) {
             dialogState.value = false
-            viewModel.delete(dto.id)
+            viewModel.delete(dto.id, context)
         }
     }
 }

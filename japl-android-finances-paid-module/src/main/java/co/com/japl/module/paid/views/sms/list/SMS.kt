@@ -24,13 +24,18 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.SavedStateHandle
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import co.com.japl.finances.iports.dtos.SMSPaidDTO
-import co.com.japl.finances.iports.enums.KindInterestRateEnum
-import co.com.japl.module.paid.enums.MoreOptionsItemSms
 import co.com.japl.module.paid.R
 import co.com.japl.module.paid.controllers.sms.list.SmsViewModel
+import co.com.japl.module.paid.enums.MoreOptionsItemSms
+import co.com.japl.module.paid.views.fakeSvc.AccountPortFake
+import co.com.japl.module.paid.views.fakeSvc.SMSPaidPortFake
 import co.com.japl.ui.components.AlertDialogOkCancel
 import co.com.japl.ui.components.Carousel
 import co.com.japl.ui.components.FloatButton
@@ -45,31 +50,31 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 @Composable
-fun SMS(viewModel:SmsViewModel) {
-    val loader = remember {viewModel.load}
-    val progress = remember {viewModel.progress}
+fun SMS(viewModel: SmsViewModel, navController: NavController) {
+    val loader = remember { viewModel.load }
+    val progress = remember { viewModel.progress }
 
     CoroutineScope(Dispatchers.IO).launch {
         viewModel.main()
     }
 
-    if(loader.value){
+    if (loader.value) {
         LinearProgressIndicator(
             progress = { progress.floatValue },
             modifier = Modifier.fillMaxWidth(),
         )
-    }else{
-        Body(viewModel = viewModel)
+    } else {
+        Body(viewModel = viewModel, navController = navController)
     }
 
 }
 
 @Composable
-private fun Body(viewModel: SmsViewModel){
-    Scaffold (
+private fun Body(viewModel: SmsViewModel, navController: NavController) {
+    Scaffold(
         floatingActionButton = {
-            Buttons{
-                viewModel.add()
+            Buttons {
+                viewModel.add(navController)
             }
         }
     ) {
