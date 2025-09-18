@@ -7,7 +7,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.CreationExtras
 import androidx.navigation.NavController
 import co.com.japl.finances.iports.dtos.ProjectionDTO
 import co.com.japl.finances.iports.enums.KindPaymentsEnums
@@ -16,6 +15,7 @@ import co.com.japl.module.paid.R
 import co.com.japl.ui.utils.DateUtils
 import co.japl.android.graphs.utils.NumbersUtil
 import co.com.japl.ui.utils.initialFieldState
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -24,50 +24,49 @@ import java.time.LocalDate
 import javax.inject.Inject
 
 class ProjectionFormViewModel @Inject constructor(
+    @ApplicationContext private val context: Context,
     private val saveStateHandler: SavedStateHandle,
     private val projectionSvc: IProjectionFormPort,
-) : ViewModel() {
+): ViewModel(){
     val loaderStatus = mutableStateOf(false)
     val disableSaveStatus = mutableStateOf(true)
+    private val periodsOpt = KindPaymentsEnums.entries.map{ Pair(it.month,context.getString(it.title) ) }
     val hostState: SnackbarHostState = SnackbarHostState()
-    private var id: Int? = null
-    private val projection = MutableStateFlow(
-        ProjectionDTO(
-            id = 0,
-            create = LocalDate.now(),
-            end = LocalDate.now(),
-            name = "",
-            value = BigDecimal.ZERO,
-            quote = BigDecimal.ZERO,
-            monthsLeft = 0,
-            amountSaved = BigDecimal.ZERO,
-        )
-    )
+    private var id:Int?=null
+    private val projection = MutableStateFlow(ProjectionDTO(
+        id= 0,
+        create= LocalDate.now(),
+         end= LocalDate.now(),
+         name= "",
+         value= BigDecimal.ZERO,
+         quote= BigDecimal.ZERO,
+         monthsLeft = 0,
+         amountSaved = BigDecimal.ZERO,
+    ))
 
     val datePayment = initialFieldState<LocalDate>(
         saveStateHandler,
         "FORM_DATE_PAYMENT",
         initialValue = LocalDate.now(),
         formatter = {
-            if (it.isNotBlank()) {
+            if(it.isNotBlank()) {
                 DateUtils.toLocalDate(it)
-            } else {
+            }else{
                 null
             }
         },
         validator = { !it.isBefore(LocalDate.now()) },
-        onValueChangeCallBack = { date ->
+        onValueChangeCallBack = {date->
             projection.update {
-                it.copy(end = date)
-            }
-        }
+            it.copy(end = date)
+        }}
     )
-    val period = initialFieldState<Pair<Int, String>>(
+    val period = initialFieldState<Pair<Int,String>>(
         saveStateHandler,
         "FORM_PERIOD",
-        initialValue = Pair(0, ""),
-        validator = { KindPaymentsEnums.existIndex(it.first) },
-        list = KindPaymentsEnums.entries.map { Pair(it.month, it.name) },
+        initialValue = periodsOpt.first(),
+        validator = { KindPaymentsEnums.existIndex( it.first ) },
+        list = periodsOpt,
         onValueChangeCallBack = {
             projection.update {
                 it.copy(type = it.type)
@@ -79,7 +78,7 @@ class ProjectionFormViewModel @Inject constructor(
         initialValue = "",
         validator = { it.isNotBlank() },
         onValueChangeCallBack = {
-            projection.update {
+            projection.update{
                 it.copy(name = it.name)
             }
         })
@@ -87,10 +86,10 @@ class ProjectionFormViewModel @Inject constructor(
         saveStateHandler,
         "FORM_VALUE",
         initialValue = BigDecimal.ZERO,
-        formatter = { if (NumbersUtil.isNumber(it)) BigDecimal(it) else BigDecimal.ZERO },
+        formatter = { if(NumbersUtil.isNumber(it)) BigDecimal(it) else BigDecimal.ZERO },
         validator = { it > BigDecimal.ZERO },
         onValueChangeCallBack = {
-            projection.update {
+            projection.update{
                 it.copy(value = it.value)
             }
         }).also {
@@ -100,10 +99,10 @@ class ProjectionFormViewModel @Inject constructor(
         saveStateHandler,
         "FORM_QUOTE",
         initialValue = BigDecimal.ZERO,
-        formatter = { if (NumbersUtil.isNumber(it)) BigDecimal(it) else BigDecimal.ZERO },
+        formatter = { if(NumbersUtil.isNumber(it)) BigDecimal(it) else BigDecimal.ZERO },
         validator = { it > BigDecimal.ZERO },
         onValueChangeCallBack = {
-            projection.update {
+            projection.update{
                 it.copy(quote = it.quote)
             }
         }).also {
@@ -111,14 +110,14 @@ class ProjectionFormViewModel @Inject constructor(
     }
 
     init {
-        saveStateHandler.get<Int>("id")?.let { id = it }
+        saveStateHandler.get<Int>("id")?.let{ id = it }
         main()
     }
 
-    fun save(navController: NavController, context: Context) {
-        if (disableSaveStatus.value.not()) {
-            projectionSvc.let {
-                it.save(projection.value).let {
+    fun save(navController: NavController){
+        if(disableSaveStatus.value.not()){
+            projectionSvc.let{
+                it.save(projection.value).let{
                     viewModelScope.launch {
                         if (it) {
                             hostState.showSnackbar(
@@ -141,10 +140,10 @@ class ProjectionFormViewModel @Inject constructor(
         }
     }
 
-    fun update(navController: NavController, context: Context) {
-        if (disableSaveStatus.value.not()) {
-            projectionSvc.let {
-                it.save(projection.value).let {
+    fun update(navController: NavController){
+        if(disableSaveStatus.value.not()){
+            projectionSvc.let{
+                it.save(projection.value).let{
                     viewModelScope.launch {
                         if (it) {
                             hostState.showSnackbar(
@@ -167,32 +166,33 @@ class ProjectionFormViewModel @Inject constructor(
         }
     }
 
-    fun validate() {
+    fun validate(){
         datePayment.validate()
         period.validate()
         name.validate()
         value.validate()
-        if (datePayment.error.value.not() && period.error.value.not() && name.error.value.not() && value.error.value.not()) {
+        if(datePayment.error.value.not() && period.error.value.not() && name.error.value.not() && value.error.value.not()){
             disableSaveStatus.value = false
             quoteCalculation()
-        } else {
+        }else{
             disableSaveStatus.value = true
         }
+
     }
 
-    fun clear() {
+    fun clear(){
         datePayment.reset(LocalDate.now())
         name.reset("")
         value.reset(BigDecimal.ZERO)
         quote.reset(BigDecimal.ZERO)
-        period.reset(Pair(0, ""))
+        period.reset(Pair(0,""))
     }
 
     fun main() = viewModelScope.launch {
         loaderStatus.value = true
-        projectionSvc.let {
+        projectionSvc.let{
             id?.let {
-                projectionSvc.findById(id!!)?.let { dto ->
+                projectionSvc.findById(id!!)?.let{ dto ->
                     projection.update {
                         dto
                     }
@@ -202,22 +202,11 @@ class ProjectionFormViewModel @Inject constructor(
         loaderStatus.value = false
     }
 
-    private fun quoteCalculation() = viewModelScope.launch {
+    private fun quoteCalculation()= viewModelScope.launch {
         loaderStatus.value = true
-        projectionSvc.let {
-            it.calculateQuote(
-                KindPaymentsEnums.findByIndex(period.value.value.first),
-                datePayment.value.value,
-                value.value.value
-            ).let(quote::onValueChange)
+        projectionSvc.let{
+            it.calculateQuote(KindPaymentsEnums.findByIndex(period.value.value.first),datePayment.value.value,value.value.value).let(quote::onValueChange)
         }
         loaderStatus.value = false
-    }
-
-    companion object {
-        fun create(extras: CreationExtras, projectionSvc: IProjectionFormPort): ProjectionFormViewModel {
-            val savedStateHandle = extras.createSavedStateHandle()
-            return ProjectionFormViewModel(savedStateHandle, projectionSvc)
-        }
     }
 }

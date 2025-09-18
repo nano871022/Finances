@@ -23,21 +23,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import co.com.japl.finances.iports.dtos.SMSPaidDTO
-import co.com.japl.finances.iports.inbounds.inputs.IAccountPort
-import co.com.japl.finances.iports.inbounds.paid.ISMSPaidPort
+import co.com.japl.finances.iports.enums.KindInterestRateEnum
+import co.com.japl.module.paid.enums.MoreOptionsItemSms
 import co.com.japl.module.paid.R
 import co.com.japl.module.paid.controllers.sms.list.SmsViewModel
-import co.com.japl.module.paid.enums.MoreOptionsItemSms
-import co.com.japl.module.paid.views.accounts.form.fakes.FakeAccountPort
-import co.com.japl.module.paid.views.sms.form.fakes.FakeSMSPaidPort
 import co.com.japl.ui.components.AlertDialogOkCancel
 import co.com.japl.ui.components.Carousel
 import co.com.japl.ui.components.FloatButton
@@ -47,108 +40,106 @@ import co.com.japl.ui.components.MoreOptionsDialog
 import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.com.japl.ui.theme.values.Dimensions
 import co.com.japl.ui.theme.values.ModifiersCustom.Weight1f
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 @Composable
-fun SMS(viewModel: SmsViewModel, navController: NavController) {
-    val loader = remember { viewModel.load }
-    val progress = remember { viewModel.progress }
+fun SMS(viewModel:SmsViewModel) {
+    val loader = remember {viewModel.load}
+    val progress = remember {viewModel.progress}
 
-    if (loader.value) {
+    CoroutineScope(Dispatchers.IO).launch {
+        viewModel.main()
+    }
+
+    if(loader.value){
         LinearProgressIndicator(
             progress = { progress.floatValue },
             modifier = Modifier.fillMaxWidth(),
         )
-    } else {
-        Body(viewModel = viewModel, navController = navController)
+    }else{
+        Body(viewModel = viewModel)
     }
+
 }
 
 @Composable
-private fun Body(viewModel: SmsViewModel, navController: NavController) {
-    Scaffold(
+private fun Body(viewModel: SmsViewModel){
+    Scaffold (
         floatingActionButton = {
-            Buttons {
-                viewModel.add(navController)
+            Buttons{
+                viewModel.add()
             }
         }
     ) {
-        Content(viewModel = viewModel, navController = navController, modifier = Modifier.padding(it))
+        Content(viewModel = viewModel, modifier = Modifier.padding(it))
     }
 }
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-private fun Content(viewModel: SmsViewModel, navController: NavController, modifier: Modifier) {
-    val list = remember { viewModel.list }
+private fun Content(viewModel: SmsViewModel,modifier: Modifier){
+    val list = remember { viewModel.list}
     Column {
-        Row(horizontalArrangement = Arrangement.End, modifier = Modifier.fillMaxWidth()) {
-            HelpWikiButton(
-                wikiUrl = R.string.wiki_sms_paid_url,
-                descriptionContent = R.string.wiki_sms_paid_description
-            )
+        Row (horizontalArrangement = Arrangement.End, modifier=Modifier.fillMaxWidth()) {
+            HelpWikiButton(wikiUrl = R.string.wiki_sms_paid_url,
+                descriptionContent = R.string.wiki_sms_paid_description)
         }
-        if (list.isNotEmpty()) {
-            Carousel(size = list.size) {
-                Column(
-                    modifier = modifier.padding(bottom = Dimensions.PADDING_BOTTOM_SPACE_FLOATING_BUTTON)
-                ) {
-                    list[it]?.values?.forEach {
-                        for (i in it) {
-                            Card(
-                                sms = i,
-                                modifier = Modifier,
-                                edit = { viewModel.edit(it, navController) },
-                                delete = { viewModel.delete(it, navController.context, navController) },
-                                enable = { viewModel.enabled(it, navController.context) },
-                                disable = { viewModel.disabled(it, navController.context) })
-                        }
+    if(list.isNotEmpty()) {
+        Carousel(size = list.size) {
+            Column(
+                modifier = modifier.padding(bottom = Dimensions.PADDING_BOTTOM_SPACE_FLOATING_BUTTON)
+            ) {
+                list[it]?.values?.forEach {
+                    for (i in it) {
+                        Card(sms = i, modifier = Modifier, edit = {
+                            viewModel.edit(it)
+                        }, delete = {
+                            viewModel.delete(it)
+                        }, enable = {
+                            viewModel.enabled(it)
+                        }, disable = {
+                            viewModel.disabled(it)
+                        })
                     }
                 }
+            }
             }
         }
     }
 }
 
 @Composable
-private fun Card(
-    sms: SMSPaidDTO,
-    modifier: Modifier = Modifier,
-    edit: (Int) -> Unit,
-    delete: (Int) -> Unit,
-    enable: (Int) -> Unit,
-    disable: (Int) -> Unit
-) {
+private fun Card(sms:SMSPaidDTO,modifier:Modifier=Modifier,edit:(Int)->Unit,delete:(Int)->Unit,enable:(Int)->Unit,disable:(Int)->Unit) {
     val popupStable = remember { mutableStateOf(false) }
     val popupDeleteDialog = remember { mutableStateOf(false) }
-    Card(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(
-                start = Dimensions.PADDING_SHORT,
-                end = Dimensions.PADDING_SHORT,
-                top = Dimensions.PADDING_SHORT
-            ),
-        border = BorderStroke(width = 1.dp, color = if (sms.active) Color.Unspecified else Color.Red)
+    Card( modifier = modifier
+        .fillMaxWidth()
+        .padding(
+            start = Dimensions.PADDING_SHORT,
+            end = Dimensions.PADDING_SHORT,
+            top = Dimensions.PADDING_SHORT
+        ), border = BorderStroke(width= 1.dp, color = if(sms.active)Color.Unspecified else Color.Red)
     ) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.padding(Dimensions.PADDING_SHORT)
+        Row (
+            verticalAlignment = Alignment.CenterVertically
+            ,modifier = Modifier.padding(Dimensions.PADDING_SHORT)
         ) {
-            Text(text = sms.nameAccount, modifier = Weight1f())
-            Text(text = sms.phoneNumber, modifier = Weight1f(), textAlign = TextAlign.End)
-            IconButton(
-                imageVector = Icons.Rounded.MoreVert,
-                descriptionContent = co.com.japl.ui.R.string.see_more,
-                onClick = {
+            Text(text = sms.nameAccount,modifier=Weight1f())
+
+            Text(text = sms.phoneNumber,modifier=Weight1f(), textAlign = TextAlign.End)
+
+            IconButton(imageVector = Icons.Rounded.MoreVert,
+                descriptionContent = co.com.japl.ui.R.string.see_more, onClick = {
                     popupStable.value = true
                 })
         }
     }
     if (popupStable.value) {
-        MoreOptionsDialog(
-            listOptions = MoreOptionsItemSms.values().filter {
-                (sms.active && it != MoreOptionsItemSms.ENABLE) || (!sms.active && it != MoreOptionsItemSms.DISABLE)
-            }.toList(),
+        MoreOptionsDialog(listOptions = MoreOptionsItemSms.values().filter{
+            (sms.active && it != MoreOptionsItemSms.ENABLE) || (!sms.active && it != MoreOptionsItemSms.DISABLE)
+        }.toList(),
             onDismiss = { popupStable.value = false }) {
             when (it) {
                 MoreOptionsItemSms.DELETE -> popupDeleteDialog.value = true
@@ -171,7 +162,7 @@ private fun Card(
 }
 
 @Composable
-private fun Buttons(create: () -> Unit) {
+private fun Buttons(create:()->Unit){
     FloatButton(imageVector = Icons.Rounded.Add, descriptionIcon = R.string.create) {
         create.invoke()
     }
@@ -180,39 +171,73 @@ private fun Buttons(create: () -> Unit) {
 @RequiresApi(Build.VERSION_CODES.S)
 @Composable
 @Preview(showSystemUi = true, showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
-internal fun SMSPreviewNight() {
-    val smsSvc: ISMSPaidPort = FakeSMSPaidPort()
-    val accountSvc: IAccountPort = FakeAccountPort()
+internal fun SMSPreviewNight(){
     MaterialThemeComposeUI {
-        SMS(
-            viewModel(
-                factory = SmsViewModel.Companion.create(
-                    extras = viewModel(),
-                    smsSvc = smsSvc,
-                    accountSvc = accountSvc
-                )
-            ),
-            navController = rememberNavController()
-        )
+
+        SMS(getViewModel())
     }
 }
 
 @RequiresApi(Build.VERSION_CODES.S)
 @Composable
 @Preview(showSystemUi = true, showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
-internal fun SMSPreview() {
-    val smsSvc: ISMSPaidPort = FakeSMSPaidPort()
-    val accountSvc: IAccountPort = FakeAccountPort()
+internal fun SMSPreview(){
     MaterialThemeComposeUI {
-        SMS(
-            viewModel(
-                factory = SmsViewModel.Companion.create(
-                    extras = viewModel(),
-                    smsSvc = smsSvc,
-                    accountSvc = accountSvc
-                )
-            ),
-            navController = rememberNavController()
-        )
+
+        SMS(getViewModel())
     }
+}
+
+@Composable
+private fun getViewModel():SmsViewModel {
+  val viewModel = SmsViewModel(null,null, null)
+    viewModel.load.value = false
+    listOf(
+        SMSPaidDTO(
+            id = 1,
+            codeAccount = 1,
+            nameAccount = "Visa",
+            phoneNumber = "123456789",
+            pattern = "123456789",
+            active = false
+        )
+    ,
+        SMSPaidDTO(
+            id = 1,
+            codeAccount = 1,
+            nameAccount = "Visa",
+            phoneNumber = "123456789",
+            pattern = "123456789",
+            active = true
+        ),
+        SMSPaidDTO(
+            id = 1,
+            codeAccount = 2,
+            nameAccount = "Master",
+            phoneNumber = "123456789",
+            pattern = "123456789",
+            active = true
+        ),
+        SMSPaidDTO(
+            id = 1,
+            codeAccount = 2,
+            nameAccount = "Master",
+            phoneNumber = "123456789",
+            pattern = "123456789",
+            active = true
+        )
+    ).groupBy { it.codeAccount }?.let {
+        it.map{
+            it
+        }?.let{
+            it.map {
+                mapOf(it.key to it.value)
+            }?.let{
+                viewModel.list.addAll(it)
+            }
+
+        }
+
+    }
+  return viewModel
 }

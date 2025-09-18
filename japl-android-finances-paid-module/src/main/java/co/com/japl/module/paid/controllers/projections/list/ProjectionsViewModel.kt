@@ -5,7 +5,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.CreationExtras
 import androidx.navigation.NavController
 import co.com.japl.finances.iports.dtos.ProjectionRecap
 import co.com.japl.finances.iports.inbounds.paid.IProjectionsPort
@@ -16,10 +15,7 @@ import kotlinx.coroutines.runBlocking
 import java.math.BigDecimal
 import javax.inject.Inject
 
-class ProjectionsViewModel @Inject constructor(
-    private val savedStateHandler: SavedStateHandle,
-    private val projectionSvc: IProjectionsPort
-) : ViewModel() {
+class ProjectionsViewModel @Inject constructor(private val savedStateHandler: SavedStateHandle,private val projectionSvc: IProjectionsPort) : ViewModel() {
 
     val loadingStatus = mutableStateOf(false)
     val projectionsList = mutableStateListOf<ProjectionRecap>()
@@ -35,17 +31,17 @@ class ProjectionsViewModel @Inject constructor(
         initialValue = BigDecimal.ZERO
     )
 
-    init {
+    init{
         viewModelScope.launch {
             main()
         }
     }
 
-    fun goToList(navController: NavController) {
+    fun goToList(navController: NavController){
         Projections.listNavigate(navController)
     }
 
-    fun goToCreate(navController: NavController) {
+    fun goToCreate(navController: NavController){
         Projections.formNavigate(navController)
     }
 
@@ -54,12 +50,12 @@ class ProjectionsViewModel @Inject constructor(
         execute()
     }
 
-    suspend fun execute() {
-        projectionSvc.let {
-            it.getProjectionRecap().let {
+    suspend fun execute(){
+        projectionSvc.let{
+            it.getProjectionRecap().let{
                 it.first.let(totalCount::onValueChange)
                 it.second.let(totalSaved::onValueChange)
-                it.third.let {
+                it.third.let{
                     projectionsList.clear()
                     projectionsList.addAll(it)
                 }
@@ -68,10 +64,4 @@ class ProjectionsViewModel @Inject constructor(
         loadingStatus.value = false
     }
 
-    companion object {
-        fun create(extras: CreationExtras, projectionSvc: IProjectionsPort): ProjectionsViewModel {
-            val savedStateHandle = extras.createSavedStateHandle()
-            return ProjectionsViewModel(savedStateHandle, projectionSvc)
-        }
-    }
 }

@@ -4,7 +4,6 @@ import android.content.res.Configuration
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.annotation.StringRes
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -16,20 +15,20 @@ import androidx.compose.material.icons.rounded.RemoveRedEye
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.runtime.collectAsState
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.lifecycle.SavedStateHandle
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import co.com.japl.finances.iports.dtos.ProjectionRecap
-import co.com.japl.finances.iports.inbounds.paid.IProjectionsPort
 import co.com.japl.module.paid.R
 import co.com.japl.module.paid.controllers.projections.list.ProjectionsViewModel
-import co.com.japl.module.paid.views.projections.list.fakes.FakeProjectionsPort
+import co.com.japl.module.paid.views.fakeSvc.ProjectionsFake
 import co.com.japl.ui.components.CardValues
 import co.com.japl.ui.components.Carousel
 import co.com.japl.ui.components.FieldView
@@ -38,92 +37,91 @@ import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.com.japl.ui.theme.values.Dimensions
 import co.com.japl.ui.utils.DateUtils
 import co.japl.android.graphs.utils.NumbersUtil
+import java.math.BigDecimal
+import java.time.LocalDate
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun Projections(viewModel: ProjectionsViewModel, navController: NavController) {
+fun Projections(viewModel: ProjectionsViewModel, navController: NavController){
     val progressStatus = remember { viewModel.loadingStatus }
 
     if (progressStatus.value) {
         LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
-    } else {
-        Scaffold(viewModel = viewModel, navController = navController)
+    }else {
+        Scafold(viewModel=viewModel, navController = navController)
     }
 }
 
 @Composable
-private fun Scaffold(viewModel: ProjectionsViewModel, navController: NavController) {
-    Scaffold(
+private fun Scafold(viewModel: ProjectionsViewModel, navController: NavController){
+    Scaffold (
         floatingActionButton = {
             FloatButton(viewModel, navController)
         }
     ) {
-        Body(viewModel = viewModel, modifier = Modifier.padding(it))
+        Body(viewModel=viewModel,modifier = Modifier.padding(it))
     }
 }
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-private fun Body(viewModel: ProjectionsViewModel, modifier: Modifier) {
+private fun Body(viewModel: ProjectionsViewModel,modifier: Modifier){
     val list = remember { viewModel.projectionsList }
-    Column(modifier = modifier.padding(Dimensions.PADDING_SHORT)) {
-        Header(viewModel = viewModel)
+  Column (modifier = modifier.padding(Dimensions.PADDING_SHORT)){
+      Header(viewModel = viewModel)
 
-        Carousel(
-            size = list.size,
-            modifier = Modifier.height(200.dp)
-        ) { pos ->
-            list[pos].let {
-                when (pos) {
-                    0 -> Card(titleCard = R.string.projection_closed, it)
-                    1 -> Card(titleCard = R.string.projection_far, it)
+      Carousel(
+          size = list.size,
+          modifier = Modifier.height(200.dp)
+      ) { pos ->
+          list[pos].let {
+              when (pos) {
+                  0 -> Card(titleCard = R.string.projection_closed,it)
+                  1 -> Card(titleCard = R.string.projection_far,it)
+              }
+          }
+      }
+
+  }
+}
+
+@Composable
+private fun Card(@StringRes titleCard:Int, projection: ProjectionRecap){
+    CardValues (title = stringResource(titleCard)){
+            Column {
+                Row {
+                    FieldView(
+                        title = stringResource(R.string.limite_date),
+                        value = DateUtils.localDateToStringDate(projection.limitDate),
+                        modifier = Modifier.weight(1f).padding(end = Dimensions.PADDING_SHORT)
+                    )
+
+                    FieldView(
+                        title = stringResource(R.string.months_left_to_pay),
+                        value = projection.monthsLeft.toString(),
+                        modifier = Modifier.weight(1f)
+                    )
                 }
+
+                FieldView(
+                    title = stringResource(R.string.saved_cash),
+                    value = NumbersUtil.COPtoString(projection.savedCash),
+                    modifier = Modifier.padding(top = Dimensions.PADDING_SHORT).fillMaxWidth()
+                )
             }
-        }
+
     }
 }
 
 @Composable
-private fun Card(@StringRes titleCard: Int, projection: ProjectionRecap) {
-    CardValues(title = stringResource(titleCard)) {
-        Column {
-            Row {
-                FieldView(
-                    title = stringResource(R.string.limite_date),
-                    value = DateUtils.localDateToStringDate(projection.limitDate),
-                    modifier = Modifier
-                        .weight(1f)
-                        .padding(end = Dimensions.PADDING_SHORT)
-                )
-
-                FieldView(
-                    title = stringResource(R.string.months_left_to_pay),
-                    value = projection.monthsLeft.toString(),
-                    modifier = Modifier.weight(1f)
-                )
-            }
-
-            FieldView(
-                title = stringResource(R.string.saved_cash),
-                value = NumbersUtil.COPtoString(projection.savedCash),
-                modifier = Modifier
-                    .padding(top = Dimensions.PADDING_SHORT)
-                    .fillMaxWidth()
-            )
-        }
-    }
-}
-
-@Composable
-private fun Header(viewModel: ProjectionsViewModel) {
+private fun Header(viewModel: ProjectionsViewModel){
     val totalSaved = viewModel.totalSaved.value.collectAsState()
-    Row(modifier = Modifier.fillMaxWidth()) {
+    Row (modifier = Modifier.fillMaxWidth()){
+
         FieldView(
             title = stringResource(R.string.products_count),
             value = viewModel.totalCount.valueStr,
-            modifier = Modifier
-                .weight(1f)
-                .padding(end = Dimensions.PADDING_SHORT)
+            modifier = Modifier.weight(1f).padding(end  = Dimensions.PADDING_SHORT)
         )
 
         FieldView(
@@ -131,12 +129,13 @@ private fun Header(viewModel: ProjectionsViewModel) {
             value = NumbersUtil.COPtoString(totalSaved.value),
             modifier = Modifier.weight(1f)
         )
+
     }
 }
 
 @Composable
-private fun FloatButton(viewModel: ProjectionsViewModel, navController: NavController) {
-    Column {
+private fun FloatButton(viewModel: ProjectionsViewModel, navController: NavController){
+    Column(){
         FloatButton(
             imageVector = Icons.Rounded.RemoveRedEye,
             descriptionIcon = R.string.list_projection
@@ -155,36 +154,26 @@ private fun FloatButton(viewModel: ProjectionsViewModel, navController: NavContr
 
 @RequiresApi(Build.VERSION_CODES.S)
 @Composable
-@Preview(showBackground = true, showSystemUi = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
-fun PreviewLight() {
-    val projectionSvc: IProjectionsPort = FakeProjectionsPort()
+@Preview(showBackground = true, showSystemUi = true, uiMode = Configuration.UI_MODE_NIGHT_NO, backgroundColor = 0x000000)
+fun PreviewLight(){
     MaterialThemeComposeUI {
-        Projections(
-            viewModel(
-                factory = ProjectionsViewModel.Companion.create(
-                    extras = viewModel(),
-                    projectionSvc = projectionSvc
-                )
-            ),
-            navController = rememberNavController()
-        )
+        Projections(getViewModel(), NavController(LocalContext.current))
     }
 }
 
 @RequiresApi(Build.VERSION_CODES.S)
 @Composable
-@Preview(showBackground = true, showSystemUi = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
-fun PreviewDark() {
-    val projectionSvc: IProjectionsPort = FakeProjectionsPort()
+@Preview(showBackground = true, showSystemUi = true, uiMode = Configuration.UI_MODE_NIGHT_YES, backgroundColor = 0xffffff)
+fun PreviewDark(){
     MaterialThemeComposeUI {
-        Projections(
-            viewModel(
-                factory = ProjectionsViewModel.Companion.create(
-                    extras = viewModel(),
-                    projectionSvc = projectionSvc
-                )
-            ),
-            navController = rememberNavController()
-        )
+        Projections(getViewModel(), NavController(LocalContext.current))
     }
+}
+
+@Composable
+fun getViewModel(): ProjectionsViewModel{
+    val savedStateHandle = SavedStateHandle()
+    val projectionSvc = ProjectionsFake()
+    val vm =  ProjectionsViewModel(savedStateHandle, projectionSvc)
+    return vm
 }
