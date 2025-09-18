@@ -1,7 +1,6 @@
 package co.com.japl.module.paid.views.projections.list
 
 import android.content.res.Configuration
-import android.icu.text.DecimalFormat
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.BorderStroke
@@ -10,18 +9,17 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.material.LinearProgressIndicator
-import androidx.compose.material.Scaffold
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
+import androidx.compose.material3.LinearProgressIndicator
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.MoreVert
 import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.SnackbarHost
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -32,10 +30,13 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import co.com.japl.finances.iports.dtos.ProjectionDTO
-import co.com.japl.finances.iports.enums.KindPaymentsEnums
+import co.com.japl.finances.iports.inbounds.paid.IProjectionListPort
 import co.com.japl.module.paid.R
 import co.com.japl.module.paid.controllers.projections.list.ProjectionListViewModel
+import co.com.japl.module.paid.views.projections.list.fakes.FakeProjectionListPort
 import co.com.japl.ui.components.AlertDialogOkCancel
 import co.com.japl.ui.components.FieldView
 import co.com.japl.ui.components.FloatButton
@@ -43,58 +44,57 @@ import co.com.japl.ui.components.IconButton
 import co.com.japl.ui.components.MoreOptionsDialogPair
 import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.com.japl.ui.theme.values.Dimensions
-import co.com.japl.utils.NumbersUtil
-import java.math.BigDecimal
-import java.text.DateFormat
-import java.time.LocalDate
+import co.japl.android.graphs.utils.NumbersUtil
 import java.time.format.DateTimeFormatter
 import java.util.Locale
 
 @Composable
-fun ProjectionList(viewModel: ProjectionListViewModel) {
+fun ProjectionList(viewModel: ProjectionListViewModel, navController: NavController) {
     val loadingStatus = remember { viewModel.loader }
 
-    if(loadingStatus.value){
+    if (loadingStatus.value) {
         LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
-    }else{
-        Scafold(viewModel)
+    } else {
+        Scaffold(viewModel, navController)
     }
 }
 
 @Composable
-private fun Scafold(viewModel: ProjectionListViewModel){
+private fun Scaffold(viewModel: ProjectionListViewModel, navController: NavController) {
     val snackbarHost = remember { viewModel.snackbarHost }
-    Scaffold (
-        snackbarHost = {snackbarHost},
+    Scaffold(
+        snackbarHost = { SnackbarHost(snackbarHost) },
         floatingActionButton = {
-            FloatButton(viewModel = viewModel)
-        }, modifier = Modifier.padding(Dimensions.PADDING_SHORT)
-
-    ){
-        Body(viewModel, modifier = Modifier.padding(it))
+            FloatButton(viewModel = viewModel, navController = navController)
+        },
+        modifier = Modifier.padding(Dimensions.PADDING_SHORT)
+    ) {
+        Body(viewModel, navController, modifier = Modifier.padding(it))
     }
 }
 
 @Composable
-private fun Body(viewModel: ProjectionListViewModel,modifier:Modifier){
+private fun Body(viewModel: ProjectionListViewModel, navController: NavController, modifier: Modifier) {
     val mapList = viewModel.list.sortedBy { it.end }.groupBy { it.end.year }
-    LazyColumn(modifier = modifier){
-        item{
+    val context = LocalContext.current
+    LazyColumn(modifier = modifier) {
+        item {
             Header(viewModel)
         }
-        items(mapList.size){
+        items(mapList.size) {
             val entries = mapList.entries.elementAt(it)
             val list = entries.value
-            Yearly(list,viewModel::edit,viewModel::delete)
+            Yearly(list, { viewModel.edit(it, navController) }, { viewModel.delete(it, context) })
         }
-        item{
-            if(viewModel.list.isEmpty()){
-                Text(text = stringResource(R.string.not_record_available),
+        item {
+            if (viewModel.list.isEmpty()) {
+                Text(
+                    text = stringResource(R.string.not_record_available),
                     textAlign = TextAlign.Center,
                     modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = Dimensions.PADDING_SHORT)
-                    )
+                        .fillMaxWidth()
+                        .padding(horizontal = Dimensions.PADDING_SHORT)
+                )
             }
         }
     }
@@ -139,12 +139,8 @@ private fun Monthly(items: List<ProjectionDTO>, edit: (Int) -> Unit, delete: (In
     }
 }
 
-import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
-import co.com.japl.module.paid.views.fakeSvc.ProjectionListPortFake
-
 @Composable
-private fun RowBody(item: ProjectionDTO, edit: (Int, NavController) -> Unit, delete: (Int) -> Unit, navController: NavController) {
+private fun RowBody(item: ProjectionDTO, edit: (Int) -> Unit, delete: (Int) -> Unit) {
     val optionState = remember { mutableStateOf(false) }
     val optionDeleteState = remember { mutableStateOf(false) }
     val showStatus = remember { mutableStateOf(false) }
@@ -217,7 +213,7 @@ private fun RowBody(item: ProjectionDTO, edit: (Int, NavController) -> Unit, del
             }) {
             when (it.first) {
                 0 -> {
-                    edit.invoke(item.id, navController)
+                    edit.invoke(item.id)
                 }
                 1 -> {
                     optionDeleteState.value = true
@@ -232,108 +228,57 @@ private fun RowBody(item: ProjectionDTO, edit: (Int, NavController) -> Unit, del
             confirmNameButton = R.string.delete,
             onDismiss = {
                 optionDeleteState.value = false
-
             }) {
             delete.invoke(item.id)
             optionDeleteState.value = false
-
         }
-
     }
 }
 
 @Composable
-private fun Header(viewModel: ProjectionListViewModel){
-    Row (modifier = Modifier.padding(bottom = Dimensions.PADDING_BOTTOM)){
+private fun Header(viewModel: ProjectionListViewModel) {
+    Row(modifier = Modifier.padding(bottom = Dimensions.PADDING_BOTTOM)) {
         FieldView(
             title = stringResource(R.string.count_projection),
             value = viewModel.list.size.toString(),
-            modifier = Modifier.weight(1f).padding(end= Dimensions.PADDING_SHORT)
+            modifier = Modifier
+                .weight(1f)
+                .padding(end = Dimensions.PADDING_SHORT)
         )
         FieldView(
             title = stringResource(R.string.total_saved),
             value = NumbersUtil.COPtoString(viewModel.list.sumOf { it.quote }),
             modifier = Modifier.weight(1f)
         )
-
     }
 }
 
 @Composable
-private fun FloatButton(viewModel: ProjectionListViewModel){
+private fun FloatButton(viewModel: ProjectionListViewModel, navController: NavController) {
     Column {
         FloatButton(
             imageVector = Icons.Rounded.Add,
             descriptionIcon = R.string.create_projection
         ) {
-            viewModel.goToCreate()
+            viewModel.goToCreate(navController)
         }
     }
 }
 
 @RequiresApi(Build.VERSION_CODES.S)
 @Composable
-@Preview( showBackground = true, showSystemUi = true, backgroundColor = 0xffffff, uiMode = Configuration.UI_MODE_NIGHT_NO)
-private fun ProjectionListPreviewLight(){
+@Preview(showBackground = true, showSystemUi = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
+private fun ProjectionListPreviewLight() {
+    val projectionListPort: IProjectionListPort = FakeProjectionListPort()
     MaterialThemeComposeUI {
-        ProjectionList(getViewModelList())
+        ProjectionList(
+            viewModel(
+                factory = ProjectionListViewModel.Companion.create(
+                    extras = viewModel(),
+                    projectionListPort = projectionListPort
+                )
+            ),
+            navController = rememberNavController()
+        )
     }
-}
-
-@Composable
-private fun getViewModelList(): ProjectionListViewModel {
-    val vm = ProjectionListViewModel(context = LocalContext.current)
-    vm.list.add(
-        ProjectionDTO(
-            id = 0,
-            name = "prueba1",
-            type= KindPaymentsEnums.MONTHLY,
-            value= BigDecimal.valueOf(2_000),
-            quote = BigDecimal.valueOf(200),
-            amountSaved = BigDecimal.valueOf(800),
-            monthsLeft = 7,
-            active = true,
-            create = LocalDate.now().minusMonths(3),
-            end = LocalDate.now().plusMonths(6)
-        ))
-    vm.list.add(
-        ProjectionDTO(
-            id = 0,
-            name = "prueba2",
-            type= KindPaymentsEnums.MONTHLY,
-            value= BigDecimal.valueOf(5_000),
-            quote = BigDecimal.valueOf(1_000),
-            amountSaved = BigDecimal.valueOf(2_000),
-            monthsLeft = 3,
-            active = true,
-            create = LocalDate.now().minusMonths(1).minusDays(5),
-            end = LocalDate.now().plusMonths(3).minusDays(5)
-        ))
-    vm.list.add(
-        ProjectionDTO(
-            id = 0,
-            name = "prueba3",
-            type= KindPaymentsEnums.MONTHLY,
-            value= BigDecimal.valueOf(5_000),
-            quote = BigDecimal.valueOf(1_000),
-            amountSaved = BigDecimal.valueOf(2_000),
-            monthsLeft = 3,
-            active = true,
-            create = LocalDate.now().minusMonths(1).minusDays(5),
-            end = LocalDate.now().plusMonths(4).minusDays(5).plusYears(1)
-        ))
-    vm.list.add(
-        ProjectionDTO(
-            id = 0,
-            name = "prueba4",
-            type= KindPaymentsEnums.MONTHLY,
-            value= BigDecimal.valueOf(5_000),
-            quote = BigDecimal.valueOf(1_000),
-            amountSaved = BigDecimal.valueOf(2_000),
-            monthsLeft = 3,
-            active = true,
-            create = LocalDate.now().minusMonths(1).minusDays(5),
-            end = LocalDate.now().plusMonths(2).minusDays(2).plusYears(1)
-        ))
-    return vm
 }

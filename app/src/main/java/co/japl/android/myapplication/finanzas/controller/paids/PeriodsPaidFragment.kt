@@ -8,9 +8,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.RequiresApi
 import androidx.compose.ui.platform.ViewCompositionStrategy
+import androidx.core.os.bundleOf
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.viewmodel.MutableCreationExtras
 import androidx.navigation.fragment.findNavController
 import co.com.japl.finances.iports.inbounds.paid.IPeriodPaidPort
 import co.com.japl.module.paid.controllers.period.list.PeriodsViewModel
@@ -28,17 +28,13 @@ class PeriodsPaidFragment : Fragment() {
     lateinit var service: IPeriodPaidPort
 
     private val viewModel: PeriodsViewModel by viewModels(
+        extrasProducer = {
+            defaultViewModelCreationExtras.apply {
+                this.set(ViewModelProvider.SavedStateHandleFactory.DEFAULT_ARGS_KEY, arguments ?: bundleOf())
+            }
+        },
         factoryProducer = {
             PeriodsViewModelFactory(service)
-        },
-        extrasProducer = {
-            val extras = MutableCreationExtras(defaultViewModelCreationExtras)
-            extras.apply {
-                arguments?.let {
-                    set(ViewModelProvider.SavedStateHandleFactory.DEFAULT_ARGS_KEY, it)
-                }
-            }
-            extras
         }
     )
 
@@ -52,11 +48,10 @@ class PeriodsPaidFragment : Fragment() {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
                 MaterialThemeComposeUI {
-                    Period(viewModel = viewModel, navController = findNavController())
+                    Period(viewModel = viewModel, findNavController())
                 }
             }
         }
-        return root.root.rootView
+        return root.root
     }
-
 }

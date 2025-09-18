@@ -28,23 +28,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.SavedStateHandle
-import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import co.com.japl.finances.iports.dtos.AccountDTO
 import co.com.japl.module.paid.R
 import co.com.japl.module.paid.controllers.Inputs.list.InputListModelView
-import co.com.japl.module.paid.controllers.Inputs.list.InputListModelViewFactory
 import co.com.japl.module.paid.controllers.accounts.list.AccountViewModel
 import co.com.japl.module.paid.enums.MoreOptionsItemsAccount
 import co.com.japl.module.paid.views.Inputs.list.InputList
-import co.com.japl.module.paid.views.fakeSvc.AccountPortFake
-import co.com.japl.module.paid.views.fakeSvc.InputPortFake
 import co.com.japl.ui.components.AlertDialogOkCancel
 import co.com.japl.ui.components.Carousel
 import co.com.japl.ui.components.FieldView
@@ -58,7 +49,7 @@ import kotlinx.coroutines.withContext
 import java.time.LocalDate
 
 @Composable
-fun AccountList(viewModel: AccountViewModel, navController: NavController) {
+fun AccountList(viewModel: AccountViewModel) {
     val stateProgress = remember {
         viewModel.progress
     }
@@ -72,22 +63,20 @@ fun AccountList(viewModel: AccountViewModel, navController: NavController) {
         }
     }
 
-    if (stateLoader.value) {
+    if(stateLoader.value) {
         LinearProgressIndicator(
             progress = { stateProgress.value },
             modifier = Modifier.fillMaxWidth(),
         )
-    } else {
+    }else {
 
         Scaffold(
             floatingActionButton = {
-                FloatingActionButton(
-                    onClick = { viewModel.add(navController) },
-                    elevation = FloatingActionButtonDefaults.elevation(
+                FloatingActionButton(onClick = { viewModel.add() },
+                    elevation =  FloatingActionButtonDefaults.elevation(
                         defaultElevation = 10.dp
                     ),
-                    containerColor = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.5f)
-                ) {
+                    backgroundColor =  MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.5f)) {
                     Icon(
                         imageVector = Icons.Rounded.Add,
                         contentDescription = stringResource(id = R.string.create)
@@ -95,24 +84,20 @@ fun AccountList(viewModel: AccountViewModel, navController: NavController) {
                 }
             }
         ) {
-            Body(viewModel = viewModel, modifier = Modifier.padding(it), navController = navController)
+            Body(viewModel = viewModel, modifier = Modifier.padding(it))
         }
     }
 }
-
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-private fun Body(viewModel: AccountViewModel, modifier: Modifier, navController: NavController) {
-    val listState = remember { viewModel.list }
+private fun Body(viewModel: AccountViewModel, modifier:Modifier) {
+    val listState = remember { viewModel.list}
     val state = remember { mutableStateOf(false) }
     val stateDelete = remember { mutableStateOf(false) }
-    val context = LocalContext.current
     Column {
-        Row(horizontalArrangement = Arrangement.End, modifier = Modifier.fillMaxWidth()) {
-            HelpWikiButton(
-                wikiUrl = R.string.wiki_account_url,
-                descriptionContent = R.string.wiki_account_description
-            )
+        Row(horizontalArrangement = Arrangement.End, modifier=Modifier.fillMaxWidth()) {
+            HelpWikiButton(wikiUrl = R.string.wiki_account_url,
+                descriptionContent = R.string.wiki_account_description)
         }
         Carousel(size = listState.size) {
             val item = listState[it]
@@ -140,16 +125,13 @@ private fun Body(viewModel: AccountViewModel, modifier: Modifier, navController:
                 }
 
                 Column {
-                    val inputViewModel: InputListModelView = viewModel(
-                        factory = InputListModelViewFactory(
-                            context = context,
-                            accountCode = item.id,
-                            inputSvc = viewModel.inputSvc
-                        )
-                    )
                     InputList(
-                        modelView = inputViewModel,
-                        navController = navController
+                        modelView = InputListModelView(
+                            LocalContext.current,
+                            item.id,
+                            viewModel.navController,
+                            viewModel.inputSvc
+                        )
                     )
                 }
                 if (stateDelete.value) {
@@ -169,7 +151,7 @@ private fun Body(viewModel: AccountViewModel, modifier: Modifier, navController:
                     onClick = {
                         when (it) {
                             MoreOptionsItemsAccount.DELETE -> stateDelete.value = true
-                            MoreOptionsItemsAccount.EDIT -> viewModel.edit(item.id, navController)
+                            MoreOptionsItemsAccount.EDIT -> viewModel.edit(item.id)
                         }
                         state.value = false
                     })
@@ -184,7 +166,7 @@ private fun Body(viewModel: AccountViewModel, modifier: Modifier, navController:
 fun AccountListPreview() {
     val viewModel = getViewModel()
     MaterialThemeComposeUI {
-        AccountList(viewModel = viewModel, navController = rememberNavController())
+        AccountList(viewModel = viewModel)
     }
 }
 
@@ -195,7 +177,7 @@ fun AccountListPreviewNoAccount() {
     val viewModel = getViewModel()
     viewModel.list.clear()
     MaterialThemeComposeUI {
-        AccountList(viewModel = viewModel, navController = rememberNavController())
+        AccountList(viewModel = viewModel)
     }
 }
 
@@ -206,7 +188,7 @@ fun AccountListPreviewDarkNoAccount() {
     val viewModel = getViewModel()
     viewModel.list.clear()
     MaterialThemeComposeUI {
-        AccountList(viewModel = viewModel, navController = rememberNavController())
+        AccountList(viewModel = viewModel)
     }
 }
 
@@ -216,17 +198,13 @@ fun AccountListPreviewDarkNoAccount() {
 fun AccountListPreviewDark() {
     val viewModel = getViewModel()
     MaterialThemeComposeUI {
-        AccountList(viewModel = viewModel, navController = rememberNavController())
+        AccountList(viewModel = viewModel)
     }
 }
 
 fun getViewModel(): AccountViewModel {
-    val viewModel = AccountViewModel(
-        accountSvc = AccountPortFake(),
-        inputSvc = InputPortFake(),
-        savedStateHandle = SavedStateHandle()
-    )
+    val viewModel = AccountViewModel(accountSvc = null, inputSvc = null,navController = null)
     viewModel.loading.value = false
-    viewModel.list.add(AccountDTO(1, LocalDate.now(), "", true))
+    viewModel.list.add(AccountDTO(1, LocalDate.now(),"",true))
     return viewModel
 }

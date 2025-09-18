@@ -6,6 +6,7 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.CreationExtras
 import androidx.navigation.NavController
 import co.com.japl.finances.iports.dtos.ProjectionDTO
 import co.com.japl.finances.iports.inbounds.paid.IProjectionListPort
@@ -14,8 +15,7 @@ import co.com.japl.module.paid.navigations.Projections
 import kotlinx.coroutines.launch
 
 class ProjectionListViewModel constructor(
-    private val context: Context,
-    private val projectionListPort: IProjectionListPort? = null
+    private val projectionListPort: IProjectionListPort
 ) : ViewModel() {
     val snackbarHost = SnackbarHostState()
     val loader = mutableStateOf(false)
@@ -34,25 +34,23 @@ class ProjectionListViewModel constructor(
         Projections.formNavigate(id, navController)
     }
 
-    fun delete(id: Int) {
-        projectionListPort?.let { svc ->
-            svc.delete(id).let {
-                viewModelScope.launch {
-                    if (it) {
-                        snackbarHost.showSnackbar(
-                            message = context.getString(R.string.record_was_remove_success),
-                            actionLabel = context.getString(R.string.close),
-                            duration = SnackbarDuration.Short
-                        ).also {
-                            load()
-                        }
-                    } else {
-                        snackbarHost.showSnackbar(
-                            message = context.getString(R.string.record_was_remove_error),
-                            actionLabel = context.getString(R.string.close),
-                            duration = SnackbarDuration.Short
-                        )
+    fun delete(id: Int, context: Context) {
+        projectionListPort.delete(id).let {
+            viewModelScope.launch {
+                if (it) {
+                    snackbarHost.showSnackbar(
+                        message = context.getString(R.string.record_was_remove_success),
+                        actionLabel = context.getString(R.string.close),
+                        duration = SnackbarDuration.Short
+                    ).also {
+                        load()
                     }
+                } else {
+                    snackbarHost.showSnackbar(
+                        message = context.getString(R.string.record_was_remove_error),
+                        actionLabel = context.getString(R.string.close),
+                        duration = SnackbarDuration.Short
+                    )
                 }
             }
         }
@@ -60,13 +58,16 @@ class ProjectionListViewModel constructor(
 
     private fun load() = viewModelScope.launch {
         loader.value = true
-        projectionListPort?.let {
-            it.getProjections().let {
-                _list.clear()
-                _list.addAll(it)
-            }
-        }.also {
-            loader.value = false
+        projectionListPort.getProjections().let {
+            _list.clear()
+            _list.addAll(it)
+        }
+        loader.value = false
+    }
+
+    companion object {
+        fun create(extras: CreationExtras, projectionListPort: IProjectionListPort): ProjectionListViewModel {
+            return ProjectionListViewModel(projectionListPort)
         }
     }
 }

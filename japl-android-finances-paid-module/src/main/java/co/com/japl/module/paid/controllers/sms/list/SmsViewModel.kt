@@ -5,20 +5,19 @@ import android.widget.Toast
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewmodel.CreationExtras
 import androidx.navigation.NavController
 import co.com.japl.finances.iports.dtos.SMSPaidDTO
-import co.com.japl.finances.iports.inbounds.inputs.IAccountPort
 import co.com.japl.finances.iports.inbounds.paid.ISMSPaidPort
+import co.com.japl.finances.iports.inbounds.inputs.IAccountPort
 import co.com.japl.module.paid.R
 import co.com.japl.module.paid.navigations.Sms
 import kotlinx.coroutines.runBlocking
 
 class SmsViewModel constructor(
-    private val svc: ISMSPaidPort?,
-    private val accountSvc: IAccountPort?,
-    private val savedStateHandle: SavedStateHandle
+    private val svc: ISMSPaidPort,
+    private val accountSvc: IAccountPort
 ) : ViewModel() {
 
     val load = mutableStateOf(true)
@@ -37,41 +36,32 @@ class SmsViewModel constructor(
 
     fun enabled(code: Int, context: Context) {
         require(code > 0) { "The code must be greater than 0" }
-        svc?.enable(code).takeIf { it == true }?.let {
+        if (svc.enable(code)) {
             Toast.makeText(context, R.string.toast_successful_enabled, Toast.LENGTH_SHORT).show()
-                .also {
-                    load.value = true
-                }
-        } ?: Toast.makeText(
-            context,
-            R.string.toast_dont_successful_enabled,
-            Toast.LENGTH_SHORT
-        ).show()
+            load.value = true
+        } else {
+            Toast.makeText(context, R.string.toast_dont_successful_enabled, Toast.LENGTH_SHORT).show()
+        }
     }
 
     fun disabled(code: Int, context: Context) {
         require(code > 0) { "The code must be greater than 0" }
-        svc?.disable(code).takeIf { it == true }?.let {
-            Toast.makeText(context, R.string.toast_successful_disabled, Toast.LENGTH_SHORT)
-                .show().also {
-                    load.value = true
-                }
-        } ?: Toast.makeText(
-            context,
-            R.string.toast_dont_successful_disabled,
-            Toast.LENGTH_SHORT
-        ).show()
+        if (svc.disable(code)) {
+            Toast.makeText(context, R.string.toast_successful_disabled, Toast.LENGTH_SHORT).show()
+            load.value = true
+        } else {
+            Toast.makeText(context, R.string.toast_dont_successful_disabled, Toast.LENGTH_SHORT).show()
+        }
     }
 
     fun delete(code: Int, context: Context, navController: NavController) {
         require(code > 0) { "The code must be greater than 0" }
-        svc?.delete(code)?.takeIf { it }?.let {
-            Toast.makeText(context, R.string.toast_successful_deleted, Toast.LENGTH_SHORT)
-                .show().also {
-                    navController.popBackStack()
-                }
-        } ?: Toast.makeText(context, R.string.toast_unsuccessful_deleted, Toast.LENGTH_SHORT)
-            .show()
+        if (svc.delete(code)) {
+            Toast.makeText(context, R.string.toast_successful_deleted, Toast.LENGTH_SHORT).show()
+            navController.popBackStack()
+        } else {
+            Toast.makeText(context, R.string.toast_unsuccessful_deleted, Toast.LENGTH_SHORT).show()
+        }
     }
 
     fun main() = runBlocking {
@@ -80,25 +70,28 @@ class SmsViewModel constructor(
         progress.floatValue = 1.0f
     }
 
-    suspend fun execute() {
-        svc?.let {
-            accountSvc?.let {
-                it.getAll().takeIf { it.isNotEmpty() }?.map{ dto->
-                    val list = svc.getAllByCodeAccount(dto.id)
-                    list.map { it.copy(nameAccount = dto.name) }
-                }?.flatten()?.groupBy{it.codeAccount}?.let{
-                        it.map {
-                            mapOf(it.key to it.value)
-                        }?.let{
-                            list.clear()
-                            list.addAll(it)
-                        }
-
-                    }.also { progress.floatValue = 0.5f }
+    private suspend fun execute() {
+        accountSvc.getAll().takeIf { it.isNotEmpty() }?.map { dto ->
+            val list = svc.getAllByCodeAccount(dto.id)
+            list.map { it.copy(nameAccount = dto.name) }
+        }?.flatten()?.groupBy { it.codeAccount }?.let {
+            it.map {
+                mapOf(it.key to it.value)
+            }.let {
+                list.clear()
+                list.addAll(it)
             }
-        }
+        }.also { progress.floatValue = 0.5f }
         load.value = false
     }
 
-
+    companion object {
+        fun create(
+            extras: CreationExtras,
+            smsSvc: ISMSPaidPort,
+            accountSvc: IAccountPort
+        ): SmsViewModel {
+            return SmsViewModel(smsSvc, accountSvc)
+        }
+    }
 }

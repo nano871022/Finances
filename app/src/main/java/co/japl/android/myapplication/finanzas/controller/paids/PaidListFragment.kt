@@ -8,9 +8,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.RequiresApi
 import androidx.compose.ui.platform.ViewCompositionStrategy
+import androidx.core.os.bundleOf
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.viewmodel.MutableCreationExtras
 import androidx.navigation.fragment.findNavController
 import co.com.japl.finances.iports.inbounds.paid.IPaidPort
 import co.com.japl.module.paid.controllers.paid.list.PaidViewModel
@@ -23,25 +23,19 @@ import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class PaidListFragment : Fragment() {
+class PaidListFragment : Fragment()  {
 
-    @Inject
-    lateinit var paidSvc: IPaidPort
-    @Inject
-    lateinit var prefs: Prefs
+    @Inject lateinit var paidSvc: IPaidPort
+    @Inject lateinit var prefs : Prefs
 
     private val viewModel: PaidViewModel by viewModels(
+        extrasProducer = {
+            defaultViewModelCreationExtras.apply {
+                this.set(ViewModelProvider.SavedStateHandleFactory.DEFAULT_ARGS_KEY, arguments ?: bundleOf())
+            }
+        },
         factoryProducer = {
             PaidViewModelFactory(paidSvc, prefs)
-        },
-        extrasProducer = {
-            val extras = MutableCreationExtras(defaultViewModelCreationExtras)
-            extras.apply {
-                arguments?.let {
-                    set(ViewModelProvider.SavedStateHandleFactory.DEFAULT_ARGS_KEY, it)
-                }
-            }
-            extras
         }
     )
 
@@ -49,9 +43,8 @@ class PaidListFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View {
+    ): View? {
         val root = FragmentPaidListBinding.inflate(inflater)
-
         root.cvPaidFpl.apply {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
@@ -61,7 +54,7 @@ class PaidListFragment : Fragment() {
             }
         }
 
-        return root.root.rootView
+        return root.root
     }
 
 }

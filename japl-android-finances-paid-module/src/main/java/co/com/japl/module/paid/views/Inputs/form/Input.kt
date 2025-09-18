@@ -1,6 +1,5 @@
 package co.com.japl.module.paid.views.Inputs.form
 
-import android.content.res.Configuration
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Column
@@ -14,41 +13,32 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.lifecycle.SavedStateHandle
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import co.com.japl.finances.iports.inbounds.inputs.IInputPort
 import co.com.japl.module.paid.R
 import co.com.japl.module.paid.controllers.Inputs.form.InputViewModel
+import co.com.japl.module.paid.enums.MoreOptionsKindPaymentInput
+import co.com.japl.module.paid.views.Inputs.form.fakes.FakeInputPort
 import co.com.japl.ui.components.FieldDatePicker
 import co.com.japl.ui.components.FieldSelect
 import co.com.japl.ui.components.FieldText
 import co.com.japl.ui.components.FloatButton
 import co.com.japl.ui.components.MoreOptionsDialog
-import co.com.japl.ui.theme.values.Dimensions
-import co.com.japl.module.paid.enums.MoreOptionsKindPaymentInput
-import co.com.japl.module.paid.views.fakeSvc.InputPortFake
 import co.com.japl.ui.theme.MaterialThemeComposeUI
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import co.com.japl.ui.theme.values.Dimensions
 
 @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
 @Composable
-fun InputForm(viewModel: InputViewModel, navController: NavController) {
+fun Input(viewModel: InputViewModel, navController: NavController) {
     val stateProcess = remember { viewModel.progress }
     val stateLoader = remember { viewModel.loader }
-    val scope = rememberCoroutineScope()
     val context = LocalContext.current
-    scope.launch {
-        withContext(Dispatchers.IO) {
-            viewModel.main(context)
-        }
-    }
 
     if (stateLoader.value) {
         LinearProgressIndicator(
@@ -62,44 +52,13 @@ fun InputForm(viewModel: InputViewModel, navController: NavController) {
                     imageVector = Icons.Rounded.Add,
                     descriptionIcon = R.string.add_account
                 ) {
-                    viewModel.save(context, navController)
+                    viewModel.save(navController, context)
                 }
             }
         ) {
             Body(viewModel = viewModel, Modifier.padding(it))
         }
     }
-}
-
-@RequiresApi(Build.VERSION_CODES.S)
-@Composable
-@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_NO, showSystemUi = true)
-fun InputFormPreview() {
-    val viewModel = getViewModel()
-    MaterialThemeComposeUI {
-        InputForm(viewModel = viewModel, navController = rememberNavController())
-    }
-}
-
-@RequiresApi(Build.VERSION_CODES.S)
-@Composable
-@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES, showSystemUi = true)
-fun InputFormPreviewDark() {
-    val viewModel = getViewModel()
-    MaterialThemeComposeUI {
-        InputForm(viewModel = viewModel, navController = rememberNavController())
-    }
-}
-
-private fun getViewModel(): InputViewModel {
-    val savedStateHandle = SavedStateHandle()
-    savedStateHandle.set("codeAccount", 1)
-    val viewModel = InputViewModel(
-        inputSvc = InputPortFake(),
-        savedStateHandle = savedStateHandle
-    )
-    viewModel.loader.value = false
-    return viewModel
 }
 
 @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
@@ -119,60 +78,83 @@ private fun Body(viewModel: InputViewModel, modifier: Modifier) {
 
     val context = LocalContext.current
 
-    Column {
+    Column(modifier = modifier.fillMaxWidth()) {
 
-        FieldDatePicker(title = R.string.date_input
-            ,value = stateDate.value
-            , callable = {stateDate.value = it}
-            , isError = stateErrorDate
-            , validation = {viewModel.validation()}
-            , modifier = Modifier
+        FieldDatePicker(
+            title = R.string.date_input,
+            value = stateDate.value,
+            callable = { stateDate.value = it },
+            isError = stateErrorDate,
+            validation = { viewModel.validation() },
+            modifier = Modifier
                 .fillMaxWidth()
                 .padding(Dimensions.PADDING_SHORT)
-            )
+        )
 
-        FieldSelect(title = stringResource(id = R.string.kind_of_pay)
-            ,value = stateKindOfPayment.value
-            , list = MoreOptionsKindPaymentInput.values().toList()
-             , isError = stateErrorKindOfPayment
-            , modifier = Modifier
+        FieldSelect(
+            title = stringResource(id = R.string.kind_of_pay),
+            value = stateKindOfPayment.value,
+            list = MoreOptionsKindPaymentInput.values().toList(),
+            isError = stateErrorKindOfPayment,
+            modifier = Modifier
                 .fillMaxWidth()
-                .padding(Dimensions.PADDING_SHORT)
-            , callable = {
+                .padding(Dimensions.PADDING_SHORT),
+            callable = {
                 it?.let {
                     stateKindOfPayment.value = context.getString(it.getName())
                 }
             })
 
-        FieldText(title = stringResource(id = R.string.name)
-            ,value = stateName.value
-            , validation = {viewModel.validation()}
-            , callback = {stateName.value = it}
-            , hasErrorState = stateErrorName
-            , icon = Icons.Rounded.Cancel
-            , modifier = Modifier
+        FieldText(
+            title = stringResource(id = R.string.name),
+            value = stateName.value,
+            validation = { viewModel.validation() },
+            callback = { stateName.value = it },
+            hasErrorState = stateErrorName,
+            icon = Icons.Rounded.Cancel,
+            modifier = Modifier
                 .fillMaxWidth()
-                .padding(Dimensions.PADDING_SHORT))
+                .padding(Dimensions.PADDING_SHORT)
+        )
 
-        FieldText(title = stringResource(id = R.string.value)
-            ,value = stateValue.value
-            , validation = {viewModel.validation()}
-            , callback = {stateValue.value = it}
-            , hasErrorState = stateErrorValue.value
-            , currency = true
-            , icon = Icons.Rounded.Cancel
-            , modifier = Modifier
+        FieldText(
+            title = stringResource(id = R.string.value),
+            value = stateValue.value,
+            validation = { viewModel.validation() },
+            callback = { stateValue.value = it },
+            hasErrorState = stateErrorValue,
+            currency = true,
+            icon = Icons.Rounded.Cancel,
+            modifier = Modifier
                 .fillMaxWidth()
-                .padding(Dimensions.PADDING_SHORT))
-
+                .padding(Dimensions.PADDING_SHORT)
+        )
     }
 
-    if(stateOptionsKindOfPayment.value) {
-        MoreOptionsDialog(listOptions = MoreOptionsKindPaymentInput.values().toList(),
+    if (stateOptionsKindOfPayment.value) {
+        MoreOptionsDialog(
+            listOptions = MoreOptionsKindPaymentInput.values().toList(),
             onDismiss = { stateOptionsKindOfPayment.value = false },
             onClick = {
-
                 stateOptionsKindOfPayment.value = false
             })
+    }
+}
+
+@RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
+@Preview(showBackground = true, showSystemUi = true)
+@Composable
+fun InputPreview() {
+    val inputSvc: IInputPort = FakeInputPort()
+    MaterialThemeComposeUI {
+        Input(
+            viewModel(
+                factory = InputViewModel.Companion.create(
+                    extras = viewModel(),
+                    inputSvc = inputSvc
+                )
+            ),
+            navController = rememberNavController()
+        )
     }
 }

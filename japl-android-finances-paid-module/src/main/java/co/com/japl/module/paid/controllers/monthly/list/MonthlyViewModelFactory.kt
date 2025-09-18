@@ -2,7 +2,6 @@ package co.com.japl.module.paid.controllers.monthly.list
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.createSavedStateHandle
 import androidx.lifecycle.viewmodel.CreationExtras
 import co.com.japl.finances.iports.inbounds.inputs.IAccountPort
 import co.com.japl.finances.iports.inbounds.inputs.IInputPort
@@ -19,19 +18,16 @@ class MonthlyViewModelFactory(
     private val paidSmsSvc: ISmsPort,
     private val prefs: Prefs
 ) : ViewModelProvider.Factory {
-    override fun <T : ViewModel> create(
-        modelClass: Class<T>,
-        extras: CreationExtras
-    ): T {
-        val savedStateHandle = extras.createSavedStateHandle()
+    @Suppress("UNCHECKED_CAST")
+    override fun <T : ViewModel> create(modelClass: Class<T>, extras: CreationExtras): T {
         return MonthlyViewModel(
+            extras.createSavedStateHandle(),
             paidSvc,
             incomesSvc,
             accountSvc,
             smsSvc,
             paidSmsSvc,
-            prefs,
-            savedStateHandle
+            prefs
         ) as T
     }
 }

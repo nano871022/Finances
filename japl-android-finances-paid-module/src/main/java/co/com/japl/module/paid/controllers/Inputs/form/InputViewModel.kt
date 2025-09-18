@@ -6,6 +6,7 @@ import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewmodel.CreationExtras
 import androidx.navigation.NavController
 import co.com.japl.finances.iports.dtos.InputDTO
 import co.com.japl.finances.iports.inbounds.inputs.IInputPort
@@ -17,10 +18,10 @@ import kotlinx.coroutines.runBlocking
 import java.time.LocalDate
 
 class InputViewModel constructor(
-    private val inputSvc: IInputPort,
-    private val savedStateHandle: SavedStateHandle
+    private val savedStateHandle: SavedStateHandle,
+    private val inputSvc: IInputPort
 ) : ViewModel() {
-    private var codeAccount: Int = 0
+    private var codeAccount: Int? = null
     private var codeInput: Int? = null
 
     var loader = mutableStateOf(true)
@@ -40,44 +41,27 @@ class InputViewModel constructor(
     private var save = false
 
     init {
-        savedStateHandle.get<Int>("codeAccount")?.let {
-            codeAccount = it
-        }
-        savedStateHandle.get<Int>("codeInput")?.let {
-            codeInput = it
-        }
+        codeAccount = savedStateHandle.get<Int>("account_code")
+        codeInput = savedStateHandle.get<Int>("input_code")
+        main()
     }
 
-    fun save(context: Context, navController: NavController) {
+    fun save(navController: NavController, context: Context) {
         if (save) {
             _input?.let {
                 if (it.id == 0) {
                     if (inputSvc.create(it)) {
                         navController.navigateUp()
-                        Toast.makeText(
-                            context,
-                            R.string.toast_save_successful,
-                            Toast.LENGTH_SHORT
-                        ).show()
+                        Toast.makeText(context, R.string.toast_save_successful, Toast.LENGTH_SHORT).show()
                     } else {
-                        Toast.makeText(context, R.string.toast_save_error, Toast.LENGTH_SHORT)
-                            .show()
+                        Toast.makeText(context, R.string.toast_save_error, Toast.LENGTH_SHORT).show()
                     }
-
                 } else {
                     if (inputSvc.update(it)) {
                         navController.navigateUp()
-                        Toast.makeText(
-                            context,
-                            R.string.toast_update_successful,
-                            Toast.LENGTH_SHORT
-                        ).show()
+                        Toast.makeText(context, R.string.toast_update_successful, Toast.LENGTH_SHORT).show()
                     } else {
-                        Toast.makeText(
-                            context,
-                            R.string.toast_update_error,
-                            Toast.LENGTH_SHORT
-                        ).show()
+                        Toast.makeText(context, R.string.toast_update_error, Toast.LENGTH_SHORT).show()
                     }
                 }
             }
@@ -85,39 +69,41 @@ class InputViewModel constructor(
             validation()
         }
     }
-    fun validation(){
-        errorDate.value =  date.value.isEmpty()
-        errorKindOfPayment.value =  kindOfPayment.value.isEmpty()
+
+    fun validation() {
+        errorDate.value = date.value.isEmpty()
+        errorKindOfPayment.value = kindOfPayment.value.isEmpty()
         errorName.value = name.value.isEmpty()
         errorValue.value = value.value.isEmpty() && !NumbersUtil.isNumber(value.value)
 
         save = !errorDate.value && !errorKindOfPayment.value && !errorName.value && !errorValue.value
 
-        if(save){
+        if (save) {
             val input = InputDTO(
-                _input?.id?:0,
+                _input?.id ?: 0,
                 DateUtils.toLocalDate(date.value),
-                codeAccount,
+                codeAccount!!,
                 kindOfPayment.value,
                 name.value,
                 value.value.toBigDecimal(),
                 LocalDate.now(),
-                LocalDate.MAX)
+                LocalDate.MAX
+            )
             _input = input
         }
     }
 
-    fun main()= runBlocking  {
+    private fun main() = runBlocking {
         progress.value = 0.1f
         execution()
         progress.value = 1f
     }
 
-    suspend fun execution(context: Context) {
+    private suspend fun execution() {
         date.value = DateUtils.localDateToStringDate(LocalDate.now())
-        kindOfPayment.value = context.getString(MoreOptionsKindPaymentInput.MONTHLY.getName())
+        kindOfPayment.value = MoreOptionsKindPaymentInput.MONTHLY.getName().toString()
         codeInput?.let {
-            inputSvc.getById(codeInput)?.let {
+            inputSvc.getById(it)?.let {
                 _input = it
                 date.value = DateUtils.localDateToStringDate(it.date)
                 kindOfPayment.value = it.kindOf
@@ -126,9 +112,13 @@ class InputViewModel constructor(
                 loader.value = false
             }
         }
-
         loader.value = false
-
     }
 
+    companion object {
+        fun create(extras: CreationExtras, inputSvc: IInputPort): InputViewModel {
+            val savedStateHandle = extras.createSavedStateHandle()
+            return InputViewModel(savedStateHandle, inputSvc)
+        }
+    }
 }

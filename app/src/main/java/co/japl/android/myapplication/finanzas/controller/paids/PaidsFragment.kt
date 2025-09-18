@@ -8,7 +8,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.RequiresApi
 import androidx.compose.ui.platform.ViewCompositionStrategy
+import androidx.core.os.bundleOf
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import co.com.japl.finances.iports.inbounds.inputs.IAccountPort
 import co.com.japl.finances.iports.inbounds.inputs.IInputPort
@@ -40,22 +42,22 @@ class PaidsFragment : Fragment() {
     @Inject
     lateinit var prefs: Prefs
 
-    private val viewModel: MonthlyViewModel by viewModels {
-        MonthlyViewModelFactory(
-            paidSvc = service,
-            incomesSvc = incomesSvc,
-            accountSvc = accountSvc,
-            smsSvc = smsSvc,
-            paidSmsSvc = paidSmsSvc,
-            prefs = prefs
-        )
-    }
+    private val viewModel: MonthlyViewModel by viewModels(
+        extrasProducer = {
+            defaultViewModelCreationExtras.apply {
+                this.set(ViewModelProvider.SavedStateHandleFactory.DEFAULT_ARGS_KEY, arguments ?: bundleOf())
+            }
+        },
+        factoryProducer = {
+            MonthlyViewModelFactory(service, incomesSvc, accountSvc, smsSvc, paidSmsSvc, prefs)
+        }
+    )
 
     @RequiresApi(Build.VERSION_CODES.S)
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View {
+    ): View? {
         val root = FragmentPaidsBinding.inflate(inflater, container, false)
         root.cvPaidsFp.apply {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
@@ -65,7 +67,6 @@ class PaidsFragment : Fragment() {
                 }
             }
         }
-
-        return root.root.rootView
+        return root.root
     }
 }

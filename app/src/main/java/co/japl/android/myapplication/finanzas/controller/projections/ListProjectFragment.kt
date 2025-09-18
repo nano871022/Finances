@@ -9,8 +9,6 @@ import androidx.annotation.RequiresApi
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.viewmodel.MutableCreationExtras
 import androidx.navigation.fragment.findNavController
 import co.com.japl.finances.iports.inbounds.paid.IProjectionListPort
 import co.com.japl.module.paid.controllers.projections.list.ProjectionListViewModel
@@ -29,16 +27,7 @@ class ListProjectFragment : Fragment() {
 
     private val viewModel: ProjectionListViewModel by viewModels(
         factoryProducer = {
-            ProjectionListViewModelFactory(requireContext(), svc)
-        },
-        extrasProducer = {
-            val extras = MutableCreationExtras(defaultViewModelCreationExtras)
-            extras.apply {
-                arguments?.let {
-                    set(ViewModelProvider.SavedStateHandleFactory.DEFAULT_ARGS_KEY, it)
-                }
-            }
-            extras
+            ProjectionListViewModelFactory(svc)
         }
     )
 
@@ -46,7 +35,7 @@ class ListProjectFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View {
+    ): View? {
         val root = FragmentListProjectionBinding.inflate(inflater)
         root.composeviewFlp.apply {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
@@ -58,6 +47,4 @@ class ListProjectFragment : Fragment() {
         }
         return root.root
     }
-
-
 }

@@ -9,8 +9,6 @@ import androidx.annotation.RequiresApi
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.viewmodel.MutableCreationExtras
 import androidx.navigation.fragment.findNavController
 import co.com.japl.finances.iports.inbounds.inputs.IAccountPort
 import co.com.japl.finances.iports.inbounds.paid.ISMSPaidPort
@@ -32,15 +30,6 @@ class SmsListFragment : Fragment() {
     private val viewModel: SmsViewModel by viewModels(
         factoryProducer = {
             SmsViewModelFactory(smsSvc, accountSvc)
-        },
-        extrasProducer = {
-            val extras = MutableCreationExtras(defaultViewModelCreationExtras)
-            extras.apply {
-                arguments?.let {
-                    set(ViewModelProvider.SavedStateHandleFactory.DEFAULT_ARGS_KEY, it)
-                }
-            }
-            extras
         }
     )
 
@@ -49,7 +38,7 @@ class SmsListFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View {
+    ): View? {
         val root = FragmentSmsPaidListBinding.inflate(inflater)
         root.cvComposeFspl.apply {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
@@ -59,6 +48,6 @@ class SmsListFragment : Fragment() {
                 }
             }
         }
-        return root.root.rootView
+        return root.root
     }
 }

@@ -7,20 +7,35 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.RequiresApi
+import androidx.compose.ui.platform.ViewCompositionStrategy
+import androidx.core.os.bundleOf
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import co.com.japl.finances.iports.inbounds.inputs.IAccountPort
 import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.japl.android.myapplication.databinding.FragmentAccountBinding
-import co.japl.android.myapplication.finanzas.putParams.AccountParams
-import co.com.japl.module.paid.views.accounts.form.AccountForm
 import co.com.japl.module.paid.controllers.accounts.form.AccountViewModel
+import co.com.japl.module.paid.controllers.accounts.form.AccountViewModelFactory
+import co.com.japl.module.paid.views.accounts.form.Account
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
 @AndroidEntryPoint
 class AccountFragment : Fragment() {
     @Inject lateinit var accountSvc:IAccountPort
-    private var idAccount = 0
+
+    private val viewModel: AccountViewModel by viewModels(
+        extrasProducer = {
+            defaultViewModelCreationExtras.apply {
+                this.set(ViewModelProvider.SavedStateHandleFactory.DEFAULT_ARGS_KEY, arguments ?: bundleOf())
+            }
+        },
+        factoryProducer = {
+            AccountViewModelFactory(accountSvc)
+        }
+    )
+
     private lateinit var _binding : FragmentAccountBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -33,19 +48,15 @@ class AccountFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         _binding = FragmentAccountBinding.inflate(inflater)
-        arguments?.let {
-            idAccount = AccountParams.download(it)
-        }
-
-        val viewModel = AccountViewModel(idAccount,accountSvc,findNavController())
+        _binding.cvComponentFa.setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
         _binding.cvComponentFa.apply {
             setContent {
                 MaterialThemeComposeUI {
-                    AccountForm(viewModel = viewModel)
+                    Account(viewModel = viewModel, navController = findNavController())
                 }
             }
         }
-        return _binding.root.rootView
+        return _binding.root
     }
 
 }

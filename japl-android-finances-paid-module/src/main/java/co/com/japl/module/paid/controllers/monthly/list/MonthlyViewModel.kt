@@ -8,6 +8,7 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewmodel.CreationExtras
 import androidx.navigation.NavController
 import co.com.japl.finances.iports.dtos.AccountDTO
 import co.com.japl.finances.iports.inbounds.inputs.IAccountPort
@@ -25,13 +26,13 @@ import java.time.format.TextStyle
 import java.util.Locale
 
 class MonthlyViewModel constructor(
-    private val paidSvc: IPaidPort?,
-    private val incomesSvc: IInputPort?,
-    private val accountSvc: IAccountPort?,
-    private val smsSvc: ISMSPaidPort?,
-    private val paidSmsSvc: ISmsPort?,
-    private val prefs: Prefs?,
-    private val savedStateHandle: SavedStateHandle
+    private val savedStateHandle: SavedStateHandle,
+    private val paidSvc: IPaidPort,
+    private val incomesSvc: IInputPort,
+    private val accountSvc: IAccountPort,
+    private val smsSvc: ISMSPaidPort,
+    private val paidSmsSvc: ISmsPort,
+    private val prefs: Prefs
 ) : ViewModel() {
     private var _accounts: List<AccountDTO>? = null
     val listAccount get() = _accounts
@@ -51,6 +52,7 @@ class MonthlyViewModel constructor(
         savedStateHandle.get<String>("period")?.let {
             period = YearMonth.parse(it)
         }
+        main()
     }
 
     fun goToListDetail(navController: NavController) {
@@ -66,7 +68,6 @@ class MonthlyViewModel constructor(
     fun goToListPeriod(navController: NavController) {
         try {
             accountState.value?.let {
-
                 Period.navigate(it.id, navController)
             }
         } catch (e: Exception) {
@@ -84,8 +85,7 @@ class MonthlyViewModel constructor(
         }
     }
 
-
-    fun main()= runBlocking {
+    private fun main() = runBlocking {
         progressStatus.value = 0.0f
         execute()
         progressStatus.value = 0.8f
@@ -93,57 +93,45 @@ class MonthlyViewModel constructor(
         progressStatus.value = 1.0f
     }
 
-    suspend fun execute() {
-        periodState.value = "${period?.month?.getDisplayName(TextStyle.FULL, Locale("es","CO"))} ${period?.year}"
-        accountSvc?.let {
-            it.getAllActive().takeIf { it.isNotEmpty() }?.let { list ->
-                accountList.clear()
-                _accounts = list
-                list.forEach {
-                    accountList.add(Pair(it.id,it.name))
-                }
-                list.takeIf { it.isNotEmpty() && it.size == 1 }?.let {
-                    accountState.value = it.first()
-                }
-                progressStatus.value = 0.3f
+    private suspend fun execute() {
+        periodState.value = "${period.month.getDisplayName(TextStyle.FULL, Locale("es", "CO"))} ${period.year}"
+        accountSvc.getAllActive().takeIf { it.isNotEmpty() }?.let { list ->
+            accountList.clear()
+            _accounts = list
+            list.forEach {
+                accountList.add(Pair(it.id, it.name))
             }
+            list.takeIf { it.isNotEmpty() && it.size == 1 }?.let {
+                accountState.value = it.first()
+            }
+            progressStatus.value = 0.3f
         }
 
-        accountState.value?.let {account->
-            paidSvc?.let {
-               period?.let {_period->
-                   it.getRecap(codeAccount = account.id, period = _period)?.let { recap ->
-                       countState.value = recap.count
-                       paidTotalState.value = recap.totalPaid
-
-                       progressStatus.value = 0.6f
-                   }
-                   it.getListGraph(codeAccount = account.id, period = _period).takeIf{it.isNotEmpty()}?.forEach (listGraph::add)
-               }
-
+        accountState.value?.let { account ->
+            paidSvc.getRecap(codeAccount = account.id, period = period)?.let { recap ->
+                countState.value = recap.count
+                paidTotalState.value = recap.totalPaid
+                progressStatus.value = 0.6f
             }
-            incomesSvc?.let {
-                period?.let { _period ->
-                    it.getTotalInputs(account.id, _period)?.let { total ->
-                        incomesTotalState.value = total
-                        progressStatus.value = 0.7f
-                    }
-                }
+            paidSvc.getListGraph(codeAccount = account.id, period = period).takeIf { it.isNotEmpty() }
+                ?.forEach(listGraph::add)
+            incomesSvc.getTotalInputs(account.id, period)?.let { total ->
+                incomesTotalState.value = total
+                progressStatus.value = 0.7f
             }
-
         }
         loaderState.value = false
     }
 
-    suspend fun readSms(){
+    private suspend fun readSms() {
         try {
             _accounts?.takeIf { it.isNotEmpty() }?.forEach { dto ->
-                    smsSvc?.getAllByCodeAccount(dto.id)
+                smsSvc.getAllByCodeAccount(dto.id)
                     ?.forEach { sms ->
-                        smsSvc?.getSmsMessages(sms.phoneNumber, sms.pattern,prefs?.paidSMSDaysRead?:0)
+                        smsSvc.getSmsMessages(sms.phoneNumber, sms.pattern, prefs.paidSMSDaysRead)
                             .takeIf { it?.isNotEmpty() == true }
                             ?.forEach {
-                                paidSmsSvc?.createBySms(
+                                paidSmsSvc.createBySms(
                                     name = it.first,
                                     value = it.second,
                                     date = it.third,
@@ -152,9 +140,31 @@ class MonthlyViewModel constructor(
                             }
                     }
             }
-        }catch (e:Exception){
-            Log.e(javaClass.name,e.message,e)
+        } catch (e: Exception) {
+            Log.e(javaClass.name, e.message, e)
         }
     }
 
+    companion object {
+        fun create(
+            extras: CreationExtras,
+            paidSvc: IPaidPort,
+            incomesSvc: IInputPort,
+            accountSvc: IAccountPort,
+            smsSvc: ISMSPaidPort,
+            paidSmsSvc: ISmsPort,
+            prefs: Prefs
+        ): MonthlyViewModel {
+            val savedStateHandle = extras.createSavedStateHandle()
+            return MonthlyViewModel(
+                savedStateHandle,
+                paidSvc,
+                incomesSvc,
+                accountSvc,
+                smsSvc,
+                paidSmsSvc,
+                prefs
+            )
+        }
+    }
 }
