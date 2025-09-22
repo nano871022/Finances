@@ -29,10 +29,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.SavedStateHandle
+import androidx.navigation.NavController
 import co.com.japl.finances.iports.dtos.PaidDTO
 import co.com.japl.module.paid.R
 import co.com.japl.module.paid.controllers.paid.list.PaidViewModel
@@ -61,7 +64,7 @@ import java.time.format.DateTimeFormatter
 import java.util.Locale
 
 @Composable
-fun Paid(viewModel:PaidViewModel) {
+fun Paid(viewModel:PaidViewModel,navController:NavController) {
     val progressState = remember {
         viewModel.progressStatus
     }
@@ -79,19 +82,19 @@ fun Paid(viewModel:PaidViewModel) {
             modifier = Modifier.fillMaxWidth(),
         )
     }else{
-        Body(viewModel)
+        Body(viewModel,navController)
     }
 }
 
 @Composable
-private fun Body(viewModel: PaidViewModel){
+private fun Body(viewModel: PaidViewModel,navController: NavController){
     Scaffold (floatingActionButton = {
-        Buttons(newOne = {viewModel.newOne()})
+        Buttons(newOne = {viewModel.newOne(navController)})
     }){
 
         Column{
             Header(viewModel)
-            List(viewModel,modifier = Modifier.padding(it))
+            List(viewModel, navController = navController,modifier = Modifier.padding(it))
         }
 
     }
@@ -159,19 +162,19 @@ private fun Buttons(newOne:()->Unit){
     }
 }
 
-@Composable private fun List(viewModel: PaidViewModel,modifier: Modifier){
+@Composable private fun List(viewModel: PaidViewModel,navController: NavController,modifier: Modifier){
     val list = remember {
         viewModel.list
     }
     Column(modifier = modifier){
             list.keys.sortedByDescending { it }.forEach{
-                Items(list[it],viewModel)
+                Items(list[it],viewModel, navController)
             }
 
     }
 }
 
-@Composable private fun Items(list:List<PaidDTO>?,viewModel:PaidViewModel){
+@Composable private fun Items(list:List<PaidDTO>?,viewModel:PaidViewModel,navController: NavController){
     val visibleContentState = remember {
         mutableStateOf(true)
     }
@@ -190,7 +193,7 @@ private fun Buttons(newOne:()->Unit){
                 if(visibleContentState.value) {
                     LazyColumn {
                         items(list.size) { index ->
-                            Item(dto = list[index], viewModel = viewModel)
+                            Item(dto = list[index], viewModel = viewModel,navController)
                         }
                     }
                 }
@@ -221,7 +224,7 @@ private fun Buttons(newOne:()->Unit){
     }
 }
 
-@Composable private fun Item(dto:PaidDTO,viewModel:PaidViewModel){
+@Composable private fun Item(dto:PaidDTO,viewModel:PaidViewModel,navController:NavController){
     val menuState = remember { mutableStateOf(false) }
     val dialogState = remember { mutableStateOf(false) }
 
@@ -266,16 +269,16 @@ private fun Buttons(newOne:()->Unit){
             menuState.value = false
             when(it){
                 PaidListOptions.EDIT->{
-                    viewModel.edit(dto.id)
+                    viewModel.edit(dto.id,navController)
                 }
                 PaidListOptions.DELETE->{
                     dialogState.value = true
                 }
                 PaidListOptions.COPY->{
-                    viewModel.copy(dto.id)
+                    viewModel.copy(dto.id,navController)
                 }
                 PaidListOptions.END->{
-                    viewModel.endRecurrent(dto.id)
+                    viewModel.endRecurrent(dto.id,navController)
                 }
             }
         }
@@ -285,7 +288,7 @@ private fun Buttons(newOne:()->Unit){
             confirmNameButton = R.string.delete,
             onDismiss = { dialogState.value = false }) {
             dialogState.value = false
-            viewModel.delete(dto.id)
+            viewModel.delete(dto.id,navController)
         }
     }
 }
@@ -296,7 +299,7 @@ private fun Buttons(newOne:()->Unit){
 internal fun PaidPreview() {
     val viewModel = getViewModel()
     MaterialThemeComposeUI {
-        Paid(viewModel = viewModel)
+        Paid(viewModel = viewModel, NavController(LocalContext.current))
     }
 }
 
@@ -306,13 +309,13 @@ internal fun PaidPreview() {
 internal fun PaidPreviewDark() {
     val viewModel = getViewModel()
     MaterialThemeComposeUI {
-        Paid(viewModel = viewModel)
+        Paid(viewModel = viewModel, NavController(LocalContext.current))
     }
 }
 
 @Composable
 private fun getViewModel():PaidViewModel{
-    val viewModel = PaidViewModel(paidSvc = null, accountCode = 0 , period = YearMonth.now(),prefs= null,navController = null)
+    val viewModel = PaidViewModel(SavedStateHandle(),paidSvc = null,prefs= null)
     viewModel.loaderState.value = false
     viewModel.allValues.value = 1000.0
     viewModel.periodOfList.value = "June 2022"

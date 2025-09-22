@@ -16,7 +16,7 @@ import co.com.japl.ui.utils.DateUtils
 import co.japl.android.graphs.utils.NumbersUtil
 import kotlinx.coroutines.runBlocking
 import java.time.LocalDate
-import androidx.lifecycle.SavedStateHandleSupport
+import androidx.lifecycle.createSavedStateHandle
 
 class InputViewModel constructor(
     private val savedStateHandle: SavedStateHandle,
@@ -102,7 +102,7 @@ class InputViewModel constructor(
 
     private suspend fun execution() {
         date.value = DateUtils.localDateToStringDate(LocalDate.now())
-        kindOfPayment.value = MoreOptionsKindPaymentInput.MONTHLY.getName()
+        kindOfPayment.value = MoreOptionsKindPaymentInput.MONTHLY.name
         codeInput?.let {
             inputSvc.getById(it)?.let {
                 _input = it
@@ -118,7 +118,7 @@ class InputViewModel constructor(
 
     companion object {
         fun create(extras: CreationExtras, inputSvc: IInputPort): InputViewModel {
-            val savedStateHandle = SavedStateHandleSupport.createSavedStateHandle(extras)
+            val savedStateHandle = extras.createSavedStateHandle()
             return InputViewModel(savedStateHandle, inputSvc)
         }
     }

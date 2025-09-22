@@ -27,6 +27,7 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
+import androidx.lifecycle.SavedStateHandle
 import co.com.japl.finances.iports.dtos.CheckPaymentDTO
 import co.com.japl.finances.iports.enums.CheckPaymentsEnum
 import co.com.japl.ui.components.AlertDialogOkCancel
@@ -201,7 +202,7 @@ internal fun CheckListPreviewDarkV2(){
 
 @Composable
 private fun getViewModel():CheckListViewModel{
-    val viewModel = CheckListViewModel(YearMonth.now(),null)
+    val viewModel = CheckListViewModel(SavedStateHandle(),null)
     viewModel.loaderStatus.value = false
     viewModel.loaderProgressStatus.value = false
     viewModel.listState.add(

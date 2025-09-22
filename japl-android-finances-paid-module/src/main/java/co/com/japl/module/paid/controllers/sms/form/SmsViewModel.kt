@@ -4,6 +4,7 @@ import android.widget.Toast
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.navigation.NavController
 import co.com.japl.finances.iports.dtos.AccountDTO
@@ -14,7 +15,12 @@ import co.com.japl.finances.iports.inbounds.paid.ISMSPaidPort
 import co.com.japl.module.paid.R
 import kotlinx.coroutines.runBlocking
 
-class SmsViewModel constructor(private val codeSMS:Int?, private val svc:ISMSPaidPort?, private val accountSvc:IAccountPort?, private val navController: NavController?): ViewModel() {
+class SmsViewModel constructor(
+    private val savedStateHandle: SavedStateHandle,
+    private val svc:ISMSPaidPort?,
+    private val accountSvc:IAccountPort?): ViewModel() {
+
+    private var codeSMS:Int = 0
 
     val  load = mutableStateOf(true)
     val  progress = mutableFloatStateOf(0.0f)
@@ -35,8 +41,13 @@ class SmsViewModel constructor(private val codeSMS:Int?, private val svc:ISMSPai
 
     val validate = mutableStateOf("")
 
+    init{
+        savedStateHandle.get<Int>("code_sms_paid")?.let{
+            codeSMS = it
+        }
+    }
 
-    fun save(){
+    fun save(navController: NavController){
         if(smsPaid != null && !errorPhoneNumber.value && !errorPattern.value) {
             smsPaid?.takeIf { it.id == 0 }?.let{
                 svc?.create(it)?.takeIf { it > 0 }?.let{

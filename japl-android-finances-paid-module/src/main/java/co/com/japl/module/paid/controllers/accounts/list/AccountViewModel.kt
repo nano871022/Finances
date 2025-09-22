@@ -11,20 +11,22 @@ import co.com.japl.finances.iports.inbounds.inputs.IInputPort
 import co.com.japl.module.paid.navigations.Account
 import kotlinx.coroutines.runBlocking
 
-class AccountViewModel constructor(private val accountSvc:IAccountPort?, public val inputSvc:IInputPort?,public val navController: NavController?): ViewModel(){
+class AccountViewModel constructor(
+            private val accountSvc:IAccountPort?,
+            public val inputSvc:IInputPort?): ViewModel(){
 
     val progress = mutableFloatStateOf(0f)
     val loading = mutableStateOf(true)
     var list = mutableStateListOf<AccountDTO>()
     val save = false
 
-    fun add(){
+    fun add(navController: NavController){
         navController?.let {
             Account.navigate(navController)
         }
     }
 
-    fun edit(codeAccount:Int){
+    fun edit(codeAccount:Int,navController: NavController){
         navController?.let {
             Account.navigate(codeAccount,navController)
         }

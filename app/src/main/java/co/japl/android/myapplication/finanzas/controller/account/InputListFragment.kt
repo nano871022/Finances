@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.RequiresApi
 import androidx.compose.ui.platform.ViewCompositionStrategy
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import co.com.japl.finances.iports.inbounds.inputs.IInputPort
 import co.com.japl.ui.theme.MaterialThemeComposeUI
@@ -15,6 +16,7 @@ import co.japl.android.myapplication.databinding.FragmentInputListBinding
 import co.japl.android.myapplication.finanzas.putParams.AccountParams
 import co.com.japl.module.paid.views.Inputs.list.InputList
 import co.com.japl.module.paid.controllers.Inputs.list.InputListModelView
+import co.japl.android.myapplication.finanzas.controller.ViewModelFactory
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -26,6 +28,21 @@ class InputListFragment : Fragment(){
 
     private var _binding: FragmentInputListBinding? = null
     private val binding get() = _binding!!
+
+    val viewModel: InputListModelView by viewModels {
+        ViewModelFactory(
+            owner = this,
+            viewModelClass = InputListModelView::class.java,
+            build = {
+                InputListModelView(
+                    requireContext(),
+                    it,
+                    portSvc
+                )
+            }
+        )
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
     }
@@ -42,7 +59,7 @@ class InputListFragment : Fragment(){
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
                 MaterialThemeComposeUI {
-                    InputList(modelView = InputListModelView(requireContext(),accountCode,findNavController() ,portSvc))
+                    InputList(modelView = viewModel, navController = findNavController())
                 }
             }
         }

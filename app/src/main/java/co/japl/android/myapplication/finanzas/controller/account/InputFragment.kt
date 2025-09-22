@@ -8,16 +8,14 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.RequiresApi
 import androidx.compose.ui.platform.ViewCompositionStrategy
-import androidx.core.os.bundleOf
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import co.com.japl.finances.iports.inbounds.inputs.IInputPort
 import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.japl.android.myapplication.databinding.FragmentInputBinding
 import co.com.japl.module.paid.controllers.Inputs.form.InputViewModel
-import co.com.japl.module.paid.controllers.Inputs.form.InputViewModelFactory
 import co.com.japl.module.paid.views.Inputs.form.Input
+import co.japl.android.myapplication.finanzas.controller.ViewModelFactory
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -26,28 +24,27 @@ class InputFragment : Fragment(){
 
     @Inject lateinit var service:IInputPort
 
-    private val viewModel: InputViewModel by viewModels(
-        extrasProducer = {
-            defaultViewModelCreationExtras.apply {
-                this.set(ViewModelProvider.SavedStateHandleFactory.DEFAULT_ARGS_KEY, arguments ?: bundleOf())
+    val viewModel: InputViewModel by viewModels {
+        ViewModelFactory(
+            owner = this,
+            viewModelClass = InputViewModel::class.java,
+            build = {
+                InputViewModel(
+                    savedStateHandle = it,
+                    inputSvc = service
+                )
             }
-        },
-        factoryProducer = {
-            InputViewModelFactory(service)
-        }
-    )
-
-    private lateinit var _binding : FragmentInputBinding
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+        )
     }
+    private lateinit var _binding : FragmentInputBinding
 
-    @RequiresApi(Build.VERSION_CODES.S)
+    @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         _binding = FragmentInputBinding.inflate(inflater,container,false)
+        
         _binding.cvComponentFi.apply {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {

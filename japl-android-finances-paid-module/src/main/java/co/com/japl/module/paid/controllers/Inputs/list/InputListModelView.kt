@@ -5,6 +5,7 @@ import android.widget.Toast
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.navigation.NavController
 import co.com.japl.finances.iports.dtos.InputDTO
@@ -14,13 +15,20 @@ import co.com.japl.module.paid.enums.MoreOptionsItemsInput
 import co.com.japl.module.paid.navigations.Input
 import kotlinx.coroutines.runBlocking
 
-class InputListModelView (private val context:Context, val accountCode:Int,private val navController: NavController?,private val inputSvc:IInputPort?) : ViewModel() {
-
+class InputListModelView (
+    private val context:Context,
+    private val savedStateHandle: SavedStateHandle,
+    private val inputSvc:IInputPort?) : ViewModel() {
+    var accountCode:Int = 0
     var _items = mutableStateListOf<InputDTO>()
 
     val stateDialogOptionsMore = mutableStateOf(false)
     var stateLoader = mutableStateOf(true)
     var progress = mutableFloatStateOf( 0f)
+
+    init {
+        accountCode = savedStateHandle.get<Int>("id_account")?:0
+    }
 
     fun optionSelected(id:Int,value:Double = 0.0, option:MoreOptionsItemsInput){
         when(option){
@@ -45,7 +53,7 @@ class InputListModelView (private val context:Context, val accountCode:Int,priva
         }
     }
 
-    fun goToInputForm(){
+    fun goToInputForm(navController:NavController){
        navController?.let{Input.navigate(accountCode,navController)}
     }
 

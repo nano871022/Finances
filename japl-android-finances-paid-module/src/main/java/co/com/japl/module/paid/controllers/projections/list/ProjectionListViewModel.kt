@@ -18,8 +18,7 @@ import javax.inject.Inject
 @HiltViewModel
 class ProjectionListViewModel @Inject constructor(
     private val context: Context,
-    private val projectionListPort: IProjectionListPort? = null,
-    private val navController: NavController? = null
+    private val projectionListPort: IProjectionListPort? = null
 ): ViewModel() {
     val snackbarHost = SnackbarHostState()
     val loader = mutableStateOf(false)
@@ -30,13 +29,13 @@ class ProjectionListViewModel @Inject constructor(
         load()
     }
 
-    fun goToCreate() {
+    fun goToCreate(navController: NavController) {
         navController?.let {
             Projections.formNavigate(it)
         }
     }
 
-    fun edit(id: Int) {
+    fun edit(id: Int,navController: NavController) {
         navController?.let{
             Projections.formNavigate(id,it)
         }

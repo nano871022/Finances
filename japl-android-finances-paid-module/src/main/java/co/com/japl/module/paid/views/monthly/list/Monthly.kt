@@ -21,8 +21,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.SavedStateHandle
+import androidx.navigation.NavController
 import co.com.japl.finances.iports.dtos.AccountDTO
 import co.com.japl.module.paid.R
 import co.com.japl.module.paid.controllers.monthly.list.MonthlyViewModel
@@ -41,7 +44,7 @@ import java.time.LocalDate
 import java.time.YearMonth
 
 @Composable
-fun Monthly(viewModel:MonthlyViewModel) {
+fun Monthly(viewModel:MonthlyViewModel,navController: NavController) {
     val loaderState = remember {
         viewModel.loaderState   }
     val progressStatus = remember {
@@ -56,14 +59,14 @@ fun Monthly(viewModel:MonthlyViewModel) {
         LinearProgressIndicator(modifier = Modifier.fillMaxWidth(),
         )
     }else{
-        Body(viewModel)
+        Body(viewModel,navController)
     }
 
 }
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-private fun Body(viewModel: MonthlyViewModel){
+private fun Body(viewModel: MonthlyViewModel,navController: NavController){
     val accountList = remember {
 viewModel.accountList
     }
@@ -77,9 +80,9 @@ viewModel.accountList
        floatingActionButton = {
            if(accountState.value != null) {
                Buttons(
-                   gotoList = { viewModel.goToListDetail() },
-                   gotoPeriod = { viewModel.goToListPeriod() },
-                   gotoCreate = { viewModel.goToListCreate() })
+                   gotoList = { viewModel.goToListDetail(navController) },
+                   gotoPeriod = { viewModel.goToListPeriod(navController) },
+                   gotoCreate = { viewModel.goToListCreate(navController) })
            }
        },
         modifier = Modifier.padding(Dimensions.PADDING_SHORT)
@@ -195,7 +198,7 @@ private fun Accounts(viewModel: MonthlyViewModel) {
 fun MonthlyPreview() {
     MaterialThemeComposeUI {
 
-        Monthly(getViewModel())
+        Monthly(getViewModel(),NavController(LocalContext.current))
     }
 }
 
@@ -205,13 +208,20 @@ fun MonthlyPreview() {
 fun MonthlyPreviewDark() {
     MaterialThemeComposeUI {
 
-        Monthly(getViewModel())
+        Monthly(getViewModel(),NavController(LocalContext.current))
     }
 }
 
 @Composable
 private fun getViewModel():MonthlyViewModel{
-    val viewModel = MonthlyViewModel( period = YearMonth.now(),paidSvc = null,incomesSvc = null,accountSvc = null,smsSvc = null,paidSmsSvc = null,prefs = null,navController = null)
+    val viewModel = MonthlyViewModel(
+        savedStateHandle = SavedStateHandle(),
+        paidSvc = null,
+        incomesSvc = null,
+        accountSvc = null,
+        smsSvc = null,
+        paidSmsSvc = null,
+        prefs = null)
     viewModel.loaderState.value = false
     viewModel.accountState.value = AccountDTO(id = 0, name = "Cuenta", active = true, create = LocalDate.now())
     viewModel.periodState.value = "Enero 2022"

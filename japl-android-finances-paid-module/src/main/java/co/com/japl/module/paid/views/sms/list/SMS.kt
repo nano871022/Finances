@@ -23,9 +23,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.SavedStateHandle
+import androidx.navigation.NavController
 import co.com.japl.finances.iports.dtos.SMSPaidDTO
 import co.com.japl.finances.iports.enums.KindInterestRateEnum
 import co.com.japl.module.paid.enums.MoreOptionsItemSms
@@ -45,7 +48,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 @Composable
-fun SMS(viewModel:SmsViewModel) {
+fun SMS(viewModel:SmsViewModel,navController:NavController) {
     val loader = remember {viewModel.load}
     val progress = remember {viewModel.progress}
 
@@ -59,27 +62,27 @@ fun SMS(viewModel:SmsViewModel) {
             modifier = Modifier.fillMaxWidth(),
         )
     }else{
-        Body(viewModel = viewModel)
+        Body(viewModel = viewModel,navController)
     }
 
 }
 
 @Composable
-private fun Body(viewModel: SmsViewModel){
+private fun Body(viewModel: SmsViewModel,navController: NavController){
     Scaffold (
         floatingActionButton = {
             Buttons{
-                viewModel.add()
+                viewModel.add(navController = navController)
             }
         }
     ) {
-        Content(viewModel = viewModel, modifier = Modifier.padding(it))
+        Content(viewModel = viewModel,navController, modifier = Modifier.padding(it))
     }
 }
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-private fun Content(viewModel: SmsViewModel,modifier: Modifier){
+private fun Content(viewModel: SmsViewModel,navController: NavController,modifier: Modifier){
     val list = remember { viewModel.list}
     Column {
         Row (horizontalArrangement = Arrangement.End, modifier=Modifier.fillMaxWidth()) {
@@ -94,13 +97,13 @@ private fun Content(viewModel: SmsViewModel,modifier: Modifier){
                 list[it]?.values?.forEach {
                     for (i in it) {
                         Card(sms = i, modifier = Modifier, edit = {
-                            viewModel.edit(it)
+                            viewModel.edit(it,navController)
                         }, delete = {
-                            viewModel.delete(it)
+                            viewModel.delete(it,navController)
                         }, enable = {
-                            viewModel.enabled(it)
+                            viewModel.enabled(it,navController)
                         }, disable = {
-                            viewModel.disabled(it)
+                            viewModel.disabled(it,navController)
                         })
                     }
                 }
@@ -174,7 +177,7 @@ private fun Buttons(create:()->Unit){
 internal fun SMSPreviewNight(){
     MaterialThemeComposeUI {
 
-        SMS(getViewModel())
+        SMS(getViewModel(),NavController(LocalContext.current))
     }
 }
 
@@ -184,13 +187,13 @@ internal fun SMSPreviewNight(){
 internal fun SMSPreview(){
     MaterialThemeComposeUI {
 
-        SMS(getViewModel())
+        SMS(getViewModel(),NavController(LocalContext.current))
     }
 }
 
 @Composable
 private fun getViewModel():SmsViewModel {
-  val viewModel = SmsViewModel(null,null, null)
+  val viewModel = SmsViewModel(SavedStateHandle(),null,null)
     viewModel.load.value = false
     listOf(
         SMSPaidDTO(

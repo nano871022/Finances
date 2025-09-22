@@ -4,6 +4,7 @@ import android.widget.Toast
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.navigation.NavController
 import co.com.japl.finances.iports.dtos.PaidDTO
@@ -18,7 +19,13 @@ import java.time.YearMonth
 import java.time.format.DateTimeFormatter
 import java.util.Locale
 
-class PaidViewModel constructor(private val accountCode:Int, private val period:YearMonth,private val paidSvc:IPaidPort?=null,public val prefs:Prefs?,private val navController: NavController? = null): ViewModel(){
+class PaidViewModel constructor(
+    private val savedStateHandle: SavedStateHandle,
+    private val paidSvc:IPaidPort?=null,
+    public val prefs:Prefs?): ViewModel(){
+
+    private var accountCode:Int = 0
+    private var period:YearMonth= YearMonth.now()
 
     val progressStatus = mutableFloatStateOf(0.0f)
     val loaderState = mutableStateOf(true)
@@ -28,13 +35,22 @@ class PaidViewModel constructor(private val accountCode:Int, private val period:
     val periodOfList = mutableStateOf("")
     val allValues = mutableStateOf(0.0)
 
-    fun newOne(){
+    init{
+        savedStateHandle.get<Int>("code_account")?.let{
+            accountCode = it
+        }
+        savedStateHandle.get<String>("period")?.let{
+            period = YearMonth.parse(it,DateTimeFormatter.ofPattern("yyyy-MM"))
+        }
+    }
+
+    fun newOne(navController: NavController){
         navController?.let {
             Paid.navigate(accountCode, it)
         }
     }
 
-    fun delete(id:Int){
+    fun delete(id:Int,navController: NavController){
         paidSvc?.let {
             if(it.delete(id)){
                 navController?.let{
@@ -50,13 +66,13 @@ class PaidViewModel constructor(private val accountCode:Int, private val period:
         }
     }
 
-    fun edit(id:Int){
+    fun edit(id:Int,navController: NavController){
         navController?.let {
             Paid.navigate(id,accountCode,it)
         }
     }
 
-    fun endRecurrent(id:Int){
+    fun endRecurrent(id:Int,navController: NavController){
         paidSvc?.let{
             if(it.endRecurrent(id)){
                         navController?.let{ Toast.makeText(it.context, R.string.toast_successful_end_recurrent,Toast.LENGTH_LONG).show().also {
@@ -69,7 +85,7 @@ class PaidViewModel constructor(private val accountCode:Int, private val period:
 
     }
 
-    fun copy(id:Int){
+    fun copy(id:Int,navController: NavController){
         paidSvc?.let{
             if(it.copy(id)){
                 navController?.let{ Toast.makeText(it.context, R.string.toast_successful_copy,Toast.LENGTH_LONG).show().also {

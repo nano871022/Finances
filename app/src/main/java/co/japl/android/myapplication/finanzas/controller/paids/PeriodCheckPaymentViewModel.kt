@@ -3,12 +3,15 @@ package co.japl.android.myapplication.finanzas.controller.paids
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import co.com.japl.finances.iports.dtos.PeriodCheckPaymentDTO
-import co.com.japl.finances.iports.inbounds.paid.ICheckPaymentPort
 import kotlinx.coroutines.runBlocking
+import co.com.japl.finances.iports.inbounds.common.ICheckPaymentPort
 
-class PeriodCheckPaymentViewModel constructor(private val periodCheckPaymentSvc:co.com.japl.finances.iports.inbounds.common.ICheckPaymentPort? ):ViewModel() {
+class PeriodCheckPaymentViewModel constructor(
+    private val savedStateHandle: SavedStateHandle,
+    private val periodCheckPaymentSvc:ICheckPaymentPort? ):ViewModel() {
 
     val progression = mutableFloatStateOf(0.0f)
     val loader = mutableStateOf(true)

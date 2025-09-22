@@ -4,6 +4,7 @@ import android.widget.Toast
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.navigation.NavController
 import co.com.japl.finances.iports.dtos.SMSPaidDTO
@@ -13,25 +14,28 @@ import co.com.japl.module.paid.R
 import co.com.japl.module.paid.navigations.Sms
 import kotlinx.coroutines.runBlocking
 
-class SmsViewModel constructor(private val svc: ISMSPaidPort?, private val accountSvc:IAccountPort?, private val navController: NavController?): ViewModel() {
+class SmsViewModel constructor(
+    private val savedStateHandle: SavedStateHandle,
+    private val svc: ISMSPaidPort?,
+    private val accountSvc:IAccountPort?): ViewModel() {
 
     val  load = mutableStateOf(true)
     val  progress = mutableFloatStateOf(0.0f)
 
     val list = mutableStateListOf<Map<Int,List<SMSPaidDTO>>>()
 
-    fun edit(code:Int){
+    fun edit(code:Int,navController: NavController){
         require(code > 0){"The code must be greater than 0"}
         navController?.let{
             Sms.navigate(code,navController)
         }
     }
 
-    fun add(){
+    fun add(navController: NavController){
         navController?.let{Sms.navigate(navController)}
     }
 
-    fun enabled(code:Int){
+    fun enabled(code:Int,navController: NavController){
         require(code > 0){"The code must be greater than 0"}
         svc?.enable(code).takeIf { it == true }?.let {
             navController?.let { Toast.makeText(it.context, R.string.toast_successful_enabled, Toast.LENGTH_SHORT).show() }?.also {
@@ -40,7 +44,7 @@ class SmsViewModel constructor(private val svc: ISMSPaidPort?, private val accou
         }?:navController?.let { Toast.makeText(it.context, R.string.toast_dont_successful_enabled, Toast.LENGTH_SHORT).show() }
     }
 
-    fun disabled(code:Int){
+    fun disabled(code:Int,navController: NavController){
         require(code > 0){"The code must be greater than 0"}
         svc?.disable(code).takeIf { it == true }?.let {
             navController?.let { Toast.makeText(it.context, R.string.toast_successful_disabled, Toast.LENGTH_SHORT).show() }?.also {
@@ -49,7 +53,7 @@ class SmsViewModel constructor(private val svc: ISMSPaidPort?, private val accou
         }?:navController?.let { Toast.makeText(it.context, R.string.toast_dont_successful_disabled, Toast.LENGTH_SHORT).show() }
     }
 
-    fun delete(code:Int){
+    fun delete(code:Int,navController: NavController){
         require(code > 0){"The code must be greater than 0"}
         svc?.delete(code)?.takeIf { it }?.let{
             navController?.let { Toast.makeText(it.context, R.string.toast_successful_deleted, Toast.LENGTH_SHORT).show().also {

@@ -14,13 +14,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import co.com.japl.finances.iports.inbounds.inputs.IAccountPort
 import co.com.japl.module.paid.R
 import co.com.japl.module.paid.controllers.accounts.form.AccountViewModel
-import co.com.japl.module.paid.views.accounts.form.fakes.FakeAccountPort
+import co.com.japl.module.paid.views.fakeSvc.FakeAccountPort
 import co.com.japl.ui.components.CheckBoxField
 import co.com.japl.ui.components.FieldText
 import co.com.japl.ui.components.FloatButton
@@ -82,16 +82,18 @@ private fun Body(viewModel: AccountViewModel, modifier: Modifier) {
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun AccountPreview() {
-    val accountSvc: IAccountPort = FakeAccountPort()
     MaterialThemeComposeUI {
         Account(
-            viewModel(
-                factory = AccountViewModel.Companion.create(
-                    extras = viewModel(),
-                    accountSvc = accountSvc
-                )
-            ),
-            navController = rememberNavController()
+            viewModel = getViewModel(),
+            navController = NavController(LocalContext.current)
         )
     }
+}
+
+private fun getViewModel():AccountViewModel{
+    return AccountViewModel(
+        savedStateHandle = SavedStateHandle(),
+        accountSvc=FakeAccountPort()
+    )
+
 }

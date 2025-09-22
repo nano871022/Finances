@@ -24,9 +24,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.snapshots.SnapshotStateMap
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.capitalize
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.SavedStateHandle
+import androidx.navigation.NavController
 import co.com.japl.finances.iports.dtos.PeriodPaidDTO
 import co.com.japl.module.paid.R
 import co.com.japl.module.paid.controllers.period.list.PeriodsViewModel
@@ -47,7 +49,7 @@ import java.time.format.DateTimeFormatter
 import java.util.Locale
 
 @Composable
-fun Period(viewModel:PeriodsViewModel){
+fun Period(viewModel:PeriodsViewModel,navController: NavController){
     val progressState = remember {
         viewModel.progress
     }
@@ -65,12 +67,12 @@ fun Period(viewModel:PeriodsViewModel){
             modifier = Modifier.fillMaxWidth(),
         )
     }else{
-        Body(viewModel)
+        Body(viewModel,navController)
     }
 }
 
 @Composable
-private fun Body(viewModel: PeriodsViewModel){
+private fun Body(viewModel: PeriodsViewModel,navController:NavController){
     val listState = remember {
         viewModel.list
     }
@@ -81,7 +83,7 @@ private fun Body(viewModel: PeriodsViewModel){
         Header(count = listState.values.flatMap { it }.sumOf { it.count },
             value =  listState.values.flatMap { it }.sumOf { it.value })
 
-        Year(listState = listState, goTo = {viewModel.goToListDetail(it)})
+        Year(listState = listState, goTo = {viewModel.goToListDetail(it,navController)})
     }
 }
 
@@ -222,7 +224,7 @@ private fun HeaderYearRecap(year:Int,count:Int,value:Double,onclick:()->Unit){
 @Preview(showBackground = true, showSystemUi = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
 internal fun PeriodPreview(){
     MaterialThemeComposeUI {
-        Period(getViewModel())
+        Period(getViewModel(),NavController(LocalContext.current))
     }
 }
 
@@ -231,15 +233,14 @@ internal fun PeriodPreview(){
 @Preview(showBackground = true, showSystemUi = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
 internal fun PeriodPreviewDark(){
     MaterialThemeComposeUI {
-        Period(getViewModel())
+        Period(getViewModel(),NavController(LocalContext.current))
     }
 }
 
 @Composable
 private fun getViewModel():PeriodsViewModel{
     val viewModel = PeriodsViewModel(
-        codeAccount = null,
-        navController = null,
+        SavedStateHandle(),
         paidSvc = null
     )
     viewModel.list.put(2024, arrayListOf(

@@ -6,6 +6,7 @@ import androidx.compose.runtime.mutableDoubleStateOf
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.navigation.NavController
 import co.com.japl.finances.iports.dtos.AccountDTO
@@ -19,7 +20,12 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
 
-class PaidViewModel (private val codeAccount:Int?,private val codePaid:Int?,private val accountSvc: IAccountPort?,private val paidSvc: IPaidPort?,private val navController: NavController?) :ViewModel(){
+class PaidViewModel (
+        private val savedStateHandle: SavedStateHandle,
+        private val accountSvc: IAccountPort?,
+        private val paidSvc: IPaidPort?) :ViewModel(){
+    private var codeAccount:Int = 0
+    private var codePaid:Int = 0
     private var _paid: PaidDTO? = null
     var accountList :List<AccountDTO>? = null
     val accountListPair = mutableStateListOf<Pair<Int,String>>()
@@ -38,7 +44,15 @@ class PaidViewModel (private val codeAccount:Int?,private val codePaid:Int?,priv
     val errorValue = mutableStateOf(false)
     val recurrent = mutableStateOf(false)
 
-    fun save(){
+    init{
+        savedStateHandle.get<Int>("code_account")?.let{
+            codeAccount = it
+        }
+        savedStateHandle.get<Int>("code_paid")?.let{
+            codePaid = it
+        }
+    }
+    fun save(navController: NavController){
         validate()
         _paid?.let{paid->
             paid.id.takeIf { it > 0 }?.let{

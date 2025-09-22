@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.RequiresApi
 import androidx.compose.ui.platform.ViewCompositionStrategy
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import co.com.japl.finances.iports.inbounds.inputs.IAccountPort
 import co.com.japl.finances.iports.inbounds.inputs.IInputPort
@@ -20,6 +21,7 @@ import co.com.japl.ui.Prefs
 import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.japl.android.myapplication.databinding.FragmentPaidsBinding
 import co.japl.android.myapplication.finanzas.ApplicationInitial
+import co.japl.android.myapplication.finanzas.controller.ViewModelFactory
 import co.japl.android.myapplication.finanzas.putParams.PaidsParams
 import dagger.hilt.android.AndroidEntryPoint
 import java.time.YearMonth
@@ -38,6 +40,24 @@ class PaidsFragment : Fragment() {
     @Inject lateinit var smsSvc:ISMSPaidPort
     @Inject lateinit var prefs : Prefs
 
+    val viewModel : MonthlyViewModel by viewModels{
+        ViewModelFactory(
+            owner = this,
+            viewModelClass=MonthlyViewModel::class.java,
+            build={
+                MonthlyViewModel(
+                    savedStateHandle = it,
+                    paidSvc = service,
+                    accountSvc = accountSvc,
+                    incomesSvc = incomesSvc,
+                    paidSmsSvc = paidSmsSvc,
+                    prefs = prefs,
+                    smsSvc = smsSvc
+                )
+            }
+        )
+    }
+
 
     @RequiresApi(Build.VERSION_CODES.S)
     override fun onCreateView(
@@ -45,22 +65,11 @@ class PaidsFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val root = FragmentPaidsBinding.inflate(inflater,container,false)
-        val period = arguments?.let{PaidsParams.downloadPeriod(it)}
-        val viewModel = MonthlyViewModel(
-            paidSvc = service,
-            accountSvc = accountSvc,
-            incomesSvc = incomesSvc,
-            period = period?:YearMonth.now(),
-            paidSmsSvc = paidSmsSvc,
-            prefs = prefs,
-            smsSvc = smsSvc,
-            navController = findNavController()
-        )
         root.cvPaidsFp.apply {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
                 MaterialThemeComposeUI {
-                    Monthly(viewModel = viewModel)
+                    Monthly(viewModel = viewModel,findNavController())
                 }
             }
         }

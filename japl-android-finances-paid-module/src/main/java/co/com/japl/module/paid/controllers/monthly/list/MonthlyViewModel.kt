@@ -6,6 +6,7 @@ import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.navigation.NavController
 import co.com.japl.finances.iports.dtos.AccountDTO
@@ -22,10 +23,21 @@ import co.com.japl.ui.Prefs
 import co.com.japl.ui.utils.DateUtils
 import kotlinx.coroutines.runBlocking
 import java.time.YearMonth
+import java.time.format.DateTimeFormatter
 import java.time.format.TextStyle
 import java.util.Locale
 
-class MonthlyViewModel constructor(private val period:YearMonth,private val paidSvc: IPaidPort?, private val incomesSvc:IInputPort?,private val accountSvc:IAccountPort?, private val smsSvc:ISMSPaidPort?,private val paidSmsSvc:ISmsPort?,private val prefs:Prefs?,private val navController: NavController?): ViewModel() {
+class MonthlyViewModel constructor(
+        private val savedStateHandle: SavedStateHandle,
+        private val paidSvc: IPaidPort?,
+        private val incomesSvc:IInputPort?,
+        private val accountSvc:IAccountPort?,
+        private val smsSvc:ISMSPaidPort?,
+        private val paidSmsSvc:ISmsPort?,
+        private val prefs:Prefs?): ViewModel() {
+
+    private var period:YearMonth = YearMonth.now()
+
     private var _accounts : List<AccountDTO>? = null
     val listAccount get() = _accounts
 
@@ -39,7 +51,13 @@ class MonthlyViewModel constructor(private val period:YearMonth,private val paid
     val incomesTotalState = mutableDoubleStateOf(0.0)
     val listGraph = mutableStateListOf<Pair<String,Double>>()
 
-    fun goToListDetail(){
+    init{
+        savedStateHandle.get<String>("period")?.let{
+            period = YearMonth.parse(it,DateTimeFormatter.ofPattern("yyyy-MM"))
+        }
+    }
+
+    fun goToListDetail(navController: NavController){
         try {
             navController?.let {
                 accountState.value?.let {
@@ -51,7 +69,7 @@ class MonthlyViewModel constructor(private val period:YearMonth,private val paid
         }
     }
 
-    fun goToListPeriod(){
+    fun goToListPeriod(navController: NavController){
         try {
             navController?.let {
                 accountState.value?.let {
@@ -64,7 +82,7 @@ class MonthlyViewModel constructor(private val period:YearMonth,private val paid
         }
     }
 
-    fun goToListCreate(){
+    fun goToListCreate(navController: NavController){
         try {
             navController?.let {
                 accountState.value?.let {

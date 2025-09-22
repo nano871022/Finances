@@ -34,6 +34,8 @@ import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.SavedStateHandle
+import androidx.navigation.NavController
 import co.com.japl.module.paid.R
 import co.com.japl.module.paid.controllers.Inputs.list.InputListModelView
 import co.com.japl.ui.components.Carousel
@@ -48,7 +50,7 @@ import kotlinx.coroutines.withContext
 import java.time.LocalDate
 
 @Composable
-fun InputList(modelView: InputListModelView){
+fun InputList(modelView: InputListModelView,navController:NavController){
     val stateLoader = remember { modelView.stateLoader }
     val stateProgress = remember { modelView.progress }
     val scope = rememberCoroutineScope()
@@ -65,7 +67,7 @@ fun InputList(modelView: InputListModelView){
             Scaffold (
                 floatingActionButton = {
                     FloatingActionButton(onClick = {
-                        modelView.goToInputForm()
+                        modelView.goToInputForm(navController=navController)
                     }, elevation = FloatingActionButtonDefaults.elevation(10.dp),
                         backgroundColor =  MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.5f),
                         modifier=Modifier.padding(bottom=Dimensions.PADDING_BOTTOM_SPACE_FLOATING_BUTTON)){
@@ -182,15 +184,16 @@ private fun InputListHeader(numInputs:Long,totalInputs:Double,totalMonthly:Doubl
 @Composable
 @Preview(showSystemUi = true, showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
 internal fun InputListPreview(){
+    val viewModel = getViewModel()
     MaterialThemeComposeUI {
-        InputList(getViewModel())
+        InputList(viewModel, NavController(LocalContext.current))
     }
 }
 
 @Composable
 private fun getViewModel():InputListModelView{
     val context = LocalContext.current
-    val viewModel = InputListModelView(context = context, accountCode = 0,null,null)
+    val viewModel = InputListModelView(context = context, savedStateHandle = SavedStateHandle(), null)
     viewModel.stateDialogOptionsMore.value = false
     viewModel.stateLoader.value = false
     return viewModel

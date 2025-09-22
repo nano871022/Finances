@@ -30,6 +30,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.SavedStateHandle
+import androidx.navigation.NavController
 import co.com.japl.finances.iports.dtos.AccountDTO
 import co.com.japl.module.paid.R
 import co.com.japl.module.paid.controllers.Inputs.list.InputListModelView
@@ -47,9 +49,11 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.time.LocalDate
+import java.util.Collections
+import java.util.stream.Collectors
 
 @Composable
-fun AccountList(viewModel: AccountViewModel) {
+fun AccountList(viewModel: AccountViewModel,navController: NavController) {
     val stateProgress = remember {
         viewModel.progress
     }
@@ -72,7 +76,7 @@ fun AccountList(viewModel: AccountViewModel) {
 
         Scaffold(
             floatingActionButton = {
-                FloatingActionButton(onClick = { viewModel.add() },
+                FloatingActionButton(onClick = { viewModel.add(navController) },
                     elevation =  FloatingActionButtonDefaults.elevation(
                         defaultElevation = 10.dp
                     ),
@@ -84,13 +88,13 @@ fun AccountList(viewModel: AccountViewModel) {
                 }
             }
         ) {
-            Body(viewModel = viewModel, modifier = Modifier.padding(it))
+            Body(viewModel = viewModel,navController=navController, modifier = Modifier.padding(it))
         }
     }
 }
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-private fun Body(viewModel: AccountViewModel, modifier:Modifier) {
+private fun Body(viewModel: AccountViewModel,navController:NavController, modifier:Modifier) {
     val listState = remember { viewModel.list}
     val state = remember { mutableStateOf(false) }
     val stateDelete = remember { mutableStateOf(false) }
@@ -127,11 +131,10 @@ private fun Body(viewModel: AccountViewModel, modifier:Modifier) {
                 Column {
                     InputList(
                         modelView = InputListModelView(
-                            LocalContext.current,
-                            item.id,
-                            viewModel.navController,
+                            context=LocalContext.current,
+                            savedStateHandle=SavedStateHandle(mapOf(Pair("id_account",item.id))),
                             viewModel.inputSvc
-                        )
+                        ), navController
                     )
                 }
                 if (stateDelete.value) {
@@ -151,7 +154,7 @@ private fun Body(viewModel: AccountViewModel, modifier:Modifier) {
                     onClick = {
                         when (it) {
                             MoreOptionsItemsAccount.DELETE -> stateDelete.value = true
-                            MoreOptionsItemsAccount.EDIT -> viewModel.edit(item.id)
+                            MoreOptionsItemsAccount.EDIT -> viewModel.edit(item.id,navController)
                         }
                         state.value = false
                     })
@@ -166,7 +169,7 @@ private fun Body(viewModel: AccountViewModel, modifier:Modifier) {
 fun AccountListPreview() {
     val viewModel = getViewModel()
     MaterialThemeComposeUI {
-        AccountList(viewModel = viewModel)
+        AccountList(viewModel = viewModel,navController = NavController(LocalContext.current))
     }
 }
 
@@ -177,7 +180,7 @@ fun AccountListPreviewNoAccount() {
     val viewModel = getViewModel()
     viewModel.list.clear()
     MaterialThemeComposeUI {
-        AccountList(viewModel = viewModel)
+        AccountList(viewModel = viewModel,navController = NavController(LocalContext.current))
     }
 }
 
@@ -188,7 +191,7 @@ fun AccountListPreviewDarkNoAccount() {
     val viewModel = getViewModel()
     viewModel.list.clear()
     MaterialThemeComposeUI {
-        AccountList(viewModel = viewModel)
+        AccountList(viewModel = viewModel,navController = NavController(LocalContext.current))
     }
 }
 
@@ -198,12 +201,12 @@ fun AccountListPreviewDarkNoAccount() {
 fun AccountListPreviewDark() {
     val viewModel = getViewModel()
     MaterialThemeComposeUI {
-        AccountList(viewModel = viewModel)
+        AccountList(viewModel = viewModel,navController = NavController(LocalContext.current))
     }
 }
 
 fun getViewModel(): AccountViewModel {
-    val viewModel = AccountViewModel(accountSvc = null, inputSvc = null,navController = null)
+    val viewModel = AccountViewModel(accountSvc = null, inputSvc = null)
     viewModel.loading.value = false
     viewModel.list.add(AccountDTO(1, LocalDate.now(),"",true))
     return viewModel

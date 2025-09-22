@@ -17,14 +17,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import co.com.japl.finances.iports.inbounds.inputs.IInputPort
 import co.com.japl.module.paid.R
 import co.com.japl.module.paid.controllers.Inputs.form.InputViewModel
 import co.com.japl.module.paid.enums.MoreOptionsKindPaymentInput
-import co.com.japl.module.paid.views.Inputs.form.fakes.FakeInputPort
+import co.com.japl.module.paid.views.fakeSvc.FakeInputPort
+import co.com.japl.module.paid.views.fakeSvc.InputFake
 import co.com.japl.ui.components.FieldDatePicker
 import co.com.japl.ui.components.FieldSelect
 import co.com.japl.ui.components.FieldText
@@ -122,7 +123,7 @@ private fun Body(viewModel: InputViewModel, modifier: Modifier) {
             value = stateValue.value,
             validation = { viewModel.validation() },
             callback = { stateValue.value = it },
-            hasErrorState = stateErrorValue,
+            hasErrorState = stateErrorValue.value,
             currency = true,
             icon = Icons.Rounded.Cancel,
             modifier = Modifier
@@ -148,13 +149,15 @@ fun InputPreview() {
     val inputSvc: IInputPort = FakeInputPort()
     MaterialThemeComposeUI {
         Input(
-            viewModel(
-                factory = InputViewModel.Companion.create(
-                    extras = viewModel(),
-                    inputSvc = inputSvc
-                )
-            ),
-            navController = rememberNavController()
+            viewModel = getViewModel(),
+            navController = NavController(LocalContext.current)
         )
     }
+}
+
+private fun getViewModel(): InputViewModel{
+    return InputViewModel(
+        savedStateHandle = SavedStateHandle(),
+        inputSvc=InputFake()
+    )
 }

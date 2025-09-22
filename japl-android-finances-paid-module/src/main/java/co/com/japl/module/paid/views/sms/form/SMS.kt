@@ -26,8 +26,11 @@ import  androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.lifecycle.SavedStateHandle
+import androidx.navigation.NavController
 import co.com.japl.module.paid.R
 import co.com.japl.module.paid.controllers.sms.form.SmsViewModel
 import co.com.japl.ui.components.FieldSelect
@@ -40,7 +43,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 @Composable
-fun Sms(viewModel:SmsViewModel){
+fun Sms(viewModel:SmsViewModel,navController: NavController){
     val load by remember {viewModel.load}
     var progress  by remember {viewModel.progress}
 
@@ -53,16 +56,16 @@ fun Sms(viewModel:SmsViewModel){
             modifier = Modifier.fillMaxWidth(),
         )
     }else{
-        Form(viewModel = viewModel)
+        Form(viewModel = viewModel,navController)
     }
 
 }
 
 @Composable
-private fun Form(viewModel: SmsViewModel){
+private fun Form(viewModel: SmsViewModel,navController:NavController){
     Scaffold (
         floatingActionButton = {
-            Buttons({viewModel.clean()}, {viewModel.save()})
+            Buttons({viewModel.clean()}, {viewModel.save(navController)})
         }
     ) {
         Body(viewModel = viewModel, modifier = Modifier
@@ -172,7 +175,7 @@ private fun Buttons(clean:()->Unit, save:()->Unit){
 @Preview(showBackground = true, showSystemUi = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
 internal fun SmsPreview(){
     MaterialThemeComposeUI {
-        Sms(getViewModel())
+        Sms(getViewModel(), NavController(LocalContext.current))
     }
 }
 
@@ -181,12 +184,15 @@ internal fun SmsPreview(){
 @Preview(showBackground = true, showSystemUi = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
 internal fun SmsPreviewLight(){
     MaterialThemeComposeUI {
-        Sms(getViewModel())
+        Sms(getViewModel(), NavController(LocalContext.current))
     }
 }
 @Composable
 private fun getViewModel():SmsViewModel{
-    val viewModel = SmsViewModel(null,null,null,null)
+    val viewModel = SmsViewModel(
+            SavedStateHandle(),
+            null,
+            null)
     viewModel.load.value = false
     return viewModel
 }

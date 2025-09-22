@@ -16,9 +16,12 @@ import androidx.compose.material.icons.rounded.CleaningServices
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.SavedStateHandle
+import androidx.navigation.NavController
 import co.com.japl.module.paid.R
 import co.com.japl.module.paid.controllers.paid.form.PaidViewModel
 import co.com.japl.ui.components.CheckBoxField
@@ -36,7 +39,7 @@ import kotlinx.coroutines.launch
 
 @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
 @Composable
-fun Paid(viewModel:PaidViewModel) {
+fun Paid(viewModel:PaidViewModel,navController:NavController) {
     val progresStatus  = remember{viewModel.progressStatus}
     val loaderState = remember {viewModel.loading}
 
@@ -47,16 +50,16 @@ fun Paid(viewModel:PaidViewModel) {
     if(loaderState.value){
         LinearProgressIndicator(progress = progresStatus.value,modifier=Modifier.fillMaxWidth())
     }else{
-        Body(viewModel = viewModel)
+        Body(viewModel = viewModel,navController = navController)
     }
 }
 
 @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
 @Composable
-private fun Body(viewModel:PaidViewModel){
+private fun Body(viewModel:PaidViewModel,navController: NavController){
 
     Scaffold (floatingActionButton = {
-        Buttons(add={viewModel.save()}, clear = {viewModel.clean()})
+        Buttons(add={viewModel.save(navController)}, clear = {viewModel.clean()})
     }){
         Form(viewModel = viewModel, modifier = Modifier.padding(it))
     }
@@ -181,7 +184,7 @@ internal fun PreviewPaidForm(){
 
     val viewModel = getViewModel()
     MaterialThemeComposeUI {
-        Form(viewModel = viewModel,modifier = Modifier.fillMaxWidth())
+        Paid(viewModel = viewModel, navController = NavController(LocalContext.current))
     }
 
 }
@@ -193,14 +196,14 @@ internal fun PreviewPaidFormDark(){
 
     val viewModel = getViewModel()
     MaterialThemeComposeUI {
-        Form(viewModel = viewModel,modifier = Modifier.fillMaxWidth())
+        Paid(viewModel = viewModel, navController = NavController(LocalContext.current))
     }
 
 }
 
 @Composable
 private fun getViewModel():PaidViewModel{
-    val viewModel = PaidViewModel(paidSvc = null, codeAccount = 0 , codePaid =0, accountSvc = null,navController = null)
+    val viewModel = PaidViewModel(paidSvc = null, accountSvc = null, savedStateHandle = SavedStateHandle())
     viewModel.loading.value = false
 
 

@@ -5,6 +5,7 @@ import android.widget.Toast
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import co.com.japl.finances.iports.dtos.CheckPaymentDTO
@@ -16,11 +17,20 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.YearMonth
 
-class CheckListViewModel constructor(private val period:YearMonth,private val svc:ICheckPaymentPort?): ViewModel() {
+class CheckListViewModel constructor(
+    private val savedStateHandle: SavedStateHandle,
+    private val svc:ICheckPaymentPort?): ViewModel() {
+
+    private val period:YearMonth = YearMonth.now()
+
     val progression = mutableFloatStateOf(0.0f)
     val listState = mutableStateListOf<CheckPaymentDTO>()
     val loaderStatus = mutableStateOf(true)
     val loaderProgressStatus = mutableStateOf(false)
+
+    init{
+
+    }
 
     fun save(context:Context){
         loaderProgressStatus.value = true

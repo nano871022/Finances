@@ -7,6 +7,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.createSavedStateHandle
 import androidx.lifecycle.viewmodel.CreationExtras
 import androidx.navigation.NavController
 import co.com.japl.finances.iports.dtos.AccountDTO
@@ -14,7 +15,6 @@ import co.com.japl.finances.iports.inbounds.inputs.IAccountPort
 import co.com.japl.module.paid.R
 import kotlinx.coroutines.runBlocking
 import java.time.LocalDate
-import androidx.lifecycle.SavedStateHandleSupport
 
 class AccountViewModel constructor(private val savedStateHandle: SavedStateHandle, private val accountSvc: IAccountPort) : ViewModel() {
 
@@ -94,7 +94,7 @@ class AccountViewModel constructor(private val savedStateHandle: SavedStateHandl
 
     companion object {
         fun create(extras: CreationExtras, accountSvc: IAccountPort): AccountViewModel {
-            val savedStateHandle = SavedStateHandleSupport.createSavedStateHandle(extras)
+            val savedStateHandle = extras.createSavedStateHandle()
             return AccountViewModel(savedStateHandle, accountSvc)
         }
     }

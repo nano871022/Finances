@@ -26,6 +26,7 @@ import androidx.compose.ui.text.capitalize
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.SavedStateHandle
 import co.com.japl.finances.iports.dtos.PeriodCheckPaymentDTO
 import co.com.japl.ui.components.FieldView
 import co.com.japl.ui.components.FieldViewCards
@@ -215,7 +216,7 @@ internal fun CheckPaidsPreview2(){
 
 @Composable
 private fun getViewModel():PeriodCheckPaymentViewModel{
-    val viewModel =  PeriodCheckPaymentViewModel(null)
+    val viewModel =  PeriodCheckPaymentViewModel(SavedStateHandle(),null)
     viewModel.loader.value = false
     viewModel.map.put(2024, arrayListOf(
         PeriodCheckPaymentDTO(
