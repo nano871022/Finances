@@ -62,7 +62,7 @@ fun MaterialThemeComposeUI(
 ){
     val colorSchema = getColorSchema(darkTheme, dynamicColor, LocalContext.current)
 
-    //settingView(colorSchema, darkTheme)
+    settingView(colorSchema, darkTheme)
 
     applyMaterialTheme(colorScheme = colorSchema, content = content)
 }
@@ -82,8 +82,11 @@ private fun settingView(colorScheme: ColorScheme, darkTheme: Boolean){
     if(!view.isInEditMode){
         SideEffect {
             val window = (view.context as ComponentActivity).window
-            window.statusBarColor = colorScheme.secondary.toArgb()
-            WindowCompat.getInsetsController(window,view).isAppearanceLightStatusBars = darkTheme
+            window.statusBarColor = Color.Transparent.toArgb()
+            window.navigationBarColor = Color.Transparent.toArgb()
+            WindowCompat.setDecorFitsSystemWindows(window, false)
+            WindowCompat.getInsetsController(window,view).isAppearanceLightStatusBars = !darkTheme
+            WindowCompat.getInsetsController(window,view).isAppearanceLightNavigationBars = !darkTheme
         }
     }
 }

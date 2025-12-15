@@ -38,7 +38,7 @@ class Colors constructor(val context:Context,val draws:MutableList<PiecePie>){
 
     @RequiresApi(Build.VERSION_CODES.O)
     fun getColor(): Int {
-        val colorValue = context.getColor(colors[draws.size])
+        val colorValue = context.getColor(colors[draws.size % colors.size])
         return Color.valueOf(colorValue).toArgb()
     }
 }

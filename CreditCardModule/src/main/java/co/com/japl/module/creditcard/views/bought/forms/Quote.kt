@@ -85,9 +85,9 @@ fun Quote (viewModel:QuoteViewModel){
 
                 FloatingButtons(viewModel)
 
-            }
+            },
         ) {
-            Body(viewModel,modifier = Modifier.padding(it))
+            Body(viewModel,modifier = Modifier.padding(it).background(MaterialTheme.colorScheme.background))
         }
     }
 }
