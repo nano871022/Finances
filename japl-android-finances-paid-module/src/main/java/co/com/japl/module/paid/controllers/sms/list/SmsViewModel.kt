@@ -40,6 +40,16 @@ class SmsViewModel constructor(private val svc: ISMSPaidPort?, private val accou
         }?:navController?.let { Toast.makeText(it.context, R.string.toast_dont_successful_enabled, Toast.LENGTH_SHORT).show() }
     }
 
+    fun duplicate(code:Int){
+        require(code > 0){"The code must be greater than 0"}
+        svc?.getById(code)?.let{
+            svc?.create(it.copy(id=0))?.let{
+                progress.floatValue = 0f
+                load.value = true
+            }
+        }
+    }
+
     fun disabled(code:Int){
         require(code > 0){"The code must be greater than 0"}
         svc?.disable(code).takeIf { it == true }?.let {

@@ -3,9 +3,12 @@ package co.com.japl.module.creditcard.views.sms.forms
 import android.content.res.Configuration
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Icon
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.CleaningServices
@@ -86,8 +89,9 @@ private fun Body(viewModel: SmsCreditCardViewModel,modifier:Modifier){
     val pattern = remember{viewModel.pattern}
     val errorPattern = remember{viewModel.errorPattern}
     val validationResult = remember{viewModel.validationResult}
+    val stateScroll = rememberScrollState(0)
 
-  Column(modifier=modifier.padding(Dimensions.PADDING_SHORT)){
+  Column(modifier=modifier.padding(Dimensions.PADDING_SHORT).verticalScroll(stateScroll)){
       FieldSelect(title = stringResource(id = R.string.credit_card),
           value = creditCard.value?.second?:"",
           list = listCreditCard,

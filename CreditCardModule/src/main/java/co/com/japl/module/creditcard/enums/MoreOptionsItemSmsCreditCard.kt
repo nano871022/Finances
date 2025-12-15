@@ -8,7 +8,8 @@ enum class MoreOptionsItemSmsCreditCard (@StringRes val title: Int) : IMoreOptio
     DELETE(R.string.delete)
     , EDIT(R.string.edit),
     ENABLE(R.string.enabled)
-    , DISABLE(R.string.disabled);
+    , DISABLE(R.string.disabled),
+    DUPLICATE(R.string.duplicate);
 
     override fun getName()=title
 }

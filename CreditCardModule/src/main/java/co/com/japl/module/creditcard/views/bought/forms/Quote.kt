@@ -4,6 +4,7 @@ import android.app.Application
 import android.content.res.Configuration
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -25,6 +26,7 @@ import androidx.compose.material.icons.rounded.SaveAs
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.TooltipBox
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -85,9 +87,9 @@ fun Quote (viewModel:QuoteViewModel){
 
                 FloatingButtons(viewModel)
 
-            }
+            },
         ) {
-            Body(viewModel,modifier = Modifier.padding(it))
+            Body(viewModel,modifier = Modifier.padding(it).background(MaterialTheme.colorScheme.background))
         }
     }
 }
