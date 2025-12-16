@@ -10,6 +10,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.Scaffold
@@ -80,7 +82,9 @@ private fun Body(viewModel: SmsCreditCardViewModel){
 @Composable
 private fun Content(viewModel: SmsCreditCardViewModel,modifier: Modifier){
     val list = remember { viewModel.list}
-    Column {
+    val stateScroll = rememberScrollState(0)
+    
+    Column(modifier = modifier.verticalScroll(stateScroll)) {
         Row (horizontalArrangement = Arrangement.End, modifier=Modifier.fillMaxWidth()) {
             HelpWikiButton(wikiUrl = R.string.wiki_sms_credit_card_url,
                 descriptionContent = R.string.wiki_sms_credit_card_description)
@@ -100,6 +104,8 @@ private fun Content(viewModel: SmsCreditCardViewModel,modifier: Modifier){
                                 viewModel.enabled(it)
                             }, disable = {
                                 viewModel.disabled(it)
+                            }, duplicate={
+                                viewModel.duplicate(it)
                             })
                         }
                     }
@@ -110,7 +116,7 @@ private fun Content(viewModel: SmsCreditCardViewModel,modifier: Modifier){
 }
 
 @Composable
-private fun Card(sms:SMSCreditCard,modifier:Modifier=Modifier,edit:(Int)->Unit,delete:(Int)->Unit,enable:(Int)->Unit,disable:(Int)->Unit) {
+private fun Card(sms:SMSCreditCard,modifier:Modifier=Modifier,edit:(Int)->Unit,delete:(Int)->Unit,enable:(Int)->Unit,disable:(Int)->Unit,duplicate:(Int)->Unit) {
     val popupStable = remember { mutableStateOf(false) }
     val popupDeleteDialog = remember { mutableStateOf(false) }
     Card( modifier = modifier
@@ -147,6 +153,7 @@ private fun Card(sms:SMSCreditCard,modifier:Modifier=Modifier,edit:(Int)->Unit,d
                 MoreOptionsItemSmsCreditCard.EDIT -> edit.invoke(sms.id)
                 MoreOptionsItemSmsCreditCard.ENABLE -> enable.invoke(sms.id)
                 MoreOptionsItemSmsCreditCard.DISABLE -> disable.invoke(sms.id)
+                MoreOptionsItemSmsCreditCard.DUPLICATE -> duplicate.invoke(sms.id)
             }
             popupStable.value = false
         }

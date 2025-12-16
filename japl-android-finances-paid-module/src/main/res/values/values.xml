@@ -56,6 +56,7 @@
     <string name="kind_rate">Tipo Tasa</string>
     <string name="enabled">Habilitar</string>
     <string name="disabled">Desabilitar</string>
+    <string name="duplicate">Duplicar</string>
 
     <string name="wiki_paid_url">https://github.com/nano871022/Finances/wiki/Pagos</string>
     <string name="wiki_paid_description">Información acerca de pagos con tarjeta débito o efectivo</string>

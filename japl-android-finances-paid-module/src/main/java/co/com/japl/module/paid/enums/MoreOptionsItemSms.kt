@@ -8,7 +8,8 @@ enum class MoreOptionsItemSms (@StringRes val title: Int) : IMoreOptions{
     DELETE(R.string.delete)
     , EDIT(R.string.edit),
     ENABLE(R.string.enabled)
-    , DISABLE(R.string.disabled);
+    , DISABLE(R.string.disabled),
+    DUPLICATE(R.string.duplicate);
 
     override fun getName()=title
 }

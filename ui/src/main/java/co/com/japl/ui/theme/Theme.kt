@@ -1,6 +1,8 @@
 package co.com.japl.ui.theme
 
+import android.app.Activity
 import android.content.Context
+import android.content.ContextWrapper
 import android.os.Build
 import androidx.activity.ComponentActivity
 import androidx.annotation.RequiresApi
@@ -62,7 +64,7 @@ fun MaterialThemeComposeUI(
 ){
     val colorSchema = getColorSchema(darkTheme, dynamicColor, LocalContext.current)
 
-    //settingView(colorSchema, darkTheme)
+    settingView(colorSchema, darkTheme)
 
     applyMaterialTheme(colorScheme = colorSchema, content = content)
 }
@@ -81,11 +83,25 @@ private fun settingView(colorScheme: ColorScheme, darkTheme: Boolean){
     val view = LocalView.current
     if(!view.isInEditMode){
         SideEffect {
-            val window = (view.context as ComponentActivity).window
-            window.statusBarColor = colorScheme.secondary.toArgb()
-            WindowCompat.getInsetsController(window,view).isAppearanceLightStatusBars = darkTheme
+            val window = (view.context.findActivity())?.window
+            if(window != null) {
+                window.statusBarColor = Color.Transparent.toArgb()
+                window.navigationBarColor = Color.Transparent.toArgb()
+                WindowCompat.setDecorFitsSystemWindows(window, false)
+                WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = !darkTheme
+                WindowCompat.getInsetsController(window, view).isAppearanceLightNavigationBars = !darkTheme
+            }
         }
     }
+}
+
+private fun Context.findActivity(): Activity? {
+    var context = this
+    while (context is ContextWrapper) {
+        if (context is Activity) return context
+        context = context.baseContext
+    }
+    return null
 }
 
 @RequiresApi(Build.VERSION_CODES.S)

@@ -194,7 +194,7 @@ class QuoteViewModel constructor(private val codeCreditCard:Int,
         interestValue.reset("")
         isNew.value = true
 
-        loading.value = true
+        loading.value = false
 
         validate = false
 
@@ -219,32 +219,36 @@ class QuoteViewModel constructor(private val codeCreditCard:Int,
     }
 
     fun create(){
+        validate()
         if(validate) {
             boughtSvc?.let {
-                val id = it.create(bought!!,prefs.simulator)
-                if(id > 0) {
-                    buyCreditCardSettingSvc?.let{svc->
-                        settingName.value?.let{svc.createOrUpdate(getBuyCreditCardSetting(id,it.value?.first!!))
-                        }?:buySetting?.let {svc.delete(it.id)}
-                    }
-                    tagSvc?.let { svc ->
-                        tagSelected.value?.let{svc.createOrUpdate(it.value?.id?:0,id)}
-                    }
-                    navController?.let { navController ->
-                        Toast.makeText(
-                            navController.context,
-                            R.string.toast_successful_insert,
-                            Toast.LENGTH_SHORT
-                        ).show().also {
-                            navController.popBackStack()
+                bought?.let { bought ->
+                    val id = it.create(bought, prefs.simulator)
+                    if (id > 0) {
+                        buyCreditCardSettingSvc?.let { svc ->
+                            settingName.value.value?.let { value ->
+                                svc.createOrUpdate(getBuyCreditCardSetting(id, value.first))
+                            } ?: buySetting?.let { svc.delete(it.id) }
                         }
+                        tagSvc?.let { svc ->
+                            tagSelected.value.value?.let { value -> svc.createOrUpdate(value.id, id) }
+                        }
+                        navController?.let { navController ->
+                            Toast.makeText(
+                                navController.context,
+                                R.string.toast_successful_insert,
+                                Toast.LENGTH_SHORT
+                            ).show().also {
+                                navController.popBackStack()
+                            }
+                        }
+                    } else {
+                        Toast.makeText(
+                            navController?.context,
+                            R.string.toast_unsuccessful_insert,
+                            Toast.LENGTH_SHORT
+                        ).show()
                     }
-                }else {
-                    Toast.makeText(
-                        navController?.context,
-                        R.string.toast_unsuccessful_insert,
-                        Toast.LENGTH_SHORT
-                    ).show()
                 }
             }
         }
@@ -254,30 +258,33 @@ class QuoteViewModel constructor(private val codeCreditCard:Int,
         validate()
         if(validate) {
             boughtSvc?.let {
-                val id = it.create(bought!!,prefs.simulator)
-                if(id > 0) {
-                    buyCreditCardSettingSvc?.let{svc->
-                        settingName.value?.let{svc.createOrUpdate(getBuyCreditCardSetting(id,it.value?.first!!))
-                        }?:buySetting?.let {svc.delete(it.id)}
-                    }
-                    tagSvc?.let { svc ->
-                        tagSelected.value?.let{svc.createOrUpdate(it.value?.id!!,id)}
-                    }
-                    navController?.let { navController ->
-                        Toast.makeText(
-                            navController.context,
-                            R.string.toast_successful_insert,
-                            Toast.LENGTH_SHORT
-                        ).show().also {
-                            clear()
+                bought?.let { bought ->
+                    val id = it.create(bought, prefs.simulator)
+                    if (id > 0) {
+                        buyCreditCardSettingSvc?.let { svc ->
+                            settingName.value.value?.let { value ->
+                                svc.createOrUpdate(getBuyCreditCardSetting(id, value.first))
+                            } ?: buySetting?.let { svc.delete(it.id) }
                         }
+                        tagSvc?.let { svc ->
+                            tagSelected.value.value?.let { value -> svc.createOrUpdate(value.id, id) }
+                        }
+                        navController?.let { navController ->
+                            Toast.makeText(
+                                navController.context,
+                                R.string.toast_successful_insert,
+                                Toast.LENGTH_SHORT
+                            ).show().also {
+                                clear()
+                            }
+                        }
+                    } else {
+                        Toast.makeText(
+                            navController?.context,
+                            R.string.toast_unsuccessful_insert,
+                            Toast.LENGTH_SHORT
+                        ).show()
                     }
-                }else {
-                    Toast.makeText(
-                        navController?.context,
-                        R.string.toast_unsuccessful_insert,
-                        Toast.LENGTH_SHORT
-                    ).show()
                 }
             }
         }
