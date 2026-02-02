@@ -30,5 +30,5 @@ Este documento contiene información clave sobre el proyecto para guiar futuras 
 - **compileSdk**: 36
 - **targetSdk**: 36
 - **minSdk**: 26 (Android 8.0)
-- **Edge-to-Edge**: Habilitado en `MainActivity`. Los layouts XML usan `fitsSystemWindows="true"`.
+- **Edge-to-Edge**: Habilitado en `MainActivity`. Los layouts XML usan `fitsSystemWindows="true"` en la Toolbar para integración perfecta con la barra de sistema.
 - **Protocolo de Permisos**: Se implementó diálogo de justificación (rationale) para permisos sensibles (SMS) según políticas de Google Play.

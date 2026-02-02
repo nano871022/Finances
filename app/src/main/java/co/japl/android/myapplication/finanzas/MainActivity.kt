@@ -46,11 +46,11 @@ class MainActivity : AppCompatActivity(){
     @Inject lateinit var subscribers:Map<Class<out ISMSObserver>,@JvmSuppressWildcards ISMSObserver>
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        val screen = installSplashScreen()
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
         val policy = StrictMode.ThreadPolicy.Builder().permitAll().build()
         StrictMode.setThreadPolicy(policy)
-        val screen = installSplashScreen()
         setContentView(R.layout.activity_main)
         bundle = savedInstanceState
         val drawLayout =  findViewById<DrawerLayout>(R.id.draw_layout)
@@ -61,6 +61,7 @@ class MainActivity : AppCompatActivity(){
         val toolbar = findViewById<Toolbar>(R.id.tool_bar)
         findViewById<NavigationView>(R.id.navigation_view).setNavigationItemSelectedListener(this::onNavigationItemSelected)
         setSupportActionBar(toolbar)
+        supportActionBar?.setDisplayShowTitleEnabled(false)
         setupActionBarWithNavController(navController,appBarConfiguration)
         if(isTablet()) {
             drawLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_OPEN)
