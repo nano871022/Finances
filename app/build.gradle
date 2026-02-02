@@ -12,12 +12,12 @@ plugins {
 }
 
 android {
-    compileSdk 35
+    compileSdk 36
 
     defaultConfig {
         applicationId "co.japl.android.myapplication"
         minSdk 21
-        targetSdk 35
+        targetSdk 36
         versionCode 4_05_26_145
         versionName "V 4.05.25 build 144 Migration Projection view and additional credit"
 

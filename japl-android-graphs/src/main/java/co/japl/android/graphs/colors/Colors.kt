@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.Color
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.core.content.ContextCompat
 import co.japl.android.graphs.R
 import co.japl.android.graphs.pojo.PiecePie
 
@@ -31,10 +32,10 @@ class Colors constructor(val context:Context,val draws:MutableList<PiecePie>){
         R.color.graphic19,
         R.color.graphic20)
     fun getColor(color:Int):Int{
-        return context.getColor(color)
+        return ContextCompat.getColor(context, color)
     }
 
     fun getColor(): Int {
-        return context.getColor(colors[draws.size % colors.size])
+        return ContextCompat.getColor(context, colors[draws.size % colors.size])
     }
 }

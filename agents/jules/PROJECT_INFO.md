@@ -27,6 +27,7 @@ Este documento contiene información clave sobre el proyecto para guiar futuras 
 - Para disparar un build de prueba: push a una rama con `[BUILD]` en el comentario.
 
 ## Configuración de SDK (Ajustado)
-- **compileSdk**: 35 (Android 15)
-- **targetSdk**: 35
+- **compileSdk**: 36
+- **targetSdk**: 36
 - **minSdk**: 21 (Android 5.0) - Requerido para Jetpack Compose.
+- **Edge-to-Edge**: Habilitado en `MainActivity`. Los layouts XML usan `fitsSystemWindows="true"`.

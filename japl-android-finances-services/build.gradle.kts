@@ -9,7 +9,7 @@ plugins {
 
 android {
     namespace = "co.japl.android.finances.services"
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
         minSdk = 21
