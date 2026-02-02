@@ -36,13 +36,13 @@ import java.time.LocalDateTime
 import java.time.YearMonth
 
 @Composable
-fun BoughList(data:BoughtCreditCard,prefs:Prefs,loader:MutableState<Boolean>){
+fun BoughList(data:BoughtCreditCard,prefs:Prefs,loader:MutableState<Boolean>, colorPendingValue:Color = Color.Unspecified){
 
     LazyColumn {
 
         items(data.group.size) {
             val key = data.group.keys.toList()[it]
-            MonthlyBoughtCreditCard(key,data.group[key]!!,data.creditCard,data.differQuotes,data.cutOff,prefs,loader=loader)
+            MonthlyBoughtCreditCard(key,data.group[key]!!,data.creditCard,data.differQuotes,data.cutOff,prefs,loader=loader, colorPendingValue = colorPendingValue)
         }
 
         item {
@@ -53,7 +53,7 @@ fun BoughList(data:BoughtCreditCard,prefs:Prefs,loader:MutableState<Boolean>){
 }
 
 @Composable
-private fun MonthlyBoughtCreditCard(key:YearMonth,list:List<CreditCardBoughtItemDTO>,creditCard:CreditCardDTO,differQuotes:List<DifferInstallmentDTO>,cutOff:LocalDateTime,prefs:Prefs ,loader: MutableState<Boolean>) {
+private fun MonthlyBoughtCreditCard(key:YearMonth,list:List<CreditCardBoughtItemDTO>,creditCard:CreditCardDTO,differQuotes:List<DifferInstallmentDTO>,cutOff:LocalDateTime,prefs:Prefs ,loader: MutableState<Boolean>, colorPendingValue:Color = Color.Unspecified) {
     val monthlyState = remember {
         BoughtMonthlyViewModel(key
             ,list
@@ -76,7 +76,7 @@ private fun MonthlyBoughtCreditCard(key:YearMonth,list:List<CreditCardBoughtItem
 
             if (monthlyState.state.value) {
                 for (item in monthlyState.list) {
-                    RecordBoughtCreditCard(item, creditCard, differQuotes, cutOff, prefs = prefs,loader=loader)
+                    RecordBoughtCreditCard(item, creditCard, differQuotes, cutOff, prefs = prefs,loader=loader, colorPendingValue = colorPendingValue)
                 }
             }
         }

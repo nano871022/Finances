@@ -29,6 +29,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.painterResource
@@ -56,7 +57,7 @@ import java.time.format.DateTimeFormatter
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-internal fun RecordBoughtCreditCard(bought: CreditCardBoughtItemDTO, creditCard: CreditCardDTO, differQuotes:List<DifferInstallmentDTO>, cutOff: LocalDateTime, view:View= LocalView.current, navController: NavController? = Navigation.findNavController(view),prefs:Prefs,loader:MutableState<Boolean>) {
+internal fun RecordBoughtCreditCard(bought: CreditCardBoughtItemDTO, creditCard: CreditCardDTO, differQuotes:List<DifferInstallmentDTO>, cutOff: LocalDateTime, view:View= LocalView.current, navController: NavController? = Navigation.findNavController(view),prefs:Prefs,loader:MutableState<Boolean>, colorPendingValue:Color = Color.Unspecified) {
     val context = LocalContext.current
     val application = context.applicationContext
 
@@ -85,7 +86,7 @@ internal fun RecordBoughtCreditCard(bought: CreditCardBoughtItemDTO, creditCard:
         ) {
             MainRow(model = model)
             if (state.value) {
-                Content(model)
+                Content(model, colorPendingValue = colorPendingValue)
             }
         }
     }
@@ -93,18 +94,18 @@ internal fun RecordBoughtCreditCard(bought: CreditCardBoughtItemDTO, creditCard:
 
 @SuppressLint("UnusedBoxWithConstraintsScope")
 @Composable
-private fun Content(model:BoughtViewModel){
+private fun Content(model:BoughtViewModel, colorPendingValue:Color = Color.Unspecified){
     BoxWithConstraints {
         if(WindowWidthSize.MEDIUM.isEqualTo(maxWidth)){
-            ContentCompact(model )
+            ContentCompact(model, colorPendingValue = colorPendingValue)
         }else{
-            ContentLarge(model)
+            ContentLarge(model, colorPendingValue = colorPendingValue)
         }
     }
 }
 
 @Composable
-private fun ContentLarge(model: BoughtViewModel,paddingEnd:Dp=10.dp){
+private fun ContentLarge(model: BoughtViewModel,paddingEnd:Dp=10.dp, colorPendingValue:Color = Color.Unspecified){
     Row (verticalAlignment = Alignment.CenterVertically) {
         LabelValue(
             label = R.string.product_value_short,
@@ -119,7 +120,8 @@ private fun ContentLarge(model: BoughtViewModel,paddingEnd:Dp=10.dp){
             value = NumbersUtil.COPtoString(model.bought.pendingToPay),
             modifier = Modifier
                 .weight(1f)
-                .padding(end = paddingEnd)
+                .padding(end = paddingEnd),
+            color = colorPendingValue
         )
 
         LabelValue(
@@ -142,7 +144,7 @@ private fun ContentLarge(model: BoughtViewModel,paddingEnd:Dp=10.dp){
 
 
 @Composable
-private fun ContentCompact(model:BoughtViewModel,paddingEnd:Dp=10.dp){
+private fun ContentCompact(model:BoughtViewModel,paddingEnd:Dp=10.dp, colorPendingValue:Color = Color.Unspecified){
     Column {
         Row(
             modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically
@@ -160,7 +162,8 @@ private fun ContentCompact(model:BoughtViewModel,paddingEnd:Dp=10.dp){
                 value = NumbersUtil.COPtoString(model.bought.pendingToPay),
                 modifier = Modifier
                     .weight(1f)
-                    .padding(end = paddingEnd)
+                    .padding(end = paddingEnd),
+                color = colorPendingValue
             )
         }
         Row(
@@ -296,9 +299,9 @@ private fun RowScope.MainRowLarge(model:BoughtViewModel){
 }
 
 @Composable
-private fun LabelValue(@StringRes label:Int, value:String, modifier:Modifier){
+private fun LabelValue(@StringRes label:Int, value:String, modifier:Modifier, color:Color = Color.Unspecified){
     Text(text = stringResource(id = label), modifier = modifier)
-    Text(text = value, modifier = modifier, textAlign = TextAlign.End)
+    Text(text = value, modifier = modifier, textAlign = TextAlign.End, color = color)
 }
 
 @RequiresApi(Build.VERSION_CODES.S)
@@ -343,6 +346,7 @@ fun Preview(){
             warningValue = 0.toBigDecimal(),
             status = true
         ), listOf(), LocalDateTime.now(), LocalView.current,null,prefs, remember{mutableStateOf(false)}
+            , colorPendingValue = Color(0xFFFFA500)
         )
     }
 }
