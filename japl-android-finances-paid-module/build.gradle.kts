@@ -6,10 +6,10 @@ plugins {
 
 android {
     namespace = "co.com.japl.module.paid"
-    compileSdk = 36
+    compileSdk = 35
 
     defaultConfig {
-        minSdk = 26
+        minSdk = 21
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
@@ -27,20 +27,7 @@ android {
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_21
         targetCompatibility = JavaVersion.VERSION_21
-    }
-    composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.12"
-    }
-    buildFeatures {
-        compose = true
-    }
-    packaging {
-        resources {
-            excludes += "/META-INF/{AL2.0,LGPL2.1}"
-        }
-    }
-    kotlinOptions {
-        jvmTarget = "21"
+        isCoreLibraryDesugaringEnabled = true
     }
     composeOptions {
         kotlinCompilerExtensionVersion = "1.5.12"
@@ -59,6 +46,7 @@ android {
 }
 
 dependencies {
+    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.0.4")
     implementation(project(":ui"))
     implementation(project(":japl-finances-iports"))
     implementation(project(":japl-android-graphs"))

@@ -44,7 +44,6 @@ class MainActivity : AppCompatActivity(){
     @Inject lateinit var smsBroadcastReceiver: ISMSBoadcastReceiver
     @Inject lateinit var subscribers:Map<Class<out ISMSObserver>,@JvmSuppressWildcards ISMSObserver>
 
-    @RequiresApi(Build.VERSION_CODES.R)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val policy = StrictMode.ThreadPolicy.Builder().permitAll().build()

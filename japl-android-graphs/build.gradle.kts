@@ -5,10 +5,10 @@ plugins {
 
 android {
     namespace = "co.japl.android.graphs"
-    compileSdk = 36
+    compileSdk = 35
 
     defaultConfig {
-        minSdk = 26
+        minSdk = 21
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
@@ -26,10 +26,15 @@ android {
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_21
         targetCompatibility = JavaVersion.VERSION_21
+        isCoreLibraryDesugaringEnabled = true
+    }
+    kotlinOptions {
+        jvmTarget = "21"
     }
 }
 
 dependencies {
+    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.0.4")
     implementation("androidx.core:core-ktx:1.13.1")
     implementation(platform("org.jetbrains.kotlin:kotlin-bom:2.0.0"))
     implementation("androidx.appcompat:appcompat:1.7.0")
