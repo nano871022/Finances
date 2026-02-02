@@ -5,7 +5,9 @@ import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -41,6 +43,10 @@ fun BoughList(data:BoughtCreditCard,prefs:Prefs,loader:MutableState<Boolean>){
         items(data.group.size) {
             val key = data.group.keys.toList()[it]
             MonthlyBoughtCreditCard(key,data.group[key]!!,data.creditCard,data.differQuotes,data.cutOff,prefs,loader=loader)
+        }
+
+        item {
+            Spacer(modifier = Modifier.height(100.dp))
         }
 
     }
