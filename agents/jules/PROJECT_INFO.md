@@ -31,3 +31,4 @@ Este documento contiene información clave sobre el proyecto para guiar futuras 
 - **targetSdk**: 36
 - **minSdk**: 21 (Android 5.0) - Requerido para Jetpack Compose.
 - **Edge-to-Edge**: Habilitado en `MainActivity`. Los layouts XML usan `fitsSystemWindows="true"`.
+- **Protocolo de Permisos**: Se implementó diálogo de justificación (rationale) para permisos sensibles (SMS) según políticas de Google Play.

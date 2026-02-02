@@ -65,14 +65,7 @@ class MainActivity : AppCompatActivity(){
         if(isTablet()) {
             drawLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_OPEN)
         }
-        if(ContextCompat.checkSelfPermission(applicationContext, Manifest.permission.READ_SMS) != PackageManager.PERMISSION_GRANTED){
-            ActivityCompat.requestPermissions(this,
-                Arrays.asList(Manifest.permission.READ_SMS).toTypedArray(),1)
-        }
-        if(ContextCompat.checkSelfPermission(applicationContext, Manifest.permission.RECEIVE_SMS) != PackageManager.PERMISSION_GRANTED){
-            ActivityCompat.requestPermissions(this,
-                Arrays.asList(Manifest.permission.RECEIVE_SMS).toTypedArray(),1)
-        }
+        checkAndRequestSmsPermissions()
 
         subscribers?.values?.toList()?.takeIf { it.isNotEmpty() }?.let {
             registerReceiver(
@@ -129,6 +122,28 @@ class MainActivity : AppCompatActivity(){
             return true
         }
         return false
+    }
+
+    private fun checkAndRequestSmsPermissions() {
+        val permissions = arrayOf(Manifest.permission.READ_SMS, Manifest.permission.RECEIVE_SMS)
+        val missingPermissions = permissions.filter {
+            ContextCompat.checkSelfPermission(this, it) != PackageManager.PERMISSION_GRANTED
+        }
+
+        if (missingPermissions.isNotEmpty()) {
+            showPermissionRationaleDialog(missingPermissions.toTypedArray())
+        }
+    }
+
+    private fun showPermissionRationaleDialog(permissions: Array<String>) {
+        androidx.appcompat.app.AlertDialog.Builder(this)
+            .setTitle(R.string.permission_sms_rationale_title)
+            .setMessage(R.string.permission_sms_rationale_message)
+            .setPositiveButton(R.string.ok) { _, _ ->
+                ActivityCompat.requestPermissions(this, permissions, 1)
+            }
+            .setNegativeButton(R.string.cancel, null)
+            .show()
     }
 
     override fun onSupportNavigateUp(): Boolean {

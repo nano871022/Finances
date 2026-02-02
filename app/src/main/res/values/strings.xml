@@ -490,4 +490,7 @@
     <string name="dont_restore_payment_successfull">No se logro restaurar correctamente</string>
     <string name="do_you_want_to_restore_this_record">¿Desea restaurar este registro al valor original?</string>
     <string name="no_records">No se encontraron registros</string>
+    <string name="permission_sms_rationale_title">Permiso de SMS requerido</string>
+    <string name="permission_sms_rationale_message">Esta aplicación necesita acceder a sus mensajes de texto para detectar automáticamente las notificaciones de transacciones de sus bancos y ayudarle a gestionar sus finanzas de forma más sencilla.</string>
+    <string name="ok">Aceptar</string>
 </resources>
