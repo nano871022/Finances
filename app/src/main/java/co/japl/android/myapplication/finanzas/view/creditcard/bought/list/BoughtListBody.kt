@@ -304,8 +304,8 @@ private fun getInstallmentColor(month: Int, monthPaid: Long): Color {
     return when {
         remaining > 5 -> Color.Red
         remaining == 5L -> Color.White
-        remaining == 4L -> Color.Blue
-        remaining == 3L -> Color(0xFF800080) // Purple
+        remaining == 4L -> Color(0x6DB4ED80)
+        remaining == 3L -> Color(0xE7D4FA80) // Purple
         remaining == 2L -> Color(0xFFFFA500) // Orange
         else -> Color.Unspecified
     }
