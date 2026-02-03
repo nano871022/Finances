@@ -28,6 +28,10 @@ android {
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_21
         targetCompatibility = JavaVersion.VERSION_21
+        isCoreLibraryDesugaringEnabled = true
+    }
+    kotlinOptions {
+        jvmTarget = "21"
     }
     composeOptions {
         kotlinCompilerExtensionVersion = "1.5.14"
@@ -43,6 +47,7 @@ android {
 }
 
 dependencies {
+    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.0.4")
     implementation(project(":ui"))
     implementation(project(":japl-finances-iports"))
     implementation(project(":japl-android-graphs"))

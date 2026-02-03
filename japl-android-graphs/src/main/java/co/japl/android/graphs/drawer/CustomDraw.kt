@@ -33,13 +33,11 @@ class CustomDraw constructor (context:Context, attributeSet: AttributeSet):View(
         piecePie.drawBackground()
     }
 
-       @RequiresApi(Build.VERSION_CODES.R)
        override fun onDraw(canvas:Canvas){
            drawable.draw(canvas)
            piecePie.drawing(canvas)
        }
 
-    @RequiresApi(Build.VERSION_CODES.O)
     fun addPiece(title:String, value:Double){
         piecePie.addPiece(title,value)
     }

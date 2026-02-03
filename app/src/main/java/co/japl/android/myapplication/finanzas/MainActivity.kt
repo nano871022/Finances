@@ -13,6 +13,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
 import androidx.annotation.RequiresApi
+import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.app.ActivityCompat
@@ -44,12 +45,12 @@ class MainActivity : AppCompatActivity(){
     @Inject lateinit var smsBroadcastReceiver: ISMSBoadcastReceiver
     @Inject lateinit var subscribers:Map<Class<out ISMSObserver>,@JvmSuppressWildcards ISMSObserver>
 
-    @RequiresApi(Build.VERSION_CODES.R)
     override fun onCreate(savedInstanceState: Bundle?) {
+        val screen = installSplashScreen()
+        enableEdgeToEdge()
         super.onCreate(savedInstanceState)
         val policy = StrictMode.ThreadPolicy.Builder().permitAll().build()
         StrictMode.setThreadPolicy(policy)
-        val screen = installSplashScreen()
         setContentView(R.layout.activity_main)
         bundle = savedInstanceState
         val drawLayout =  findViewById<DrawerLayout>(R.id.draw_layout)
@@ -60,18 +61,12 @@ class MainActivity : AppCompatActivity(){
         val toolbar = findViewById<Toolbar>(R.id.tool_bar)
         findViewById<NavigationView>(R.id.navigation_view).setNavigationItemSelectedListener(this::onNavigationItemSelected)
         setSupportActionBar(toolbar)
+        supportActionBar?.setDisplayShowTitleEnabled(false)
         setupActionBarWithNavController(navController,appBarConfiguration)
         if(isTablet()) {
             drawLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_OPEN)
         }
-        if(ContextCompat.checkSelfPermission(applicationContext, Manifest.permission.READ_SMS) != PackageManager.PERMISSION_GRANTED){
-            ActivityCompat.requestPermissions(this,
-                Arrays.asList(Manifest.permission.READ_SMS).toTypedArray(),1)
-        }
-        if(ContextCompat.checkSelfPermission(applicationContext, Manifest.permission.RECEIVE_SMS) != PackageManager.PERMISSION_GRANTED){
-            ActivityCompat.requestPermissions(this,
-                Arrays.asList(Manifest.permission.RECEIVE_SMS).toTypedArray(),1)
-        }
+        checkAndRequestSmsPermissions()
 
         subscribers?.values?.toList()?.takeIf { it.isNotEmpty() }?.let {
             registerReceiver(
@@ -128,6 +123,28 @@ class MainActivity : AppCompatActivity(){
             return true
         }
         return false
+    }
+
+    private fun checkAndRequestSmsPermissions() {
+        val permissions = arrayOf(Manifest.permission.READ_SMS, Manifest.permission.RECEIVE_SMS)
+        val missingPermissions = permissions.filter {
+            ContextCompat.checkSelfPermission(this, it) != PackageManager.PERMISSION_GRANTED
+        }
+
+        if (missingPermissions.isNotEmpty()) {
+            showPermissionRationaleDialog(missingPermissions.toTypedArray())
+        }
+    }
+
+    private fun showPermissionRationaleDialog(permissions: Array<String>) {
+        androidx.appcompat.app.AlertDialog.Builder(this)
+            .setTitle(R.string.permission_sms_rationale_title)
+            .setMessage(R.string.permission_sms_rationale_message)
+            .setPositiveButton(R.string.ok) { _, _ ->
+                ActivityCompat.requestPermissions(this, permissions, 1)
+            }
+            .setNegativeButton(R.string.cancel, null)
+            .show()
     }
 
     override fun onSupportNavigateUp(): Boolean {

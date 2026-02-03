@@ -143,7 +143,6 @@ class PieceOfPie constructor(val context:Context):IGraph{
         return null
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
     private fun drawSelected(selected:PiecePie?,canvas: Canvas,total:Double){
         if(selected != null) {
             Log.d(javaClass.name, "selected: $selected")
@@ -264,7 +263,6 @@ class PieceOfPie constructor(val context:Context):IGraph{
         }
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
     override fun drawing(canvas: Canvas){
         lastYTitle = ((context.resources.displayMetrics.density * fontSize) + 20)
         val total = draws.sumOf { it.value }
@@ -292,7 +290,6 @@ class PieceOfPie constructor(val context:Context):IGraph{
         drawSelected(selected, canvas, total)
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
     override fun addPiece(title:String, value:Double){
         val color = colors.getColor()
         val piecePie = PiecePie(color,title,value)

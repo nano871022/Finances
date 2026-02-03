@@ -16,9 +16,10 @@ android {
 
     defaultConfig {
         applicationId "co.japl.android.myapplication"
-        minSdk 35
-        versionCode 4_05_26_145
-        versionName "V 4.05.25 build 144 Migration Projection view and additional credit"
+        minSdk 26
+        targetSdk 36
+        versionCode 4_05_26_150
+        versionName "V 4.05.26 build 150 Fix issues interface"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -44,6 +45,11 @@ android {
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_21
         targetCompatibility JavaVersion.VERSION_21
+        coreLibraryDesugaringEnabled true
+    }
+
+    kotlinOptions {
+        jvmTarget = "21"
     }
 
     buildFeatures {
@@ -72,6 +78,7 @@ android {
 
 
 dependencies {
+    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.0.4'
 
     implementation(project(':japl-android-finances-core'))
     implementation(project(':japl-android-finances-services'))
