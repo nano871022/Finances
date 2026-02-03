@@ -275,13 +275,13 @@ private fun MainRow(model:BoughtViewModel){
 
 @Composable
 private fun RowScope.MainRowCompact(model:BoughtViewModel){
-    Text(text = "${model.bought.monthPaid}/${model.bought.month}")
+    Text(text = "${model.bought.monthPaid}/${model.bought.month}", color = getInstallmentColor(model.bought.month, model.bought.monthPaid))
 }
 
 @Composable
 private fun RowScope.MainRowMedium(model:BoughtViewModel){
     Log.w(javaClass.name,"=== MainRowMedium ")
-    Text(text = "${model.bought.monthPaid}/${model.bought.month}")
+    Text(text = "${model.bought.monthPaid}/${model.bought.month}", color = getInstallmentColor(model.bought.month, model.bought.monthPaid))
 
     Text(text = NumbersUtil.COPtoString(model.bought.quoteValue),modifier=Modifier.padding(start=5.dp))
 }
@@ -291,11 +291,24 @@ private fun RowScope.MainRowLarge(model:BoughtViewModel){
 
     Text(text = "${(model.bought.interest * 100).toBigDecimal().setScale(2, RoundingMode.CEILING)}% ${model.bought.kindOfTax.getName()}",modifier=Modifier.padding(end=10.dp))
 
-    Text(text = "${model.bought.monthPaid}/${model.bought.month}")
+    Text(text = "${model.bought.monthPaid}/${model.bought.month}", color = getInstallmentColor(model.bought.month, model.bought.monthPaid))
 
     Text(text = stringResource(id = R.string.quote_value),modifier=Modifier.padding(start=10.dp,end=3.dp))
 
     Text(text = NumbersUtil.COPtoString(model.bought.quoteValue))
+}
+
+@Composable
+private fun getInstallmentColor(month: Int, monthPaid: Long): Color {
+    val remaining = month - monthPaid
+    return when {
+        remaining > 5 -> Color.Red
+        remaining == 5L -> Color.White
+        remaining == 4L -> Color.Blue
+        remaining == 3L -> Color(0xFF800080) // Purple
+        remaining == 2L -> Color(0xFFFFA500) // Orange
+        else -> Color.Unspecified
+    }
 }
 
 @Composable

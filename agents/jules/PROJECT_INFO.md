@@ -32,3 +32,4 @@ Este documento contiene información clave sobre el proyecto para guiar futuras 
 - **minSdk**: 26 (Android 8.0)
 - **Edge-to-Edge**: Habilitado en `MainActivity`. Los layouts XML usan `fitsSystemWindows="true"` en la Toolbar para integración perfecta con la barra de sistema.
 - **Protocolo de Permisos**: Se implementó diálogo de justificación (rationale) para permisos sensibles (SMS) según políticas de Google Play.
+- **Codificación de Colores en Cuotas**: En el listado de compras con tarjeta de crédito, la comparación de cuotas (ej. 5/10) cambia de color según las cuotas faltantes: >5: Rojo, 5: Blanco, 4: Azul, 3: Morado, 2: Naranja, 1: Por defecto.
