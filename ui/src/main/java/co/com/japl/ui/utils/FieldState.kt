@@ -74,7 +74,12 @@ class FieldState<T> constructor(
         }
     }
 
-    fun validate():Boolean = validator.invoke(value.value)
+    fun validate():Boolean {
+        touched = true
+        val result = validator.invoke(value.value)
+        error.value = result.not()
+        return result
+    }
 
     fun reset(initialValue:T){
         savedStateHandler[key] = initialValue
