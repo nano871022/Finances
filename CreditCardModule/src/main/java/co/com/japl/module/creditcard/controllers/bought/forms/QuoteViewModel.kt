@@ -368,13 +368,23 @@ class QuoteViewModel constructor(private val codeCreditCard:Int,
         var month = true
 
         validate = true
-        nameProduct.validate().not().or(nameProduct.error.value).takeIf { it }?.let{validate = false}
+        nameProduct.validate().not().takeIf { it }?.let{validate = false}
 
-        valueProduct.validate().not().or(valueProduct.error.value).takeIf { it }?.let { validate = false; value = false }
+        valueProduct.validate().not().takeIf { it }?.let { validate = false; value = false }
 
-        monthProduct.validate().not().or(monthProduct.error.value).takeIf { it }?.let { validate = false; month = false}
+        monthProduct.validate().not().takeIf { it }?.let { validate = false; month = false}
 
-        dateBought.validate().not().or(dateBought.error.value).takeIf { it }?.let { validate = false }
+        dateBought.validate().not().takeIf { it }?.let { validate = false }
+
+        creditCardName.validate().not().takeIf { it }?.let { validate = false }
+
+        creditRate.validate().not().takeIf { it }?.let { validate = false }
+
+        settingKind.validate().not().takeIf { it }?.let { validate = false }
+
+        settingName.validate().not().takeIf { it }?.let { validate = false }
+
+        tagSelected.validate().not().takeIf { it }?.let { validate = false }
 
         calculateValues(month,value)
 
