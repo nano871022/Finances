@@ -76,8 +76,9 @@ class FieldState<T> constructor(
 
     fun validate():Boolean {
         touched = true
-        error.value = validator.invoke(value.value).not()
-        return validator.invoke(value.value)
+        val result = validator.invoke(value.value)
+        error.value = result.not()
+        return result
     }
 
     fun reset(initialValue:T){
