@@ -296,11 +296,12 @@ class QuoteViewModel constructor(private val codeCreditCard:Int,
             boughtSvc?.let {
                 if(it.update(bought!!,prefs.simulator)) {
                     buyCreditCardSettingSvc?.let{svc->
-                        settingName.value?.let{bought?.let{dto->svc.createOrUpdate(getBuyCreditCardSetting(dto.id,it.value?.first!!))}
+                        settingName.value.value?.let{ value ->
+                            bought?.let{dto->svc.createOrUpdate(getBuyCreditCardSetting(dto.id,value.first))}
                         }?:buySetting?.let {svc.delete(it.id)}
                     }
                     tagSvc?.let { svc ->
-                        tagSelected.value?.let{svc.createOrUpdate(it.value?.id!!,codeBought)}
+                        tagSelected.value.value?.let{svc.createOrUpdate(it.id,codeBought)}
                     }
                     navController?.let { navController ->
                         Toast.makeText(
