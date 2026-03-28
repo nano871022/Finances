@@ -380,11 +380,11 @@ class QuoteViewModel constructor(private val codeCreditCard:Int,
 
         creditRate.validate().not().takeIf { it }?.let { validate = false }
 
-        settingKind.validate().not().takeIf { it }?.let { validate = false }
+        //settingKind.validate().not().takeIf { it }?.let { validate = false }
 
-        settingName.validate().not().takeIf { it }?.let { validate = false }
+        //settingName.validate().not().takeIf { it }?.let { validate = false }
 
-        tagSelected.validate().not().takeIf { it }?.let { validate = false }
+        //tagSelected.validate().not().takeIf { it }?.let { validate = false }
 
         calculateValues(month,value)
 
