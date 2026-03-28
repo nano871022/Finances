@@ -84,7 +84,7 @@ class QuoteViewModel constructor(private val codeCreditCard:Int,
         savedStateHandle!!,
         "FORM_VALUE_PRODUCT",
         initialValue = "",
-        validator = {it.isNotBlank() && NumbersUtil.isNumber(it)},
+        validator = {it.isNotBlank() && NumbersUtil.isNumber(it) && it.doubleValue() != 0.0},
         onValueChangeCallBack = { bought?.valueItem = NumbersUtil.toBigDecimal(it); validate() }
     )
     val monthProduct = initialFieldState(
