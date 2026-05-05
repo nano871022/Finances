@@ -82,7 +82,9 @@ class FormViewModel @Inject constructor(
         key="FORM_CREDIT_RATE",
         initialValue = 0.0,
         validator = { it > 0.0 },
-        formatter = {NumbersUtil.toBigDecimal(it).toDouble()},
+        formatter = {
+            NumbersUtil.toBigDecimal(it).toDouble()
+        },
         onValueChangeCallBack = {cr ->
             _simulator.update {
                 it.copy(tax = cr.toDouble())
@@ -110,7 +112,9 @@ class FormViewModel @Inject constructor(
         key="FORM_MONTH",
         initialValue = 0,
         validator = { it > 0 },
-        formatter = {NumbersUtil.toBigDecimal(it).toInt()},
+        formatter = {
+            NumbersUtil.toBigDecimal(it).toInt()
+        },
         onValueChangeCallBack = {mon->
             _simulator.update{
                 it.copy(periods = mon.toShort())

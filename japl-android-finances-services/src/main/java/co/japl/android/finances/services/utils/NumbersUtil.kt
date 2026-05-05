@@ -35,42 +35,68 @@ class NumbersUtil {
 
         fun toString(field:EditText): String{
             return if(field.text?.isNotBlank() == true) {
+                try {
                  toString(field.text.toString().replace(",", "").toBigDecimal())
+                }catch(e:Exception){
+                    ""
+                }
             }else{
                 ""
             }
         }
 
         fun stringCOPToBigDecimal(value:String):BigDecimal{
-            return if(value.isEmpty()){
+            return if(value.trim().isEmpty()){
                 BigDecimal.ZERO
             }else {
-                value.replace(" ", "").replace("$", "").replace("'", "").replace(",", "").trim().toBigDecimal()
+                try {
+                    value.replace(" ", "").replace("$", "").replace("'", "").replace(",", "").trim().toBigDecimal()
+                }catch(e:Exception){
+                    BigDecimal.ZERO
+                }
             }
         }
 
         fun toBigDecimal(field:EditText):BigDecimal{
             return if(field.text?.isNotBlank() == true) {
-                field.text.toString().replace("$", "").replace(",", "").trim().toBigDecimal()
+                try {
+                    field.text.toString().replace("$", "").replace(",", "").trim().toBigDecimal()
+                }catch(e:Exception){
+                    BigDecimal.ZERO
+                }
             }else{
                 BigDecimal.ZERO
             }
         }
 
         fun toBigDecimal(field:String):BigDecimal{
-            return field?.takeIf { it.isNotBlank() }?.let { it.toString().replace("$", "").replace(",", "").trim().toBigDecimal() }?:BigDecimal.ZERO
+            return field?.takeIf { it.trim().isNotBlank() }?.let {
+                try {
+                    it.toString().replace("$", "").replace(",", "").trim().toBigDecimal()
+                }catch(e:Exception){
+                    BigDecimal.ZERO
+                }
+            }?:BigDecimal.ZERO
         }
         fun toBigDecimal(field:TextView):BigDecimal{
             return if(field.text?.isNotBlank() == true) {
-                field.text.toString().replace("$", "").replace(",", "").trim().toBigDecimal()
+                try {
+                    field.text.toString().replace("$", "").replace(",", "").trim().toBigDecimal()
+                }catch(e:Exception){
+                    BigDecimal.ZERO
+                }
             }else{
                 BigDecimal.ZERO
             }
         }
 
         fun toDouble(field:TextView):Double{
-            return if(field.text?.isNotBlank() == true){
-                field.text.toString().replace(",","").replace("%","").trim().toDouble()
+            return if(field.text?.trim()?.isNotBlank() == true){
+                try {
+                    field.text.toString().replace(",","").replace("%","").trim().toDouble()
+                }catch(e:Exception){
+                    0.0
+                }
             }else{
                 0.0
             }
