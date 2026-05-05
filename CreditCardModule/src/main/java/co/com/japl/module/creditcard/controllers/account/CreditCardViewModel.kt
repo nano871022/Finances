@@ -38,18 +38,18 @@ class CreditCardViewModel constructor(private val codeCreditCard:Int?,private va
 
     fun validate(){
 
-        hasErrorName.value = name.value.isEmpty()
-        hasErrorQuoteMax.value = maxQuotes.value.isEmpty() || NumbersUtil.isNumber(maxQuotes.value).not() || maxQuotes.value.toInt() <= 0
-        hasErrorCutOfDay.value = cutOffDay.value.isEmpty() || NumbersUtil.isNumber(cutOffDay.value).not() || (cutOffDay.value.toInt() <= 0 && cutOffDay.value.toInt() > 30)
-        hasErrorWarning.value = warningValue.value.isEmpty() || NumbersUtil.isNumber(warningValue.value).not() || (NumbersUtil.toBigDecimal(warningValue.value) <= BigDecimal.ZERO)
+        hasErrorName.value = name.value.trim().isEmpty()
+        hasErrorQuoteMax.value = maxQuotes.value.trim().isEmpty() || NumbersUtil.isNumber(maxQuotes.value.trim()).not() || (maxQuotes.value.trim().toIntOrNull() ?: 0) <= 0
+        hasErrorCutOfDay.value = cutOffDay.value.trim().isEmpty() || NumbersUtil.isNumber(cutOffDay.value.trim()).not() || ((cutOffDay.value.trim().toIntOrNull() ?: 0) <= 0 || (cutOffDay.value.trim().toIntOrNull() ?: 0) > 31)
+        hasErrorWarning.value = warningValue.value.trim().isEmpty() || NumbersUtil.isNumber(warningValue.value.trim()).not() || (NumbersUtil.toBigDecimal(warningValue.value.trim()) <= BigDecimal.ZERO)
         showButtons.value = (hasErrorName.value || hasErrorQuoteMax.value || hasErrorCutOfDay.value || hasErrorWarning.value).not()
 
         if(showButtons.value) {
             _creditCardDto?.let {
-                it.name = name.value
-                it.maxQuotes = maxQuotes.value.toShort()
-                it.cutOffDay = cutOffDay.value.toShort()
-                it.warningValue = NumbersUtil.toBigDecimal(warningValue.value)
+                it.name = name.value.trim()
+                it.maxQuotes = maxQuotes.value.trim().toShortOrNull() ?: 0
+                it.cutOffDay = cutOffDay.value.trim().toShortOrNull() ?: 0
+                it.warningValue = NumbersUtil.toBigDecimal(warningValue.value.trim())
                 it.status = state.value
                 it.interest1Quote = interest1Quote.value
                 it.interest1NotQuote = interest1NotQuote.value

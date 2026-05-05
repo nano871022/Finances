@@ -43,35 +43,57 @@ class NumbersUtil {
         }
 
         fun stringCOPToBigDecimal(value:String):BigDecimal{
-            return if(value.isEmpty()){
+            return if(value.trim().isEmpty()){
                 BigDecimal.ZERO
             }else {
-                value.replace(" ", "").replace("$", "").replace("'", "").replace(",", "").trim().toBigDecimal()
+                try {
+                    value.replace(" ", "").replace("$", "").replace("'", "").replace(",", "").trim().toBigDecimal()
+                }catch(e:Exception){
+                    BigDecimal.ZERO
+                }
             }
         }
 
         fun toBigDecimal(field:EditText):BigDecimal{
             return if(field.text?.isNotBlank() == true) {
-                field.text.toString().replace("$", "").replace(",", "").trim().toBigDecimal()
+                try {
+                    field.text.toString().replace("$", "").replace(",", "").trim().toBigDecimal()
+                }catch(e:Exception){
+                    BigDecimal.ZERO
+                }
             }else{
                 BigDecimal.ZERO
             }
         }
 
         fun toBigDecimal(field:String):BigDecimal{
-            return field?.takeIf { it.isNotBlank() }?.let { it.toString().replace("$", "").replace(",", "").trim().toBigDecimal() }?:BigDecimal.ZERO
+            return field?.takeIf { it.trim().isNotBlank() }?.let {
+                try {
+                    it.toString().replace("$", "").replace(",", "").trim().toBigDecimal()
+                }catch(e:Exception){
+                    BigDecimal.ZERO
+                }
+            }?:BigDecimal.ZERO
         }
         fun toBigDecimal(field:TextView):BigDecimal{
             return if(field.text?.isNotBlank() == true) {
-                field.text.toString().replace("$", "").replace(",", "").trim().toBigDecimal()
+                try {
+                    field.text.toString().replace("$", "").replace(",", "").trim().toBigDecimal()
+                }catch(e:Exception){
+                    BigDecimal.ZERO
+                }
             }else{
                 BigDecimal.ZERO
             }
         }
 
         fun toDouble(field:TextView):Double{
-            return if(field.text?.isNotBlank() == true){
-                field.text.toString().replace(",","").replace("%","").trim().toDouble()
+            return if(field.text?.trim()?.isNotBlank() == true){
+                try {
+                    field.text.toString().replace(",","").replace("%","").trim().toDouble()
+                }catch(e:Exception){
+                    0.0
+                }
             }else{
                 0.0
             }
@@ -79,36 +101,45 @@ class NumbersUtil {
         }
 
         fun toDouble(value:String):Double{
-            return if(value?.isNotBlank() == true){
-                value.replace(",","").replace("%","").trim().toDouble()
+            return if(value?.trim()?.isNotBlank() == true){
+                try {
+                    value.replace(",","").replace("%","").trim().toDouble()
+                }catch(e:Exception){
+                    0.0
+                }
             }else{
                 0.0
             }
         }
         fun toLong(value:String):Long{
-            return if(value?.isNotBlank() == true){
-                value.replace(",","").replace("%","").trim().toLong()
+            return if(value?.trim()?.isNotBlank() == true){
+                try {
+                    value.replace(",","").replace("%","").trim().toLong()
+                }catch(e:Exception){
+                    0
+                }
             }else{
                 0
             }
         }
 
         fun isNumber(value:String):Boolean{
-            if(value.isEmpty()) return false
-            try{
-                toBigDecimal(value).toDouble()
-                return true
-            }catch(e:NumberFormatException){
-                return false
+            val cleanValue = value.trim().replace("$", "").replace(",", "")
+            if(cleanValue.isEmpty()) return false
+            return try{
+                cleanValue.toBigDecimal()
+                true
+            }catch(e:Exception){
+                false
             }
         }
         fun isIntNumber(value:String):Boolean{
-            if(value.isEmpty()) return false
-            try{
-                value.toInt()
-                return true
-            }catch(e:NumberFormatException){
-                return false
+            if(value.trim().isEmpty()) return false
+            return try{
+                value.trim().toInt()
+                true
+            }catch(e:Exception){
+                false
             }
         }
     }
