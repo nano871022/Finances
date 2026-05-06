@@ -61,10 +61,7 @@ fun CheckList(viewModel:CheckListViewModel){
     if(loaderStatus.value){
         LinearProgressIndicator(progress = progressState.value, modifier = Modifier.fillMaxWidth())
     }else if(loaderProgressStatus.value){
-        Column(modifier = Modifier.fillMaxWidth()){
-            LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
-            Text(text="No data found")
-        }
+        LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
     }else{
         Body(viewModel)
     }

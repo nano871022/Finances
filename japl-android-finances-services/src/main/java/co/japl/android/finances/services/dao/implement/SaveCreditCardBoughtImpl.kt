@@ -529,17 +529,21 @@ class SaveCreditCardBoughtImpl @Inject constructor(
         Log.d(this.javaClass.name, "<<<=== STARTING::getAllRecurrent key: $idCreditCard")
         val db = dbConnect.readableDatabase
         val items = mutableListOf<CreditCardBoughtDTO>()
+        val selection = if (idCreditCard > 0) {
+            "${CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_RECURRENT} = ? and ${CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_CODE_CREDIT_CARD} = ?"
+        } else {
+            "${CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_RECURRENT} = ?"
+        }
+        val selectionArgs = if (idCreditCard > 0) {
+            arrayOf("1", idCreditCard.toString())
+        } else {
+            arrayOf("1")
+        }
         db.query(
             CreditCardBoughtDB.CreditCardBoughtEntry.TABLE_NAME,
             COLUMNS_CALC,
-            """
-                    ${CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_RECURRENT} = ?
-                    and ${CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_CODE_CREDIT_CARD} = ?
-                """.trimMargin(),
-            arrayOf(
-                "1",
-                idCreditCard.toString()
-            ),
+            selection,
+            selectionArgs,
             null,
             null,
             null

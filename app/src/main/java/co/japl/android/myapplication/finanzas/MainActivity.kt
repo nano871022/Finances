@@ -68,16 +68,7 @@ class MainActivity : AppCompatActivity(){
             drawLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_OPEN)
         }
         checkAndRequestSmsPermissions()
-/*
-        navController.addOnDestinationChangedListener { _, destination, _ ->
-            val isCreditCardScreen = destination.id == R.id.list_bought ||
-                                     destination.id == R.id.buy_credit_card ||
-                                     destination.id == R.id.item_menu_side_boughtmade ||
-                                     destination.id == R.id.recurrent_list_credit_card ||
-                                     destination.id == R.id.list_periods
-            recurrentItem?.isVisible = isCreditCardScreen
-        }
-*/
+
         subscribers?.values?.toList()?.takeIf { it.isNotEmpty() }?.let {
             registerReceiver(
                 smsBroadcastReceiver as BroadcastReceiver,
@@ -105,19 +96,9 @@ class MainActivity : AppCompatActivity(){
         return true
     }
 
-    //private var recurrentItem: MenuItem? = null
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         Log.d(this.javaClass.name," on create optiones menu $menu")
         menuInflater.inflate(R.menu.setting_menu,menu)
-/*
-        recurrentItem = menu?.findItem(R.id.recurrent_list_credit_card)
-        val isCreditCardScreen = navController.currentDestination?.id == R.id.list_bought ||
-                                 navController.currentDestination?.id == R.id.buy_credit_card ||
-                                 navController.currentDestination?.id == R.id.item_menu_side_boughtmade ||
-                                 navController.currentDestination?.id == R.id.recurrent_list_credit_card ||
-                                 navController.currentDestination?.id == R.id.list_periods
-        recurrentItem?.isVisible = isCreditCardScreen
-*/
         return true
     }
 
@@ -126,19 +107,6 @@ class MainActivity : AppCompatActivity(){
             if (!isTablet()) {
                 findViewById<DrawerLayout>(R.id.draw_layout).setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
             }
-            /*
-            if (item.itemId == R.id.recurrent_list_credit_card) {
-                val currentBackStackEntry = navController.currentBackStackEntry
-                val codeCreditCard = currentBackStackEntry?.arguments?.get(CreditCardQuotesParams.Params.PARAM_CREDIT_CARD_CODE)?.toString()
-                codeCreditCard?.let {
-                    val bundle = Bundle().apply {
-                        putString(CreditCardQuotesParams.Params.PARAM_CREDIT_CARD_CODE, it)
-                    }
-                    navController.navigate(R.id.recurrent_list_credit_card, bundle)
-                }
-                return true
-            }
-            */
             return NavigationUI.onNavDestinationSelected(
                 item,
                 navController
