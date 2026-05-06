@@ -18,8 +18,8 @@ android {
         applicationId "co.japl.android.myapplication"
         minSdk 26
         targetSdk 36
-        versionCode 4_06_00_158
-        versionName "V 4.06.00 build 158 added new view for recurrent bought"
+        versionCode 4_06_00_159
+        versionName "V 4.06.00 build 159 added new view for recurrent bought"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
