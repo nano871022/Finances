@@ -92,19 +92,7 @@ class BoughtViewModel @Inject constructor(
             MoreOptionsItemsCreditCard.DELETE ->{deleteDialog()}
             MoreOptionsItemsCreditCard.CLONE ->{clone()}
             MoreOptionsItemsCreditCard.RESTORE ->{restoreDialog()}
-            MoreOptionsItemsCreditCard.ACTIVATE -> {reactivate()}
-            MoreOptionsItemsCreditCard.ALTER -> {alter()}
         }
-    }
-
-    private fun reactivate(){
-        if(bought.id > 0 && boughtCreditCardSvc.reactivateRecurrent(bought.id)){
-            Snackbar.make(view, R.string.toast_save_successful, Snackbar.LENGTH_LONG).show().also { loader.value = false }
-        }
-    }
-
-    private fun alter(){
-        CreditCardQuotesParams.Companion.ListBought.newInstanceQuote(0, bought.codeCreditCard, navController, oldBoughtId = bought.id)
     }
 
     private fun restoreDialog(){
@@ -334,18 +322,6 @@ class BoughtViewModel @Inject constructor(
         if(!Regex("\\(\\d+\\. [\\d\\.]+\\)").containsMatchIn(bought.nameItem)){
             items = items.filter { it != MoreOptionsItemsCreditCard.RESTORE}.toTypedArray()
         }
-
-        val isActive = bought.endDate == LocalDateTime.MAX || bought.endDate.isAfter(LocalDateTime.now())
-        if (bought.recurrent) {
-            if (isActive) {
-                items = items.filter { it != MoreOptionsItemsCreditCard.ACTIVATE }.toTypedArray()
-            } else {
-                items = items.filter { it != MoreOptionsItemsCreditCard.ENDING && it != MoreOptionsItemsCreditCard.ALTER }.toTypedArray()
-            }
-        } else {
-            items = items.filter { it != MoreOptionsItemsCreditCard.ACTIVATE && it != MoreOptionsItemsCreditCard.ALTER }.toTypedArray()
-        }
-
         return items.toList()
     }
 }

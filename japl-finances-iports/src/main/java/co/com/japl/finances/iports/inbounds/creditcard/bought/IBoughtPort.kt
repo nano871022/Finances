@@ -24,5 +24,7 @@ interface IBoughtPort {
 
     fun getById(codeBought:Int,cache:Boolean):CreditCardBoughtDTO?
 
+    fun endingRecurrentPayment(codeBought: Int, cutOff: LocalDateTime): Boolean
+
     fun fixDataProcess()
 }

@@ -24,11 +24,9 @@ class RecurrentBoughtViewModel(
     val filterActive = mutableStateOf<Boolean?>(null) // null: All, true: Active, false: Inactive
 
     private var codeCreditCard: Int = 0
-    private lateinit var navController: NavController
 
-    fun load(codeCreditCard: Int, navController: NavController) {
+    fun load(codeCreditCard: Int) {
         this.codeCreditCard = codeCreditCard
-        this.navController = navController
         loader.value = false // Loading
         val result = boughtCreditCardSvc.getAllRecurrent(codeCreditCard)
         list.clear()
@@ -73,25 +71,25 @@ class RecurrentBoughtViewModel(
 
     private fun reactivate(item: CreditCardBoughtItemDTO) {
         if (boughtCreditCardSvc.reactivateRecurrent(item.id)) {
-            load(codeCreditCard, navController)
+            load(codeCreditCard)
         }
     }
 
     private fun deactivate(item: CreditCardBoughtItemDTO) {
         if (boughtCreditCardSvc.endingRecurrentPayment(item.id, LocalDateTime.now())) {
-            load(codeCreditCard, navController)
+            load(codeCreditCard)
         }
     }
 
     private fun delete(item: CreditCardBoughtItemDTO) {
         if (boughtCreditCardSvc.delete(item.id, prefs.simulator)) {
-            load(codeCreditCard, navController)
+            load(codeCreditCard)
         }
     }
 
     private fun clone(item: CreditCardBoughtItemDTO) {
         if (boughtCreditCardSvc.clone(item.id, prefs.simulator)) {
-            load(codeCreditCard, navController)
+            load(codeCreditCard)
         }
     }
 

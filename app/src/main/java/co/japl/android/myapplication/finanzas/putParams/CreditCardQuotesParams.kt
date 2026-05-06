@@ -53,6 +53,15 @@ class CreditCardQuotesParams {
             fun toBack(navController: NavController) {
                 navController.popBackStack()
             }
+
+            fun newInstanceRecurrent(quoteId:Int,creditCard:Int,navController: NavController, oldBoughtId: Int = 0){
+                val parameters = bundleOf(
+                    Params.PARAM_CREDIT_CARD_CODE  to creditCard.toString(),
+                    Params.PARAM_BOUGHT_ID to quoteId,
+                    Params.PARAM_OLD_BOUGHT_ID to oldBoughtId
+                )
+                navController.navigate(R.id.buy_credit_card,parameters)
+            }
         }
 
         object Historical {

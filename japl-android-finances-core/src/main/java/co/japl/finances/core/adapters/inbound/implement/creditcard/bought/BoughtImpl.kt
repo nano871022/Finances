@@ -65,6 +65,11 @@ class BoughtImpl @Inject constructor(private val service:IBought, private  val s
         return service.getById(codeBought,cache)
     }
 
+    override fun endingRecurrentPayment(codeBought: Int, cutOff: LocalDateTime): Boolean {
+        require(codeBought > 0) { "CodeBought cannot be 0" }
+        return service.endingRecurrentPayment(codeBought,cutOff)
+    }
+
     override fun fixDataProcess() {
         service.fixDataProcess()
     }

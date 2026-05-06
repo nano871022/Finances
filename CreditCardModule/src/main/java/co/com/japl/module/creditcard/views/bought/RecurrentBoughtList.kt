@@ -36,7 +36,7 @@ fun RecurrentBoughtList(
 ) {
     LaunchedEffect(codeCreditCard, viewModel.loader.value) {
         if (!viewModel.loader.value) {
-            viewModel.load(codeCreditCard, navController)
+            viewModel.load(codeCreditCard)
         }
     }
 
@@ -87,7 +87,7 @@ fun RecurrentBoughtItem(
     onAlter: (CreditCardBoughtItemDTO) -> Unit
 ) {
     val isActive = item.endDate == LocalDateTime.MAX || item.endDate.isAfter(LocalDateTime.now())
-    val borderColor = if (isActive) Color.Blue else MaterialTheme.colorScheme.outline
+    val borderColor = if (isActive) Color.Blue else Color.Unspecified
     var showMenu by remember { mutableStateOf(false) }
     var showDeleteConfirmation by remember { mutableStateOf(false) }
 
@@ -129,7 +129,7 @@ fun RecurrentBoughtItem(
 
     Card(
         modifier = Modifier.padding(8.dp).fillMaxWidth(),
-        border = BorderStroke(2.dp, borderColor)
+        border = if (isActive) BorderStroke(2.dp, borderColor) else null
     ) {
         Row(
             modifier = Modifier.padding(16.dp).fillMaxWidth(),
