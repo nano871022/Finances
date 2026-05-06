@@ -370,7 +370,7 @@ internal fun QuotePreview(){
 private fun viweModel():QuoteViewModel{
     val prefs = Prefs(LocalContext.current)
     val viewModel = QuoteViewModel(
-        0,null,0, LocalDateTime.now(),null,null,null,null,null,null,null,prefs)
+        0,null,0, 0,LocalDateTime.now(),null,null,null,null,null,null,null,prefs)
     viewModel.loading.value = false
     return viewModel
 }

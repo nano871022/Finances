@@ -19,6 +19,7 @@ import co.com.japl.finances.iports.dtos.CreditCardBoughtItemDTO
 import co.com.japl.module.creditcard.R
 import co.com.japl.module.creditcard.controllers.bought.lists.RecurrentBoughtViewModel
 import co.com.japl.module.creditcard.enums.MoreOptionsRecurrentBought
+import co.com.japl.ui.enums.IMoreOptions
 import co.com.japl.ui.components.MoreOptionsDialog
 import co.com.japl.ui.components.AlertDialogOkCancel
 import co.japl.android.myapplication.utils.NumbersUtil
@@ -113,7 +114,7 @@ fun RecurrentBoughtItem(
         }
 
         MoreOptionsDialog(
-            listOptions = options,
+            listOptions = options as List<IMoreOptions>,
             onDismiss = { showMenu = false },
             onClick = { action ->
                 showMenu = false
@@ -141,7 +142,7 @@ fun RecurrentBoughtItem(
                 Text(text = NumbersUtil.COPtoString(item.valueItem), style = MaterialTheme.typography.bodyLarge)
             }
             IconButton(onClick = { showMenu = true }) {
-                Icon(painter = painterResource(id = co.com.japl.ui.R.drawable.more_vertical), contentDescription = null)
+                Icon(painter = painterResource(id = R.drawable.more_vertical), contentDescription = null)
             }
         }
     }
