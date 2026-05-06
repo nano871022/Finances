@@ -41,7 +41,6 @@ class RecurrentBoughtListFragment : Fragment() {
                 MaterialThemeComposeUI {
                     RecurrentBoughtList(
                         codeCreditCard = codeCreditCard,
-                        navController = findNavController(),
                         viewModel = viewModel,
                         onEdit = { item ->
                              CreditCardQuotesParams.Companion.ListBought.newInstanceRecurrent(

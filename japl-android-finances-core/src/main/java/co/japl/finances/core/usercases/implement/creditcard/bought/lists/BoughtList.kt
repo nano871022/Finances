@@ -3,6 +3,7 @@ package co.japl.finances.core.usercases.implement.creditcard.bought.lists
 import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
+import co.com.japl.finances.iports.dtos.CreditCardBoughtItemDTO
 import co.com.japl.finances.iports.dtos.CreditCardBoughtListDTO
 import co.com.japl.finances.iports.dtos.RecapCreditCardBoughtListDTO
 import co.com.japl.finances.iports.dtos.TagDTO

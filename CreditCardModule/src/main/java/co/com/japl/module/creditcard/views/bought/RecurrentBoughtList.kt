@@ -30,7 +30,6 @@ import java.time.format.DateTimeFormatter
 @Composable
 fun RecurrentBoughtList(
     codeCreditCard: Int,
-    navController: NavController,
     viewModel: RecurrentBoughtViewModel,
     onEdit: (CreditCardBoughtItemDTO) -> Unit,
     onAlter: (CreditCardBoughtItemDTO) -> Unit
