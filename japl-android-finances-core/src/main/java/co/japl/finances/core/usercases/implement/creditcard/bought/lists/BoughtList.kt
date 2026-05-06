@@ -146,6 +146,20 @@ class BoughtList @Inject constructor(
         }?:false
     }
 
+    override fun getAllRecurrent(idCreditCard: Int): List<CreditCardBoughtItemDTO> {
+        val list = quoteCCSvc.getAllRecurrent(idCreditCard)
+        list.forEach { dto->
+            tag(dto.id)?.let { dto.tagName = it.name }
+        }
+        return list
+    }
+
+    override fun reactivateRecurrent(codeBought: Int): Boolean {
+        return quoteCCSvc.get(codeBought,false)?.let {
+            quoteCCSvc.update(it.copy(endDate = LocalDateTime.of(LocalDate.MAX, LocalTime.MAX)),false)
+        }?:false
+    }
+
     private fun tag(codeBought:Int):TagDTO?{
         return tagsSvc.getTags(codeBought).firstOrNull()
     }

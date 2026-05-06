@@ -22,11 +22,16 @@ class CreditCardQuotesParams {
         val PARAM_CUTOFF_DAY = "cutOffDay"
         val PARAM_CUTOFF = "cutOff"
         val PARAM_DEEPLINK = "android-support-nav:controller:deepLinkIntent"
+        val PARAM_OLD_BOUGHT_ID = "old_bought_id"
     }
     companion object {
         object ListBought{
-            fun newInstanceQuote(quoteId:Int,creditCard:Int,navController: NavController){
-                val parameters = bundleOf(Params.PARAM_CREDIT_CARD_CODE  to creditCard.toString(),Params.PARAM_BOUGHT_ID to quoteId)
+            fun newInstanceQuote(quoteId:Int,creditCard:Int,navController: NavController, oldBoughtId: Int = 0){
+                val parameters = bundleOf(
+                    Params.PARAM_CREDIT_CARD_CODE  to creditCard.toString(),
+                    Params.PARAM_BOUGHT_ID to quoteId,
+                    Params.PARAM_OLD_BOUGHT_ID to oldBoughtId
+                )
                 navController.navigate(R.id.action_list_bought_to_buy_credit_card,parameters)
             }
 
@@ -127,6 +132,10 @@ class CreditCardQuotesParams {
                         return Triple(code, name, id)
                     }
                 }
+            }
+
+            fun downloadOldBoughtId(argument: Bundle): Int {
+                return argument.getInt(Params.PARAM_OLD_BOUGHT_ID, 0)
             }
 
             fun toBack(navController: NavController) {

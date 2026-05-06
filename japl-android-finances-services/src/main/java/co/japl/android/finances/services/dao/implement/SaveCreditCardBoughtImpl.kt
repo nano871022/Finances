@@ -525,6 +525,42 @@ class SaveCreditCardBoughtImpl @Inject constructor(
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
+    override fun getAllRecurrent(idCreditCard: Int): List<CreditCardBoughtDTO> {
+        Log.d(this.javaClass.name, "<<<=== STARTING::getAllRecurrent key: $idCreditCard")
+        val db = dbConnect.readableDatabase
+        val items = mutableListOf<CreditCardBoughtDTO>()
+        db.query(
+            CreditCardBoughtDB.CreditCardBoughtEntry.TABLE_NAME,
+            COLUMNS_CALC,
+            """
+                    ${CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_RECURRENT} = ?
+                    and ${CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_CODE_CREDIT_CARD} = ?
+                """.trimMargin(),
+            arrayOf(
+                "1",
+                idCreditCard.toString()
+            ),
+            null,
+            null,
+            null
+        )?.use { cursor ->
+            with(cursor) {
+                while (moveToNext()) {
+                    CreditCardBoughtMap().mapping(this)?.let {
+                        items.add(it)
+                    }
+                }
+            }
+        }
+        return items.also {
+            Log.d(
+                this.javaClass.name,
+                "<<<=== ENDING::getAllRecurrent Size: ${it.size}"
+            )
+        }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun getRecurrentPendingQuotes(
         key: Int,
         cutOff: LocalDateTime

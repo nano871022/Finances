@@ -22,4 +22,16 @@
     <string name="first_quote_value">Primera Cuota</string>
     <string name="first_interest">Primer Interes</string>
     <string name="options">Opciones</string>
+    <string name="activate">Activar</string>
+    <string name="deactivate">Desactivar</string>
+    <string name="alter">Alterar</string>
+    <string name="delete">Eliminar</string>
+    <string name="copy">Copiar</string>
+    <string name="edit">Editar</string>
+    <string name="total_active_recurrent">Total Recurrentes Activas</string>
+    <string name="do_you_want_to_delete_this_record">¿Desea eliminar el registro?</string>
+    <string name="navigate_recurrent_list_bought">android-app://co.com.japl.finanzas.module.creditcard/recurrentList?codeCreditCard=%1$d</string>
+    <string name="all">Todos</string>
+    <string name="active">Activos</string>
+    <string name="inactive">Inactivos</string>
 </resources>

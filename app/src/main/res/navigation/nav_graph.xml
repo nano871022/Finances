@@ -489,4 +489,11 @@
         android:label="@string/settings_app"
         tools:layout="@layout/fragment_settings_app" />
 
+    <fragment
+        android:id="@+id/recurrent_list_credit_card"
+        android:name="co.com.japl.module.creditcard.controllers.bought.lists.RecurrentBoughtListFragment"
+        android:label="@string/recurrent" >
+        <deepLink app:uri="android-app://co.com.japl.finanzas.module.creditcard/recurrentList"/>
+    </fragment>
+
 </navigation>

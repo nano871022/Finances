@@ -27,5 +27,9 @@ interface IBoughtList {
 
     fun clone(codeBought:Int,cache: Boolean):Boolean
 
+    fun getAllRecurrent(idCreditCard: Int): List<CreditCardBoughtItemDTO>
+
+    fun reactivateRecurrent(codeBought: Int): Boolean
+
 
 }

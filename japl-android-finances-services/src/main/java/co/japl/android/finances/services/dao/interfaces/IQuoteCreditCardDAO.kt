@@ -13,6 +13,8 @@ interface IQuoteCreditCardDAO:  SaveSvc<CreditCardBoughtDTO>,
     SearchSvc<CreditCardBoughtDTO>, IGetPeriodsServices {
         public fun getRecurrentPendingQuotes(key: Int, cutOff: LocalDateTime):List<CreditCardBoughtDTO>
 
+        fun getAllRecurrent(idCreditCard: Int): List<CreditCardBoughtDTO>
+
         fun endingRecurrentPayment(idBought: Int,cutOff:LocalDateTime):Boolean
 
         fun endingPayment(idBought: Int,message:String,cutOff:LocalDateTime):Boolean

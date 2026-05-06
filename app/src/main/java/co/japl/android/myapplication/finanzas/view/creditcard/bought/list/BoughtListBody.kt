@@ -57,7 +57,7 @@ import java.time.format.DateTimeFormatter
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-internal fun RecordBoughtCreditCard(bought: CreditCardBoughtItemDTO, creditCard: CreditCardDTO, differQuotes:List<DifferInstallmentDTO>, cutOff: LocalDateTime, view:View= LocalView.current, navController: NavController? = Navigation.findNavController(view),prefs:Prefs,loader:MutableState<Boolean>, colorPendingValue:Color = Color.Unspecified) {
+internal fun RecordBoughtCreditCard(bought: CreditCardBoughtItemDTO, creditCard: CreditCardDTO, differQuotes:List<DifferInstallmentDTO>, cutOff: LocalDateTime, view:View= LocalView.current, navController: NavController? = Navigation.findNavController(view),prefs:Prefs,loader:MutableState<Boolean>, colorPendingValue:Color = Color.Unspecified, borderColor: Color? = null) {
     val context = LocalContext.current
     val application = context.applicationContext
 
@@ -78,7 +78,7 @@ internal fun RecordBoughtCreditCard(bought: CreditCardBoughtItemDTO, creditCard:
         , modifier = Modifier
             .padding(top = 1.dp, start = 2.dp, end = 2.dp, bottom = 2.dp)
             .fillMaxWidth()
-        , border = BorderStroke(2.dp, getColor(model))
+        , border = BorderStroke(2.dp, borderColor ?: getColor(model))
     ) {
         Column(
             modifier = Modifier

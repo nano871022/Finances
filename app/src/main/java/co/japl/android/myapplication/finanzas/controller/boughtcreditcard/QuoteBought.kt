@@ -43,9 +43,11 @@ class QuoteBought : Fragment(){
             viewModelClass=QuoteViewModel::class.java,
             build = {
                 val (codeCreditCard,_,codeBought) = CreditCardQuotesParams.Companion.CreateQuote.download(requireArguments())
+                val oldBoughtId = CreditCardQuotesParams.Companion.CreateQuote.downloadOldBoughtId(requireArguments())
                 QuoteViewModel(
                     codeCreditCard=codeCreditCard,
                     codeBought=codeBought,
+                    oldBoughtId = oldBoughtId,
                     period= LocalDateTime.now(),
                     boughtSvc= saveSvc,
                     creditRateSvc= taxSvc,
