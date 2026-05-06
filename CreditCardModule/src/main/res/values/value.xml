@@ -71,12 +71,8 @@
 
     <string name="credit_card_setting_type">Tipo</string>
     <string name="save">Guardar</string>
-    <string name="active">Activo</string>
     <string name="look_at">Ver</string>
     <string name="see_more">Ver más</string>
-    <string name="edit">Editar</string>
-    <string name="delete">Eliminar</string>
-    <string name="do_you_want_to_delete_this_record">¿Desea eliminar este registro?</string>
     <string name="add_credit_card">Agregar tarjeta de crédito</string>
     <string name="item_select_setting_redifer">1. Rediferir</string>
     <string name="item_select_setting_special_tax">2. Tasas Especiales</string>

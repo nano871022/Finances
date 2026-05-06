@@ -48,9 +48,9 @@ fun RecurrentBoughtList(
                     style = MaterialTheme.typography.headlineSmall
                 )
                 Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly) {
-                    Button(onClick = { viewModel.setFilter(null) }) { Text(text = stringResource(id = R.string.all)) }
-                    Button(onClick = { viewModel.setFilter(true) }) { Text(text = stringResource(id = R.string.active)) }
-                    Button(onClick = { viewModel.setFilter(false) }) { Text(text = stringResource(id = R.string.inactive)) }
+                    Button(onClick = { viewModel.setFilter(null) }) { Text(text = stringResource(id = R.string.filter_all)) }
+                    Button(onClick = { viewModel.setFilter(true) }) { Text(text = stringResource(id = R.string.filter_active)) }
+                    Button(onClick = { viewModel.setFilter(false) }) { Text(text = stringResource(id = R.string.filter_inactive)) }
                 }
             }
         }
