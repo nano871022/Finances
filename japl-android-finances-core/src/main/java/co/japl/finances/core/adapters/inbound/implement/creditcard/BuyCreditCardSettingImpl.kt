@@ -1,4 +1,4 @@
-package co.japl.finances.core.adapters.inbound.implement.creditCard
+package co.japl.finances.core.adapters.inbound.implement.creditcard
 
 import co.com.japl.finances.iports.dtos.BuyCreditCardSettingDTO
 import co.com.japl.finances.iports.inbounds.creditcard.IBuyCreditCardSettingPort

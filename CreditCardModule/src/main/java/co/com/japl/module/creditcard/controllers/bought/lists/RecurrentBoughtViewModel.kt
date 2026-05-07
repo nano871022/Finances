@@ -22,6 +22,8 @@ class RecurrentBoughtViewModel(
     val loader = mutableStateOf(false)
     val filterActive = mutableStateOf<Boolean?>(null) // null: All, true: Active, false: Inactive
 
+    val progress = mutableStateOf<Float>(0f)
+
     private var codeCreditCard: Int = 0
 
     fun load(codeCreditCard: Int) {
@@ -41,7 +43,7 @@ class RecurrentBoughtViewModel(
             false -> list.filter { it.endDate != LocalDateTime.MAX && it.endDate.isBefore(LocalDateTime.now()) }
             else -> list
         }
-        filteredList.addAll(filtered.sortedByDescending { it.createDate })
+        filteredList.addAll(filtered.sortedByDescending { it.boughtDate })
 
         val total = list.filter { it.endDate == LocalDateTime.MAX || it.endDate.isAfter(LocalDateTime.now()) }
             .sumOf { it.valueItem }

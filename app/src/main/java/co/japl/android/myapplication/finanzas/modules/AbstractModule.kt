@@ -63,9 +63,9 @@ import co.japl.finances.core.adapters.inbound.implement.credit.CreditImpl
 import co.japl.finances.core.adapters.inbound.implement.credit.PeriodCreditImpl
 import co.japl.finances.core.adapters.inbound.implement.credit.PeriodGraceImpl
 import co.japl.finances.core.adapters.inbound.implement.credit.SimulatorCreditFixImpl
-import co.japl.finances.core.adapters.inbound.implement.creditCard.AmortizationTableImpl
-import co.japl.finances.core.adapters.inbound.implement.creditCard.SMSCreditCardImpl
-import co.japl.finances.core.adapters.inbound.implement.creditCard.SimulatorImpl
+import co.japl.finances.core.adapters.inbound.implement.creditcard.AmortizationTableImpl
+import co.japl.finances.core.adapters.inbound.implement.creditcard.SMSCreditCardImpl
+import co.japl.finances.core.adapters.inbound.implement.creditcard.SimulatorImpl
 import co.japl.finances.core.adapters.inbound.implement.creditcard.bought.BoughtImpl
 import co.japl.finances.core.adapters.inbound.implement.creditcard.bought.lists.ListImpl
 import co.japl.finances.core.adapters.inbound.implement.paid.PeriodImpl
@@ -107,7 +107,7 @@ import co.japl.finances.core.usercases.interfaces.creditcard.bought.lists.IBough
 import co.japl.finances.core.usercases.interfaces.creditcard.bought.lists.IBoughtSms
 import co.japl.finances.core.usercases.interfaces.creditcard.paid.lists.IPaidList
 import co.japl.finances.core.usercases.interfaces.paid.IProjection
-import co.japl.finances.core.usercases.interfaces.paid.ISMS
+import co.japl.finances.core.usercases.interfaces.paid.ISMSOld
 import co.japl.finances.core.usercases.interfaces.paid.ISms
 import co.japl.finances.core.usercases.interfaces.recap.IRecap
 import dagger.Binds
@@ -202,7 +202,7 @@ abstract class AbstractModule {
     abstract fun bindOutboundTax(implement: co.japl.android.finances.services.core.TaxImpl): co.com.japl.finances.iports.outbounds.ITaxPort
 
     @Binds
-    abstract fun bindServiceRate(implement: co.japl.finances.core.adapters.inbound.implement.creditCard.TaxImpl): ITaxPort
+    abstract fun bindServiceRate(implement: co.japl.finances.core.adapters.inbound.implement.creditcard.TaxImpl): ITaxPort
 
 
     @Binds
@@ -256,7 +256,7 @@ abstract class AbstractModule {
     abstract fun bindUserCaseBoughtList(implement:BoughtList):IBoughtList
 
     @Binds
-    abstract fun bindCreditCardPort(implement:co.japl.finances.core.adapters.inbound.implement.creditCard.CreditCardImpl):ICreditCardPort
+    abstract fun bindCreditCardPort(implement:co.japl.finances.core.adapters.inbound.implement.creditcard.CreditCardImpl):ICreditCardPort
 
     @Binds
     abstract fun bindDifferInstallmentPort(implement:co.japl.finances.core.adapters.inbound.implement.common.DifferQuotesImpl):IDifferQuotesPort
@@ -274,7 +274,7 @@ abstract class AbstractModule {
     abstract fun bindUserCasePaidList(implement:PaidListImpl):IPaidList
 
     @Binds
-    abstract fun bindInputCreditCardSetting(implement:co.japl.finances.core.adapters.inbound.implement.creditCard.CreditCardSettingImpl):ICreditCardSettingPort
+    abstract fun bindInputCreditCardSetting(implement:co.japl.finances.core.adapters.inbound.implement.creditcard.CreditCardSettingImpl):ICreditCardSettingPort
 
     @Binds
     abstract fun bindUserCaseCreditCardSetting(implement:co.japl.finances.core.usercases.implement.creditcard.CreditCardSettingImpl):ICreditCardSetting
@@ -304,13 +304,13 @@ abstract class AbstractModule {
     abstract fun bindOutputTag(implement:co.japl.android.finances.services.core.TagImpl):co.com.japl.finances.iports.outbounds.ITagPort
 
     @Binds
-    abstract fun bindInputTag(implement:co.japl.finances.core.adapters.inbound.implement.creditCard.TagImpl):ITagPort
+    abstract fun bindInputTag(implement:co.japl.finances.core.adapters.inbound.implement.creditcard.TagImpl):ITagPort
 
     @Binds
     abstract fun bindTagSvc(implement:co.japl.android.finances.services.implement.TagsImpl):co.japl.android.finances.services.interfaces.ITagSvc
 
     @Binds
-    abstract fun bindInboundBuyCreditCadSetting(implement:co.japl.finances.core.adapters.inbound.implement.creditCard.BuyCreditCardSettingImpl):IBuyCreditCardSettingPort
+    abstract fun bindInboundBuyCreditCadSetting(implement:co.japl.finances.core.adapters.inbound.implement.creditcard.BuyCreditCardSettingImpl):IBuyCreditCardSettingPort
     @Binds
     abstract fun bindUserCaseBuyCreditCardSetting(implement:co.japl.finances.core.usercases.implement.creditcard.BuyCreditCardSettingImpl):IBuyCreditCardSetting
 
@@ -362,7 +362,7 @@ abstract class AbstractModule {
     @Binds
     abstract fun getInboundSmsPaidPort(svc:SMSImpl):ISMSPaidPort
     @Binds
-    abstract fun SmsPaidQuery(svc:co.japl.finances.core.usercases.implement.paid.SMSImpl):ISMS
+    abstract fun SmsPaidQuery(svc:co.japl.finances.core.usercases.implement.paid.SMSImpl):ISMSOld
 
     @Binds
     abstract fun getOutboundSmsPaidPort(svc:co.japl.android.finances.services.core.SMSPaidImpl):co.com.japl.finances.iports.outbounds.ISMSPaidPort
