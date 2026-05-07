@@ -18,8 +18,8 @@ android {
         applicationId "co.japl.android.myapplication"
         minSdk 26
         targetSdk 36
-        versionCode 4_06_00_159
-        versionName "V 4.06.00 build 159 Fix numbers issues"
+        versionCode 4_06_00_160
+        versionName "V 4.06.00 build 160 Fix numbers issues"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
