@@ -3,11 +3,11 @@ package co.japl.finances.core.adapters.inbound.implement.creditCard
 import co.com.japl.finances.iports.dtos.EmailCreditCardDTO
 import co.com.japl.finances.iports.enums.KindInterestRateEnum
 import co.com.japl.finances.iports.inbounds.creditcard.IEmailCreditCardPort
-import co.japl.finances.core.usercases.implement.creditcard.EmailCreditCardImpl
+import co.japl.finances.core.usercases.interfaces.creditcard.IEmailCreditCard
 import java.time.LocalDateTime
 import javax.inject.Inject
 
-class EmailCreditCardImpl @Inject constructor(private val svc: EmailCreditCardImpl) : IEmailCreditCardPort {
+class EmailCreditCardImpl @Inject constructor(private val svc: IEmailCreditCard) : IEmailCreditCardPort {
 
     override fun create(dto: EmailCreditCardDTO): Int {
         require(dto.id == 0) { "Id must be zero" }

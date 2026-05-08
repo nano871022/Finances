@@ -100,6 +100,7 @@ import co.japl.finances.core.usercases.interfaces.credit.IPeriodGrace
 import co.japl.finances.core.usercases.interfaces.creditcard.IAmortizationTable
 import co.japl.finances.core.usercases.interfaces.creditcard.IBuyCreditCardSetting
 import co.japl.finances.core.usercases.interfaces.creditcard.ICreditCardSetting
+import co.japl.finances.core.usercases.interfaces.creditcard.IEmailCreditCard
 import co.japl.finances.core.usercases.interfaces.creditcard.ISMSCreditCard
 import co.japl.finances.core.usercases.interfaces.creditcard.ITag
 import co.japl.finances.core.usercases.interfaces.creditcard.ITax
@@ -337,7 +338,7 @@ abstract class AbstractModule {
     abstract fun SmsCreditCardQuery(svc:co.japl.finances.core.usercases.implement.creditcard.SMSCreditCardImpl):ISMSCreditCard
 
     @Binds
-    abstract fun EmailCreditCardQuery(svc:co.japl.finances.core.usercases.implement.creditcard.EmailCreditCardImpl):co.com.japl.finances.iports.inbounds.creditcard.IEmailCreditCardPort
+    abstract fun EmailCreditCardQuery(svc:co.japl.finances.core.usercases.implement.creditcard.EmailCreditCardImpl):IEmailCreditCard
 
     @Binds
     abstract fun getOutboundSmsCreditCardPort(svc:co.japl.android.finances.services.core.SMSCreditCardImpl):co.com.japl.finances.iports.outbounds.ISMSCreditCardPort

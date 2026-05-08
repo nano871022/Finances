@@ -2,13 +2,13 @@ package co.japl.finances.core.usercases.implement.creditcard
 
 import co.com.japl.finances.iports.dtos.EmailCreditCardDTO
 import co.com.japl.finances.iports.enums.KindInterestRateEnum
-import co.com.japl.finances.iports.inbounds.creditcard.IEmailCreditCardPort
+import co.com.japl.finances.core.usercases.interfaces.creditcard.IEmailCreditCard
 import co.com.japl.finances.iports.outbounds.IEmailCreditCardPort as IEmailCreditCardOutPort
 import co.japl.finances.core.utils.SmsUtil
 import java.time.LocalDateTime
 import javax.inject.Inject
 
-class EmailCreditCardImpl @Inject constructor(private val svc: IEmailCreditCardOutPort) : IEmailCreditCardPort {
+class EmailCreditCardImpl @Inject constructor(private val svc: IEmailCreditCardOutPort) : IEmailCreditCard {
 
     override fun create(dto: EmailCreditCardDTO): Int {
         return svc.create(dto)
