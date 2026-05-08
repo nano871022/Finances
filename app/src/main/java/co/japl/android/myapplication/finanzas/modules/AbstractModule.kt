@@ -14,6 +14,7 @@ import co.com.japl.finances.iports.inbounds.creditcard.IAmortizationTablePort
 import co.com.japl.finances.iports.inbounds.creditcard.IBuyCreditCardSettingPort
 import co.com.japl.finances.iports.inbounds.creditcard.ICreditCardSettingPort
 import co.com.japl.finances.iports.inbounds.creditcard.ISMSCreditCardPort
+import co.com.japl.finances.iports.inbounds.creditcard.IEmailCreditCardPort
 import co.com.japl.finances.iports.inbounds.creditcard.ISimulatorCreditVariablePort
 import co.com.japl.finances.iports.inbounds.creditcard.ITagPort
 import co.com.japl.finances.iports.inbounds.creditcard.ITaxPort
@@ -330,13 +331,25 @@ abstract class AbstractModule {
     abstract fun getInboundSmsCreditCardPort(svc:SMSCreditCardImpl):ISMSCreditCardPort
 
     @Binds
+    abstract fun getInboundEmailCreditCardPort(svc:co.japl.finances.core.adapters.inbound.implement.creditCard.EmailCreditCardImpl):IEmailCreditCardPort
+
+    @Binds
     abstract fun SmsCreditCardQuery(svc:co.japl.finances.core.usercases.implement.creditcard.SMSCreditCardImpl):ISMSCreditCard
+
+    @Binds
+    abstract fun EmailCreditCardQuery(svc:co.japl.finances.core.usercases.implement.creditcard.EmailCreditCardImpl):co.com.japl.finances.iports.inbounds.creditcard.IEmailCreditCardPort
 
     @Binds
     abstract fun getOutboundSmsCreditCardPort(svc:co.japl.android.finances.services.core.SMSCreditCardImpl):co.com.japl.finances.iports.outbounds.ISMSCreditCardPort
 
     @Binds
+    abstract fun getOutboundEmailCreditCardPort(svc:co.japl.android.finances.services.core.EmailCreditCardImpl):co.com.japl.finances.iports.outbounds.IEmailCreditCardPort
+
+    @Binds
     abstract fun getDAOSmsCreditCard(svc:co.japl.android.finances.services.dao.implement.SmsCreditCardImpl):co.japl.android.finances.services.dao.interfaces.ISmsCreditCardDAO
+
+    @Binds
+    abstract fun getDAOEmailCreditCard(svc:co.japl.android.finances.services.dao.implement.EmailCreditCardImpl):co.japl.android.finances.services.dao.interfaces.IEmailCreditCardDAO
 
     @Binds
     abstract fun getSmsRead(svc:SMS):ISMSRead

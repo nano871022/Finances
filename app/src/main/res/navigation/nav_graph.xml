@@ -468,6 +468,23 @@
     </fragment>
 
     <fragment
+        android:id="@+id/email_list_credit_card"
+        android:name="co.japl.android.myapplication.finanzas.controller.boughtcreditcard.EmailListFragment"
+        android:label="@string/fragment_list_email_credit_card"
+        tools:layout="@layout/fragment_list_sms_credit_card" >
+        <action
+            android:id="@+id/action_email_list_credit_card_to_email_credit_card"
+            app:destination="@id/email_credit_card" />
+    </fragment>
+    <fragment
+        android:id="@+id/email_credit_card"
+        android:name="co.japl.android.myapplication.finanzas.controller.boughtcreditcard.EmailFragment"
+        android:label="@string/fragment_email_credit_card"
+        tools:layout="@layout/fragment_sms_credit_card" >
+        <deepLink app:uri="android-app://co.com.japl.finanzas.modulo.app/email_credit_card"/>
+    </fragment>
+
+    <fragment
         android:id="@+id/sms_list_paid"
         android:name="co.japl.android.myapplication.finanzas.controller.paids.SmsListFragment"
         android:label="@string/fragment_list_sms_paid"

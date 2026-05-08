@@ -32,6 +32,12 @@
         android:icon="@android:drawable/stat_notify_chat"
         android:title="@string/sms_credit_card"
         />
+
+    <item
+        android:id="@+id/email_list_credit_card"
+        android:icon="@android:drawable/ic_dialog_email"
+        android:title="@string/email_credit_card"
+        />
 </group>
 
     <group>
