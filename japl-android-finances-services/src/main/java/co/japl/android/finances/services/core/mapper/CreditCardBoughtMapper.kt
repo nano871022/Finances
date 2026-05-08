@@ -43,4 +43,31 @@ object CreditCardBoughtMapper {
             codeCreditCard = creditCardBoughtDTO.codeCreditCard
         )
     }
+
+    fun mapperItem(creditCardBoughtDTO: CreditCardBoughtDTO):co.com.japl.finances.iports.dtos.CreditCardBoughtItemDTO{
+        return co.com.japl.finances.iports.dtos.CreditCardBoughtItemDTO(
+            codeCreditCard = creditCardBoughtDTO.codeCreditCard,
+            nameCreditCard = creditCardBoughtDTO.nameCreditCard,
+            nameItem = creditCardBoughtDTO.nameItem,
+            valueItem = creditCardBoughtDTO.valueItem.toDouble(),
+            interest = creditCardBoughtDTO.interest,
+            month = creditCardBoughtDTO.month,
+            boughtDate = creditCardBoughtDTO.boughtDate,
+            cutOutDate = creditCardBoughtDTO.cutOutDate,
+            createDate = creditCardBoughtDTO.createDate,
+            endDate = creditCardBoughtDTO.endDate,
+            id = creditCardBoughtDTO.id,
+            recurrent = creditCardBoughtDTO.recurrent == 1.toShort(),
+            kind = KindInterestRateEnum.findByOrdinal(creditCardBoughtDTO.kind),
+            kindOfTax = KindOfTaxEnum.findByValue( creditCardBoughtDTO.kindOfTax),
+            monthPaid = 0,
+            capitalValue = 0.0,
+            interestValue = 0.0,
+            settings = 0.0,
+            settingCode = 0,
+            pendingToPay = creditCardBoughtDTO.valueItem.toDouble(),
+            quoteValue = 0.0,
+            tagName = ""
+        )
+    }
 }

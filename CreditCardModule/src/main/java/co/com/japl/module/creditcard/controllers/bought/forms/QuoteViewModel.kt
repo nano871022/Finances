@@ -39,6 +39,7 @@ import java.time.LocalDateTime
 class QuoteViewModel constructor(private val codeCreditCard:Int,
                                  private val savedStateHandle: SavedStateHandle?=null,
                                  private val codeBought:Int,
+                                 private val oldBoughtId:Int = 0,
                                  private val period:LocalDateTime,
                                  private val boughtSvc:IBoughtPort?,
                                  private val creditRateSvc:ITaxPort?,
@@ -63,6 +64,7 @@ class QuoteViewModel constructor(private val codeCreditCard:Int,
     val progress = mutableFloatStateOf(0.0f)
 
     val isNew = mutableStateOf(true)
+    val wasRecurrent = mutableStateOf(false)
 
     val creditCardName = initialFieldState(
         savedStateHandle!!,
@@ -225,6 +227,9 @@ class QuoteViewModel constructor(private val codeCreditCard:Int,
                 bought?.let { bought ->
                     val id = it.create(bought, prefs.simulator)
                     if (id > 0) {
+                        if (oldBoughtId > 0) {
+                            boughtSvc.endingRecurrentPayment(oldBoughtId, LocalDateTime.now())
+                        }
                         buyCreditCardSettingSvc?.let { svc ->
                             settingName.value.value?.let { value ->
                                 svc.createOrUpdate(getBuyCreditCardSetting(id, value.first))
@@ -261,6 +266,9 @@ class QuoteViewModel constructor(private val codeCreditCard:Int,
                 bought?.let { bought ->
                     val id = it.create(bought, prefs.simulator)
                     if (id > 0) {
+                        if (oldBoughtId > 0) {
+                            boughtSvc.endingRecurrentPayment(oldBoughtId, LocalDateTime.now())
+                        }
                         buyCreditCardSettingSvc?.let { svc ->
                             settingName.value.value?.let { value ->
                                 svc.createOrUpdate(getBuyCreditCardSetting(id, value.first))
@@ -485,11 +493,21 @@ class QuoteViewModel constructor(private val codeCreditCard:Int,
                 taxDto = it
                 creditRate.onValueChange(it.value.toString())
                 creditRateKind.onValueChange( it.kindOfTax?.getName()?: KindOfTaxEnum.MONTHLY_EFFECTIVE.name)
-                progress.floatValue = 0.5f
             }
         }
 
         boughtSvc?.let {
+            if (oldBoughtId > 0) {
+                it.getById(oldBoughtId, prefs.simulator)?.let {
+                    nameProduct.onValueChange(it.nameItem)
+                    valueProduct.onValueChange(NumbersUtil.toString(it.valueItem))
+                    monthProduct.onValueChange(it.month.toString())
+                    recurrent.onValueChange(true)
+                    wasRecurrent.value = true
+                    validate()
+                }
+            }
+
             if(codeBought > 0) {
                 it.getById(codeBought, prefs.simulator)?.let {
                     bought = it
@@ -499,7 +517,9 @@ class QuoteViewModel constructor(private val codeCreditCard:Int,
                     nameProduct.onValueChange(it.nameItem)
                     valueProduct.onValueChange(NumbersUtil.toString(it.valueItem))
                     monthProduct.onValueChange(it.month.toString())
-                    recurrent.onValueChange( it.recurrent == "1".toShort())
+                    val recurrentVal = it.recurrent == 1.toShort()
+                    recurrent.onValueChange( recurrentVal )
+                    wasRecurrent.value = recurrentVal
                     validate()
 
                     progress.floatValue = 0.6f

@@ -3,6 +3,7 @@ package co.japl.finances.core.usercases.implement.creditcard.bought.lists
 import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
+import co.com.japl.finances.iports.dtos.CreditCardBoughtItemDTO
 import co.com.japl.finances.iports.dtos.CreditCardBoughtListDTO
 import co.com.japl.finances.iports.dtos.RecapCreditCardBoughtListDTO
 import co.com.japl.finances.iports.dtos.TagDTO
@@ -143,6 +144,20 @@ class BoughtList @Inject constructor(
                  nameItem = it.nameItem + "*",
                  createDate = LocalDateTime.now(),
                  boughtDate = LocalDateTime.now()),cache) > 0
+        }?:false
+    }
+
+    override fun getAllRecurrent(idCreditCard: Int): List<CreditCardBoughtItemDTO> {
+        val list = quoteCCSvc.getAllRecurrent(idCreditCard)
+        list.forEach { dto->
+            tag(dto.id)?.let { dto.tagName = it.name }
+        }
+        return list
+    }
+
+    override fun reactivateRecurrent(codeBought: Int): Boolean {
+        return quoteCCSvc.get(codeBought,false)?.let {
+            quoteCCSvc.update(it.copy(endDate = LocalDateTime.of(LocalDate.MAX, LocalTime.MAX)),false)
         }?:false
     }
 

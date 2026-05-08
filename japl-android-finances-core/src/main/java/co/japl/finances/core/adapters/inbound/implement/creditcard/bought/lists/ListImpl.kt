@@ -53,4 +53,12 @@ class ListImpl @Inject constructor(private val service: IBoughtList,private val 
     override fun clone(codeBought: Int, cache: Boolean): Boolean {
         return service.clone(codeBought,cache)
     }
+
+    override fun getAllRecurrent(idCreditCard: Int): List<CreditCardBoughtItemDTO> {
+        return service.getAllRecurrent(idCreditCard)
+    }
+
+    override fun reactivateRecurrent(codeBought: Int): Boolean {
+        return service.reactivateRecurrent(codeBought)
+    }
 }

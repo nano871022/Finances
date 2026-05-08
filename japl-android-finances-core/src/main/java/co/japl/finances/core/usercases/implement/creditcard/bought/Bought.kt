@@ -137,6 +137,10 @@ class Bought @Inject constructor(private val boughtSvc:IQuoteCreditCardPort,priv
         return boughtSvc.get(codeBought,cache)
     }
 
+    override fun endingRecurrentPayment(codeBought: Int, cutOff: LocalDateTime): Boolean {
+        return boughtSvc.endingRecurrentPayment(codeBought,cutOff)
+    }
+
     override fun fixDataProcess() {
         boughtSvc.fixDataProcess()
     }

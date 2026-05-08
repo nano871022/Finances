@@ -32,6 +32,11 @@
         android:icon="@android:drawable/stat_notify_chat"
         android:title="@string/sms_credit_card"
         />
+
+        <item
+            android:id="@+id/recurrent_list_credit_card"
+            android:icon="@android:drawable/ic_menu_agenda"
+            android:title="@string/recurrent"/>
 </group>
 
     <group>
@@ -39,20 +44,20 @@
             android:id="@+id/item_menu_setting_account"
             android:icon="@drawable/ic_credit_card_foreground"
             android:title="@string/account"
-            app:showAsAction="ifRoom" />
+            app:showAsAction="ifRoom"/>
 
         <item
             android:id="@+id/sms_list_paid"
             android:icon="@android:drawable/stat_notify_chat"
-            android:title="@string/sms_paid"
-            />
+            android:title="@string/sms_paid"/>
+
+        <item
+            android:id="@+id/item_menu_setting_check_paids"
+            android:icon="@drawable/ic_credit_card_foreground"
+            android:title="@string/paids"/>
     </group>
 
-    <item
-        android:id="@+id/item_menu_setting_check_paids"
-        android:icon="@drawable/ic_credit_card_foreground"
-        android:title="@string/paids"
-        />
+
 
     <item
         android:id="@+id/item_menu_setting_settings_application"
@@ -60,9 +65,9 @@
         android:title="@string/settings_app"/>
 
     <item
-    android:id="@+id/item_menu_setting_about_it"
-    android:icon="@drawable/ic_credit_card_foreground"
-    android:title="@string/about_it"/>
+        android:id="@+id/item_menu_setting_about_it"
+        android:icon="@drawable/ic_credit_card_foreground"
+        android:title="@string/about_it"/>
 
     <item
         android:id="@+id/item_menu_setting_google_login"

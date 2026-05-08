@@ -9,6 +9,8 @@ interface IQuoteCreditCardPort {
 
     fun getRecurrentBuys(key:Int,cutOff:LocalDateTime):List<CreditCardBoughtDTO>
 
+    fun getAllRecurrent(idCreditCard: Int): List<co.com.japl.finances.iports.dtos.CreditCardBoughtItemDTO>
+
     fun getToDate(key:Int,startDate:LocalDateTime,cutOffDate: LocalDateTime,cache:Boolean): List<CreditCardBoughtDTO>
 
     fun getCapitalPendingQuotes(idCreditCard:Int, startDate: LocalDateTime, endDate:LocalDateTime): BigDecimal?

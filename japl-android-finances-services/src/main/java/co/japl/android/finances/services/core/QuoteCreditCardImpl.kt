@@ -26,6 +26,10 @@ class QuoteCreditCardImpl @Inject constructor(private val quoteCCSvc: IQuoteCred
         return@Caching quoteCCSvc.getRecurrentBuys(key,cutOff).map (CreditCardBoughtMapper::mapper)
     }
 
+    override fun getAllRecurrent(idCreditCard: Int): List<co.com.japl.finances.iports.dtos.CreditCardBoughtItemDTO> {
+        return quoteCCSvc.getAllRecurrent(idCreditCard).map(CreditCardBoughtMapper::mapperItem)
+    }
+
     override fun getToDate(
         key: Int,
         startDate: LocalDateTime,

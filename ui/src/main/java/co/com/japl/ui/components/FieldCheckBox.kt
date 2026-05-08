@@ -24,7 +24,7 @@ import co.com.japl.ui.theme.MaterialThemeComposeUI
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CheckBoxField(title:String, value:Boolean,callback:(Boolean)->Unit, modifier:Modifier = Modifier){
+fun CheckBoxField(title:String, value:Boolean,callback:(Boolean)->Unit, modifier:Modifier = Modifier, enabled: Boolean = true){
     val activeState = remember { mutableStateOf(false)}
     value?.let{
         activeState.value = value
@@ -38,7 +38,7 @@ fun CheckBoxField(title:String, value:Boolean,callback:(Boolean)->Unit, modifier
         Checkbox(checked = activeState.value, onCheckedChange = {
             callback.invoke(it)
             activeState.value = it
-        })
+        }, enabled = enabled)
     }
 }
 
@@ -47,7 +47,8 @@ fun CheckBoxField(customTitle:@Composable() (RowScope.(color: Color, modifier: M
                   description:@Composable() (Color,Modifier)->Unit = {color,modifier->},
                   value: Boolean,callback:(Boolean)->Unit,
                   customColor:Color = MaterialTheme.colorScheme.onBackground,
-                  customModifier:Modifier = Modifier){
+                  customModifier:Modifier = Modifier,
+                  enabled: Boolean = true){
     val state = remember { mutableStateOf(false) }
     value.let{
         state.value = value
@@ -60,7 +61,7 @@ fun CheckBoxField(customTitle:@Composable() (RowScope.(color: Color, modifier: M
                 onCheckedChange = {
                 state.value = it
                 callback.invoke(it)
-            })
+            }, enabled = enabled)
         }
 
        description(customColor,customModifier)

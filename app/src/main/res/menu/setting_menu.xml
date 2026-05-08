@@ -13,6 +13,7 @@
         app:showAsAction="ifRoom" />
 
     <group>
+        
         <item
             android:id="@+id/item_menu_setting_credit_card"
             android:icon="@drawable/ic_credit_card_foreground"
@@ -28,11 +29,17 @@
         <item
             android:id="@+id/sms_list_credit_card"
             android:icon="@android:drawable/stat_notify_chat"
-            android:title="@string/sms_credit_card"
-             />
+            android:title="@string/sms_credit_card"/>
+
+        <item
+            android:id="@+id/recurrent_list_credit_card"
+            android:icon="@android:drawable/ic_menu_agenda"
+            android:title="@string/recurrent"/>
+
     </group>
 
-    <group >
+    <group>
+        
         <item
             android:id="@+id/item_menu_setting_account"
             android:icon="@drawable/ic_credit_card_foreground"
@@ -42,15 +49,14 @@
         <item
             android:id="@+id/sms_list_paid"
             android:icon="@android:drawable/stat_notify_chat"
-            android:title="@string/sms_paid"
-            />
-    </group>
+            android:title="@string/sms_paid"/>
 
-    <item
-        android:id="@+id/item_menu_setting_check_paids"
-        android:icon="@drawable/ic_credit_card_foreground"
-        android:title="@string/paids"
-        />
+         <item
+            android:id="@+id/item_menu_setting_check_paids"
+            android:icon="@drawable/ic_credit_card_foreground"
+            android:title="@string/paids"/>
+        
+    </group>
 
     <item
         android:id="@+id/item_menu_setting_settings_application"

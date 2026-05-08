@@ -145,6 +145,7 @@ private fun Body(viewModel: QuoteViewModel,modifier:Modifier){
     val creditRate = viewModel.creditRate.value.collectAsState()
     val creditRateKind = viewModel.creditRateKind.value.collectAsState()
     val recurrent = viewModel.recurrent.value.collectAsState()
+    val wasRecurrent = viewModel.wasRecurrent
     val tagSelected = viewModel.tagSelected.value.collectAsState()
     val settingKind = viewModel.settingKind.value.collectAsState()
     val settingName = viewModel.settingName.value.collectAsState()
@@ -233,7 +234,8 @@ private fun Body(viewModel: QuoteViewModel,modifier:Modifier){
         CheckBoxField(title = stringResource(id = R.string.recurrent),
             value = recurrent.value,
             callback = viewModel.recurrent::onValueChange,
-            modifier = ModifiersCustom.FieldFillMAxWidhtAndPaddingShort())
+            modifier = ModifiersCustom.FieldFillMAxWidhtAndPaddingShort(),
+            enabled = !wasRecurrent.value)
 
         Row {
             FieldView(
@@ -368,7 +370,7 @@ internal fun QuotePreview(){
 private fun viweModel():QuoteViewModel{
     val prefs = Prefs(LocalContext.current)
     val viewModel = QuoteViewModel(
-        0,null,0, LocalDateTime.now(),null,null,null,null,null,null,null,prefs)
+        0,null,0, 0,LocalDateTime.now(),null,null,null,null,null,null,null,prefs)
     viewModel.loading.value = false
     return viewModel
 }
