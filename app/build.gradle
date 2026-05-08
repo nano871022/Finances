@@ -18,8 +18,8 @@ android {
         applicationId "co.japl.android.myapplication"
         minSdk 26
         targetSdk 36
-        versionCode 4_06_00_161
-        versionName "V 4.06.00 build 161 New interface to recurrent bought credit card"
+        versionCode 4_06_00_162
+        versionName "V 4.06.00 build 162 New interface to recurrent bought credit card"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
