@@ -35,7 +35,8 @@ class ConnectDB(context: Context):SQLiteOpenHelper(context,
     TagConnectDB(),
     TagQuoteCreditCardConnectDB(),
     SmsCreditCardConnectDB(),
-    SmsPaidConnectDB()
+    SmsPaidConnectDB(),
+    EmailCreditCardConnectDB()
     )
 
     override fun onCreate(p0: SQLiteDatabase?) {

@@ -156,6 +156,7 @@
 
     <string name="taxes_credit_card">Tasas Tarjeta Credito</string>
     <string name="sms_credit_card">SMS Tarjeta Crédito</string>
+    <string name="email_credit_card">Email Tarjeta Crédito</string>
     <string name="credit_card">Tarjeta de Credito</string>
     <string name="month">Mes</string>
     <string name="year">Año</string>
@@ -175,6 +176,12 @@
 
     <string name="fragment_list_sms_credit_card">Lista SMS Tarjeta Crédito</string>
     <string name="fragment_sms_credit_card">SMS Tarjeta Crédito</string>
+
+    <string name="fragment_list_email_credit_card">Lista Email Tarjeta Crédito</string>
+    <string name="fragment_email_credit_card">Email Tarjeta Crédito</string>
+    <string name="email_sender">Remitente Email</string>
+    <string name="subject_pattern">Patrón Asunto</string>
+    <string name="body_pattern">Patrón Cuerpo</string>
 
     <string name="fragment_list_sms_paid">Lista SMS Pagos</string>
     <string name="fragment_sms_paid">SMS Pagos</string>
