@@ -5,16 +5,21 @@ import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import co.com.japl.finances.iports.dtos.AccountDTO
 import co.com.japl.finances.iports.dtos.SMSPaidDTO
 import co.com.japl.finances.iports.enums.KindInterestRateEnum
+import co.com.japl.finances.iports.inbounds.common.ILLMService
 import co.com.japl.finances.iports.inbounds.inputs.IAccountPort
 import co.com.japl.finances.iports.inbounds.paid.ISMSPaidPort
 import co.com.japl.module.paid.R
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 
-class SmsViewModel constructor(private val codeSMS:Int?, private val svc:ISMSPaidPort?, private val accountSvc:IAccountPort?, private val navController: NavController?): ViewModel() {
+class SmsViewModel constructor(private val codeSMS:Int?, private val svc:ISMSPaidPort?, private val accountSvc:IAccountPort?, private val navController: NavController?, private val llmService: ILLMService? = null): ViewModel() {
 
     val  load = mutableStateOf(true)
     val  progress = mutableFloatStateOf(0.0f)
@@ -34,6 +39,36 @@ class SmsViewModel constructor(private val codeSMS:Int?, private val svc:ISMSPai
     val validationResult = mutableStateOf("")
 
     val validate = mutableStateOf("")
+
+    val smsSamples = mutableStateListOf<Pair<String, Boolean>>()
+    val showSmsDialog = mutableStateOf(false)
+
+    fun loadSmsSamples() {
+        if (phoneNumber.value.isNotEmpty()) {
+            svc?.getSmsList(phoneNumber.value)?.let { list ->
+                smsSamples.clear()
+                list.map { Pair(it, false) }.forEach(smsSamples::add)
+                showSmsDialog.value = true
+            }
+        }
+    }
+
+    fun generateRegexWithAI() {
+        val selectedSms = smsSamples.filter { it.second }.map { it.first }
+        if (selectedSms.isNotEmpty()) {
+            viewModelScope.launch(Dispatchers.IO) {
+                load.value = true
+                val prompt = "Analizar estos mensajes para obtener un patrón y devolver exclusivamente una expresión regular que capture en este orden: fecha, valor de compra y nombre de la compra. La respuesta debe contener únicamente la cadena de la expresión regular, sin explicaciones, sin bloques de código, ni comillas.\n\nMensajes:\n${selectedSms.joinToString("\n")}"
+                llmService?.getAiResponse(prompt)?.onSuccess { response ->
+                    pattern.value = response.trim().removeSurrounding("`").removePrefix("regex").trim()
+                    load.value = false
+                    showSmsDialog.value = false
+                }?.onFailure {
+                    load.value = false
+                }
+            }
+        }
+    }
 
 
     fun save(){
@@ -71,6 +106,7 @@ class SmsViewModel constructor(private val codeSMS:Int?, private val svc:ISMSPai
     }
 
     fun validatePatternWithMessages(){
+        validate()
         smsPaid?.let {dto->
             svc?.let{
                 validationResult.value = ""

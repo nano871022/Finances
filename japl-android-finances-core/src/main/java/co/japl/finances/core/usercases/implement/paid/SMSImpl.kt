@@ -72,4 +72,8 @@ class SMSImpl @Inject constructor(private val svc:ISMSPaidPort, private val smsS
             return svc.update(it.copy(active = false))
         }?:false
     }
+
+    override fun getSmsList(phoneNumber: String): List<String> {
+        return smsSvc.load(phoneNumber, 30)
+    }
 }

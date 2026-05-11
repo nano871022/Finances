@@ -28,4 +28,6 @@ interface ISMSCreditCardPort{
 
     fun disable(codeSMSCreditCard: Int):Boolean
 
+    fun getSmsList(phoneNumber: String): List<String>
+
 }

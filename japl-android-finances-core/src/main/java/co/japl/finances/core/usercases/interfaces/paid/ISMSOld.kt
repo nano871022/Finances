@@ -26,4 +26,6 @@ interface ISMSOld {
     fun enable(codeSMSPaidDTO: Int): Boolean
 
     fun disable(codeSMSPaidDTO: Int): Boolean
+
+    fun getSmsList(phoneNumber: String): List<String>
 }

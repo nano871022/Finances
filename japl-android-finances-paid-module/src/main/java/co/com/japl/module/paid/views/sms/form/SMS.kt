@@ -14,7 +14,10 @@ import androidx.compose.material.icons.rounded.CleaningServices
 import androidx.compose.material.icons.rounded.Save
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.Scaffold
-import androidx.compose.material.Text
+import androidx.compose.material3.Text
+import androidx.compose.material3.Button
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.TextButton
 import androidx.compose.material.icons.automirrored.rounded.DirectionsRun
 import androidx.compose.material.icons.rounded.Cancel
 import androidx.compose.material.icons.rounded.DirectionsRun
@@ -35,6 +38,7 @@ import co.com.japl.module.paid.controllers.sms.form.SmsViewModel
 import co.com.japl.ui.components.FieldSelect
 import co.com.japl.ui.components.FieldText
 import co.com.japl.ui.components.FloatButton
+import co.com.japl.ui.components.CheckBoxField
 import co.com.japl.ui.theme.values.Dimensions
 import co.com.japl.ui.theme.values.ModifiersCustom.Weight1f
 import kotlinx.coroutines.CoroutineScope
@@ -122,6 +126,10 @@ private fun Body(viewModel: SmsViewModel,modifier:Modifier){
           },
           modifier = modifier)
 
+      Button(onClick = { viewModel.loadSmsSamples() }, modifier = Modifier.align(Alignment.End)) {
+          Text(text = "Generar con IA", color = MaterialTheme.colorScheme.onPrimary)
+      }
+
 
       OutlinedButton(onClick = { viewModel.validatePatternWithMessages() },
           modifier = modifier.align(alignment = Alignment.End)) {
@@ -148,6 +156,34 @@ private fun Body(viewModel: SmsViewModel,modifier:Modifier){
           modifier = modifier)
 
 
+  }
+
+  if (viewModel.showSmsDialog.value) {
+      AlertDialog(
+          onDismissRequest = { viewModel.showSmsDialog.value = false },
+          title = { Text(text = "Seleccionar SMS Ejemplos", color = MaterialTheme.colorScheme.onSurface) },
+          text = {
+              Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
+                  viewModel.smsSamples.forEachIndexed { index, pair ->
+                      CheckBoxField(
+                          title = pair.first,
+                          value = pair.second,
+                          callback = { viewModel.smsSamples[index] = pair.copy(second = it) }
+                      )
+                  }
+              }
+          },
+          confirmButton = {
+              TextButton(onClick = { viewModel.generateRegexWithAI() }) {
+                  Text("Generar")
+              }
+          },
+          dismissButton = {
+              TextButton(onClick = { viewModel.showSmsDialog.value = false }) {
+                  Text("Cancelar")
+              }
+          }
+      )
   }
 }
 

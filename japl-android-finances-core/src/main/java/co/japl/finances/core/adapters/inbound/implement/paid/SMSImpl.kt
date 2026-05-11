@@ -56,6 +56,10 @@ class SMSImpl @Inject constructor(private val svc:ISMSOld, private val smsSvc:IS
         return svc.disable(codeSMSPaidDTO)
     }
 
+    override fun getSmsList(phoneNumber: String): List<String> {
+        return svc.getSmsList(phoneNumber)
+    }
+
     override fun createBySms(name: String, value: Double, date: LocalDateTime,codeAccount:Int) {
         smsSvc.createBySms(
             PaidDTO(

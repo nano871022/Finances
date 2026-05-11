@@ -9,7 +9,22 @@ class Prefs constructor(private val context:Context){
     val SHARED_NAME_CREDIT_CARD_SMS_DAYS_READ = "credit_card_sms_days_read"
     val SHARED_NAME_PAID_SMS_DAYS_READ = "paid_sms_days_read"
     val SHARED_NAME_MSG_INITIAL = "msg_initial"
+    val SHARED_NAME_LLM_TYPE = "llm_type"
+    val SHARED_NAME_LLM_API_KEY = "llm_api_key"
+    val SHARED_NAME_LLM_ENABLED = "llm_enabled"
     val prefs:SharedPreferences = context.getSharedPreferences(PREFS_NAME,0)
+
+    var llmType: String
+        get() = prefs.getString(SHARED_NAME_LLM_TYPE, "GEMINI") ?: "GEMINI"
+        set(value) = prefs.edit().putString(SHARED_NAME_LLM_TYPE, value).apply()
+
+    var llmApiKey: String
+        get() = prefs.getString(SHARED_NAME_LLM_API_KEY, "") ?: ""
+        set(value) = prefs.edit().putString(SHARED_NAME_LLM_API_KEY, value).apply()
+
+    var llmEnabled: Boolean
+        get() = prefs.getBoolean(SHARED_NAME_LLM_ENABLED, false)
+        set(value) = prefs.edit().putBoolean(SHARED_NAME_LLM_ENABLED, value).apply()
 
     var simulator: Boolean
         get() = prefs.getString(SHARED_NAME_SIMULATOR,"false").toBoolean()

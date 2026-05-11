@@ -31,4 +31,6 @@ interface ISMSCreditCard {
     fun enable(codeSMSCreditCard: Int): Boolean
 
     fun disable(codeSMSCreditCard: Int): Boolean
+
+    fun getSmsList(phoneNumber: String): List<String>
 }

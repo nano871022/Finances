@@ -69,4 +69,8 @@ class SMSCreditCardImpl @Inject constructor(private val svc:ISMSCreditCard) : IS
     override fun disable(codeSMSCreditCard: Int): Boolean {
         return svc.disable(codeSMSCreditCard)
     }
+
+    override fun getSmsList(phoneNumber: String): List<String> {
+        return svc.getSmsList(phoneNumber)
+    }
 }
