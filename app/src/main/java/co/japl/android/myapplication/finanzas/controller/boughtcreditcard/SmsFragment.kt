@@ -9,6 +9,7 @@ import androidx.annotation.RequiresApi
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import co.com.japl.finances.iports.inbounds.common.ILLMService
 import co.com.japl.finances.iports.inbounds.creditcard.ICreditCardPort
 import co.com.japl.finances.iports.inbounds.creditcard.ISMSCreditCardPort
 import co.com.japl.module.creditcard.controllers.smscreditcard.form.SmsCreditCardViewModel
@@ -24,6 +25,8 @@ class SmsFragment: Fragment()  {
     @Inject lateinit var creditCardSvc:ICreditCardPort
     @Inject lateinit var smsCreditCardSvc:ISMSCreditCardPort
 
+    @Inject lateinit var llmService: ILLMService
+
     @RequiresApi(Build.VERSION_CODES.S)
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -35,6 +38,7 @@ class SmsFragment: Fragment()  {
             codeSMSCC = code,
             svc=smsCreditCardSvc,
             creditCardSvc = creditCardSvc,
+            llmService = llmService,
             navController = findNavController()
         )
         view.cvComposeLscc?.apply {

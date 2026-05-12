@@ -57,7 +57,9 @@
             android:title="@string/paids"/>
     </group>
 
-
+    <item android:id="@+id/item_menu_setting_llm_connection"
+        android:icon="@android:drawable/ic_menu_set_as"
+        android:title="@string/llm_connection"/>
 
     <item
         android:id="@+id/item_menu_setting_settings_application"

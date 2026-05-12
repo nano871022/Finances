@@ -496,4 +496,11 @@
         <deepLink app:uri="android-app://co.com.japl.finanzas.module.creditcard/recurrentList"/>
     </fragment>
 
+    <fragment
+        android:id="@+id/item_menu_setting_llm_connection"
+        android:name="co.japl.android.myapplication.finanzas.controller.setting.LLMConnectionSetting"
+        android:label="@string/llm_connection"
+        tools:layout="@layout/fragment_llm_connection" />
+
+
 </navigation>

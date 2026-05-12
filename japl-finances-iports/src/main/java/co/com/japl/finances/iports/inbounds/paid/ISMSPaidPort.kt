@@ -24,4 +24,6 @@ interface ISMSPaidPort{
 
     fun disable(codeSMSPaid: Int):Boolean
 
+    fun getSmsList(phoneNumber: String): List<String>
+
 }

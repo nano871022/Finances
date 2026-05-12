@@ -1,20 +1,25 @@
 package co.com.japl.module.creditcard.controllers.smscreditcard.form
 
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import co.com.japl.finances.iports.dtos.CreditCardDTO
 import co.com.japl.finances.iports.dtos.SMSCreditCard
 import co.com.japl.finances.iports.enums.KindInterestRateEnum
+import co.com.japl.finances.iports.inbounds.common.ILLMService
 import co.com.japl.finances.iports.inbounds.creditcard.ICreditCardPort
 import co.com.japl.finances.iports.inbounds.creditcard.ISMSCreditCardPort
 import co.com.japl.module.creditcard.R
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 
-class SmsCreditCardViewModel constructor(private val codeSMSCC:Int?,private val svc:ISMSCreditCardPort?,private val creditCardSvc:ICreditCardPort?,private val navController: NavController?): ViewModel() {
+class SmsCreditCardViewModel constructor(private val codeSMSCC:Int?,private val svc:ISMSCreditCardPort?,private val creditCardSvc:ICreditCardPort?,private val navController: NavController?, private val llmService: ILLMService? = null): ViewModel() {
 
     val  load = mutableStateOf(true)
     val  progress = mutableFloatStateOf(0.0f)
@@ -36,6 +41,39 @@ class SmsCreditCardViewModel constructor(private val codeSMSCC:Int?,private val 
     val validationResult = mutableStateOf("")
 
     val validate = mutableStateOf("")
+
+    val smsSamples = mutableStateListOf<Pair<String, Boolean>>()
+    val showSmsDialog = mutableStateOf(false)
+
+    fun loadSmsSamples() {
+        if (phoneNumber.value.isNotEmpty()) {
+            svc?.getSmsList(phoneNumber.value)?.let { list ->
+                smsSamples.clear()
+                list.map { Pair(it, false) }.forEach(smsSamples::add)
+                showSmsDialog.value = true
+            }
+        }
+    }
+
+    fun generateRegexWithAI() {
+        val selectedSms = smsSamples.filter { it.second }.map { it.first }
+        if (selectedSms.isNotEmpty()) {
+            Log.d(this::javaClass.name, "selectedSms: $selectedSms")
+            viewModelScope.launch(Dispatchers.IO) {
+                load.value = true
+                val prompt = navController?.context?.getString(R.string.promt_sms_expreg, selectedSms.joinToString("\n"))?:""
+                llmService?.getAiResponse(prompt)?.onSuccess { response ->
+                    Log.d("SmsCreditCardViewModel", "Response: $response")
+                    pattern.value = response.trim().removeSurrounding("`").removePrefix("regex").trim()
+                    load.value = false
+                    showSmsDialog.value = false
+                }?.onFailure {
+                    Log.d("SmsCreditCardViewModel", "Error: ${it.message}")
+                    load.value = false
+                }
+            }
+        }
+    }
 
 
     fun save(){
@@ -75,6 +113,7 @@ class SmsCreditCardViewModel constructor(private val codeSMSCC:Int?,private val 
     }
 
     fun validatePatternWithMessages() {
+        validate()
         smsCreditCard?.let { dto ->
             svc?.let {
                 validationResult.value = ""

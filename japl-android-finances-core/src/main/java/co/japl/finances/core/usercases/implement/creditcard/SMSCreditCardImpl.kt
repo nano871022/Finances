@@ -77,6 +77,10 @@ class SMSCreditCardImpl @Inject constructor(private val svc:ISMSCreditCardPort, 
         }?:false
     }
 
+    override fun getSmsList(phoneNumber: String): List<String> {
+        return smsSvc.load(phoneNumber, 30)
+    }
+
     override fun getByCreditCardAndKindInterest(
         codeCreditCard: Int,
         kind: KindInterestRateEnum
