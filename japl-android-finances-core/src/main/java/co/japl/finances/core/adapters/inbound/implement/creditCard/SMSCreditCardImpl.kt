@@ -1,4 +1,4 @@
-package co.japl.finances.core.adapters.inbound.implement.creditCard
+package co.japl.finances.core.adapters.inbound.implement.creditcard
 
 import co.com.japl.finances.iports.dtos.SMSCreditCard
 import co.com.japl.finances.iports.enums.KindInterestRateEnum

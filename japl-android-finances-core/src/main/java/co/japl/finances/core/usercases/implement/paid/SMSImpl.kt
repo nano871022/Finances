@@ -3,14 +3,14 @@ package co.japl.finances.core.usercases.implement.paid
 import co.com.japl.finances.iports.dtos.SMSPaidDTO
 import co.com.japl.finances.iports.inbounds.common.ISMSRead
 import co.com.japl.finances.iports.outbounds.ISMSPaidPort
-import co.japl.finances.core.usercases.interfaces.paid.ISMS
+import co.japl.finances.core.usercases.interfaces.paid.ISMS2
 import co.japl.finances.core.utils.DateUtils
 import co.japl.finances.core.utils.NumbersUtil
 import co.japl.finances.core.utils.SmsUtil
 import java.time.LocalDateTime
 import javax.inject.Inject
 
-class SMSImpl @Inject constructor(private val svc:ISMSPaidPort, private val smsSvc:ISMSRead): ISMS {
+class SMSImpl @Inject constructor(private val svc:ISMSPaidPort, private val smsSvc:ISMSRead): ISMS2 {
     override fun create(dto: SMSPaidDTO): Int {
         return svc.create(dto)
     }

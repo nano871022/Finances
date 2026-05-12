@@ -2,7 +2,7 @@ package co.japl.finances.core.usercases.implement.creditcard
 
 import co.com.japl.finances.iports.dtos.EmailCreditCardDTO
 import co.com.japl.finances.iports.enums.KindInterestRateEnum
-import co.com.japl.finances.core.usercases.interfaces.creditcard.IEmailCreditCard
+import co.japl.finances.core.usercases.interfaces.creditcard.IEmailCreditCard
 import co.com.japl.finances.iports.outbounds.IEmailCreditCardPort as IEmailCreditCardOutPort
 import co.japl.finances.core.utils.SmsUtil
 import java.time.LocalDateTime

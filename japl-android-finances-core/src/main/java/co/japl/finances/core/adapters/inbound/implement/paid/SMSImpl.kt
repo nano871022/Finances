@@ -5,12 +5,12 @@ import co.com.japl.finances.iports.dtos.SMSPaidDTO
 import co.com.japl.finances.iports.enums.KindInterestRateEnum
 import co.com.japl.finances.iports.inbounds.paid.ISMSPaidPort
 import co.com.japl.finances.iports.inbounds.paid.ISmsPort
-import co.japl.finances.core.usercases.interfaces.paid.ISMS
+import co.japl.finances.core.usercases.interfaces.paid.ISMS2
 import co.japl.finances.core.usercases.interfaces.paid.ISms
 import java.time.LocalDateTime
 import javax.inject.Inject
 
-class SMSImpl @Inject constructor(private val svc:ISMS, private val smsSvc:ISms) : ISMSPaidPort , ISmsPort{
+class SMSImpl @Inject constructor(private val svc:ISMS2, private val smsSvc:ISms) : ISMSPaidPort , ISmsPort{
     override fun create(dto: SMSPaidDTO): Int {
         require(dto.id == 0){"Id must be zero"}
         return svc.create(dto)
