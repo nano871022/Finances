@@ -3,6 +3,7 @@ package co.japl.android.myapplication.finanzas.modules
 import android.content.Context
 import co.com.japl.finances.iports.inbounds.creditcard.ICreditCardPort
 import co.com.japl.finances.iports.inbounds.common.IDifferQuotesPort
+import co.com.japl.finances.iports.inbounds.common.ILLMService
 import co.com.japl.finances.iports.inbounds.common.ISMSRead
 import co.com.japl.finances.iports.inbounds.credit.IAdditional
 import co.com.japl.finances.iports.inbounds.credit.IAdditionalFormPort
@@ -58,6 +59,7 @@ import co.japl.android.finances.services.dao.interfaces.IGracePeriodDAO
 import co.japl.android.finances.services.dao.interfaces.ISimulatorCreditDAO
 import co.japl.android.myapplication.finanzas.controller.SMS
 import co.japl.finances.core.adapters.inbound.implement.common.CheckPaymentsImpl
+import co.japl.finances.core.adapters.inbound.implement.common.LLMServiceImpl
 import co.japl.finances.core.adapters.inbound.implement.credit.AdditionalPort
 import co.japl.finances.core.adapters.inbound.implement.credit.CreditImpl
 import co.japl.finances.core.adapters.inbound.implement.credit.PeriodCreditImpl
@@ -481,4 +483,7 @@ abstract class AbstractModule {
     abstract fun bindOutputAddAdditionalValue(impl: co.japl.android.finances.services.core.ExtraValueAmortizationImpl): IExtraValueAmortizationPort
     @Binds
     abstract fun bindDAOAddAmortization(impl: co.japl.android.finances.services.dao.implement.AddAmortizationImpl): IAddAmortizationDAO
+
+    @Binds
+    abstract fun bindInboundLLMService(impl: LLMServiceImpl): ILLMService
 }

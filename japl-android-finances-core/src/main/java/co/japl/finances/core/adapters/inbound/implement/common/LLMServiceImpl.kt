@@ -1,5 +1,6 @@
 package co.japl.finances.core.adapters.inbound.implement.common
 
+import android.util.Log
 import co.com.japl.finances.iports.inbounds.common.ILLMService
 import co.com.japl.finances.iports.enums.LLMType
 import co.com.japl.ui.Prefs
@@ -14,6 +15,7 @@ class LLMServiceImpl @Inject constructor(
 ) : ILLMService {
 
     override suspend fun getAiResponse(prompt: String): Result<String> {
+        Log.d(this::javaClass.name, "getAiResponse: $prompt")
         if (!prefs.llmEnabled) {
             return Result.failure(Exception("LLM is disabled"))
         }

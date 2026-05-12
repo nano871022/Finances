@@ -9,7 +9,7 @@ import androidx.annotation.RequiresApi
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.Fragment
 import co.com.japl.ui.theme.MaterialThemeComposeUI
-import co.japl.android.myapplication.databinding.FragmentSettingsAppBinding
+import co.japl.android.myapplication.databinding.FragmentLlmConnectionBinding
 import co.japl.android.myapplication.finanzas.ApplicationInitial
 import co.japl.android.myapplication.finanzas.view.setting.LLMConnectionForm
 
@@ -21,9 +21,9 @@ class LLMConnectionSetting : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val binding = FragmentSettingsAppBinding.inflate(inflater)
+        val binding = FragmentLlmConnectionBinding.inflate(inflater)
         val viewModel = LLMConnectionViewModel(prefs = ApplicationInitial.prefs, context = requireContext())
-        binding.cvComposeFsa.apply {
+        binding.composeViewLlmcnt.apply {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
                 MaterialThemeComposeUI {

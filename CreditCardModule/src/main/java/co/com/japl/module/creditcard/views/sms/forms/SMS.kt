@@ -190,12 +190,12 @@ private fun Body(viewModel: SmsCreditCardViewModel,modifier:Modifier){
           },
           confirmButton = {
               TextButton(onClick = { viewModel.generateRegexWithAI() }) {
-                  Text("Generar")
+                  Text("Generar", color = MaterialTheme.colorScheme.onSurface)
               }
           },
           dismissButton = {
               TextButton(onClick = { viewModel.showSmsDialog.value = false }) {
-                  Text("Cancelar")
+                  Text("Cancelar", color = MaterialTheme.colorScheme.onSurface)
               }
           }
       )

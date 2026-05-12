@@ -12,9 +12,10 @@ class GeminiService @Inject constructor(private val prefs: Prefs) : ILLMService 
     override suspend fun getAiResponse(prompt: String): Result<String> {
         val apiKey = prefs.llmApiKey
         if (apiKey.isEmpty()) return Result.failure(Exception("API Key is empty"))
+        val model = "gemini-2.5-flash-lite"
 
         return runCatching {
-            val url = URL("https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=$apiKey")
+            val url = URL("https://generativelanguage.googleapis.com/v1beta/models/$model:generateContent?key=$apiKey")
             val connection = url.openConnection() as HttpURLConnection
             connection.requestMethod = "POST"
             connection.setRequestProperty("Content-Type", "application/json")

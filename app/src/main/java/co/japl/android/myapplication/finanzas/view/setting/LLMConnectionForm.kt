@@ -16,6 +16,7 @@ fun LLMConnectionForm(viewModel: LLMConnectionViewModel) {
     val enabled by viewModel.llmEnabled
     val type by viewModel.llmType
     val apiKey by viewModel.llmApiKey
+    val typeList = remember { viewModel.llmTypeList.toMutableStateList() }
 
     Scaffold(
         floatingActionButton = {
@@ -39,7 +40,7 @@ fun LLMConnectionForm(viewModel: LLMConnectionViewModel) {
             FieldSelect(
                 title = "Proveedor de IA",
                 value = type,
-                list = viewModel.llmTypeList,
+                list = typeList,
                 modifier = Modifier.fillMaxWidth(),
                 callAble = { it?.let { viewModel.llmType.value = it.second } }
             )

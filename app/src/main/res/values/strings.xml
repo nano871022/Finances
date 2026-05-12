@@ -493,4 +493,5 @@
     <string name="permission_sms_rationale_title">Permiso de SMS requerido</string>
     <string name="permission_sms_rationale_message">Esta aplicación necesita acceder a sus mensajes de texto para detectar automáticamente las notificaciones de transacciones de sus bancos y ayudarle a gestionar sus finanzas de forma más sencilla.</string>
     <string name="ok">Aceptar</string>
+    <string name="llm_connection">LLM Conección</string>
 </resources>

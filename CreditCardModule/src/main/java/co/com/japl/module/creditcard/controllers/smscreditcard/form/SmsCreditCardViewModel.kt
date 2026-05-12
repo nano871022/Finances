@@ -1,5 +1,6 @@
 package co.com.japl.module.creditcard.controllers.smscreditcard.form
 
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateListOf
@@ -57,14 +58,17 @@ class SmsCreditCardViewModel constructor(private val codeSMSCC:Int?,private val 
     fun generateRegexWithAI() {
         val selectedSms = smsSamples.filter { it.second }.map { it.first }
         if (selectedSms.isNotEmpty()) {
+            Log.d(this::javaClass.name, "selectedSms: $selectedSms")
             viewModelScope.launch(Dispatchers.IO) {
                 load.value = true
-                val prompt = "Analizar estos mensajes para obtener un patrón y devolver exclusivamente una expresión regular que capture en este orden: fecha, valor de compra y nombre de la compra. La respuesta debe contener únicamente la cadena de la expresión regular, sin explicaciones, sin bloques de código, ni comillas.\n\nMensajes:\n${selectedSms.joinToString("\n")}"
+                val prompt = navController?.context?.getString(R.string.promt_sms_expreg, selectedSms.joinToString("\n"))?:""
                 llmService?.getAiResponse(prompt)?.onSuccess { response ->
+                    Log.d("SmsCreditCardViewModel", "Response: $response")
                     pattern.value = response.trim().removeSurrounding("`").removePrefix("regex").trim()
                     load.value = false
                     showSmsDialog.value = false
                 }?.onFailure {
+                    Log.d("SmsCreditCardViewModel", "Error: ${it.message}")
                     load.value = false
                 }
             }
