@@ -12,6 +12,7 @@ class Prefs constructor(private val context:Context){
     val SHARED_NAME_LLM_TYPE = "llm_type"
     val SHARED_NAME_LLM_API_KEY = "llm_api_key"
     val SHARED_NAME_LLM_ENABLED = "llm_enabled"
+    val SHARED_NAME_LLM_MODEL = "llm_model"
     val prefs:SharedPreferences = context.getSharedPreferences(PREFS_NAME,0)
 
     var llmType: String
@@ -25,6 +26,10 @@ class Prefs constructor(private val context:Context){
     var llmEnabled: Boolean
         get() = prefs.getBoolean(SHARED_NAME_LLM_ENABLED, false)
         set(value) = prefs.edit().putBoolean(SHARED_NAME_LLM_ENABLED, value).apply()
+
+    var llmModel: String
+        get() = prefs.getString(SHARED_NAME_LLM_MODEL, "") ?: ""
+        set(value) = prefs.edit().putString(SHARED_NAME_LLM_MODEL, value).apply()
 
     var simulator: Boolean
         get() = prefs.getString(SHARED_NAME_SIMULATOR,"false").toBoolean()

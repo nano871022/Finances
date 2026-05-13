@@ -54,7 +54,7 @@ private fun Buttons(viewModel: SettingsAppViewModel){
 @Preview(showBackground = true, showSystemUi = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
 internal fun SettingsAppPreview(){
     MaterialThemeComposeUI {
-        SettingsApp(getViewModel())
+        SettingsApp(getSetAppViewModel())
     }
 }
 
@@ -63,11 +63,11 @@ internal fun SettingsAppPreview(){
 @Preview(showBackground = true, showSystemUi = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
 internal fun SettingsAppPreviewDark(){
     MaterialThemeComposeUI {
-        SettingsApp(getViewModel())
+        SettingsApp(getSetAppViewModel())
     }
 }
 
 @Composable
-private fun getViewModel():SettingsAppViewModel{
+private fun getSetAppViewModel():SettingsAppViewModel{
     return  SettingsAppViewModel(prefs=Prefs(LocalContext.current), context = LocalContext.current)
 }

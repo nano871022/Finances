@@ -12,7 +12,7 @@ class GeminiService @Inject constructor(private val prefs: Prefs) : ILLMService 
     override suspend fun getAiResponse(prompt: String): Result<String> {
         val apiKey = prefs.llmApiKey
         if (apiKey.isEmpty()) return Result.failure(Exception("API Key is empty"))
-        val model = "gemini-2.5-flash-lite"
+        val model = prefs.llmModel.ifEmpty { "gemini-1.5-flash" }
 
         return runCatching {
             val url = URL("https://generativelanguage.googleapis.com/v1beta/models/$model:generateContent?key=$apiKey")
@@ -45,6 +45,33 @@ class GeminiService @Inject constructor(private val prefs: Prefs) : ILLMService 
                 val contentRes = candidates.getJSONObject(0).getJSONObject("content")
                 val partsRes = contentRes.getJSONArray("parts")
                 partsRes.getJSONObject(0).getString("text")
+            } else {
+                throw Exception("Error: ${connection.responseCode} ${connection.errorStream?.bufferedReader()?.readText()}")
+            }
+        }
+    }
+
+    override suspend fun getModels(): Result<List<String>> {
+        val apiKey = prefs.llmApiKey
+        if (apiKey.isEmpty()) return Result.failure(Exception("API Key is empty"))
+
+        return runCatching {
+            val url = URL("https://generativelanguage.googleapis.com/v1beta/models?key=$apiKey")
+            val connection = url.openConnection() as HttpURLConnection
+            connection.requestMethod = "GET"
+            connection.setRequestProperty("Content-Type", "application/json")
+
+            if (connection.responseCode == 200) {
+                val response = connection.inputStream.bufferedReader().readText()
+                val jsonResponse = JSONObject(response)
+                val models = jsonResponse.getJSONArray("models")
+                val modelList = mutableListOf<String>()
+                for (i in 0 until models.length()) {
+                    val model = models.getJSONObject(i)
+                    val name = model.getString("name").replace("models/", "")
+                    modelList.add(name)
+                }
+                modelList
             } else {
                 throw Exception("Error: ${connection.responseCode} ${connection.errorStream?.bufferedReader()?.readText()}")
             }
