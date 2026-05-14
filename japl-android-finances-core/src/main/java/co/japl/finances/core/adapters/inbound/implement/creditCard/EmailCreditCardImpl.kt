@@ -29,7 +29,7 @@ class EmailCreditCardImpl @Inject constructor(private val svc: IEmailCreditCard)
         return svc.getById(codeEmailCreditCard)
     }
 
-    override fun validateMessagePattern(dto: EmailCreditCardDTO): List<String> {
+    override suspend fun validateMessagePattern(dto: EmailCreditCardDTO): List<String> {
         return svc.validateMessagePattern(dto)
     }
 
@@ -45,7 +45,7 @@ class EmailCreditCardImpl @Inject constructor(private val svc: IEmailCreditCard)
         return svc.getAllByCodeCreditCard(codeCreditCard)
     }
 
-    override fun getEmailMessages(
+    override suspend fun getEmailMessages(
         sender: String,
         subjectPattern: String,
         bodyPattern: String

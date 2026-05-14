@@ -14,7 +14,7 @@ interface IEmailCreditCard {
 
     fun getById(codeEmailCreditCard: Int): EmailCreditCardDTO?
 
-    fun validateMessagePattern(dto: EmailCreditCardDTO): List<String>
+    suspend fun validateMessagePattern(dto: EmailCreditCardDTO): List<String>
 
     fun getAllByCodeCreditCard(codeCreditCard: Int): List<EmailCreditCardDTO>
 
@@ -23,7 +23,7 @@ interface IEmailCreditCard {
         kind: KindInterestRateEnum
     ): List<EmailCreditCardDTO>
 
-    fun getEmailMessages(
+    suspend fun getEmailMessages(
         sender: String,
         subjectPattern: String,
         bodyPattern: String

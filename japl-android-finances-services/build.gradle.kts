@@ -55,6 +55,8 @@ dependencies {
     implementation("com.google.android.gms:play-services-drive:17.0.0")
     implementation("com.google.http-client:google-http-client-gson:1.42.3")
     implementation("com.google.apis:google-api-services-script:v1-rev20220323-2.0.0")
+    implementation("com.google.apis:google-api-services-gmail:v1-rev20220404-2.0.0")
+    implementation("com.google.api-client:google-api-client-android:2.2.0")
     implementation("com.squareup.okio:okio:3.6.0")
 
 
