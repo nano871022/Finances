@@ -11,6 +11,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import co.com.japl.finances.iports.inbounds.common.ILLMService
 import co.com.japl.ui.Prefs
@@ -28,7 +29,9 @@ fun LLMConnectionForm(viewModel: LLMConnectionViewModel) {
     val progress = remember { viewModel.loadProgress }
     val loading = remember { viewModel.isLoadingModels }
 
-    viewModel.main()
+    LaunchedEffect(Unit) {
+        viewModel.loadModels()
+    }
 
     if(loading.value) {
         LinearProgressIndicator(
@@ -49,6 +52,8 @@ private fun Body(viewModel: LLMConnectionViewModel){
     val type by viewModel.llmType
     val apiKey by viewModel.llmApiKey
     val model by viewModel.llmModel
+    val geminiUrl by viewModel.llmGeminiUrl
+    val deepSeekUrl by viewModel.llmDeepSeekUrl
     val typeList = remember { viewModel.llmTypeList.toMutableStateList() }
     val modelsList = viewModel.modelsList
     val isLoadingModels by viewModel.isLoadingModels
@@ -78,7 +83,6 @@ private fun Body(viewModel: LLMConnectionViewModel){
                 modifier = Modifier.fillMaxWidth(),
                 callAble = { it?.let { 
                     viewModel.llmType.value = it.second
-                    viewModel.main()
                 } }
             )
 
@@ -91,6 +95,20 @@ private fun Body(viewModel: LLMConnectionViewModel){
                 modifier = Modifier.fillMaxWidth()
             )
 
+            FieldText(
+                title = "Gemini URL",
+                value = geminiUrl,
+                callback = { viewModel.llmGeminiUrl.value = it },
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            FieldText(
+                title = "DeepSeek URL",
+                value = deepSeekUrl,
+                callback = { viewModel.llmDeepSeekUrl.value = it },
+                modifier = Modifier.fillMaxWidth()
+            )
+
             Row(verticalAlignment = Alignment.CenterVertically) {
                 FieldSelect(
                     title = "Modelo",
@@ -100,7 +118,7 @@ private fun Body(viewModel: LLMConnectionViewModel){
                     callAble = { it?.let { viewModel.llmModel.value = it.second } }
                 )
                 
-                IconButton(onClick = { viewModel.main() }, enabled = !isLoadingModels) {
+                IconButton(onClick = { viewModel.loadModels() }, enabled = !isLoadingModels) {
                     if (isLoadingModels) {
                         CircularProgressIndicator(modifier = Modifier.size(Dimensions.ICON_SIZE_MEDIUM))
                     } else {
@@ -141,5 +159,3 @@ fun getLLMConnectFViewModel(): LLMConnectionViewModel {
         context,
         llmsSvc)
 }
-
-

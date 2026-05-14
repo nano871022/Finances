@@ -13,6 +13,8 @@ class Prefs constructor(private val context:Context){
     val SHARED_NAME_LLM_API_KEY = "llm_api_key"
     val SHARED_NAME_LLM_ENABLED = "llm_enabled"
     val SHARED_NAME_LLM_MODEL = "llm_model"
+    val SHARED_NAME_LLM_GEMINI_URL = "llm_gemini_url"
+    val SHARED_NAME_LLM_DEEPSEEK_URL = "llm_deepseek_url"
     val prefs:SharedPreferences = context.getSharedPreferences(PREFS_NAME,0)
 
     var llmType: String
@@ -30,6 +32,14 @@ class Prefs constructor(private val context:Context){
     var llmModel: String
         get() = prefs.getString(SHARED_NAME_LLM_MODEL, "") ?: ""
         set(value) = prefs.edit().putString(SHARED_NAME_LLM_MODEL, value).apply()
+
+    var llmGeminiUrl: String
+        get() = prefs.getString(SHARED_NAME_LLM_GEMINI_URL, "https://generativelanguage.googleapis.com/v1beta/models/") ?: "https://generativelanguage.googleapis.com/v1beta/models/"
+        set(value) = prefs.edit().putString(SHARED_NAME_LLM_GEMINI_URL, value).apply()
+
+    var llmDeepSeekUrl: String
+        get() = prefs.getString(SHARED_NAME_LLM_DEEPSEEK_URL, "https://api.deepseek.com/v1/") ?: "https://api.deepseek.com/v1/"
+        set(value) = prefs.edit().putString(SHARED_NAME_LLM_DEEPSEEK_URL, value).apply()
 
     var simulator: Boolean
         get() = prefs.getString(SHARED_NAME_SIMULATOR,"false").toBoolean()
