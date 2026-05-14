@@ -486,4 +486,7 @@ abstract class AbstractModule {
 
     @Binds
     abstract fun bindInboundLLMService(impl: LLMServiceImpl): ILLMService
+
+    @Binds
+    abstract fun bindOutboundLLMService(impl: co.japl.android.finances.services.core.LLMOutboundAdapter): co.com.japl.finances.iports.outbounds.ILLMOutboundPort
 }

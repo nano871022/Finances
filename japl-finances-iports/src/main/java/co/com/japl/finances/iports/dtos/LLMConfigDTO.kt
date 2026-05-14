@@ -5,5 +5,7 @@ import co.com.japl.finances.iports.enums.LLMType
 data class LLMConfigDTO(
     val type: LLMType,
     val apiKey: String,
-    val isEnabled: Boolean = true
+    val isEnabled: Boolean = true,
+    val model: String? = null,
+    val url: String? = null
 )

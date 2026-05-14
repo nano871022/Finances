@@ -13,13 +13,14 @@ import co.com.japl.ui.Prefs
 import co.japl.android.myapplication.R
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 
 class LLMConnectionViewModel(private val prefs: Prefs, private val context: Context, private val llmService: ILLMService) : ViewModel() {
     val llmEnabled = mutableStateOf(prefs.llmEnabled)
     val llmType = mutableStateOf(prefs.llmType)
     val llmApiKey = mutableStateOf(prefs.llmApiKey)
     val llmModel = mutableStateOf(prefs.llmModel)
+    val llmGeminiUrl = mutableStateOf(prefs.llmGeminiUrl)
+    val llmDeepSeekUrl = mutableStateOf(prefs.llmDeepSeekUrl)
     val modelsList = mutableStateListOf<Pair<Int, String>>()
     val isLoadingModels = mutableStateOf(false)
 
@@ -27,16 +28,11 @@ class LLMConnectionViewModel(private val prefs: Prefs, private val context: Cont
 
     val loadProgress = mutableStateOf(0f)
 
-
-    fun main() = runBlocking {
-        loadModels()
-    }
-    suspend fun loadModels() = coroutineScope {
-        launch {
+    fun loadModels() {
+        viewModelScope.launch {
             if (llmApiKey.value.isNotEmpty()) {
                 loadProgress.value = 0.1f
                 isLoadingModels.value = true
-                loadProgress.value = 0.2f
                 loadProgress.value = 0.3f
                 llmService.getModels().onSuccess { models ->
                     loadProgress.value = 0.5f
@@ -55,7 +51,6 @@ class LLMConnectionViewModel(private val prefs: Prefs, private val context: Cont
                     Log.e(this.javaClass.name,"Error al cargar modelos: ${it.message}")
                 }
                 isLoadingModels.value = false
-                loadProgress.value = 0.9f
                 loadProgress.value = 1f
             }
         }
@@ -66,6 +61,8 @@ class LLMConnectionViewModel(private val prefs: Prefs, private val context: Cont
         prefs.llmType = llmType.value
         prefs.llmApiKey = llmApiKey.value
         prefs.llmModel = llmModel.value
+        prefs.llmGeminiUrl = llmGeminiUrl.value
+        prefs.llmDeepSeekUrl = llmDeepSeekUrl.value
         Toast.makeText(context, R.string.toast_save_successful, Toast.LENGTH_SHORT).show()
     }
 }
