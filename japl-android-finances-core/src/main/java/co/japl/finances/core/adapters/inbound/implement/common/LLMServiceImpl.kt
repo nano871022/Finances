@@ -19,10 +19,18 @@ class LLMServiceImpl @Inject constructor(
         if (!prefs.llmEnabled) {
             return Result.failure(Exception("LLM is disabled"))
         }
-        val type = LLMType.valueOf(prefs.llmType)
+        val type = try { LLMType.valueOf(prefs.llmType) } catch (e: Exception) { LLMType.GEMINI }
         return when (type) {
             LLMType.GEMINI -> geminiService.getAiResponse(prompt)
             LLMType.DEEPSEEK -> deepSeekService.getAiResponse(prompt)
+        }
+    }
+
+    override suspend fun getModels(): Result<List<String>> {
+        val type = try { LLMType.valueOf(prefs.llmType) } catch (e: Exception) { LLMType.GEMINI }
+        return when (type) {
+            LLMType.GEMINI -> geminiService.getModels()
+            LLMType.DEEPSEEK -> deepSeekService.getModels()
         }
     }
 }
