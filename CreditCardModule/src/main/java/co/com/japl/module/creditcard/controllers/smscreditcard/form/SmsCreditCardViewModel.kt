@@ -1,5 +1,6 @@
 package co.com.japl.module.creditcard.controllers.smscreditcard.form
 
+import android.content.Context
 import android.util.Log
 import android.widget.Toast
 import androidx.compose.runtime.mutableFloatStateOf
@@ -15,14 +16,18 @@ import co.com.japl.finances.iports.inbounds.common.ILLMService
 import co.com.japl.finances.iports.inbounds.creditcard.ICreditCardPort
 import co.com.japl.finances.iports.inbounds.creditcard.ISMSCreditCardPort
 import co.com.japl.module.creditcard.R
+import co.com.japl.ui.Prefs
+import com.google.android.material.snackbar.BaseTransientBottomBar
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import kotlin.time.Duration
 
-class SmsCreditCardViewModel constructor(private val codeSMSCC:Int?,private val svc:ISMSCreditCardPort?,private val creditCardSvc:ICreditCardPort?,private val navController: NavController?, private val llmService: ILLMService? = null): ViewModel() {
+class SmsCreditCardViewModel constructor(private val codeSMSCC:Int?,private val svc:ISMSCreditCardPort?,private val creditCardSvc:ICreditCardPort?,private val navController: NavController?, private val llmService: ILLMService? = null, private val prefs: Prefs?=null): ViewModel() {
 
     val  load = mutableStateOf(true)
     val  progress = mutableFloatStateOf(0.0f)
+    val aiFaile = mutableStateOf<Boolean>(false)
 
     private var creditCardLists = mutableListOf<CreditCardDTO>()
    private var smsCreditCard:SMSCreditCard? = null
@@ -58,18 +63,26 @@ class SmsCreditCardViewModel constructor(private val codeSMSCC:Int?,private val 
     fun generateRegexWithAI() {
         val selectedSms = smsSamples.filter { it.second }.map { it.first }
         if (selectedSms.isNotEmpty()) {
-            Log.d(this::javaClass.name, "selectedSms: $selectedSms")
             viewModelScope.launch(Dispatchers.IO) {
                 load.value = true
+                progress.floatValue = 0.1f
                 val prompt = navController?.context?.getString(R.string.promt_sms_expreg, selectedSms.joinToString("\n"))?:""
+                progress.floatValue = 0.3f
                 llmService?.getAiResponse(prompt)?.onSuccess { response ->
-                    Log.d("SmsCreditCardViewModel", "Response: $response")
+                    progress.floatValue = 0.6f
                     pattern.value = response.trim().removeSurrounding("`").removePrefix("regex").trim()
+                    progress.floatValue = 1.0f
                     load.value = false
                     showSmsDialog.value = false
+                    viewModelScope.launch(Dispatchers.Main) {
+                        navController?.let { Toast.makeText(it.context, R.string.ai_response, Toast.LENGTH_SHORT).show() }
+                    }
                 }?.onFailure {
-                    Log.d("SmsCreditCardViewModel", "Error: ${it.message}")
+                    Log.e("SmsCreditCardViewModel", "Error: ${it.message}")
+                    aiFaile.value=true
                     load.value = false
+                    showSmsDialog.value = false
+                    progress.floatValue = 1.0f
                 }
             }
         }
@@ -94,6 +107,10 @@ class SmsCreditCardViewModel constructor(private val codeSMSCC:Int?,private val 
                 }?:navController?.let { Toast.makeText(it.context, R.string.toast_dont_successful_update, Toast.LENGTH_SHORT).show() }
             }
         }
+    }
+
+    fun isAIValid():Boolean{
+        return prefs?.llmEnabled?:false
     }
 
     fun clean(){

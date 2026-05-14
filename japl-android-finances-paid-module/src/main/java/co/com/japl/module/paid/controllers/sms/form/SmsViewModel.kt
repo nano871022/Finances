@@ -14,12 +14,13 @@ import co.com.japl.finances.iports.inbounds.common.ILLMService
 import co.com.japl.finances.iports.inbounds.inputs.IAccountPort
 import co.com.japl.finances.iports.inbounds.paid.ISMSPaidPort
 import co.com.japl.module.paid.R
+import co.com.japl.ui.Prefs
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 
-class SmsViewModel constructor(private val codeSMS:Int?, private val svc:ISMSPaidPort?, private val accountSvc:IAccountPort?, private val navController: NavController?, private val llmService: ILLMService? = null): ViewModel() {
+class SmsViewModel constructor(private val codeSMS:Int?, private val svc:ISMSPaidPort?, private val accountSvc:IAccountPort?, private val navController: NavController?, private val llmService: ILLMService? = null, val prefs: Prefs?=null): ViewModel() {
 
     val  load = mutableStateOf(true)
     val  progress = mutableFloatStateOf(0.0f)
@@ -42,6 +43,7 @@ class SmsViewModel constructor(private val codeSMS:Int?, private val svc:ISMSPai
 
     val smsSamples = mutableStateListOf<Pair<String, Boolean>>()
     val showSmsDialog = mutableStateOf(false)
+    val aiFaile = mutableStateOf<Boolean>(false)
 
     fun loadSmsSamples() {
         if (phoneNumber.value.isNotEmpty()) {
@@ -53,18 +55,31 @@ class SmsViewModel constructor(private val codeSMS:Int?, private val svc:ISMSPai
         }
     }
 
+    fun isAIValid():Boolean = prefs?.llmEnabled?:false
+
+
     fun generateRegexWithAI() {
         val selectedSms = smsSamples.filter { it.second }.map { it.first }
         if (selectedSms.isNotEmpty()) {
             viewModelScope.launch(Dispatchers.IO) {
                 load.value = true
-                val prompt = "Analizar estos mensajes para obtener un patrón y devolver exclusivamente una expresión regular que capture en este orden: fecha, valor de compra y nombre de la compra. La respuesta debe contener únicamente la cadena de la expresión regular, sin explicaciones, sin bloques de código, ni comillas.\n\nMensajes:\n${selectedSms.joinToString("\n")}"
+                progress.floatValue = 0.1f
+                val prompt = navController?.context?.getString(R.string.promt_sms_expreg,selectedSms.joinToString("\n"))?:""
                 llmService?.getAiResponse(prompt)?.onSuccess { response ->
+                    progress.floatValue = 0.5f
                     pattern.value = response.trim().removeSurrounding("`").removePrefix("regex").trim()
+                    progress.floatValue = 0.8f
+                    viewModelScope.launch(Dispatchers.Main) {
+                        navController?.let { Toast.makeText(it.context, R.string.ai_response, Toast.LENGTH_SHORT).show() }
+                    }
+                    progress.floatValue = 1.0f
                     load.value = false
                     showSmsDialog.value = false
                 }?.onFailure {
+                    progress.floatValue = 1.0f
                     load.value = false
+                    aiFaile.value = true
+                    showSmsDialog.value = false
                 }
             }
         }

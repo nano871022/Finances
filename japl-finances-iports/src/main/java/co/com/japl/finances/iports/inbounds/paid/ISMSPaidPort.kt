@@ -20,6 +20,8 @@ interface ISMSPaidPort{
 
     fun getSmsMessages(phoneNumber:String,pattern:String,numDaysRead:Int):List<Triple<String,Double, LocalDateTime>>
 
+    fun getSmsMessages(pattern: String, message: String): Triple<String, Double, LocalDateTime>?
+
     fun enable(codeSMSPaid: Int):Boolean
 
     fun disable(codeSMSPaid: Int):Boolean

@@ -7,7 +7,11 @@ import androidx.compose.runtime.mutableStateOf
 import co.com.japl.finances.iports.inbounds.creditcard.ICreditCardPort
 import co.com.japl.finances.iports.inbounds.creditcard.ISMSCreditCardPort
 import co.com.japl.finances.iports.inbounds.creditcard.bought.IBoughtSmsPort
-import co.com.japl.module.creditcard.impl.SMSObserver
+import co.com.japl.finances.iports.inbounds.inputs.IAccountPort
+import co.com.japl.finances.iports.inbounds.paid.ISMSPaidPort
+import co.com.japl.finances.iports.inbounds.paid.ISmsPort
+import co.com.japl.module.creditcard.impl.SMSObserver as SMSObserverCreditCard
+import co.com.japl.module.paid.impl.SMSObserver as SMSObserverPaid
 import co.com.japl.ui.Prefs
 import co.com.japl.ui.impls.SMSObservable
 import co.com.japl.ui.interfaces.ISMSObservablePublicher
@@ -77,9 +81,16 @@ object Module {
     }
 
     @IntoMap
-    @IObservers(value = SMSObserver::class)
+    @IObservers(value = SMSObserverCreditCard::class)
     @Provides
     fun getSMSObserverCreditCardModule( smsSvc: ISMSCreditCardPort,subscriber: ISMSObservableSubscriber,ccSvc:ICreditCardPort,msmSvc:ISMSCreditCardPort,svc:IBoughtSmsPort):ISMSObserver{
-        return SMSObserver(smsSvc,subscriber,ccSvc,svc,msmSvc)
+        return SMSObserverCreditCard(smsSvc,subscriber,ccSvc,svc,msmSvc)
+    }
+
+    @IntoMap
+    @IObservers(value = SMSObserverPaid::class)
+    @Provides
+    fun getSMSObserverPaidModule(smsSvc: ISMSPaidPort, subscriber: ISMSObservableSubscriber, accountSvc: IAccountPort, svc: ISmsPort): ISMSObserver {
+        return SMSObserverPaid(smsSvc, subscriber, accountSvc, svc)
     }
 }

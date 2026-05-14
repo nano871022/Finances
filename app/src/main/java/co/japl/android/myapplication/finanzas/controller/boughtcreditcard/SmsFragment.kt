@@ -14,6 +14,7 @@ import co.com.japl.finances.iports.inbounds.creditcard.ICreditCardPort
 import co.com.japl.finances.iports.inbounds.creditcard.ISMSCreditCardPort
 import co.com.japl.module.creditcard.controllers.smscreditcard.form.SmsCreditCardViewModel
 import co.com.japl.module.creditcard.views.sms.forms.Sms
+import co.com.japl.ui.Prefs
 import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.japl.android.myapplication.databinding.FragmentSmsCreditCardBinding
 import co.japl.android.myapplication.putParams.SmsCreditCardParams
@@ -26,6 +27,7 @@ class SmsFragment: Fragment()  {
     @Inject lateinit var smsCreditCardSvc:ISMSCreditCardPort
 
     @Inject lateinit var llmService: ILLMService
+    @Inject lateinit var prefs: Prefs
 
     @RequiresApi(Build.VERSION_CODES.S)
     override fun onCreateView(
@@ -39,7 +41,8 @@ class SmsFragment: Fragment()  {
             svc=smsCreditCardSvc,
             creditCardSvc = creditCardSvc,
             llmService = llmService,
-            navController = findNavController()
+            navController = findNavController(),
+            prefs = prefs
         )
         view.cvComposeLscc?.apply {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)

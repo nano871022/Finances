@@ -52,13 +52,18 @@ class SMSImpl @Inject constructor(private val svc:ISMSPaidPort, private val smsS
     override fun getSmsMessages(phoneNumber:String,pattern:String,numDaysRead:Int):List<Triple<String,Double,LocalDateTime>>{
         val list = mutableListOf<Triple<String,Double,LocalDateTime>>()
         smsSvc.load(phoneNumber,numDaysRead).takeIf{it.isNotEmpty()}?.forEach{sms->
-            if(pattern.isNotEmpty() && pattern.toRegex().containsMatchIn(sms)){
-               pattern.toRegex().find(sms)?.let{
-                   SmsUtil.getValues(it.groupValues)?.let (list::add)
-                }
-            }
+            getSmsMessages(pattern,sms)?.let(list::add)
         }
         return list
+    }
+
+    override fun getSmsMessages(pattern: String, message: String): Triple<String, Double, LocalDateTime>? {
+        if(pattern.isNotEmpty() && pattern.toRegex().containsMatchIn(message)){
+            pattern.toRegex().find(message)?.let{
+                return SmsUtil.getValues(it.groupValues)
+            }
+        }
+        return null
     }
 
     override fun enable(codeSMSPaidDTO: Int): Boolean {
