@@ -35,6 +35,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import co.com.japl.module.paid.R
 import co.com.japl.module.paid.controllers.sms.form.SmsViewModel
+import co.com.japl.ui.components.AlertDialogOkCancel
 import co.com.japl.ui.components.FieldSelect
 import co.com.japl.ui.components.FieldText
 import co.com.japl.ui.components.FloatButton
@@ -79,92 +80,115 @@ private fun Form(viewModel: SmsViewModel){
 }
 
 @Composable
-private fun Body(viewModel: SmsViewModel,modifier:Modifier){
-    val listCreditCard = remember {viewModel.accountList}
+private fun Body(viewModel: SmsViewModel,modifier:Modifier) {
+    val listCreditCard = remember { viewModel.accountList }
     val creditCard = remember { viewModel.account }
-    val errorCreditCard =remember {viewModel.errorAccount}
-    val kinInterestList = remember{viewModel.kindInterestRateList}
-    val phoneNumber =remember{viewModel.phoneNumber}
-    val errorPhoneNumber = remember{viewModel.errorPhoneNumber}
-    val pattern = remember{viewModel.pattern}
-    val errorPattern = remember{viewModel.errorPattern}
-    val validationResult = remember{viewModel.validationResult}
+    val errorCreditCard = remember { viewModel.errorAccount }
+    val kinInterestList = remember { viewModel.kindInterestRateList }
+    val phoneNumber = remember { viewModel.phoneNumber }
+    val errorPhoneNumber = remember { viewModel.errorPhoneNumber }
+    val pattern = remember { viewModel.pattern }
+    val errorPattern = remember { viewModel.errorPattern }
+    val validationResult = remember { viewModel.validationResult }
     val stateScroll = rememberScrollState(0)
+    val AIValid = remember { viewModel.isAIValid()}
 
-  Column(modifier=modifier.padding(Dimensions.PADDING_SHORT).verticalScroll(stateScroll)){
-      FieldSelect(title = stringResource(id = R.string.account),
-          value = creditCard.value?.second?:"",
-          list = listCreditCard,
-          isError = errorCreditCard,
-          modifier = modifier,
-          callAble = {
-              it?.let{
-                  creditCard.value = it
-                  viewModel.validate()
-              }
+    Column(modifier = modifier.padding(Dimensions.PADDING_SHORT).verticalScroll(stateScroll)) {
+        FieldSelect(
+            title = stringResource(id = R.string.account),
+            value = creditCard.value?.second ?: "",
+            list = listCreditCard,
+            isError = errorCreditCard,
+            modifier = modifier,
+            callAble = {
+                it?.let {
+                    creditCard.value = it
+                    viewModel.validate()
+                }
 
-          })
+            })
 
-      FieldText(title = stringResource(id = R.string.phone_number)
-      , value = phoneNumber.value
-              , hasErrorState = errorPhoneNumber,
-          validation = {viewModel.validate()},
-          icon=Icons.Rounded.Cancel,
-          callback = {
-              phoneNumber.value = it
-                     },
-          modifier = modifier)
-
-      FieldText(title = stringResource(id = R.string.pattern)
-          , value = pattern.value
-          , hasErrorState = errorPattern,
-          validation = {viewModel.validate()},
-          icon = Icons.Rounded.Cancel,
-          lines = 3,
-          callback = {
-              pattern.value = it
-          },
-          modifier = modifier)
-
-      Button(onClick = { viewModel.loadSmsSamples() }, modifier = Modifier.align(Alignment.End)) {
-          Text(text = "Generar con IA", color = MaterialTheme.colorScheme.onPrimary)
-      }
-
-
-      OutlinedButton(onClick = { viewModel.validatePatternWithMessages() },
-          modifier = modifier.align(alignment = Alignment.End)) {
-
-          Icon(imageVector = Icons.AutoMirrored.Rounded.DirectionsRun,
-              contentDescription = stringResource(id = R.string.validate)
-              , tint = MaterialTheme.colorScheme.onPrimary
-          )
-
-          Text(text = stringResource(id = R.string.validate)
-          ,color = MaterialTheme.colorScheme.onPrimary
-              , textAlign = TextAlign.Center
-              ,modifier=Weight1f())
-      }
-
-    FieldText(title = stringResource(id = R.string.validate)
-          , value = validationResult.value,
-          lines = 6,
+        FieldText(
+            title = stringResource(id = R.string.phone_number),
+            value = phoneNumber.value,
+            hasErrorState = errorPhoneNumber,
+            validation = { viewModel.validate() },
             icon = Icons.Rounded.Cancel,
-        callback = {
-            validationResult.value = it
-        },
-          readOnly = true,
-          modifier = modifier)
+            callback = {
+                phoneNumber.value = it
+            },
+            modifier = modifier
+        )
+
+        FieldText(
+            title = stringResource(id = R.string.pattern),
+            value = pattern.value,
+            hasErrorState = errorPattern,
+            validation = { viewModel.validate() },
+            icon = Icons.Rounded.Cancel,
+            lines = 3,
+            callback = {
+                pattern.value = it
+            },
+            modifier = modifier
+        )
+
+        if(AIValid) {
+            Button(
+                onClick = { viewModel.loadSmsSamples() },
+                modifier = Modifier.align(Alignment.End)
+            ) {
+                Text(text = stringResource(R.string.generate_by_ai), color = MaterialTheme.colorScheme.onPrimary)
+            }
+        }
 
 
-  }
+        OutlinedButton(
+            onClick = { viewModel.validatePatternWithMessages() },
+            modifier = modifier.align(alignment = Alignment.End)
+        ) {
 
-  if (viewModel.showSmsDialog.value) {
+            Icon(
+                imageVector = Icons.AutoMirrored.Rounded.DirectionsRun,
+                contentDescription = stringResource(id = R.string.validate),
+                tint = MaterialTheme.colorScheme.onPrimary
+            )
+
+            Text(
+                text = stringResource(id = R.string.validate),
+                color = MaterialTheme.colorScheme.onPrimary,
+                textAlign = TextAlign.Center,
+                modifier = Weight1f()
+            )
+        }
+
+        FieldText(
+            title = stringResource(id = R.string.validate), value = validationResult.value,
+            lines = 6,
+            icon = Icons.Rounded.Cancel,
+            callback = {
+                validationResult.value = it
+            },
+            readOnly = true,
+            modifier = modifier
+        )
+    }
+    AIDialog(viewModel)
+}
+
+@Composable
+private fun AIDialog(viewModel: SmsViewModel){
+    val showSms by viewModel.showSmsDialog
+    val aiFaile by   viewModel.aiFaile
+    val examples = remember { viewModel.smsSamples}
+
+  if (showSms && examples.isNotEmpty()) {
       AlertDialog(
           onDismissRequest = { viewModel.showSmsDialog.value = false },
-          title = { Text(text = "Seleccionar SMS Ejemplos", color = MaterialTheme.colorScheme.onSurface) },
+          title = { Text(text = stringResource(R.string.select_example_sms), color = MaterialTheme.colorScheme.onSurface) },
           text = {
               Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
-                  viewModel.smsSamples.forEachIndexed { index, pair ->
+                  examples.forEachIndexed { index, pair ->
                       CheckBoxField(
                           title = pair.first,
                           value = pair.second,
@@ -174,17 +198,35 @@ private fun Body(viewModel: SmsViewModel,modifier:Modifier){
               }
           },
           confirmButton = {
-              TextButton(onClick = { viewModel.generateRegexWithAI() }) {
-                  Text("Generar")
+              TextButton(onClick = {
+                  viewModel.showSmsDialog.value = false
+                  viewModel.generateRegexWithAI()
+              }) {
+                  Text(stringResource(R.string.generate))
               }
           },
           dismissButton = {
               TextButton(onClick = { viewModel.showSmsDialog.value = false }) {
-                  Text("Cancelar")
+                  Text(stringResource(R.string.cancel))
               }
           }
       )
   }
+
+    if((showSms && examples.isEmpty()) || aiFaile){
+        AlertDialogOkCancel (
+            title = R.string.no_data,
+            confirmNameButton = R.string.ok,
+            onDismiss = {
+                viewModel.showSmsDialog.value = false
+                viewModel.aiFaile.value = false
+            },
+            onClick = {
+                viewModel.showSmsDialog.value = false
+                viewModel.aiFaile.value = false
+            }
+        )
+    }
 }
 
 @Composable

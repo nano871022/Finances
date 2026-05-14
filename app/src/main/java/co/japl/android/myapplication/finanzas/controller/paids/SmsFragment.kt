@@ -13,6 +13,7 @@ import co.com.japl.finances.iports.inbounds.inputs.IAccountPort
 import co.com.japl.finances.iports.inbounds.paid.ISMSPaidPort
 import co.com.japl.module.paid.controllers.sms.form.SmsViewModel
 import co.com.japl.module.paid.views.sms.form.Sms
+import co.com.japl.ui.Prefs
 import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.japl.android.myapplication.databinding.FragmentSmsPaidBinding
 import co.japl.android.myapplication.putParams.SmsPaidParams
@@ -23,6 +24,8 @@ import javax.inject.Inject
 class SmsFragment : Fragment() {
     @Inject lateinit var smsSvc: ISMSPaidPort
     @Inject lateinit var accountSvc: IAccountPort
+    @Inject lateinit var prefs: Prefs
+
     @RequiresApi(Build.VERSION_CODES.S)
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -35,7 +38,8 @@ class SmsFragment : Fragment() {
             codeSMS = code,
             svc = smsSvc,
             accountSvc = accountSvc,
-            navController = findNavController()
+            navController = findNavController(),
+            prefs = prefs
         )
         root.cvComposeFsp.apply {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)

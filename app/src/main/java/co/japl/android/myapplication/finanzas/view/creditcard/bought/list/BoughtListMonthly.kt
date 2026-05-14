@@ -41,7 +41,7 @@ internal fun HeaderMonthly(key: YearMonth, list:List<CreditCardBoughtItemDTO>, m
 private fun RowScope.HeaderCompact(key: YearMonth, list:List<CreditCardBoughtItemDTO>, monthlyState:BoughtMonthlyViewModel) {
 
     Column (modifier=Modifier.weight(1f)){
-        Text(text = key.format(DateTimeFormatter.ofPattern("MMM yyyy")))
+        Text(text = key.format(DateTimeFormatter.ofPattern("MMM")))
         Text(text = "${list.size}")
     }
     Column(modifier=Modifier.weight(1f)) {
@@ -58,7 +58,7 @@ private fun RowScope.HeaderCompact(key: YearMonth, list:List<CreditCardBoughtIte
 @Composable
 private fun RowScope.HeaderMedium(key: YearMonth, list:List<CreditCardBoughtItemDTO>, monthlyState:BoughtMonthlyViewModel) {
     Column {
-        Text(text = key.format(DateTimeFormatter.ofPattern("MMM yyyy")))
+        Text(text = key.format(DateTimeFormatter.ofPattern("MMM")))
         Text(text = "${list.size}")
     }
 
@@ -79,7 +79,7 @@ private fun RowScope.HeaderMedium(key: YearMonth, list:List<CreditCardBoughtItem
 
 @Composable
 fun RowScope.HeaderLarge(key: YearMonth, list:List<CreditCardBoughtItemDTO>, monthlyState:BoughtMonthlyViewModel) {
-    Text(text = key.format(DateTimeFormatter.ofPattern("MMM yyyy")),modifier= Modifier
+    Text(text = key.format(DateTimeFormatter.ofPattern("MMM")),modifier= Modifier
         .weight(1f)
         .padding(2.dp))
     Text(text = "# ${list.size}",modifier= Modifier

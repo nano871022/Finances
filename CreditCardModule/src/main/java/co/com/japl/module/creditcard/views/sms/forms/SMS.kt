@@ -2,6 +2,7 @@ package co.com.japl.module.creditcard.views.sms.forms
 
 import android.content.res.Configuration
 import android.os.Build
+import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Column
@@ -33,9 +34,11 @@ import  androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import co.com.japl.module.creditcard.R
+import co.com.japl.ui.components.AlertDialogOkCancel
 import co.com.japl.ui.components.FieldSelect
 import co.com.japl.ui.components.FieldText
 import co.com.japl.ui.components.FloatButton
@@ -93,6 +96,8 @@ private fun Body(viewModel: SmsCreditCardViewModel,modifier:Modifier){
     val errorPattern = remember{viewModel.errorPattern}
     val validationResult = remember{viewModel.validationResult}
     val stateScroll = rememberScrollState(0)
+    val aiEnabled = remember{viewModel.isAIValid()}
+
 
   Column(modifier=modifier.padding(Dimensions.PADDING_SHORT).verticalScroll(stateScroll)){
       FieldSelect(title = stringResource(id = R.string.credit_card),
@@ -141,8 +146,16 @@ private fun Body(viewModel: SmsCreditCardViewModel,modifier:Modifier){
           },
           modifier = modifier)
 
-      Button(onClick = { viewModel.loadSmsSamples() }, modifier = Modifier.align(Alignment.End)) {
-          Text(text = "Generar con IA", color = MaterialTheme.colorScheme.onPrimary)
+      if(aiEnabled) {
+          Button(
+              onClick = { viewModel.loadSmsSamples() },
+              modifier = Modifier.align(Alignment.End)
+          ) {
+              Text(
+                  text = stringResource(R.string.generate_by_ai),
+                  color = MaterialTheme.colorScheme.onPrimary
+              )
+          }
       }
 
 
@@ -172,34 +185,60 @@ private fun Body(viewModel: SmsCreditCardViewModel,modifier:Modifier){
 
 
   }
+    DialogAIExpReg(viewModel)
 
-  if (viewModel.showSmsDialog.value) {
-      AlertDialog(
-          onDismissRequest = { viewModel.showSmsDialog.value = false },
-          title = { Text(text = "Seleccionar SMS Ejemplos", color = MaterialTheme.colorScheme.onSurface) },
-          text = {
-              Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
-                  viewModel.smsSamples.forEachIndexed { index, pair ->
-                      CheckBoxField(
-                          title = pair.first,
-                          value = pair.second,
-                          callback = { viewModel.smsSamples[index] = pair.copy(second = it) }
-                      )
-                  }
-              }
-          },
-          confirmButton = {
-              TextButton(onClick = { viewModel.generateRegexWithAI() }) {
-                  Text("Generar", color = MaterialTheme.colorScheme.onSurface)
-              }
-          },
-          dismissButton = {
-              TextButton(onClick = { viewModel.showSmsDialog.value = false }) {
-                  Text("Cancelar", color = MaterialTheme.colorScheme.onSurface)
-              }
-          }
-      )
-  }
+}
+
+@Composable
+private fun DialogAIExpReg( viewModel: SmsCreditCardViewModel){
+    val showDialog = remember {viewModel.showSmsDialog}
+    val examples = remember {viewModel.smsSamples}
+    val aiFaile = remember {  viewModel.aiFaile }
+
+    if (showDialog.value && examples.isNotEmpty()) {
+        AlertDialog(
+            onDismissRequest = { viewModel.showSmsDialog.value = false },
+            title = { Text(text = stringResource(R.string.select_exaple_sms), color = MaterialTheme.colorScheme.onSurface) },
+            text = {
+                Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
+                    examples.forEachIndexed { index, pair ->
+                        CheckBoxField(
+                            title = pair.first,
+                            value = pair.second,
+                            callback = { viewModel.smsSamples[index] = pair.copy(second = it) }
+                        )
+                    }
+                }
+            },
+            confirmButton = {
+                TextButton(onClick = {
+                    viewModel.showSmsDialog.value = false
+                    viewModel.generateRegexWithAI()
+                }) {
+                    Text(stringResource(R.string.generate), color = MaterialTheme.colorScheme.onSurface)
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { viewModel.showSmsDialog.value = false }) {
+                    Text(stringResource(R.string.cancel), color = MaterialTheme.colorScheme.onSurface)
+                }
+            }
+        )
+    }
+    if((showDialog.value && examples.isEmpty()) || aiFaile.value){
+        AlertDialogOkCancel (
+            title = R.string.no_data,
+            confirmNameButton = R.string.ok,
+            onDismiss = {
+                viewModel.showSmsDialog.value = false
+                viewModel.aiFaile.value = false
+                        },
+            onClick = {
+                viewModel.showSmsDialog.value = false
+                viewModel.aiFaile.value = false
+            }
+        )
+    }
 }
 
 @Composable
@@ -227,6 +266,17 @@ private fun Buttons(clean:()->Unit, save:()->Unit){
 internal fun SmsPreview(){
     MaterialThemeComposeUI {
         Sms(getViewModel())
+    }
+}
+
+@RequiresApi(Build.VERSION_CODES.S)
+@Composable
+@Preview(showBackground = true, showSystemUi = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
+internal fun SmsDialogAIPreview(){
+    val vm = getViewModel()
+    vm.showSmsDialog.value = true
+    MaterialThemeComposeUI {
+        Sms(vm)
     }
 }
 

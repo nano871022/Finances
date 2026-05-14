@@ -37,34 +37,42 @@
     <string name="filter_inactive">Inactivos</string>
     <string name="no_data">No hay datos</string>
     <string name="promt_sms_expreg">
-        Actúa como un compilador de Regex para Java. Analiza el mensaje SMS y genera una única expresión regular lineal que capture: comercio, valor y fecha.
+Act as a Java Regex compiler.
 
-Instrucciones técnicas de escapado (CRÍTICO):
+Analyze the SMS message and generate a single, linear regular expression that captures: merchant/product name, value, and date.
 
-Cada signo de dólar "$" debe escribirse como "\$".
-Cada barra diagonal "/" debe escribirse como "\/".
+Technical Escaping Instructions (CRITICAL):
 
-Cada punto "." que deba ser literal debe escribirse como "\.".
+Every dollar sign "$" must be written as "\$".
+Every forward slash "/" must be written as "\/".
+Every dot "." that must be treated as a literal must be written as "\.".
+Every comma "," that must be treated as a literal must be written as "\,".
+Every asteric "*" that must be treated as a literal must be written as "\*".
 
-Utiliza grupos de captura () con clases de caracteres específicas: ([\w ]+) para el comercio y ([\d\.,]+) para el valor.
+Use capture groups () with specific character classes:
+        ([\w ]+) for the merchant/product name.
+        ([\d\.\,]+) for the value.
+        (\d{2}\/\d{2}\/\d{4}) for the date but it depend of date format ex. dd/mm/yyyy.
 
-No uses comodines genéricos como ".+?"; utiliza anclajes de texto del mensaje y conectores [\w ]+.
 
-La estructura debe ser compatible con java.util.regex.Pattern.
+Do not use generic wildcards like ".+?"; use text anchors from the message and [\w ]+ connectors.
 
-Reglas de respuesta:
+The structure must be compatible with java.util.regex.Pattern.
 
-Entrega ÚNICAMENTE la cadena de texto pura.
+Response Rules:
 
-No uses bloques de código (```).
+Provide ONLY the raw text string.
+Do not use code blocks (```).
+Do not use quotation marks.
+Do not provide explanations or introductions.
+If the result does not include the escape characters "" before "$" and "/", the response will be considered incorrect.
 
-No uses comillas.
-
-No des explicaciones ni introducciones.
-
-Si el resultado no tiene los caracteres de escape "\" antes de "$" y "/", la respuesta será incorrecta.
-
-Mensaje:
+Message:
 %s
     </string>
+    <string name="generate_by_ai">Generar con IA</string>
+    <string name="select_exaple_sms">Seleccionar Ejemplo de SMS</string>
+    <string name="generate">Generar</string>
+    <string name="ai_response">Respuesta IA</string>
+    <string name="ok">OK</string>
 </resources>

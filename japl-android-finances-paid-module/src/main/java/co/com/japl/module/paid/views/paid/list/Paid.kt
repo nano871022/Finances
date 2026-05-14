@@ -19,6 +19,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.BrightnessHigh
+import androidx.compose.material.icons.rounded.Downloading
 import androidx.compose.material.icons.rounded.MoreVert
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -140,6 +141,12 @@ private fun Buttons(newOne:()->Unit){
                 }
                 settingState.value = false
             }
+            FloatButton(
+                imageVector = Icons.Rounded.Downloading, descriptionIcon = R.string.download_sms){
+
+                settingState.value = false
+            }
+
         }) {
             Column (modifier = Modifier
                 .padding(it)

@@ -1,6 +1,7 @@
 package co.japl.android.myapplication.finanzas.view.setting
 
 import android.content.Context
+import android.content.res.Configuration
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Refresh
@@ -76,53 +77,61 @@ private fun Body(viewModel: LLMConnectionViewModel){
                 callback = { viewModel.llmEnabled.value = it }
             )
 
-            FieldSelect(
-                title = "Proveedor de IA",
-                value = type,
-                list = typeList,
-                modifier = Modifier.fillMaxWidth(),
-                callAble = { it?.let { 
-                    viewModel.llmType.value = it.second
-                } }
-            )
-
-            FieldText(
-                title = "API Key",
-                value = apiKey,
-                callback = { 
-                    viewModel.llmApiKey.value = it
-                },
-                modifier = Modifier.fillMaxWidth()
-            )
-
-            FieldText(
-                title = "Gemini URL",
-                value = geminiUrl,
-                callback = { viewModel.llmGeminiUrl.value = it },
-                modifier = Modifier.fillMaxWidth()
-            )
-
-            FieldText(
-                title = "DeepSeek URL",
-                value = deepSeekUrl,
-                callback = { viewModel.llmDeepSeekUrl.value = it },
-                modifier = Modifier.fillMaxWidth()
-            )
-
-            Row(verticalAlignment = Alignment.CenterVertically) {
+            if (viewModel.llmEnabled.value) {
                 FieldSelect(
-                    title = "Modelo",
-                    value = model,
-                    list = modelsList,
-                    modifier = Modifier.weight(1f),
-                    callAble = { it?.let { viewModel.llmModel.value = it.second } }
+                    title = "Proveedor de IA",
+                    value = type,
+                    list = typeList,
+                    modifier = Modifier.fillMaxWidth(),
+                    callAble = {
+                        it?.let {
+                            viewModel.llmType.value = it.second
+                        }
+                    }
                 )
-                
-                IconButton(onClick = { viewModel.loadModels() }, enabled = !isLoadingModels) {
-                    if (isLoadingModels) {
-                        CircularProgressIndicator(modifier = Modifier.size(Dimensions.ICON_SIZE_MEDIUM))
-                    } else {
-                        Icon(Icons.Rounded.Refresh, contentDescription = "Cargar modelos")
+
+                FieldText(
+                    title = "API Key",
+                    value = apiKey,
+                    callback = {
+                        viewModel.llmApiKey.value = it
+                    },
+                    modifier = Modifier.fillMaxWidth()
+                )
+
+                if (viewModel.llmType.value == "GEMINI") {
+                    FieldText(
+                        title = "Gemini URL",
+                        value = geminiUrl,
+                        callback = { viewModel.llmGeminiUrl.value = it },
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                }
+
+                if (viewModel.llmType.value == "DEEP_SEEK") {
+                    FieldText(
+                        title = "DeepSeek URL",
+                        value = deepSeekUrl,
+                        callback = { viewModel.llmDeepSeekUrl.value = it },
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                }
+
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    FieldSelect(
+                        title = "Modelo",
+                        value = model,
+                        list = modelsList,
+                        modifier = Modifier.weight(1f),
+                        callAble = { it?.let { viewModel.llmModel.value = it.second } }
+                    )
+
+                    IconButton(onClick = { viewModel.loadModels() }, enabled = !isLoadingModels) {
+                        if (isLoadingModels) {
+                            CircularProgressIndicator(modifier = Modifier.size(Dimensions.ICON_SIZE_MEDIUM))
+                        } else {
+                            Icon(Icons.Rounded.Refresh, contentDescription = "Cargar modelos")
+                        }
                     }
                 }
             }
@@ -130,10 +139,24 @@ private fun Body(viewModel: LLMConnectionViewModel){
     }
 }
 
-@Preview
+@Preview(showBackground = true)
 @Composable
-private fun FormPreview(){
+private fun FormLLMPreview(){
     val vm = getLLMConnectFViewModel()
+    vm.llmEnabled.value = true
+    MaterialThemeComposeUI {
+        LLMConnectionForm(
+            viewModel=vm
+        )
+    }
+}
+
+@Preview(showBackground = true, showSystemUi = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
+@Composable
+private fun FormLLMProgressPreview(){
+    val vm = getLLMConnectFViewModel()
+    vm.loadProgress.value = 0.5f
+    vm.isLoadingModels.value = true
     MaterialThemeComposeUI {
         LLMConnectionForm(
             viewModel=vm

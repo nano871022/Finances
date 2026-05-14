@@ -1,5 +1,6 @@
 package co.japl.android.finances.services.core
 
+import android.util.Log
 import co.com.japl.finances.iports.dtos.LLMConfigDTO
 import co.com.japl.finances.iports.enums.LLMType
 import co.com.japl.finances.iports.outbounds.ILLMOutboundPort
@@ -63,6 +64,7 @@ class LLMOutboundAdapter @Inject constructor() : ILLMOutboundPort {
 
             if (connection.responseCode == 200) {
                 val response = connection.inputStream.bufferedReader().readText()
+                Log.d(this.javaClass.name,"AIReponse: $response")
                 val jsonResponse = JSONObject(response)
                 val candidates = jsonResponse.getJSONArray("candidates")
                 val contentRes = candidates.getJSONObject(0).getJSONObject("content")

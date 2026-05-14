@@ -18,8 +18,8 @@ android {
         applicationId "co.japl.android.myapplication"
         minSdk 26
         targetSdk 36
-        versionCode 4_07_01_164
-        versionName "V 4.07.01 build 164 New interface to connect with AI to use in sms credit card to create exp reg"
+        versionCode 4_07_02_165
+        versionName "V 4.07.02 build 165 FIx issues with AI and sms read"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
