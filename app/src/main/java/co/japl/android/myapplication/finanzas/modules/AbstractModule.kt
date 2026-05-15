@@ -495,4 +495,7 @@ abstract class AbstractModule {
     abstract fun bindOutputAddAdditionalValue(impl: co.japl.android.finances.services.core.ExtraValueAmortizationImpl): IExtraValueAmortizationPort
     @Binds
     abstract fun bindDAOAddAmortization(impl: co.japl.android.finances.services.dao.implement.AddAmortizationImpl): IAddAmortizationDAO
+
+    @Binds
+    abstract fun bindGmailPort(impl: co.japl.android.finances.services.core.GmailAdapter): co.com.japl.finances.iports.outbounds.IGmailPort
 }

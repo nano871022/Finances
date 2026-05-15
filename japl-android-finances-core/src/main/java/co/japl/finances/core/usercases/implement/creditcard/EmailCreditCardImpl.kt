@@ -4,11 +4,12 @@ import co.com.japl.finances.iports.dtos.EmailCreditCardDTO
 import co.com.japl.finances.iports.enums.KindInterestRateEnum
 import co.japl.finances.core.usercases.interfaces.creditcard.IEmailCreditCard
 import co.com.japl.finances.iports.outbounds.IEmailCreditCardPort as IEmailCreditCardOutPort
+import co.com.japl.finances.iports.outbounds.IGmailPort
 import co.japl.finances.core.utils.SmsUtil
 import java.time.LocalDateTime
 import javax.inject.Inject
 
-class EmailCreditCardImpl @Inject constructor(private val svc: IEmailCreditCardOutPort) : IEmailCreditCard {
+class EmailCreditCardImpl @Inject constructor(private val svc: IEmailCreditCardOutPort, private val gmailPort: IGmailPort) : IEmailCreditCard {
 
     override fun create(dto: EmailCreditCardDTO): Int {
         return svc.create(dto)
@@ -26,10 +27,15 @@ class EmailCreditCardImpl @Inject constructor(private val svc: IEmailCreditCardO
         return svc.getById(codeEmailCreditCard)
     }
 
-    override fun validateMessagePattern(dto: EmailCreditCardDTO): List<String> {
-        // Since we don't have a direct way to load emails yet like SMS,
-        // we'll return a placeholder or implement logic if we can mock an email string
-        return listOf("Email loading not yet implemented for direct validation")
+    override suspend fun validateMessagePattern(dto: EmailCreditCardDTO): List<String> {
+        val list = mutableListOf<String>()
+        val emails = gmailPort.loadEmails(dto.sender)
+        emails.forEach { (subject, body) ->
+            getEmailMessages(dto.subjectPattern, dto.bodyPattern, subject, body)?.let {
+                list.add("OK $it")
+            } ?: list.add("Not matched: Subject: $subject Snippet: $body")
+        }
+        return list
     }
 
     override fun getAllByCodeCreditCard(codeCreditCard: Int): List<EmailCreditCardDTO> {
@@ -43,9 +49,15 @@ class EmailCreditCardImpl @Inject constructor(private val svc: IEmailCreditCardO
         return svc.getByCreditCardAndKindInterest(codeCreditCard, kind)
     }
 
-    override fun getEmailMessages(sender: String, subjectPattern: String, bodyPattern: String): List<Triple<String, Double, LocalDateTime>> {
-        // This will be implemented when we have an IEmailRead interface
-        return emptyList()
+    override suspend fun getEmailMessages(sender: String, subjectPattern: String, bodyPattern: String): List<Triple<String, Double, LocalDateTime>> {
+        val list = mutableListOf<Triple<String, Double, LocalDateTime>>()
+        val emails = gmailPort.loadEmails(sender)
+        emails.forEach { (subject, body) ->
+            getEmailMessages(subjectPattern, bodyPattern, subject, body)?.let {
+                list.add(it)
+            }
+        }
+        return list
     }
 
     override fun getEmailMessages(subjectPattern: String, bodyPattern: String, subject: String, body: String): Triple<String, Double, LocalDateTime>? {

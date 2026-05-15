@@ -109,19 +109,17 @@ dependencies {
     implementation 'com.google.android.material:material:1.12.0'
     implementation 'com.google.android.gms:play-services-auth:21.2.0'
     implementation 'com.google.android.gms:play-services-drive:17.0.0'
+    
+    // Google API Client Dependencies
+    implementation 'com.google.api-client:google-api-client-android:2.2.0'
+    implementation 'com.google.http-client:google-http-client-android:1.42.3'
     implementation 'com.google.http-client:google-http-client-gson:1.42.3'
-    implementation 'com.google.gms.google-services:com.google.gms.google-services.gradle.plugin:4.4.3'
-    //implementation 'com.google.apis:google-api-services-script:v1-rev20220323-2.0.0'
-    implementation('com.google.api-client:google-api-client-android:1.23.0') {
-        exclude group: 'org.apache.httpcomponents'
-    }
     implementation('com.google.apis:google-api-services-drive:v3-rev20240123-2.0.0') {
         exclude group: 'org.apache.httpcomponents'
     }
-    implementation 'com.google.http-client:google-http-client-gson:1.42.3'
+
     implementation platform('com.google.firebase:firebase-bom:33.1.0')
     implementation 'com.google.firebase:firebase-auth'
-    //implementation 'com.google.android.play:core:1.10.3'
     implementation('com.google.android.play:integrity:1.3.0')
     implementation('com.google.android.libraries.identity.googleid:googleid:1.1.1')
     implementation 'com.google.dagger:hilt-android:2.56.2'

@@ -15,6 +15,7 @@ class GoogleLoginService(private val activity:Activity, override val RC_SIGN_IN:
     private val googleSignInOptions = GoogleSignInOptions
         .Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
         .requestEmail()
+        .requestScopes(com.google.android.gms.common.api.Scope("https://www.googleapis.com/auth/gmail.readonly"))
         .build()
     val signInClient = GoogleSignIn.getClient(activity,googleSignInOptions)
     override fun getIntent():Intent{
