@@ -5,6 +5,7 @@ import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import co.com.japl.finances.iports.dtos.CreditCardDTO
 import co.com.japl.finances.iports.dtos.EmailCreditCardDTO
@@ -12,6 +13,7 @@ import co.com.japl.finances.iports.enums.KindInterestRateEnum
 import co.com.japl.finances.iports.inbounds.creditcard.ICreditCardPort
 import co.com.japl.finances.iports.inbounds.creditcard.IEmailCreditCardPort
 import co.com.japl.module.creditcard.R
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 
 class EmailCreditCardViewModel constructor(
@@ -85,16 +87,20 @@ class EmailCreditCardViewModel constructor(
 
     fun validatePatternWithMessages() {
         emailCreditCard?.let { dto ->
-            svc?.let {
+            svc?.let { port ->
                 validationResult.value = ""
-                runCatching {
-                    it.validateMessagePattern(dto)
-                }.onFailure {
-                    validationResult.value = "Error: ${it.message}"
-                }.onSuccess {
-                    it?.takeIf { it.isNotEmpty() }?.forEach {
-                        validationResult.value += it + "\n\n"
-                    } ?: validationResult.let { it.value = "Not found messages" }
+                viewModelScope.launch {
+                    runCatching {
+                        port.validateMessagePattern(dto)
+                    }.onFailure {
+                        validationResult.value = "Error: ${it.message}"
+                    }.onSuccess { list ->
+                        if (list.isNotEmpty()) {
+                            validationResult.value = list.joinToString("\n\n")
+                        } else {
+                            validationResult.value = "Not found messages"
+                        }
+                    }
                 }
             }
         }
