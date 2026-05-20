@@ -227,6 +227,11 @@ private fun ValidationPopup(viewModel: EmailCreditCardViewModel) {
                                 text = stringResource(id = R.string.extracted_date, result.date ?: ""),
                                 color = MaterialTheme.colorScheme.onPrimary
                             )
+                            Text(
+                                text = result.bodySnippet,
+                                color = MaterialTheme.colorScheme.onPrimary,
+                                style = MaterialTheme.typography.bodySmall
+                            )
                         } else {
                             Text(
                                 text = stringResource(id = R.string.not_extracted),
