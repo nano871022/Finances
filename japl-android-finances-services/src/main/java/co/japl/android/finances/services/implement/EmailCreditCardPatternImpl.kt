@@ -32,4 +32,8 @@ class EmailCreditCardPatternImpl @Inject constructor(private val emailRead: IEma
             }
         }
     }
+
+    override fun getEmailList(sender: String, subject: String): List<String> {
+        return emailRead.getEmails(sender, subject)
+    }
 }

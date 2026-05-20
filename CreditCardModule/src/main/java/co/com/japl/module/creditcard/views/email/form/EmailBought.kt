@@ -24,6 +24,9 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -37,7 +40,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import co.com.japl.module.creditcard.R
 import co.com.japl.module.creditcard.controllers.emailcreditcard.form.EmailCreditCardViewModel
+import co.com.japl.ui.components.AlertDialogOkCancel
 import co.com.japl.ui.components.Carousel
+import co.com.japl.ui.components.CheckBoxField
 import co.com.japl.ui.components.FieldSelect
 import co.com.japl.ui.components.FieldText
 import co.com.japl.ui.components.FloatButton
@@ -82,6 +87,7 @@ private fun Body(viewModel: EmailCreditCardViewModel) {
     val isErrorBodyPattern = viewModel.errorBodyPattern
     
     val validationResult = viewModel.validationResult
+    val aiEnabled = viewModel.isAIValid()
 
     Scaffold(
         floatingActionButton = { Buttons(addClick = { viewModel.save() }, clear = { viewModel.clean() }) },
@@ -152,6 +158,18 @@ private fun Body(viewModel: EmailCreditCardViewModel) {
                 bodyPattern.value = it
             }
 
+            if (aiEnabled) {
+                Button(
+                    onClick = { viewModel.loadEmailSamples() },
+                    modifier = Modifier.align(Alignment.End).padding(top = Dimensions.PADDING_TOP)
+                ) {
+                    Text(
+                        text = stringResource(R.string.generate_by_ai),
+                        color = MaterialTheme.colorScheme.onPrimary
+                    )
+                }
+            }
+
             OutlinedButton(
                 onClick = { viewModel.validatePatternWithMessages() },
                 modifier = Modifier
@@ -175,6 +193,59 @@ private fun Body(viewModel: EmailCreditCardViewModel) {
     }
 
     ValidationPopup(viewModel)
+    DialogAIEmail(viewModel)
+}
+
+@Composable
+private fun DialogAIEmail(viewModel: EmailCreditCardViewModel) {
+    val showDialog = viewModel.showEmailDialog
+    val examples = viewModel.emailSamples
+    val aiFailed = viewModel.aiFailed
+
+    if (showDialog.value && examples.isNotEmpty()) {
+        AlertDialog(
+            onDismissRequest = { viewModel.showEmailDialog.value = false },
+            title = { Text(text = stringResource(R.string.select_example_email), color = MaterialTheme.colorScheme.onSurface) },
+            text = {
+                Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
+                    examples.forEachIndexed { index, pair ->
+                        CheckBoxField(
+                            title = pair.first,
+                            value = pair.second,
+                            callback = { viewModel.emailSamples[index] = pair.copy(second = it) }
+                        )
+                    }
+                }
+            },
+            confirmButton = {
+                TextButton(onClick = {
+                    viewModel.showEmailDialog.value = false
+                    viewModel.generateRegexWithAI()
+                }) {
+                    Text(stringResource(R.string.generate), color = MaterialTheme.colorScheme.onSurface)
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { viewModel.showEmailDialog.value = false }) {
+                    Text(stringResource(R.string.cancel), color = MaterialTheme.colorScheme.onSurface)
+                }
+            }
+        )
+    }
+    if ((showDialog.value && examples.isEmpty()) || aiFailed.value) {
+        AlertDialogOkCancel(
+            title = R.string.no_data,
+            confirmNameButton = R.string.ok,
+            onDismiss = {
+                viewModel.showEmailDialog.value = false
+                viewModel.aiFailed.value = false
+            },
+            onClick = {
+                viewModel.showEmailDialog.value = false
+                viewModel.aiFailed.value = false
+            }
+        )
+    }
 }
 
 @Composable

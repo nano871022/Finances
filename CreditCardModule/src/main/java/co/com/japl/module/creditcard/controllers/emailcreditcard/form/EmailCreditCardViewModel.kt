@@ -9,11 +9,15 @@ import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import co.com.japl.finances.iports.dtos.CreditCardDTO
 import co.com.japl.finances.iports.dtos.EmailCreditCardDTO
+import android.util.Log
+import android.content.Context
 import co.com.japl.finances.iports.dtos.EmailValidationDTO
 import co.com.japl.finances.iports.enums.KindInterestRateEnum
+import co.com.japl.finances.iports.inbounds.common.ILLMService
 import co.com.japl.finances.iports.inbounds.creditcard.ICreditCardPort
 import co.com.japl.finances.iports.inbounds.creditcard.IEmailCreditCardPort
 import co.com.japl.module.creditcard.R
+import co.com.japl.ui.Prefs
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -22,7 +26,10 @@ class EmailCreditCardViewModel constructor(
     private val codeEmailCC: Int?,
     private val svc: IEmailCreditCardPort?,
     private val creditCardSvc: ICreditCardPort?,
-    private val navController: NavController?
+    private val navController: NavController?,
+    private val llmService: ILLMService? = null,
+    private val prefs: Prefs? = null,
+    private val context: Context? = null
 ) : ViewModel() {
 
     val load = mutableStateOf(true)
@@ -49,6 +56,72 @@ class EmailCreditCardViewModel constructor(
     val validating = mutableStateOf(false)
     val validationResults = mutableStateListOf<EmailValidationDTO>()
 
+    val aiFailed = mutableStateOf(false)
+    val emailSamples = mutableStateListOf<Pair<String, Boolean>>()
+    val showEmailDialog = mutableStateOf(false)
+
+    fun loadEmailSamples() {
+        if (sender.value.isNotEmpty()) {
+            viewModelScope.launch(Dispatchers.IO) {
+                svc?.getEmailList(sender.value, subjectPattern.value)?.let { list ->
+                    withContext(Dispatchers.Main) {
+                        emailSamples.clear()
+                        list.map { Pair(it, false) }.forEach(emailSamples::add)
+                        showEmailDialog.value = true
+                    }
+                }
+            }
+        }
+    }
+
+    fun generateRegexWithAI() {
+        val selectedEmails = emailSamples.filter { it.second }.map { it.first }
+        if (selectedEmails.isNotEmpty()) {
+            viewModelScope.launch(Dispatchers.IO) {
+                withContext(Dispatchers.Main) {
+                    load.value = true
+                    progress.floatValue = 0.1f
+                }
+                val prompt = context?.getString(R.string.promt_email_expreg, selectedEmails.joinToString("\n")) ?: ""
+                withContext(Dispatchers.Main) {
+                    progress.floatValue = 0.3f
+                }
+                llmService?.getAiResponse(prompt)?.onSuccess { response ->
+                    withContext(Dispatchers.Main) {
+                        progress.floatValue = 0.6f
+                        val lines = response.trim().lines()
+                        lines.forEach { line ->
+                            if (line.startsWith("SUBJECT:", ignoreCase = true)) {
+                                subjectPattern.value = line.substringAfter("SUBJECT:").trim()
+                            } else if (line.startsWith("BODY:", ignoreCase = true)) {
+                                bodyPattern.value = line.substringAfter("BODY:").trim().removeSurrounding("`").removePrefix("regex").trim()
+                            }
+                        }
+                        if (lines.size == 1 && !response.contains("SUBJECT:", ignoreCase = true)) {
+                             bodyPattern.value = response.trim().removeSurrounding("`").removePrefix("regex").trim()
+                        }
+                        progress.floatValue = 1.0f
+                        load.value = false
+                        showEmailDialog.value = false
+                        context?.let { Toast.makeText(it, R.string.ai_response, Toast.LENGTH_SHORT).show() }
+                    }
+                }?.onFailure {
+                    Log.e("EmailCCViewModel", "Error: ${it.message}")
+                    withContext(Dispatchers.Main) {
+                        aiFailed.value = true
+                        load.value = false
+                        showEmailDialog.value = false
+                        progress.floatValue = 1.0f
+                    }
+                }
+            }
+        }
+    }
+
+    fun isAIValid(): Boolean {
+        return prefs?.llmEnabled ?: false
+    }
+
     fun save() {
         validate()
         emailCreditCard?.let { dto ->
@@ -59,24 +132,24 @@ class EmailCreditCardViewModel constructor(
                         if (id > 0) {
                             emailCreditCard = dto.copy(id = id)
                             withContext(Dispatchers.Main) {
-                                Toast.makeText(navController?.context, R.string.toast_successful_insert, Toast.LENGTH_SHORT).show()
+                                context?.let { Toast.makeText(it, R.string.toast_successful_insert, Toast.LENGTH_SHORT).show() }
                                 navController?.popBackStack()
                             }
                         } else {
                             withContext(Dispatchers.Main) {
-                                Toast.makeText(navController?.context, R.string.toast_unsuccessful_insert, Toast.LENGTH_SHORT).show()
+                                context?.let { Toast.makeText(it, R.string.toast_unsuccessful_insert, Toast.LENGTH_SHORT).show() }
                             }
                         }
                     } else {
                         val result = svc?.update(dto) ?: false
                         if (result) {
                             withContext(Dispatchers.Main) {
-                                Toast.makeText(navController?.context, R.string.toast_successful_update, Toast.LENGTH_SHORT).show()
+                                context?.let { Toast.makeText(it, R.string.toast_successful_update, Toast.LENGTH_SHORT).show() }
                                 navController?.popBackStack()
                             }
                         } else {
                             withContext(Dispatchers.Main) {
-                                Toast.makeText(navController?.context, R.string.toast_dont_successful_update, Toast.LENGTH_SHORT).show()
+                                context?.let { Toast.makeText(it, R.string.toast_dont_successful_update, Toast.LENGTH_SHORT).show() }
                             }
                         }
                     }

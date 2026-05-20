@@ -9,11 +9,13 @@ import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import co.com.japl.finances.iports.inbounds.common.ILLMService
 import co.com.japl.finances.iports.inbounds.creditcard.ICreditCardPort
 import co.com.japl.finances.iports.inbounds.creditcard.IEmailCreditCardPort
 import co.com.japl.module.creditcard.controllers.bought.forms.AdvanceViewModel
 import co.com.japl.module.creditcard.controllers.emailcreditcard.form.EmailCreditCardViewModel
 import co.com.japl.module.creditcard.views.email.form.EmailBought
+import co.com.japl.ui.Prefs
 import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.japl.android.myapplication.databinding.FragmentEmailCreditCardBinding
 import co.japl.android.myapplication.finanzas.controller.ViewModelFactory
@@ -27,6 +29,7 @@ class EmailFragment: Fragment(){
 
     @Inject lateinit var emailCCSvc : IEmailCreditCardPort
     @Inject lateinit var ccSvc : ICreditCardPort
+    @Inject lateinit var llmSvc : ILLMService
 
     val viewModel : EmailCreditCardViewModel by viewModels{
         ViewModelFactory(
@@ -39,6 +42,9 @@ class EmailFragment: Fragment(){
                     svc = emailCCSvc,
                     creditCardSvc = ccSvc,
                     navController = findNavController(),
+                    llmService = llmSvc,
+                    prefs = Prefs(requireContext()),
+                    context = requireContext()
                 )
             }
         )

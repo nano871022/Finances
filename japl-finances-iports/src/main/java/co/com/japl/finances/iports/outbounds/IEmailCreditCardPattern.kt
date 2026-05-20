@@ -6,4 +6,6 @@ import co.com.japl.finances.iports.dtos.EmailValidationDTO
 interface IEmailCreditCardPattern {
 
     fun validateMessagePattern(dto: EmailCreditCardDTO): List<EmailValidationDTO>
+
+    fun getEmailList(sender: String, subject: String): List<String>
 }
