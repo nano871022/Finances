@@ -1,6 +1,7 @@
 package co.japl.finances.core.usercases.implement.creditcard
 
 import co.com.japl.finances.iports.dtos.EmailCreditCardDTO
+import co.com.japl.finances.iports.dtos.EmailValidationDTO
 import co.com.japl.finances.iports.outbounds.IEmailCreditCardPattern
 import co.com.japl.finances.iports.outbounds.IEmailCreditCardPort
 import co.japl.finances.core.usercases.interfaces.creditcard.IEmailCreditCard
@@ -21,5 +22,5 @@ class EmailCreditCardImpl @Inject constructor(val svc: IEmailCreditCardPort, val
 
     override fun clone(id: Int): Boolean =getById(id)?.let{create(it.copy(id=0))!=0}?:false
 
-    override fun validateMessagePattern(dto: EmailCreditCardDTO): List<String> = messageSvc.validateMessagePattern(dto)
+    override fun validateMessagePattern(dto: EmailCreditCardDTO): List<EmailValidationDTO> = messageSvc.validateMessagePattern(dto)
 }

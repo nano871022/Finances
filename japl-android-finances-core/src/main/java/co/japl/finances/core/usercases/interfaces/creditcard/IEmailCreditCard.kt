@@ -1,6 +1,7 @@
 package co.japl.finances.core.usercases.interfaces.creditcard
 
 import co.com.japl.finances.iports.dtos.EmailCreditCardDTO
+import co.com.japl.finances.iports.dtos.EmailValidationDTO
 
 interface IEmailCreditCard {
 
@@ -18,5 +19,5 @@ interface IEmailCreditCard {
 
     fun clone(id: Int): Boolean
 
-    fun validateMessagePattern(dto: EmailCreditCardDTO): List<String>
+    fun validateMessagePattern(dto: EmailCreditCardDTO): List<EmailValidationDTO>
 }

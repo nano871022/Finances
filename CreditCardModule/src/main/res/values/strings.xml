@@ -82,4 +82,12 @@ Message:
     <string name="more_options">Más Opciones</string>
     <string name="delete_email_record">¿Desea Eliminar este Registro?</string>
     <string name="sender">Remitente</string>
+    <string name="validation_results_title">Resultados de Validación</string>
+    <string name="emails_found">Correos encontrados: %1$d</string>
+    <string name="emails_matched">Coincidencias: %1$d</string>
+    <string name="extracted_name">Nombre: %1$s</string>
+    <string name="extracted_value">Valor: %1$s</string>
+    <string name="extracted_date">Fecha: %1$s</string>
+    <string name="not_extracted">No se logró extraer datos</string>
+    <string name="validation_close">Cerrar</string>
 </resources>
