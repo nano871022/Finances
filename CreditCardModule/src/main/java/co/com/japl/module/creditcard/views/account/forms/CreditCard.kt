@@ -4,8 +4,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.IconButton
-import androidx.compose.material3.Icon
 import androidx.compose.material.LinearProgressIndicator
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Cancel
@@ -64,7 +62,8 @@ fun CreditCard(viewModel: CreditCardViewModel){
                                 }
                             }
                         }else {
-                            FloatButton(imageVector = Icons.Rounded.Create,
+                            FloatButton(
+                                imageVector = Icons.Rounded.Create,
                                 descriptionIcon =  R.string.create){ viewModel.create() }
                         }
                     }

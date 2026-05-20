@@ -75,4 +75,11 @@ Message:
     <string name="generate">Generar</string>
     <string name="ai_response">Respuesta IA</string>
     <string name="ok">OK</string>
+    <string name="add">Agregar</string>
+    <string name="subject_email_pattern">Asunto (Patron)</string>
+    <string name="message_email_pattern">Mensaje (Patrón)</string>
+    <string name="validate_email_patterns">Validar</string>
+    <string name="more_options">Más Opciones</string>
+    <string name="delete_email_record">¿Desea Eliminar este Registro?</string>
+    <string name="sender">Remitente</string>
 </resources>

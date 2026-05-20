@@ -50,12 +50,10 @@ import co.com.japl.ui.components.Popup
 import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.com.japl.ui.theme.values.Dimensions
 import co.com.japl.ui.theme.values.ModifiersCustom.Weight1f
-import co.com.japl.ui.utils.DateUtils
 import co.japl.android.myapplication.utils.NumbersUtil
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import java.text.DecimalFormat
 import java.time.LocalDateTime
 import java.time.YearMonth
 import java.time.format.DateTimeFormatter

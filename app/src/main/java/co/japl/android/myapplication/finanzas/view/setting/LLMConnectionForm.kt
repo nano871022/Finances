@@ -1,6 +1,5 @@
 package co.japl.android.myapplication.finanzas.view.setting
 
-import android.content.Context
 import android.content.res.Configuration
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
@@ -12,7 +11,6 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import co.com.japl.finances.iports.inbounds.common.ILLMService
 import co.com.japl.ui.Prefs
@@ -21,8 +19,6 @@ import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.com.japl.ui.theme.values.Dimensions
 import co.japl.android.myapplication.R
 import co.japl.android.myapplication.finanzas.controller.setting.LLMConnectionViewModel
-import dagger.hilt.android.internal.Contexts
-import dagger.hilt.android.qualifiers.ApplicationContext
 
 
 @Composable

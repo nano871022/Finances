@@ -502,5 +502,27 @@
         android:label="@string/llm_connection"
         tools:layout="@layout/fragment_llm_connection" />
 
+    <fragment
+        android:id="@+id/email_list_credit_card"
+        android:name="co.japl.android.myapplication.finanzas.controller.boughtcreditcard.EmailListFragment"
+        android:label="@string/email_list"
+        tools:layout="@layout/fragment_list_email_credit_card">
+        <action
+            android:id="@+id/action_email_list_to_email_form"
+            app:destination="@id/email_credit_card" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/email_credit_card"
+        android:name="co.japl.android.myapplication.finanzas.controller.boughtcreditcard.EmailFragment"
+        android:label="@string/email_address"
+        tools:layout="@layout/fragment_email_credit_card">
+        <deepLink app:uri="android-app://co.com.japl.finanzas.modulo.app/email_credit_card" />
+        <argument
+            android:name="code_email_credit_card"
+            app:argType="integer"
+            android:defaultValue="0" />
+    </fragment>
+
 
 </navigation>

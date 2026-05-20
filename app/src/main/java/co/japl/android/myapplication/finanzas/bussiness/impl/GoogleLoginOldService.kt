@@ -14,6 +14,8 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.auth.api.signin.SignInAccount
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.api.GoogleApiClient
+import com.google.android.gms.common.api.Scope
+import com.google.api.services.gmail.GmailScopes
 
 class GoogleLoginOldService(private val activity: Activity, override val RC_SIGN_IN: Int): IGoogleLoginService,
     GoogleApiClient.OnConnectionFailedListener {
@@ -22,6 +24,7 @@ class GoogleLoginOldService(private val activity: Activity, override val RC_SIGN
     private val googleSignInOptions = GoogleSignInOptions
         .Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
         .requestEmail()
+        .requestScopes(Scope(GmailScopes.GMAIL_READONLY))
         .build()
     private val signInClient = GoogleApiClient.Builder(activity)
         .enableAutoManage(activity as FragmentActivity,this)

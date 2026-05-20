@@ -104,6 +104,7 @@
     <string name="navigate_list_credit_rates">android-app://co.com.japl.finanzas.modulo.app/credit_rates</string>
     <string name="navigate_list_credit_rate">android-app://co.com.japl.finanzas.modulo.app/credit_rate</string>
     <string name="navigate_list_credit_rate_with_code_credit_card">android-app://co.com.japl.finanzas.modulo.app/credit_rate?codeCreditCard=%d</string>
+    <string name="navigate_list_credit_card_with_code_email_credit_card">android-app://co.com.japl.finanzas.modulo.app/email_credit_card?code_email_credit_card=%d</string>
     <string name="navigate_list_credit_rate_with_code_credit_card_and_cod_credit_rate">android-app://co.com.japl.finanzas.modulo.app/credit_rate?codeCreditCard=%d&amp;codeCreditRate=%d</string>
     <string name="navigate_list_bought_period">android-app://co.com.japl.finanzas.module.app/BoughtPeriodList?codeCreditCard=%d</string>
     <string name="navigate_bought_cash_advance">android-app://co.com.japl.finanzas.module.app/cashAdvanceBought?cod_credit_card=%d</string>

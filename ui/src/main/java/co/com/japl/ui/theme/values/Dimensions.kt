@@ -11,4 +11,6 @@ object  Dimensions {
      val PADDING_BOTTOM_CAROUSEL_SPACE = 13.dp
      val PADDING_VIEW_SPACE = 8.dp
      val ICON_SIZE_MEDIUM = 24.dp
+
+     val PADDING_TOP_MORE_VERT = 15.dp
 }

@@ -36,6 +36,11 @@
             android:icon="@android:drawable/ic_menu_agenda"
             android:title="@string/recurrent"/>
 
+        <item
+            android:id="@+id/email_list_credit_card"
+            android:icon="@android:drawable/ic_menu_send"
+            android:title="@string/email_credit_card"/>
+
     </group>
 
     <group>

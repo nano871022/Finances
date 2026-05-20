@@ -29,7 +29,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import co.com.japl.finances.iports.dtos.SMSPaidDTO
-import co.com.japl.finances.iports.enums.KindInterestRateEnum
 import co.com.japl.module.paid.enums.MoreOptionsItemSms
 import co.com.japl.module.paid.R
 import co.com.japl.module.paid.controllers.sms.list.SmsViewModel

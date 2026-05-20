@@ -42,7 +42,8 @@ fun SettingsApp(viewModel:SettingsAppViewModel){
 @Composable
 private fun Buttons(viewModel: SettingsAppViewModel){
     Column{
-        FloatButton(imageVector = Icons.Rounded.Save,
+        FloatButton(
+            imageVector = Icons.Rounded.Save,
             descriptionIcon = R.string.save) {
             viewModel.save()
         }

@@ -8,7 +8,7 @@ import co.japl.android.finances.services.interfaces.IConnectDB
 import co.japl.android.finances.services.utils.DatabaseConstants
 
 class ConnectDB(context: Context):SQLiteOpenHelper(context,
-        DatabaseConstants.DATA_BASE_NAME,null, 4_05_05_082) {
+        DatabaseConstants.DATA_BASE_NAME,null, 4_08_01_168) {
 
     val list = arrayListOf<IConnectDB>(
         CalculationConnectDB(),
@@ -35,7 +35,8 @@ class ConnectDB(context: Context):SQLiteOpenHelper(context,
     TagConnectDB(),
     TagQuoteCreditCardConnectDB(),
     SmsCreditCardConnectDB(),
-    SmsPaidConnectDB()
+    SmsPaidConnectDB(),
+    EmailCreditCardConnectDB()
     )
 
     override fun onCreate(p0: SQLiteDatabase?) {

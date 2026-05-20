@@ -130,7 +130,7 @@ private fun FloatButtons(viewModel: CreditAmortizationViewModel) {
 
         FloatButton(
             descriptionIcon =  R.string.extra_value_list,
-            imageVector= Icons.Rounded.PlusOne,
+            imageVector = Icons.Rounded.PlusOne,
             onClick = { viewModel.goToExtraValues() },
         )
         FloatButton(

@@ -9,12 +9,15 @@ import co.japl.android.finances.services.interfaces.IGoogleLoginService
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.android.gms.common.api.Scope
+import com.google.api.services.gmail.GmailScopes
 
 class GoogleLoginService(private val activity:Activity, override val RC_SIGN_IN: Int) :IGoogleLoginService{
     private lateinit var signInAccount:GoogleSignInAccount
     private val googleSignInOptions = GoogleSignInOptions
         .Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
         .requestEmail()
+        .requestScopes(Scope(GmailScopes.GMAIL_READONLY))
         .build()
     val signInClient = GoogleSignIn.getClient(activity,googleSignInOptions)
     override fun getIntent():Intent{
@@ -47,8 +50,6 @@ class GoogleLoginService(private val activity:Activity, override val RC_SIGN_IN:
             }
         }
     }
-
-
 
     override fun getAccount():GoogleSignInAccount{
         return signInAccount
