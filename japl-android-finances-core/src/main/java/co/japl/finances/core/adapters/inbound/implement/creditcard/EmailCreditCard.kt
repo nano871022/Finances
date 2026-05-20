@@ -1,13 +1,14 @@
 package co.japl.finances.core.adapters.inbound.implement.creditcard
 
 import co.com.japl.finances.iports.dtos.EmailCreditCardDTO
+import co.com.japl.finances.iports.dtos.EmailValidationDTO
 import co.com.japl.finances.iports.inbounds.creditcard.IEmailCreditCardPort
 import co.japl.finances.core.usercases.interfaces.creditcard.IEmailCreditCard
 import javax.inject.Inject
 
 class EmailCreditCard @Inject constructor(val svc: IEmailCreditCard) : IEmailCreditCardPort {
 
-    override fun validateMessagePattern(dto: EmailCreditCardDTO): List<String> {
+    override fun validateMessagePattern(dto: EmailCreditCardDTO): List<EmailValidationDTO> {
         require(dto.bodyPattern.isNotEmpty()){"Need pattern for find in message"}
         require(dto.subjectPattern.isNotEmpty()){"Need pattern for find in email"}
         require(dto.sender.isNotEmpty()){"Need sender of email"}

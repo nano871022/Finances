@@ -11,6 +11,13 @@ import androidx.compose.material.icons.automirrored.rounded.DirectionsRun
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.Cancel
 import androidx.compose.material.icons.rounded.CleaningServices
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.size
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
@@ -27,11 +34,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import co.com.japl.module.creditcard.R
 import co.com.japl.module.creditcard.controllers.emailcreditcard.form.EmailCreditCardViewModel
+import co.com.japl.ui.components.Carousel
 import co.com.japl.ui.components.FieldSelect
 import co.com.japl.ui.components.FieldText
 import co.com.japl.ui.components.FloatButton
+import co.com.japl.ui.components.Popup
 import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.com.japl.ui.theme.values.Dimensions
 
@@ -161,17 +171,107 @@ private fun Body(viewModel: EmailCreditCardViewModel) {
                     modifier = Modifier.weight(1f)
                 )
             }
+        }
+    }
 
-            FieldText(
-                title = stringResource(id = R.string.validate),
-                value = validationResult.value,
-                lines = 6,
-                callback = {},
-                readOnly = true,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = Dimensions.PADDING_TOP)
-            )
+    ValidationPopup(viewModel)
+}
+
+@Composable
+private fun ValidationPopup(viewModel: EmailCreditCardViewModel) {
+    val showPopup = viewModel.showPopup
+    val validating = viewModel.validating.value
+    val validationResults = viewModel.validationResults
+
+    Popup(title = R.string.validation_results_title, state = showPopup) {
+        Column(
+            modifier = Modifier
+                .padding(Dimensions.PADDING_SHORT)
+                .fillMaxWidth()
+        ) {
+            if (validating) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(200.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    CircularProgressIndicator(
+                        modifier = Modifier.size(50.dp),
+                        color = MaterialTheme.colorScheme.onPrimary
+                    )
+                }
+            } else {
+                Carousel(
+                    size = validationResults.size,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(200.dp)
+                ) { index ->
+                    val result = validationResults[index]
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(Dimensions.PADDING_SHORT)
+                    ) {
+                        if (result.matched) {
+                            Text(
+                                text = stringResource(id = R.string.extracted_name, result.name ?: ""),
+                                color = MaterialTheme.colorScheme.onPrimary
+                            )
+                            Text(
+                                text = stringResource(id = R.string.extracted_value, result.value ?: ""),
+                                color = MaterialTheme.colorScheme.onPrimary
+                            )
+                            Text(
+                                text = stringResource(id = R.string.extracted_date, result.date ?: ""),
+                                color = MaterialTheme.colorScheme.onPrimary
+                            )
+                            Text(
+                                text = result.bodySnippet,
+                                color = MaterialTheme.colorScheme.onPrimary,
+                                style = MaterialTheme.typography.bodySmall
+                            )
+                        } else {
+                            Text(
+                                text = stringResource(id = R.string.not_extracted),
+                                color = MaterialTheme.colorScheme.onPrimary,
+                                style = MaterialTheme.typography.titleMedium
+                            )
+                            Spacer(modifier = Modifier.height(Dimensions.PADDING_SHORT))
+                            Text(
+                                text = result.bodySnippet,
+                                color = MaterialTheme.colorScheme.onPrimary,
+                                style = MaterialTheme.typography.bodySmall
+                            )
+                        }
+                    }
+                }
+
+                HorizontalDivider(modifier = Modifier.padding(vertical = Dimensions.PADDING_SHORT))
+
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = stringResource(id = R.string.emails_found, validationResults.size),
+                        color = MaterialTheme.colorScheme.onPrimary,
+                        modifier = Modifier.weight(1f)
+                    )
+                    Text(
+                        text = stringResource(id = R.string.emails_matched, validationResults.count { it.matched }),
+                        color = MaterialTheme.colorScheme.onPrimary,
+                        modifier = Modifier.weight(1f)
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(Dimensions.PADDING_SHORT))
+
+                OutlinedButton(onClick = { showPopup.value = false }, modifier = Modifier.align(Alignment.End)) {
+                    Text(text = stringResource(id = R.string.validation_close), color = MaterialTheme.colorScheme.onPrimary)
+                }
+            }
         }
     }
 }

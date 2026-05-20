@@ -1,10 +1,11 @@
 package co.com.japl.finances.iports.inbounds.creditcard;
 
 import co.com.japl.finances.iports.dtos.EmailCreditCardDTO
+import co.com.japl.finances.iports.dtos.EmailValidationDTO
 
 interface IEmailCreditCardPort{
 
-    fun validateMessagePattern(dto: EmailCreditCardDTO):List<String>
+    fun validateMessagePattern(dto: EmailCreditCardDTO):List<EmailValidationDTO>
 
     fun create(dto: EmailCreditCardDTO): Int
 

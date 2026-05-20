@@ -9,6 +9,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import co.com.japl.finances.iports.dtos.CreditCardDTO
 import co.com.japl.finances.iports.dtos.EmailCreditCardDTO
+import co.com.japl.finances.iports.dtos.EmailValidationDTO
 import co.com.japl.finances.iports.enums.KindInterestRateEnum
 import co.com.japl.finances.iports.inbounds.creditcard.ICreditCardPort
 import co.com.japl.finances.iports.inbounds.creditcard.IEmailCreditCardPort
@@ -44,6 +45,9 @@ class EmailCreditCardViewModel constructor(
     val bodyPattern = mutableStateOf("")
     val errorBodyPattern = mutableStateOf(false)
     val validationResult = mutableStateOf("")
+    val showPopup = mutableStateOf(false)
+    val validating = mutableStateOf(false)
+    val validationResults = mutableStateListOf<EmailValidationDTO>()
 
     fun save() {
         validate()
@@ -96,22 +100,33 @@ class EmailCreditCardViewModel constructor(
         errorBodyPattern.value = false
         errorCreditCard.value = false
         validationResult.value = ""
+        showPopup.value = false
+        validating.value = false
+        validationResults.clear()
     }
 
     fun validatePatternWithMessages() {
         validate()
         emailCreditCard?.let { dto ->
             viewModelScope.launch(Dispatchers.IO) {
+                withContext(Dispatchers.Main) {
+                    validating.value = true
+                    showPopup.value = true
+                    validationResults.clear()
+                }
                 runCatching {
                     svc?.validateMessagePattern(dto) ?: emptyList()
                 }.onFailure { e ->
                     withContext(Dispatchers.Main) {
+                        validating.value = false
                         validationResult.value = "Error: ${e.message}"
                     }
                 }.onSuccess { list ->
                     withContext(Dispatchers.Main) {
+                        validating.value = false
+                        validationResults.addAll(list)
                         if (list.isNotEmpty()) {
-                            validationResult.value = list.joinToString("\n\n")
+                            validationResult.value = "Success"
                         } else {
                             validationResult.value = "Not found messages"
                         }
