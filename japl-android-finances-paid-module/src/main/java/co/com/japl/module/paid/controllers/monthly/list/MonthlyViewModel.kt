@@ -21,6 +21,7 @@ import co.com.japl.module.paid.navigations.Paids
 import co.com.japl.module.paid.navigations.Period
 import co.com.japl.ui.Prefs
 import co.com.japl.ui.utils.DateUtils
+
 import kotlinx.coroutines.runBlocking
 import java.time.YearMonth
 import java.time.format.TextStyle
@@ -156,9 +157,15 @@ class MonthlyViewModel constructor(private val period:YearMonth,private val paid
     suspend fun readEmail(){
         try {
             val numDaysRead = paidEmailDaysRead.value.toIntOrNull() ?: prefs?.paidEmailDaysRead ?: 7
+
             emailSvc?.getAll()?.filter { it.active }?.forEach { emailConfig ->
+
                 emailSvc.validateMessagePattern(emailConfig, numDaysRead).filter { it.matched }.forEach { validation ->
-                    val date = validation.date?.let { DateUtils.toLocalDateRegex(it) }?.atStartOfDay()
+
+                    val date = validation.date?.let {
+                        DateUtils.toLocalDate(it)
+                    }?.atStartOfDay()
+
                     val value = validation.value?.toDoubleOrNull()
                     if (date != null && value != null) {
                         paidSmsSvc?.createBySms(

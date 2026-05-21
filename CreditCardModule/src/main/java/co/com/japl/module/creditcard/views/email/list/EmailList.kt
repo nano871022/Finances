@@ -8,7 +8,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.Button
-import androidx.compose.material.Card
+import androidx.compose.material3.Card
 import androidx.compose.material.Icon
 import androidx.compose.material.LinearProgressIndicator
 import androidx.compose.material.Text
@@ -113,16 +113,15 @@ private fun EmailItem(dto: EmailCreditCardDTO,onClick:(IMoreOptions,Int)->Unit){
     val moreOptions = remember { mutableStateOf<Boolean>(false) }
     val id = dto.id
 
-    Card (modifier = Modifier.fillMaxWidth().padding(Dimensions.PADDING_SHORT),
-        backgroundColor = MaterialTheme.colorScheme.secondary){
+    Card (modifier = Modifier.fillMaxWidth().padding(Dimensions.PADDING_SHORT)){
         Row(modifier=Modifier.fillMaxWidth().padding(Dimensions.PADDING_SHORT)){
 
             Text(text=dto.nameCreditCard,
-                color = MaterialTheme.colorScheme.onSecondary,
+                color = MaterialTheme.colorScheme.onBackground,
                 modifier = Modifier.weight(1f).padding(Dimensions.PADDING_TOP_MORE_VERT))
 
             Text(text=dto.sender,
-                color = MaterialTheme.colorScheme.onSecondary,
+                color = MaterialTheme.colorScheme.onBackground,
                 modifier = Modifier.weight(1f).padding(Dimensions.PADDING_TOP_MORE_VERT))
 
             IconButton(

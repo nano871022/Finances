@@ -172,6 +172,26 @@ private fun ValidationPopup(viewModel: EmailPaidViewModel) {
                         Text(text = result.bodySnippet, color = MaterialTheme.colorScheme.onPrimary, style = MaterialTheme.typography.bodySmall)
                     }
                 }
+                HorizontalDivider(modifier = Modifier.padding(vertical = Dimensions.PADDING_SHORT))
+
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = stringResource(id = R.string.emails_found, validationResults.size),
+                        color = MaterialTheme.colorScheme.onPrimary,
+                        modifier = Modifier.weight(1f)
+                    )
+                    Text(
+                        text = stringResource(id = R.string.emails_matched, validationResults.count { it.matched }),
+                        color = MaterialTheme.colorScheme.onPrimary,
+                        modifier = Modifier.weight(1f)
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(Dimensions.PADDING_SHORT))
+
                 OutlinedButton(onClick = { showPopup.value = false }, modifier = Modifier.align(Alignment.End)) {
                     Text(text = stringResource(R.string.close), color = MaterialTheme.colorScheme.onPrimary)
                 }

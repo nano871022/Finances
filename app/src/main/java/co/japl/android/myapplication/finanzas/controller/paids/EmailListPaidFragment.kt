@@ -14,6 +14,7 @@ import co.com.japl.module.paid.controllers.emailpaid.list.EmailListPaidViewModel
 import co.com.japl.module.paid.views.email.list.EmailListPaid
 import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.japl.android.myapplication.databinding.FragmentListEmailCreditCardBinding
+import co.japl.android.myapplication.databinding.FragmentListEmailPaidBinding
 import co.japl.android.myapplication.finanzas.controller.ViewModelFactory
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -42,9 +43,9 @@ class EmailListPaidFragment: Fragment(){
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val root = FragmentListEmailCreditCardBinding.inflate(inflater,container,false)
+        val root = FragmentListEmailPaidBinding.inflate(inflater,container,false)
 
-        root.cvComposeListEmailCc.apply {
+        root.cvComposeListEmailPd.apply {
             setContent {
                 MaterialThemeComposeUI {
                     EmailListPaid(viewModel = viewModel)

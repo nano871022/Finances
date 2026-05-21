@@ -15,12 +15,14 @@ import androidx.compose.material.icons.automirrored.rounded.DirectionsRun
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.CalendarMonth
 import androidx.compose.material.icons.rounded.RemoveRedEye
+import androidx.compose.material.icons.rounded.SaveAs
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -138,7 +140,7 @@ private fun Settings(viewModel: MonthlyViewModel) {
             ) { paidEmailDaysRead.value = it }
 
             IconButton(onClick = { viewModel.saveSettings() }) {
-                Icon(imageVector = Icons.Rounded.Save, contentDescription = stringResource(R.string.save))
+                Icon(imageVector = Icons.Rounded.SaveAs, contentDescription = stringResource(R.string.save))
             }
 
             IconButton(onClick = {

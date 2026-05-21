@@ -60,6 +60,11 @@
             android:id="@+id/item_menu_setting_check_paids"
             android:icon="@drawable/ic_credit_card_foreground"
             android:title="@string/paids"/>
+
+        <item
+            android:id="@+id/email_list_paid"
+            android:icon="@drawable/ic_credit_card_foreground"
+            android:title="@string/list_email_paids"/>
     </group>
 
     <item android:id="@+id/item_menu_setting_llm_connection"

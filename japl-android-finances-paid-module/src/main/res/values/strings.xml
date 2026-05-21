@@ -126,4 +126,6 @@ Email Samples:
     <string name="email_read">Leer Email</string>
     <string name="email_list">Lista de Emails</string>
     <string name="email_address">Email</string>
+    <string name="clone">Duplicar</string>
+    <string name="do_you_wnat_to_delete_email_record">Desea eliminar el registro</string>
 </resources>

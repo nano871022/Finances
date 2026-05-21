@@ -18,6 +18,7 @@ import co.com.japl.ui.Prefs
 import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.japl.android.myapplication.databinding.FragmentEmailCreditCardBinding
 import co.japl.android.myapplication.finanzas.controller.ViewModelFactory
+import co.japl.android.myapplication.finanzas.putParams.EmailPaidsParams
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -33,7 +34,7 @@ class EmailPaidFragment: Fragment(){
             owner = this,
             viewModelClass = EmailPaidViewModel::class.java,
             build = {
-                val code = arguments?.getInt("code_email_paid",0) ?: 0
+                val code = EmailPaidsParams.download(requireArguments())
                 EmailPaidViewModel(
                     codeEmailPaid = code,
                     svc = emailPaidSvc,

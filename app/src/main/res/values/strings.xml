@@ -499,4 +499,5 @@
     <string name="llm_connection">LLM Conección</string>
     <string name="email_list">Lista Correos Compras</string>
     <string name="email_credit_card">Correo Electronico TC</string>
+    <string name="list_email_paids">Correo Electronico Pagos</string>
 </resources>
