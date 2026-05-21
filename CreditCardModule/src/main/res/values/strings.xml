@@ -111,6 +111,8 @@ Messages:
     <string name="validation_results_title">Resultados de Validación</string>
     <string name="emails_found">Correos encontrados: %1$d</string>
     <string name="emails_matched">Coincidencias: %1$d</string>
+    <string name="sms_found">SMS encontrados: %1$d</string>
+    <string name="sms_matched">Coincidencias: %1$d</string>
     <string name="extracted_name">Nombre: %1$s</string>
     <string name="extracted_value">Valor: %1$s</string>
     <string name="extracted_date">Fecha: %1$s</string>

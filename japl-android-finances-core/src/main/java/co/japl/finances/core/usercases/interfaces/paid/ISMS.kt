@@ -1,5 +1,6 @@
 package co.japl.finances.core.usercases.interfaces.paid
 
+import co.com.japl.finances.iports.dtos.EmailValidationDTO
 import co.com.japl.finances.iports.dtos.SMSPaidDTO
 import co.com.japl.finances.iports.enums.KindInterestRateEnum
 import java.time.LocalDateTime
@@ -14,7 +15,7 @@ interface ISMS {
 
     fun getById(codeSMSPaidDTO: Int): SMSPaidDTO?
 
-    fun validateMessagePattern(dto: SMSPaidDTO): List<String>
+    fun validateMessagePattern(dto: SMSPaidDTO): List<EmailValidationDTO>
 
     fun getAllByCodeAccount(codeAccount: Int): List<SMSPaidDTO>
 

@@ -1,5 +1,6 @@
 package co.japl.finances.core.usercases.interfaces.creditcard
 
+import co.com.japl.finances.iports.dtos.EmailValidationDTO
 import co.com.japl.finances.iports.dtos.SMSCreditCard
 import co.com.japl.finances.iports.enums.KindInterestRateEnum
 import java.time.LocalDateTime
@@ -14,7 +15,7 @@ interface ISMSCreditCard {
 
     fun getById(codeSMSCreditCard: Int): SMSCreditCard?
 
-    fun validateMessagePattern(dto: SMSCreditCard): List<String>
+    fun validateMessagePattern(dto: SMSCreditCard): List<EmailValidationDTO>
 
     fun getAllByCodeCreditCard(codeCreditCard: Int): List<SMSCreditCard>
 

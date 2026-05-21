@@ -10,6 +10,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import co.com.japl.finances.iports.dtos.CreditCardDTO
+import co.com.japl.finances.iports.dtos.EmailValidationDTO
 import co.com.japl.finances.iports.dtos.SMSCreditCard
 import co.com.japl.finances.iports.enums.KindInterestRateEnum
 import co.com.japl.finances.iports.inbounds.common.ILLMService
@@ -21,6 +22,7 @@ import com.google.android.material.snackbar.BaseTransientBottomBar
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
 import kotlin.time.Duration
 
 class SmsCreditCardViewModel constructor(private val codeSMSCC:Int?,private val svc:ISMSCreditCardPort?,private val creditCardSvc:ICreditCardPort?,private val navController: NavController?, private val llmService: ILLMService? = null, private val prefs: Prefs?=null): ViewModel() {
@@ -44,6 +46,9 @@ class SmsCreditCardViewModel constructor(private val codeSMSCC:Int?,private val 
     val pattern = mutableStateOf("")
     val errorPattern = mutableStateOf(false)
     val validationResult = mutableStateOf("")
+    val showPopup = mutableStateOf(false)
+    val validating = mutableStateOf(false)
+    val validationResults = mutableStateListOf<EmailValidationDTO>()
 
     val validate = mutableStateOf("")
 
@@ -132,16 +137,30 @@ class SmsCreditCardViewModel constructor(private val codeSMSCC:Int?,private val 
     fun validatePatternWithMessages() {
         validate()
         smsCreditCard?.let { dto ->
-            svc?.let {
-                validationResult.value = ""
+            viewModelScope.launch(Dispatchers.IO) {
+                withContext(Dispatchers.Main) {
+                    validating.value = true
+                    showPopup.value = true
+                    validationResults.clear()
+                    validationResult.value = ""
+                }
                 runCatching {
-                    it.validateMessagePattern(dto)
-                }.onFailure {
-                    validationResult.value = "Error: ${it.message}"
-                }.onSuccess {
-                    it?.takeIf { it.isNotEmpty() }?.forEach {
-                        validationResult.value += it + "\n\n"
-                    } ?: validationResult.let { it.value = "Not found sms" }
+                    svc?.validateMessagePattern(dto) ?: emptyList()
+                }.onFailure { e ->
+                    withContext(Dispatchers.Main) {
+                        validating.value = false
+                        validationResult.value = "Error: ${e.message}"
+                    }
+                }.onSuccess { list ->
+                    withContext(Dispatchers.Main) {
+                        validating.value = false
+                        validationResults.addAll(list)
+                        if (list.isNotEmpty()) {
+                            validationResult.value = "Success"
+                        } else {
+                            validationResult.value = "Not found sms"
+                        }
+                    }
                 }
             }
         }
@@ -186,10 +205,16 @@ class SmsCreditCardViewModel constructor(private val codeSMSCC:Int?,private val 
         }
     }
 
-    fun main() = runBlocking {
-        progress.floatValue = 0.1f
-        execute()
-        progress.floatValue = 1.0f
+    fun main() {
+        viewModelScope.launch(Dispatchers.IO) {
+            withContext(Dispatchers.Main) {
+                progress.floatValue = 0.1f
+            }
+            execute()
+            withContext(Dispatchers.Main) {
+                progress.floatValue = 1.0f
+            }
+        }
     }
 
     suspend fun execute(){

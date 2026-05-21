@@ -1,5 +1,6 @@
 package co.japl.finances.core.usercases.implement.paid
 
+import co.com.japl.finances.iports.dtos.EmailValidationDTO
 import co.com.japl.finances.iports.dtos.SMSPaidDTO
 import co.com.japl.finances.iports.inbounds.common.ISMSRead
 import co.com.japl.finances.iports.outbounds.ISMSPaidPort
@@ -27,19 +28,20 @@ class SMSImpl @Inject constructor(private val svc:ISMSPaidPort, private val smsS
         return svc.getById(codeSMSPaidDTO)
     }
 
-    override fun validateMessagePattern(dto: SMSPaidDTO): List<String> {
-        val list = mutableListOf<String>()
+    override fun validateMessagePattern(dto: SMSPaidDTO): List<EmailValidationDTO> {
+        val list = mutableListOf<EmailValidationDTO>()
         smsSvc.load(dto.phoneNumber,360).takeIf{it.isNotEmpty()}?.forEach{sms->
             if(dto.pattern.isNotEmpty() && dto.pattern.toRegex().containsMatchIn(sms)){
                 dto.pattern.toRegex().find(sms)?.let{
-                    if(it.groupValues.size > 3){
-                        list.add("OK ${it.groupValues}")
+                    val values = SmsUtil.getValues(it.groupValues)
+                    if(values != null){
+                        list.add(EmailValidationDTO(name = values.first, value = values.second.toString(), date = values.third.toString(), matched = true, bodySnippet = sms.take(100).replace("\n", " ")))
                     }else{
-                        list.add("Not enough values get Name Bought, Price and Date $sms")
+                        list.add(EmailValidationDTO(matched = false, bodySnippet = sms.take(100).replace("\n", " ")))
                     }
-                }?:list.add("Not matched $sms")
+                }?:list.add(EmailValidationDTO(matched = false, bodySnippet = sms.take(100).replace("\n", " ")))
             }else{
-                list.add("Not matched $sms")
+                list.add(EmailValidationDTO(matched = false, bodySnippet = sms.take(100).replace("\n", " ")))
             }
         }
         return list
