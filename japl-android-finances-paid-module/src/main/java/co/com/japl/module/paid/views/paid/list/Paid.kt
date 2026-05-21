@@ -104,9 +104,8 @@ private fun Buttons(newOne:()->Unit){
 }
 
 @Composable private fun Header(viewModel: PaidViewModel){
-    val settingState = remember {
-        mutableStateOf(false)
-    }
+    val settingState = remember {viewModel.settingState}
+
     Row{
 
         FieldView(name = stringResource(id = R.string.period),
@@ -123,44 +122,7 @@ private fun Buttons(newOne:()->Unit){
             },modifier=Weight1f())
     }
     if(settingState.value){
-        Settings(settingState = settingState,prefs= viewModel.prefs)
-    }
-}
-
-@Composable private fun Settings( settingState: MutableState<Boolean>,prefs: Prefs?){
-    val daysSmsReadState = remember {
-        mutableStateOf(prefs?.paidSMSDaysRead?.toString()?:"0")
-    }
-    Popup(title = R.string.setting, state = settingState) {
-        Scaffold (floatingActionButton = {
-            FloatButton(imageVector = Icons.Rounded.Add, descriptionIcon = R.string.save) {
-                daysSmsReadState.value?.takeIf { it.isNotBlank() }?.let{
-                    prefs?.paidSMSDaysRead = it.toInt()
-                }
-                settingState.value = false
-            }
-            FloatButton(
-                imageVector = Icons.Rounded.Downloading, descriptionIcon = R.string.download_sms){
-
-                settingState.value = false
-            }
-
-        }) {
-            Column (modifier = Modifier
-                .padding(it)
-                .padding(Dimensions.PADDING_SHORT)) {
-                FieldText(title = stringResource(id = R.string.msm_read_num)
-                , value = daysSmsReadState.value
-                    , keyboardType = KeyboardOptions(keyboardType = KeyboardType.Number)
-                    , callback = {
-                        it.takeIf { it.isNotBlank() }?.let {
-                            daysSmsReadState.value = it
-                        }
-                    }
-                    ,modifier = Modifier.fillMaxWidth()
-                )
-            }
-        }
+        PopupSetting(viewModel = viewModel, state = settingState)
     }
 }
 
@@ -317,7 +279,7 @@ internal fun PaidPreviewDark() {
 
 @Composable
 private fun getViewModel():PaidViewModel{
-    val viewModel = PaidViewModel(paidSvc = null, accountCode = 0 , period = YearMonth.now(),prefs= null,navController = null)
+    val viewModel = PaidViewModel(paidSvc = null, accountCode = 0 , period = YearMonth.now(),prefs= null,navController = null, emailSvc = null, paidSmsSvc = null)
     viewModel.loaderState.value = false
     viewModel.allValues.value = 1000.0
     viewModel.periodOfList.value = "June 2022"

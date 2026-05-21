@@ -35,7 +35,7 @@ import java.time.YearMonth
 import java.time.format.TextStyle
 import java.util.Locale
 
-class MonthlyViewModel constructor(private val period:YearMonth,private val paidSvc: IPaidPort?, private val incomesSvc:IInputPort?,private val accountSvc:IAccountPort?, private val smsSvc:ISMSPaidPort?,private val paidSmsSvc:ISmsPort?,private val prefs:Prefs?,private val navController: NavController?,private val emailSvc:IEmailPaidPort? = null): ViewModel() {
+class MonthlyViewModel constructor(private val period:YearMonth,private val paidSvc: IPaidPort?, private val incomesSvc:IInputPort?,private val accountSvc:IAccountPort?, private val smsSvc:ISMSPaidPort?,private val paidSmsSvc:ISmsPort?,private val prefs:Prefs?,private val navController: NavController?): ViewModel() {
     private var _accounts : List<AccountDTO>? = null
     val listAccount get() = _accounts
 
@@ -48,11 +48,6 @@ class MonthlyViewModel constructor(private val period:YearMonth,private val paid
     val paidTotalState = mutableDoubleStateOf(0.0)
     val incomesTotalState = mutableDoubleStateOf(0.0)
     val listGraph = mutableStateListOf<Pair<String,Double>>()
-    val paidEmailDaysRead = mutableStateOf("${prefs?.paidEmailDaysRead ?: 7}")
-    val paidSMSDaysRead = mutableStateOf("${prefs?.paidSMSDaysRead ?: 7}")
-    val errorPaidEmailDaysRead = mutableStateOf(false)
-    val errorPaidSMSDaysRead = mutableStateOf(false)
-    val settingState = mutableStateOf(false)
 
     fun goToListDetail(){
         try {
@@ -98,7 +93,7 @@ class MonthlyViewModel constructor(private val period:YearMonth,private val paid
         progressStatus.value = 0.6f
         readSms()
         progressStatus.value = 0.8f
-        readEmail()
+
         progressStatus.value = 1.0f
     }
 
@@ -165,65 +160,4 @@ class MonthlyViewModel constructor(private val period:YearMonth,private val paid
             Log.e(javaClass.name,e.message,e)
         }
     }
-
-    suspend fun readEmail(){
-        val numDaysRead = paidEmailDaysRead.value.toIntOrNull() ?: prefs?.paidEmailDaysRead ?: 7
-        try {
-            emailSvc?.getAll()?.filter { it.active }?.forEach { emailConfig ->
-
-                emailSvc.validateMessagePattern(emailConfig, numDaysRead).filter { it.matched }.forEach { validation ->
-
-                    val date = validation.date?.let {
-                        DateUtils.toLocalDate(it)
-                    }?.atStartOfDay()
-
-                    val value = validation.value?.toDoubleOrNull()
-                    if (date != null && value != null) {
-                        paidSmsSvc?.createBySms(
-                            name = validation.name ?: "",
-                            value = value,
-                            date = date,
-                            codeAccount = emailConfig.codeAccount
-                        )
-                    }
-                }
-            }
-        } catch (e: Exception) {
-            Log.e(javaClass.name, e.message, e)
-        }
-    }
-
-    fun readEmail(context: Context){
-        settingState.value = false
-        viewModelScope.launch(Dispatchers.IO) {
-            readEmail()
-            withContext(Dispatchers.Main) {
-                Toast.makeText(context, R.string.email_read_process_completed, Toast.LENGTH_SHORT).show()
-            }
-        }
-    }
-
-    fun saveSettings(context: Context) {
-        if(!errorPaidEmailDaysRead.value && !errorPaidSMSDaysRead.value) {
-            paidEmailDaysRead.value.toIntOrNull()?.let {
-                prefs?.paidEmailDaysRead = it
-            }
-            paidSMSDaysRead.value.toIntOrNull()?.let {
-                prefs?.paidSMSDaysRead = it
-            }
-            settingState.value = false
-            Toast.makeText(context, R.string.toast_saves_successful, Toast.LENGTH_SHORT).show()
-        }
-    }
-
-    fun validation(){
-        paidEmailDaysRead.value.takeIf { it.isNotEmpty() && NumbersUtil.isNumber(it) }?.let{
-            errorPaidEmailDaysRead.value = false
-        }?: errorPaidEmailDaysRead.let{it.value = true}
-
-        paidSMSDaysRead.value.takeIf { it.isNotEmpty() && NumbersUtil.isNumber(it) }?.let{
-            errorPaidSMSDaysRead.value = false
-        }?: errorPaidSMSDaysRead.let{it.value = true}
-    }
-
 }

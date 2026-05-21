@@ -36,7 +36,7 @@ class PaidsFragment : Fragment() {
     lateinit var incomesSvc: IInputPort
     @Inject lateinit var paidSmsSvc:ISmsPort
     @Inject lateinit var smsSvc:ISMSPaidPort
-    @Inject lateinit var emailSvc:IEmailPaidPort
+
 
 
     @RequiresApi(Build.VERSION_CODES.S)
@@ -54,8 +54,7 @@ class PaidsFragment : Fragment() {
             paidSmsSvc = paidSmsSvc,
             prefs = ApplicationInitial.prefs,
             smsSvc = smsSvc,
-            navController = findNavController(),
-            emailSvc = emailSvc
+            navController = findNavController()
         )
         root.cvPaidsFp.apply {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)

@@ -9,7 +9,9 @@ import android.view.ViewGroup
 import androidx.annotation.RequiresApi
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.navigation.fragment.findNavController
+import co.com.japl.finances.iports.inbounds.paid.IEmailPaidPort
 import co.com.japl.finances.iports.inbounds.paid.IPaidPort
+import co.com.japl.finances.iports.inbounds.paid.ISmsPort
 import co.com.japl.module.paid.controllers.paid.list.PaidViewModel
 import co.com.japl.module.paid.views.paid.list.Paid
 import co.com.japl.ui.theme.MaterialThemeComposeUI
@@ -24,6 +26,8 @@ import javax.inject.Inject
 class PaidListFragment : Fragment()  {
 
     @Inject lateinit var paidSvc: IPaidPort
+    @Inject lateinit var emailSvc:IEmailPaidPort
+    @Inject lateinit var paidSmsSvc: ISmsPort
 
 
 
@@ -41,7 +45,9 @@ class PaidListFragment : Fragment()  {
             period= if(date != null) YearMonth.of(date.year,date.monthValue) else YearMonth.now(),
             paidSvc = paidSvc,
             prefs = ApplicationInitial.prefs,
-            navController = findNavController()
+            navController = findNavController(),
+            emailSvc = emailSvc,
+            paidSmsSvc = paidSmsSvc
         )
         root.cvPaidFpl.apply {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)

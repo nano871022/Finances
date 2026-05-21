@@ -1,4 +1,4 @@
-package co.com.japl.module.paid.views.monthly.list
+package co.com.japl.module.paid.views.paid.list
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -20,6 +20,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import co.com.japl.module.paid.R
 import co.com.japl.module.paid.controllers.monthly.list.MonthlyViewModel
+import co.com.japl.module.paid.controllers.paid.list.PaidViewModel
 import co.com.japl.ui.components.FieldText
 import co.com.japl.ui.components.FloatButton
 import co.com.japl.ui.components.Popup
@@ -27,7 +28,7 @@ import co.com.japl.ui.theme.values.Dimensions
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun PopupSetting(viewModel: MonthlyViewModel, state: MutableState<Boolean>) {
+fun PopupSetting(viewModel: PaidViewModel, state: MutableState<Boolean>) {
     val paidEmailDaysRead = remember { viewModel.paidEmailDaysRead }
     val errorPaidEmailDaysRead = remember { viewModel.errorPaidEmailDaysRead }
     val paidSMSDaysRead = remember { viewModel.paidSMSDaysRead }

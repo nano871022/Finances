@@ -109,10 +109,6 @@ viewModel.accountList
                         } ?: accountState?.let { it.value = null }
                     })
 
-                IconButton(onClick = { viewModel.settingState.value = true }) {
-                    Icon(imageVector = Icons.Rounded.Settings, contentDescription = stringResource(id = R.string.setting))
-                }
-
                 HelpWikiButton(wikiUrl = R.string.wiki_paid_url, descriptionContent = R.string.wiki_paid_description)
             }
 
@@ -124,9 +120,7 @@ viewModel.accountList
 
         }
     }
-    if(viewModel.settingState.value){
-        PopupSetting(viewModel = viewModel, state = viewModel.settingState)
-    }
+
 }
 
 @Composable
