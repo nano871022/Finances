@@ -1,0 +1,37 @@
+package co.japl.android.finances.services.implement
+
+import android.util.Log
+import co.com.japl.finances.iports.dtos.EmailCreditCardDTO
+import co.com.japl.finances.iports.dtos.EmailValidationDTO
+import co.com.japl.finances.iports.inbounds.common.IEmailRead
+import co.com.japl.finances.iports.outbounds.IEmailCreditCardPattern
+import co.japl.finances.core.utils.DateUtils
+import co.japl.finances.core.utils.ExtractItemPatternUtil
+import java.util.regex.Pattern
+import javax.inject.Inject
+
+class EmailCreditCardPatternImpl @Inject constructor(private val emailRead: IEmailRead) : IEmailCreditCardPattern {
+
+    override fun validateMessagePattern(dto: EmailCreditCardDTO, numDaysRead: Int): List<EmailValidationDTO> {
+        val emails = emailRead.getEmails(dto.sender, dto.subjectPattern, numDaysRead)
+        return emails.map{ it.replace("\\s+".toRegex()," ")}.map { body ->
+            dto.bodyPattern.toRegex(RegexOption.IGNORE_CASE).containsMatchIn(body).takeIf { it }?.let {
+                dto.bodyPattern.toRegex().find(body)?.let {
+                    ExtractItemPatternUtil.getValues(it.groupValues)?.let {
+                        EmailValidationDTO(
+                            name = it.first,
+                            value = it.second.toString(),
+                            date = DateUtils.localDateTimeToString(it.third),
+                            matched = true,
+                            bodySnippet = body.take(100).replace("\n", " ")
+                        )
+                    }
+                }
+            }?:EmailValidationDTO(matched = false, bodySnippet = body.take(100).replace("\n", " "))
+        }
+    }
+
+    override fun getEmailList(sender: String, subject: String, numDaysRead: Int): List<String> {
+        return emailRead.getEmails(sender, subject, numDaysRead)
+    }
+}

@@ -1,16 +1,20 @@
 package co.japl.finances.core.usercases.implement.paid
 
+import co.com.japl.finances.iports.dtos.EmailValidationDTO
 import co.com.japl.finances.iports.dtos.SMSPaidDTO
 import co.com.japl.finances.iports.inbounds.common.ISMSRead
 import co.com.japl.finances.iports.outbounds.ISMSPaidPort
+import co.japl.finances.core.usercases.interfaces.IAccount
 import co.japl.finances.core.usercases.interfaces.paid.ISMSOld
+import co.japl.finances.core.usercases.interfaces.paid.ISms2
 import co.japl.finances.core.utils.DateUtils
+import co.japl.finances.core.utils.ExtractItemPatternUtil
 import co.japl.finances.core.utils.NumbersUtil
-import co.japl.finances.core.utils.SmsUtil
+
 import java.time.LocalDateTime
 import javax.inject.Inject
 
-class SMSImpl @Inject constructor(private val svc:ISMSPaidPort, private val smsSvc:ISMSRead): ISMSOld {
+class SMSImpl @Inject constructor(private val svc:ISMSPaidPort, private val smsSvc:ISMSRead, private val accountSvc:IAccount, private val paidSmsSvc:ISms2): ISMSOld {
     override fun create(dto: SMSPaidDTO): Int {
         return svc.create(dto)
     }
@@ -27,19 +31,20 @@ class SMSImpl @Inject constructor(private val svc:ISMSPaidPort, private val smsS
         return svc.getById(codeSMSPaidDTO)
     }
 
-    override fun validateMessagePattern(dto: SMSPaidDTO): List<String> {
-        val list = mutableListOf<String>()
-        smsSvc.load(dto.phoneNumber,360).takeIf{it.isNotEmpty()}?.forEach{sms->
+    override fun validateMessagePattern(dto: SMSPaidDTO): List<EmailValidationDTO> {
+        val list = mutableListOf<EmailValidationDTO>()
+        smsSvc.load(dto.phoneNumber,360).takeIf{it.isNotEmpty()}?.map{ it.replace("\\s+".toRegex()," ")}?.forEach{sms->
             if(dto.pattern.isNotEmpty() && dto.pattern.toRegex().containsMatchIn(sms)){
                 dto.pattern.toRegex().find(sms)?.let{
-                    if(it.groupValues.size > 3){
-                        list.add("OK ${it.groupValues}")
+                    val values = ExtractItemPatternUtil.getValues(it.groupValues)
+                    if(values != null){
+                        list.add(EmailValidationDTO(name = values.first, value = values.second.toString(), date = values.third.toString(), matched = true, bodySnippet = sms.take(100).replace("\n", " ")))
                     }else{
-                        list.add("Not enough values get Name Bought, Price and Date $sms")
+                        list.add(EmailValidationDTO(matched = false, bodySnippet = sms.take(100).replace("\n", " ")))
                     }
-                }?:list.add("Not matched $sms")
+                }?:list.add(EmailValidationDTO(matched = false, bodySnippet = sms.take(100).replace("\n", " ")))
             }else{
-                list.add("Not matched $sms")
+                list.add(EmailValidationDTO(matched = false, bodySnippet = sms.take(100).replace("\n", " ")))
             }
         }
         return list
@@ -51,7 +56,7 @@ class SMSImpl @Inject constructor(private val svc:ISMSPaidPort, private val smsS
 
     override fun getSmsMessages(phoneNumber:String,pattern:String,numDaysRead:Int):List<Triple<String,Double,LocalDateTime>>{
         val list = mutableListOf<Triple<String,Double,LocalDateTime>>()
-        smsSvc.load(phoneNumber,numDaysRead).takeIf{it.isNotEmpty()}?.forEach{sms->
+        smsSvc.load(phoneNumber,numDaysRead).takeIf{it.isNotEmpty()}?.map{ it.replace("\\s+".toRegex()," ")}?.forEach{sms->
             getSmsMessages(pattern,sms)?.let(list::add)
         }
         return list
@@ -60,7 +65,7 @@ class SMSImpl @Inject constructor(private val svc:ISMSPaidPort, private val smsS
     override fun getSmsMessages(pattern: String, message: String): Triple<String, Double, LocalDateTime>? {
         if(pattern.isNotEmpty() && pattern.toRegex().containsMatchIn(message)){
             pattern.toRegex().find(message)?.let{
-                return SmsUtil.getValues(it.groupValues)
+                return ExtractItemPatternUtil.getValues(it.groupValues)
             }
         }
         return null
@@ -80,5 +85,25 @@ class SMSImpl @Inject constructor(private val svc:ISMSPaidPort, private val smsS
 
     override fun getSmsList(phoneNumber: String): List<String> {
         return smsSvc.load(phoneNumber, 30)
+    }
+
+    override fun read(numDaysRead: Int) {
+        accountSvc.getAllActive().forEach { dto ->
+            svc.getByCodeAccount(dto.id).forEach { sms ->
+                getSmsMessages(sms.phoneNumber, sms.pattern, numDaysRead).forEach {
+                    paidSmsSvc.createBySms(
+                        co.com.japl.finances.iports.dtos.PaidDTO(
+                            id = 0,
+                            itemName = it.first,
+                            itemValue = it.second,
+                            datePaid = it.third,
+                            account = dto.id,
+                            recurrent = false,
+                            end = LocalDateTime.now()
+                        )
+                    )
+                }
+            }
+        }
     }
 }

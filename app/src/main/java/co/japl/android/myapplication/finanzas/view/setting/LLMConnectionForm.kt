@@ -1,6 +1,5 @@
 package co.japl.android.myapplication.finanzas.view.setting
 
-import android.content.Context
 import android.content.res.Configuration
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
@@ -12,7 +11,6 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import co.com.japl.finances.iports.inbounds.common.ILLMService
 import co.com.japl.ui.Prefs
@@ -21,8 +19,6 @@ import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.com.japl.ui.theme.values.Dimensions
 import co.japl.android.myapplication.R
 import co.japl.android.myapplication.finanzas.controller.setting.LLMConnectionViewModel
-import dagger.hilt.android.internal.Contexts
-import dagger.hilt.android.qualifiers.ApplicationContext
 
 
 @Composable
@@ -34,16 +30,19 @@ fun LLMConnectionForm(viewModel: LLMConnectionViewModel) {
         viewModel.loadModels()
     }
 
-    if(loading.value) {
-        LinearProgressIndicator(
-            progress = { progress.value },
-            modifier = Modifier.fillMaxWidth(),
-            color = ProgressIndicatorDefaults.linearColor,
-            trackColor = ProgressIndicatorDefaults.linearTrackColor,
-            strokeCap = ProgressIndicatorDefaults.LinearStrokeCap,
-        )
-    }else {
-        Body(viewModel)
+    Column(modifier=Modifier.fillMaxWidth()) {
+
+        if (loading.value) {
+            LinearProgressIndicator(
+                progress = { progress.value },
+                modifier = Modifier.fillMaxWidth(),
+                color = ProgressIndicatorDefaults.linearColor,
+                trackColor = ProgressIndicatorDefaults.linearTrackColor,
+                strokeCap = ProgressIndicatorDefaults.LinearStrokeCap,
+            )
+        } else {
+            Body(viewModel)
+        }
     }
 
 }
@@ -169,12 +168,17 @@ fun getLLMConnectFViewModel(): LLMConnectionViewModel {
     var context = LocalContext.current
     val prefs = Prefs(context)
     var llmsSvc = object : ILLMService {
-        override suspend fun getAiResponse(prompt: String): Result<String> {
-            return Result.success("Respuesta de IA")
+        override suspend fun getAiResponse(
+            prompt: String,
+            model: String?
+        ): Result<String> {
+            TODO("Not yet implemented")
         }
+
         override suspend fun getModels(): Result<List<String>> {
-            return Result.success(listOf("Modelo 1", "Modelo 2"))
+            TODO("Not yet implemented")
         }
+
     }
 
     return LLMConnectionViewModel(

@@ -3,9 +3,7 @@ package co.com.japl.module.credit.views.lists
 import android.content.res.Configuration
 import android.os.Build
 import androidx.annotation.RequiresApi
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -182,7 +180,8 @@ private fun RowScope.RowFooter(viewModel: AdditionalViewModel){
 @Composable
 private fun ButtonsFloating(viewModel: AdditionalViewModel ){
     Column {
-        FloatButton(imageVector = Icons.Rounded.Add,
+        FloatButton(
+            imageVector = Icons.Rounded.Add,
             descriptionIcon = R.string.Add) {
             viewModel.addAdditional()
         }

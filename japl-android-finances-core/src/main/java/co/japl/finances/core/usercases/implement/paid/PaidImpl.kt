@@ -5,12 +5,13 @@ import co.com.japl.finances.iports.dtos.PaidRecapDTO
 import co.com.japl.finances.iports.outbounds.IPaidPort
 import co.com.japl.finances.iports.outbounds.IPaidRecapPort
 import co.japl.finances.core.usercases.interfaces.paid.IPaid
-import co.japl.finances.core.usercases.interfaces.paid.ISms
+
+import co.japl.finances.core.usercases.interfaces.paid.ISms2
 import java.time.LocalDateTime
 import java.time.YearMonth
 import javax.inject.Inject
 
-class PaidImpl @Inject constructor(private val recapSvc: IPaidRecapPort,private val paidSvc:IPaidPort)   : IPaid , ISms{
+class PaidImpl @Inject constructor(private val recapSvc: IPaidRecapPort,private val paidSvc:IPaidPort)   : IPaid , ISms2{
     override fun get(codeAccount: Int, period: YearMonth): List<PaidDTO> {
 
         return paidSvc.getActivePaid(codeAccount, period)

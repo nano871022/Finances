@@ -10,9 +10,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Cancel
 import androidx.compose.material.icons.rounded.Create
 import androidx.compose.material.icons.rounded.Update
-import androidx.compose.material3.Button
-import androidx.compose.material3.FloatingActionButton
-import androidx.compose.material3.Icon
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
@@ -147,12 +144,14 @@ private fun Buttons(viewModel: CreditCardSettingViewModel) {
     val state = remember {viewModel.showButtons}
     val newOneState = remember {viewModel.newOne}
         if (!newOneState.value) {
-            FloatButton(imageVector = Icons.Rounded.Update,
+            FloatButton(
+                imageVector = Icons.Rounded.Update,
                 descriptionIcon = R.string.save) {
                 viewModel.update()
             }
         } else {
-            FloatButton(imageVector = Icons.Rounded.Create,
+            FloatButton(
+                imageVector = Icons.Rounded.Create,
                 descriptionIcon =R.string.save) {
                 viewModel.create()
             }

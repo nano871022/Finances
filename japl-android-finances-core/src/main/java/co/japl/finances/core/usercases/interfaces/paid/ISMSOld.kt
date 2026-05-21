@@ -1,5 +1,6 @@
 package co.japl.finances.core.usercases.interfaces.paid
 
+import co.com.japl.finances.iports.dtos.EmailValidationDTO
 import co.com.japl.finances.iports.dtos.SMSPaidDTO
 import co.com.japl.finances.iports.enums.KindInterestRateEnum
 import java.time.LocalDateTime
@@ -14,7 +15,7 @@ interface ISMSOld {
 
     fun getById(codeSMSPaidDTO: Int): SMSPaidDTO?
 
-    fun validateMessagePattern(dto: SMSPaidDTO): List<String>
+    fun validateMessagePattern(dto: SMSPaidDTO): List<EmailValidationDTO>
 
     fun getAllByCodeAccount(codeAccount: Int): List<SMSPaidDTO>
 
@@ -30,4 +31,6 @@ interface ISMSOld {
     fun disable(codeSMSPaidDTO: Int): Boolean
 
     fun getSmsList(phoneNumber: String): List<String>
+
+    fun read(numDaysRead: Int)
 }

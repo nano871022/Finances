@@ -18,8 +18,8 @@ android {
         applicationId "co.japl.android.myapplication"
         minSdk 26
         targetSdk 36
-        versionCode 4_07_02_165
-        versionName "V 4.07.02 build 165 FIx issues with AI and sms read"
+        versionCode 4_08_01_171
+        versionName "V 4.08.01 build 171 FIx issues with AI and sms read"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -66,7 +66,18 @@ android {
 
     packagingOptions {
         resources {
-            excludes += ['META-INF/DEPENDENCIES']
+            excludes += [
+                'META-INF/DEPENDENCIES',
+                'META-INF/INDEX.LIST',
+                'META-INF/LICENSE',
+                'META-INF/LICENSE.txt',
+                'META-INF/license.txt',
+                'META-INF/NOTICE',
+                'META-INF/NOTICE.txt',
+                'META-INF/notice.txt',
+                'META-INF/ASL2.0',
+                'META-INF/*.kotlin_module'
+            ]
         }
     }
     namespace 'co.japl.android.myapplication'
@@ -104,22 +115,26 @@ dependencies {
     implementation 'androidx.navigation:navigation-ui-ktx:2.8.3'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'androidx.loader:loader:1.1.0'
-    implementation 'com.google.api-client:google-api-client:2.2.0'
+    implementation 'com.google.api-client:google-api-client:2.9.0'
     implementation 'androidx.compose.foundation:foundation:1.8.3'
 
     implementation 'com.google.android.material:material:1.12.0'
-    implementation 'com.google.android.gms:play-services-auth:21.2.0'
+    implementation 'com.google.android.gms:play-services-auth:21.5.1'
+    implementation 'com.google.android.gms:play-services-base:18.10.0'
     implementation 'com.google.android.gms:play-services-drive:17.0.0'
-    implementation 'com.google.http-client:google-http-client-gson:1.42.3'
+    implementation 'com.google.http-client:google-http-client-gson:1.45.3'
+    implementation 'com.google.http-client:google-http-client-android:1.45.3'
     implementation 'com.google.gms.google-services:com.google.gms.google-services.gradle.plugin:4.4.3'
     //implementation 'com.google.apis:google-api-services-script:v1-rev20220323-2.0.0'
-    implementation('com.google.api-client:google-api-client-android:1.23.0') {
+    implementation('com.google.api-client:google-api-client-android:2.9.0') {
         exclude group: 'org.apache.httpcomponents'
     }
     implementation('com.google.apis:google-api-services-drive:v3-rev20240123-2.0.0') {
         exclude group: 'org.apache.httpcomponents'
     }
-    implementation 'com.google.http-client:google-http-client-gson:1.42.3'
+    implementation('com.google.apis:google-api-services-gmail:v1-rev20231023-2.0.0') {
+        exclude group: 'org.apache.httpcomponents'
+    }
     implementation platform('com.google.firebase:firebase-bom:33.1.0')
     implementation 'com.google.firebase:firebase-auth'
     //implementation 'com.google.android.play:core:1.10.3'

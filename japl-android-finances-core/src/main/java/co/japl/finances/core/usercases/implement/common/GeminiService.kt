@@ -12,11 +12,11 @@ class GeminiService @Inject constructor(
     private val llmOutboundPort: ILLMOutboundPort
 ) : ILLMService {
 
-    override suspend fun getAiResponse(prompt: String): Result<String> {
+    override suspend fun getAiResponse(prompt: String, model: String?): Result<String> {
         val config = LLMConfigDTO(
             type = LLMType.GEMINI,
             apiKey = prefs.llmApiKey,
-            model = prefs.llmModel.ifEmpty { "gemini-1.5-flash" },
+            model = model ?: prefs.llmModel.ifEmpty { "gemini-1.5-flash" },
             url = prefs.llmGeminiUrl
         )
         return llmOutboundPort.getAiResponse(config, prompt)

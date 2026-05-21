@@ -28,7 +28,7 @@ class SMSCreditCardImpl @Inject constructor(private val svc:ISMSCreditCard) : IS
         return svc.getById(codeSMSCreditCard)
     }
 
-    override fun validateMessagePattern(dto: SMSCreditCard): List<String> {
+    override fun validateMessagePattern(dto: SMSCreditCard): List<co.com.japl.finances.iports.dtos.EmailValidationDTO> {
         return svc.validateMessagePattern(dto)
     }
 
@@ -72,5 +72,9 @@ class SMSCreditCardImpl @Inject constructor(private val svc:ISMSCreditCard) : IS
 
     override fun getSmsList(phoneNumber: String): List<String> {
         return svc.getSmsList(phoneNumber)
+    }
+
+    override fun read(numDaysRead: Int) {
+        svc.read(numDaysRead)
     }
 }
