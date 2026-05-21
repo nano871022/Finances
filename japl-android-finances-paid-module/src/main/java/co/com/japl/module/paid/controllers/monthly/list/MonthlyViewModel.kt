@@ -1,12 +1,15 @@
 package co.com.japl.module.paid.controllers.monthly.list
 
+import android.content.Context
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.runtime.mutableDoubleStateOf
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import co.com.japl.finances.iports.dtos.AccountDTO
 import co.com.japl.finances.iports.enums.KindInterestRateEnum
@@ -19,15 +22,20 @@ import co.com.japl.finances.iports.inbounds.paid.ISmsPort
 import co.com.japl.module.paid.navigations.Paid
 import co.com.japl.module.paid.navigations.Paids
 import co.com.japl.module.paid.navigations.Period
+import co.com.japl.module.paid.R
 import co.com.japl.ui.Prefs
 import co.com.japl.ui.utils.DateUtils
+import co.japl.android.myapplication.utils.NumbersUtil
+import kotlinx.coroutines.Dispatchers
 
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.time.YearMonth
 import java.time.format.TextStyle
 import java.util.Locale
 
-class MonthlyViewModel constructor(private val period:YearMonth,private val paidSvc: IPaidPort?, private val incomesSvc:IInputPort?,private val accountSvc:IAccountPort?, private val smsSvc:ISMSPaidPort?,private val paidSmsSvc:ISmsPort?,private val prefs:Prefs?,private val navController: NavController?,private val emailSvc:IEmailPaidPort? = null): ViewModel() {
+class MonthlyViewModel constructor(private val period:YearMonth,private val paidSvc: IPaidPort?, private val incomesSvc:IInputPort?,private val accountSvc:IAccountPort?, private val smsSvc:ISMSPaidPort?,private val paidSmsSvc:ISmsPort?,private val prefs:Prefs?,private val navController: NavController?): ViewModel() {
     private var _accounts : List<AccountDTO>? = null
     val listAccount get() = _accounts
 
@@ -40,7 +48,6 @@ class MonthlyViewModel constructor(private val period:YearMonth,private val paid
     val paidTotalState = mutableDoubleStateOf(0.0)
     val incomesTotalState = mutableDoubleStateOf(0.0)
     val listGraph = mutableStateListOf<Pair<String,Double>>()
-    val paidEmailDaysRead = mutableStateOf("${prefs?.paidEmailDaysRead ?: 7}")
 
     fun goToListDetail(){
         try {
@@ -86,7 +93,7 @@ class MonthlyViewModel constructor(private val period:YearMonth,private val paid
         progressStatus.value = 0.6f
         readSms()
         progressStatus.value = 0.8f
-        readEmail()
+
         progressStatus.value = 1.0f
     }
 
@@ -153,39 +160,4 @@ class MonthlyViewModel constructor(private val period:YearMonth,private val paid
             Log.e(javaClass.name,e.message,e)
         }
     }
-
-    suspend fun readEmail(){
-        try {
-            val numDaysRead = paidEmailDaysRead.value.toIntOrNull() ?: prefs?.paidEmailDaysRead ?: 7
-
-            emailSvc?.getAll()?.filter { it.active }?.forEach { emailConfig ->
-
-                emailSvc.validateMessagePattern(emailConfig, numDaysRead).filter { it.matched }.forEach { validation ->
-
-                    val date = validation.date?.let {
-                        DateUtils.toLocalDate(it)
-                    }?.atStartOfDay()
-
-                    val value = validation.value?.toDoubleOrNull()
-                    if (date != null && value != null) {
-                        paidSmsSvc?.createBySms(
-                            name = validation.name ?: "",
-                            value = value,
-                            date = date,
-                            codeAccount = emailConfig.codeAccount
-                        )
-                    }
-                }
-            }
-        } catch (e: Exception) {
-            Log.e(javaClass.name, e.message, e)
-        }
-    }
-
-    fun saveSettings() {
-        paidEmailDaysRead.value.toIntOrNull()?.let {
-            prefs?.paidEmailDaysRead = it
-        }
-    }
-
 }
