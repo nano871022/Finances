@@ -89,7 +89,7 @@ fun Body(viewModel: EmailListPaidViewModel){
                 }
         }
         if(moreOptions){
-            MoreOptions(onClick = { opt ->
+            MoreOptions(item.active,onClick = { opt ->
                 when(opt){
                     MoreOptionsItemsEmail.EDIT->edit(item.id)
                     MoreOptionsItemsEmail.CLONE->clone(item.id)
@@ -123,9 +123,13 @@ private fun ConfirmDeletePopup( onClick: () -> Unit, onDismiss: () -> Unit){
 }
 
 @Composable
-private fun MoreOptions(onClick: (IMoreOptions)->Unit, onDismiss: ()->Unit){
+private fun MoreOptions(enable:Boolean,onClick: (IMoreOptions)->Unit, onDismiss: ()->Unit){
     MoreOptionsDialog (
-        listOptions = MoreOptionsItemsEmail.entries,
+        listOptions = MoreOptionsItemsEmail.entries.filter{
+            (enable && it == MoreOptionsItemsEmail.DISABLED) ||
+            (enable.not() && it == MoreOptionsItemsEmail.ENABLED) ||
+            (it != MoreOptionsItemsEmail.DISABLED && it != MoreOptionsItemsEmail.ENABLED)
+        },
         onClick = {  onClick(it) },
         onDismiss = onDismiss
     )

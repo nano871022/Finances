@@ -10,7 +10,7 @@ import co.japl.finances.core.usercases.interfaces.creditcard.ISMSCreditCard
 import co.japl.finances.core.usercases.interfaces.creditcard.bought.lists.IBoughtSms
 import co.japl.finances.core.utils.DateUtils
 import co.japl.finances.core.utils.NumbersUtil
-import co.japl.finances.core.utils.SmsUtil
+import co.japl.finances.core.utils.ExtractItemPatternUtil
 import java.time.LocalDateTime
 import javax.inject.Inject
 
@@ -33,10 +33,10 @@ class SMSCreditCardImpl @Inject constructor(private val svc:ISMSCreditCardPort, 
 
     override fun validateMessagePattern(dto: SMSCreditCard): List<EmailValidationDTO> {
         val list = mutableListOf<EmailValidationDTO>()
-        smsSvc.load(dto.phoneNumber,360).takeIf{it.isNotEmpty()}?.forEach{sms->
+        smsSvc.load(dto.phoneNumber,360).takeIf{it.isNotEmpty()}?.map{ it.replace("\\s+".toRegex()," ")}?.forEach{sms->
             if(dto.pattern.isNotEmpty() && dto.pattern.toRegex().containsMatchIn(sms)){
                 dto.pattern.toRegex().find(sms)?.let{
-                    val values = SmsUtil.getValues(it.groupValues)
+                    val values = ExtractItemPatternUtil.getValues(it.groupValues)
                     if(values != null){
                         list.add(EmailValidationDTO(name = values.first, value = values.second.toString(), date = values.third.toString(), matched = true, bodySnippet = sms.take(100).replace("\n", " ")))
                     }else{
@@ -56,14 +56,14 @@ class SMSCreditCardImpl @Inject constructor(private val svc:ISMSCreditCardPort, 
 
     override fun getSmsMessages(phoneNumber:String,pattern:String,numDaysRead:Int):List<Triple<String,Double,LocalDateTime>>{
         return smsSvc.load(phoneNumber,numDaysRead).takeIf{it.isNotEmpty()}
-            ?.mapNotNull{getSmsMessages(pattern,it)}
+            ?.map{ it.replace("\\s+".toRegex()," ")}?.mapNotNull{getSmsMessages(pattern,it)}
             ?: emptyList()
     }
 
     override fun getSmsMessages(pattern: String,sms:String):Triple<String,Double,LocalDateTime>?{
         if(pattern.isNotEmpty() && pattern.toRegex().containsMatchIn(sms)){
             pattern.toRegex().find(sms)?.let{
-                return SmsUtil.getValues(it.groupValues)
+                return ExtractItemPatternUtil.getValues(it.groupValues)
             }
         }
         return null

@@ -183,6 +183,11 @@ private fun ValidationPopup(viewModel: EmailPaidViewModel) {
                     CircularProgressIndicator(modifier = Modifier.size(50.dp), color = MaterialTheme.colorScheme.onPrimary)
                 }
             } else {
+                Text(text=viewModel.bodyPattern.value,
+                    color = MaterialTheme.colorScheme.onPrimary,
+                    fontSize = MaterialTheme.typography.bodySmall.fontSize,
+                    modifier = Modifier.fillMaxWidth())
+
                 Carousel(size = validationResults.size, modifier = Modifier.fillMaxWidth().height(200.dp)) { index ->
                     val result = validationResults[index]
                     Column(modifier = Modifier.fillMaxWidth().padding(Dimensions.PADDING_SHORT)) {
