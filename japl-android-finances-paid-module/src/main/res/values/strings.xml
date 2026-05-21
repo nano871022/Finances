@@ -80,4 +80,50 @@ Message:
     <string name="extracted_date">Fecha: %1$s</string>
     <string name="not_extracted">No se logró extraer datos</string>
     <string name="validation_close">Cerrar</string>
+    <string name="sender">Remitente</string>
+    <string name="subject_email_pattern">Patrón Asunto</string>
+    <string name="message_email_pattern">Patrón Mensaje</string>
+    <string name="select_example_email">Seleccione Email de ejemplos</string>
+    <string name="promt_email_expreg">
+Act as a Java Regex compiler.
+
+Analyze the Email body and generate a single, linear regular expression that captures: merchant/product name, value, and date.
+
+Technical Escaping Instructions (CRITICAL):
+
+Every dollar sign "$" must be written as "\$".
+Every forward slash "/" must be written as "\/".
+Every dot "." that must be treated as a literal must be written as "\.".
+Every comma "," that must be treated as a literal must be written as "\,".
+Every asteric "*" that must be treated as a literal must be written as "\*".
+
+Use capture groups () with specific names:
+        (?&lt;name&gt;[\w ]+) for the merchant/product name.
+        (?&lt;value&gt;[\d\.\,]+) for the value.
+        (?&lt;date&gt;\d{2}\/\d{2}\/\d{4}) for the date but it depend of date format ex. dd/mm/yyyy.
+
+Do not use generic wildcards like ".+?"; use text anchors from the message and [\w ]+ connectors.
+
+The structure must be compatible with java.util.regex.Pattern.
+
+Response Rules:
+
+Provide ONLY the raw text string for SUBJECT and BODY.
+SUBJECT: (regex for email subject)
+BODY: (regex for email body)
+Do not use code blocks (```).
+Do not use quotation marks.
+Do not provide explanations or introductions.
+If the result does not include the escape characters "" before "$" and "/", the response will be considered incorrect.
+
+Email Samples:
+%s
+    </string>
+    <string name="emails_found">Emails encontrados: %1$d</string>
+    <string name="emails_matched">Coincidencias: %1$d</string>
+    <string name="email_read_process_completed">Proceso de lectura de email completado</string>
+    <string name="loading_data">Cargando datos...</string>
+    <string name="email_read">Leer Email</string>
+    <string name="email_list">Lista de Emails</string>
+    <string name="email_address">Email</string>
 </resources>

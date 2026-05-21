@@ -11,9 +11,13 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.rounded.DirectionsRun
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.CalendarMonth
 import androidx.compose.material.icons.rounded.RemoveRedEye
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -31,6 +35,7 @@ import co.com.japl.ui.components.FieldView
 import co.com.japl.ui.components.FloatButton
 import co.com.japl.ui.components.HelpWikiButton
 import co.com.japl.ui.components.PiecePieGraph
+import co.com.japl.ui.components.FieldText
 import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.com.japl.ui.theme.values.Dimensions
 import co.japl.android.myapplication.utils.NumbersUtil
@@ -111,8 +116,38 @@ viewModel.accountList
                 Accounts(viewModel = viewModel)
 
                 PiecePieGraph(list = listGraph)
+
+                Settings(viewModel = viewModel)
             }
 
+        }
+    }
+}
+
+@Composable
+private fun Settings(viewModel: MonthlyViewModel) {
+    val paidEmailDaysRead = viewModel.paidEmailDaysRead
+    Column(modifier = Modifier.padding(top = Dimensions.PADDING_SHORT)) {
+        HorizontalDivider()
+        Text(text = stringResource(R.string.setting), style = MaterialTheme.typography.titleMedium, modifier = Modifier.padding(vertical = Dimensions.PADDING_SHORT))
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            FieldText(
+                title = stringResource(R.string.msm_read_num),
+                value = paidEmailDaysRead.value,
+                modifier = Modifier.weight(1f)
+            ) { paidEmailDaysRead.value = it }
+
+            IconButton(onClick = { viewModel.saveSettings() }) {
+                Icon(imageVector = Icons.Rounded.Save, contentDescription = stringResource(R.string.save))
+            }
+
+            IconButton(onClick = {
+                CoroutineScope(Dispatchers.IO).launch {
+                    viewModel.readEmail()
+                }
+            }) {
+                Icon(imageVector = Icons.AutoMirrored.Rounded.DirectionsRun, contentDescription = stringResource(R.string.email_read))
+            }
         }
     }
 }

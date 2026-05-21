@@ -17,6 +17,7 @@ import co.com.japl.finances.iports.inbounds.creditcard.IBuyCreditCardSettingPort
 import co.com.japl.finances.iports.inbounds.creditcard.ICreditCardSettingPort
 import co.com.japl.finances.iports.inbounds.creditcard.ISMSCreditCardPort
 import co.com.japl.finances.iports.inbounds.creditcard.IEmailCreditCardPort
+import co.com.japl.finances.iports.inbounds.paid.IEmailPaidPort
 import co.com.japl.finances.iports.inbounds.creditcard.ISimulatorCreditVariablePort
 import co.com.japl.finances.iports.inbounds.creditcard.ITagPort
 import co.com.japl.finances.iports.inbounds.creditcard.ITaxPort
@@ -502,10 +503,16 @@ abstract class AbstractModule {
     abstract fun bindInbountEmailCreditCard(impl: EmailCreditCard): IEmailCreditCardPort
 
     @Binds
+    abstract fun bindInboundEmailPaid(impl: co.japl.finances.core.adapters.inbound.implement.paid.EmailPaid): IEmailPaidPort
+
+    @Binds
     abstract fun bindUserCaseEmailCreditCard(impl: EmailCreditCardImpl): IEmailCreditCard
 
     @Binds
     abstract fun bindOutboudEmailCreditCard(impl: co.japl.android.finances.services.core.EmailCreditCardImpl): co.com.japl.finances.iports.outbounds.IEmailCreditCardPort
+
+    @Binds
+    abstract fun bindOutboundEmailPaid(impl: co.japl.android.finances.services.core.EmailPaidImpl): co.com.japl.finances.iports.outbounds.IEmailPaidPort
 
     @Binds
     abstract fun binDAOEmailCreditCard(impl: co.japl.android.finances.services.dao.implement.EmailCreditCardImpl): IEmailCreditCardDAO
@@ -515,5 +522,14 @@ abstract class AbstractModule {
 
     @Binds
     abstract fun bindOutbound(impl: EmailCreditCardPatternImpl ): IEmailCreditCardPattern
+
+    @Binds
+    abstract fun bindEmailPaidPattern(impl: co.japl.android.finances.services.implement.EmailPaidPatternImpl): co.com.japl.finances.iports.outbounds.IEmailPaidPattern
+
+    @Binds
+    abstract fun bindUserCaseEmailPaid(impl: co.japl.finances.core.usercases.implement.paid.EmailPaidImpl): co.japl.finances.core.usercases.interfaces.paid.IEmailPaid
+
+    @Binds
+    abstract fun binDAOEmailPaid(impl: co.japl.android.finances.services.dao.implement.EmailPaidImpl): co.japl.android.finances.services.dao.interfaces.IEmailPaidDAO
 
 }

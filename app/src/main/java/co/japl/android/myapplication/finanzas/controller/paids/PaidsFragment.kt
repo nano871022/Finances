@@ -11,6 +11,7 @@ import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.navigation.fragment.findNavController
 import co.com.japl.finances.iports.inbounds.inputs.IAccountPort
 import co.com.japl.finances.iports.inbounds.inputs.IInputPort
+import co.com.japl.finances.iports.inbounds.paid.IEmailPaidPort
 import co.com.japl.finances.iports.inbounds.paid.IPaidPort
 import co.com.japl.finances.iports.inbounds.paid.ISMSPaidPort
 import co.com.japl.finances.iports.inbounds.paid.ISmsPort
@@ -35,6 +36,7 @@ class PaidsFragment : Fragment() {
     lateinit var incomesSvc: IInputPort
     @Inject lateinit var paidSmsSvc:ISmsPort
     @Inject lateinit var smsSvc:ISMSPaidPort
+    @Inject lateinit var emailSvc:IEmailPaidPort
 
 
     @RequiresApi(Build.VERSION_CODES.S)
@@ -52,7 +54,8 @@ class PaidsFragment : Fragment() {
             paidSmsSvc = paidSmsSvc,
             prefs = ApplicationInitial.prefs,
             smsSvc = smsSvc,
-            navController = findNavController()
+            navController = findNavController(),
+            emailSvc = emailSvc
         )
         root.cvPaidsFp.apply {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
