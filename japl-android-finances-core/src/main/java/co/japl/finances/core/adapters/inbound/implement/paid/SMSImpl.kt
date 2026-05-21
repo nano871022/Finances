@@ -31,7 +31,7 @@ class SMSImpl @Inject constructor(private val svc:ISMSOld, private val smsSvc:IS
         return svc.getById(codeSMSPaidDTO)
     }
 
-    override fun validateMessagePattern(dto: SMSPaidDTO): List<String> {
+    override fun validateMessagePattern(dto: SMSPaidDTO): List<co.com.japl.finances.iports.dtos.EmailValidationDTO> {
         return svc.validateMessagePattern(dto)
     }
 

@@ -3,9 +3,14 @@ package co.com.japl.module.creditcard.views.sms.forms
 import android.content.res.Configuration
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Icon
@@ -22,8 +27,12 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.Button
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.tooling.preview.Preview
 import co.com.japl.module.creditcard.controllers.smscreditcard.form.SmsCreditCardViewModel
 import co.com.japl.ui.theme.MaterialThemeComposeUI
@@ -35,22 +44,21 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import co.com.japl.module.creditcard.R
 import co.com.japl.ui.components.AlertDialogOkCancel
+import co.com.japl.ui.components.Carousel
 import co.com.japl.ui.components.FieldSelect
 import co.com.japl.ui.components.FieldText
 import co.com.japl.ui.components.FloatButton
+import co.com.japl.ui.components.Popup
 import co.com.japl.ui.components.CheckBoxField
 import co.com.japl.ui.theme.values.Dimensions
 import co.com.japl.ui.theme.values.ModifiersCustom.Weight1f
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 
 @Composable
 fun Sms(viewModel:SmsCreditCardViewModel){
     val load by remember {viewModel.load}
     var progress  by remember {viewModel.progress}
 
-    CoroutineScope(Dispatchers.IO).launch {
+    LaunchedEffect(Unit) {
         viewModel.main()
     }
     if(load){
@@ -168,21 +176,128 @@ private fun Body(viewModel: SmsCreditCardViewModel,modifier:Modifier){
               , textAlign = TextAlign.Center
               ,modifier=Weight1f())
       }
-
-    FieldText(title = stringResource(id = R.string.validate)
-          , value = validationResult.value,
-          lines = 6,
-            icon = Icons.Rounded.Cancel,
-        callback = {
-            validationResult.value = it
-        },
-          readOnly = true,
-          modifier = modifier)
-
-
   }
+    ValidationPopup(viewModel)
     DialogAIExpReg(viewModel)
 
+}
+
+@Composable
+private fun ValidationPopup(viewModel: SmsCreditCardViewModel) {
+    val showPopup = remember { viewModel.showPopup }
+    val validating = remember { viewModel.validating }
+    val validationResults = remember { viewModel.validationResults }
+
+    Popup(title = R.string.validation_results_title, state = showPopup) {
+        Column(
+            modifier = Modifier
+                .padding(Dimensions.PADDING_SHORT)
+                .fillMaxWidth()
+        ) {
+            if (validating.value) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(200.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    CircularProgressIndicator(
+                        modifier = Modifier.size(50.dp),
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
+                }
+            } else {
+                if (validationResults.isEmpty() && viewModel.validationResult.value.isNotEmpty()) {
+                    Text(
+                        text = viewModel.validationResult.value,
+                        color = MaterialTheme.colorScheme.onSurface,
+                        modifier = Modifier.padding(Dimensions.PADDING_SHORT)
+                    )
+                } else {
+                    Carousel(
+                        size = validationResults.size,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(200.dp)
+                    ) { index ->
+                        val result = validationResults[index]
+                        Column(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(Dimensions.PADDING_SHORT)
+                        ) {
+                            if (result.matched) {
+                                Text(
+                                    text = stringResource(
+                                        id = R.string.extracted_name,
+                                        result.name ?: ""
+                                    ),
+                                    color = MaterialTheme.colorScheme.onSurface
+                                )
+                                Text(
+                                    text = stringResource(
+                                        id = R.string.extracted_value,
+                                        result.value ?: ""
+                                    ),
+                                    color = MaterialTheme.colorScheme.onSurface
+                                )
+                                Text(
+                                    text = stringResource(
+                                        id = R.string.extracted_date,
+                                        result.date ?: ""
+                                    ),
+                                    color = MaterialTheme.colorScheme.onSurface
+                                )
+                                Text(
+                                    text = result.bodySnippet,
+                                    color = MaterialTheme.colorScheme.onSurface,
+                                    style = MaterialTheme.typography.bodySmall
+                                )
+                            } else {
+                                Text(
+                                    text = stringResource(id = R.string.not_extracted),
+                                    color = MaterialTheme.colorScheme.onSurface,
+                                    style = MaterialTheme.typography.titleMedium
+                                )
+                                Spacer(modifier = Modifier.height(Dimensions.PADDING_SHORT))
+                                Text(
+                                    text = result.bodySnippet,
+                                    color = MaterialTheme.colorScheme.onSurface,
+                                    style = MaterialTheme.typography.bodySmall
+                                )
+                            }
+                        }
+                    }
+
+                    HorizontalDivider(modifier = Modifier.padding(vertical = Dimensions.PADDING_SHORT))
+
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = stringResource(id = R.string.sms_found, validationResults.size),
+                            color = MaterialTheme.colorScheme.onSurface,
+                            modifier = Modifier.weight(1f)
+                        )
+                        Text(
+                            text = stringResource(
+                                id = R.string.sms_matched,
+                                validationResults.count { it.matched }),
+                            color = MaterialTheme.colorScheme.onSurface,
+                            modifier = Modifier.weight(1f)
+                        )
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(Dimensions.PADDING_SHORT))
+
+                OutlinedButton(onClick = { showPopup.value = false }, modifier = Modifier.align(Alignment.End)) {
+                    Text(text = stringResource(id = R.string.validation_close), color = MaterialTheme.colorScheme.onSurface)
+                }
+            }
+        }
+    }
 }
 
 @Composable
