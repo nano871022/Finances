@@ -63,7 +63,6 @@ fun Sms(viewModel:SmsViewModel){
     }
     if(load){
         LinearProgressIndicator(
-            progress = { progress },
             modifier = Modifier.fillMaxWidth(),
         )
     }else{

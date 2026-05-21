@@ -63,7 +63,6 @@ fun Sms(viewModel:SmsCreditCardViewModel){
     }
     if(load){
         LinearProgressIndicator(
-            progress = { progress },
             modifier = Modifier.fillMaxWidth(),
         )
     }else{

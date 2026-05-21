@@ -117,7 +117,7 @@ import co.japl.finances.core.usercases.interfaces.creditcard.bought.lists.IBough
 import co.japl.finances.core.usercases.interfaces.creditcard.paid.lists.IPaidList
 import co.japl.finances.core.usercases.interfaces.paid.IProjection
 import co.japl.finances.core.usercases.interfaces.paid.ISMSOld
-import co.japl.finances.core.usercases.interfaces.paid.ISms
+import co.japl.finances.core.usercases.interfaces.paid.ISms2
 import co.japl.finances.core.usercases.interfaces.recap.IRecap
 import co.japl.finances.core.adapters.inbound.implement.creditcard.EmailCreditCard
 import co.japl.finances.core.usercases.implement.creditcard.EmailCreditCardImpl
@@ -384,7 +384,7 @@ abstract class AbstractModule {
     abstract fun bindInboundSmsPaidPort(svc:SMSImpl):ISmsPort
 
     @Binds
-    abstract fun bindUserCaseSmsPaid(svc:co.japl.finances.core.usercases.implement.paid.PaidImpl):ISms
+    abstract fun bindUserCaseSmsPaid(svc:co.japl.finances.core.usercases.implement.paid.PaidImpl):ISms2
 
     @Binds
     abstract fun bindInboundPaidCheckPaymentPort(svc:co.japl.finances.core.adapters.inbound.implement.paid.CheckPaymentImpl):ICheckPaymentPort

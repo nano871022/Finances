@@ -19,6 +19,7 @@ import co.com.japl.ui.Prefs
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
 
 class SmsViewModel constructor(private val codeSMS:Int?, private val svc:ISMSPaidPort?, private val accountSvc:IAccountPort?, private val navController: NavController?, private val llmService: ILLMService? = null, val prefs: Prefs?=null): ViewModel() {
 
