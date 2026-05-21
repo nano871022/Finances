@@ -22,6 +22,7 @@
     <string name="end">Finalizar</string>
     <string name="setting">Configuración</string>
     <string name="msm_read_num">Número dias lectura SMS</string>
+    <string name="email_read_num">Número dias lectura Email</string>
 
     <string name="year">Año</string>
     <string name="month">Mes</string>

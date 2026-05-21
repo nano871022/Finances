@@ -1,12 +1,15 @@
 package co.com.japl.module.paid.controllers.monthly.list
 
+import android.content.Context
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.runtime.mutableDoubleStateOf
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import co.com.japl.finances.iports.dtos.AccountDTO
 import co.com.japl.finances.iports.enums.KindInterestRateEnum
@@ -19,10 +22,15 @@ import co.com.japl.finances.iports.inbounds.paid.ISmsPort
 import co.com.japl.module.paid.navigations.Paid
 import co.com.japl.module.paid.navigations.Paids
 import co.com.japl.module.paid.navigations.Period
+import co.com.japl.module.paid.R
 import co.com.japl.ui.Prefs
 import co.com.japl.ui.utils.DateUtils
+import co.japl.android.myapplication.utils.NumbersUtil
+import kotlinx.coroutines.Dispatchers
 
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.time.YearMonth
 import java.time.format.TextStyle
 import java.util.Locale
@@ -41,6 +49,10 @@ class MonthlyViewModel constructor(private val period:YearMonth,private val paid
     val incomesTotalState = mutableDoubleStateOf(0.0)
     val listGraph = mutableStateListOf<Pair<String,Double>>()
     val paidEmailDaysRead = mutableStateOf("${prefs?.paidEmailDaysRead ?: 7}")
+    val paidSMSDaysRead = mutableStateOf("${prefs?.paidSMSDaysRead ?: 7}")
+    val errorPaidEmailDaysRead = mutableStateOf(false)
+    val errorPaidSMSDaysRead = mutableStateOf(false)
+    val settingState = mutableStateOf(false)
 
     fun goToListDetail(){
         try {
@@ -155,9 +167,8 @@ class MonthlyViewModel constructor(private val period:YearMonth,private val paid
     }
 
     suspend fun readEmail(){
+        val numDaysRead = paidEmailDaysRead.value.toIntOrNull() ?: prefs?.paidEmailDaysRead ?: 7
         try {
-            val numDaysRead = paidEmailDaysRead.value.toIntOrNull() ?: prefs?.paidEmailDaysRead ?: 7
-
             emailSvc?.getAll()?.filter { it.active }?.forEach { emailConfig ->
 
                 emailSvc.validateMessagePattern(emailConfig, numDaysRead).filter { it.matched }.forEach { validation ->
@@ -182,10 +193,37 @@ class MonthlyViewModel constructor(private val period:YearMonth,private val paid
         }
     }
 
-    fun saveSettings() {
-        paidEmailDaysRead.value.toIntOrNull()?.let {
-            prefs?.paidEmailDaysRead = it
+    fun readEmail(context: Context){
+        settingState.value = false
+        viewModelScope.launch(Dispatchers.IO) {
+            readEmail()
+            withContext(Dispatchers.Main) {
+                Toast.makeText(context, R.string.email_read_process_completed, Toast.LENGTH_SHORT).show()
+            }
         }
+    }
+
+    fun saveSettings(context: Context) {
+        if(!errorPaidEmailDaysRead.value && !errorPaidSMSDaysRead.value) {
+            paidEmailDaysRead.value.toIntOrNull()?.let {
+                prefs?.paidEmailDaysRead = it
+            }
+            paidSMSDaysRead.value.toIntOrNull()?.let {
+                prefs?.paidSMSDaysRead = it
+            }
+            settingState.value = false
+            Toast.makeText(context, R.string.toast_saves_successful, Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    fun validation(){
+        paidEmailDaysRead.value.takeIf { it.isNotEmpty() && NumbersUtil.isNumber(it) }?.let{
+            errorPaidEmailDaysRead.value = false
+        }?: errorPaidEmailDaysRead.let{it.value = true}
+
+        paidSMSDaysRead.value.takeIf { it.isNotEmpty() && NumbersUtil.isNumber(it) }?.let{
+            errorPaidSMSDaysRead.value = false
+        }?: errorPaidSMSDaysRead.let{it.value = true}
     }
 
 }
