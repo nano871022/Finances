@@ -524,5 +524,28 @@
             android:defaultValue="0" />
     </fragment>
 
+    <fragment
+        android:id="@+id/email_list_paid"
+        android:name="co.japl.android.myapplication.finanzas.controller.paids.EmailListPaidFragment"
+        android:label="@string/email_list"
+        tools:layout="@layout/fragment_list_email_credit_card">
+        <action
+            android:id="@+id/action_email_list_paid_to_email_paid"
+            app:destination="@id/email_paid" />
+        <deepLink app:uri="android-app://co.com.japl.finanzas.module.app/paid/email/list" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/email_paid"
+        android:name="co.japl.android.myapplication.finanzas.controller.paids.EmailPaidFragment"
+        android:label="@string/email_address"
+        tools:layout="@layout/fragment_email_credit_card">
+        <deepLink app:uri="android-app://co.com.japl.finanzas.module.app/paid/email/form" />
+        <argument
+            android:name="code_email_paid"
+            app:argType="integer"
+            android:defaultValue="0" />
+    </fragment>
+
 
 </navigation>

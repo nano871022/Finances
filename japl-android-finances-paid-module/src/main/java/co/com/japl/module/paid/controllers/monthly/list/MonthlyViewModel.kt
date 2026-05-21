@@ -13,6 +13,7 @@ import co.com.japl.finances.iports.enums.KindInterestRateEnum
 import co.com.japl.finances.iports.inbounds.paid.IPaidPort
 import co.com.japl.finances.iports.inbounds.inputs.IAccountPort
 import co.com.japl.finances.iports.inbounds.inputs.IInputPort
+import co.com.japl.finances.iports.inbounds.paid.IEmailPaidPort
 import co.com.japl.finances.iports.inbounds.paid.ISMSPaidPort
 import co.com.japl.finances.iports.inbounds.paid.ISmsPort
 import co.com.japl.module.paid.navigations.Paid
@@ -20,12 +21,13 @@ import co.com.japl.module.paid.navigations.Paids
 import co.com.japl.module.paid.navigations.Period
 import co.com.japl.ui.Prefs
 import co.com.japl.ui.utils.DateUtils
+
 import kotlinx.coroutines.runBlocking
 import java.time.YearMonth
 import java.time.format.TextStyle
 import java.util.Locale
 
-class MonthlyViewModel constructor(private val period:YearMonth,private val paidSvc: IPaidPort?, private val incomesSvc:IInputPort?,private val accountSvc:IAccountPort?, private val smsSvc:ISMSPaidPort?,private val paidSmsSvc:ISmsPort?,private val prefs:Prefs?,private val navController: NavController?): ViewModel() {
+class MonthlyViewModel constructor(private val period:YearMonth,private val paidSvc: IPaidPort?, private val incomesSvc:IInputPort?,private val accountSvc:IAccountPort?, private val smsSvc:ISMSPaidPort?,private val paidSmsSvc:ISmsPort?,private val prefs:Prefs?,private val navController: NavController?,private val emailSvc:IEmailPaidPort? = null): ViewModel() {
     private var _accounts : List<AccountDTO>? = null
     val listAccount get() = _accounts
 
@@ -38,6 +40,7 @@ class MonthlyViewModel constructor(private val period:YearMonth,private val paid
     val paidTotalState = mutableDoubleStateOf(0.0)
     val incomesTotalState = mutableDoubleStateOf(0.0)
     val listGraph = mutableStateListOf<Pair<String,Double>>()
+    val paidEmailDaysRead = mutableStateOf("${prefs?.paidEmailDaysRead ?: 7}")
 
     fun goToListDetail(){
         try {
@@ -80,8 +83,10 @@ class MonthlyViewModel constructor(private val period:YearMonth,private val paid
     fun main()= runBlocking {
         progressStatus.value = 0.0f
         execute()
-        progressStatus.value = 0.8f
+        progressStatus.value = 0.6f
         readSms()
+        progressStatus.value = 0.8f
+        readEmail()
         progressStatus.value = 1.0f
     }
 
@@ -146,6 +151,40 @@ class MonthlyViewModel constructor(private val period:YearMonth,private val paid
             }
         }catch (e:Exception){
             Log.e(javaClass.name,e.message,e)
+        }
+    }
+
+    suspend fun readEmail(){
+        try {
+            val numDaysRead = paidEmailDaysRead.value.toIntOrNull() ?: prefs?.paidEmailDaysRead ?: 7
+
+            emailSvc?.getAll()?.filter { it.active }?.forEach { emailConfig ->
+
+                emailSvc.validateMessagePattern(emailConfig, numDaysRead).filter { it.matched }.forEach { validation ->
+
+                    val date = validation.date?.let {
+                        DateUtils.toLocalDate(it)
+                    }?.atStartOfDay()
+
+                    val value = validation.value?.toDoubleOrNull()
+                    if (date != null && value != null) {
+                        paidSmsSvc?.createBySms(
+                            name = validation.name ?: "",
+                            value = value,
+                            date = date,
+                            codeAccount = emailConfig.codeAccount
+                        )
+                    }
+                }
+            }
+        } catch (e: Exception) {
+            Log.e(javaClass.name, e.message, e)
+        }
+    }
+
+    fun saveSettings() {
+        paidEmailDaysRead.value.toIntOrNull()?.let {
+            prefs?.paidEmailDaysRead = it
         }
     }
 

@@ -85,3 +85,4 @@ This project work with Onion, so it join user case with UI and services.
 * Create new components if there are not any other you can not use.
 * Not create a components or complex logic for UI it make dirty if you logic if complex use/create UI component.
 * !important! check other logic in the module and try to create in the same way (name, structure, components, calls, name method, name field, injects and more) .
+* when you need to navigate between interfaces it need use a deeplink for it exist in app module the package  putparams where it contain how get parameter of bundle using deeplink
