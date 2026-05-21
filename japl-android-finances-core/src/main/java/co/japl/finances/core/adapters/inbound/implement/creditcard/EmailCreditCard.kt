@@ -8,11 +8,11 @@ import javax.inject.Inject
 
 class EmailCreditCard @Inject constructor(val svc: IEmailCreditCard) : IEmailCreditCardPort {
 
-    override fun validateMessagePattern(dto: EmailCreditCardDTO): List<EmailValidationDTO> {
+    override fun validateMessagePattern(dto: EmailCreditCardDTO, numDaysRead: Int): List<EmailValidationDTO> {
         require(dto.bodyPattern.isNotEmpty()){"Need pattern for find in message"}
         require(dto.subjectPattern.isNotEmpty()){"Need pattern for find in email"}
         require(dto.sender.isNotEmpty()){"Need sender of email"}
-        return svc.validateMessagePattern(dto)
+        return svc.validateMessagePattern(dto, numDaysRead)
     }
 
     override fun create(dto: EmailCreditCardDTO): Int {
@@ -57,7 +57,7 @@ class EmailCreditCard @Inject constructor(val svc: IEmailCreditCard) : IEmailCre
         return svc.clone(id)
     }
 
-    override fun getEmailList(sender: String, subject: String): List<String> {
-        return svc.getEmailList(sender, subject)
+    override fun getEmailList(sender: String, subject: String, numDaysRead: Int): List<String> {
+        return svc.getEmailList(sender, subject, numDaysRead)
     }
 }

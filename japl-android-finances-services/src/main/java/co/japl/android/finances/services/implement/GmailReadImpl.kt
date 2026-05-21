@@ -22,7 +22,7 @@ class GmailReadImpl @Inject constructor(
     private val jsonFactory = GsonFactory.getDefaultInstance()
     private val httpTransport = NetHttpTransport()
 
-    override fun getEmails(sender: String, subject: String): List<String> {
+    override fun getEmails(sender: String, subject: String, numDaysRead: Int): List<String> {
         val account = GoogleSignIn.getLastSignedInAccount(context) ?: return emptyList()
         val credential =
             GoogleAccountCredential.usingOAuth2(context, listOf(GmailScopes.GMAIL_READONLY))
@@ -32,7 +32,7 @@ class GmailReadImpl @Inject constructor(
             .setApplicationName("Finanzas")
             .build()
 
-        val query = "from:$sender"
+        val query = "from:$sender newer_than:${numDaysRead}d"
 
         return try {
             val response = service.users().messages().list("me").setQ(query).execute()
