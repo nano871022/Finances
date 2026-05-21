@@ -133,7 +133,8 @@ private fun EmailItem(dto: EmailCreditCardDTO,onClick:(IMoreOptions,Int)->Unit){
         }
     }
     if(moreOptions.value){
-        MoreOptions(onClick = {
+        MoreOptions(enable=dto.active,
+            onClick = {
             onClick(it,id)
             moreOptions.value = false
         }, onDismiss = {
@@ -143,9 +144,13 @@ private fun EmailItem(dto: EmailCreditCardDTO,onClick:(IMoreOptions,Int)->Unit){
 }
 
 @Composable
-private fun MoreOptions(onClick: (IMoreOptions)->Unit, onDismiss: ()->Unit){
+private fun MoreOptions(enable:Boolean,onClick: (IMoreOptions)->Unit, onDismiss: ()->Unit){
     MoreOptionsDialog(
-        listOptions = MoreOptionsItemEmailListCC.entries,
+        listOptions = MoreOptionsItemEmailListCC.entries.filter{
+            (enable && it == MoreOptionsItemEmailListCC.DISABLED) ||
+            (enable.not() && it == MoreOptionsItemEmailListCC.ENABLED) ||
+            (it != MoreOptionsItemEmailListCC.DISABLED && it != MoreOptionsItemEmailListCC.ENABLED)
+        },
         onClick = {  onClick(it) },
         onDismiss = onDismiss
     )
