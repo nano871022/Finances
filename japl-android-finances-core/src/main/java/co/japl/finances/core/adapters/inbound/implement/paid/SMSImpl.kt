@@ -66,6 +66,10 @@ class SMSImpl @Inject constructor(private val svc:ISMSOld, private val smsSvc: I
         return svc.getSmsList(phoneNumber)
     }
 
+    override fun read(numDaysRead: Int) {
+        svc.read(numDaysRead)
+    }
+
     override fun createBySms(name: String, value: Double, date: LocalDateTime,codeAccount:Int) {
         smsSvc.createBySms(
             PaidDTO(

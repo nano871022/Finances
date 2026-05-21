@@ -134,25 +134,7 @@ class PaidViewModel constructor(private val accountCode:Int, private val period:
     suspend fun readEmail(){
         val numDaysRead = paidEmailDaysRead.value.toIntOrNull() ?: prefs?.paidEmailDaysRead ?: 7
         try {
-            emailSvc?.getAll()?.filter { it.active }?.forEach { emailConfig ->
-
-                emailSvc.validateMessagePattern(emailConfig, numDaysRead).filter { it.matched }.forEach { validation ->
-
-                    val date = validation.date?.let {
-                        DateUtils.toLocalDate(it)
-                    }?.atStartOfDay()
-
-                    val value = validation.value?.toDoubleOrNull()
-                    if (date != null && value != null) {
-                        paidSmsSvc?.createBySms(
-                            name = validation.name ?: "",
-                            value = value,
-                            date = date,
-                            codeAccount = emailConfig.codeAccount
-                        )
-                    }
-                }
-            }
+            emailSvc?.read(numDaysRead)
         } catch (e: Exception) {
             Log.e(javaClass.name, e.message, e)
         }

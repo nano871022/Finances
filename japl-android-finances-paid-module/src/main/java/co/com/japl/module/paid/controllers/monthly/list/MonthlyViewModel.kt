@@ -141,21 +141,7 @@ class MonthlyViewModel constructor(private val period:YearMonth,private val paid
 
     suspend fun readSms(){
         try {
-            _accounts?.takeIf { it.isNotEmpty() }?.forEach { dto ->
-                    smsSvc?.getAllByCodeAccount(dto.id)
-                    ?.forEach { sms ->
-                        smsSvc?.getSmsMessages(sms.phoneNumber, sms.pattern,prefs?.paidSMSDaysRead?:0)
-                            .takeIf { it?.isNotEmpty() == true }
-                            ?.forEach {
-                                paidSmsSvc?.createBySms(
-                                    name = it.first,
-                                    value = it.second,
-                                    date = it.third,
-                                    codeAccount = dto.id
-                                )
-                            }
-                    }
-            }
+            smsSvc?.read(prefs?.paidSMSDaysRead?:0)
         }catch (e:Exception){
             Log.e(javaClass.name,e.message,e)
         }

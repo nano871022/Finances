@@ -60,4 +60,8 @@ class EmailCreditCard @Inject constructor(val svc: IEmailCreditCard) : IEmailCre
     override fun getEmailList(sender: String, subject: String, numDaysRead: Int): List<String> {
         return svc.getEmailList(sender, subject, numDaysRead)
     }
+
+    override fun read(numDaysRead: Int) {
+        svc.read(numDaysRead)
+    }
 }

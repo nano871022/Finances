@@ -54,26 +54,10 @@ class SettingsViewModel constructor(private val prefs: Prefs): ViewModel() {
 
     fun readEmail(context: Context) {
         val emailCCSvc: IEmailCreditCardPort = EntryPoints.get(context.applicationContext, EntryPoint::class.java).getEmailCreditCardPort()
-        val boughtSmsSvc: IBoughtSmsPort = EntryPoints.get(context.applicationContext, EntryPoint::class.java).getInboundBoughtSmsPort()
         val numDaysRead = daysEmailRead.value.toIntOrNull() ?: prefs.creditCardEmailDaysRead
-        val startDate = LocalDate.now().minusDays(numDaysRead.toLong())
 
         viewModelScope.launch(Dispatchers.IO) {
-            emailCCSvc.getAll().filter { it.active }.forEach { emailConfig ->
-                emailCCSvc.validateMessagePattern(emailConfig, numDaysRead).filter { it.matched }.forEach { validation ->
-                    val date = validation.date?.let { DateUtils.toLocalDateRegex(it) }
-                    val value = validation.value?.toDoubleOrNull()
-                    if (date != null && value != null && (date.isAfter(startDate) || date.isEqual(startDate))) {
-                        boughtSmsSvc.createBySms(
-                            name = validation.name ?: "",
-                            value = value,
-                            date = date.atStartOfDay(),
-                            codeCreditRate = emailConfig.codeCreditCard,
-                            kind = emailConfig.kindInterestRateEnum
-                        )
-                    }
-                }
-            }
+            emailCCSvc.read(numDaysRead)
             withContext(Dispatchers.Main) {
                 Toast.makeText(context, R.string.email_read_process_completed, Toast.LENGTH_SHORT).show()
             }
