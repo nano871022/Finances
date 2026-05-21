@@ -165,12 +165,17 @@ fun getLLMConnectFViewModel(): LLMConnectionViewModel {
     var context = LocalContext.current
     val prefs = Prefs(context)
     var llmsSvc = object : ILLMService {
-        override suspend fun getAiResponse(prompt: String): Result<String> {
-            return Result.success("Respuesta de IA")
+        override suspend fun getAiResponse(
+            prompt: String,
+            model: String?
+        ): Result<String> {
+            TODO("Not yet implemented")
         }
+
         override suspend fun getModels(): Result<List<String>> {
-            return Result.success(listOf("Modelo 1", "Modelo 2"))
+            TODO("Not yet implemented")
         }
+
     }
 
     return LLMConnectionViewModel(

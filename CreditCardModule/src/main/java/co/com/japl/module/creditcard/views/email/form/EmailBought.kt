@@ -215,16 +215,6 @@ private fun DialogAIEmail(viewModel: EmailCreditCardViewModel) {
             title = { Text(text = stringResource(R.string.select_example_email), color = MaterialTheme.colorScheme.onSurface) },
             text = {
                 Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
-                    examples.forEachIndexed { index, pair ->
-                        CheckBoxField(
-                            title = pair.first,
-                            value = pair.second,
-                            callback = { viewModel.emailSamples[index] = pair.copy(second = it) }
-                        )
-                    }
-
-                    HorizontalDivider(modifier = Modifier.padding(vertical = Dimensions.PADDING_SHORT))
-
                     Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.clickable { showModelSelection.value = !showModelSelection.value }) {
                         Text(text = stringResource(R.string.ai_model), modifier = Modifier.weight(1f), color = MaterialTheme.colorScheme.onSurface)
                         Icon(imageVector = Icons.Rounded.ArrowDownward, contentDescription = null, tint = MaterialTheme.colorScheme.onSurface)
@@ -240,6 +230,18 @@ private fun DialogAIEmail(viewModel: EmailCreditCardViewModel) {
                             viewModel.selectedLLMModel.value = it
                         }
                     }
+
+                    HorizontalDivider(modifier = Modifier.padding(vertical = Dimensions.PADDING_SHORT))
+
+                    examples.forEachIndexed { index, pair ->
+                        CheckBoxField(
+                            title = pair.first,
+                            value = pair.second,
+                            callback = { viewModel.emailSamples[index] = pair.copy(second = it) }
+                        )
+                    }
+
+
                 }
             },
             confirmButton = {

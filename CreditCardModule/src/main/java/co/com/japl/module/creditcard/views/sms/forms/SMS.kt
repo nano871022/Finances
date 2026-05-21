@@ -39,6 +39,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import co.com.japl.module.creditcard.controllers.smscreditcard.form.SmsCreditCardViewModel
 import co.com.japl.ui.theme.MaterialThemeComposeUI
 import  androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -314,15 +315,7 @@ private fun DialogAIExpReg( viewModel: SmsCreditCardViewModel){
             title = { Text(text = stringResource(R.string.select_exaple_sms), color = MaterialTheme.colorScheme.onSurface) },
             text = {
                 Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
-                    examples.forEachIndexed { index, pair ->
-                        CheckBoxField(
-                            title = pair.first,
-                            value = pair.second,
-                            callback = { viewModel.smsSamples[index] = pair.copy(second = it) }
-                        )
-                    }
 
-                    HorizontalDivider(modifier = Modifier.padding(vertical = Dimensions.PADDING_SHORT))
 
                     Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.clickable { showModelSelection.value = !showModelSelection.value }) {
                         Text(text = stringResource(R.string.ai_model), modifier = Modifier.weight(1f), color = MaterialTheme.colorScheme.onSurface)
@@ -339,6 +332,18 @@ private fun DialogAIExpReg( viewModel: SmsCreditCardViewModel){
                             viewModel.selectedLLMModel.value = it
                         }
                     }
+
+                    HorizontalDivider(modifier = Modifier.padding(vertical = Dimensions.PADDING_SHORT))
+
+                    examples.forEachIndexed { index, pair ->
+                        CheckBoxField(
+                            title = pair.first,
+                            value = pair.second,
+                            callback = { viewModel.smsSamples[index] = pair.copy(second = it) }
+                        )
+                    }
+
+
                 }
             },
             confirmButton = {
