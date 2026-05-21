@@ -116,4 +116,5 @@ Messages:
     <string name="extracted_date">Fecha: %1$s</string>
     <string name="not_extracted">No se logró extraer datos</string>
     <string name="validation_close">Cerrar</string>
+    <string name="loading_data">Cargando Data</string>
 </resources>

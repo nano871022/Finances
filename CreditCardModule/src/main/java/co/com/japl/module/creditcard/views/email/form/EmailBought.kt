@@ -57,13 +57,17 @@ fun EmailBought(viewModel: EmailCreditCardViewModel){
     LaunchedEffect(Unit) {
         viewModel.main()
     }
+    Column (modifier =  Modifier.fillMaxWidth()){
+        if (load) {
+            LinearProgressIndicator(
+                modifier = Modifier.fillMaxWidth()
+            )
 
-    if (load) {
-        LinearProgressIndicator(
-            modifier = Modifier.fillMaxWidth()
-        )
-    } else {
-        Body(viewModel)
+            Text(text = stringResource(id = R.string.loading_data),
+                color = MaterialTheme.colorScheme.onPrimary)
+        } else {
+            Body(viewModel)
+        }
     }
 }
 
