@@ -502,5 +502,12 @@
         android:label="@string/llm_connection"
         tools:layout="@layout/fragment_llm_connection" />
 
+    <fragment
+        android:id="@+id/item_menu_setting_dian"
+        android:name="com.nano871022.finances.features.declaracion_renta_dian.ui.TaxDeclarationFragment"
+        android:label="@string/dian_tax_declaration"
+        tools:layout="@layout/fragment_tax_declaration" >
+        <deepLink app:uri="android-app://co.com.japl.finanzas.module.app/dian_tax_declaration"/>
+    </fragment>
 
 </navigation>
