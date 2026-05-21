@@ -216,6 +216,7 @@ fun PopupSetting(viewModel: SettingsViewModel,state: MutableState<Boolean>) {
                 Row {
                     FloatButton(imageVector = Icons.Rounded.ForwardToInbox, descriptionIcon = R.string.read_email) {
                         viewModel.readEmail(context)
+                        state.value = false
                     }
                     FloatButton(imageVector = Icons.Rounded.Save, descriptionIcon = R.string.save) {
                         viewModel.save(context)
