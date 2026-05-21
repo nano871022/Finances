@@ -48,6 +48,8 @@ class SmsViewModel constructor(private val codeSMS:Int?, private val svc:ISMSPai
     val smsSamples = mutableStateListOf<Pair<String, Boolean>>()
     val showSmsDialog = mutableStateOf(false)
     val aiFaile = mutableStateOf<Boolean>(false)
+    val llmModels = mutableStateListOf<Pair<Int, String>>()
+    val selectedLLMModel = mutableStateOf<Pair<Int, String>?>(null)
 
     fun loadSmsSamples() {
         if (phoneNumber.value.isNotEmpty()) {
@@ -69,7 +71,7 @@ class SmsViewModel constructor(private val codeSMS:Int?, private val svc:ISMSPai
                 load.value = true
                 progress.floatValue = 0.1f
                 val prompt = navController?.context?.getString(R.string.promt_sms_expreg,selectedSms.joinToString("\n"))?:""
-                llmService?.getAiResponse(prompt)?.onSuccess { response ->
+                llmService?.getAiResponse(prompt, selectedLLMModel.value?.second)?.onSuccess { response ->
                     progress.floatValue = 0.5f
                     pattern.value = response.trim().removeSurrounding("`").removePrefix("regex").trim()
                     progress.floatValue = 0.8f
@@ -227,6 +229,15 @@ class SmsViewModel constructor(private val codeSMS:Int?, private val svc:ISMSPai
         kindInterestRateList.clear()
         KindInterestRateEnum.values().map { Pair(it.getCode().toInt(), it.name)}.forEach(kindInterestRateList::add)
             .also { progress.floatValue = 0.8f }
+
+        llmService?.getModels()?.onSuccess { models ->
+            llmModels.clear()
+            models.forEachIndexed { index, name ->
+                llmModels.add(Pair(index, name))
+            }
+            val model = prefs?.llmModel ?: ""
+            selectedLLMModel.value = llmModels.firstOrNull { it.second == model } ?: llmModels.firstOrNull()
+        }
 
         load.value = false
     }

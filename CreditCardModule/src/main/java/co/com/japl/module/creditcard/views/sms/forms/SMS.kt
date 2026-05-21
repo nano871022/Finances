@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -16,6 +17,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Icon
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.CleaningServices
+import androidx.compose.material.icons.rounded.ArrowDownward
 import androidx.compose.material.icons.rounded.Save
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.Scaffold
@@ -37,6 +39,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import co.com.japl.module.creditcard.controllers.smscreditcard.form.SmsCreditCardViewModel
 import co.com.japl.ui.theme.MaterialThemeComposeUI
 import  androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -304,6 +307,7 @@ private fun DialogAIExpReg( viewModel: SmsCreditCardViewModel){
     val showDialog = remember {viewModel.showSmsDialog}
     val examples = remember {viewModel.smsSamples}
     val aiFaile = remember {  viewModel.aiFaile }
+    val showModelSelection = remember { mutableStateOf(false) }
 
     if (showDialog.value && examples.isNotEmpty()) {
         AlertDialog(
@@ -311,6 +315,26 @@ private fun DialogAIExpReg( viewModel: SmsCreditCardViewModel){
             title = { Text(text = stringResource(R.string.select_exaple_sms), color = MaterialTheme.colorScheme.onSurface) },
             text = {
                 Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
+
+
+                    Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.clickable { showModelSelection.value = !showModelSelection.value }) {
+                        Text(text = stringResource(R.string.ai_model), modifier = Modifier.weight(1f), color = MaterialTheme.colorScheme.onSurface)
+                        androidx.compose.material3.Icon(imageVector = Icons.Rounded.ArrowDownward, contentDescription = null, tint = MaterialTheme.colorScheme.onSurface)
+                    }
+
+                    if (showModelSelection.value) {
+                        FieldSelect(
+                            title = stringResource(R.string.select_ai_model),
+                            value = viewModel.selectedLLMModel.value?.second ?: "",
+                            list = viewModel.llmModels,
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            viewModel.selectedLLMModel.value = it
+                        }
+                    }
+
+                    HorizontalDivider(modifier = Modifier.padding(vertical = Dimensions.PADDING_SHORT))
+
                     examples.forEachIndexed { index, pair ->
                         CheckBoxField(
                             title = pair.first,
@@ -318,6 +342,8 @@ private fun DialogAIExpReg( viewModel: SmsCreditCardViewModel){
                             callback = { viewModel.smsSamples[index] = pair.copy(second = it) }
                         )
                     }
+
+
                 }
             },
             confirmButton = {

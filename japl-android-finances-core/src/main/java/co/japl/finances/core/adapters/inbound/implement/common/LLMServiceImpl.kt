@@ -14,15 +14,15 @@ class LLMServiceImpl @Inject constructor(
     private val deepSeekService: DeepSeekService
 ) : ILLMService {
 
-    override suspend fun getAiResponse(prompt: String): Result<String> {
+    override suspend fun getAiResponse(prompt: String, model: String?): Result<String> {
         Log.d(this::javaClass.name, "getAiResponse: $prompt")
         if (!prefs.llmEnabled) {
             return Result.failure(Exception("LLM is disabled"))
         }
         val type = try { LLMType.valueOf(prefs.llmType) } catch (e: Exception) { LLMType.GEMINI }
         return when (type) {
-            LLMType.GEMINI -> geminiService.getAiResponse(prompt)
-            LLMType.DEEPSEEK -> deepSeekService.getAiResponse(prompt)
+            LLMType.GEMINI -> geminiService.getAiResponse(prompt, model)
+            LLMType.DEEPSEEK -> deepSeekService.getAiResponse(prompt, model)
         }
     }
 
