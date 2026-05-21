@@ -207,6 +207,11 @@ private fun ValidationPopup(viewModel: SmsViewModel) {
                         modifier = Modifier.padding(Dimensions.PADDING_SHORT)
                     )
                 } else {
+                    Text(text=viewModel.pattern.value,
+                        color = MaterialTheme.colorScheme.onPrimary,
+                        fontSize = MaterialTheme.typography.bodySmall.fontSize,
+                        modifier = Modifier.fillMaxWidth())
+
                     Carousel(
                         size = validationResults.size,
                         modifier = Modifier

@@ -1,9 +1,12 @@
 package co.japl.android.finances.services.implement
 
+import android.util.Log
 import co.com.japl.finances.iports.dtos.EmailCreditCardDTO
 import co.com.japl.finances.iports.dtos.EmailValidationDTO
 import co.com.japl.finances.iports.inbounds.common.IEmailRead
 import co.com.japl.finances.iports.outbounds.IEmailCreditCardPattern
+import co.japl.finances.core.utils.DateUtils
+import co.japl.finances.core.utils.ExtractItemPatternUtil
 import java.util.regex.Pattern
 import javax.inject.Inject
 
@@ -11,25 +14,20 @@ class EmailCreditCardPatternImpl @Inject constructor(private val emailRead: IEma
 
     override fun validateMessagePattern(dto: EmailCreditCardDTO, numDaysRead: Int): List<EmailValidationDTO> {
         val emails = emailRead.getEmails(dto.sender, dto.subjectPattern, numDaysRead)
-        val pattern = Pattern.compile(dto.bodyPattern, Pattern.CASE_INSENSITIVE or Pattern.MULTILINE or Pattern.DOTALL)
-        
-        return emails.map { body ->
-            val matcher = pattern.matcher(body)
-            if (matcher.find()) {
-                val name = try { matcher.group("name") } catch (e: Exception) { 
-                    if (matcher.groupCount() >= 1) matcher.group(1) else ""
+        return emails.map{ it.replace("\\s+".toRegex()," ")}.map { body ->
+            dto.bodyPattern.toRegex(RegexOption.IGNORE_CASE).containsMatchIn(body).takeIf { it }?.let {
+                dto.bodyPattern.toRegex().find(body)?.let {
+                    ExtractItemPatternUtil.getValues(it.groupValues)?.let {
+                        EmailValidationDTO(
+                            name = it.first,
+                            value = it.second.toString(),
+                            date = DateUtils.localDateTimeToString(it.third),
+                            matched = true,
+                            bodySnippet = body.take(100).replace("\n", " ")
+                        )
+                    }
                 }
-                val value = try { matcher.group("value") } catch (e: Exception) { 
-                    if (matcher.groupCount() >= 2) matcher.group(2) else ""
-                }
-                val date = try { matcher.group("date") } catch (e: Exception) { 
-                    if (matcher.groupCount() >= 3) matcher.group(3) else ""
-                }
-                
-                EmailValidationDTO(name = name, value = value, date = date, matched = true, bodySnippet = body.take(100).replace("\n", " "))
-            } else {
-                EmailValidationDTO(matched = false, bodySnippet = body.take(100).replace("\n", " "))
-            }
+            }?:EmailValidationDTO(matched = false, bodySnippet = body.take(100).replace("\n", " "))
         }
     }
 

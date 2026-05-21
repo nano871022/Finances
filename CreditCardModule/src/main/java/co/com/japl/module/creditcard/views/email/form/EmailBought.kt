@@ -300,6 +300,11 @@ private fun ValidationPopup(viewModel: EmailCreditCardViewModel) {
                     )
                 }
             } else {
+                Text(text=viewModel.bodyPattern.value,
+                    color = MaterialTheme.colorScheme.onPrimary,
+                    fontSize = MaterialTheme.typography.bodySmall.fontSize,
+                    modifier = Modifier.fillMaxWidth())
+
                 Carousel(
                     size = validationResults.size,
                     modifier = Modifier

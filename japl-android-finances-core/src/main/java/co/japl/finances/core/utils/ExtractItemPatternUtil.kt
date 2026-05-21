@@ -3,7 +3,7 @@ package co.japl.finances.core.utils
 import java.time.LocalDateTime
 import java.time.LocalTime
 
-object SmsUtil {
+object ExtractItemPatternUtil {
 
     fun getValues(values:List<String>):Triple<String,Double,LocalDateTime>?{
         if(values.size >= 3) {
