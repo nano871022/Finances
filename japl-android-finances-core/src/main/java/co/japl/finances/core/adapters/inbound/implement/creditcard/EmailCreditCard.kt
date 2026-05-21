@@ -56,4 +56,8 @@ class EmailCreditCard @Inject constructor(val svc: IEmailCreditCard) : IEmailCre
         require(id != 0){"Id is 0"}
         return svc.clone(id)
     }
+
+    override fun getEmailList(sender: String, subject: String): List<String> {
+        return svc.getEmailList(sender, subject)
+    }
 }

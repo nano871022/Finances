@@ -21,4 +21,5 @@ interface IEmailCreditCardPort{
 
     fun clone(id:Int):Boolean
 
+    fun getEmailList(sender: String, subject: String): List<String>
 }

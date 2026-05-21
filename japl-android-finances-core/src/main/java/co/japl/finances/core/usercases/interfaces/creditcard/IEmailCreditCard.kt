@@ -20,4 +20,6 @@ interface IEmailCreditCard {
     fun clone(id: Int): Boolean
 
     fun validateMessagePattern(dto: EmailCreditCardDTO): List<EmailValidationDTO>
+
+    fun getEmailList(sender: String, subject: String): List<String>
 }

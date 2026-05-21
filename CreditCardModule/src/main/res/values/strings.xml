@@ -70,8 +70,34 @@ If the result does not include the escape characters "" before "$" and "/", the 
 Message:
 %s
     </string>
+    <string name="promt_email_expreg">
+Act as a Java Regex compiler and Email Subject analyzer.
+
+Analyze the Email messages provided and generate:
+1. A search string for the email subject (Title Pattern) that is common to all these emails.
+2. A single, linear regular expression for the email body (Message Pattern) that captures: merchant/product name, value, and date.
+
+Technical Escaping Instructions for Body Regex (CRITICAL):
+Every dollar sign "$" must be written as "\$".
+Every forward slash "/" must be written as "\/".
+Every dot "." that must be treated as a literal must be written as "\.".
+Every comma "," that must be treated as a literal must be written as "\,".
+Every asterisk "*" that must be treated as a literal must be written as "\*".
+
+Use capture groups (?&lt;name&gt;...), (?&lt;value&gt;...), (?&lt;date&gt;...) for the Body Regex.
+
+Response Format (MANDATORY):
+SUBJECT: [title pattern]
+BODY: [body regex]
+
+Do not provide explanations or introductions.
+
+Messages:
+%s
+    </string>
     <string name="generate_by_ai">Generar con IA</string>
     <string name="select_exaple_sms">Seleccionar Ejemplo de SMS</string>
+    <string name="select_example_email">Seleccionar Ejemplo de Correo</string>
     <string name="generate">Generar</string>
     <string name="ai_response">Respuesta IA</string>
     <string name="ok">OK</string>
@@ -90,4 +116,5 @@ Message:
     <string name="extracted_date">Fecha: %1$s</string>
     <string name="not_extracted">No se logró extraer datos</string>
     <string name="validation_close">Cerrar</string>
+    <string name="loading_data">Cargando Data</string>
 </resources>
