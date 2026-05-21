@@ -1,5 +1,6 @@
 package co.com.japl.finances.iports.inbounds.paid
 
+import co.com.japl.finances.iports.dtos.EmailValidationDTO
 import co.com.japl.finances.iports.dtos.SMSPaidDTO
 import co.com.japl.finances.iports.enums.KindInterestRateEnum
 import java.time.LocalDateTime
@@ -14,7 +15,7 @@ interface ISMSPaidPort{
 
     fun getById(codeSMSPaid: Int):SMSPaidDTO?
 
-    fun validateMessagePattern(dto:SMSPaidDTO):List<String>
+    fun validateMessagePattern(dto:SMSPaidDTO):List<EmailValidationDTO>
 
     fun getAllByCodeAccount(codeAccount: Int):List<SMSPaidDTO>
 
@@ -28,4 +29,5 @@ interface ISMSPaidPort{
 
     fun getSmsList(phoneNumber: String): List<String>
 
+    fun read(numDaysRead: Int)
 }

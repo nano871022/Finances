@@ -1,26 +1,36 @@
 package co.com.japl.module.paid.controllers.monthly.list
 
+import android.content.Context
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.runtime.mutableDoubleStateOf
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import co.com.japl.finances.iports.dtos.AccountDTO
 import co.com.japl.finances.iports.enums.KindInterestRateEnum
 import co.com.japl.finances.iports.inbounds.paid.IPaidPort
 import co.com.japl.finances.iports.inbounds.inputs.IAccountPort
 import co.com.japl.finances.iports.inbounds.inputs.IInputPort
+import co.com.japl.finances.iports.inbounds.paid.IEmailPaidPort
 import co.com.japl.finances.iports.inbounds.paid.ISMSPaidPort
 import co.com.japl.finances.iports.inbounds.paid.ISmsPort
 import co.com.japl.module.paid.navigations.Paid
 import co.com.japl.module.paid.navigations.Paids
 import co.com.japl.module.paid.navigations.Period
+import co.com.japl.module.paid.R
 import co.com.japl.ui.Prefs
 import co.com.japl.ui.utils.DateUtils
+import co.japl.android.myapplication.utils.NumbersUtil
+import kotlinx.coroutines.Dispatchers
+
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.time.YearMonth
 import java.time.format.TextStyle
 import java.util.Locale
@@ -80,8 +90,10 @@ class MonthlyViewModel constructor(private val period:YearMonth,private val paid
     fun main()= runBlocking {
         progressStatus.value = 0.0f
         execute()
-        progressStatus.value = 0.8f
+        progressStatus.value = 0.6f
         readSms()
+        progressStatus.value = 0.8f
+
         progressStatus.value = 1.0f
     }
 
@@ -129,24 +141,9 @@ class MonthlyViewModel constructor(private val period:YearMonth,private val paid
 
     suspend fun readSms(){
         try {
-            _accounts?.takeIf { it.isNotEmpty() }?.forEach { dto ->
-                    smsSvc?.getAllByCodeAccount(dto.id)
-                    ?.forEach { sms ->
-                        smsSvc?.getSmsMessages(sms.phoneNumber, sms.pattern,prefs?.paidSMSDaysRead?:0)
-                            .takeIf { it?.isNotEmpty() == true }
-                            ?.forEach {
-                                paidSmsSvc?.createBySms(
-                                    name = it.first,
-                                    value = it.second,
-                                    date = it.third,
-                                    codeAccount = dto.id
-                                )
-                            }
-                    }
-            }
+            smsSvc?.read(prefs?.paidSMSDaysRead?:0)
         }catch (e:Exception){
             Log.e(javaClass.name,e.message,e)
         }
     }
-
 }

@@ -11,6 +11,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.Scope
 import com.google.api.services.drive.DriveScopes
+import com.google.api.services.gmail.GmailScopes
 
 class GoogleSignInSimpleImplement constructor(private val context: Context): IGoogleSignInService {
 
@@ -20,6 +21,8 @@ class GoogleSignInSimpleImplement constructor(private val context: Context): IGo
     init {
         val googleSignInOptionsBuild = GoogleSignInOptions
             .Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+            .requestEmail()
+            .requestScopes(Scope(DriveScopes.DRIVE_FILE), Scope(DriveScopes.DRIVE_APPDATA), Scope(GmailScopes.GMAIL_READONLY))
 
         val googleSignInOptions = googleSignInOptionsBuild.build()
         googleSignInClient = GoogleSignIn.getClient(context, googleSignInOptions)
@@ -67,7 +70,9 @@ class GoogleSignInSimpleImplement constructor(private val context: Context): IGo
 
     override fun check():Boolean {
        return GoogleSignIn.getLastSignedInAccount(context)
-           ?.takeIf{it.grantedScopes.isNotEmpty()}
+           ?.takeIf{ account ->
+               account.grantedScopes.any { it.scopeUri == DriveScopes.DRIVE_FILE || it.scopeUri == DriveScopes.DRIVE_APPDATA || it.scopeUri == GmailScopes.GMAIL_READONLY }
+           }
            ?.let{
                signInAccount = it
                it.grantedScopes.forEach{ Log.d(javaClass.name,"=== GrantedScope $it")}

@@ -12,11 +12,11 @@ class DeepSeekService @Inject constructor(
     private val llmOutboundPort: ILLMOutboundPort
 ) : ILLMService {
 
-    override suspend fun getAiResponse(prompt: String): Result<String> {
+    override suspend fun getAiResponse(prompt: String, model: String?): Result<String> {
         val config = LLMConfigDTO(
             type = LLMType.DEEPSEEK,
             apiKey = prefs.llmApiKey,
-            model = prefs.llmModel.ifEmpty { "deepseek-chat" },
+            model = model ?: prefs.llmModel.ifEmpty { "deepseek-chat" },
             url = prefs.llmDeepSeekUrl
         )
         return llmOutboundPort.getAiResponse(config, prompt)

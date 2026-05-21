@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import co.com.japl.finances.iports.dtos.AccountDTO
+import co.com.japl.finances.iports.dtos.EmailValidationDTO
 import co.com.japl.finances.iports.dtos.SMSPaidDTO
 import co.com.japl.finances.iports.enums.KindInterestRateEnum
 import co.com.japl.finances.iports.inbounds.common.ILLMService
@@ -15,10 +16,10 @@ import co.com.japl.finances.iports.inbounds.inputs.IAccountPort
 import co.com.japl.finances.iports.inbounds.paid.ISMSPaidPort
 import co.com.japl.module.paid.R
 import co.com.japl.ui.Prefs
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
 
 class SmsViewModel constructor(private val codeSMS:Int?, private val svc:ISMSPaidPort?, private val accountSvc:IAccountPort?, private val navController: NavController?, private val llmService: ILLMService? = null, val prefs: Prefs?=null): ViewModel() {
 
@@ -38,12 +39,17 @@ class SmsViewModel constructor(private val codeSMS:Int?, private val svc:ISMSPai
     val pattern = mutableStateOf("")
     val errorPattern = mutableStateOf(false)
     val validationResult = mutableStateOf("")
+    val showPopup = mutableStateOf(false)
+    val validating = mutableStateOf(false)
+    val validationResults = mutableStateListOf<EmailValidationDTO>()
 
     val validate = mutableStateOf("")
 
     val smsSamples = mutableStateListOf<Pair<String, Boolean>>()
     val showSmsDialog = mutableStateOf(false)
     val aiFaile = mutableStateOf<Boolean>(false)
+    val llmModels = mutableStateListOf<Pair<Int, String>>()
+    val selectedLLMModel = mutableStateOf<Pair<Int, String>?>(null)
 
     fun loadSmsSamples() {
         if (phoneNumber.value.isNotEmpty()) {
@@ -65,7 +71,7 @@ class SmsViewModel constructor(private val codeSMS:Int?, private val svc:ISMSPai
                 load.value = true
                 progress.floatValue = 0.1f
                 val prompt = navController?.context?.getString(R.string.promt_sms_expreg,selectedSms.joinToString("\n"))?:""
-                llmService?.getAiResponse(prompt)?.onSuccess { response ->
+                llmService?.getAiResponse(prompt, selectedLLMModel.value?.second)?.onSuccess { response ->
                     progress.floatValue = 0.5f
                     pattern.value = response.trim().removeSurrounding("`").removePrefix("regex").trim()
                     progress.floatValue = 0.8f
@@ -123,11 +129,31 @@ class SmsViewModel constructor(private val codeSMS:Int?, private val svc:ISMSPai
     fun validatePatternWithMessages(){
         validate()
         smsPaid?.let {dto->
-            svc?.let{
-                validationResult.value = ""
-                it.validateMessagePattern(dto)?.takeIf { it.isNotEmpty() }?.forEach{
-                    validationResult.value += it+"\n\n"
-                }?:validationResult.let{it.value = "Not found sms"}
+            viewModelScope.launch(Dispatchers.IO) {
+                withContext(Dispatchers.Main) {
+                    validating.value = true
+                    showPopup.value = true
+                    validationResults.clear()
+                    validationResult.value = ""
+                }
+                runCatching {
+                    svc?.validateMessagePattern(dto) ?: emptyList()
+                }.onFailure { e ->
+                    withContext(Dispatchers.Main) {
+                        validating.value = false
+                        validationResult.value = "Error: ${e.message}"
+                    }
+                }.onSuccess { list ->
+                    withContext(Dispatchers.Main) {
+                        validating.value = false
+                        validationResults.addAll(list)
+                        if (list.isNotEmpty()) {
+                            validationResult.value = "Success"
+                        } else {
+                            validationResult.value = "Not found sms"
+                        }
+                    }
+                }
             }
         }
     }
@@ -164,10 +190,16 @@ class SmsViewModel constructor(private val codeSMS:Int?, private val svc:ISMSPai
         }
     }
 
-    fun main() = runBlocking {
-        progress.floatValue = 0.1f
-        execute()
-        progress.floatValue = 1.0f
+    fun main() {
+        viewModelScope.launch(Dispatchers.IO) {
+            withContext(Dispatchers.Main) {
+                progress.floatValue = 0.1f
+            }
+            execute()
+            withContext(Dispatchers.Main) {
+                progress.floatValue = 1.0f
+            }
+        }
     }
 
     suspend fun execute(){
@@ -197,6 +229,15 @@ class SmsViewModel constructor(private val codeSMS:Int?, private val svc:ISMSPai
         kindInterestRateList.clear()
         KindInterestRateEnum.values().map { Pair(it.getCode().toInt(), it.name)}.forEach(kindInterestRateList::add)
             .also { progress.floatValue = 0.8f }
+
+        llmService?.getModels()?.onSuccess { models ->
+            llmModels.clear()
+            models.forEachIndexed { index, name ->
+                llmModels.add(Pair(index, name))
+            }
+            val model = prefs?.llmModel ?: ""
+            selectedLLMModel.value = llmModels.firstOrNull { it.second == model } ?: llmModels.firstOrNull()
+        }
 
         load.value = false
     }

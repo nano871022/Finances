@@ -31,7 +31,7 @@ import com.google.android.libraries.identity.googleid.GetGoogleIdOption
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
 import com.google.android.libraries.identity.googleid.GoogleIdTokenParsingException
 import com.google.api.services.drive.*
-import com.google.api.client.extensions.android.http.AndroidHttp
+import com.google.api.client.http.javanet.NetHttpTransport
 import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential
 import com.google.api.client.http.FileContent
 import com.google.api.client.json.gson.GsonFactory
@@ -182,7 +182,7 @@ class GoogleDriveService(private var dbConnect: SQLiteOpenHelper,private val act
     private fun getDrive(account:GoogleSignInAccount):Drive?{
         val credential = GoogleAccountCredential.usingOAuth2(activity, listOf(DriveScopes.DRIVE_FILE))
         credential.selectedAccount = account.account
-        return Drive.Builder(AndroidHttp.newCompatibleTransport(), GsonFactory(), credential)
+        return Drive.Builder(NetHttpTransport(), GsonFactory.getDefaultInstance(), credential)
             .setApplicationName("Finanzas")
             .build()
             .also { Log.d(javaClass.name,"=== HandleSignIn2 $it") }
@@ -276,10 +276,3 @@ class GoogleDriveService(private var dbConnect: SQLiteOpenHelper,private val act
 
 
 }
-
-
-
-
-
-
-

@@ -14,9 +14,13 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.CalendarMonth
 import androidx.compose.material.icons.rounded.RemoveRedEye
+import androidx.compose.material.icons.rounded.Settings
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -31,6 +35,7 @@ import co.com.japl.ui.components.FieldView
 import co.com.japl.ui.components.FloatButton
 import co.com.japl.ui.components.HelpWikiButton
 import co.com.japl.ui.components.PiecePieGraph
+import co.com.japl.ui.components.FieldText
 import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.com.japl.ui.theme.values.Dimensions
 import co.japl.android.myapplication.utils.NumbersUtil
@@ -115,6 +120,7 @@ viewModel.accountList
 
         }
     }
+
 }
 
 @Composable

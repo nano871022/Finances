@@ -22,6 +22,7 @@
     <string name="end">Finalizar</string>
     <string name="setting">Configuración</string>
     <string name="msm_read_num">Número dias lectura SMS</string>
+    <string name="email_read_num">Número dias lectura Email</string>
 
     <string name="year">Año</string>
     <string name="month">Mes</string>
@@ -92,6 +93,9 @@
     <string name="navigate_monthly">android-app://co.com.japl.finanzas.module.app/paid/monthly?period=%s</string>
     <string name="navigate_sms_form">android-app://co.com.japl.finanzas.module.app/paid/sms</string>
     <string name="navigate_sms_form_code">android-app://co.com.japl.finanzas.module.app/paid/sms?code_sms_paid=%d</string>
+    <string name="navigate_email_paid_list">android-app://co.com.japl.finanzas.module.app/paid/email/list</string>
+    <string name="navigate_email_paid_form">android-app://co.com.japl.finanzas.module.app/paid/email/form</string>
+    <string name="navigate_email_paid_form_code">android-app://co.com.japl.finanzas.module.app/paid/email/form?code_email_paid=%d</string>
     <string name="navigate_projection_list">android-app://co.com.japl.finanzas.module.app/paid/projection/list</string>
     <string name="navigate_projection_form">android-app://co.com.japl.finanzas.module.app/paid/projection/form</string>
     <string name="navigate_projection_form_edit">android-app://co.com.japl.finanzas.module.app/paid/projection/form?id=%d</string>

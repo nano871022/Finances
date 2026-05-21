@@ -1,24 +1,34 @@
 package co.com.japl.module.paid.controllers.paid.list
 
+import android.content.Context
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import co.com.japl.finances.iports.dtos.PaidDTO
+import co.com.japl.finances.iports.inbounds.paid.IEmailPaidPort
 import co.com.japl.finances.iports.inbounds.paid.IPaidPort
+import co.com.japl.finances.iports.inbounds.paid.ISmsPort
 import co.com.japl.module.paid.R
 import co.com.japl.module.paid.enums.PaidListOptions
 import co.com.japl.module.paid.navigations.Paid
 import co.com.japl.ui.Prefs
+import co.com.japl.ui.utils.DateUtils
+import co.japl.android.myapplication.utils.NumbersUtil
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
 import java.time.LocalDateTime
 import java.time.YearMonth
 import java.time.format.DateTimeFormatter
 import java.util.Locale
 
-class PaidViewModel constructor(private val accountCode:Int, private val period:YearMonth,private val paidSvc:IPaidPort?=null,public val prefs:Prefs?,private val navController: NavController? = null): ViewModel(){
+class PaidViewModel constructor(private val accountCode:Int, private val period:YearMonth,private val paidSvc:IPaidPort?=null,public val prefs:Prefs?,private val navController: NavController? = null,private val emailSvc:IEmailPaidPort? = null,private val paidSmsSvc:ISmsPort?): ViewModel(){
 
     val progressStatus = mutableFloatStateOf(0.0f)
     val loaderState = mutableStateOf(true)
@@ -27,6 +37,13 @@ class PaidViewModel constructor(private val accountCode:Int, private val period:
 
     val periodOfList = mutableStateOf("")
     val allValues = mutableStateOf(0.0)
+    val paidEmailDaysRead = mutableStateOf("${prefs?.paidEmailDaysRead ?: 7}")
+    val paidSMSDaysRead = mutableStateOf("${prefs?.paidSMSDaysRead ?: 7}")
+    val errorPaidEmailDaysRead = mutableStateOf(false)
+    val errorPaidSMSDaysRead = mutableStateOf(false)
+
+    val settingState = mutableStateOf(false)
+
 
     fun newOne(){
         navController?.let {
@@ -78,6 +95,48 @@ class PaidViewModel constructor(private val accountCode:Int, private val period:
             }else{
                 navController?.let{ Toast.makeText(it.context, R.string.toast_unsuccessful_copy,Toast.LENGTH_LONG).show() }
             }
+        }
+    }
+
+    fun readEmail(context: Context){
+        settingState.value = false
+        viewModelScope.launch(Dispatchers.IO) {
+            readEmail()
+            withContext(Dispatchers.Main) {
+                Toast.makeText(context, R.string.email_read_process_completed, Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+    fun saveSettings(context: Context) {
+        if(!errorPaidEmailDaysRead.value && !errorPaidSMSDaysRead.value) {
+            paidEmailDaysRead.value.toIntOrNull()?.let {
+                prefs?.paidEmailDaysRead = it
+            }
+            paidSMSDaysRead.value.toIntOrNull()?.let {
+                prefs?.paidSMSDaysRead = it
+            }
+            settingState.value = false
+            Toast.makeText(context, R.string.toast_saves_successful, Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    fun validation(){
+        paidEmailDaysRead.value.takeIf { it.isNotEmpty() && NumbersUtil.isNumber(it) }?.let{
+            errorPaidEmailDaysRead.value = false
+        }?: errorPaidEmailDaysRead.let{it.value = true}
+
+        paidSMSDaysRead.value.takeIf { it.isNotEmpty() && NumbersUtil.isNumber(it) }?.let{
+            errorPaidSMSDaysRead.value = false
+        }?: errorPaidSMSDaysRead.let{it.value = true}
+    }
+
+    suspend fun readEmail(){
+        val numDaysRead = paidEmailDaysRead.value.toIntOrNull() ?: prefs?.paidEmailDaysRead ?: 7
+        try {
+            emailSvc?.read(numDaysRead)
+        } catch (e: Exception) {
+            Log.e(javaClass.name, e.message, e)
         }
     }
 

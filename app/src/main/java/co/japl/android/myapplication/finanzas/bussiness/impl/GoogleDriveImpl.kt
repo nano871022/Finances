@@ -2,13 +2,13 @@ package co.japl.android.myapplication.finanzas.bussiness.impl
 
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
+import android.util.Log
 import co.japl.android.myapplication.bussiness.DB.connections.ConnectDB
 import co.japl.android.myapplication.finanzas.bussiness.interfaces.IGoogleDriveService
 import co.japl.android.myapplication.utils.DatabaseConstants
 import com.google.android.gms.auth.api.identity.AuthorizationResult
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
-import com.google.api.client.extensions.android.http.AndroidHttp
-import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken
+import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport
 import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential
 import com.google.api.client.http.FileContent
 import com.google.api.client.json.gson.GsonFactory
@@ -22,6 +22,7 @@ import java.util.Collections
 class GoogleDriveImpl constructor(private val context:Context,private val dbConnect:ConnectDB) : IGoogleDriveService {
     companion object {
         const val PARAMETER_FOLDER = "appDataFolder"
+        private val SCOPES = listOf(DriveScopes.DRIVE_FILE, DriveScopes.DRIVE_APPDATA)
     }
 
     override suspend fun stats(): List<Pair<String, Long>> {
@@ -63,27 +64,36 @@ class GoogleDriveImpl constructor(private val context:Context,private val dbConn
     }
 
     private fun getFiles(drive:Drive):List<File>{
-        return drive.files().list()
-            .setSpaces(PARAMETER_FOLDER)
-            .setFields("nextPageToken, files(id, name, version, modifiedTime)")
-            .execute()?.files?: emptyList()
+        try {
+            return drive.files().list()
+                .setSpaces(PARAMETER_FOLDER)
+                .setFields("nextPageToken, files(id, name, version, modifiedTime)")
+                .execute()?.files ?: emptyList()
+        }catch (e:Exception){
+            Log.e(this.javaClass.name,e.message,e)
+            return emptyList()
+        }
     }
-    private fun getDrive(account: GoogleSignInAccount?):Drive?{
+    private fun getDrive(account: GoogleSignInAccount?):Drive? {
         return account?.let {
-
-            GoogleAccountCredential.usingOAuth2(context, listOf(DriveScopes.DRIVE_FILE))?.let{
-                it.selectedAccount = account.account
-                return Drive.Builder(AndroidHttp.newCompatibleTransport(), GsonFactory(), it)
+            val transport = GoogleNetHttpTransport.newTrustedTransport()
+            GoogleAccountCredential.usingOAuth2(context, SCOPES).apply {
+                selectedAccountName = account.email
+            }?.let { credential ->
+                return Drive.Builder(transport, GsonFactory.getDefaultInstance(), credential)
                     .setApplicationName("Finanzas")
                     .build()
             }
         }
     }
 
-    fun getDrive(authorizationResult:AuthorizationResult):Drive?{
-       return GoogleAccountCredential.usingOAuth2(context, listOf(DriveScopes.DRIVE_FILE))?.let{
-            it.selectedAccount = authorizationResult.toGoogleSignInAccount()?.account
-            return Drive.Builder(AndroidHttp.newCompatibleTransport(), GsonFactory(), it)
+    fun getDrive(authorizationResult:AuthorizationResult):Drive? {
+        val transport = GoogleNetHttpTransport.newTrustedTransport()
+        val account = authorizationResult.toGoogleSignInAccount()
+        return GoogleAccountCredential.usingOAuth2(context, SCOPES).apply {
+            selectedAccountName = account?.email
+        }?.let { credential ->
+            return Drive.Builder(transport, GsonFactory.getDefaultInstance(), credential)
                 .setApplicationName("Finanzas")
                 .build()
         }

@@ -8,17 +8,14 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.IconButton
 import androidx.compose.material.Switch
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Cancel
-import androidx.compose.material.icons.rounded.Close
+import androidx.compose.material.icons.rounded.ForwardToInbox
 import androidx.compose.material.icons.rounded.Save
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.TooltipBox
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
@@ -210,13 +207,21 @@ fun PopupSetting(viewModel: SettingsViewModel,state: MutableState<Boolean>) {
     val simulatorState = remember { viewModel.simulatorState }
     val daysSmsRead = remember { viewModel.daysSmsRead }
     val errorDaysSmsRead = remember { viewModel.errorDaysSmsRead }
+    val daysEmailRead = remember { viewModel.daysEmailRead }
+    val errorDaysEmailRead = remember { viewModel.errorDaysEmailRead }
     val context = LocalContext.current
     co.com.japl.ui.components.Popup(title = R.string.settings_credit_card_boughts, state = state) {
         Scaffold(
             floatingActionButton = {
-                FloatButton(imageVector = Icons.Rounded.Save, descriptionIcon = R.string.save) {
-                    viewModel.save(context)
-                    state.value = false
+                Row {
+                    FloatButton(imageVector = Icons.Rounded.ForwardToInbox, descriptionIcon = R.string.read_email) {
+                        viewModel.readEmail(context)
+                        state.value = false
+                    }
+                    FloatButton(imageVector = Icons.Rounded.Save, descriptionIcon = R.string.save) {
+                        viewModel.save(context)
+                        state.value = false
+                    }
                 }
             },
             modifier=Modifier.padding(Dimensions.PADDING_SHORT)
@@ -247,6 +252,16 @@ fun PopupSetting(viewModel: SettingsViewModel,state: MutableState<Boolean>) {
                    validation = {viewModel.validation()},
                    callback = {
                        daysSmsRead.value = it
+                   },modifier= Modifier.padding(top=Dimensions.PADDING_SHORT).fillMaxWidth())
+
+               FieldText(title = stringResource(id = R.string.days_email_read),
+                   value = "${daysEmailRead.value}",
+                   hasErrorState = errorDaysEmailRead,
+                   keyboardType = KeyboardOptions(keyboardType = KeyboardType.Number),
+                   icon = Icons.Rounded.Cancel,
+                   validation = {viewModel.validation()},
+                   callback = {
+                       daysEmailRead.value = it
                    },modifier= Modifier.padding(top=Dimensions.PADDING_SHORT).fillMaxWidth())
             }
         }

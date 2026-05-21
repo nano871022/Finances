@@ -14,6 +14,8 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.auth.api.signin.SignInAccount
 import com.google.android.gms.common.api.GoogleApi
+import com.google.android.gms.common.api.Scope
+import com.google.api.services.gmail.GmailScopes
 
 enum class ProviderType{
     GOOGLE,
@@ -26,6 +28,7 @@ abstract class GoogleLoginService(private val activity:Activity, override val RC
         .Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
       //  .requestIdToken(activity.getString(R.string.default_web_client_id))
         .requestEmail()
+        .requestScopes(Scope(GmailScopes.GMAIL_READONLY))
         .build()
     val signInClient = GoogleSignIn.getClient(activity,googleSignInOptions)
     override fun getIntent():Intent{

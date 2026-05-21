@@ -1,5 +1,6 @@
 package co.com.japl.finances.iports.inbounds.creditcard
 
+import co.com.japl.finances.iports.dtos.EmailValidationDTO
 import co.com.japl.finances.iports.dtos.SMSCreditCard
 import co.com.japl.finances.iports.enums.KindInterestRateEnum
 import java.time.LocalDateTime
@@ -14,7 +15,7 @@ interface ISMSCreditCardPort{
 
     fun getById(codeSMSCreditCard: Int):SMSCreditCard?
 
-    fun validateMessagePattern(dto:SMSCreditCard):List<String>
+    fun validateMessagePattern(dto:SMSCreditCard):List<EmailValidationDTO>
 
     fun getByCreditCardAndKindInterest(codeCreditCard:Int,kind: KindInterestRateEnum):List<SMSCreditCard>
 
@@ -30,4 +31,5 @@ interface ISMSCreditCardPort{
 
     fun getSmsList(phoneNumber: String): List<String>
 
+    fun read(numDaysRead: Int)
 }

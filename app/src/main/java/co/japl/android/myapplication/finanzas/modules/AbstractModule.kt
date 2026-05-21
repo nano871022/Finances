@@ -5,6 +5,7 @@ import co.com.japl.finances.iports.inbounds.creditcard.ICreditCardPort
 import co.com.japl.finances.iports.inbounds.common.IDifferQuotesPort
 import co.com.japl.finances.iports.inbounds.common.ILLMService
 import co.com.japl.finances.iports.inbounds.common.ISMSRead
+import co.com.japl.finances.iports.inbounds.common.IEmailRead
 import co.com.japl.finances.iports.inbounds.credit.IAdditional
 import co.com.japl.finances.iports.inbounds.credit.IAdditionalFormPort
 import co.com.japl.finances.iports.inbounds.credit.ICreditFormPort
@@ -15,6 +16,8 @@ import co.com.japl.finances.iports.inbounds.creditcard.IAmortizationTablePort
 import co.com.japl.finances.iports.inbounds.creditcard.IBuyCreditCardSettingPort
 import co.com.japl.finances.iports.inbounds.creditcard.ICreditCardSettingPort
 import co.com.japl.finances.iports.inbounds.creditcard.ISMSCreditCardPort
+import co.com.japl.finances.iports.inbounds.creditcard.IEmailCreditCardPort
+import co.com.japl.finances.iports.inbounds.paid.IEmailPaidPort
 import co.com.japl.finances.iports.inbounds.creditcard.ISimulatorCreditVariablePort
 import co.com.japl.finances.iports.inbounds.creditcard.ITagPort
 import co.com.japl.finances.iports.inbounds.creditcard.ITaxPort
@@ -47,16 +50,21 @@ import co.com.japl.finances.iports.inbounds.recap.IRecapPort
 import co.com.japl.finances.iports.outbounds.IExtraValueAmortizationPort
 import co.com.japl.finances.iports.outbounds.IAdditionalPort
 import co.com.japl.finances.iports.outbounds.ICreditPort
+import co.com.japl.finances.iports.outbounds.IEmailCreditCardPattern
 import co.com.japl.finances.iports.outbounds.ISimulatorCreditPort
 import co.com.japl.ui.impls.SMSObservable
 import co.com.japl.ui.interfaces.ISMSObservablePublicher
 import co.com.japl.ui.interfaces.ISMSObservableSubscriber
+import co.com.japl.ui.interfaces.ISMSObserver
 import co.japl.android.finances.services.dao.interfaces.IAddAmortizationDAO
 import co.japl.android.finances.services.dao.interfaces.IAdditionalCreditDAO
 import co.japl.android.finances.services.dao.interfaces.ICheckCreditDAO
 import co.japl.android.finances.services.dao.interfaces.ICheckQuoteDAO
+import co.japl.android.finances.services.dao.interfaces.IEmailCreditCardDAO
 import co.japl.android.finances.services.dao.interfaces.IGracePeriodDAO
 import co.japl.android.finances.services.dao.interfaces.ISimulatorCreditDAO
+import co.japl.android.finances.services.implement.EmailCreditCardPatternImpl
+import co.japl.android.finances.services.implement.GmailReadImpl
 import co.japl.android.myapplication.finanzas.controller.SMS
 import co.japl.finances.core.adapters.inbound.implement.common.CheckPaymentsImpl
 import co.japl.finances.core.adapters.inbound.implement.common.LLMServiceImpl
@@ -110,8 +118,14 @@ import co.japl.finances.core.usercases.interfaces.creditcard.bought.lists.IBough
 import co.japl.finances.core.usercases.interfaces.creditcard.paid.lists.IPaidList
 import co.japl.finances.core.usercases.interfaces.paid.IProjection
 import co.japl.finances.core.usercases.interfaces.paid.ISMSOld
-import co.japl.finances.core.usercases.interfaces.paid.ISms
+import co.japl.finances.core.usercases.interfaces.paid.ISms2
 import co.japl.finances.core.usercases.interfaces.recap.IRecap
+import co.japl.finances.core.adapters.inbound.implement.creditcard.EmailCreditCard
+import co.japl.finances.core.usercases.implement.creditcard.EmailCreditCardImpl
+import co.japl.finances.core.usercases.interfaces.creditcard.IEmailCreditCard
+import co.com.japl.finances.iports.outbounds.ICreditCardPort as ICreditCardOutPort
+import co.com.japl.finances.iports.outbounds.IQuoteCreditCardPort as IQuoteCreditCardOutPort
+import co.com.japl.finances.iports.outbounds.ITaxPort as ITaxOutPort
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -168,7 +182,6 @@ abstract class AbstractModule {
     @Binds
     abstract fun bindUserCaseProjections(implement: co.japl.finances.core.usercases.implement.common.ProjectionsImpl): IProjections
 
-
     @Binds
     abstract fun bindUserCasePaid(implement: PaidImp): IPaid
 
@@ -177,7 +190,6 @@ abstract class AbstractModule {
 
     @Binds
     abstract fun bindServicePaid(implement: co.japl.android.finances.services.dao.implement.PaidImpl): co.japl.android.finances.services.dao.interfaces.IPaidDAO
-
 
     @Binds
     abstract fun bindUserCaseQuoteCreditCard(implement: QuoteCreditCardImpl): IQuoteCreditCard
@@ -206,7 +218,6 @@ abstract class AbstractModule {
     @Binds
     abstract fun bindServiceRate(implement: co.japl.finances.core.adapters.inbound.implement.creditcard.TaxImpl): ITaxPort
 
-
     @Binds
     abstract fun bindOutboundRate(implement: co.japl.finances.core.usercases.implement.creditcard.TaxImpl): ITax
 
@@ -225,7 +236,6 @@ abstract class AbstractModule {
     @Binds
     abstract fun bindServiceCreditCardSetting(implement: co.japl.android.finances.services.implement.CreditCardSettingImpl): co.japl.android.finances.services.interfaces.ICreditCardSettingSvc
 
-
     @Binds
     abstract fun bindUserCaseInput(implement: co.japl.finances.core.usercases.implement.common.InputImpl): IInput
 
@@ -234,7 +244,6 @@ abstract class AbstractModule {
 
     @Binds
     abstract fun bindOutboundInput(implement: co.japl.android.finances.services.core.InputImpl): co.com.japl.finances.iports.outbounds.IInputPort
-
 
     @Binds
     abstract fun binUserCaseCreditCard(implement: co.japl.finances.core.usercases.implement.common.CreditCardImpl): ICreditCard
@@ -252,7 +261,7 @@ abstract class AbstractModule {
     abstract fun bindUSerCaseRecap(implement:RecapImpl):IRecap
 
     @Binds
-    abstract fun bindBoughtListPort(implement:ListImpl):IBoughtListPort
+    abstract fun bindBoughtListPort(implement:ListImpl): IBoughtListPort
 
     @Binds
     abstract fun bindUserCaseBoughtList(implement:BoughtList):IBoughtList
@@ -376,7 +385,7 @@ abstract class AbstractModule {
     abstract fun bindInboundSmsPaidPort(svc:SMSImpl):ISmsPort
 
     @Binds
-    abstract fun bindUserCaseSmsPaid(svc:co.japl.finances.core.usercases.implement.paid.PaidImpl):ISms
+    abstract fun bindUserCaseSmsPaid(svc:co.japl.finances.core.usercases.implement.paid.PaidImpl):ISms2
 
     @Binds
     abstract fun bindInboundPaidCheckPaymentPort(svc:co.japl.finances.core.adapters.inbound.implement.paid.CheckPaymentImpl):ICheckPaymentPort
@@ -489,4 +498,38 @@ abstract class AbstractModule {
 
     @Binds
     abstract fun bindOutboundLLMService(impl: co.japl.android.finances.services.core.LLMOutboundAdapter): co.com.japl.finances.iports.outbounds.ILLMOutboundPort
+
+    @Binds
+    abstract fun bindInbountEmailCreditCard(impl: EmailCreditCard): IEmailCreditCardPort
+
+    @Binds
+    abstract fun bindInboundEmailPaid(impl: co.japl.finances.core.adapters.inbound.implement.paid.EmailPaid): IEmailPaidPort
+
+    @Binds
+    abstract fun bindUserCaseEmailCreditCard(impl: EmailCreditCardImpl): IEmailCreditCard
+
+    @Binds
+    abstract fun bindOutboudEmailCreditCard(impl: co.japl.android.finances.services.core.EmailCreditCardImpl): co.com.japl.finances.iports.outbounds.IEmailCreditCardPort
+
+    @Binds
+    abstract fun bindOutboundEmailPaid(impl: co.japl.android.finances.services.core.EmailPaidImpl): co.com.japl.finances.iports.outbounds.IEmailPaidPort
+
+    @Binds
+    abstract fun binDAOEmailCreditCard(impl: co.japl.android.finances.services.dao.implement.EmailCreditCardImpl): IEmailCreditCardDAO
+
+    @Binds
+    abstract fun bindOutboudGmailRead(imp: GmailReadImpl): IEmailRead
+
+    @Binds
+    abstract fun bindOutbound(impl: EmailCreditCardPatternImpl ): IEmailCreditCardPattern
+
+    @Binds
+    abstract fun bindEmailPaidPattern(impl: co.japl.android.finances.services.implement.EmailPaidPatternImpl): co.com.japl.finances.iports.outbounds.IEmailPaidPattern
+
+    @Binds
+    abstract fun bindUserCaseEmailPaid(impl: co.japl.finances.core.usercases.implement.paid.EmailPaidImpl): co.japl.finances.core.usercases.interfaces.paid.IEmailPaid
+
+    @Binds
+    abstract fun binDAOEmailPaid(impl: co.japl.android.finances.services.dao.implement.EmailPaidImpl): co.japl.android.finances.services.dao.interfaces.IEmailPaidDAO
+
 }
