@@ -24,4 +24,8 @@ class EmailPaid @Inject constructor(val svc: IEmailPaid) : IEmailPaidPort {
     override fun validateMessagePattern(dto: EmailPaidDTO, numDaysRead: Int): List<EmailValidationDTO> = svc.validateMessagePattern(dto, numDaysRead)
 
     override fun getEmailList(sender: String, subject: String, numDaysRead: Int): List<String> = svc.getEmailList(sender, subject, numDaysRead)
+
+    override fun read(numDaysRead: Int) {
+        svc.read(numDaysRead)
+    }
 }

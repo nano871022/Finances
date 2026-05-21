@@ -13,4 +13,6 @@ interface IEmailPaid {
     fun clone(id: Int): Boolean
     fun validateMessagePattern(dto: EmailPaidDTO, numDaysRead: Int): List<EmailValidationDTO>
     fun getEmailList(sender: String, subject: String, numDaysRead: Int): List<String>
+
+    fun read(numDaysRead: Int)
 }

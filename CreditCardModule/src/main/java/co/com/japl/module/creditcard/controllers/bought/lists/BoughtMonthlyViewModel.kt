@@ -153,26 +153,7 @@ class BoughtMonthlyViewModel constructor(
 
     suspend fun readSms(){
         try {
-            listCreditCard?.takeIf { it.isNotEmpty() }?.forEach { ccDto ->
-                arrayListOf(
-                msmSvc?.getByCreditCardAndKindInterest(ccDto.id, KindInterestRateEnum.CREDIT_CARD)
-                ,msmSvc?.getByCreditCardAndKindInterest(ccDto.id, KindInterestRateEnum.CASH_ADVANCE)
-                ,msmSvc?.getByCreditCardAndKindInterest(ccDto.id, KindInterestRateEnum.WALLET_BUY)
-                    )?.flatMap{ it!! }
-                    ?.forEach { sms ->
-                        msmSvc?.getSmsMessages(sms.phoneNumber, sms.pattern,prefs.creditCardSMSDaysRead)
-                            .takeIf { it?.isNotEmpty() == true }
-                            ?.forEach {
-                                svc?.createBySms(
-                                    name = it.first,
-                                    value = it.second,
-                                    date = it.third,
-                                    codeCreditRate = ccDto.id,
-                                    kind = sms.kindInterestRateEnum
-                                )
-                            }
-                    }
-            }
+            msmSvc?.read(prefs.creditCardSMSDaysRead)
         }catch (e:Exception){
             Log.e(javaClass.name,e.message,e)
         }

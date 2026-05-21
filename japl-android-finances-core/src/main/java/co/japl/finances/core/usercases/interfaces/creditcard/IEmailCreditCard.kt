@@ -22,4 +22,6 @@ interface IEmailCreditCard {
     fun delete(id: Int): Boolean
 
     fun clone(id: Int): Boolean
+
+    fun read(numDaysRead: Int)
 }

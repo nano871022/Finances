@@ -29,4 +29,5 @@ interface ISMSPaidPort{
 
     fun getSmsList(phoneNumber: String): List<String>
 
+    fun read(numDaysRead: Int)
 }
