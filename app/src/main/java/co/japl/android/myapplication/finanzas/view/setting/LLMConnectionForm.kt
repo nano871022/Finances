@@ -30,16 +30,19 @@ fun LLMConnectionForm(viewModel: LLMConnectionViewModel) {
         viewModel.loadModels()
     }
 
-    if(loading.value) {
-        LinearProgressIndicator(
-            progress = { progress.value },
-            modifier = Modifier.fillMaxWidth(),
-            color = ProgressIndicatorDefaults.linearColor,
-            trackColor = ProgressIndicatorDefaults.linearTrackColor,
-            strokeCap = ProgressIndicatorDefaults.LinearStrokeCap,
-        )
-    }else {
-        Body(viewModel)
+    Column(modifier=Modifier.fillMaxWidth()) {
+
+        if (loading.value) {
+            LinearProgressIndicator(
+                progress = { progress.value },
+                modifier = Modifier.fillMaxWidth(),
+                color = ProgressIndicatorDefaults.linearColor,
+                trackColor = ProgressIndicatorDefaults.linearTrackColor,
+                strokeCap = ProgressIndicatorDefaults.LinearStrokeCap,
+            )
+        } else {
+            Body(viewModel)
+        }
     }
 
 }
