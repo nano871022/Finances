@@ -1,11 +1,13 @@
 package co.com.japl.module.paid.views.email.form
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.DirectionsRun
 import androidx.compose.material.icons.rounded.Add
+import androidx.compose.material.icons.rounded.ArrowDownward
 import androidx.compose.material.icons.rounded.CleaningServices
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -120,6 +122,7 @@ private fun DialogAIEmail(viewModel: EmailPaidViewModel) {
     val showDialog = viewModel.showEmailDialog
     val examples = viewModel.emailSamples
     val aiFailed = viewModel.aiFailed
+    val showModelSelection = remember { mutableStateOf(false) }
 
     if (showDialog.value && examples.isNotEmpty()) {
         AlertDialog(
@@ -129,6 +132,24 @@ private fun DialogAIEmail(viewModel: EmailPaidViewModel) {
                 Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
                     examples.forEachIndexed { index, pair ->
                         CheckBoxField(title = pair.first, value = pair.second, callback = { viewModel.emailSamples[index] = pair.copy(second = it) })
+                    }
+
+                    HorizontalDivider(modifier = Modifier.padding(vertical = Dimensions.PADDING_SHORT))
+
+                    Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.clickable { showModelSelection.value = !showModelSelection.value }) {
+                        Text(text = stringResource(R.string.ai_model), modifier = Modifier.weight(1f), color = MaterialTheme.colorScheme.onSurface)
+                        Icon(imageVector = androidx.compose.material.icons.Icons.Rounded.ArrowDownward, contentDescription = null, tint = MaterialTheme.colorScheme.onSurface)
+                    }
+
+                    if (showModelSelection.value) {
+                        FieldSelect(
+                            title = stringResource(R.string.select_ai_model),
+                            value = viewModel.selectedLLMModel.value?.second ?: "",
+                            list = viewModel.llmModels,
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            viewModel.selectedLLMModel.value = it
+                        }
                     }
                 }
             },

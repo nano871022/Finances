@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -16,6 +17,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Icon
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.CleaningServices
+import androidx.compose.material.icons.rounded.ArrowDownward
 import androidx.compose.material.icons.rounded.Save
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.Scaffold
@@ -295,6 +297,7 @@ private fun AIDialog(viewModel: SmsViewModel){
     val showSms by viewModel.showSmsDialog
     val aiFaile by   viewModel.aiFaile
     val examples = remember { viewModel.smsSamples}
+    val showModelSelection = remember { mutableStateOf(false) }
 
   if (showSms && examples.isNotEmpty()) {
       AlertDialog(
@@ -308,6 +311,24 @@ private fun AIDialog(viewModel: SmsViewModel){
                           value = pair.second,
                           callback = { viewModel.smsSamples[index] = pair.copy(second = it) }
                       )
+                  }
+
+                  HorizontalDivider(modifier = Modifier.padding(vertical = Dimensions.PADDING_SHORT))
+
+                  Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.clickable { showModelSelection.value = !showModelSelection.value }) {
+                      Text(text = stringResource(R.string.ai_model), modifier = Modifier.weight(1f), color = MaterialTheme.colorScheme.onSurface)
+                      androidx.compose.material3.Icon(imageVector = Icons.Rounded.ArrowDownward, contentDescription = null, tint = MaterialTheme.colorScheme.onSurface)
+                  }
+
+                  if (showModelSelection.value) {
+                      FieldSelect(
+                          title = stringResource(R.string.select_ai_model),
+                          value = viewModel.selectedLLMModel.value?.second ?: "",
+                          list = viewModel.llmModels,
+                          modifier = Modifier.fillMaxWidth()
+                      ) {
+                          viewModel.selectedLLMModel.value = it
+                      }
                   }
               }
           },

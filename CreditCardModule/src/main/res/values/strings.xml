@@ -119,4 +119,6 @@ Messages:
     <string name="not_extracted">No se logró extraer datos</string>
     <string name="validation_close">Cerrar</string>
     <string name="loading_data">Cargando Data</string>
+    <string name="ai_model">Modelo IA</string>
+    <string name="select_ai_model">Seleccionar Modelo IA</string>
 </resources>

@@ -54,6 +54,8 @@ class SmsCreditCardViewModel constructor(private val codeSMSCC:Int?,private val 
 
     val smsSamples = mutableStateListOf<Pair<String, Boolean>>()
     val showSmsDialog = mutableStateOf(false)
+    val llmModels = mutableStateListOf<Pair<Int, String>>()
+    val selectedLLMModel = mutableStateOf<Pair<Int, String>?>(null)
 
     fun loadSmsSamples() {
         if (phoneNumber.value.isNotEmpty()) {
@@ -73,7 +75,7 @@ class SmsCreditCardViewModel constructor(private val codeSMSCC:Int?,private val 
                 progress.floatValue = 0.1f
                 val prompt = navController?.context?.getString(R.string.promt_sms_expreg, selectedSms.joinToString("\n"))?:""
                 progress.floatValue = 0.3f
-                llmService?.getAiResponse(prompt)?.onSuccess { response ->
+                llmService?.getAiResponse(prompt, selectedLLMModel.value?.second)?.onSuccess { response ->
                     progress.floatValue = 0.6f
                     pattern.value = response.trim().removeSurrounding("`").removePrefix("regex").trim()
                     progress.floatValue = 1.0f
@@ -247,6 +249,15 @@ class SmsCreditCardViewModel constructor(private val codeSMSCC:Int?,private val 
         kindInterestRateList.clear()
         KindInterestRateEnum.values().map { Pair(it.getCode().toInt(), it.name)}.forEach(kindInterestRateList::add)
             .also { progress.floatValue = 0.8f }
+
+        llmService?.getModels()?.onSuccess { models ->
+            llmModels.clear()
+            models.forEachIndexed { index, name ->
+                llmModels.add(Pair(index, name))
+            }
+            val model = prefs?.llmModel ?: ""
+            selectedLLMModel.value = llmModels.firstOrNull { it.second == model } ?: llmModels.firstOrNull()
+        }
 
         load.value = false
     }

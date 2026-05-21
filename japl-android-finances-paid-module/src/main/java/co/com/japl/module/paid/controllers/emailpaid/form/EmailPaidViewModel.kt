@@ -51,6 +51,8 @@ class EmailPaidViewModel(
     val aiFailed = mutableStateOf(false)
     val emailSamples = mutableStateListOf<Pair<String, Boolean>>()
     val showEmailDialog = mutableStateOf(false)
+    val llmModels = mutableStateListOf<Pair<Int, String>>()
+    val selectedLLMModel = mutableStateOf<Pair<Int, String>?>(null)
 
     fun loadEmailSamples() {
         if (sender.value.isNotEmpty()) {
@@ -75,7 +77,7 @@ class EmailPaidViewModel(
                     progress.floatValue = 0.1f
                 }
                 val prompt = context?.getString(R.string.promt_email_expreg, selectedEmails.joinToString("\n")) ?: ""
-                llmService?.getAiResponse(prompt)?.onSuccess { response ->
+                llmService?.getAiResponse(prompt, selectedLLMModel.value?.second)?.onSuccess { response ->
                     withContext(Dispatchers.Main) {
                         val lines = response.trim().lines()
                         lines.forEach { line ->
@@ -205,6 +207,15 @@ class EmailPaidViewModel(
                 }
             }
             withContext(Dispatchers.Main) {
+                llmService?.getModels()?.onSuccess { models ->
+                    llmModels.clear()
+                    models.forEachIndexed { index, name ->
+                        llmModels.add(Pair(index, name))
+                    }
+                    val model = prefs?.llmModel ?: ""
+                    selectedLLMModel.value = llmModels.firstOrNull { it.second == model } ?: llmModels.firstOrNull()
+                }
+
                 load.value = false
             }
         }

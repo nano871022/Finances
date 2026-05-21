@@ -59,6 +59,8 @@ class EmailCreditCardViewModel constructor(
     val aiFailed = mutableStateOf(false)
     val emailSamples = mutableStateListOf<Pair<String, Boolean>>()
     val showEmailDialog = mutableStateOf(false)
+    val llmModels = mutableStateListOf<Pair<Int, String>>()
+    val selectedLLMModel = mutableStateOf<Pair<Int, String>?>(null)
 
     fun loadEmailSamples() {
         if (sender.value.isNotEmpty()) {
@@ -86,7 +88,7 @@ class EmailCreditCardViewModel constructor(
                 withContext(Dispatchers.Main) {
                     progress.floatValue = 0.3f
                 }
-                llmService?.getAiResponse(prompt)?.onSuccess { response ->
+                llmService?.getAiResponse(prompt, selectedLLMModel.value?.second)?.onSuccess { response ->
                     withContext(Dispatchers.Main) {
                         progress.floatValue = 0.6f
                         val lines = response.trim().lines()
@@ -279,6 +281,15 @@ class EmailCreditCardViewModel constructor(
         withContext(Dispatchers.Main) {
             kindInterestRateList.clear()
             KindInterestRateEnum.entries.map { Pair(it.getCode().toInt(), it.name) }.forEach { kindInterestRateList.add(it) }
+
+            llmService?.getModels()?.onSuccess { models ->
+                llmModels.clear()
+                models.forEachIndexed { index, name ->
+                    llmModels.add(Pair(index, name))
+                }
+                val model = prefs?.llmModel ?: ""
+                selectedLLMModel.value = llmModels.firstOrNull { it.second == model } ?: llmModels.firstOrNull()
+            }
         }
         progress.floatValue = 0.8f
     }
