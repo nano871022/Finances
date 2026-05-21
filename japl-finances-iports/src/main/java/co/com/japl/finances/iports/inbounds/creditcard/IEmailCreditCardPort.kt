@@ -5,7 +5,7 @@ import co.com.japl.finances.iports.dtos.EmailValidationDTO
 
 interface IEmailCreditCardPort{
 
-    fun validateMessagePattern(dto: EmailCreditCardDTO):List<EmailValidationDTO>
+    fun validateMessagePattern(dto: EmailCreditCardDTO, numDaysRead: Int):List<EmailValidationDTO>
 
     fun create(dto: EmailCreditCardDTO): Int
 
@@ -21,5 +21,5 @@ interface IEmailCreditCardPort{
 
     fun clone(id:Int):Boolean
 
-    fun getEmailList(sender: String, subject: String): List<String>
+    fun getEmailList(sender: String, subject: String, numDaysRead: Int): List<String>
 }

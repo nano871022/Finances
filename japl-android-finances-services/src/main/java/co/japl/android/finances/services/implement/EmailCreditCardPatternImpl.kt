@@ -9,8 +9,8 @@ import javax.inject.Inject
 
 class EmailCreditCardPatternImpl @Inject constructor(private val emailRead: IEmailRead) : IEmailCreditCardPattern {
 
-    override fun validateMessagePattern(dto: EmailCreditCardDTO): List<EmailValidationDTO> {
-        val emails = emailRead.getEmails(dto.sender, dto.subjectPattern)
+    override fun validateMessagePattern(dto: EmailCreditCardDTO, numDaysRead: Int): List<EmailValidationDTO> {
+        val emails = emailRead.getEmails(dto.sender, dto.subjectPattern, numDaysRead)
         val pattern = Pattern.compile(dto.bodyPattern, Pattern.CASE_INSENSITIVE or Pattern.MULTILINE or Pattern.DOTALL)
         
         return emails.map { body ->
@@ -33,7 +33,7 @@ class EmailCreditCardPatternImpl @Inject constructor(private val emailRead: IEma
         }
     }
 
-    override fun getEmailList(sender: String, subject: String): List<String> {
-        return emailRead.getEmails(sender, subject)
+    override fun getEmailList(sender: String, subject: String, numDaysRead: Int): List<String> {
+        return emailRead.getEmails(sender, subject, numDaysRead)
     }
 }

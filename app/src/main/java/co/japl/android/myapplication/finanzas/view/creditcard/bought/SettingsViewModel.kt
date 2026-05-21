@@ -7,9 +7,20 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import co.com.japl.finances.iports.inbounds.creditcard.IEmailCreditCardPort
+import co.com.japl.finances.iports.inbounds.creditcard.bought.IBoughtSmsPort
 import co.com.japl.ui.Prefs
 import co.japl.android.myapplication.R
+import co.japl.android.myapplication.finanzas.modules.EntryPoint
+import co.japl.finances.core.utils.DateUtils
 import co.japl.finances.core.utils.NumbersUtil
+import dagger.hilt.EntryPoints
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import java.time.LocalDate
+import java.time.LocalDateTime
 
 class SettingsViewModel constructor(private val prefs: Prefs): ViewModel() {
 
@@ -17,12 +28,15 @@ class SettingsViewModel constructor(private val prefs: Prefs): ViewModel() {
 
     val daysSmsRead = mutableStateOf("${prefs.creditCardSMSDaysRead}")
     val errorDaysSmsRead = mutableStateOf(false)
+    val daysEmailRead = mutableStateOf("${prefs.creditCardEmailDaysRead}")
+    val errorDaysEmailRead = mutableStateOf(false)
     val simulatorState = mutableStateOf(prefs.simulator)
 
     fun save(context:Context){
-        if(!errorDaysSmsRead.value) {
+        if(!errorDaysSmsRead.value && !errorDaysEmailRead.value) {
             prefs.simulator = simulatorState.value
             prefs.creditCardSMSDaysRead = daysSmsRead.value.toInt()
+            prefs.creditCardEmailDaysRead = daysEmailRead.value.toInt()
             state.value = false
             Toast.makeText(context, R.string.saved, Toast.LENGTH_SHORT).show()
         }
@@ -32,6 +46,38 @@ class SettingsViewModel constructor(private val prefs: Prefs): ViewModel() {
         daysSmsRead.value.takeIf { it != null && it.isNotEmpty() && NumbersUtil.isNumber(it) }?.let{
             errorDaysSmsRead.value = false
         }?: errorDaysSmsRead.let{it.value = true}
+
+        daysEmailRead.value.takeIf { it != null && it.isNotEmpty() && NumbersUtil.isNumber(it) }?.let{
+            errorDaysEmailRead.value = false
+        }?: errorDaysEmailRead.let{it.value = true}
+    }
+
+    fun readEmail(context: Context) {
+        val emailCCSvc: IEmailCreditCardPort = EntryPoints.get(context.applicationContext, EntryPoint::class.java).getEmailCreditCardPort()
+        val boughtSmsSvc: IBoughtSmsPort = EntryPoints.get(context.applicationContext, EntryPoint::class.java).getInboundBoughtSmsPort()
+        val numDaysRead = daysEmailRead.value.toIntOrNull() ?: prefs.creditCardEmailDaysRead
+        val startDate = LocalDate.now().minusDays(numDaysRead.toLong())
+
+        viewModelScope.launch(Dispatchers.IO) {
+            emailCCSvc.getAll().filter { it.active }.forEach { emailConfig ->
+                emailCCSvc.validateMessagePattern(emailConfig, numDaysRead).filter { it.matched }.forEach { validation ->
+                    val date = validation.date?.let { DateUtils.toLocalDateRegex(it) }
+                    val value = validation.value?.toDoubleOrNull()
+                    if (date != null && value != null && (date.isAfter(startDate) || date.isEqual(startDate))) {
+                        boughtSmsSvc.createBySms(
+                            name = validation.name ?: "",
+                            value = value,
+                            date = date.atStartOfDay(),
+                            codeCreditRate = emailConfig.codeCreditCard,
+                            kind = emailConfig.kindInterestRateEnum
+                        )
+                    }
+                }
+            }
+            withContext(Dispatchers.Main) {
+                Toast.makeText(context, R.string.email_read_process_completed, Toast.LENGTH_SHORT).show()
+            }
+        }
     }
 
 }

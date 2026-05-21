@@ -480,6 +480,9 @@
     <string name="title_account_doesnt_create_yet">No hay una Cuenta bancaria creada</string>
     <string name="message_account_doesnt_create_yet">Para utilizar este modulo es necesario crear una cuenta bancaria de referencia, desea crear una?</string>
     <string name="days_sms_read">Dias de lectura SMS</string>
+    <string name="days_email_read">Dias de lectura Email</string>
+    <string name="read_email">Leer Email</string>
+    <string name="email_read_process_completed">Proceso de lectura de email completado</string>
     <string name="go">Ir</string>
     <string name="default_web_client_id">332922408573-hdcfmvvogd9thf0ujtqbl1rghn5voud2.apps.googleusercontent.com</string>
     <string name="default_web_client_id2">332922408573-sq5fj56cbl35mptmvo0mvp3ig39mf58p.apps.googleusercontent.com</string>

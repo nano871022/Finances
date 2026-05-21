@@ -63,7 +63,7 @@ class EmailCreditCardViewModel constructor(
     fun loadEmailSamples() {
         if (sender.value.isNotEmpty()) {
             viewModelScope.launch(Dispatchers.IO) {
-                svc?.getEmailList(sender.value, subjectPattern.value)?.let { list ->
+                svc?.getEmailList(sender.value, subjectPattern.value, 30)?.let { list ->
                     withContext(Dispatchers.Main) {
                         emailSamples.clear()
                         list.map { Pair(it, false) }.forEach(emailSamples::add)
@@ -188,7 +188,7 @@ class EmailCreditCardViewModel constructor(
                     validationResults.clear()
                 }
                 runCatching {
-                    svc?.validateMessagePattern(dto) ?: emptyList()
+                    svc?.validateMessagePattern(dto, 30) ?: emptyList()
                 }.onFailure { e ->
                     withContext(Dispatchers.Main) {
                         validating.value = false

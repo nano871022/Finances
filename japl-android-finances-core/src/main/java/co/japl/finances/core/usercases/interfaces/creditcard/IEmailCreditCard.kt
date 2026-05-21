@@ -5,6 +5,10 @@ import co.com.japl.finances.iports.dtos.EmailValidationDTO
 
 interface IEmailCreditCard {
 
+    fun validateMessagePattern(dto: EmailCreditCardDTO, numDaysRead: Int): List<EmailValidationDTO>
+
+    fun getEmailList(sender: String, subject: String, numDaysRead: Int): List<String>
+
     fun create(dto: EmailCreditCardDTO): Int
 
     fun update(dto: EmailCreditCardDTO): Boolean
@@ -18,8 +22,4 @@ interface IEmailCreditCard {
     fun delete(id: Int): Boolean
 
     fun clone(id: Int): Boolean
-
-    fun validateMessagePattern(dto: EmailCreditCardDTO): List<EmailValidationDTO>
-
-    fun getEmailList(sender: String, subject: String): List<String>
 }

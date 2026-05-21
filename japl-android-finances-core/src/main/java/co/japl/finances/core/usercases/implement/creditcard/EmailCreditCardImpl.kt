@@ -22,7 +22,7 @@ class EmailCreditCardImpl @Inject constructor(val svc: IEmailCreditCardPort, val
 
     override fun clone(id: Int): Boolean =getById(id)?.let{create(it.copy(id=0))!=0}?:false
 
-    override fun validateMessagePattern(dto: EmailCreditCardDTO): List<EmailValidationDTO> = messageSvc.validateMessagePattern(dto)
+    override fun validateMessagePattern(dto: EmailCreditCardDTO, numDaysRead: Int): List<EmailValidationDTO> = messageSvc.validateMessagePattern(dto, numDaysRead)
 
-    override fun getEmailList(sender: String, subject: String): List<String> = messageSvc.getEmailList(sender, subject)
+    override fun getEmailList(sender: String, subject: String, numDaysRead: Int): List<String> = messageSvc.getEmailList(sender, subject, numDaysRead)
 }
