@@ -9,6 +9,7 @@ import co.com.japl.finances.iports.dtos.InputDTO
 import co.com.japl.finances.iports.inbounds.inputs.IInputPort
 import co.com.japl.module.paid.R
 import co.com.japl.module.paid.enums.MoreOptionsKindPaymentInput
+import co.com.japl.module.paid.mapper.InputMapper
 import co.com.japl.ui.utils.DateUtils
 import co.japl.android.myapplication.utils.NumbersUtil
 import kotlinx.coroutines.runBlocking
@@ -65,16 +66,14 @@ class InputViewModel constructor(private val codeAccount:Int,private val codeInp
         save = !errorDate.value && !errorKindOfPayment.value && !errorName.value && !errorValue.value
 
         if(save){
-            val input = InputDTO(
-                _input?.id?:0,
-                DateUtils.toLocalDate(date.value),
+            _input = InputMapper.mapper(
+                _input?.id,
+                date.value,
                 codeAccount,
                 kindOfPayment.value,
                 name.value,
-                value.value.toBigDecimal(),
-                LocalDate.now(),
-                LocalDate.MAX)
-            _input = input
+                value.value
+            )
         }
     }
 

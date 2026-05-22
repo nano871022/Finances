@@ -16,19 +16,19 @@ class FinancesModuleIntegrationAdapter @Inject constructor(
 ) : ExternalFinancialDataPort {
 
     override suspend fun getIncomeYTD(year: Int): BigDecimal {
-        return inputDAO.getAll().filter { it.date.year == year }.map { it.value }.fold(BigDecimal.ZERO, BigDecimal::add)
+        return inputDAO.getTotalInputs()
     }
 
     override suspend fun getCreditCardPurchasesYTD(year: Int): BigDecimal {
-        return boughtDAO.getAll().filter { it.boughtDate.year == year }.map { it.valueItem }.fold(BigDecimal.ZERO, BigDecimal::add)
+        return boughtDAO.getAll().filter { it.boughtDate.year == year }.sumOf { it.valueItem }
     }
 
     override suspend fun getDebitPaymentsYTD(year: Int): BigDecimal {
-        return paidDAO.getAll().filter { it.date.year == year }.map { it.value }.fold(BigDecimal.ZERO, BigDecimal::add)
+        return paidDAO.getAll().filter { it.date.year == year }.sumOf { it.value }
     }
 
     override suspend fun getOutstandingDebts(year: Int): BigDecimal {
-        return creditDAO.getAll().filter { it.date.year == year }.map { it.value }.fold(BigDecimal.ZERO, BigDecimal::add)
+        return creditDAO.getAll().filter { it.date.year == year }.sumOf { it.value }
     }
 
     override suspend fun getAverageMonthlyIncomeHistorical(): BigDecimal {

@@ -113,15 +113,18 @@ class InputImpl @Inject constructor(override var dbConnect: SQLiteOpenHelper,pub
     override fun getAllValid(accountCode:Int,date: LocalDate): List<InputDTO> {
         val db = dbConnect.readableDatabase
         val items = mutableListOf<InputDTO>()
-        db.query(InputDB.Entry.TABLE_NAME,COLUMNS,"""
+        db.query(InputDB.Entry.TABLE_NAME,COLUMNS,
+            """
                 ${InputDB.Entry.COLUMN_ACCOUNT_CODE} = ?
-            """, arrayOf(accountCode.toString()),null,null,null)
+            """,
+            arrayOf(accountCode.toString())
+            ,null,null,null)
             ?.use { cursor ->
-                Log.d(javaClass.name,"=== GetAllValid $FORMAT_DATE_END_WHERE Date ${DateUtils.localDateToStringDate(date)}")
                 with(cursor) {
                     while (moveToNext()) {
-                        mapper.mapping(cursor).takeIf { it.dateEnd > date }?.let {
-                            Log.d(javaClass.name,"=== GetAllValid ${it.dateEnd} Date ${date} ${it}")
+                        mapper.mapping(cursor).takeIf {
+                            it.dateEnd > date
+                        }?.let {
                             items.add(it)
                         }
                     }
