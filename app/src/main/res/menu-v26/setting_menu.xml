@@ -27,12 +27,6 @@
         android:title="@string/taxes_credit_card"
         app:showAsAction="ifRoom" />
 
-        <item
-            android:id="@+id/item_menu_setting_dian"
-            android:icon="@android:drawable/ic_menu_edit"
-            android:title="@string/dian_tax_declaration"
-            app:showAsAction="ifRoom" />
-
     <item
         android:id="@+id/sms_list_credit_card"
         android:icon="@android:drawable/stat_notify_chat"
