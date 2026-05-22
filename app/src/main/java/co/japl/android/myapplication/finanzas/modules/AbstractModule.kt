@@ -532,4 +532,21 @@ abstract class AbstractModule {
     @Binds
     abstract fun binDAOEmailPaid(impl: co.japl.android.finances.services.dao.implement.EmailPaidImpl): co.japl.android.finances.services.dao.interfaces.IEmailPaidDAO
 
+    @Binds
+    abstract fun bindTaxConfigurationPort(impl: co.japl.android.finances.services.core.TaxConfigurationPortImpl): com.nano871022.finances.iport.ports.outbound.TaxConfigurationPort
+
+    @Binds
+    abstract fun bindExternalFinancialDataPort(impl: co.japl.android.finances.services.core.FinancesModuleIntegrationAdapter): com.nano871022.finances.iport.ports.outbound.ExternalFinancialDataPort
+
+    @Binds
+    abstract fun bindTaxHistoryPersistencePort(impl: co.japl.android.finances.services.core.TaxHistoryPortImpl): com.nano871022.finances.iport.ports.outbound.TaxHistoryPersistencePort
+
+    @Binds
+    abstract fun bindPatrimonyPersistencePort(impl: co.japl.android.finances.services.core.PatrimonyPortImpl): com.nano871022.finances.iport.ports.outbound.PatrimonyPersistencePort
+
+    @Binds
+    abstract fun bindPatrimonyDAO(impl: co.japl.android.finances.services.dao.implement.PatrimonyImpl): co.japl.android.finances.services.dao.interfaces.IPatrimonyDAO
+
+    @Binds
+    abstract fun bindTaxHistoryDAO(impl: co.japl.android.finances.services.dao.implement.TaxHistoryImpl): co.japl.android.finances.services.dao.interfaces.ITaxHistoryDAO
 }
