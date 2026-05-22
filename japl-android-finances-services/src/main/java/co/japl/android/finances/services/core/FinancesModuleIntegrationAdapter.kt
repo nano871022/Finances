@@ -4,17 +4,19 @@ import com.nano871022.finances.iport.ports.outbound.ExternalFinancialDataPort
 import co.japl.android.finances.services.dao.interfaces.IPaidDAO
 import co.japl.android.finances.services.dao.interfaces.IQuoteCreditCardDAO
 import co.japl.android.finances.services.dao.interfaces.ICreditDAO
+import co.japl.android.finances.services.dao.interfaces.IInputDAO
 import java.math.BigDecimal
 import javax.inject.Inject
 
 class FinancesModuleIntegrationAdapter @Inject constructor(
     private val paidDAO: IPaidDAO,
     private val boughtDAO: IQuoteCreditCardDAO,
-    private val creditDAO: ICreditDAO
+    private val creditDAO: ICreditDAO,
+    private val inputDAO: IInputDAO
 ) : ExternalFinancialDataPort {
 
     override suspend fun getIncomeYTD(year: Int): BigDecimal {
-        return BigDecimal.ZERO
+        return inputDAO.getAll().filter { it.date.year == year }.map { it.value }.fold(BigDecimal.ZERO, BigDecimal::add)
     }
 
     override suspend fun getCreditCardPurchasesYTD(year: Int): BigDecimal {
