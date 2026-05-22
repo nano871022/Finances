@@ -1,6 +1,6 @@
 package co.japl.android.finances.services.core
 
-import com.nano871022.finances.iport.ports.outbound.ExternalFinancialDataPort
+import co.com.japl.finances.iports.outbounds.ExternalFinancialDataPort
 import co.japl.android.finances.services.dao.interfaces.IPaidDAO
 import co.japl.android.finances.services.dao.interfaces.IQuoteCreditCardDAO
 import co.japl.android.finances.services.dao.interfaces.ICreditDAO

@@ -1,4 +1,4 @@
-package com.nano871022.finances.features.declaracion_renta_dian.ui
+package co.com.japl.module.declaracion_renta_dian.controller
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -7,7 +7,8 @@ import android.view.ViewGroup
 import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import com.nano871022.finances.features.declaracion_renta_dian.viewmodel.TaxDeclarationViewModel
+import co.com.japl.module.declaracion_renta_dian.view.TaxDeclarationScreen
+import co.com.japl.module.declaracion_renta_dian.viewmodel.TaxDeclarationViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint

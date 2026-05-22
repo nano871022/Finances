@@ -1,10 +1,10 @@
-package com.nano871022.finances.core.domain.inbound
+package co.japl.finances.core.adapters.inbound.implement.dian
 
-import com.nano871022.finances.iport.dto.TaxDeclarationDTO
-import com.nano871022.finances.iport.ports.inbound.GetTaxDeclarationUseCase
-import com.nano871022.finances.iport.ports.outbound.TaxConfigurationPort
-import com.nano871022.finances.iport.ports.outbound.ExternalFinancialDataPort
-import com.nano871022.finances.iport.ports.outbound.PatrimonyPersistencePort
+import co.com.japl.finances.iports.dtos.TaxDeclarationDTO
+import co.com.japl.finances.iports.inbounds.common.GetTaxDeclarationUseCase
+import co.com.japl.finances.iports.outbounds.TaxConfigurationPort
+import co.com.japl.finances.iports.outbounds.ExternalFinancialDataPort
+import co.com.japl.finances.iports.outbounds.PatrimonyPersistencePort
 import java.math.BigDecimal
 import java.math.RoundingMode
 import javax.inject.Inject

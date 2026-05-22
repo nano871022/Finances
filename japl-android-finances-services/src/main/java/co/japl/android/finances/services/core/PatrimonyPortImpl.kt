@@ -1,7 +1,7 @@
 package co.japl.android.finances.services.core
 
-import com.nano871022.finances.iport.dto.PatrimonyAssetDTO
-import com.nano871022.finances.iport.ports.outbound.PatrimonyPersistencePort
+import co.com.japl.finances.iports.dtos.PatrimonyAssetDTO
+import co.com.japl.finances.iports.outbounds.PatrimonyPersistencePort
 import co.japl.android.finances.services.dao.interfaces.IPatrimonyDAO
 import co.japl.android.finances.services.dto.PatrimonyDTO
 import javax.inject.Inject

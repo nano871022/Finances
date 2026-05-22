@@ -1,4 +1,4 @@
-package com.nano871022.finances.features.declaracion_renta_dian.ui
+package co.com.japl.module.declaracion_renta_dian.view
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -18,9 +18,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import co.japl.android.myapplication.utils.NumbersUtil
-import com.nano871022.finances.features.declaracion_renta_dian.R
-import com.nano871022.finances.features.declaracion_renta_dian.viewmodel.TaxDeclarationViewModel
-import com.nano871022.finances.iport.dto.LimitStatus
+import co.com.japl.module.declaracion_renta_dian.R
+import co.com.japl.module.declaracion_renta_dian.viewmodel.TaxDeclarationViewModel
+import co.com.japl.finances.iports.dtos.LimitStatus
+import java.math.RoundingMode
 
 @Composable
 fun ProjectionTab(viewModel: TaxDeclarationViewModel) {
@@ -46,7 +47,7 @@ fun ProjectionTab(viewModel: TaxDeclarationViewModel) {
                         LimitStatus.EXCEEDED -> Color.Red
                     }
                     LinearProgressIndicator(
-                        progress = (proj.projectedEndOfYear.divide(proj.threshold, 2, java.math.RoundingMode.HALF_UP).toFloat()).coerceAtMost(1f),
+                        progress = (proj.projectedEndOfYear.divide(proj.threshold, 2, RoundingMode.HALF_UP).toFloat()).coerceAtMost(1f),
                         color = color,
                         modifier = Modifier.fillMaxWidth().padding(top = 8.dp)
                     )

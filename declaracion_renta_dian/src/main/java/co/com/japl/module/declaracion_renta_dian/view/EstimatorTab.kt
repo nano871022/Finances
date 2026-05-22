@@ -1,4 +1,4 @@
-package com.nano871022.finances.features.declaracion_renta_dian.ui
+package co.com.japl.module.declaracion_renta_dian.view
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -23,9 +23,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import co.japl.android.myapplication.utils.NumbersUtil
-import com.nano871022.finances.features.declaracion_renta_dian.R
-import com.nano871022.finances.features.declaracion_renta_dian.viewmodel.TaxDeclarationViewModel
-import com.nano871022.finances.iport.dto.TaxDeclarationDTO
+import co.com.japl.module.declaracion_renta_dian.R
+import co.com.japl.module.declaracion_renta_dian.viewmodel.TaxDeclarationViewModel
+import co.com.japl.finances.iports.dtos.TaxDeclarationDTO
 import java.math.BigDecimal
 
 @Composable

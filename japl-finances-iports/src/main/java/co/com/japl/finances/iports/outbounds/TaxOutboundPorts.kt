@@ -1,5 +1,7 @@
-package com.nano871022.finances.iport.ports.outbound
+package co.com.japl.finances.iports.outbounds
 
+import co.com.japl.finances.iports.dtos.PatrimonyAssetDTO
+import co.com.japl.finances.iports.dtos.TaxHistoryDTO
 import java.math.BigDecimal
 
 interface TaxConfigurationPort {
@@ -29,12 +31,12 @@ interface ExternalFinancialDataPort {
 }
 
 interface TaxHistoryPersistencePort {
-    suspend fun saveHistory(history: com.nano871022.finances.iport.dto.TaxHistoryDTO)
-    suspend fun getHistory(): List<com.nano871022.finances.iport.dto.TaxHistoryDTO>
+    suspend fun saveHistory(history: TaxHistoryDTO)
+    suspend fun getHistory(): List<TaxHistoryDTO>
 }
 
 interface PatrimonyPersistencePort {
-    suspend fun saveAsset(asset: com.nano871022.finances.iport.dto.PatrimonyAssetDTO)
-    suspend fun getAssets(): List<com.nano871022.finances.iport.dto.PatrimonyAssetDTO>
+    suspend fun saveAsset(asset: PatrimonyAssetDTO)
+    suspend fun getAssets(): List<PatrimonyAssetDTO>
     suspend fun deleteAsset(id: Long)
 }

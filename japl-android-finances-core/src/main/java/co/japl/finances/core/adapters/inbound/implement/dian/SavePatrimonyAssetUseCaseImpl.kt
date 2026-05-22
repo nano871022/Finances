@@ -1,8 +1,8 @@
-package com.nano871022.finances.core.domain.inbound
+package co.japl.finances.core.adapters.inbound.implement.dian
 
-import com.nano871022.finances.iport.dto.PatrimonyAssetDTO
-import com.nano871022.finances.iport.ports.inbound.SavePatrimonyAssetUseCase
-import com.nano871022.finances.iport.ports.outbound.PatrimonyPersistencePort
+import co.com.japl.finances.iports.dtos.PatrimonyAssetDTO
+import co.com.japl.finances.iports.inbounds.common.SavePatrimonyAssetUseCase
+import co.com.japl.finances.iports.outbounds.PatrimonyPersistencePort
 import javax.inject.Inject
 
 class SavePatrimonyAssetUseCaseImpl @Inject constructor(

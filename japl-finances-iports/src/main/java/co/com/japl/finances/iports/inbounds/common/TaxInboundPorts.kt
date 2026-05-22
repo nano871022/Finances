@@ -1,9 +1,9 @@
-package com.nano871022.finances.iport.ports.inbound
+package co.com.japl.finances.iports.inbounds.common
 
-import com.nano871022.finances.iport.dto.TaxDeclarationDTO
-import com.nano871022.finances.iport.dto.TaxHistoryDTO
-import com.nano871022.finances.iport.dto.PatrimonyAssetDTO
-import com.nano871022.finances.iport.dto.TaxProjectionDTO
+import co.com.japl.finances.iports.dtos.TaxDeclarationDTO
+import co.com.japl.finances.iports.dtos.TaxHistoryDTO
+import co.com.japl.finances.iports.dtos.PatrimonyAssetDTO
+import co.com.japl.finances.iports.dtos.TaxProjectionDTO
 
 interface GetTaxDeclarationUseCase {
     suspend fun getTaxDeclaration(year: Int): TaxDeclarationDTO

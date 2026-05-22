@@ -1,7 +1,7 @@
 package co.japl.android.finances.services.core
 
-import com.nano871022.finances.iport.dto.TaxHistoryDTO as IPortTaxHistoryDTO
-import com.nano871022.finances.iport.ports.outbound.TaxHistoryPersistencePort
+import co.com.japl.finances.iports.dtos.TaxHistoryDTO as IPortTaxHistoryDTO
+import co.com.japl.finances.iports.outbounds.TaxHistoryPersistencePort
 import co.japl.android.finances.services.dao.interfaces.ITaxHistoryDAO
 import co.japl.android.finances.services.dto.TaxHistoryDTO
 import javax.inject.Inject

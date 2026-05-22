@@ -1,8 +1,8 @@
-package com.nano871022.finances.core.domain.inbound
+package co.japl.finances.core.adapters.inbound.implement.dian
 
-import com.nano871022.finances.iport.dto.TaxHistoryDTO
-import com.nano871022.finances.iport.ports.inbound.GetTaxHistoryUseCase
-import com.nano871022.finances.iport.ports.outbound.TaxHistoryPersistencePort
+import co.com.japl.finances.iports.dtos.TaxHistoryDTO
+import co.com.japl.finances.iports.inbounds.common.GetTaxHistoryUseCase
+import co.com.japl.finances.iports.outbounds.TaxHistoryPersistencePort
 import javax.inject.Inject
 
 class GetTaxHistoryUseCaseImpl @Inject constructor(

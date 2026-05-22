@@ -1,15 +1,15 @@
-package com.nano871022.finances.features.declaracion_renta_dian.viewmodel
+package co.com.japl.module.declaracion_renta_dian.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.nano871022.finances.iport.dto.TaxDeclarationDTO
-import com.nano871022.finances.iport.dto.TaxHistoryDTO
-import com.nano871022.finances.iport.dto.TaxProjectionDTO
-import com.nano871022.finances.iport.dto.PatrimonyAssetDTO
-import com.nano871022.finances.iport.ports.inbound.GetTaxDeclarationUseCase
-import com.nano871022.finances.iport.ports.inbound.GetTaxHistoryUseCase
-import com.nano871022.finances.iport.ports.inbound.GetTaxProjectionUseCase
-import com.nano871022.finances.iport.ports.inbound.SavePatrimonyAssetUseCase
+import co.com.japl.finances.iports.dtos.TaxDeclarationDTO
+import co.com.japl.finances.iports.dtos.TaxHistoryDTO
+import co.com.japl.finances.iports.dtos.TaxProjectionDTO
+import co.com.japl.finances.iports.dtos.PatrimonyAssetDTO
+import co.com.japl.finances.iports.inbounds.common.GetTaxDeclarationUseCase
+import co.com.japl.finances.iports.inbounds.common.GetTaxHistoryUseCase
+import co.com.japl.finances.iports.inbounds.common.GetTaxProjectionUseCase
+import co.com.japl.finances.iports.inbounds.common.SavePatrimonyAssetUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

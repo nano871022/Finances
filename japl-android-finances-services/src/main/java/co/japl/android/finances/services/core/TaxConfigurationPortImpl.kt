@@ -1,8 +1,8 @@
 package co.japl.android.finances.services.core
 
 import android.content.Context
-import com.nano871022.finances.iport.ports.outbound.TaxConfigurationPort
-import com.nano871022.finances.iport.ports.outbound.TaxBracketConfig
+import co.com.japl.finances.iports.outbounds.TaxConfigurationPort
+import co.com.japl.finances.iports.outbounds.TaxBracketConfig
 import java.math.BigDecimal
 import java.util.Properties
 import javax.inject.Inject

@@ -1,4 +1,4 @@
-package com.nano871022.finances.core.domain.model
+package co.japl.finances.core.model
 
 import java.math.BigDecimal
 

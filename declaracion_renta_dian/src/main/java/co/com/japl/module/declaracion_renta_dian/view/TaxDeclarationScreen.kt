@@ -1,13 +1,12 @@
-package com.nano871022.finances.features.declaracion_renta_dian.ui
+package co.com.japl.module.declaracion_renta_dian.view
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import com.nano871022.finances.features.declaracion_renta_dian.R
-import com.nano871022.finances.features.declaracion_renta_dian.viewmodel.TaxDeclarationViewModel
-
+import co.com.japl.module.declaracion_renta_dian.viewmodel.TaxDeclarationViewModel
+import co.com.japl.module.declaracion_renta_dian.R
 
 @Composable
 fun TaxDeclarationScreen(viewModel: TaxDeclarationViewModel) {

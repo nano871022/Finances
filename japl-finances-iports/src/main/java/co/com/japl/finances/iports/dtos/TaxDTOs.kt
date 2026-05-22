@@ -1,4 +1,4 @@
-package com.nano871022.finances.iport.dto
+package co.com.japl.finances.iports.dtos
 
 import java.math.BigDecimal
 import java.time.LocalDate

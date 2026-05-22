@@ -8,7 +8,7 @@ plugins {
 }
 
 android {
-    namespace = "com.nano871022.finances.features.declaracion_renta_dian"
+    namespace = "co.com.japl.module.declaracion_renta_dian"
     compileSdk = 36
 
     defaultConfig {
