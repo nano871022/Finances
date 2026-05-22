@@ -28,6 +28,11 @@ interface ExternalFinancialDataPort {
     suspend fun getOutstandingDebts(year: Int): BigDecimal
     suspend fun getAverageMonthlyIncomeHistorical(): BigDecimal
     suspend fun getAverageMonthlyExpenseHistorical(): BigDecimal
+
+    suspend fun getIncomeForYear(year: Int): BigDecimal
+    suspend fun getProjectedIncome(year: Int): BigDecimal
+    suspend fun getCreditCardPaymentsForYear(year: Int): BigDecimal
+    suspend fun getCreditPaymentsForYear(year: Int): BigDecimal
 }
 
 interface TaxHistoryPersistencePort {

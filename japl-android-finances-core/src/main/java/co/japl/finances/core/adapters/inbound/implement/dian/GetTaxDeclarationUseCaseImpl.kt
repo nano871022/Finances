@@ -17,10 +17,11 @@ class GetTaxDeclarationUseCaseImpl @Inject constructor(
 
     override suspend fun getTaxDeclaration(year: Int): TaxDeclarationDTO {
         val uvt = configPort.getUVTValue(year)
-        val income = financialDataPort.getIncomeYTD(year)
-        val ccPurchases = financialDataPort.getCreditCardPurchasesYTD(year)
+        val income = financialDataPort.getIncomeForYear(year)
+        val ccPurchases = financialDataPort.getCreditCardPaymentsForYear(year)
+        val creditPayments = financialDataPort.getCreditPaymentsForYear(year)
         val debitPayments = financialDataPort.getDebitPaymentsYTD(year)
-        val totalConsumptions = ccPurchases.add(debitPayments)
+        val totalConsumptions = ccPurchases.add(debitPayments).add(creditPayments)
         val manualPatrimony = patrimonyPersistencePort.getAssets().sumOf { it.value }
 
         val reasons = mutableListOf<String>()
