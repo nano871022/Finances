@@ -3,7 +3,7 @@ package co.japl.android.myapplication.finanzas.bussiness.impl
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.util.Log
-import co.japl.android.myapplication.bussiness.DB.connections.ConnectDB
+import co.japl.android.myapplication.finanzas.bussiness.DB.connections.ConnectDB
 import co.japl.android.myapplication.finanzas.bussiness.interfaces.IGoogleDriveService
 import co.japl.android.myapplication.utils.DatabaseConstants
 import com.google.android.gms.auth.api.identity.AuthorizationResult

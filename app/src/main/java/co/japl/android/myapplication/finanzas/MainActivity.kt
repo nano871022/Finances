@@ -50,8 +50,8 @@ class MainActivity : AppCompatActivity(){
         val screen = installSplashScreen()
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
-        val policy = StrictMode.ThreadPolicy.Builder().permitAll().build()
-        StrictMode.setThreadPolicy(policy)
+        //val policy = StrictMode.ThreadPolicy.Builder().permitAll().build()
+        //StrictMode.setThreadPolicy(policy)
         setContentView(R.layout.activity_main)
         bundle = savedInstanceState
         val drawLayout =  findViewById<DrawerLayout>(R.id.draw_layout)
@@ -69,7 +69,12 @@ class MainActivity : AppCompatActivity(){
         }
         checkAndRequestSmsPermissions()
 
-        subscribers?.values?.toList()?.takeIf { it.isNotEmpty() }?.let {
+        subscriberSMS()
+
+    }
+
+    private fun subscriberSMS(){
+        subscribers.values.toList().takeIf { it.isNotEmpty() }?.let {
             registerReceiver(
                 smsBroadcastReceiver as BroadcastReceiver,
                 IntentFilter(Telephony.Sms.Intents.SMS_RECEIVED_ACTION)

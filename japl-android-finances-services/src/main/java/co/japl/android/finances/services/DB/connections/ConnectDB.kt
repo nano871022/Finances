@@ -45,10 +45,16 @@ class ConnectDB @Inject constructor(context: Context):SQLiteOpenHelper(context,
 
     override fun onCreate(p0: SQLiteDatabase?) {
         Log.i(this.javaClass.name,"<<<=== onCreate - Start $p0")
-        list.forEach{
-            it.onCreate(p0)
+        p0?.beginTransaction()
+        try {
+            list.forEach {
+                it.onCreate(p0)
+            }
+            p0?.setTransactionSuccessful()
+        }finally{
+            p0?.endTransaction()
         }
-        Log.i(this.javaClass.name,"<<<=== onCreate - End")
+        Log.i(this.javaClass.name, "<<<=== onCreate - End")
     }
 
     override fun onUpgrade(p0: SQLiteDatabase?, p1: Int, p2: Int) {

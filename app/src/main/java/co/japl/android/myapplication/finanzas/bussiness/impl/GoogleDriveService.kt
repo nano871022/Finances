@@ -18,7 +18,7 @@ import co.japl.android.finances.services.DB.connections.PaidConnectDB
 import co.japl.android.finances.services.dto.PaidDB
 import co.japl.android.myapplication.R
 import co.japl.android.myapplication.R.*
-import co.japl.android.myapplication.bussiness.DB.connections.ConnectDB
+import co.japl.android.myapplication.finanzas.bussiness.DB.connections.ConnectDB
 import co.japl.android.myapplication.finanzas.bussiness.config.GoogleDriveConfig
 import co.japl.android.myapplication.finanzas.bussiness.interfaces.IGoogleLoginService
 import co.japl.android.myapplication.utils.DatabaseConstants
