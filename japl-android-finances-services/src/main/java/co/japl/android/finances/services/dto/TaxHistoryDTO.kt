@@ -13,7 +13,7 @@ data class TaxHistoryDTO(
 object TaxHistoryDB {
     object TaxHistoryEntry {
         const val TABLE_NAME = "dian_tax_declarations_history"
-        const val COLUMN_ID = "id"
+        const val COLUMN_ID = "_id"
         const val COLUMN_FISCAL_YEAR = "fiscal_year"
         const val COLUMN_TAX_VALUE_COP = "tax_value_cop"
         const val COLUMN_DATE = "date"

@@ -105,7 +105,11 @@ private fun Form(viewModel: CreditFormViewModel, modifier: Modifier) {
             value = DateUtils.localDateToStringDate(creditDate.value),
             validation = viewModel::validate,
             isError = viewModel.creditDate.error,
-            callable = { viewModel.creditDate.onValueChange(DateUtils.toLocalDate(it)) },
+            callable = {
+                if(it.isNotBlank()) {
+                    viewModel.creditDate.onValueChange(DateUtils.toLocalDate(it))
+                }
+                       },
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(bottom = Dimensions.PADDING_BOTTOM)
