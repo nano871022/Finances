@@ -16,22 +16,9 @@ class GetTaxProjectionUseCaseImpl @Inject constructor(
 ) : GetTaxProjectionUseCase {
 
     override suspend fun getProjection(year: Int): List<TaxProjectionDTO> {
-        val alpha = configPort.getAlphaSmoothingFactor()
         val uvt = configPort.getUVTValue(year)
-        val currentMonth = LocalDate.now().monthValue
-        val remainingMonths = 12 - currentMonth
-
-        if (remainingMonths <= 0) return emptyList()
-
         val incomeYTD = financialDataPort.getIncomeYTD(year)
-        val avgMonthlyIncomeActual = if (currentMonth > 0) incomeYTD.divide(BigDecimal.valueOf(currentMonth.toLong()), 2, RoundingMode.HALF_UP) else BigDecimal.ZERO
-        val avgMonthlyIncomeHist = financialDataPort.getAverageMonthlyIncomeHistorical()
-
-        val projectedIncome = incomeYTD.add(
-            (BigDecimal.valueOf(alpha).multiply(avgMonthlyIncomeActual).add(BigDecimal.valueOf(1 - alpha).multiply(avgMonthlyIncomeHist)))
-                .multiply(BigDecimal.valueOf(remainingMonths.toLong()))
-        )
-
+        val projectedIncome = financialDataPort.getProjectedIncome(year)
         val thresholdIncome = configPort.getIncomeThresholdUVT().multiply(uvt)
 
         return listOf(
