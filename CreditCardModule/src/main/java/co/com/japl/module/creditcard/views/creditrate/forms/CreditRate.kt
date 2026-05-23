@@ -106,11 +106,7 @@ private fun Body(viewModel: CreateRateViewModel,modifier:Modifier){
                 .padding(Dimensions.PADDING_SHORT))
 
        var kindCreditRateV = getKind(value = kindCreditRate.value)
-        if(isCacheAdvance(kindCreditRate.value)){
-            periodShow.value = true
-        }else{
-            periodShow.value = false
-        }
+        periodShow.value = isCacheAdvance(kindCreditRate.value)
 
         FieldSelect(value = kindCreditRateV,
             callable = {

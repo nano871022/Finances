@@ -228,7 +228,7 @@ fun PopupSetting(viewModel: SettingsViewModel,state: MutableState<Boolean>) {
         ) {
        Column(modifier = Modifier.padding(it)) {
 
-                Row() {
+                Row {
                     Text(
                         text = stringResource(id = R.string.simulator),
                         color=MaterialTheme.colorScheme.onPrimary,

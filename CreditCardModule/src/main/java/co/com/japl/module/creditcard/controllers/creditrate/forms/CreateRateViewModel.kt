@@ -19,7 +19,7 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.YearMonth
 
-class CreateRateViewModel constructor(private val codeCreditCard:Int?,private val codeCreditRate:Int?,private val creditRateSvc:ITaxPort?,private val creditCardSvc:ICreditCardPort?,private val navCompiler: NavController?): ViewModel() {
+class CreateRateViewModel(private val codeCreditCard:Int?, private val codeCreditRate:Int?, private val creditRateSvc:ITaxPort?, private val creditCardSvc:ICreditCardPort?, private val navCompiler: NavController?): ViewModel() {
 
     val progress = mutableFloatStateOf(0f)
     val loader = mutableStateOf(true)

@@ -42,7 +42,7 @@ class EmailListPaidFragment: Fragment(){
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         val root = FragmentListEmailPaidBinding.inflate(inflater,container,false)
 
         root.cvComposeListEmailPd.apply {

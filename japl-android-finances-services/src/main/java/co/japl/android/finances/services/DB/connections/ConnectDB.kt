@@ -9,7 +9,7 @@ import co.japl.android.finances.services.utils.DatabaseConstants
 import javax.inject.Inject
 
 class ConnectDB @Inject constructor(context: Context):SQLiteOpenHelper(context,
-        DatabaseConstants.DATA_BASE_NAME,null, 4_08_01_174) {
+        DatabaseConstants.DATA_BASE_NAME,null, 4_08_01_175) {
 
     val list = arrayListOf<IConnectDB>(
         CalculationConnectDB(),

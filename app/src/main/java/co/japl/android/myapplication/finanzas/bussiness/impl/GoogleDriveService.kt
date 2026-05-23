@@ -86,19 +86,18 @@ class GoogleDriveService(private var dbConnect: SQLiteOpenHelper,private val act
     }
 
     private fun handleSignIn(result:GetCredentialResponse){
-        val credential = result.credential
-        when(credential) {
+        when(val credential = result.credential) {
             is PublicKeyCredential -> {
-                val responseJson = credential.authenticationResponseJson
+                credential.authenticationResponseJson
             }
             is PasswordCredential -> {
-                val username = credential.id
-                val password = credential.password
+                credential.id
+                credential.password
             }
             is CustomCredential -> {
                 if(credential.type== GoogleIdTokenCredential.TYPE_GOOGLE_ID_TOKEN_CREDENTIAL){
                     try{
-                        val googleIdTokenCredential = GoogleIdTokenCredential.createFrom(credential.data)
+                        GoogleIdTokenCredential.createFrom(credential.data)
                     }catch (e:GoogleIdTokenParsingException){
                         Log.e(javaClass.simpleName,"=== ERROR: Receive an Invalid google id token response ${e.message}")
                     }

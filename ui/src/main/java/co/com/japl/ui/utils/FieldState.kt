@@ -12,7 +12,7 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.onEach
 
 
-class FieldState<T> constructor(
+class FieldState<T>(
                      private val savedStateHandler: SavedStateHandle,
                      private val key:String,
                      private val initialValue:T,

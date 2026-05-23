@@ -27,7 +27,7 @@ class ListProjectFragment : Fragment(){
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         val root = FragmentListProjectionBinding.inflate(inflater)
         val viewModel = ProjectionListViewModel(context?.applicationContext!!,svc,findNavController())
         root.composeviewFlp.apply {

@@ -43,7 +43,7 @@ class AccountImpl @Inject constructor(override var dbConnect: SQLiteOpenHelper,v
     @RequiresApi(Build.VERSION_CODES.O)
     override fun save(dto: AccountDTO): Long {
         val db = dbConnect.writableDatabase
-        val content: ContentValues? = AccountMap().mapping(dto)
+        val content: ContentValues = AccountMap().mapping(dto)
         return if(dto.id > 0){
             db?.update(AccountDB.Entry.TABLE_NAME,content,"_id=?", arrayOf(dto.id.toString()))?.toLong() ?: 0
         }else {

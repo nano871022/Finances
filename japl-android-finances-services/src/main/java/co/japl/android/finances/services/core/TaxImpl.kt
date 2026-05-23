@@ -36,7 +36,7 @@ class TaxImpl @Inject constructor(private val  taxSvc: ITaxDAO): ITaxPort {
 
     }
 
-    override fun getByCreditCard(codCreditCard: Int): List<TaxDTO>? {
+    override fun getByCreditCard(codCreditCard: Int): List<TaxDTO> {
         return taxSvc.getAll().filter { it.codCreditCard == codCreditCard }.map { TaxMapper.mapper(it) }
     }
 

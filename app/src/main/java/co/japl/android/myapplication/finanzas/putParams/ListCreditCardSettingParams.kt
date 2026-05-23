@@ -9,7 +9,7 @@ import androidx.navigation.NavController
 import co.japl.android.myapplication.R
 import co.japl.android.myapplication.putParams.CreditCardSettingParams.Params.ARG_CODE_CREDIT_CARD
 
-class ListCreditCardSettingParams() {
+class ListCreditCardSettingParams {
     object Params {
         const val ARG_CODE_CREDIT_CARD = "codeCreditCard"
         const val ARG_DEEPLINK = "android-support-nav:controller:deepLinkIntent"

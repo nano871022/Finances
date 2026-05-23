@@ -11,7 +11,7 @@ import co.com.japl.ui.Prefs
 import kotlinx.coroutines.runBlocking
 import java.time.LocalDateTime
 
-class BoughtCreditCardViewModel constructor(private val service:IBoughtListPort?,private val idCreditCard:Int,private val navController: NavController,private val prefs:Prefs):ViewModel() {
+class BoughtCreditCardViewModel(private val service:IBoughtListPort?, private val idCreditCard:Int, private val navController: NavController, private val prefs:Prefs):ViewModel() {
     val cache = mutableStateOf(prefs.simulator)
     val progress = mutableFloatStateOf(0f)
     val loader = mutableStateOf(false)

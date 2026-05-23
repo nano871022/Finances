@@ -49,7 +49,7 @@ class ProjectionsImpl @Inject constructor(override var dbConnect: SQLiteOpenHelp
     @RequiresApi(Build.VERSION_CODES.O)
     override fun save(dto: ProjectionDTO): Long {
         val db = dbConnect.writableDatabase
-        val content: ContentValues? = ProjectionMap().mapping(dto)
+        val content: ContentValues = ProjectionMap().mapping(dto)
         return if (dto.id > 0) {
             db?.update(
                 ProjectionDB.Entry.TABLE_NAME,

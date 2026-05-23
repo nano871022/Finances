@@ -21,7 +21,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 
-class SmsViewModel constructor(private val codeSMS:Int?, private val svc:ISMSPaidPort?, private val accountSvc:IAccountPort?, private val navController: NavController?, private val llmService: ILLMService? = null, val prefs: Prefs?=null): ViewModel() {
+class SmsViewModel(private val codeSMS:Int?, private val svc:ISMSPaidPort?, private val accountSvc:IAccountPort?, private val navController: NavController?, private val llmService: ILLMService? = null, val prefs: Prefs?=null): ViewModel() {
 
     val  load = mutableStateOf(true)
     val  progress = mutableFloatStateOf(0.0f)

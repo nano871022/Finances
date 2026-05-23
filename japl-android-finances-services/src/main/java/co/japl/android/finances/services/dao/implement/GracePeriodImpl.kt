@@ -27,7 +27,7 @@ class GracePeriodImpl @Inject constructor(override var dbConnect: SQLiteOpenHelp
     @RequiresApi(Build.VERSION_CODES.O)
     override fun save(dto: GracePeriodDTO): Long {
         val db = dbConnect.writableDatabase
-        val content: ContentValues? = GracePeriodMap().mapping(dto)
+        val content: ContentValues = GracePeriodMap().mapping(dto)
         return if(dto.id > 0){
             db?.update(GracePeriodDB.Entry.TABLE_NAME,content,"${BaseColumns._ID}=?", arrayOf(dto.id.toString()))?.toLong() ?: 0
         }else {

@@ -146,7 +146,7 @@ Column (modifier=Modifier.padding(Dimensions.PADDING_SHORT)) {
         validation = { viewModel.validate() },
         icon= Icons.Rounded.Cancel,
         currency = true,
-        keyboardType = KeyboardOptions.Companion.Default.copy (keyboardType = KeyboardType.Decimal),
+        keyboardType = KeyboardOptions.Default.copy (keyboardType = KeyboardType.Decimal),
         hasErrorState = errorValueItemState.value,
         callback = {valueItemState.value = it},
         modifier = Modifier

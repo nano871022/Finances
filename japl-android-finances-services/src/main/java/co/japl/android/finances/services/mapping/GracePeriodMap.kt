@@ -8,7 +8,7 @@ import androidx.annotation.RequiresApi
 import co.japl.android.finances.services.dto.*
 import co.japl.android.finances.services.utils.DateUtils
 
-class GracePeriodMap() {
+class GracePeriodMap {
 
     @RequiresApi(Build.VERSION_CODES.O)
     fun mapping(cursor: Cursor):GracePeriodDTO{

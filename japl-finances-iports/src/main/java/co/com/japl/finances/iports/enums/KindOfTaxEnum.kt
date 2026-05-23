@@ -15,13 +15,13 @@ enum class KindOfTaxEnum (val value:String, @StringRes val title:Int){
 
     companion object{
         fun findByValue(value:String?): KindOfTaxEnum {
-            return KindOfTaxEnum.entries.firstOrNull{ it.value == value }?: KindOfTaxEnum.MONTHLY_EFFECTIVE
+            return KindOfTaxEnum.entries.firstOrNull{ it.value == value }?: MONTHLY_EFFECTIVE
         }
 
         fun findByIndex(index:Int?): KindOfTaxEnum {
             return index?.let{
                 KindOfTaxEnum.entries.getOrNull(index)
-            }?: KindOfTaxEnum.MONTHLY_EFFECTIVE
+            }?: MONTHLY_EFFECTIVE
         }
     }
 }

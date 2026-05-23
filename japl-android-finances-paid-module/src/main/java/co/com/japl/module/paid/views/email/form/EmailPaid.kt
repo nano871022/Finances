@@ -121,7 +121,7 @@ private fun Buttons(addClick: () -> Unit, clear: () -> Unit) {
 private fun DialogAIEmail(viewModel: EmailPaidViewModel) {
     val showDialog = viewModel.showEmailDialog
     val examples = viewModel.emailSamples
-    val aiFailed = viewModel.aiFailed
+    viewModel.aiFailed
     val showModelSelection = remember { mutableStateOf(false) }
 
     if (showDialog.value && examples.isNotEmpty()) {
@@ -133,7 +133,7 @@ private fun DialogAIEmail(viewModel: EmailPaidViewModel) {
 
                     Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.clickable { showModelSelection.value = !showModelSelection.value }) {
                         Text(text = stringResource(R.string.ai_model), modifier = Modifier.weight(1f), color = MaterialTheme.colorScheme.onSurface)
-                        Icon(imageVector = androidx.compose.material.icons.Icons.Rounded.ArrowDownward, contentDescription = null, tint = MaterialTheme.colorScheme.onSurface)
+                        Icon(imageVector = Icons.Rounded.ArrowDownward, contentDescription = null, tint = MaterialTheme.colorScheme.onSurface)
                     }
 
                     if (showModelSelection.value) {

@@ -13,7 +13,7 @@ enum class WindowWidthSize(private val size: Dp?) {
     EXPANDED(null);
 
     fun isEqualTo(size: Dp): Boolean {
-        return if(this.size == null || this.size?.compareTo(size)!! >= 0) true else false
+        return this.size == null || this.size?.compareTo(size)!! >= 0
     }
 
 

@@ -47,7 +47,7 @@ class MainActivity : AppCompatActivity(){
     @Inject lateinit var subscribers:Map<Class<out ISMSObserver>,@JvmSuppressWildcards ISMSObserver>
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        val screen = installSplashScreen()
+        installSplashScreen()
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
         //val policy = StrictMode.ThreadPolicy.Builder().permitAll().build()
@@ -108,6 +108,9 @@ class MainActivity : AppCompatActivity(){
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (item.itemId == android.R.id.home) {
+            return super.onOptionsItemSelected(item)
+        }
         try {
             if (!isTablet()) {
                 findViewById<DrawerLayout>(R.id.draw_layout).setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
@@ -125,10 +128,7 @@ class MainActivity : AppCompatActivity(){
     private fun isTablet():Boolean{
         val res = resources.getDimension(R.dimen.open_menu)
         Log.d(this.javaClass.name,"open menu $res")
-        if( res != 0F){
-            return true
-        }
-        return false
+        return res != 0F
     }
 
     private fun checkAndRequestSmsPermissions() {
@@ -164,18 +164,5 @@ class MainActivity : AppCompatActivity(){
             return false
         }
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 }

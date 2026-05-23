@@ -26,7 +26,7 @@ class CheckQuoteConnectDB: DBRestore(),IConnectDB{
             var findVersion = oldVersion+1
             while(findVersion <= newVersion) {
                 try {
-                    val value = findVersion.toString()
+                    findVersion.toString()
                     /*
                     if(CheckQuoteQuery.SQL_ALTER.containsKey(value)) {
                         val query = CheckQuoteQuery.SQL_ALTER[value]

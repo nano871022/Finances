@@ -114,7 +114,7 @@ fun BoughtMonthly(viewModel:BoughtMonthlyViewModel?=null) {
 
 @Composable
 private fun Loaded(viewModel:BoughtMonthlyViewModel){
-    val modeWindow = LocalConfiguration.current
+    LocalConfiguration.current
     var cutOffDay by remember{ viewModel!!.cutOff }
     var daysLeftCutoff by remember{ viewModel!!.daysLeftCutOff }
     var totalValue by remember{ viewModel!!.totalValue }

@@ -19,7 +19,7 @@ class GoogleDriveService(private val activity:Activity,private val config:Google
     private var signInAccount: GoogleSignInAccount? = null
     private val googleSignInClient: GoogleSignInClient by lazy{
         val builder = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-        for ( scope in GoogleDriveService.SCOPES){
+        for ( scope in SCOPES){
             builder.requestScopes(scope)
         }
         val signInOptions = builder.build()
@@ -50,7 +50,7 @@ class GoogleDriveService(private val activity:Activity,private val config:Google
 
     fun auth(){
         Log.d(this.javaClass.name,"<<<=== auth start ${googleSignInClient.signInIntent} $REQUEST_CODE_SIGN_IN")
-        activity.startActivityForResult(googleSignInClient.signInIntent, GoogleDriveService.REQUEST_CODE_SIGN_IN)
+        activity.startActivityForResult(googleSignInClient.signInIntent, REQUEST_CODE_SIGN_IN)
         Log.d(this.javaClass.name,"<<<=== auth finish")
     }
 
@@ -80,15 +80,15 @@ class GoogleDriveService(private val activity:Activity,private val config:Google
             Log.e(this.javaClass.name,"DownloadFile is null")
             return
         }
-        val drive = data.asDriveFile()
-        val fileName = "test"
+        data.asDriveFile()
+        "test"
 
     }
 
     fun onActivityResults(requestCode: Int, resultCode: Int, data: Intent?){
         Log.d(this.javaClass.name, "onActivityResult $requestCode $data")
         when(requestCode){
-            GoogleDriveService.REQUEST_CODE_SIGN_IN -> {
+            REQUEST_CODE_SIGN_IN -> {
                 Log.d(this.javaClass.name,"onActivityResults REQUEST CODE SIGN IN")
                 if(data != null){
                     handleSignIn(data)
@@ -96,7 +96,7 @@ class GoogleDriveService(private val activity:Activity,private val config:Google
                     serviceListener?.cancelled("REQUST CODE SIGHN IN Data: $data Code: $resultCode Request: $requestCode")
                 }
             }
-            GoogleDriveService.REQUEST_CODE_OPEN_ITEM->{
+            REQUEST_CODE_OPEN_ITEM ->{
                 Log.d(this.javaClass.name,"onActivityResults REQUEST CODE OPEN ITEM")
                 if(data != null){
                     openItem(data)

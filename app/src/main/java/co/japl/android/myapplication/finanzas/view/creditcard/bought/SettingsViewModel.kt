@@ -22,7 +22,7 @@ import kotlinx.coroutines.withContext
 import java.time.LocalDate
 import java.time.LocalDateTime
 
-class SettingsViewModel constructor(private val prefs: Prefs): ViewModel() {
+class SettingsViewModel(private val prefs: Prefs): ViewModel() {
 
     val state = mutableStateOf(false)
 

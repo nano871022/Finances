@@ -59,7 +59,6 @@ import co.com.japl.ui.theme.values.ModifiersCustom.Weight1f
 @Composable
 fun Sms(viewModel:SmsViewModel){
     val load by remember {viewModel.load}
-    var progress  by remember {viewModel.progress}
 
     LaunchedEffect(Unit) {
         viewModel.main()
@@ -93,12 +92,12 @@ private fun Body(viewModel: SmsViewModel,modifier:Modifier) {
     val listCreditCard = remember { viewModel.accountList }
     val creditCard = remember { viewModel.account }
     val errorCreditCard = remember { viewModel.errorAccount }
-    val kinInterestList = remember { viewModel.kindInterestRateList }
+    remember { viewModel.kindInterestRateList }
     val phoneNumber = remember { viewModel.phoneNumber }
     val errorPhoneNumber = remember { viewModel.errorPhoneNumber }
     val pattern = remember { viewModel.pattern }
     val errorPattern = remember { viewModel.errorPattern }
-    val validationResult = remember { viewModel.validationResult }
+    remember { viewModel.validationResult }
     val stateScroll = rememberScrollState(0)
     val AIValid = remember { viewModel.isAIValid()}
 

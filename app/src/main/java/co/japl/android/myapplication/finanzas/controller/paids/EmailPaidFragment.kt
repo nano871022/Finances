@@ -53,7 +53,7 @@ class EmailPaidFragment: Fragment(){
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         val root = FragmentEmailCreditCardBinding.inflate(inflater,container,false)
 
         root.cvComposeEmailCc.apply {

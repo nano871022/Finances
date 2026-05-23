@@ -14,7 +14,7 @@ import co.com.japl.module.creditcard.R
 import co.com.japl.module.creditcard.navigations.ListCreditRate
 import kotlinx.coroutines.runBlocking
 
-class CreditRateListViewModel constructor(private val context:Context?,private val creditCardSvc:ICreditCardPort?,private val creditRateSvc:ITaxPort?,private val navController: NavController?):ViewModel() {
+class CreditRateListViewModel(private val context:Context?, private val creditCardSvc:ICreditCardPort?, private val creditRateSvc:ITaxPort?, private val navController: NavController?):ViewModel() {
 
     var progress = mutableFloatStateOf(0f)
     var showProgress = mutableStateOf(true)

@@ -3,10 +3,10 @@ package co.com.japl.ui.utils
 import android.util.Log
 import androidx.compose.ui.text.input.OffsetMapping
 
-class CurrencyOffSetMapping constructor(private val originalText:String,
-                                        private val formattedText:String,
-                                        private val decimalSeparator: Char = '.',
-                                        private val groupingSeparator: Char = ','): OffsetMapping {
+class CurrencyOffSetMapping(private val originalText:String,
+                            private val formattedText:String,
+                            private val decimalSeparator: Char = '.',
+                            private val groupingSeparator: Char = ','): OffsetMapping {
 
 
     override fun originalToTransformed(offset: Int): Int {

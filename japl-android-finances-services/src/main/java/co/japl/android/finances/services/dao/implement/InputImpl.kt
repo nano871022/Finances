@@ -16,7 +16,7 @@ import java.time.LocalDate
 import java.util.*
 import javax.inject.Inject
 
-class InputImpl @Inject constructor(override var dbConnect: SQLiteOpenHelper,public var mapper : InputMap) : IInputDAO{
+class InputImpl @Inject constructor(override var dbConnect: SQLiteOpenHelper, var mapper : InputMap) : IInputDAO{
     val COLUMNS = arrayOf(
         BaseColumns._ID,
         InputDB.Entry.COLUMN_DATE_INPUT,
@@ -49,7 +49,7 @@ class InputImpl @Inject constructor(override var dbConnect: SQLiteOpenHelper,pub
     @RequiresApi(Build.VERSION_CODES.O)
     override fun getTotalInputs(): BigDecimal {
         val db = dbConnect.readableDatabase
-        val cursor = db.rawQuery("""
+        db.rawQuery("""
             SELECT SUM(value), count(1)
             FROM(
             SELECT
@@ -136,7 +136,7 @@ class InputImpl @Inject constructor(override var dbConnect: SQLiteOpenHelper,pub
     @RequiresApi(Build.VERSION_CODES.O)
     override fun save(dto: InputDTO): Long {
         val db = dbConnect.writableDatabase
-        val content: ContentValues? = mapper.mapping(dto)
+        val content: ContentValues = mapper.mapping(dto)
         return if(dto.id > 0){
             db?.update(InputDB.Entry.TABLE_NAME,content,"${BaseColumns._ID}=?", arrayOf(dto.id.toString()))?.toLong() ?: 0
         }else {

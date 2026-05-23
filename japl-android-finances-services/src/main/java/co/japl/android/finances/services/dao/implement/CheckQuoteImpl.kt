@@ -117,7 +117,7 @@ class CheckQuoteImpl @Inject constructor(override var dbConnect: SQLiteOpenHelpe
     @RequiresApi(Build.VERSION_CODES.O)
     override fun get(id: Int): Optional<CheckQuoteDTO> {
         val db = dbConnect.writableDatabase
-        val cursor = db.query(
+        db.query(
             CheckQuoteDB.Entry.TABLE_NAME,
             COLUMNS,
             " ${BaseColumns._ID} = ?",

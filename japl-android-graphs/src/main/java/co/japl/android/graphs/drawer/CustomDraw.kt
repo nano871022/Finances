@@ -11,7 +11,7 @@ import androidx.annotation.RequiresApi
 import co.japl.android.graphs.interfaces.IGraph
 import co.japl.android.graphs.pieceofpie.PieceOfPie
 
-class CustomDraw constructor (context:Context, attributeSet: AttributeSet):View(context,attributeSet){
+class CustomDraw(context:Context, attributeSet: AttributeSet):View(context,attributeSet){
     val piecePie :IGraph = PieceOfPie(context)
 
          override fun onTouchEvent(event: MotionEvent?): Boolean {

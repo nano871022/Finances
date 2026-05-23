@@ -148,7 +148,7 @@ private fun Options(viewModel: SimulatorListItemViewModel,state: MutableState<Bo
         MoreOptionsDialogPair(
             listOptions = list,
             onDismiss = {state.value = false},
-            onClick = { (code, key) ->
+            onClick = { (code, _) ->
                 state.value = false
                 when(code){
                     1 -> viewModel.gotoAmortization(viewModel.item.get())

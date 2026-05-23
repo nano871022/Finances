@@ -22,7 +22,7 @@ import java.math.MathContext
 import java.text.DecimalFormat
 import kotlin.math.atan2
 
-class PieceOfPie constructor(val context:Context):IGraph{
+class PieceOfPie(val context:Context):IGraph{
 
     val fontSize = 14
     val posX = (context.resources.displayMetrics.density * 14).toInt()

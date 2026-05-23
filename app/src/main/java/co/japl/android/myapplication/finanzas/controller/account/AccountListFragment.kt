@@ -25,9 +25,6 @@ class AccountListFragment : Fragment() {
 
     private lateinit var _binding:FragmentAccountListBinding
     private val binding get() = _binding
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
 
     @RequiresApi(Build.VERSION_CODES.S)
     override fun onCreateView(

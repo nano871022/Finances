@@ -219,7 +219,7 @@ class PaidImpl @Inject constructor(override var dbConnect: SQLiteOpenHelper) : I
     @RequiresApi(Build.VERSION_CODES.O)
     override fun save(dto: PaidDTO): Long {
         val db = dbConnect.writableDatabase
-        val content: ContentValues? = PaidMap().mapping(dto)
+        val content: ContentValues = PaidMap().mapping(dto)
 
         return if(dto.id > 0){
             db?.update(PaidDB.Entry.TABLE_NAME,content,"${BaseColumns._ID}=?", arrayOf(dto.id.toString()))?.toLong() ?: 0

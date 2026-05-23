@@ -44,7 +44,7 @@ class SimulatorCredit : Fragment(){
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         val rootView = FragmentSimulatorCreditBinding.inflate(inflater,container,false)
         rootView.composeViewSqc.apply {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)

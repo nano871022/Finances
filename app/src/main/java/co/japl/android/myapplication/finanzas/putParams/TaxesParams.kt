@@ -12,7 +12,7 @@ import co.japl.android.myapplication.putParams.TaxesParams.Params.ARG_CODE_CREDI
 import co.japl.android.myapplication.putParams.TaxesParams.Params.ARG_PARAM1
 import co.japl.android.myapplication.putParams.TaxesParams.Params.ARG_PARAM2
 
-class TaxesParams() {
+class TaxesParams {
     object Params {
         val ARG_PARAM1 = "param1"
         val ARG_PARAM2 = "param2"
@@ -43,11 +43,11 @@ class TaxesParams() {
 
                 if(it.containsKey(Params.ARG_DEEPLINK)){
                     val intent = it.get(Params.ARG_DEEPLINK) as Intent
-                    if(Uri.parse(intent.dataString).getQueryParameter(Params.ARG_CODE_CREDIT_CARD) != null){
-                        param1 = Uri.parse(intent.dataString).getQueryParameter(Params.ARG_CODE_CREDIT_CARD)!!
+                    if(Uri.parse(intent.dataString).getQueryParameter(ARG_CODE_CREDIT_CARD) != null){
+                        param1 = Uri.parse(intent.dataString).getQueryParameter(ARG_CODE_CREDIT_CARD)!!
                     }
-                    if(Uri.parse(intent.dataString).getQueryParameter(Params.ARG_CODE_CREDIT_RATE) != null){
-                        param2 = Uri.parse(intent.dataString).getQueryParameter(Params.ARG_CODE_CREDIT_RATE)!!
+                    if(Uri.parse(intent.dataString).getQueryParameter(ARG_CODE_CREDIT_RATE) != null){
+                        param2 = Uri.parse(intent.dataString).getQueryParameter(ARG_CODE_CREDIT_RATE)!!
                     }
                 }
 

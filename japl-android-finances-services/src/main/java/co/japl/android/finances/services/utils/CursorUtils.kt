@@ -30,7 +30,7 @@ object CursorUtils {
         return cursor.getColumnIndex(nameColumn).let { cursor.getShortOrNull(it) }
     }
 
-    fun getLocalDateTime(cursor: Cursor, nameColumn:String?):LocalDateTime?{
+    fun getLocalDateTime(cursor: Cursor, nameColumn:String?): LocalDateTime {
         return cursor.getColumnIndex(nameColumn).let {
             val date = cursor.getString(it)
             DateUtils.toLocalDateTime(date,DateUtils.DEFAULT_DATE_TIME)

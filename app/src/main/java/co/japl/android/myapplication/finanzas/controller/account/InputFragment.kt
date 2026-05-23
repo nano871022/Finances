@@ -26,9 +26,6 @@ class InputFragment : Fragment(){
     @Inject lateinit var service:IInputPort
 
     lateinit var _binding : FragmentInputBinding
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
 
     @RequiresApi(Build.VERSION_CODES.S)
     override fun onCreateView(

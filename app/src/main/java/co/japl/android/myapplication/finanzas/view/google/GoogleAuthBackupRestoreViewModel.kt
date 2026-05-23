@@ -1,56 +1,42 @@
 package co.japl.android.myapplication.finanzas.view.google
 
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
-import android.credentials.GetCredentialException
-import android.os.Build
-import android.widget.Toast
-import androidx.activity.result.IntentSenderRequest
-import androidx.activity.result.contract.ActivityResultContracts
-import androidx.annotation.RequiresApi
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
-import androidx.credentials.CredentialManager
-import androidx.credentials.GetCredentialRequest
-import androidx.credentials.exceptions.NoCredentialException
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import co.japl.android.myapplication.R
-import co.japl.android.myapplication.finanzas.bussiness.impl.GoogleDriveImpl
-import co.japl.android.myapplication.finanzas.bussiness.impl.GoogleSignInWebImplement
-import co.japl.android.myapplication.finanzas.bussiness.impl.GoogleSignInnImplement
 import co.japl.android.myapplication.finanzas.bussiness.interfaces.IGoogleDriveService
-import co.japl.android.myapplication.finanzas.bussiness.interfaces.IGoogleLoginService
 import co.japl.android.myapplication.finanzas.bussiness.interfaces.IGoogleSignInService
-import com.google.android.gms.auth.api.identity.AuthorizationRequest
-import com.google.android.gms.auth.api.identity.Identity
-import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
-import com.google.android.gms.common.Scopes
-import com.google.android.gms.common.api.GoogleApi
-import com.google.android.gms.common.api.GoogleApiClient
-import com.google.android.gms.common.api.Scope
-import com.google.android.gms.common.api.Status
-import com.google.android.libraries.identity.googleid.GoogleIdTokenParsingException
-import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential
 import com.google.api.client.googleapis.json.GoogleJsonResponseException
-import com.google.api.services.drive.DriveScopes
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
-import java.util.Locale
+import java.time.LocalDateTime
 
-class GoogleAuthBackupRestoreViewModel constructor(private val activity:Activity?,private val loginSvc: IGoogleSignInService?,private val loginSimpleSvc: IGoogleSignInService?,private val loginWebSvc: IGoogleSignInService?,private val driveSvc: IGoogleDriveService?): ViewModel() {
+class GoogleAuthBackupRestoreViewModel(private val activity:Activity?, private val loginSvc: IGoogleSignInService?, private val loginSimpleSvc: IGoogleSignInService?, private val loginWebSvc: IGoogleSignInService?, private val driveSvc: IGoogleDriveService?): ViewModel() {
     var loginValue = mutableStateOf("Powered by Google LogIn")
+    var nameValue = mutableStateOf("name")
+    var photoUrlValue = mutableStateOf<String?>(null)
     val result = mutableStateOf("***LOG INFO ********")
     val isLogged = mutableStateOf(false)
     val isProcessing = mutableStateOf(false)
     val statsLocalProgess = mutableStateOf(true)
     val statsLocal = mutableStateListOf<Pair<String,Long>>()
     val tabIndex = mutableIntStateOf(0)
+    val spaceUsed = mutableStateOf(0.0)
+    val spaceMax = mutableStateOf(0.0)
+    val lastBackup = mutableStateOf(LocalDateTime.now())
+    val spaceDBKb = mutableStateOf(0.0)
+
+    val isGoogleDriveGranted = mutableStateOf(false)
+    val isEmailAccessGranted = mutableStateOf(false)
+    val isSmsAccessGranted = mutableStateOf(false)
+    val isAllPermissionsGranted = derivedStateOf { isGoogleDriveGranted.value && isEmailAccessGranted.value && isSmsAccessGranted.value }
 
     init{
         CoroutineScope(Dispatchers.IO).launch {
@@ -63,6 +49,9 @@ class GoogleAuthBackupRestoreViewModel constructor(private val activity:Activity
             isProcessing.value = true
             loginSvc?.logoutAndOnComplete {
                 isLogged.value = false
+                isGoogleDriveGranted.value = false
+                isEmailAccessGranted.value = false
+                isSmsAccessGranted.value = false
                 result.value = "${result.value} \n == LogOut Successful"
                 isProcessing.value = false
             }
@@ -91,6 +80,7 @@ class GoogleAuthBackupRestoreViewModel constructor(private val activity:Activity
                      }
                  }
                  result.value = "=== ${result.value} \n ${actvty?.getString(R.string.error_login)}"
+                 isProcessing.value = false
              }
          }
     }
@@ -98,41 +88,75 @@ class GoogleAuthBackupRestoreViewModel constructor(private val activity:Activity
     private suspend fun validation(){
         try {
             isProcessing.value = true
-            loginSvc?.let {
-                if (loginSvc.check()) {
+            loginSvc?.let { svc ->
+                if (svc.check()) {
                     isLogged.value = true
-                    (loginSvc.getAccount() as GoogleSignInAccount).let {
-                        it.email?.let { loginValue.value = it }
-                        driveSvc?.infoBackup(it)?.let {
-                            result.value = "${result.value} \n $it"
-                            isProcessing.value = false
+                    (svc.getAccount() as? GoogleSignInAccount)?.let { account ->
+                        account.email?.let { loginValue.value = it }
+                        account.displayName?.let { nameValue.value = it }
+                        account.photoUrl?.let { photoUrlValue.value = it.toString() }
+                        
+                        isGoogleDriveGranted.value = svc.isGoogleDriveGranted()
+                        isEmailAccessGranted.value = svc.isEmailAccessGranted()
+
+                        driveSvc?.infoBackup(account)?.let { info ->
+                            result.value = "${result.value} \n $info"
+                            updateStorageInfo(account)
                         }
                     }
                 } else {
                     isLogged.value = false
                     loginValue.value = "Powered by Google LogIn"
-                    isProcessing.value = false
                 }
             }
+            checkSmsPermission()
         }catch(e:GoogleJsonResponseException){
             e.details.forEach{
                 result.value = "${result.value} \n ${it.key}: ${it.value}"
             }
+        } finally {
+            isProcessing.value = false
+        }
+    }
+
+    fun checkSmsPermission() {
+        isSmsAccessGranted.value = loginSvc?.isSmsAccessGranted() ?: false
+    }
+
+    private suspend fun updateStorageInfo(account: GoogleSignInAccount) {
+        driveSvc?.getStorageInfo(account)?.let { info ->
+            spaceUsed.value = info.spaceUsed.toDouble()
+            spaceMax.value = info.spaceMax.toDouble()
+            info.lastBackup?.let { lastBackup.value = it }
+            spaceDBKb.value = info.spaceDBKb.toDouble()
         }
     }
 
     fun login(): Intent? {
-        return loginSvc?.getConnection() as Intent
+        return loginSvc?.getConnection() as? Intent
+    }
+
+    fun grantGooglePermissions() {
+        activity?.let {
+            loginSvc?.requestPermissions(it)
+        }
+    }
+
+    fun grantSmsPermission() {
+        activity?.let {
+            loginSvc?.requestSmsPermission(it)
+        }
     }
 
    suspend fun backup() {
        isProcessing.value = true
-            (loginSvc?.getAccount() as GoogleSignInAccount)?.let {
-                driveSvc?.backup(it)?.let {
+       (loginSvc?.getAccount() as? GoogleSignInAccount)?.let { account ->
+                driveSvc?.backup(account)?.let {
                     result.value = "${result.value} \n $it"
+                    updateStorageInfo(account)
                     isProcessing.value = false
                 }
-            }
+       }
     }
 
     fun onload(){
@@ -145,9 +169,10 @@ class GoogleAuthBackupRestoreViewModel constructor(private val activity:Activity
         isProcessing.value = true
         CoroutineScope(Dispatchers.IO).launch {
             isProcessing.value.takeIf { it }?.let {
-                (loginSvc?.getAccount() as GoogleSignInAccount)?.let {
-                    driveSvc?.restore(it)?.let {
+                (loginSvc?.getAccount() as? GoogleSignInAccount)?.let { account ->
+                    driveSvc?.restore(account)?.let {
                         result.value = "${result.value} \n $it"
+                        updateStorageInfo(account)
                         isProcessing.value = false
                     }
                 }

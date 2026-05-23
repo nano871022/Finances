@@ -15,7 +15,7 @@ import kotlinx.coroutines.runBlocking
 import java.math.BigDecimal
 import java.time.LocalDateTime
 
-class CreditCardViewModel constructor(private val codeCreditCard:Int?,private val creditCardSvc:ICreditCardPort, private val navController: NavController):ViewModel() {
+class CreditCardViewModel(private val codeCreditCard:Int?, private val creditCardSvc:ICreditCardPort, private val navController: NavController):ViewModel() {
     var showProgress = mutableStateOf(true)
     var progress = mutableFloatStateOf(0f)
     var showButtonUpdate = mutableStateOf(false)

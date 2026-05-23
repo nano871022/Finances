@@ -6,8 +6,8 @@ import android.database.sqlite.SQLiteOpenHelper
 import co.japl.android.finances.services.DB.connections.ConnectDB as ServicesConnectDB
 import co.japl.android.myapplication.utils.DatabaseConstants
 
-class ConnectDB constructor(private val context: Context):SQLiteOpenHelper(context,
-        DatabaseConstants.DATA_BASE_NAME,null, 4_08_01_174) {
+class ConnectDB(private val context: Context):SQLiteOpenHelper(context,
+        DatabaseConstants.DATA_BASE_NAME,null, 4_08_01_175) {
 
     val connectDB:ServicesConnectDB = ServicesConnectDB(context)
     override fun onCreate(p0: SQLiteDatabase?) {

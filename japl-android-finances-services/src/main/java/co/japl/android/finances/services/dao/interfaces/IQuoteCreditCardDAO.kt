@@ -11,7 +11,7 @@ import java.time.YearMonth
 
 interface IQuoteCreditCardDAO:  SaveSvc<CreditCardBoughtDTO>,
     SearchSvc<CreditCardBoughtDTO>, IGetPeriodsServices {
-        public fun getRecurrentPendingQuotes(key: Int, cutOff: LocalDateTime):List<CreditCardBoughtDTO>
+        fun getRecurrentPendingQuotes(key: Int, cutOff: LocalDateTime):List<CreditCardBoughtDTO>
 
         fun getAllRecurrent(idCreditCard: Int): List<CreditCardBoughtDTO>
 

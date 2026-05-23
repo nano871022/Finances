@@ -8,9 +8,9 @@ import java.time.LocalDate
 
 interface IInputDAO: SaveSvc<InputDTO>,ISaveSvc<InputDTO>  {
 
-    public fun getTotalInputs():BigDecimal
+    fun getTotalInputs():BigDecimal
 
-    public fun getTotalInputsSemestral(): BigDecimal
+    fun getTotalInputsSemestral(): BigDecimal
 
     fun getAllValid(accountCode:Int,date:LocalDate):List<InputDTO>
 }

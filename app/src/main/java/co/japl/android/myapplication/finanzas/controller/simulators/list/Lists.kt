@@ -77,7 +77,7 @@ private fun Body(dto: SimulatorCreditDTO,viewModel:ListViewModel) {
 @Preview( showBackground = true, backgroundColor = 0x000000, showSystemUi = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
 private fun ListSimulatorPreviewLight(){
     val viewModel = getViewModel()
-    MaterialThemeComposeUI() {
+    MaterialThemeComposeUI {
         ListSimulator(viewModel)
     }
 }
@@ -88,7 +88,7 @@ private fun ListSimulatorPreviewLight(){
 private fun ListSimulatorPreviewLightNoRecords(){
     val viewModel = getViewModel()
     viewModel.list.clear()
-    MaterialThemeComposeUI() {
+    MaterialThemeComposeUI {
         ListSimulator(viewModel)
     }
 }
@@ -99,7 +99,7 @@ private fun ListSimulatorPreviewLightNoRecords(){
 private fun ListSimulatorPreviewLightProgress(){
     val viewModel = getViewModel()
     viewModel.progres.value = true
-    MaterialThemeComposeUI() {
+    MaterialThemeComposeUI {
         ListSimulator(viewModel)
     }
 }
@@ -109,7 +109,7 @@ private fun ListSimulatorPreviewLightProgress(){
 @Preview( showBackground = true,  backgroundColor = 0x000000, showSystemUi = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
 private fun ListSimulatorPreviewDark(){
     val viewModel = getViewModel()
-    MaterialThemeComposeUI() {
+    MaterialThemeComposeUI {
         ListSimulator(viewModel)
     }
 }

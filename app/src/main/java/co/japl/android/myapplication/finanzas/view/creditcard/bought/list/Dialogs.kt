@@ -178,7 +178,7 @@ fun MoreOptionsDialog(valueToPay:Double,isRecurrent:Boolean, creditRate:Double,l
 @Composable
 private fun UpdateValueDialog(onDismiss: () -> Unit, onClick: (Double) -> Unit) {
     var text by remember { mutableDoubleStateOf(0.0) }
-    androidx.compose.material3.AlertDialog(
+    AlertDialog(
         onDismissRequest = onDismiss){
         Surface{
             Column(modifier = Modifier.fillMaxWidth()

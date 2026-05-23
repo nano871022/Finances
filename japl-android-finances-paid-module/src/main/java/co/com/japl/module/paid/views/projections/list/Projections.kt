@@ -131,7 +131,7 @@ private fun Header(viewModel: ProjectionsViewModel){
 
 @Composable
 private fun FloatButton(viewModel: ProjectionsViewModel){
-    Column(){
+    Column {
         FloatButton(
             imageVector = Icons.Rounded.RemoveRedEye,
             descriptionIcon = R.string.list_projection

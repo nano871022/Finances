@@ -42,7 +42,7 @@ import co.japl.android.myapplication.utils.NumbersUtil
 @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
 @Composable
 fun CreditForm(viewModel: CreditFormViewModel = viewModel()) {
-    val progress = remember { viewModel.progress }
+    remember { viewModel.progress }
     val showProgress = remember { viewModel.showProgress }
 
     if (showProgress.value) {
@@ -243,7 +243,7 @@ private fun FloatButton(save:()->Unit,clean:()->Unit,amortization:()->Unit,backV
 fun PreviewNight() {
     val viewModel = creditViewModel()
     viewModel.showProgress.value = false
-    MaterialThemeComposeUI() {
+    MaterialThemeComposeUI {
         CreditForm(viewModel = viewModel)
     }
 }

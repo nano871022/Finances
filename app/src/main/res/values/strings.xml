@@ -501,4 +501,42 @@
     <string name="email_list">Lista Correos Compras</string>
     <string name="email_credit_card">Correo Electronico TC</string>
     <string name="list_email_paids">Correo Electronico Pagos</string>
+    <string name="user_profile">Perfil del usuario</string>
+    <string name="setting">Configuración</string>
+    <string name="user_avatar">Imagen usuario</string>
+    <string name="home">Inicio</string>
+    <string name="sync">Sincronizar</string>
+    <string name="database">Base Datos</string>
+    <string name="profile">Perfil</string>
+    <string name="sms_access">Leer SMS</string>
+    <string name="sms_access_detail">Leer los SMS para obtener los pagos realizados con tarjeta de credito o pagos con debito o QR por medio de expresiones regulares y procesada localmente</string>
+    <string name="email_access">Leer Correos Electrónicos</string>
+    <string name="email_access_detail">Lee correos electrónicos para obtener los pagos realizados con tarjeta de credito o pagos con debito o QR por medio de expresiones regulares y procesada localmente</string>
+    <string name="google_drive">Google Drive</string>
+    <string name="google_drive_detail">Acceso a Google Drive para poder realizar backup de la Base de datos</string>
+    <string name="cloud_connection">Conectarse con la nube</string>
+    <string name="switch_account">Cambiar Cuenta</string>
+    <string name="not_signed_in">No ha Iniciado Sesión</string>
+    <string name="signed_in_google">Inicio Sesion con Google</string>
+    <string name="please_sign_in">Porfavor Iniciar Sesión</string>
+    <string name="not_connected">No Conectado</string>
+    <string name="sing_in_to_sync_your_data">Inicie Sesión para sincronizar los datos</string>
+    <string name="backup_description">Cargar la base de datos de la aplicacion a google drive para salvar la información</string>
+    <string name="restore_description">Descarga la base de datos del drive y la carga en el dispositivo local</string>
+    <string name="data_operations">Acciones con los datos</string>
+    <string name="last_backup">Ultimo Backup</string>
+    <string name="connected_account">Cuenta Conectada</string>
+    <string name="store_space">Almacenamiento %s / %s</string>
+    <string name="used_percent">%s %% usado</string>
+    <string name="up_do_date">Actualizado</string>
+    <string name="cloud_sync_status">Estado de Sincronización</string>
+    <string name="security_privacy"><![CDATA[Seguridad & Privacidad]]></string>
+    <string name="security_privacy_description">
+        En esta aplicación no recolecta datos para enviar a los servidores,\n
+        la data aquí suministrada se alamacena solamente en el dispositivo y puede realizar backups en su cuenta de google drive,\n
+        puede leer mensajes para descargar pagos q envian los bancos o otros proveedores y\n
+        si usa la IA esta se conecta con su cuenta de gemini,\n
+        ninguna inforamción aqui proporsionada es usada fuera de su dispositivos</string>
+    <string name="account_manager">Administración de Cuenta</string>
+    <string name="loading_data">Cargando Datos</string>
 </resources>

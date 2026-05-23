@@ -18,7 +18,7 @@ import com.google.android.libraries.identity.googleid.GetGoogleIdOption
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
 import com.google.api.services.drive.DriveScopes
 
-class GoogleSignInWebImplement constructor(private val context: Context): IGoogleSignInService {
+class GoogleSignInWebImplement(private val context: Context): IGoogleSignInService {
 
     private var getCredentialRequest:GetCredentialRequest? = null
     private var account : GoogleIdTokenCredential? = null
@@ -52,8 +52,7 @@ class GoogleSignInWebImplement constructor(private val context: Context): IGoogl
     }
 
     fun login(result:GetCredentialResponse){
-        val credential = result.credential
-        when(credential){
+        when(val credential = result.credential){
             is CustomCredential -> {
                 if(credential.type == GoogleIdTokenCredential.TYPE_GOOGLE_ID_TOKEN_CREDENTIAL){
                     account = GoogleIdTokenCredential.createFrom(credential.data)
@@ -69,4 +68,24 @@ class GoogleSignInWebImplement constructor(private val context: Context): IGoogl
     }
 
     override fun getAccount() = account
+
+    override fun isGoogleDriveGranted(): Boolean {
+        TODO("Not yet implemented")
+    }
+
+    override fun isEmailAccessGranted(): Boolean {
+        TODO("Not yet implemented")
+    }
+
+    override fun isSmsAccessGranted(): Boolean {
+        TODO("Not yet implemented")
+    }
+
+    override fun requestPermissions(activity: Activity) {
+        TODO("Not yet implemented")
+    }
+
+    override fun requestSmsPermission(activity: Activity) {
+        TODO("Not yet implemented")
+    }
 }

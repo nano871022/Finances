@@ -138,7 +138,7 @@ private fun CreditCard(value:Map.Entry<CreditCardDTO?,List<TaxDTO>>,viewModel: C
         HorizontalDivider()
             Column(modifier=Modifier) {
                 listState.forEach { list ->
-                    LazyColumn () {
+                    LazyColumn {
                         items(list.size){ pos ->
                             Rate(
                                 rate = list[pos],

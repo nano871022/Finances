@@ -43,7 +43,7 @@ class CreditFixImpl @Inject constructor(override var dbConnect: SQLiteOpenHelper
     @RequiresApi(Build.VERSION_CODES.O)
     override fun save(dto: CreditDTO): Long {
         val db = dbConnect.writableDatabase
-        val content: ContentValues? = CreditMap().mapping(dto)
+        val content: ContentValues = CreditMap().mapping(dto)
         return if(dto.id > 0){
             db?.update(CreditDB.Entry.TABLE_NAME,content,"${BaseColumns._ID}=?", arrayOf(dto.id.toString()))?.toLong() ?: 0
         }else {

@@ -31,7 +31,7 @@ import javax.inject.Inject
 class ListBoughtViewModel @Inject constructor(
     private val application: Application,
     private var navController: NavController?,
-    public val prefs:Prefs
+    val prefs:Prefs
 ) : ViewModel() {
 
     private  var _taxSvc: ITaxPort = EntryPoints.get(application, EntryPoint::class.java).getInboundTaxPort()

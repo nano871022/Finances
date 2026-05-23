@@ -27,11 +27,6 @@ class ListTaxCreditCard : Fragment() {
     lateinit var _bind : FragmentListTaxCreditCardBinding
     val bind get() = _bind
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-    }
-
     @RequiresApi(Build.VERSION_CODES.S)
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,

@@ -5,6 +5,7 @@ import android.database.sqlite.SQLiteDatabase
 import android.util.Log
 import co.japl.android.myapplication.finanzas.bussiness.DB.connections.ConnectDB
 import co.japl.android.myapplication.finanzas.bussiness.interfaces.IGoogleDriveService
+import co.japl.android.myapplication.finanzas.pojo.BackupStorageInfo
 import co.japl.android.myapplication.utils.DatabaseConstants
 import com.google.android.gms.auth.api.identity.AuthorizationResult
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
@@ -18,8 +19,10 @@ import com.google.api.services.drive.model.File
 import java.io.FileOutputStream
 import java.nio.file.Files
 import java.util.Collections
+import java.time.LocalDateTime
+import java.time.ZoneId
 
-class GoogleDriveImpl constructor(private val context:Context,private val dbConnect:ConnectDB) : IGoogleDriveService {
+class GoogleDriveImpl(private val context:Context, private val dbConnect:ConnectDB) : IGoogleDriveService {
     companion object {
         const val PARAMETER_FOLDER = "appDataFolder"
         private val SCOPES = listOf(DriveScopes.DRIVE_FILE, DriveScopes.DRIVE_APPDATA)
@@ -48,7 +51,7 @@ class GoogleDriveImpl constructor(private val context:Context,private val dbConn
         }
     }
 
-    private fun readAndRestoreDB(fileTempDB:java.io.File):String?{
+    private fun readAndRestoreDB(fileTempDB:java.io.File): String {
         val db = SQLiteDatabase.openDatabase(fileTempDB.absolutePath, null, SQLiteDatabase.OPEN_READONLY)
         dbConnect.onRestore(dbConnect.writableDatabase,db)
         return "== Finished Restore Process"
@@ -67,7 +70,7 @@ class GoogleDriveImpl constructor(private val context:Context,private val dbConn
         try {
             return drive.files().list()
                 .setSpaces(PARAMETER_FOLDER)
-                .setFields("nextPageToken, files(id, name, version, modifiedTime)")
+                .setFields("nextPageToken, files(id, name, version, modifiedTime, size)")
                 .execute()?.files ?: emptyList()
         }catch (e:Exception){
             Log.e(this.javaClass.name,e.message,e)
@@ -101,12 +104,12 @@ class GoogleDriveImpl constructor(private val context:Context,private val dbConn
 
     override suspend fun backup(account: GoogleSignInAccount?): String? {
         return getDrive(account)?.let{drive->
-            getFiles(drive).takeIf { it.isNotEmpty() }
-                ?.filter{ it.name == DatabaseConstants.DATA_BASE_NAME }
-                ?.firstOrNull{it.size == 1}?.let{
-                    update(it.id,drive)
-                }?: create(drive)
-
+            val files = getFiles(drive).filter { it.name == DatabaseConstants.DATA_BASE_NAME }
+            if (files.isNotEmpty()) {
+                update(files[0].id, drive)
+            } else {
+                create(drive)
+            }
         }
     }
 
@@ -114,17 +117,17 @@ class GoogleDriveImpl constructor(private val context:Context,private val dbConn
         return context.applicationContext.getDatabasePath(DatabaseConstants.DATA_BASE_NAME)
     }
 
-    private fun update(idFile:String,drive:Drive):String?{
+    private fun update(idFile:String,drive:Drive): String {
         return getFileDB()?.let {file->
             val mimeType = Files.probeContentType(file.toPath())
             val mediaContent = FileContent(mimeType, file)
-            drive.Files().update(idFile, null, mediaContent).execute()?.let{
+            drive.files().update(idFile, null, mediaContent).execute()?.let{
                 "== Finished Backup Process - Update Size: ${file.length() / (1024)}Kb"
             }
         }?:"== NOT-BACKUP-UPDATE"
     }
 
-    private fun create(drive: Drive):String?{
+    private fun create(drive: Drive): String {
         return getFileDB()?.let{file->
             val mimeType = Files.probeContentType(file.toPath())
             val mediaContent = FileContent(mimeType, file)
@@ -132,7 +135,7 @@ class GoogleDriveImpl constructor(private val context:Context,private val dbConn
             fileMetadata.name = DatabaseConstants.DATA_BASE_NAME
             fileMetadata.mimeType = mimeType
             fileMetadata.parents = Collections.singletonList(PARAMETER_FOLDER)
-            drive.Files().create(fileMetadata,mediaContent)
+            drive.files().create(fileMetadata,mediaContent)
                 .setFields("id").execute()?.let{
                     "== Finished Backup Process - Create Size: ${file.length() / (1024)}Kb"
                 }
@@ -146,6 +149,26 @@ class GoogleDriveImpl constructor(private val context:Context,private val dbConn
                     "== ${it.name} V ${it.version}  \nLast Modified:${it.modifiedTime}"
 
         }}?: "== NOT-INFO"
+    }
+
+    override suspend fun getStorageInfo(account: GoogleSignInAccount?): BackupStorageInfo? {
+        return getDrive(account)?.let { drive ->
+            val about = drive.about().get().setFields("storageQuota").execute()
+            val quota = about.storageQuota
+            val files = getFiles(drive)
+            val backupFile = files.firstOrNull { it.name == DatabaseConstants.DATA_BASE_NAME }
+            
+            val lastBackup = backupFile?.modifiedTime?.let {
+                LocalDateTime.ofInstant(java.time.Instant.ofEpochMilli(it.value), ZoneId.systemDefault())
+            }
+            val spaceDBKb = ((backupFile?.size ?: 0) /1024).toLong()
+            BackupStorageInfo(
+                spaceUsed = quota.usage ?: 0L,
+                spaceMax = quota.limit ?: 0L,
+                lastBackup = lastBackup,
+                spaceDBKb = spaceDBKb
+            )
+        }
     }
 
 

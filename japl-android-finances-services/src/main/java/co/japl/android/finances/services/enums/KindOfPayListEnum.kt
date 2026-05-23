@@ -17,11 +17,11 @@ enum class KindOfPayListEnum (private val months:Int,private val monthStr:String
 
     object actions {
         fun findByMonthStr(value:String): KindOfPayListEnum{
-            return KindOfPayListEnum.entries.firstOrNull { it.monthStr == value } ?: KindOfPayListEnum.Annual
+            return KindOfPayListEnum.entries.firstOrNull { it.monthStr == value } ?: Annual
         }
 
         fun findByMonths(value:Int): KindOfPayListEnum{
-            return KindOfPayListEnum.entries.firstOrNull { it.months == value } ?: KindOfPayListEnum.Annual
+            return KindOfPayListEnum.entries.firstOrNull { it.months == value } ?: Annual
         }
     }
 }

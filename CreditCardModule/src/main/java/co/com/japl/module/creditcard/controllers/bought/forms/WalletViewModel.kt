@@ -22,7 +22,7 @@ import kotlinx.coroutines.runBlocking
 import java.time.LocalDate
 import java.time.LocalDateTime
 
-class WalletViewModel constructor(private val savedStateHolder: SavedStateHandle?=null,private val codeCreditCard:Int, private val codeBought:Int, private val period:LocalDateTime, private val boughtSvc:IBoughtPort?, private val creditRateSvc:ITaxPort?, private val creditCardSvc:ICreditCardPort?, private val navController: NavController?, private val prefs:Prefs) : ViewModel(){
+class WalletViewModel(private val savedStateHolder: SavedStateHandle?=null, private val codeCreditCard:Int, private val codeBought:Int, private val period:LocalDateTime, private val boughtSvc:IBoughtPort?, private val creditRateSvc:ITaxPort?, private val creditCardSvc:ICreditCardPort?, private val navController: NavController?, private val prefs:Prefs) : ViewModel(){
 
     private var cutOffDate:LocalDateTime? = null
     private var bought:CreditCardBoughtDTO? = null

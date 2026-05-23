@@ -35,7 +35,7 @@ import java.time.YearMonth
 import java.time.format.TextStyle
 import java.util.Locale
 
-class MonthlyViewModel constructor(private val period:YearMonth,private val paidSvc: IPaidPort?, private val incomesSvc:IInputPort?,private val accountSvc:IAccountPort?, private val smsSvc:ISMSPaidPort?,private val paidSmsSvc:ISmsPort?,private val prefs:Prefs?,private val navController: NavController?): ViewModel() {
+class MonthlyViewModel(private val period:YearMonth, private val paidSvc: IPaidPort?, private val incomesSvc:IInputPort?, private val accountSvc:IAccountPort?, private val smsSvc:ISMSPaidPort?, private val paidSmsSvc:ISmsPort?, private val prefs:Prefs?, private val navController: NavController?): ViewModel() {
     private var _accounts : List<AccountDTO>? = null
     val listAccount get() = _accounts
 

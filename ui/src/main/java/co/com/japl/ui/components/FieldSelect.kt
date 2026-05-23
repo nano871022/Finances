@@ -55,7 +55,7 @@ fun FieldSelect(title:String,value:String?,list:List<IMoreOptions>?,isError:Muta
 
 
     Box(modifier = modifier
-        .background(color = androidx.compose.material3.MaterialTheme.colorScheme.surfaceVariant)
+        .background(color = MaterialTheme.colorScheme.surfaceVariant)
         .border(1.dp, Color.Unspecified, shape = ShapeDefaults.ExtraLarge)
         .clickable { state.value = true }){
         Text(text = title,
@@ -117,7 +117,7 @@ fun FieldSelect(
         list:List<Pair<Int,String>>?,
         modifier: Modifier,
         callable:(Pair<Int,String>?)->Unit){
-    val context = LocalContext.current
+    LocalContext.current
     val state = remember { mutableStateOf(false) }
     val stateValue = remember { mutableStateOf("") }
     val stateClean = remember { mutableStateOf(false) }
@@ -130,7 +130,7 @@ fun FieldSelect(
 
     Box(modifier = modifier
         .defaultMinSize(minHeight = 48.dp)
-        .background(color = androidx.compose.material3.MaterialTheme.colorScheme.surfaceVariant)
+        .background(color = MaterialTheme.colorScheme.surfaceVariant)
         .border(1.dp, Color.Unspecified, shape = ShapeDefaults.ExtraLarge)
         .clickable { state.value = true }){
         Text(text = title,
@@ -192,7 +192,7 @@ fun FieldSelect(title: String,
                 list:SnapshotStateList<Pair<Int,String>>,
                 modifier: Modifier,
                 callAble:(Pair<Int,String>?)->Unit){
-    val context = LocalContext.current
+    LocalContext.current
     val state = remember { mutableStateOf(false) }
     val stateValue = remember { mutableStateOf("") }
     val stateClean = remember { mutableStateOf(false) }
@@ -204,7 +204,7 @@ fun FieldSelect(title: String,
 
 
     Box(modifier = modifier
-        .background(color = androidx.compose.material3.MaterialTheme.colorScheme.surfaceVariant)
+        .background(color = MaterialTheme.colorScheme.surfaceVariant)
         .border(1.dp, Color.Unspecified, shape = ShapeDefaults.ExtraLarge)
         .clickable { state.value = true }){
         Text(text = title,
