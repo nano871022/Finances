@@ -47,7 +47,7 @@ class AdditionalCreditFragment : Fragment(){
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         val root = FragmentAdditionalCreditBinding.inflate(inflater)
         root.composeViewFacf.apply {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed )

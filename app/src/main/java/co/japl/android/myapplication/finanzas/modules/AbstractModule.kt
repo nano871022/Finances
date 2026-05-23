@@ -303,7 +303,7 @@ abstract class AbstractModule {
     abstract fun bindDAOAccount(implement:co.japl.android.finances.services.dao.implement.AccountImpl):co.japl.android.finances.services.dao.interfaces.IAccountDAO
 
     @Binds
-    abstract fun bindInputBought(implement:co.japl.finances.core.adapters.inbound.implement.creditcard.bought.BoughtImpl):IBoughtPort
+    abstract fun bindInputBought(implement: BoughtImpl):IBoughtPort
 
     @Binds
     abstract fun bindUserCaseBought(implement:co.japl.finances.core.usercases.implement.creditcard.bought.Bought):IBought

@@ -2,7 +2,7 @@ package co.japl.android.myapplication.finanzas.view.google
 
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.background
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -11,45 +11,55 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.rounded.ChevronRight
 import androidx.compose.material.icons.rounded.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import co.com.japl.ui.components.AlertDialogOkCancel
-import co.com.japl.ui.theme.values.Dimensions
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.japl.android.myapplication.R
 import coil.compose.AsyncImage
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 
 @Composable
 fun LoginSpace(viewModel: GoogleAuthBackupRestoreViewModel) {
-    val context = LocalContext.current
-    val statusRestoreDialog = remember { mutableStateOf(false) }
     val stateResultActivity = rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) {
         viewModel.isProcessing.value = true
         viewModel.responseConnection(it)
     }
     val loginValue = remember { viewModel.loginValue }
+    val nameValue = remember { viewModel.nameValue }
+    val photoUrlValue = remember { viewModel.photoUrlValue }
     val isLogged = remember { viewModel.isLogged }
     val isProcessing = remember { viewModel.isProcessing }
+
+    val lifecycleOwner = LocalLifecycleOwner.current
+    DisposableEffect(lifecycleOwner) {
+        val observer = LifecycleEventObserver { _, event ->
+            if (event == Lifecycle.Event.ON_RESUME) {
+                viewModel.checkSmsPermission()
+            }
+        }
+        lifecycleOwner.lifecycle.addObserver(observer)
+        onDispose {
+            lifecycleOwner.lifecycle.removeObserver(observer)
+        }
+    }
 
     Column(
         modifier = Modifier
@@ -59,84 +69,77 @@ fun LoginSpace(viewModel: GoogleAuthBackupRestoreViewModel) {
     ) {
         if (isProcessing.value) {
             LinearProgressIndicator(modifier = Modifier.fillMaxWidth().padding(bottom = 16.dp))
+
+            Text(
+                text=stringResource(R.string.loading_data),
+                textAlign = TextAlign.Center,
+                modifier=Modifier.fillMaxWidth()
+
+            )
+        }else {
+
+            if (isLogged.value) {
+                ProfileHeader(
+                    isLogged.value,
+                    loginValue.value,
+                    nameValue.value,
+                    photoUrlValue.value
+                )
+            }
+
+            Spacer(modifier = Modifier.height(5.dp))
+
+            if (isLogged.value.not()) {
+                CloudConnectionCard(isLogged.value, loginValue.value, onSwitchAccount = {
+                    viewModel.login()?.let { stateResultActivity.launch(it) }
+                })
+            }
+
+            Spacer(modifier = Modifier.height(5.dp))
+
+            // Permissions & Status
+            PermissionsAndStatusSection(viewModel)
+
+            Spacer(modifier = Modifier.height(5.dp))
+
+            // Secondary Actions List
+            AccountManagementList(isLogged.value, onSignOut = { viewModel.logout() })
+
+            Spacer(modifier = Modifier.height(32.dp))
         }
-
-        // Profile Header Section
-        ProfileHeader(isLogged.value, loginValue.value)
-
-        Spacer(modifier = Modifier.height(24.dp))
-
-        // Bento Layout Grid - Auth & Connection
-        CloudConnectionCard(isLogged.value, loginValue.value, onSwitchAccount = {
-            viewModel.login()?.let { stateResultActivity.launch(it) }
-        })
-
-        Spacer(modifier = Modifier.height(24.dp))
-
-        // Permissions & Status
-        PermissionsAndStatusSection()
-
-        Spacer(modifier = Modifier.height(24.dp))
-
-        // Manual Sync Button
-        Button(
-            onClick = {
-                CoroutineScope(Dispatchers.IO).launch {
-                    viewModel.backup()
-                }
-            },
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(56.dp),
-            shape = RoundedCornerShape(12.dp),
-            colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
-        ) {
-            Icon(Icons.Rounded.Sync, contentDescription = null)
-            Spacer(modifier = Modifier.width(8.dp))
-            Text("Manual Force Sync", fontWeight = FontWeight.Bold)
-        }
-
-        Spacer(modifier = Modifier.height(32.dp))
-
-        // Secondary Actions List
-        AccountManagementList(onSignOut = { viewModel.logout() })
-
-        Spacer(modifier = Modifier.height(32.dp))
     }
-
-    AlertRestore(status = statusRestoreDialog, action = {
-        viewModel.restore()
-    })
 }
 
 @Composable
-private fun ProfileHeader(isLogged: Boolean, email: String) {
+private fun ProfileHeader(isLogged: Boolean, email: String, name:String, photoUrl: String?) {
     Column(
         modifier = Modifier.fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Box(contentAlignment = Alignment.BottomEnd) {
             AsyncImage(
-                model = "https://lh3.googleusercontent.com/aida-public/AB6AXuB4pBHmtD4vguMkfj9hvQOrCph3A-HOLRkfivwIhkFcq5TKtChn-UDpeqkYUStwRbUh403n9QEqmrl4VAHEXwmfntfxZmwX3fwjvZ48uq0n8xACY8EwrNFz9BUv0ovF7vsTITAUQE0UIgFBqJYf_BNJXBO_mFeNuV48ERmAQ6qbfar4ynXkNBpT5ZT4vlCfxds6XhZ9uL_3BDPUrqe9qXfXZbjmdxbTjWrbqb4zZnFWUmSH2yl7SoUacsJb3KDQMubCfnv1LTPm781u",
+                model = photoUrl ?: R.drawable.ic_launcher_foreground,
                 contentDescription = "Profile Picture",
                 modifier = Modifier
                     .size(128.dp)
                     .clip(CircleShape)
-                    .border(4.dp, Color.White, CircleShape),
-                contentScale = ContentScale.Crop
+                    .border(4.dp, MaterialTheme.colorScheme.surface, CircleShape),
+                contentScale = ContentScale.Crop,
+                placeholder = painterResource(id = R.drawable.ic_launcher_foreground),
+                error = painterResource(id = R.drawable.ic_launcher_foreground)
             )
             if (isLogged) {
                 Surface(
-                    color = Color(0xFF38761D),
+                    color = MaterialTheme.colorScheme.onPrimary,
                     shape = CircleShape,
                     modifier = Modifier
                         .size(32.dp)
-                        .border(2.dp, Color.White, CircleShape)
+                        .border(2.dp, MaterialTheme.colorScheme.surface, CircleShape)
                 ) {
                     Icon(
                         Icons.Rounded.CheckCircle,
                         contentDescription = null,
-                        tint = Color.White,
+                        tint = MaterialTheme.colorScheme.primary,
                         modifier = Modifier.padding(4.dp)
                     )
                 }
@@ -146,14 +149,16 @@ private fun ProfileHeader(isLogged: Boolean, email: String) {
         Spacer(modifier = Modifier.height(16.dp))
 
         Text(
-            text = if (isLogged) "Connected as Alex Rivers" else "Not Connected",
+            text = if (isLogged) name
+                    else  stringResource(R.string.not_connected),
             style = MaterialTheme.typography.headlineLarge,
             fontWeight = FontWeight.Bold,
             color = MaterialTheme.colorScheme.onSurface
         )
 
         Text(
-            text = if (isLogged) email else "Sign in to sync your data",
+            text = if (isLogged) email
+                    else stringResource(R.string.sing_in_to_sync_your_data),
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )
@@ -199,7 +204,7 @@ private fun CloudConnectionCard(isLogged: Boolean, email: String, onSwitchAccoun
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.White),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
@@ -207,11 +212,11 @@ private fun CloudConnectionCard(isLogged: Boolean, email: String, onSwitchAccoun
                 Icon(
                     Icons.Rounded.AccountBalanceWallet,
                     contentDescription = null,
-                    tint = MaterialTheme.colorScheme.primary
+                    tint = MaterialTheme.colorScheme.onPrimary
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(
-                    "Cloud Connection",
+                    stringResource(R.string.cloud_connection),
                     style = MaterialTheme.typography.headlineSmall,
                     fontWeight = FontWeight.Bold
                 )
@@ -235,71 +240,42 @@ private fun CloudConnectionCard(isLogged: Boolean, email: String, onSwitchAccoun
                         Surface(
                             modifier = Modifier.size(40.dp),
                             shape = CircleShape,
-                            color = Color.White,
+                            color = MaterialTheme.colorScheme.surface,
                             shadowElevation = 2.dp
                         ) {
                             Box(contentAlignment = Alignment.Center) {
-                                // Google Icon placeholder
-                                Icon(Icons.Rounded.Cloud, contentDescription = null, tint = Color(0xFF4285F4))
+                                Icon(Icons.Rounded.Cloud,
+                                    contentDescription = stringResource(id = R.string.login),
+                                    tint = MaterialTheme.colorScheme.onPrimary)
                             }
                         }
                         Spacer(modifier = Modifier.width(12.dp))
                         Column {
                             Text(
-                                if (isLogged) "Signed in with Google" else "Not Signed In",
+                                if (isLogged) stringResource(id = R.string.signed_in_google)
+                                else stringResource(id = R.string.not_signed_in),
                                 style = MaterialTheme.typography.labelLarge,
                                 fontWeight = FontWeight.Bold,
-                                color = MaterialTheme.colorScheme.primary
+                                color = MaterialTheme.colorScheme.onPrimary
                             )
                             Text(
-                                if (isLogged) "Active session since Oct 12" else "Please sign in",
+                                if (isLogged) "Active session since Oct 12"
+                                else stringResource(id = R.string.please_sign_in),
                                 style = MaterialTheme.typography.bodySmall,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant
                             )
                         }
                     }
-                    Text(
-                        if (isLogged) "Switch Account" else "Sign In",
-                        modifier = Modifier
-                            .clickable { onSwitchAccount() }
-                            .padding(8.dp),
-                        style = MaterialTheme.typography.labelLarge,
-                        color = MaterialTheme.colorScheme.primary,
-                        fontWeight = FontWeight.Bold
-                    )
-                }
-            }
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(200.dp)
-                    .clip(RoundedCornerShape(12.dp))
-            ) {
-                AsyncImage(
-                    model = "https://lh3.googleusercontent.com/aida-public/AB6AXuDKHz-tU37oEw7k49c9cveuGODmpew8X0S6XFtJNJ6uxV76o1Z99vghQUT8Gvwg1dfjgmUMziHsmWU3DkxRQT8vhUiOxZ1R_x9nPVD1n0xZ7ir8RrLpI2MCUEPpafc3oWHPisyfFJjzkp6VFQKXLq6qXOUlVI42RFGqYbbO-_jKdYO2RRjzQMkoNtyQGnUns3gGZGOiUHLMBL6Dt0eJOloprNzREvFPl0Wh-DYv7k70AtN4TRRB7ep3lFY5icwb_y6LP-no_XHIXYaF",
-                    contentDescription = "Secure Cloud",
-                    modifier = Modifier.fillMaxSize(),
-                    contentScale = ContentScale.Crop
-                )
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .background(
-                            Brush.verticalGradient(
-                                colors = listOf(Color.Transparent, MaterialTheme.colorScheme.primary.copy(alpha = 0.8f))
-                            )
+                        Text(
+                            if (isLogged) stringResource(id = R.string.switch_account)
+                            else stringResource(id = R.string.login),
+                            modifier = Modifier
+                                .clickable { onSwitchAccount() }
+                                .padding(8.dp),
+                            style = MaterialTheme.typography.labelLarge,
+                            color = MaterialTheme.colorScheme.onPrimary,
+                            fontWeight = FontWeight.Bold
                         )
-                        .padding(16.dp),
-                    contentAlignment = Alignment.BottomStart
-                ) {
-                    Text(
-                        "Your data is end-to-end encrypted and synced across all your Android devices automatically.",
-                        color = Color.White,
-                        style = MaterialTheme.typography.bodyMedium
-                    )
                 }
             }
         }
@@ -307,59 +283,67 @@ private fun CloudConnectionCard(isLogged: Boolean, email: String, onSwitchAccoun
 }
 
 @Composable
-private fun PermissionsAndStatusSection() {
+private fun PermissionsAndStatusSection(viewModel: GoogleAuthBackupRestoreViewModel) {
+    val isLogged = viewModel.isLogged.value
+    val isGoogleDriveGranted = viewModel.isGoogleDriveGranted.value
+    val isEmailAccessGranted = viewModel.isEmailAccessGranted.value
+    val isSmsAccessGranted = viewModel.isSmsAccessGranted.value
+
+    if(isLogged)
     Column {
+        val allGranted = isGoogleDriveGranted && isEmailAccessGranted && isSmsAccessGranted
+        val sectionColor = if (allGranted) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.error
+        
         Card(
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(16.dp),
-            colors = CardDefaults.cardColors(containerColor = Color.White),
-            border = BorderStroke(1.dp, MaterialTheme.colorScheme.error.copy(alpha = 0.5f))
+            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+            border = BorderStroke(1.dp, sectionColor.copy(alpha = 0.5f))
         ) {
             Column(modifier = Modifier.padding(16.dp)) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Icon(
                         Icons.Rounded.GppMaybe,
                         contentDescription = null,
-                        tint = MaterialTheme.colorScheme.error
+                        tint = sectionColor
                     )
                     Spacer(modifier = Modifier.width(8.dp))
                     Text(
                         "Permissions & Status",
                         style = MaterialTheme.typography.headlineSmall,
                         fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.error
+                        color = sectionColor
                     )
                 }
 
                 Spacer(modifier = Modifier.height(16.dp))
 
                 StatusItem(
-                    icon = Icons.Rounded.CloudOff,
-                    title = "Drive Access Required",
-                    description = "Automated backups are paused because FinanceFlow doesn't have write access to your Google Drive.",
-                    tint = MaterialTheme.colorScheme.error,
-                    containerColor = MaterialTheme.colorScheme.errorContainer.copy(alpha = 0.4f),
-                    actionText = "Grant Permission"
+                    icon = Icons.Rounded.AddToDrive,
+                    title = stringResource(R.string.google_drive),
+                    description = stringResource(R.string.google_drive_detail),
+                    isGranted = isGoogleDriveGranted,
+                    onGrant = { viewModel.grantGooglePermissions() }
                 )
 
                 Spacer(modifier = Modifier.height(12.dp))
 
                 StatusItem(
-                    icon = Icons.Rounded.CheckCircle,
-                    title = "Biometric Auth",
-                    description = "Face Unlock & Fingerprint active.",
-                    tint = Color(0xFF38761D),
-                    containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.6f)
+                    icon = Icons.Rounded.MarkEmailRead,
+                    title = stringResource(R.string.email_access),
+                    description = stringResource(R.string.email_access_detail),
+                    isGranted = isEmailAccessGranted,
+                    onGrant = { viewModel.grantGooglePermissions() }
                 )
 
                 Spacer(modifier = Modifier.height(12.dp))
 
                 StatusItem(
-                    icon = Icons.Rounded.NotificationsActive,
-                    title = "Smart Alerts",
-                    description = "Notify on unusual spending patterns.",
-                    tint = Color(0xFF93C47D),
-                    containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.6f)
+                    icon = Icons.Rounded.Textsms,
+                    title = stringResource(R.string.sms_access),
+                    description = stringResource(R.string.sms_access_detail),
+                    isGranted = isSmsAccessGranted,
+                    onGrant = { viewModel.grantSmsPermission() }
                 )
             }
         }
@@ -371,10 +355,12 @@ private fun StatusItem(
     icon: ImageVector,
     title: String,
     description: String,
-    tint: Color,
-    containerColor: Color,
-    actionText: String? = null
+    isGranted: Boolean,
+    onGrant: () -> Unit
 ) {
+    val tint = if (isGranted) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.error
+    val containerColor = if (isGranted) MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.1f) else MaterialTheme.colorScheme.errorContainer.copy(alpha = 0.4f)
+    
     Surface(
         color = containerColor,
         shape = RoundedCornerShape(12.dp),
@@ -386,10 +372,18 @@ private fun StatusItem(
             Column {
                 Text(title, style = MaterialTheme.typography.labelLarge, fontWeight = FontWeight.Bold)
                 Text(description, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
-                if (actionText != null) {
-                    Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(top = 8.dp)) {
-                        Text(actionText, style = MaterialTheme.typography.labelLarge, color = MaterialTheme.colorScheme.primary, fontWeight = FontWeight.Bold)
-                        Icon(Icons.AutoMirrored.Rounded.ChevronRight, contentDescription = null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(16.dp))
+                if (!isGranted) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically, 
+                        modifier = Modifier
+                            .padding(top = 8.dp)
+                            .clickable { onGrant() }
+                    ) {
+                        Text("Garantizar permisos",
+                            style = MaterialTheme.typography.labelLarge,
+                            color = MaterialTheme.colorScheme.onSurface,
+                            fontWeight = FontWeight.Bold)
+                        Icon(Icons.Rounded.ChevronRight, contentDescription = null, tint = MaterialTheme.colorScheme.onSurface, modifier = Modifier.size(16.dp))
                     }
                 }
             }
@@ -398,10 +392,10 @@ private fun StatusItem(
 }
 
 @Composable
-private fun AccountManagementList(onSignOut: () -> Unit) {
+private fun AccountManagementList(isLogged: Boolean,onSignOut: () -> Unit) {
     Column {
         Text(
-            "ACCOUNT MANAGEMENT",
+            stringResource(R.string.account_manager),
             style = MaterialTheme.typography.labelSmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             letterSpacing = 1.5.sp,
@@ -410,29 +404,28 @@ private fun AccountManagementList(onSignOut: () -> Unit) {
         Spacer(modifier = Modifier.height(12.dp))
         Card(
             shape = RoundedCornerShape(16.dp),
-            colors = CardDefaults.cardColors(containerColor = Color.White),
+            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
             elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
         ) {
             Column {
                 ManagementItem(
                     icon = Icons.Rounded.Security,
-                    title = "Security & Privacy",
-                    description = "Manage your encryption keys and passwords"
+                    title = stringResource(R.string.security_privacy),
+                    description = stringResource(R.string.security_privacy_description)
                 )
-                HorizontalDivider(modifier = Modifier.padding(horizontal = 16.dp), color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.3f))
-                ManagementItem(
-                    icon = Icons.Rounded.Storage,
-                    title = "Data Export",
-                    description = "Download your transaction history as CSV"
-                )
-                HorizontalDivider(modifier = Modifier.padding(horizontal = 16.dp), color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.3f))
-                ManagementItem(
-                    icon = Icons.Rounded.Logout,
-                    title = "Sign Out",
-                    description = "Disconnect your current session",
-                    tint = MaterialTheme.colorScheme.error,
-                    onClick = onSignOut
-                )
+                if(isLogged) {
+                    HorizontalDivider(
+                        modifier = Modifier.padding(horizontal = 16.dp),
+                        color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.3f)
+                    )
+                    ManagementItem(
+                        icon = Icons.Rounded.Logout,
+                        title = stringResource(id = R.string.logout),
+                        description = stringResource(id = R.string.logout),
+                        tint = MaterialTheme.colorScheme.error,
+                        onClick = onSignOut
+                    )
+                }
             }
         }
     }
@@ -462,20 +455,30 @@ private fun ManagementItem(
                 Text(description, style = MaterialTheme.typography.bodySmall, color = if (tint == MaterialTheme.colorScheme.error) tint.copy(alpha = 0.7f) else MaterialTheme.colorScheme.onSurfaceVariant)
             }
         }
-        Icon(Icons.AutoMirrored.Rounded.ChevronRight, contentDescription = null, tint = tint)
+        Icon(Icons.Rounded.ChevronRight, contentDescription = null, tint = tint)
+    }
+}
+
+@Preview( backgroundColor = 0xFFFFFFFF)
+@Composable
+fun ProfileLoginPreview(){
+    val vm = getViewModel()
+    MaterialThemeComposeUI {
+        LoginSpace(vm)
+    }
+}
+
+@Preview(heightDp = 1600, backgroundColor = 0xFFFFFFFF)
+@Composable
+fun ProfileLogedPreview(){
+    val vm = getViewModel()
+    vm.isLogged.value = true
+    MaterialThemeComposeUI {
+        LoginSpace(vm)
     }
 }
 
 @Composable
-private fun AlertRestore(status: MutableState<Boolean>, action: () -> Unit) {
-    if (status.value) {
-        AlertDialogOkCancel(
-            title = R.string.dialog_restore,
-            confirmNameButton = R.string.restore,
-            onDismiss = { status.value = false },
-        ) {
-            action.invoke()
-            status.value = false
-        }
-    }
+private fun getViewModel(): GoogleAuthBackupRestoreViewModel{
+    return GoogleAuthBackupRestoreViewModel(null,null,null,null,null)
 }

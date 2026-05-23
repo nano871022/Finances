@@ -13,7 +13,7 @@ import co.com.japl.module.credit.controllers.simulator.SimulatorListItemViewMode
 import kotlinx.coroutines.launch
 
 
-class ListViewModel  constructor(private val simulatorVariableSvc: ISimulatorCreditVariablePort?=null,private val simulatorFixSvc: ISimulatorCreditFixPort?=null, private val navController: NavController?=null):ViewModel() {
+class ListViewModel(private val simulatorVariableSvc: ISimulatorCreditVariablePort?=null, private val simulatorFixSvc: ISimulatorCreditFixPort?=null, private val navController: NavController?=null):ViewModel() {
     val progres = mutableStateOf(false)
     val list = mutableListOf<SimulatorCreditDTO>()
 

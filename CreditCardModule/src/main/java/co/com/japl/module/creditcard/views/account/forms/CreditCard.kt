@@ -32,7 +32,7 @@ fun CreditCard(viewModel: CreditCardViewModel){
     val progression = remember{viewModel.progress}
     val showProgress = remember{viewModel.showProgress}
 
-    val buttonsState = remember { viewModel.showButtons }
+    remember { viewModel.showButtons }
     val buttonUpdateState = remember { viewModel.showButtonUpdate}
 
     CoroutineScope(Dispatchers.IO).launch {

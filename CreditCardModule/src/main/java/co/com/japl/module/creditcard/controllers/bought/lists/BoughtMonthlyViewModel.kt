@@ -26,7 +26,7 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.Period
 
-class BoughtMonthlyViewModel constructor(
+class BoughtMonthlyViewModel(
                                         private val creditRate:ITaxPort?,
                                         private val creditCardSvc: ICreditCardPort?,
                                         private val boughtCreditCardSvc: IBoughtPort?,

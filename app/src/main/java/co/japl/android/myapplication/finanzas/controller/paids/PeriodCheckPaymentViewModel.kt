@@ -8,7 +8,7 @@ import co.com.japl.finances.iports.dtos.PeriodCheckPaymentDTO
 import co.com.japl.finances.iports.inbounds.paid.ICheckPaymentPort
 import kotlinx.coroutines.runBlocking
 
-class PeriodCheckPaymentViewModel constructor(private val periodCheckPaymentSvc:co.com.japl.finances.iports.inbounds.common.ICheckPaymentPort? ):ViewModel() {
+class PeriodCheckPaymentViewModel(private val periodCheckPaymentSvc:co.com.japl.finances.iports.inbounds.common.ICheckPaymentPort? ):ViewModel() {
 
     val progression = mutableFloatStateOf(0.0f)
     val loader = mutableStateOf(true)

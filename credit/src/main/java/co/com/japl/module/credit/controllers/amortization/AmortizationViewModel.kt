@@ -14,7 +14,7 @@ import kotlinx.coroutines.launch
 import java.time.LocalDate
 
 @ViewModelScoped
-class AmortizationViewModel constructor(
+class AmortizationViewModel(
     private val savedStateHandle: SavedStateHandle?=null,
     private val code:Int=0,
     private val lastDate: LocalDate = LocalDate.now(),

@@ -11,7 +11,8 @@ import co.com.japl.finances.iports.inbounds.inputs.IInputPort
 import co.com.japl.module.paid.navigations.Account
 import kotlinx.coroutines.runBlocking
 
-class AccountViewModel constructor(private val accountSvc:IAccountPort?, public val inputSvc:IInputPort?,public val navController: NavController?): ViewModel(){
+class AccountViewModel(private val accountSvc:IAccountPort?, val inputSvc:IInputPort?,
+                       val navController: NavController?): ViewModel(){
 
     val progress = mutableFloatStateOf(0f)
     val loading = mutableStateOf(true)

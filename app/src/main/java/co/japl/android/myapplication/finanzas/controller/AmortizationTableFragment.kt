@@ -28,7 +28,7 @@ class AmortizationTableFragment : Fragment(){
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         val view = FragmentAmortizationTableBinding.inflate(inflater)
         val code = arguments?.let{ AmortizationTableParams.download(it)["CODE"] as Long }
         val viewModel = AmortizationViewModel( code?.toInt()!!,amortizationSvc,findNavController())

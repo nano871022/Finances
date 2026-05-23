@@ -17,7 +17,7 @@ import co.com.japl.module.credit.navigations.CreditList
 import co.com.japl.module.credit.navigations.ExtraValueList
 import java.time.LocalDate
 
-class CreditAmortizationViewModel constructor(
+class CreditAmortizationViewModel(
     private val creditCode: Int,
     private val lastDate: LocalDate,
     private val creditSvc: ICreditPort?=null,

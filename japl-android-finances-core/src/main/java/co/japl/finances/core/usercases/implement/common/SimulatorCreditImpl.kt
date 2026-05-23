@@ -19,7 +19,7 @@ class SimulatorCreditImpl @Inject constructor(private val simulatorCreditSvc: IS
                 calculateQuote(dto.value, dto.tax, dto.kindOfTax, 0, dto.periods.toInt(), 1)
         }else{
             val (interes,capital,pair) = calculateFixQuote(dto.value, dto.tax, dto.kindOfTax, 0, dto.periods.toInt(), 1)
-            val (quote, pending) = pair
+            val (quote, _) = pair
             Triple(interes,capital,quote)
         }
         return dto.copy(interestValue = calculate.first, capitalValue = calculate.second, quoteValue = calculate.third)

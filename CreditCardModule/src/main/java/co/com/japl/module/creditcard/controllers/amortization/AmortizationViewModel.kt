@@ -1,4 +1,4 @@
-package co.com.japl.module.creditcard.controllers.amortization;
+package co.com.japl.module.creditcard.controllers.amortization
 
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
@@ -12,7 +12,7 @@ import dagger.hilt.android.scopes.ViewModelScoped
 import kotlinx.coroutines.launch
 
 @HiltViewModel
-class  AmortizationViewModel constructor(private val id:Int, private val svc: IAmortizationTablePort?=null, private val navController: NavController?=null):
+class  AmortizationViewModel(private val id:Int, private val svc: IAmortizationTablePort?=null, private val navController: NavController?=null):
 	ViewModel(){
 	val progressStatus = mutableStateOf(true)
 	val list = mutableListOf<AmortizationRowDTO>()

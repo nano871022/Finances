@@ -1,6 +1,6 @@
 package co.japl.android.finances.services.enums
 
-enum class KindInitialQuoteEnum constructor(public val symbole:String) {
+enum class KindInitialQuoteEnum(val symbole:String) {
     PERCENTAGE("%"),AMOUNT("$")
 
 }

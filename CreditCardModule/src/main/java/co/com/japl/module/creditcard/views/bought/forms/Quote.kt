@@ -81,7 +81,7 @@ fun Quote (viewModel:QuoteViewModel){
 
 @Composable
 private fun FloatingButtons(viewModel: QuoteViewModel) {
-    val uiState = viewModel.uiState.collectAsState()
+    viewModel.uiState.collectAsState()
     val isNewState = remember { viewModel.isNew }
     Column {
         FloatButton(

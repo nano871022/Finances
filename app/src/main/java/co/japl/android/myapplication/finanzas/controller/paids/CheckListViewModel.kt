@@ -16,7 +16,7 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.YearMonth
 
-class CheckListViewModel constructor(private val period:YearMonth,private val svc:ICheckPaymentPort?): ViewModel() {
+class CheckListViewModel(private val period:YearMonth, private val svc:ICheckPaymentPort?): ViewModel() {
     val progression = mutableFloatStateOf(0.0f)
     val listState = mutableStateListOf<CheckPaymentDTO>()
     val loaderStatus = mutableStateOf(true)

@@ -20,7 +20,7 @@ import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
 @ViewModelScoped
-class AdditionalViewModel constructor(private val context: Context,private val code:Int=0, private val additionalSvc: IAdditional?, private val navController: NavController? ): ViewModel(){
+class AdditionalViewModel(private val context: Context, private val code:Int=0, private val additionalSvc: IAdditional?, private val navController: NavController? ): ViewModel(){
 
     val list = mutableStateListOf<AdditionalCreditDTO>()
     private val _loading = MutableStateFlow<Boolean>(false)

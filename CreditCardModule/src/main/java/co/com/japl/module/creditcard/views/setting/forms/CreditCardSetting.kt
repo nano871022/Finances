@@ -141,7 +141,7 @@ private fun Body(viewModel: CreditCardSettingViewModel, modifier:Modifier) {
 
 @Composable
 private fun Buttons(viewModel: CreditCardSettingViewModel) {
-    val state = remember {viewModel.showButtons}
+    remember {viewModel.showButtons}
     val newOneState = remember {viewModel.newOne}
         if (!newOneState.value) {
             FloatButton(

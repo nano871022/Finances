@@ -8,7 +8,7 @@ import co.com.japl.finances.iports.inbounds.credit.ISimulatorCreditFixPort
 import co.com.japl.module.credit.R
 import java.util.Optional
 
-class SimulatorListItemViewModel constructor(private val dto: SimulatorCreditDTO?=null, private val simulatorCreditSvc: ISimulatorCreditFixPort?=null, private val navController: NavController?=null){
+class SimulatorListItemViewModel(private val dto: SimulatorCreditDTO?=null, private val simulatorCreditSvc: ISimulatorCreditFixPort?=null, private val navController: NavController?=null){
 
     var item: Optional<SimulatorCreditDTO> = Optional.empty()
         private set

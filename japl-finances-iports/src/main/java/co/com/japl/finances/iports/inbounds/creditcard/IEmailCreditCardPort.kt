@@ -1,4 +1,4 @@
-package co.com.japl.finances.iports.inbounds.creditcard;
+package co.com.japl.finances.iports.inbounds.creditcard
 
 import co.com.japl.finances.iports.dtos.EmailCreditCardDTO
 import co.com.japl.finances.iports.dtos.EmailValidationDTO

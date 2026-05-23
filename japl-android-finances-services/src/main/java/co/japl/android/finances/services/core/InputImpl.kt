@@ -10,7 +10,7 @@ import javax.inject.Inject
 import kotlin.jvm.optionals.getOrNull
 
 class InputImpl @Inject constructor(private val inputImpl:IInputDAO) : IInputPort {
-    override fun getTotalInputs(cutOff:LocalDate): BigDecimal? {
+    override fun getTotalInputs(cutOff:LocalDate): BigDecimal {
         val records = inputImpl.getAll().filter{ it.dateEnd.isAfter(cutOff) }
         val monthly = records.filter {
             it.kindOf == "Mensual"

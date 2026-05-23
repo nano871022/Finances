@@ -23,10 +23,6 @@ class AccountFragment : Fragment() {
     private var idAccount = 0
     private lateinit var _binding : FragmentAccountBinding
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
-
     @RequiresApi(Build.VERSION_CODES.S)
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,

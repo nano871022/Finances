@@ -19,7 +19,7 @@ import javax.inject.Inject
 
 class AdditionalCreditImpl @Inject constructor(override var dbConnect: SQLiteOpenHelper) :
     IAdditionalCreditDAO {
-    public  val COLUMNS = arrayOf(
+    val COLUMNS = arrayOf(
         BaseColumns._ID,
         AdditionalCreditDB.Entry.COLUMN_NAME,
         AdditionalCreditDB.Entry.COLUMN_VALUE,
@@ -32,7 +32,7 @@ class AdditionalCreditImpl @Inject constructor(override var dbConnect: SQLiteOpe
     @RequiresApi(Build.VERSION_CODES.O)
     override fun save(dto: AdditionalCreditDTO): Long {
         val db = dbConnect.writableDatabase
-        val values:ContentValues? = AdditionalMap().mapping(dto)
+        val values: ContentValues = AdditionalMap().mapping(dto)
         return (db?.insert(AdditionalCreditDB.Entry.TABLE_NAME,null,values) ?: 0).also {
             Log.d(javaClass.name,"<<<=== END SAVE Id $dto Record: $it CreditCode: ${dto.creditCode}")
         }
@@ -41,7 +41,7 @@ class AdditionalCreditImpl @Inject constructor(override var dbConnect: SQLiteOpe
     @RequiresApi(Build.VERSION_CODES.O)
     override fun update(dto:AdditionalCreditDTO):Int{
         val db = dbConnect.writableDatabase
-        val values:ContentValues? = AdditionalMap().mapping(dto)
+        val values: ContentValues = AdditionalMap().mapping(dto)
         return ((db?.update(AdditionalCreditDB.Entry.TABLE_NAME,values,"${BaseColumns._ID} = ?",arrayOf(dto.id.toString()))) ?: 0).also {
             Log.d(javaClass.name,"<<<=== END UPDATE Id $dto Record: $it CreditCode: ${dto.creditCode}")
         }
@@ -154,7 +154,7 @@ class AdditionalCreditImpl @Inject constructor(override var dbConnect: SQLiteOpe
         val localDate = DateUtils.localDateToStringDate(date)
         val list = arrayListOf<AdditionalCreditDTO>()
         val mapper = AdditionalMap()
-        val cursor = db.query(AdditionalCreditDB.Entry.TABLE_NAME,COLUMNS
+        db.query(AdditionalCreditDB.Entry.TABLE_NAME,COLUMNS
             ,"${AdditionalCreditDB.Entry.COLUMN_CREDIT_CODE} = ? AND $FORMAT_DATE_END_WHERE >= ?"
             , arrayOf(codeCredit.toString(),localDate),null,null,null)?.use { cursor ->
             with(cursor) {

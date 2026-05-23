@@ -31,7 +31,7 @@ class DifferInstallmentImpl @Inject constructor(override var dbConnect: SQLiteOp
     @RequiresApi(Build.VERSION_CODES.O)
     override fun save(dto: DifferInstallmentDTO): Long {
         val db = dbConnect.writableDatabase
-        val content: ContentValues? = DifferInstallmentMap().mapping(dto)
+        val content: ContentValues = DifferInstallmentMap().mapping(dto)
         return if (dto.id > 0) {
             db?.update(
                 DifferInstallmentDB.Entry.TABLE_NAME,

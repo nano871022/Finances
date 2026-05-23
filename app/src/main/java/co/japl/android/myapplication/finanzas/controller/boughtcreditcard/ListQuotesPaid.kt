@@ -32,7 +32,7 @@ class ListQuotesPaid : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         _binding = FragmentListPeriodsBinding.inflate(inflater, container, false)
         val rootView = _binding.root
         arguments?.let{

@@ -15,7 +15,7 @@ import co.japl.android.myapplication.utils.NumbersUtil
 import kotlinx.coroutines.runBlocking
 import java.time.LocalDate
 
-class InputViewModel constructor(private val codeAccount:Int,private val codeInput:Int?,private val inputSvc:IInputPort,private val navController: NavController): ViewModel(){
+class InputViewModel(private val codeAccount:Int, private val codeInput:Int?, private val inputSvc:IInputPort, private val navController: NavController): ViewModel(){
 
     var loader = mutableStateOf(true)
     var progress = mutableFloatStateOf( 0f)

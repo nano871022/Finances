@@ -823,7 +823,7 @@ class SaveCreditCardBoughtImpl @Inject constructor(
         if (checkDatesWrong(CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_BOUGHT_DATE)) {
             var value = 0
             val db = dbConnect.readableDatabase
-            val cursor = db.rawQuery(
+            db.rawQuery(
                 "SELECT ${BaseColumns._ID}, ${CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_BOUGHT_DATE} " +
                         "FROM ${CreditCardBoughtDB.CreditCardBoughtEntry.TABLE_NAME} " +
                         "WHERE ${CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_BOUGHT_DATE} NOT REGEXP '^[0-9]+$'",
@@ -853,7 +853,7 @@ class SaveCreditCardBoughtImpl @Inject constructor(
         if (checkDatesWrong(CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_END_DATE)) {
             var value = 0
             val db = dbConnect.readableDatabase
-            val cursor = db.rawQuery(
+            db.rawQuery(
                 "SELECT ${BaseColumns._ID}, ${CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_END_DATE} " +
                         "FROM ${CreditCardBoughtDB.CreditCardBoughtEntry.TABLE_NAME} " +
                         "WHERE ${CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_END_DATE} NOT REGEXP '^[0-9]+$'",

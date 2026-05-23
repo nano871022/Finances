@@ -24,16 +24,11 @@ class ListCreditCard : Fragment()  {
     private lateinit var _binding : FragmentListCreditCardBinding
     private val binding get() = _binding
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-    }
-
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         _binding = FragmentListCreditCardBinding.inflate(inflater)
         val viewModel = CreditCardListViewModel(creditCardSvc,findNavController())
         binding?.listComposeLcc?.apply {

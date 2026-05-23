@@ -12,7 +12,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class EmailListCreditCardViewModel constructor(val svc: IEmailCreditCardPort?, val navController: NavController?) : ViewModel(){
+class EmailListCreditCardViewModel(val svc: IEmailCreditCardPort?, val navController: NavController?) : ViewModel(){
 
     val load = mutableStateOf(false)
     val list = mutableListOf<EmailCreditCardDTO>()

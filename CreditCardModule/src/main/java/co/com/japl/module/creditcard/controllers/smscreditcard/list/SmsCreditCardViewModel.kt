@@ -14,7 +14,7 @@ import co.com.japl.finances.iports.inbounds.creditcard.ISMSCreditCardPort
 import co.com.japl.module.creditcard.R
 import kotlinx.coroutines.runBlocking
 
-class SmsCreditCardViewModel constructor(private val svc:ISMSCreditCardPort?,private val creditCardSvc:ICreditCardPort?,private val navController: NavController?): ViewModel() {
+class SmsCreditCardViewModel(private val svc:ISMSCreditCardPort?, private val creditCardSvc:ICreditCardPort?, private val navController: NavController?): ViewModel() {
 
     val  load = mutableStateOf(true)
     val  progress = mutableFloatStateOf(0.0f)

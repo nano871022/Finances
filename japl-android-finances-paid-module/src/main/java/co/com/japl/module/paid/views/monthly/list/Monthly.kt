@@ -49,7 +49,7 @@ import java.time.YearMonth
 fun Monthly(viewModel:MonthlyViewModel) {
     val loaderState = remember {
         viewModel.loaderState   }
-    val progressStatus = remember {
+    remember {
         viewModel.progressStatus
     }
 

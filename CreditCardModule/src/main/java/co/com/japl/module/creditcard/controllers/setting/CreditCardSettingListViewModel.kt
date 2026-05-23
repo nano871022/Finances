@@ -14,7 +14,7 @@ import co.com.japl.module.creditcard.R
 import co.com.japl.module.creditcard.navigations.CreditCardSetting
 import kotlinx.coroutines.runBlocking
 
-class CreditCardSettingListViewModel constructor(private val codCreditCard:Int, private val creditCardSettingSvc:ICreditCardSettingPort?, private val navController: NavController?):ViewModel() {
+class CreditCardSettingListViewModel(private val codCreditCard:Int, private val creditCardSettingSvc:ICreditCardSettingPort?, private val navController: NavController?):ViewModel() {
 
     var showProgress : MutableState<Boolean> = mutableStateOf(true)
     var progress : MutableFloatState = mutableFloatStateOf(0f)

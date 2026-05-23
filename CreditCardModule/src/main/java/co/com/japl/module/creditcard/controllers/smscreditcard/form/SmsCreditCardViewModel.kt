@@ -25,7 +25,7 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import kotlin.time.Duration
 
-class SmsCreditCardViewModel constructor(private val codeSMSCC:Int?,private val svc:ISMSCreditCardPort?,private val creditCardSvc:ICreditCardPort?,private val navController: NavController?, private val llmService: ILLMService? = null, private val prefs: Prefs?=null): ViewModel() {
+class SmsCreditCardViewModel(private val codeSMSCC:Int?, private val svc:ISMSCreditCardPort?, private val creditCardSvc:ICreditCardPort?, private val navController: NavController?, private val llmService: ILLMService? = null, private val prefs: Prefs?=null): ViewModel() {
 
     val  load = mutableStateOf(true)
     val  progress = mutableFloatStateOf(0.0f)

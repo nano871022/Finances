@@ -26,7 +26,7 @@ class CheckPaymentConnectDB: DBRestore(),IConnectDB{
             var findVersion = oldVersion+1
             while(findVersion <= newVersion) {
                 try {
-                    val value = findVersion.toString()
+                    findVersion.toString()
                     /*
                     if(CheckPaymentsQuery.SQL_ALTER.containsKey(value)) {
                         val query = CheckPaymentsQuery.SQL_ALTER[value]

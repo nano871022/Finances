@@ -13,7 +13,7 @@ import co.com.japl.module.creditcard.navigations.CreditCard
 import co.com.japl.module.creditcard.navigations.ListCreditCardSettings
 import kotlinx.coroutines.runBlocking
 
-class CreditCardListViewModel constructor(private val creditCardSvc:ICreditCardPort?, private val navController:NavController?) : ViewModel(){
+class CreditCardListViewModel(private val creditCardSvc:ICreditCardPort?, private val navController:NavController?) : ViewModel(){
 
 
     val list = mutableStateListOf<CreditCardDTO?>()

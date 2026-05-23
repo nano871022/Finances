@@ -15,7 +15,7 @@ import co.japl.android.myapplication.utils.NumbersUtil
 import kotlinx.coroutines.runBlocking
 import java.time.LocalDateTime
 
-class CreditCardSettingViewModel constructor(private val codeCreditCard:Int?,private val codeCreditCardSetting:Int?,private val creditCardSvc:ICreditCardPort?,private val creditCardSettingSvc:ICreditCardSettingPort?,private val navController: NavController?) : ViewModel() {
+class CreditCardSettingViewModel(private val codeCreditCard:Int?, private val codeCreditCardSetting:Int?, private val creditCardSvc:ICreditCardPort?, private val creditCardSettingSvc:ICreditCardSettingPort?, private val navController: NavController?) : ViewModel() {
 
     var progress = mutableFloatStateOf(0f)
     var showProgress = mutableStateOf(true)

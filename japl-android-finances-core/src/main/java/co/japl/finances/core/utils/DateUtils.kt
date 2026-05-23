@@ -80,7 +80,7 @@ class DateUtils {
             if (value == "1") {
                 return LocalDate.now()
             }
-            throw Exception("Invalid date: $value");
+            throw Exception("Invalid date: $value")
         }
 
         @RequiresApi(Build.VERSION_CODES.O)

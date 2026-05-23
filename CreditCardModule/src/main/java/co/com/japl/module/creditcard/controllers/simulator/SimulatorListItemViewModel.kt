@@ -8,7 +8,7 @@ import co.com.japl.finances.iports.inbounds.creditcard.ISimulatorCreditVariableP
 import co.com.japl.module.creditcard.R
 import java.util.Optional
 
-class SimulatorListItemViewModel constructor(private val itemValue: SimulatorCreditDTO?=null, private val simulatorVariableSvc: ISimulatorCreditVariablePort?=null, private val navController: NavController?=null){
+class SimulatorListItemViewModel(private val itemValue: SimulatorCreditDTO?=null, private val simulatorVariableSvc: ISimulatorCreditVariablePort?=null, private val navController: NavController?=null){
 
     val showOptions = mutableStateOf(false)
     var item: Optional<SimulatorCreditDTO> = Optional.empty()

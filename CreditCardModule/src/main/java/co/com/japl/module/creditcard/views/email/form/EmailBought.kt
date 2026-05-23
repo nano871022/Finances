@@ -91,8 +91,8 @@ private fun Body(viewModel: EmailCreditCardViewModel) {
     
     val bodyPattern = viewModel.bodyPattern
     val isErrorBodyPattern = viewModel.errorBodyPattern
-    
-    val validationResult = viewModel.validationResult
+
+    viewModel.validationResult
     val aiEnabled = viewModel.isAIValid()
 
     Scaffold(

@@ -27,7 +27,7 @@ class AdditionalListFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         val root = FragmentAdditionalListBinding.inflate(inflater)
         val code = arguments?.let {
             CreditFixParams.downloadAdditionalList(it)

@@ -19,7 +19,7 @@ import java.time.LocalDate
 import java.time.YearMonth
 
 @ViewModelScoped
-class ListViewModel constructor(private val period:YearMonth,private val creditSvc:ICreditPort?,val periodGraceSvc:IPeriodGracePort?, private val navController: NavController?) : ViewModel() {
+class ListViewModel(private val period:YearMonth, private val creditSvc:ICreditPort?, val periodGraceSvc:IPeriodGracePort?, private val navController: NavController?) : ViewModel() {
 
     val progress = mutableStateOf(true)
     val list = mutableListOf<CreditPeriodGraceDTO>()
