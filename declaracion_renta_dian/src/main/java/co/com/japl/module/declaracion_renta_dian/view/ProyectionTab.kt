@@ -40,6 +40,10 @@ fun ProjectionTab(viewModel: TaxDeclarationViewModel) {
                         color= MaterialTheme.colorScheme.onBackground)
                     Text(text=stringResource(R.string.threshold,NumbersUtil.COPtoString(proj.threshold)),
                         color= MaterialTheme.colorScheme.onBackground)
+                    Text(text=stringResource(R.string.credit_debt,NumbersUtil.COPtoString(proj.creditDebt)),
+                        color= MaterialTheme.colorScheme.onBackground)
+                    Text(text=stringResource(R.string.credit_card_debt,NumbersUtil.COPtoString(proj.creditCardDebt)),
+                        color= MaterialTheme.colorScheme.onBackground)
 
                     val color = when (proj.limitStatus) {
                         LimitStatus.SAFE -> Color.Green

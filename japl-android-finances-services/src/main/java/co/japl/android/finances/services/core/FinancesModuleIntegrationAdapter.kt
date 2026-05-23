@@ -5,8 +5,11 @@ import co.japl.android.finances.services.dao.interfaces.IPaidDAO
 import co.japl.android.finances.services.dao.interfaces.IQuoteCreditCardDAO
 import co.japl.android.finances.services.dao.interfaces.ICreditDAO
 import co.japl.android.finances.services.dao.interfaces.IInputDAO
+import co.japl.android.finances.services.interfaces.ICreditCardSvc
+import co.japl.android.finances.services.utils.DateUtils
 import java.math.BigDecimal
 import java.time.LocalDate
+import java.time.LocalDateTime
 import java.time.Month
 import java.time.temporal.ChronoUnit
 import javax.inject.Inject
@@ -15,7 +18,8 @@ class FinancesModuleIntegrationAdapter @Inject constructor(
     private val paidDAO: IPaidDAO,
     private val boughtDAO: IQuoteCreditCardDAO,
     private val creditDAO: ICreditDAO,
-    private val inputDAO: IInputDAO
+    private val inputDAO: IInputDAO,
+    private val creditCardSvc: ICreditCardSvc
 ) : ExternalFinancialDataPort {
 
     override suspend fun getIncomeYTD(year: Int): BigDecimal {
@@ -55,6 +59,23 @@ class FinancesModuleIntegrationAdapter @Inject constructor(
                 val months = countOccurrences(start, end, input.kindOf)
                 total = total.add(input.value.multiply(BigDecimal.valueOf(months.toLong())))
             }
+        }
+        return total
+    }
+
+    override suspend fun getCreditDebt(date: LocalDate): BigDecimal {
+        return creditDAO.getPendingToPayAll(date)
+    }
+
+    override suspend fun getCreditCardDebt(date: LocalDate): BigDecimal {
+        val creditCards = creditCardSvc.getAll().filter { it.status }
+        var total = BigDecimal.ZERO
+        creditCards.forEach { creditCard ->
+            val endDate = DateUtils.cutOffLastMonth(creditCard.cutOffDay.toShort(), LocalDateTime.of(date, java.time.LocalTime.MAX))
+            val startDate = DateUtils.startDateFromCutoff(creditCard.cutOffDay.toShort(), endDate)
+            val pendingToPay = boughtDAO.getPendingToPay(creditCard.id, startDate, endDate).orElse(BigDecimal.ZERO)
+            val pendingToPayQuotes = boughtDAO.getPendingToPayQuotes(creditCard.id, startDate, endDate).orElse(BigDecimal.ZERO)
+            total = total.add(pendingToPay).add(pendingToPayQuotes)
         }
         return total
     }

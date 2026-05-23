@@ -29,7 +29,9 @@ data class TaxProjectionDTO(
     val currentYTD: BigDecimal,
     val projectedEndOfYear: BigDecimal,
     val threshold: BigDecimal,
-    val limitStatus: LimitStatus
+    val limitStatus: LimitStatus,
+    val creditDebt: BigDecimal = BigDecimal.ZERO,
+    val creditCardDebt: BigDecimal = BigDecimal.ZERO
 )
 
 enum class LimitStatus {

@@ -20,6 +20,8 @@ class GetTaxProjectionUseCaseImpl @Inject constructor(
         val incomeYTD = financialDataPort.getIncomeYTD(year)
         val projectedIncome = financialDataPort.getProjectedIncome(year)
         val thresholdIncome = configPort.getIncomeThresholdUVT().multiply(uvt)
+        val creditDebt = financialDataPort.getCreditDebt(LocalDate.now())
+        val creditCardDebt = financialDataPort.getCreditCardDebt(LocalDate.now())
 
         return listOf(
             TaxProjectionDTO(
@@ -27,7 +29,9 @@ class GetTaxProjectionUseCaseImpl @Inject constructor(
                 currentYTD = incomeYTD,
                 projectedEndOfYear = projectedIncome,
                 threshold = thresholdIncome,
-                limitStatus = calculateStatus(projectedIncome, thresholdIncome)
+                limitStatus = calculateStatus(projectedIncome, thresholdIncome),
+                creditDebt = creditDebt,
+                creditCardDebt = creditCardDebt
             )
         )
     }
