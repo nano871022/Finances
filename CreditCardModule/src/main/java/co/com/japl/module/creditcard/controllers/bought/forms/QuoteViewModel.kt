@@ -36,19 +36,19 @@ import java.math.BigDecimal
 import java.time.LocalDate
 import java.time.LocalDateTime
 
-class QuoteViewModel constructor(private val codeCreditCard:Int,
-                                 private val savedStateHandle: SavedStateHandle?=null,
-                                 private val codeBought:Int,
-                                 private val oldBoughtId:Int = 0,
-                                 private val period:LocalDateTime,
-                                 private val boughtSvc:IBoughtPort?,
-                                 private val creditRateSvc:ITaxPort?,
-                                 private val creditCardSvc:ICreditCardPort?,
-                                 private val tagSvc:ITagPort?,
-                                 private val creditCardSettingSvc:ICreditCardSettingPort?,
-                                 private val buyCreditCardSettingSvc:IBuyCreditCardSettingPort?,
-                                 private val navController: NavController?,
-                                 private val prefs:Prefs) : ViewModel(){
+class QuoteViewModel(private val codeCreditCard:Int,
+                     private val savedStateHandle: SavedStateHandle?=null,
+                     private val codeBought:Int,
+                     private val oldBoughtId:Int = 0,
+                     private val period:LocalDateTime,
+                     private val boughtSvc:IBoughtPort?,
+                     private val creditRateSvc:ITaxPort?,
+                     private val creditCardSvc:ICreditCardPort?,
+                     private val tagSvc:ITagPort?,
+                     private val creditCardSettingSvc:ICreditCardSettingPort?,
+                     private val buyCreditCardSettingSvc:IBuyCreditCardSettingPort?,
+                     private val navController: NavController?,
+                     private val prefs:Prefs) : ViewModel(){
 
 
 

@@ -28,7 +28,8 @@ import java.time.YearMonth
 import java.time.format.DateTimeFormatter
 import java.util.Locale
 
-class PaidViewModel constructor(private val accountCode:Int, private val period:YearMonth,private val paidSvc:IPaidPort?=null,public val prefs:Prefs?,private val navController: NavController? = null,private val emailSvc:IEmailPaidPort? = null,private val paidSmsSvc:ISmsPort?): ViewModel(){
+class PaidViewModel(private val accountCode:Int, private val period:YearMonth, private val paidSvc:IPaidPort?=null,
+                    val prefs:Prefs?, private val navController: NavController? = null, private val emailSvc:IEmailPaidPort? = null, private val paidSmsSvc:ISmsPort?): ViewModel(){
 
     val progressStatus = mutableFloatStateOf(0.0f)
     val loaderState = mutableStateOf(true)

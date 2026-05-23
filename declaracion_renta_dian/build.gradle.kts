@@ -8,7 +8,7 @@ plugins {
 }
 
 android {
-    namespace = "com.nano871022.finances.features.declaracion_renta_dian"
+    namespace = "co.com.japl.module.declaracion_renta_dian"
     compileSdk = 36
 
     defaultConfig {
@@ -49,6 +49,8 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.7")
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.7")
     implementation("androidx.navigation:navigation-compose:2.8.3")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.6")
+    implementation("androidx.fragment:fragment-ktx:1.8.0")
 
     implementation("com.google.dagger:hilt-android:2.56.2")
     kapt("com.google.dagger:hilt-compiler:2.56.2")

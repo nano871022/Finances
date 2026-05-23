@@ -16,7 +16,7 @@ import java.time.LocalDate
 import java.util.*
 import javax.inject.Inject
 
-class InputImpl @Inject constructor(override var dbConnect: SQLiteOpenHelper,public var mapper : InputMap) : IInputDAO{
+class InputImpl @Inject constructor(override var dbConnect: SQLiteOpenHelper, var mapper : InputMap) : IInputDAO{
     val COLUMNS = arrayOf(
         BaseColumns._ID,
         InputDB.Entry.COLUMN_DATE_INPUT,
@@ -49,7 +49,7 @@ class InputImpl @Inject constructor(override var dbConnect: SQLiteOpenHelper,pub
     @RequiresApi(Build.VERSION_CODES.O)
     override fun getTotalInputs(): BigDecimal {
         val db = dbConnect.readableDatabase
-        val cursor = db.rawQuery("""
+        db.rawQuery("""
             SELECT SUM(value), count(1)
             FROM(
             SELECT
@@ -113,15 +113,18 @@ class InputImpl @Inject constructor(override var dbConnect: SQLiteOpenHelper,pub
     override fun getAllValid(accountCode:Int,date: LocalDate): List<InputDTO> {
         val db = dbConnect.readableDatabase
         val items = mutableListOf<InputDTO>()
-        db.query(InputDB.Entry.TABLE_NAME,COLUMNS,"""
+        db.query(InputDB.Entry.TABLE_NAME,COLUMNS,
+            """
                 ${InputDB.Entry.COLUMN_ACCOUNT_CODE} = ?
-            """, arrayOf(accountCode.toString()),null,null,null)
+            """,
+            arrayOf(accountCode.toString())
+            ,null,null,null)
             ?.use { cursor ->
-                Log.d(javaClass.name,"=== GetAllValid $FORMAT_DATE_END_WHERE Date ${DateUtils.localDateToStringDate(date)}")
                 with(cursor) {
                     while (moveToNext()) {
-                        mapper.mapping(cursor).takeIf { it.dateEnd > date }?.let {
-                            Log.d(javaClass.name,"=== GetAllValid ${it.dateEnd} Date ${date} ${it}")
+                        mapper.mapping(cursor).takeIf {
+                            it.dateEnd > date
+                        }?.let {
                             items.add(it)
                         }
                     }
@@ -133,7 +136,7 @@ class InputImpl @Inject constructor(override var dbConnect: SQLiteOpenHelper,pub
     @RequiresApi(Build.VERSION_CODES.O)
     override fun save(dto: InputDTO): Long {
         val db = dbConnect.writableDatabase
-        val content: ContentValues? = mapper.mapping(dto)
+        val content: ContentValues = mapper.mapping(dto)
         return if(dto.id > 0){
             db?.update(InputDB.Entry.TABLE_NAME,content,"${BaseColumns._ID}=?", arrayOf(dto.id.toString()))?.toLong() ?: 0
         }else {

@@ -26,15 +26,12 @@ class InputListFragment : Fragment(){
 
     private var _binding: FragmentInputListBinding? = null
     private val binding get() = _binding!!
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
 
     @RequiresApi(Build.VERSION_CODES.S)
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         _binding = FragmentInputListBinding.inflate(inflater,container,false)
         val root = binding.root
         accountCode = arguments?.let{AccountParams.download(it)}?:0

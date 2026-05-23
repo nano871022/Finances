@@ -1,3 +1,17 @@
 <resources>
     <string name="feature_tax_declaration">DIAN Tax Declaration</string>
+    <string name="estimator">Estimación</string>
+    <string name="history">Historico</string>
+    <string name="projection">Proyección</string>
+    <string name="fiscal_year">Año Fiscal %s</string>
+    <string name="obligated_file">Cargar Archivo</string>
+    <string name="not_oblicated_file">No cargar archivo</string>
+    <string name="delete">eliminar</string>
+    <string name="add_mock_asset">Agregar recursos</string>
+    <string name="manual_patrimony_assets">Recursos manuales de patrimonio</string>
+    <string name="calculated_on">Calculado en %s</string>
+    <string name="ytd">YTD: %s</string>
+    <string name="projected">Proyectado %s</string>
+    <string name="threshold">Limite: %s</string>
+    <string name="tax_value">Valor Impuesto %s</string>
 </resources>

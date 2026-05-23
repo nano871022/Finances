@@ -45,7 +45,7 @@ import java.math.BigDecimal
 
 @Composable
 fun Simulator(viewModel: FormViewModel){
-    val hasProgress = remember() { mutableStateOf(false) }
+    val hasProgress = remember { mutableStateOf(false) }
 
     if(hasProgress.value){
         LinearProgressIndicator(modifier = Modifier.fillMaxWidth())

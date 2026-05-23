@@ -3,7 +3,7 @@ package co.com.japl.finances.iports.enums
 import androidx.annotation.StringRes
 import co.com.japl.finances.iports.R
 
-enum class KindPaymentsEnums constructor(@StringRes val title:Int, val month:Int){
+enum class KindPaymentsEnums(@StringRes val title:Int, val month:Int){
     MONTHLY(R.string.monthly,1),
     QUARTERLY(R.string.quarterly,3),
     SEMIANNUAL(R.string.semiannual,6),

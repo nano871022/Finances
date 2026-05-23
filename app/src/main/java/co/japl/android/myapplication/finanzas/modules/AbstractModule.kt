@@ -47,15 +47,18 @@ import co.japl.android.myapplication.finanzas.bussiness.interfaces.ICreditFix
 import co.japl.android.myapplication.finanzas.bussiness.interfaces.IGracePeriod
 import co.japl.android.myapplication.finanzas.bussiness.interfaces.IKindOfTaxSvc
 import co.com.japl.finances.iports.inbounds.recap.IRecapPort
+import co.com.japl.finances.iports.outbounds.ExternalFinancialDataPort
 import co.com.japl.finances.iports.outbounds.IExtraValueAmortizationPort
 import co.com.japl.finances.iports.outbounds.IAdditionalPort
 import co.com.japl.finances.iports.outbounds.ICreditPort
 import co.com.japl.finances.iports.outbounds.IEmailCreditCardPattern
 import co.com.japl.finances.iports.outbounds.ISimulatorCreditPort
+import co.com.japl.finances.iports.outbounds.PatrimonyPersistencePort
+import co.com.japl.finances.iports.outbounds.TaxConfigurationPort
+import co.com.japl.finances.iports.outbounds.TaxHistoryPersistencePort
 import co.com.japl.ui.impls.SMSObservable
 import co.com.japl.ui.interfaces.ISMSObservablePublicher
 import co.com.japl.ui.interfaces.ISMSObservableSubscriber
-import co.com.japl.ui.interfaces.ISMSObserver
 import co.japl.android.finances.services.dao.interfaces.IAddAmortizationDAO
 import co.japl.android.finances.services.dao.interfaces.IAdditionalCreditDAO
 import co.japl.android.finances.services.dao.interfaces.ICheckCreditDAO
@@ -123,9 +126,6 @@ import co.japl.finances.core.usercases.interfaces.recap.IRecap
 import co.japl.finances.core.adapters.inbound.implement.creditcard.EmailCreditCard
 import co.japl.finances.core.usercases.implement.creditcard.EmailCreditCardImpl
 import co.japl.finances.core.usercases.interfaces.creditcard.IEmailCreditCard
-import co.com.japl.finances.iports.outbounds.ICreditCardPort as ICreditCardOutPort
-import co.com.japl.finances.iports.outbounds.IQuoteCreditCardPort as IQuoteCreditCardOutPort
-import co.com.japl.finances.iports.outbounds.ITaxPort as ITaxOutPort
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -303,7 +303,7 @@ abstract class AbstractModule {
     abstract fun bindDAOAccount(implement:co.japl.android.finances.services.dao.implement.AccountImpl):co.japl.android.finances.services.dao.interfaces.IAccountDAO
 
     @Binds
-    abstract fun bindInputBought(implement:co.japl.finances.core.adapters.inbound.implement.creditcard.bought.BoughtImpl):IBoughtPort
+    abstract fun bindInputBought(implement: BoughtImpl):IBoughtPort
 
     @Binds
     abstract fun bindUserCaseBought(implement:co.japl.finances.core.usercases.implement.creditcard.bought.Bought):IBought
@@ -532,4 +532,21 @@ abstract class AbstractModule {
     @Binds
     abstract fun binDAOEmailPaid(impl: co.japl.android.finances.services.dao.implement.EmailPaidImpl): co.japl.android.finances.services.dao.interfaces.IEmailPaidDAO
 
+    @Binds
+    abstract fun bindTaxConfigurationPort(impl: co.japl.android.finances.services.core.TaxConfigurationPortImpl): TaxConfigurationPort
+
+    @Binds
+    abstract fun bindExternalFinancialDataPort(impl: co.japl.android.finances.services.core.FinancesModuleIntegrationAdapter): ExternalFinancialDataPort
+
+    @Binds
+    abstract fun bindTaxHistoryPersistencePort(impl: co.japl.android.finances.services.core.TaxHistoryPortImpl): TaxHistoryPersistencePort
+
+    @Binds
+    abstract fun bindPatrimonyPersistencePort(impl: co.japl.android.finances.services.core.PatrimonyPortImpl): PatrimonyPersistencePort
+
+    @Binds
+    abstract fun bindPatrimonyDAO(impl: co.japl.android.finances.services.dao.implement.PatrimonyImpl): co.japl.android.finances.services.dao.interfaces.IPatrimonyDAO
+
+    @Binds
+    abstract fun bindTaxHistoryDAO(impl: co.japl.android.finances.services.dao.implement.TaxHistoryImpl): co.japl.android.finances.services.dao.interfaces.ITaxHistoryDAO
 }

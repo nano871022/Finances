@@ -47,11 +47,11 @@ class MainActivity : AppCompatActivity(){
     @Inject lateinit var subscribers:Map<Class<out ISMSObserver>,@JvmSuppressWildcards ISMSObserver>
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        val screen = installSplashScreen()
+        installSplashScreen()
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
-        val policy = StrictMode.ThreadPolicy.Builder().permitAll().build()
-        StrictMode.setThreadPolicy(policy)
+        //val policy = StrictMode.ThreadPolicy.Builder().permitAll().build()
+        //StrictMode.setThreadPolicy(policy)
         setContentView(R.layout.activity_main)
         bundle = savedInstanceState
         val drawLayout =  findViewById<DrawerLayout>(R.id.draw_layout)
@@ -69,7 +69,12 @@ class MainActivity : AppCompatActivity(){
         }
         checkAndRequestSmsPermissions()
 
-        subscribers?.values?.toList()?.takeIf { it.isNotEmpty() }?.let {
+        subscriberSMS()
+
+    }
+
+    private fun subscriberSMS(){
+        subscribers.values.toList().takeIf { it.isNotEmpty() }?.let {
             registerReceiver(
                 smsBroadcastReceiver as BroadcastReceiver,
                 IntentFilter(Telephony.Sms.Intents.SMS_RECEIVED_ACTION)
@@ -103,6 +108,9 @@ class MainActivity : AppCompatActivity(){
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (item.itemId == android.R.id.home) {
+            return super.onOptionsItemSelected(item)
+        }
         try {
             if (!isTablet()) {
                 findViewById<DrawerLayout>(R.id.draw_layout).setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
@@ -120,10 +128,7 @@ class MainActivity : AppCompatActivity(){
     private fun isTablet():Boolean{
         val res = resources.getDimension(R.dimen.open_menu)
         Log.d(this.javaClass.name,"open menu $res")
-        if( res != 0F){
-            return true
-        }
-        return false
+        return res != 0F
     }
 
     private fun checkAndRequestSmsPermissions() {
@@ -159,18 +164,5 @@ class MainActivity : AppCompatActivity(){
             return false
         }
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 }

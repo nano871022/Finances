@@ -173,7 +173,7 @@ private fun Options(state: MutableState<Boolean>, actionAmortization:()->Unit){
         MoreOptionsDialogPair(
             listOptions = list,
             onDismiss = { state.value = false },
-            onClick = { (code, value) ->
+            onClick = { (code, _) ->
                 when (code) {
                     1 -> actionAmortization.invoke()
                 }

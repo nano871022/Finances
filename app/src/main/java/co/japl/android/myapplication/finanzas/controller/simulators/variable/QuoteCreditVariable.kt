@@ -42,7 +42,7 @@ class QuoteCreditVariable : Fragment(){
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         val rootView = QuoteCreditVariableBinding.inflate(inflater)
 
         rootView.composeViewSqcv.apply {

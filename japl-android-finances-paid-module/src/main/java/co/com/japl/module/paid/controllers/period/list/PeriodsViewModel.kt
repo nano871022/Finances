@@ -11,7 +11,7 @@ import co.com.japl.module.paid.navigations.Paids
 import kotlinx.coroutines.runBlocking
 import java.time.YearMonth
 
-class PeriodsViewModel constructor(private val codeAccount:Int?,private val paidSvc: IPeriodPaidPort?, private val navController: NavController?): ViewModel(){
+class PeriodsViewModel(private val codeAccount:Int?, private val paidSvc: IPeriodPaidPort?, private val navController: NavController?): ViewModel(){
     val progress = mutableStateOf(0f)
     val loader = mutableStateOf(true)
 

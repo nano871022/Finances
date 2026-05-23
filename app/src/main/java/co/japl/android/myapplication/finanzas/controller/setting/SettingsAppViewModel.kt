@@ -6,7 +6,7 @@ import androidx.compose.runtime.mutableStateOf
 import co.com.japl.ui.Prefs
 import co.japl.android.myapplication.R
 
-class SettingsAppViewModel constructor(private val prefs:Prefs,private val context:Context) {
+class SettingsAppViewModel(private val prefs:Prefs, private val context:Context) {
 
     val msgInitial = mutableStateOf(prefs.msgInitial)
     fun save(){

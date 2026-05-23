@@ -49,7 +49,7 @@ fun FieldDatePicker(@StringRes title:Int,value:String,isEnablePicker:MutableStat
     val stateValue = remember { mutableStateOf(value) }
 
     Box(modifier = modifier
-        .background(color = androidx.compose.material3.MaterialTheme.colorScheme.surfaceVariant)
+        .background(color = MaterialTheme.colorScheme.surfaceVariant)
         .border(1.dp, Color.Unspecified, shape = ShapeDefaults.ExtraLarge)
         .clickable {
             if(isEnablePicker.value) {

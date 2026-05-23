@@ -23,7 +23,7 @@ import java.math.BigDecimal
 import java.time.LocalDate
 
 @ViewModelScoped
-class AdditionalFormViewModel constructor(private val context: Context, private val savedStateHandle: SavedStateHandle?=null, private val id:Int=-1, private val codeCredit:Int=0, private val additionalSvc: IAdditionalFormPort?, private val navController: NavController?) : ViewModel(){
+class AdditionalFormViewModel(private val context: Context, private val savedStateHandle: SavedStateHandle?=null, private val id:Int=-1, private val codeCredit:Int=0, private val additionalSvc: IAdditionalFormPort?, private val navController: NavController?) : ViewModel(){
     private val _dto = MutableStateFlow<AdditionalCreditDTO>(AdditionalCreditDTO(
         id=id,
         creditCode = codeCredit.toLong(),

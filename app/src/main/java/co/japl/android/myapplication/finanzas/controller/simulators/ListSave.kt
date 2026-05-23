@@ -46,7 +46,7 @@ class ListSave : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         val root = FragmentListSaveBinding.inflate(inflater)
         root.composeViewFls.apply {
             setViewCompositionStrategy(ViewCompositionStrategy.Default)

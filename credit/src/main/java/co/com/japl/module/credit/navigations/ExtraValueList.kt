@@ -9,7 +9,7 @@ object ExtraValueList {
 
     fun list(creditCode:Int,nav: NavController){
         val uri = nav.context.getString(R.string.navigate_list_extra_amortization,creditCode).toUri()
-        val deep = NavDeepLinkRequest.Builder.fromUri(uri).build()
+        NavDeepLinkRequest.Builder.fromUri(uri).build()
         nav.navigate(uri)
     }
 }

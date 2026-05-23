@@ -6,9 +6,9 @@ enum class MoreOptionsItemsPayments(val i: Int) {
 
     companion object {
         fun finByPosition(i: Int) = when (i) {
-            0 -> MoreOptionsItemsPayments.ENDING
-            1 -> MoreOptionsItemsPayments.UPDATE_VALUE
-            2 -> MoreOptionsItemsPayments.DELETE
+            0 -> ENDING
+            1 -> UPDATE_VALUE
+            2 -> DELETE
             else -> throw IllegalArgumentException("invalid value $i")
         }
     }

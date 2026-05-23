@@ -26,7 +26,7 @@ import kotlinx.coroutines.launch
 import java.time.LocalDate
 
 @ViewModelScoped
-class CreditFormViewModel constructor(private val savedStateHandle: SavedStateHandle?=null, var id:Int?, val creditSvc: ICreditFormPort?, val context:Context?, val navController: NavController?): ViewModel() {
+class CreditFormViewModel(private val savedStateHandle: SavedStateHandle?=null, var id:Int?, val creditSvc: ICreditFormPort?, val context:Context?, val navController: NavController?): ViewModel() {
     var progress = mutableFloatStateOf(0f)
     var showProgress = mutableStateOf(false)
     val snackbarHostState = SnackbarHostState()

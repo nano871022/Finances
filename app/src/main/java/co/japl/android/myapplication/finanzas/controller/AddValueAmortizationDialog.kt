@@ -14,7 +14,7 @@ import android.widget.Button
 import android.widget.Toast
 import androidx.navigation.NavController
 import co.japl.android.myapplication.R
-import co.japl.android.myapplication.bussiness.DB.connections.ConnectDB
+import co.japl.android.myapplication.finanzas.bussiness.DB.connections.ConnectDB
 import co.japl.android.myapplication.finanzas.bussiness.impl.AddAmortizationImpl
 import co.japl.android.myapplication.finanzas.bussiness.interfaces.IAddAmortizationSvc
 import co.japl.android.myapplication.finanzas.holders.validations.firstInvalid

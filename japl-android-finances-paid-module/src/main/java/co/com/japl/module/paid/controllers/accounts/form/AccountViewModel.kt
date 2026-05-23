@@ -11,7 +11,7 @@ import co.com.japl.module.paid.R
 import kotlinx.coroutines.runBlocking
 import java.time.LocalDate
 
-class AccountViewModel constructor(private val codeAccount:Int?,private val accountSvc:IAccountPort,private val navController: NavController):ViewModel(){
+class AccountViewModel(private val codeAccount:Int?, private val accountSvc:IAccountPort, private val navController: NavController):ViewModel(){
 
     var loader = mutableStateOf(true)
     var progress = mutableFloatStateOf( 0f)

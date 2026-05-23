@@ -14,13 +14,13 @@ class PeriodPaidParam {
 
     @RequiresApi(Build.VERSION_CODES.O)
     fun downloadList(parameters: Bundle): Int? {
-        if (parameters.containsKey(PeriodPaidParam.Params.ARG_DEEPLINK)) {
-            val intent = parameters.get(PeriodPaidParam.Params.ARG_DEEPLINK) as Intent
+        if (parameters.containsKey(Params.ARG_DEEPLINK)) {
+            val intent = parameters.get(Params.ARG_DEEPLINK) as Intent
             if (Uri.parse(intent.dataString)
-                    .getQueryParameter(PeriodPaidParam.Params.PARAM_CODE_ACCOUNT) != null
+                    .getQueryParameter(Params.PARAM_CODE_ACCOUNT) != null
             ) {
                 return Uri.parse(intent.dataString)
-                    .getQueryParameter(PeriodPaidParam.Params.PARAM_CODE_ACCOUNT)?.toInt()
+                    .getQueryParameter(Params.PARAM_CODE_ACCOUNT)?.toInt()
             }
         }
         return null

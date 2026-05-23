@@ -13,7 +13,7 @@ import com.google.android.gms.common.api.Scope
 import com.google.api.services.drive.DriveScopes
 import com.google.api.services.gmail.GmailScopes
 
-class GoogleSignInSimpleImplement constructor(private val context: Context): IGoogleSignInService {
+class GoogleSignInSimpleImplement(private val context: Context): IGoogleSignInService {
 
     private var signInAccount:GoogleSignInAccount? = null
     private var googleSignInClient:GoogleSignInClient? = null
@@ -81,4 +81,23 @@ class GoogleSignInSimpleImplement constructor(private val context: Context): IGo
     }
 
     override fun getAccount() = signInAccount
+    override fun isGoogleDriveGranted(): Boolean {
+        TODO("Not yet implemented")
+    }
+
+    override fun isEmailAccessGranted(): Boolean {
+        TODO("Not yet implemented")
+    }
+
+    override fun isSmsAccessGranted(): Boolean {
+        TODO("Not yet implemented")
+    }
+
+    override fun requestPermissions(activity: Activity) {
+        TODO("Not yet implemented")
+    }
+
+    override fun requestSmsPermission(activity: Activity) {
+        TODO("Not yet implemented")
+    }
 }

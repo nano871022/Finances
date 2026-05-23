@@ -54,7 +54,7 @@ class AmortizationCreditFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         val root = FragmentAmortizationCreditBinding.inflate( inflater)
         root.composeViewFac.apply {
             setViewCompositionStrategy(ViewCompositionStrategy.Default)

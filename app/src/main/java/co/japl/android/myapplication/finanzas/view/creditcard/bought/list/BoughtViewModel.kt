@@ -160,10 +160,9 @@ class BoughtViewModel @Inject constructor(
     }
 
     private fun goToAmortization() {
-        val hasDifferInstallment =
-            _differQuotes.firstOrNull { it.cdBoughtCreditCard.toInt() == bought.id }?.let { true }
-                ?: false
-        val monthsCalc: Long = if (bought.endDate.toLocalDate() != LocalDate.of(9999, 12, 31)) {
+        _differQuotes.firstOrNull { it.cdBoughtCreditCard.toInt() == bought.id }?.let { true }
+            ?: false
+        if (bought.endDate.toLocalDate() != LocalDate.of(9999, 12, 31)) {
             DateUtils.getMonths(bought.boughtDate, bought.endDate)
         } else {
             bought.month.toLong()

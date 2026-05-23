@@ -24,7 +24,7 @@ class CheckCreditConnectDB:IConnectDB{
             var findVersion = oldVersion+1
             while(findVersion <= newVersion) {
                 try {
-                    val value = findVersion.toString()
+                    findVersion.toString()
                     /*
                     if(CheckCreditsQuery.SQL_ALTER.containsKey(value)) {
                         val query = CheckCreditsQuery.SQL_ALTER[value]

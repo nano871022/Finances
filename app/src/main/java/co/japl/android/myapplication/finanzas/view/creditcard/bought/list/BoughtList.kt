@@ -87,7 +87,7 @@ private fun YearlyBoughtCreditCard(year:Int, list:List<Map.Entry<YearMonth,List<
             .background(MaterialTheme.colorScheme.background)) {
         Column {
 
-            Row() {
+            Row {
                 Text(text = "${year}", modifier = Modifier.padding(Dimensions.PADDING_TOP))
                 Text(
                     text = NumbersUtil.COPtoString(list.sumOf { it.value.sumOf { it.quoteValue } }),

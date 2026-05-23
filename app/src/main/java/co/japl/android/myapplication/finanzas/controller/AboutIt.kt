@@ -17,14 +17,11 @@ class AboutIt : Fragment() {
 
     private var _bind : FragmentAboutItBinding ? = null
     private val bind get() = _bind!!
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         _bind = FragmentAboutItBinding.inflate(inflater,container,false)
         val root = bind.root
         bind.firstCardCompose.apply {

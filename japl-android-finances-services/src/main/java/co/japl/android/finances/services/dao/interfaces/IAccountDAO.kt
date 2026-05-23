@@ -4,5 +4,4 @@ import co.japl.android.finances.services.dto.AccountDTO
 import co.japl.android.finances.services.interfaces.ISaveSvc
 import co.japl.android.finances.services.interfaces.SaveSvc
 
-interface IAccountDAO : SaveSvc<AccountDTO>, ISaveSvc<AccountDTO> {
-}
+interface IAccountDAO : SaveSvc<AccountDTO>, ISaveSvc<AccountDTO>

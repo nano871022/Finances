@@ -21,7 +21,7 @@ import co.japl.android.finances.services.cache.impl.QuoteCreditCardCache
 import co.japl.android.finances.services.cache.impl.SimulatorCreditCache
 import co.japl.android.finances.services.cache.interfaces.ISimulatorCreditCache
 import co.japl.android.finances.services.dao.interfaces.IQuoteCreditCardDAO
-import co.japl.android.myapplication.bussiness.DB.connections.ConnectDB
+import co.japl.android.myapplication.finanzas.bussiness.DB.connections.ConnectDB
 import co.japl.android.myapplication.finanzas.ApplicationInitial
 import co.japl.android.myapplication.finanzas.annotations.IObservers
 import co.japl.android.myapplication.finanzas.controller.SMS
@@ -39,9 +39,13 @@ import javax.inject.Singleton
 object Module {
     @Singleton
     @Provides
-    fun provideConnectDB(@ApplicationContext context:Context): SQLiteOpenHelper {
+    fun provideConnectDB(@ApplicationContext context:Context): ConnectDB {
         return ConnectDB(context)
     }
+
+    @Singleton
+    @Provides
+    fun provideSQLiteOpenHelper(connectDB: ConnectDB): SQLiteOpenHelper= connectDB
 
     @Provides
     fun provideMutableStateBooleanOf():MutableState<Boolean>{

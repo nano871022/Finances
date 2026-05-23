@@ -67,7 +67,7 @@ private fun RecordBodyCompact(dateRange:String, capital:Double, interest:Double,
 
 @Composable
 private fun RecordBodyMedium(dateRange:String, capital:Double, interest:Double, moreOptionsStatus: MutableState<Boolean>){
-    val cardState = remember {mutableStateOf(false)}
+    remember {mutableStateOf(false)}
 
 
     Column{

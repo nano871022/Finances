@@ -17,7 +17,7 @@ import javax.inject.Inject
 
 
 @ViewModelScoped
-class PeriodsViewModel constructor(private val periodSvc: IPeriodCreditPort?): ViewModel(){
+class PeriodsViewModel(private val periodSvc: IPeriodCreditPort?): ViewModel(){
     val records  = mutableStateListOf<PeriodCreditDTO>()
     private val _uiState = MutableStateFlow<FormUIState>(FormUIState.Loading)
     val viewState: StateFlow<FormUIState> = _uiState.asStateFlow()

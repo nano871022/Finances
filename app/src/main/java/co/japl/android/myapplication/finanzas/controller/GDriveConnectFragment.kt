@@ -21,7 +21,7 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.japl.android.myapplication.R
-import co.japl.android.myapplication.bussiness.DB.connections.ConnectDB
+import co.japl.android.myapplication.finanzas.bussiness.DB.connections.ConnectDB
 import co.japl.android.myapplication.databinding.FragmentGDriveConnectBinding
 import co.japl.android.myapplication.finanzas.bussiness.config.GoogleDriveConfig
 import co.japl.android.myapplication.finanzas.bussiness.impl.GoogleDriveImpl

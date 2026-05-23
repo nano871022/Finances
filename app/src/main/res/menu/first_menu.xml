@@ -56,4 +56,10 @@
         android:icon="@drawable/ic_credit_card_foreground"
         android:title="@string/bought_made"
         android:titleCondensed="@string/bought_made"/>
+
+    <item
+        android:id="@+id/item_menu_setting_dian"
+        android:icon="@android:drawable/ic_menu_edit"
+        android:title="@string/dian_tax_declaration"
+        android:titleCondensed="@string/dian_tax_declaration" />
 </menu>

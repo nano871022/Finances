@@ -111,7 +111,7 @@ class QuoteCreditCardImpl @Inject constructor(private val creditCardSvc:ICreditC
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    override fun getInterestPendingQuotes(codCreditCard: Int,startDate: LocalDateTime, cutOff: LocalDateTime,cache:Boolean): BigDecimal? {
+    override fun getInterestPendingQuotes(codCreditCard: Int,startDate: LocalDateTime, cutOff: LocalDateTime,cache:Boolean): BigDecimal {
         Log.d(this.javaClass.name,"<<<=== STARTING::getInterestPendingQuotes Cod Credit Card: $codCreditCard Start: $startDate CutOff: $cutOff")
         val creditCard = creditCardSvc.get(codCreditCard)
         val period = YearMonth.from(cutOff)

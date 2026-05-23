@@ -42,7 +42,7 @@ import co.japl.android.myapplication.utils.NumbersUtil
 @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
 @Composable
 fun CreditForm(viewModel: CreditFormViewModel = viewModel()) {
-    val progress = remember { viewModel.progress }
+    remember { viewModel.progress }
     val showProgress = remember { viewModel.showProgress }
 
     if (showProgress.value) {
@@ -105,7 +105,11 @@ private fun Form(viewModel: CreditFormViewModel, modifier: Modifier) {
             value = DateUtils.localDateToStringDate(creditDate.value),
             validation = viewModel::validate,
             isError = viewModel.creditDate.error,
-            callable = { viewModel.creditDate.onValueChange(DateUtils.toLocalDate(it)) },
+            callable = {
+                if(it.isNotBlank()) {
+                    viewModel.creditDate.onValueChange(DateUtils.toLocalDate(it))
+                }
+                       },
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(bottom = Dimensions.PADDING_BOTTOM)
@@ -239,7 +243,7 @@ private fun FloatButton(save:()->Unit,clean:()->Unit,amortization:()->Unit,backV
 fun PreviewNight() {
     val viewModel = creditViewModel()
     viewModel.showProgress.value = false
-    MaterialThemeComposeUI() {
+    MaterialThemeComposeUI {
         CreditForm(viewModel = viewModel)
     }
 }

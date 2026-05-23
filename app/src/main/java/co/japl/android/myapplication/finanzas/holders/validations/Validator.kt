@@ -51,7 +51,7 @@ fun Array<Validation>.firstInvalid(onFound: (TextInputEditText.() -> Unit)? = nu
             if(invalid){
                 with(editText){
                     error = context.getString(set.resource)
-                    onFound.notNull (){
+                    onFound.notNull {
                         
                     }
                 }
@@ -66,7 +66,7 @@ fun Array<ValidationAutoComplete>.firstInvalid(onFound: (MaterialAutoCompleteTex
             if(invalid){
                 with(editText){
                     error = context.getString(set.resource)
-                    onFound.notNull (){
+                    onFound.notNull {
 
                     }
                 }

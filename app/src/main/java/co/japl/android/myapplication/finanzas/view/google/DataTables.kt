@@ -1,6 +1,7 @@
 package co.japl.android.myapplication.finanzas.view.google
 
 import android.icu.text.DecimalFormat
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.LinearProgressIndicator
@@ -10,14 +11,16 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import co.com.japl.ui.components.DataTable
 import co.com.japl.ui.model.datatable.Header
+import co.japl.android.myapplication.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun StatsSpace(viewModel:GoogleAuthBackupRestoreViewModel){
+fun DataTables(viewModel:GoogleAuthBackupRestoreViewModel){
     val progress by remember {viewModel.statsLocalProgess}
     val stateStats = remember {viewModel.statsLocal }
     val color = MaterialTheme.colorScheme.onBackground
@@ -31,7 +34,10 @@ fun StatsSpace(viewModel:GoogleAuthBackupRestoreViewModel){
     viewModel.onload()
 
     if(progress) {
-        LinearProgressIndicator()
+        LinearProgressIndicator( modifier=Modifier.fillMaxWidth())
+        Text(text= stringResource(R.string.loading_data),
+            textAlign = TextAlign.Center,
+            modifier=Modifier.fillMaxWidth())
     }else {
         DataTable(listHeader = {_->listHeader},
             sizeBody = stateStats.size,

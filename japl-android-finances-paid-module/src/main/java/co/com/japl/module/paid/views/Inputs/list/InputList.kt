@@ -6,6 +6,7 @@ import androidx.annotation.RequiresApi
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -32,6 +33,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import co.com.japl.module.paid.R
@@ -50,7 +52,6 @@ import java.time.LocalDate
 @Composable
 fun InputList(modelView: InputListModelView){
     val stateLoader = remember { modelView.stateLoader }
-    val stateProgress = remember { modelView.progress }
     val scope = rememberCoroutineScope()
     scope.launch {
         withContext(Dispatchers.IO) {
@@ -58,9 +59,17 @@ fun InputList(modelView: InputListModelView){
         }
     }
         if(stateLoader.value) {
-            LinearProgressIndicator(
-                progress = { stateProgress.value },
-            )
+            Column(modifier = Modifier.fillMaxWidth()) {
+                LinearProgressIndicator(
+                    modifier = Modifier.fillMaxWidth()
+                )
+                Text(
+                    text = stringResource(id = R.string.loading_data),
+                    color=MaterialTheme.colorScheme.onSurface,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.fillMaxWidth().padding(Dimensions.PADDING_TOP)
+                )
+            }
         }else {
             Scaffold (
                 floatingActionButton = {

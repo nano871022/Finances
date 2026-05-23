@@ -20,15 +20,11 @@ import javax.inject.Inject
 class PeriodCreditListFragment : Fragment(){
     @Inject lateinit var periodSvc: IPeriodCreditPort
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
-
     @RequiresApi(Build.VERSION_CODES.S)
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         val root = FragmentPeriodCreditListBinding.inflate(inflater)
         val viewModel = PeriodsViewModel( periodSvc )
         root.composeViewPcl.apply {

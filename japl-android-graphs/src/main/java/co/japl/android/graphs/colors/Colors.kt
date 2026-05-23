@@ -8,7 +8,7 @@ import androidx.core.content.ContextCompat
 import co.japl.android.graphs.R
 import co.japl.android.graphs.pojo.PiecePie
 
-class Colors constructor(val context:Context,val draws:MutableList<PiecePie>){
+class Colors(val context:Context, val draws:MutableList<PiecePie>){
 
     val colors = arrayOf(
         R.color.graphic1,

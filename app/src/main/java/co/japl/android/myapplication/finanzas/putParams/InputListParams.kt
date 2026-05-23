@@ -3,6 +3,7 @@ package co.japl.android.myapplication.finanzas.putParams
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import androidx.core.net.toUri
 import androidx.core.os.bundleOf
 import androidx.navigation.NavController
@@ -12,7 +13,6 @@ import co.japl.android.myapplication.R
 class InputListParams {
     object PARAMS {
         const val PARAM_ACCOUNT_CODE = "account_code"
-        const val PARAM_CREDIT_CODE = "CREDIT_CODE"
         const val ARG_DEEPLINK = "android-support-nav:controller:deepLinkIntent"
     }
         companion object {
@@ -31,8 +31,10 @@ class InputListParams {
                 parameters.let{
                     if(it.containsKey(PARAMS.ARG_DEEPLINK)) {
                         val intent = it[PARAMS.ARG_DEEPLINK] as Intent
-                        if(intent.dataString?.toUri()?.getQueryParameter(PARAMS.PARAM_CREDIT_CODE) != null){
-                            return intent.dataString?.toUri()?.getQueryParameter(PARAMS.PARAM_CREDIT_CODE)!!.toInt()
+                        if(intent.dataString?.toUri()?.getQueryParameter(PARAMS.PARAM_ACCOUNT_CODE) != null){
+                            return intent.dataString?.toUri()?.getQueryParameter(PARAMS.PARAM_ACCOUNT_CODE)!!.toInt().also {
+                                Log.d(this.javaClass.name,"=== PARAM_CREDIT_CODE: $it")
+                            }
                         }
                     }
                     return parameters.getInt(PARAMS.PARAM_ACCOUNT_CODE)

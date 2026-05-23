@@ -13,7 +13,7 @@ import co.com.japl.module.paid.R
 import co.com.japl.module.paid.navigations.Sms
 import kotlinx.coroutines.runBlocking
 
-class SmsViewModel constructor(private val svc: ISMSPaidPort?, private val accountSvc:IAccountPort?, private val navController: NavController?): ViewModel() {
+class SmsViewModel(private val svc: ISMSPaidPort?, private val accountSvc:IAccountPort?, private val navController: NavController?): ViewModel() {
 
     val  load = mutableStateOf(true)
     val  progress = mutableFloatStateOf(0.0f)

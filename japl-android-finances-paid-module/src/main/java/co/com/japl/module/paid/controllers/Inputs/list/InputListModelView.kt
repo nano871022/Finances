@@ -6,12 +6,14 @@ import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import co.com.japl.finances.iports.dtos.InputDTO
 import co.com.japl.finances.iports.inbounds.inputs.IInputPort
 import co.com.japl.module.paid.R
 import co.com.japl.module.paid.enums.MoreOptionsItemsInput
 import co.com.japl.module.paid.navigations.Input
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 
 class InputListModelView (private val context:Context, val accountCode:Int,private val navController: NavController?,private val inputSvc:IInputPort?) : ViewModel() {
@@ -32,6 +34,9 @@ class InputListModelView (private val context:Context, val accountCode:Int,priva
     private fun deleteInput(id:Int){
         if(inputSvc?.deleteRecord(id) == true){
             Toast.makeText(context,context.resources.getText(R.string.toast_successful_deleted),Toast.LENGTH_SHORT).show()
+            viewModelScope.launch {
+                main()
+            }
         }else{
             Toast.makeText(context,context.resources.getText(R.string.toast_unsuccessful_deleted),Toast.LENGTH_SHORT).show()
         }
@@ -40,6 +45,9 @@ class InputListModelView (private val context:Context, val accountCode:Int,priva
     private fun updateValue(id:Int,value:Double){
         if(inputSvc?.updateValue(id,value) == true){
             Toast.makeText(context,context.resources.getText(R.string.toast_update_successful),Toast.LENGTH_SHORT).show()
+            viewModelScope.launch {
+                main()
+            }
         }else{
             Toast.makeText(context,context.resources.getText(R.string.toast_update_error),Toast.LENGTH_SHORT).show()
         }

@@ -1,9 +1,14 @@
 package co.japl.android.myapplication.finanzas.bussiness.impl
 
+import android.Manifest
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.net.Uri
+import android.provider.Settings
 import android.util.Log
+import androidx.core.content.ContextCompat
 import co.japl.android.myapplication.R
 import co.japl.android.myapplication.finanzas.bussiness.interfaces.IGoogleSignInService
 import com.google.android.gms.auth.api.identity.Identity
@@ -14,7 +19,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.Scope
 import com.google.api.services.drive.DriveScopes
 
-class GoogleSignInnImplement constructor(private val context: Context): IGoogleSignInService {
+class GoogleSignInnImplement(private val context: Context): IGoogleSignInService {
 
     private var signInAccount:GoogleSignInAccount? = null
     private var googleSignInClient:GoogleSignInClient? = null
@@ -43,7 +48,6 @@ class GoogleSignInnImplement constructor(private val context: Context): IGoogleS
     override fun login(requestCode:Int, resultCode:Int, data:Intent?):String {
         var message = ""
         if(resultCode == Activity.RESULT_OK && data != null){
-            // Try Legacy Google Sign-In first as it is the one used by getConnection()
             try {
                 val task = GoogleSignIn.getSignedInAccountFromIntent(data)
                 if (task.isSuccessful) {
@@ -55,7 +59,6 @@ class GoogleSignInnImplement constructor(private val context: Context): IGoogleS
                 Log.d(javaClass.name, "Legacy Sign-In parsing failed: ${e.message}")
             }
 
-            // Fallback to Identity API (Credential Manager) result parsing
             try {
                 Identity.getAuthorizationClient(context).getAuthorizationResultFromIntent(data)
                     .toGoogleSignInAccount()?.let {
@@ -79,23 +82,56 @@ class GoogleSignInnImplement constructor(private val context: Context): IGoogleS
         return message
     }
 
-
-
     override fun check():Boolean {
-       val account = GoogleSignIn.getLastSignedInAccount(context) ?: return false
-       val hasDrive = account.grantedScopes.any { it.scopeUri == DriveScopes.DRIVE_FILE || it.scopeUri == DriveScopes.DRIVE_APPDATA }
-       val hasGmail = account.grantedScopes.any { it.scopeUri == GMAIL_SCOPE }
-       
-       return if (hasDrive && hasGmail) {
-           signInAccount = account
-           account.grantedScopes.forEach{ Log.d(javaClass.name,"=== GrantedScope $it")}
-           true
-       } else {
-           false
-       }
+       val account = GoogleSignIn.getLastSignedInAccount(context)
+       signInAccount = account
+       return account != null
     }
 
     override fun getAccount() = signInAccount
+
+    override fun isGoogleDriveGranted(): Boolean {
+        return signInAccount?.grantedScopes?.any { 
+            it.scopeUri == DriveScopes.DRIVE_FILE || it.scopeUri == DriveScopes.DRIVE_APPDATA 
+        } ?: false
+    }
+
+    override fun isEmailAccessGranted(): Boolean {
+        return signInAccount?.grantedScopes?.any { 
+            it.scopeUri == GMAIL_SCOPE 
+        } ?: false
+    }
+
+    override fun isSmsAccessGranted(): Boolean {
+        return ContextCompat.checkSelfPermission(context, Manifest.permission.RECEIVE_SMS) == PackageManager.PERMISSION_GRANTED
+    }
+
+    override fun requestPermissions(activity: Activity) {
+        val account = GoogleSignIn.getLastSignedInAccount(activity)
+        val scopes = mutableListOf<Scope>()
+        if (!isGoogleDriveGranted()) {
+            scopes.add(Scope(DriveScopes.DRIVE_FILE))
+            scopes.add(Scope(DriveScopes.DRIVE_APPDATA))
+        }
+        if (!isEmailAccessGranted()) {
+            scopes.add(Scope(GMAIL_SCOPE))
+        }
+        
+        if (scopes.isNotEmpty() && account != null) {
+            GoogleSignIn.requestPermissions(activity, 101, account, *scopes.toTypedArray())
+        } else {
+            getConnection()?.let { intent ->
+                activity.startActivityForResult(intent as Intent, 102)
+            }
+        }
+    }
+
+    override fun requestSmsPermission(activity: Activity) {
+        val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
+            data = Uri.fromParts("package", activity.packageName, null)
+        }
+        activity.startActivity(intent)
+    }
 
     fun setAccount(account:GoogleSignInAccount?) {
         signInAccount = account

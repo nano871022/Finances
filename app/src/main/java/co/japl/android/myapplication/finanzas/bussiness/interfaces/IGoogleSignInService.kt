@@ -1,7 +1,7 @@
 package co.japl.android.myapplication.finanzas.bussiness.interfaces
 
+import android.app.Activity
 import android.content.Intent
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 
 interface IGoogleSignInService {
 
@@ -14,4 +14,10 @@ interface IGoogleSignInService {
 
     fun getAccount(): Any?
 
+    fun isGoogleDriveGranted(): Boolean
+    fun isEmailAccessGranted(): Boolean
+    fun isSmsAccessGranted(): Boolean
+
+    fun requestPermissions(activity: Activity)
+    fun requestSmsPermission(activity: Activity)
 }

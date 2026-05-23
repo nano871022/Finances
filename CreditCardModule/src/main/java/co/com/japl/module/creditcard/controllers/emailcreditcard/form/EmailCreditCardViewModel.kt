@@ -22,7 +22,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class EmailCreditCardViewModel constructor(
+class EmailCreditCardViewModel(
     private val codeEmailCC: Int?,
     private val svc: IEmailCreditCardPort?,
     private val creditCardSvc: ICreditCardPort?,

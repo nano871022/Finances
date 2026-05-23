@@ -24,7 +24,7 @@ import kotlinx.coroutines.launch
 import java.math.BigDecimal
 
 @ViewModelScoped
-class SimulatorFixViewModel constructor(
+class SimulatorFixViewModel(
     private val context: Context?=null,
     private val simuladorSvc: ISimulatorCreditFixPort?=null,
     private val savedStateHandler: SavedStateHandle?=null,
