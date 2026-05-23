@@ -196,12 +196,12 @@ class GoogleDriveImpl(private val context:Context, private val dbConnect:Connect
                 val lastBackup = backupFile?.modifiedTime?.let {
                     LocalDateTime.ofInstant(java.time.Instant.ofEpochMilli(it.value), ZoneId.systemDefault())
                 }
-                val spaceDBKb = ((backupFile?.size ?: 0) / 1024).toLong()
+
                 BackupStorageInfo(
-                    spaceUsed = quota.usage ?: 0L,
-                    spaceMax = quota.limit ?: 0L,
+                    spaceUsed = (quota.usage?: 0L) ,
+                    spaceMax = (quota.limit?: 0L) ,
                     lastBackup = lastBackup,
-                    spaceDBKb = spaceDBKb
+                    spaceDBKb = (backupFile?.size?.toLong()?:0L)
                 )
             }
         } catch (e: GoogleJsonResponseException) {
@@ -215,6 +215,7 @@ class GoogleDriveImpl(private val context:Context, private val dbConnect:Connect
             null
         }
     }
+
 
 
 }

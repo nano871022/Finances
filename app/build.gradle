@@ -18,8 +18,8 @@ android {
         applicationId "co.japl.android.myapplication"
         minSdk 26
         targetSdk 36
-        versionCode 4_08_01_174
-        versionName "V 4.08.01 build 174 FIx issues with AI and sms read"
+        versionCode 4_08_01_175
+        versionName "V 4.08.01 build 175 FIx issues with AI and sms read"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }

@@ -3,6 +3,7 @@ package co.com.japl.finances.iports.outbounds
 import co.com.japl.finances.iports.dtos.PatrimonyAssetDTO
 import co.com.japl.finances.iports.dtos.TaxHistoryDTO
 import java.math.BigDecimal
+import java.time.LocalDate
 
 interface TaxConfigurationPort {
     fun getUVTValue(year: Int): BigDecimal
@@ -33,6 +34,8 @@ interface ExternalFinancialDataPort {
     suspend fun getProjectedIncome(year: Int): BigDecimal
     suspend fun getCreditCardPaymentsForYear(year: Int): BigDecimal
     suspend fun getCreditPaymentsForYear(year: Int): BigDecimal
+    suspend fun getCreditDebt(date: LocalDate): BigDecimal
+    suspend fun getCreditCardDebt(date: LocalDate): BigDecimal
 }
 
 interface TaxHistoryPersistencePort {

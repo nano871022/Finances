@@ -65,7 +65,7 @@ fun LoginSpace(viewModel: GoogleAuthBackupRestoreViewModel) {
         modifier = Modifier
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
-            .padding(16.dp)
+            .padding(0.dp)
     ) {
         if (isProcessing.value) {
             LinearProgressIndicator(modifier = Modifier.fillMaxWidth().padding(bottom = 16.dp))
@@ -289,7 +289,6 @@ private fun PermissionsAndStatusSection(viewModel: GoogleAuthBackupRestoreViewMo
     val isEmailAccessGranted = viewModel.isEmailAccessGranted.value
     val isSmsAccessGranted = viewModel.isSmsAccessGranted.value
 
-    if(isLogged)
     Column {
         val allGranted = isGoogleDriveGranted && isEmailAccessGranted && isSmsAccessGranted
         val sectionColor = if (allGranted) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.error
@@ -315,26 +314,27 @@ private fun PermissionsAndStatusSection(viewModel: GoogleAuthBackupRestoreViewMo
                         color = sectionColor
                     )
                 }
+                if(isLogged) {
+                    Spacer(modifier = Modifier.height(16.dp))
 
-                Spacer(modifier = Modifier.height(16.dp))
+                    StatusItem(
+                        icon = Icons.Rounded.AddToDrive,
+                        title = stringResource(R.string.google_drive),
+                        description = stringResource(R.string.google_drive_detail),
+                        isGranted = isGoogleDriveGranted,
+                        onGrant = { viewModel.grantGooglePermissions() }
+                    )
 
-                StatusItem(
-                    icon = Icons.Rounded.AddToDrive,
-                    title = stringResource(R.string.google_drive),
-                    description = stringResource(R.string.google_drive_detail),
-                    isGranted = isGoogleDriveGranted,
-                    onGrant = { viewModel.grantGooglePermissions() }
-                )
+                    Spacer(modifier = Modifier.height(12.dp))
 
-                Spacer(modifier = Modifier.height(12.dp))
-
-                StatusItem(
-                    icon = Icons.Rounded.MarkEmailRead,
-                    title = stringResource(R.string.email_access),
-                    description = stringResource(R.string.email_access_detail),
-                    isGranted = isEmailAccessGranted,
-                    onGrant = { viewModel.grantGooglePermissions() }
-                )
+                    StatusItem(
+                        icon = Icons.Rounded.MarkEmailRead,
+                        title = stringResource(R.string.email_access),
+                        description = stringResource(R.string.email_access_detail),
+                        isGranted = isEmailAccessGranted,
+                        onGrant = { viewModel.grantGooglePermissions() }
+                    )
+                }
 
                 Spacer(modifier = Modifier.height(12.dp))
 

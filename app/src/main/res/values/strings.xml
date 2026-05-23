@@ -539,4 +539,6 @@
         ninguna inforamción aqui proporsionada es usada fuera de su dispositivos</string>
     <string name="account_manager">Administración de Cuenta</string>
     <string name="loading_data">Cargando Datos</string>
+    <string name="total_records">"Total Registros: "</string>
+    <string name="dialog_backup">"Esta seguro que desea realizar backup de la base de datos local de la aplicación "</string>
 </resources>
