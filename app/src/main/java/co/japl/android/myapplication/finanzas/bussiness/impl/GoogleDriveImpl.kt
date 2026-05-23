@@ -78,10 +78,10 @@ class GoogleDriveImpl(private val context:Context, private val dbConnect:Connect
         }
     }
     private fun getDrive(account: GoogleSignInAccount?):Drive? {
-        return account?.let {
+        return account?.email?.takeIf { it.isNotBlank() }?.let { email ->
             val transport = GoogleNetHttpTransport.newTrustedTransport()
             GoogleAccountCredential.usingOAuth2(context, SCOPES).apply {
-                selectedAccountName = account.email
+                selectedAccountName = email
             }?.let { credential ->
                 return Drive.Builder(transport, GsonFactory.getDefaultInstance(), credential)
                     .setApplicationName("Finanzas")
@@ -93,12 +93,14 @@ class GoogleDriveImpl(private val context:Context, private val dbConnect:Connect
     fun getDrive(authorizationResult:AuthorizationResult):Drive? {
         val transport = GoogleNetHttpTransport.newTrustedTransport()
         val account = authorizationResult.toGoogleSignInAccount()
-        return GoogleAccountCredential.usingOAuth2(context, SCOPES).apply {
-            selectedAccountName = account?.email
-        }?.let { credential ->
-            return Drive.Builder(transport, GsonFactory.getDefaultInstance(), credential)
-                .setApplicationName("Finanzas")
-                .build()
+        return account?.email?.takeIf { it.isNotBlank() }?.let { email ->
+            GoogleAccountCredential.usingOAuth2(context, SCOPES).apply {
+                selectedAccountName = email
+            }?.let { credential ->
+                return Drive.Builder(transport, GsonFactory.getDefaultInstance(), credential)
+                    .setApplicationName("Finanzas")
+                    .build()
+            }
         }
     }
 
