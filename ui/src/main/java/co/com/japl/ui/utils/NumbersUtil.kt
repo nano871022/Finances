@@ -13,6 +13,10 @@ class NumbersUtil {
         val formatDecimal = "#,###.00"
         val format8Decimal = "#,###.00######"
 
+        val format4Decimal = "#,###.00##"
+
+        val formatLong = "#,###"
+
         fun COPtoString(value: BigDecimal): String {
             return DecimalFormat(formatDecimalMoneyCO).format(value)
         }
@@ -28,6 +32,14 @@ class NumbersUtil {
 
         fun toString(value: Double): String {
             return DecimalFormat(formatDecimal).format(value)
+        }
+
+        fun toStringLong(value: Long): String {
+            return DecimalFormat(formatLong).format(value)
+        }
+
+        fun toString4(value: Double): String {
+            return DecimalFormat(format4Decimal).format(value)
         }
 
         fun toString(value: BigDecimal): String {
@@ -141,6 +153,21 @@ class NumbersUtil {
             }catch(e:Exception){
                 false
             }
+        }
+
+        fun bytesConvert(bytes:Double): String{
+            if(bytes > 1024) {
+                val kb = bytes / 1024
+                if (kb > 1024) {
+                    val mb = kb / 1024
+                    if (mb > 1024) {
+                        return "${toString(mb / 1024)} Gb"
+                    }
+                    return "${toString(mb)} Mb"
+                }
+                return "${toString(kb)} Kb"
+            }
+            return "${toString(bytes)} B"
         }
     }
 }

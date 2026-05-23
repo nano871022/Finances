@@ -55,6 +55,7 @@ fun DataTable(
     listHeader: (Dp) -> List<Header>?,
     sizeBody: Int,
     splitPos: Int = 0,
+    splitEnable:Boolean?=true,
     highlightPos:Int = -1,
     footer: @Composable RowScope.(Dp) -> Unit?,
     split: @Composable (Int,Dp) -> Unit? = {_,_->},
@@ -65,7 +66,7 @@ fun DataTable(
         val width = maxWidth
         Column {
             Header(textColor, listHeader(width))
-            Body(textColor, sizeBody, width, splitPos,highlightPos,footer, split,listBody)
+            Body(textColor, sizeBody, width, splitPos,highlightPos,splitEnable?:true,footer, split,listBody)
         }
     }
 }
@@ -77,6 +78,7 @@ private fun Body(
         maxWidth:Dp,
         splitPos: Int,
         highlightPos:Int,
+        splitEnable:Boolean?,
         footer: @Composable RowScope.(Dp) -> Unit?,
         splitView: @Composable (Int,Dp) -> Unit?,
         listBody: @Composable RowScope.(Int,Dp) -> Unit){
@@ -94,7 +96,7 @@ private fun Body(
                     splitView(index, maxWidth)
                 }
             }
-            BodyRow(index,textColor,maxWidth,highlightPos,listBody)
+            BodyRow(index,textColor,maxWidth,highlightPos, splitEnable?:true ,listBody)
         }
         item {
             Row(modifier = Modifier.fillMaxWidth().padding(bottom=Dimensions.PADDING_BOTTOM)) {
@@ -105,24 +107,28 @@ private fun Body(
 }
 
 @Composable
-private fun BodyRow( index:Int,textColor: Color,maxWidth:Dp,highlightPos:Int,listBody: @Composable RowScope.(Int,Dp) -> Unit){
+private fun BodyRow( index:Int,textColor: Color,maxWidth:Dp,highlightPos:Int,splitEnable:Boolean=true,listBody: @Composable RowScope.(Int,Dp) -> Unit){
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .padding(5.dp)
             .background(color=if(index == highlightPos) MaterialTheme.colorScheme.surfaceContainer else Color.Transparent)
     ) {
-        Text(
-            text = "${index + 1}",
-            color = textColor,
-            modifier = Modifier
-                .padding(end = 5.dp)
-                .align(alignment = Alignment.CenterVertically)
-        )
+        if(splitEnable) {
+            Text(
+                text = "${index + 1}",
+                color = textColor,
+                modifier = Modifier
+                    .padding(end = 5.dp)
+                    .align(alignment = Alignment.CenterVertically)
+            )
+        }
 
         listBody(index,maxWidth)
     }
-    HorizontalDivider()
+    if(splitEnable) {
+        HorizontalDivider()
+    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)

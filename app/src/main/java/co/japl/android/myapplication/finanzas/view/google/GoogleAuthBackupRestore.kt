@@ -33,24 +33,25 @@ import coil.compose.AsyncImage
 @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
 @Composable
 fun GoogleAuthBackupRestore(viewModel:GoogleAuthBackupRestoreViewModel) {
-
-
     Body(viewModel)
 }
 
 @Composable
 fun Body(viewModel:GoogleAuthBackupRestoreViewModel){
     val selectedTabIndex = remember { viewModel.tabIndex }
+    val isProcessing = remember { viewModel.isProcessing }
 
     Scaffold(
         bottomBar = {
-            BottomNav(selectedTabIndex)
+
+                BottomNav(isProcessing,selectedTabIndex)
+
         }
     ) { paddingValues ->
         Column(modifier = Modifier
             .fillMaxSize()
             .padding(paddingValues)
-            .padding(top= Dimensions.PADDING_TOP)
+            .padding(top= 0.dp)
             .background(MaterialTheme.colorScheme.background)) {
 
             when (selectedTabIndex.value) {
@@ -63,29 +64,31 @@ fun Body(viewModel:GoogleAuthBackupRestoreViewModel){
 }
 
 @Composable
-fun BottomNav(selectedTabIndex: MutableIntState) {
-    NavigationBar(
-        containerColor = MaterialTheme.colorScheme.surfaceContainer,
-        tonalElevation = 8.dp
-    ) {
-        NavigationBarItem(
-            selected = selectedTabIndex.value == 1,
-            onClick = { selectedTabIndex.value = 1 },
-            icon = { Icon(Icons.Rounded.CloudSync, contentDescription = "Sync") },
-            label = { Text("Sync") }
-        )
-        NavigationBarItem(
-            selected = false,
-            onClick = { selectedTabIndex.value = 2 },
-            icon = { Icon(Icons.Rounded.Storage, contentDescription = "Database") },
-            label = { Text("Database") }
-        )
-        NavigationBarItem(
-            selected = selectedTabIndex.value == 0,
-            onClick = { selectedTabIndex.value = 0 },
-            icon = { Icon(Icons.Rounded.Person, contentDescription = "Profile") },
-            label = { Text("Profile") }
-        )
+fun BottomNav(isProcessing: MutableState<Boolean>, selectedTabIndex: MutableIntState) {
+    if(isProcessing.value.not()) {
+        NavigationBar(
+            containerColor = MaterialTheme.colorScheme.surfaceContainer,
+            tonalElevation = 8.dp
+        ) {
+            NavigationBarItem(
+                selected = selectedTabIndex.value == 1,
+                onClick = { selectedTabIndex.value = 1 },
+                icon = { Icon(Icons.Rounded.CloudSync, contentDescription = "Sync") },
+                label = { Text("Sync") }
+            )
+            NavigationBarItem(
+                selected = false,
+                onClick = { selectedTabIndex.value = 2 },
+                icon = { Icon(Icons.Rounded.Storage, contentDescription = "Database") },
+                label = { Text("Database") }
+            )
+            NavigationBarItem(
+                selected = selectedTabIndex.value == 0,
+                onClick = { selectedTabIndex.value = 0 },
+                icon = { Icon(Icons.Rounded.Person, contentDescription = "Profile") },
+                label = { Text("Profile") }
+            )
+        }
     }
 }
 

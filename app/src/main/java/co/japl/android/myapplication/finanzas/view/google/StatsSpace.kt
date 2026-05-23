@@ -49,6 +49,7 @@ fun StatsSpace(viewModel: GoogleAuthBackupRestoreViewModel) {
     val lastBackup = remember { viewModel.lastBackup }
     val spaceDBKb = remember { viewModel.spaceDBKb }
     val statusRestoreDialog = remember { mutableStateOf(false) }
+    val statusBackupDialog = remember { mutableStateOf(false) }
 
     Column(
         modifier = Modifier
@@ -68,7 +69,7 @@ fun StatsSpace(viewModel: GoogleAuthBackupRestoreViewModel) {
 
             LastBackupCard(lastBackup.value, spaceDBKb.value)
         }
-
+        if(isLogged) {
         Spacer(modifier = Modifier.height(24.dp))
 
         // Main Actions Section
@@ -80,7 +81,7 @@ fun StatsSpace(viewModel: GoogleAuthBackupRestoreViewModel) {
             fontWeight = FontWeight.Bold
         )
 
-        if(isLogged) {
+
             Spacer(modifier = Modifier.height(12.dp))
 
             DataOperationCard(
@@ -90,9 +91,7 @@ fun StatsSpace(viewModel: GoogleAuthBackupRestoreViewModel) {
                 iconContainerColor = MaterialTheme.colorScheme.primary,
                 iconContentColor = MaterialTheme.colorScheme.onSurface,
                 onClick = {
-                    CoroutineScope(Dispatchers.IO).launch {
-                        viewModel.backup()
-                    }
+                   statusBackupDialog.value = true
                 }
             )
         }
@@ -122,6 +121,14 @@ fun StatsSpace(viewModel: GoogleAuthBackupRestoreViewModel) {
         action= {
             viewModel.restore()
         })
+
+    AlertBackup(
+        status = statusBackupDialog,
+        action= {
+            CoroutineScope(Dispatchers.IO).launch {
+                viewModel.backup()
+            }
+        })
 }
 
 @Composable
@@ -129,7 +136,6 @@ private fun CloudSyncStatusCard(isLogged: Boolean, email: String, used:Double,ma
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.White),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
         border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.2f))
     ) {
@@ -138,20 +144,14 @@ private fun CloudSyncStatusCard(isLogged: Boolean, email: String, used:Double,ma
                 .drawWithBorder()
                 .padding(16.dp)
         ) {
-            Row(
+            Column(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(
-                    stringResource(R.string.cloud_sync_status),
-                    style = MaterialTheme.typography.headlineSmall,
-                    fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.onPrimary
-                )
+                if(isLogged) {
                 Surface(
                     color = MaterialTheme.colorScheme.secondaryContainer,
-                    shape = CircleShape
+                    shape = CircleShape,
+                    modifier=Modifier.align(Alignment.End)
                 ) {
                     Row(
                         modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp),
@@ -163,7 +163,6 @@ private fun CloudSyncStatusCard(isLogged: Boolean, email: String, used:Double,ma
                             modifier = Modifier.size(16.dp),
                             tint = MaterialTheme.colorScheme.onSecondaryContainer
                         )
-                        if(isLogged) {
                             Spacer(modifier = Modifier.width(4.dp))
                             Text(
                                 stringResource(R.string.up_do_date),
@@ -173,6 +172,14 @@ private fun CloudSyncStatusCard(isLogged: Boolean, email: String, used:Double,ma
                         }
                     }
                 }
+
+                Text(
+                    stringResource(R.string.cloud_sync_status),
+                    style = MaterialTheme.typography.headlineSmall,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onPrimary
+                )
+
             }
 
             Spacer(modifier = Modifier.height(24.dp))
@@ -210,19 +217,19 @@ private fun CloudSyncStatusCard(isLogged: Boolean, email: String, used:Double,ma
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            Row(
+            Column(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Text(
-                    stringResource(R.string.store_space,used,max),
+                    stringResource(R.string.store_space,NumbersUtil.bytesConvert(used), NumbersUtil.bytesConvert(max)),
                     style = MaterialTheme.typography.labelSmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
                 Text(
-                    stringResource(R.string.used_percent,NumbersUtil.toString((used/max)*100)),
+                    stringResource(R.string.used_percent,NumbersUtil.toString4((used/max)*100)),
                     style = MaterialTheme.typography.labelSmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.align( alignment = Alignment.End)
                 )
             }
             Spacer(modifier = Modifier.height(8.dp))
@@ -272,7 +279,7 @@ private fun LastBackupCard(date: LocalDateTime,spaceKb: Double) {
                     color = MaterialTheme.colorScheme.onPrimaryContainer
                 )
                 Text(
-                    "${date.format(DateTimeFormatter.ofPattern("HH:mm"))} • ${NumbersUtil.toString(spaceKb)} Kb",
+                    "${date.format(DateTimeFormatter.ofPattern("HH:mm"))} • ${NumbersUtil.bytesConvert(spaceKb)}",
                     style = MaterialTheme.typography.labelSmall,
                     color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.8f)
                 )
@@ -295,7 +302,6 @@ private fun DataOperationCard(
             .fillMaxWidth()
             .clickable { onClick() },
         shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.White),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
         Row(
@@ -360,11 +366,35 @@ private fun AlertRestore(status: MutableState<Boolean>, action: () -> Unit) {
     }
 }
 
+@Composable
+private fun AlertBackup(status: MutableState<Boolean>, action: () -> Unit) {
+    if (status.value) {
+        AlertDialogOkCancel(
+            title = R.string.dialog_backup,
+            confirmNameButton = R.string.backup,
+            onDismiss = { status.value = false },
+        ) {
+            action.invoke()
+            status.value = false
+        }
+    }
+}
+
 
 @Composable
 @Preview(heightDp = 700)
-private fun DataTablePreview(){
+private fun StatsSpacePreview(){
     val vm = getViewModel()
+    MaterialThemeComposeUI() {
+        StatsSpace(vm)
+    }
+}
+
+@Composable
+@Preview(heightDp = 700)
+private fun StatsSpaceLogedPreview(){
+    val vm = getViewModel()
+    vm.isLogged.value=true
     MaterialThemeComposeUI() {
         StatsSpace(vm)
     }
@@ -373,7 +403,7 @@ private fun DataTablePreview(){
 @Composable
 private fun getViewModel():GoogleAuthBackupRestoreViewModel{
     val vm =  GoogleAuthBackupRestoreViewModel(null,null,null,null,null)
-    vm.spaceMax.value = 15.0
+    vm.spaceMax.value = 15000000000.0
     vm.spaceUsed.value = 10.0
     vm.spaceDBKb.value = 1000.0
     vm.lastBackup.value = LocalDateTime.now().minusMonths(3)
