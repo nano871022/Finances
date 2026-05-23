@@ -9,6 +9,7 @@ import co.japl.android.myapplication.finanzas.pojo.BackupStorageInfo
 import co.japl.android.myapplication.utils.DatabaseConstants
 import com.google.android.gms.auth.api.identity.AuthorizationResult
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
+import com.google.api.client.googleapis.json.GoogleJsonResponseException
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport
 import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential
 import com.google.api.client.http.FileContent
@@ -58,12 +59,17 @@ class GoogleDriveImpl(private val context:Context, private val dbConnect:Connect
     }
 
     private fun saveInTempFile(idFile:String,drive:Drive):java.io.File?{
-        val file = java.io.File.createTempFile("${DatabaseConstants.DATA_BASE_NAME}",".db.db")
-        val outputStream = FileOutputStream(file)
-        drive.files().get(idFile).executeMediaAndDownloadTo(outputStream)
-        outputStream.flush()
-        outputStream.close()
-        return file
+        try {
+            val file = java.io.File.createTempFile("${DatabaseConstants.DATA_BASE_NAME}", ".db.db")
+            val outputStream = FileOutputStream(file)
+            drive.files().get(idFile).executeMediaAndDownloadTo(outputStream)
+            outputStream.flush()
+            outputStream.close()
+            return file
+        } catch (e: Exception) {
+            Log.e(this.javaClass.name, "Error saving temp file: ${e.message}", e)
+            return null
+        }
     }
 
     private fun getFiles(drive:Drive):List<File>{
@@ -78,30 +84,40 @@ class GoogleDriveImpl(private val context:Context, private val dbConnect:Connect
         }
     }
     private fun getDrive(account: GoogleSignInAccount?):Drive? {
-        return account?.email?.takeIf { it.isNotBlank() }?.let { email ->
-            val transport = GoogleNetHttpTransport.newTrustedTransport()
-            GoogleAccountCredential.usingOAuth2(context, SCOPES).apply {
+        val accountObj = account?.account
+        val email = account?.email?.takeIf { it.isNotBlank() }
+        if (accountObj == null && email == null) return null
+
+        val transport = GoogleNetHttpTransport.newTrustedTransport()
+        val credential = GoogleAccountCredential.usingOAuth2(context, SCOPES).apply {
+            if (accountObj != null) {
+                selectedAccount = accountObj
+            } else {
                 selectedAccountName = email
-            }?.let { credential ->
-                return Drive.Builder(transport, GsonFactory.getDefaultInstance(), credential)
-                    .setApplicationName("Finanzas")
-                    .build()
             }
         }
+        return Drive.Builder(transport, GsonFactory.getDefaultInstance(), credential)
+            .setApplicationName("Finanzas")
+            .build()
     }
 
     fun getDrive(authorizationResult:AuthorizationResult):Drive? {
         val transport = GoogleNetHttpTransport.newTrustedTransport()
         val account = authorizationResult.toGoogleSignInAccount()
-        return account?.email?.takeIf { it.isNotBlank() }?.let { email ->
-            GoogleAccountCredential.usingOAuth2(context, SCOPES).apply {
+        val accountObj = account?.account
+        val email = account?.email?.takeIf { it.isNotBlank() }
+        if (accountObj == null && email == null) return null
+
+        val credential = GoogleAccountCredential.usingOAuth2(context, SCOPES).apply {
+            if (accountObj != null) {
+                selectedAccount = accountObj
+            } else {
                 selectedAccountName = email
-            }?.let { credential ->
-                return Drive.Builder(transport, GsonFactory.getDefaultInstance(), credential)
-                    .setApplicationName("Finanzas")
-                    .build()
             }
         }
+        return Drive.Builder(transport, GsonFactory.getDefaultInstance(), credential)
+            .setApplicationName("Finanzas")
+            .build()
     }
 
     override suspend fun backup(account: GoogleSignInAccount?): String? {
@@ -120,56 +136,83 @@ class GoogleDriveImpl(private val context:Context, private val dbConnect:Connect
     }
 
     private fun update(idFile:String,drive:Drive): String {
-        return getFileDB()?.let {file->
-            val mimeType = Files.probeContentType(file.toPath())
-            val mediaContent = FileContent(mimeType, file)
-            drive.files().update(idFile, null, mediaContent).execute()?.let{
-                "== Finished Backup Process - Update Size: ${file.length() / (1024)}Kb"
-            }
-        }?:"== NOT-BACKUP-UPDATE"
+        return try {
+            getFileDB()?.let { file ->
+                val mimeType = Files.probeContentType(file.toPath())
+                val mediaContent = FileContent(mimeType, file)
+                drive.files().update(idFile, null, mediaContent).execute()?.let {
+                    "== Finished Backup Process - Update Size: ${file.length() / (1024)}Kb"
+                }
+            } ?: "== NOT-BACKUP-UPDATE"
+        } catch (e: Exception) {
+            Log.e(this.javaClass.name, "Error updating backup: ${e.message}", e)
+            "== ERROR-BACKUP-UPDATE: ${e.message}"
+        }
     }
 
     private fun create(drive: Drive): String {
-        return getFileDB()?.let{file->
-            val mimeType = Files.probeContentType(file.toPath())
-            val mediaContent = FileContent(mimeType, file)
-            val fileMetadata = File()
-            fileMetadata.name = DatabaseConstants.DATA_BASE_NAME
-            fileMetadata.mimeType = mimeType
-            fileMetadata.parents = Collections.singletonList(PARAMETER_FOLDER)
-            drive.files().create(fileMetadata,mediaContent)
-                .setFields("id").execute()?.let{
-                    "== Finished Backup Process - Create Size: ${file.length() / (1024)}Kb"
-                }
-        }?:"== NOT-BACKUP-CREATE"
+        return try {
+            getFileDB()?.let { file ->
+                val mimeType = Files.probeContentType(file.toPath())
+                val mediaContent = FileContent(mimeType, file)
+                val fileMetadata = File()
+                fileMetadata.name = DatabaseConstants.DATA_BASE_NAME
+                fileMetadata.mimeType = mimeType
+                fileMetadata.parents = Collections.singletonList(PARAMETER_FOLDER)
+                drive.files().create(fileMetadata, mediaContent)
+                    .setFields("id").execute()?.let {
+                        "== Finished Backup Process - Create Size: ${file.length() / (1024)}Kb"
+                    }
+            } ?: "== NOT-BACKUP-CREATE"
+        } catch (e: Exception) {
+            Log.e(this.javaClass.name, "Error creating backup: ${e.message}", e)
+            "== ERROR-BACKUP-CREATE: ${e.message}"
+        }
     }
 
     override suspend fun infoBackup(account: GoogleSignInAccount?): String {
-        return getDrive(account)?.let{drive->
-            getFiles(drive).takeIf { it.isNotEmpty() }
-                ?.firstOrNull { it.name == DatabaseConstants.DATA_BASE_NAME }?.let{
-                    "== ${it.name} V ${it.version}  \nLast Modified:${it.modifiedTime}"
+        return try {
+            getDrive(account)?.let { drive ->
+                getFiles(drive).takeIf { it.isNotEmpty() }
+                    ?.firstOrNull { it.name == DatabaseConstants.DATA_BASE_NAME }?.let {
+                        "== ${it.name} V ${it.version}  \nLast Modified:${it.modifiedTime}"
 
-        }}?: "== NOT-INFO"
+                    }
+            } ?: "== NOT-INFO"
+        } catch (e: Exception) {
+            Log.e(this.javaClass.name, "Error getting info backup: ${e.message}", e)
+            "== ERROR-INFO: ${e.message}"
+        }
     }
 
     override suspend fun getStorageInfo(account: GoogleSignInAccount?): BackupStorageInfo? {
-        return getDrive(account)?.let { drive ->
-            val about = drive.about().get().setFields("storageQuota").execute()
-            val quota = about.storageQuota
-            val files = getFiles(drive)
-            val backupFile = files.firstOrNull { it.name == DatabaseConstants.DATA_BASE_NAME }
-            
-            val lastBackup = backupFile?.modifiedTime?.let {
-                LocalDateTime.ofInstant(java.time.Instant.ofEpochMilli(it.value), ZoneId.systemDefault())
+        return try {
+            getDrive(account)?.let { drive ->
+                val about = drive.about().get().setFields("storageQuota").execute()
+                val quota = about.storageQuota
+                val files = getFiles(drive)
+                val backupFile = files.firstOrNull { it.name == DatabaseConstants.DATA_BASE_NAME }
+
+                val lastBackup = backupFile?.modifiedTime?.let {
+                    LocalDateTime.ofInstant(java.time.Instant.ofEpochMilli(it.value), ZoneId.systemDefault())
+                }
+                val spaceDBKb = ((backupFile?.size ?: 0) / 1024).toLong()
+                BackupStorageInfo(
+                    spaceUsed = quota.usage ?: 0L,
+                    spaceMax = quota.limit ?: 0L,
+                    lastBackup = lastBackup,
+                    spaceDBKb = spaceDBKb
+                )
             }
-            val spaceDBKb = ((backupFile?.size ?: 0) /1024).toLong()
-            BackupStorageInfo(
-                spaceUsed = quota.usage ?: 0L,
-                spaceMax = quota.limit ?: 0L,
-                lastBackup = lastBackup,
-                spaceDBKb = spaceDBKb
-            )
+        } catch (e: GoogleJsonResponseException) {
+            Log.e(this.javaClass.name, "Google JSON Error: ${e.details}", e)
+            null
+        } catch (e: IllegalArgumentException) {
+            Log.e(this.javaClass.name, "Illegal Argument Error: ${e.message}", e)
+            null
+        } catch (e: Exception) {
+            Log.e(this.javaClass.name, "General Error: ${e.message}", e)
+            null
         }
     }
 

@@ -99,9 +99,11 @@ class GoogleAuthBackupRestoreViewModel(private val activity:Activity?, private v
                         isGoogleDriveGranted.value = svc.isGoogleDriveGranted()
                         isEmailAccessGranted.value = svc.isEmailAccessGranted()
 
-                        driveSvc?.infoBackup(account)?.let { info ->
-                            result.value = "${result.value} \n $info"
-                            updateStorageInfo(account)
+                        if (account.email?.isNotBlank() == true) {
+                            driveSvc?.infoBackup(account)?.let { info ->
+                                result.value = "${result.value} \n $info"
+                                updateStorageInfo(account)
+                            }
                         }
                     }
                 } else {
@@ -124,11 +126,13 @@ class GoogleAuthBackupRestoreViewModel(private val activity:Activity?, private v
     }
 
     private suspend fun updateStorageInfo(account: GoogleSignInAccount) {
-        driveSvc?.getStorageInfo(account)?.let { info ->
-            spaceUsed.value = info.spaceUsed.toDouble()
-            spaceMax.value = info.spaceMax.toDouble()
-            info.lastBackup?.let { lastBackup.value = it }
-            spaceDBKb.value = info.spaceDBKb.toDouble()
+        if (account.email?.isNotBlank() == true) {
+            driveSvc?.getStorageInfo(account)?.let { info ->
+                spaceUsed.value = info.spaceUsed.toDouble()
+                spaceMax.value = info.spaceMax.toDouble()
+                info.lastBackup?.let { lastBackup.value = it }
+                spaceDBKb.value = info.spaceDBKb.toDouble()
+            }
         }
     }
 
@@ -151,11 +155,17 @@ class GoogleAuthBackupRestoreViewModel(private val activity:Activity?, private v
    suspend fun backup() {
        isProcessing.value = true
        (loginSvc?.getAccount() as? GoogleSignInAccount)?.let { account ->
-                driveSvc?.backup(account)?.let {
-                    result.value = "${result.value} \n $it"
-                    updateStorageInfo(account)
-                    isProcessing.value = false
-                }
+           if (account.email?.isNotBlank() == true) {
+               driveSvc?.backup(account)?.let {
+                   result.value = "${result.value} \n $it"
+                   updateStorageInfo(account)
+                   isProcessing.value = false
+               }
+           } else {
+               isProcessing.value = false
+           }
+       } ?: run {
+           isProcessing.value = false
        }
     }
 
@@ -170,11 +180,17 @@ class GoogleAuthBackupRestoreViewModel(private val activity:Activity?, private v
         CoroutineScope(Dispatchers.IO).launch {
             isProcessing.value.takeIf { it }?.let {
                 (loginSvc?.getAccount() as? GoogleSignInAccount)?.let { account ->
-                    driveSvc?.restore(account)?.let {
-                        result.value = "${result.value} \n $it"
-                        updateStorageInfo(account)
+                    if (account.email?.isNotBlank() == true) {
+                        driveSvc?.restore(account)?.let {
+                            result.value = "${result.value} \n $it"
+                            updateStorageInfo(account)
+                            isProcessing.value = false
+                        }
+                    } else {
                         isProcessing.value = false
                     }
+                } ?: run {
+                    isProcessing.value = false
                 }
             }
         }
