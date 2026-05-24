@@ -36,6 +36,12 @@ interface ExternalFinancialDataPort {
     suspend fun getCreditPaymentsForYear(year: Int): BigDecimal
     suspend fun getCreditDebt(date: LocalDate): BigDecimal
     suspend fun getCreditCardDebt(date: LocalDate): BigDecimal
+
+    suspend fun getIncomeDetails(year: Int): List<co.com.japl.finances.iports.dtos.FinancialItemDTO>
+    suspend fun getDeductionDetails(year: Int): List<co.com.japl.finances.iports.dtos.FinancialItemDTO>
+    suspend fun getWithholdingDetails(year: Int): List<co.com.japl.finances.iports.dtos.FinancialItemDTO>
+    suspend fun getAssetsAt(date: LocalDate): List<co.com.japl.finances.iports.dtos.FinancialItemDTO>
+    suspend fun getLiabilitiesAt(date: LocalDate): List<co.com.japl.finances.iports.dtos.FinancialItemDTO>
 }
 
 interface TaxHistoryPersistencePort {

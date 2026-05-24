@@ -1,10 +1,13 @@
 package co.japl.android.finances.services.core
 
 import co.com.japl.finances.iports.outbounds.ExternalFinancialDataPort
+import co.com.japl.finances.iports.dtos.FinancialItemDTO
 import co.japl.android.finances.services.dao.interfaces.IPaidDAO
 import co.japl.android.finances.services.dao.interfaces.IQuoteCreditCardDAO
 import co.japl.android.finances.services.dao.interfaces.ICreditDAO
 import co.japl.android.finances.services.dao.interfaces.IInputDAO
+import co.japl.android.finances.services.dao.interfaces.IPatrimonyDAO
+import co.japl.android.finances.services.dao.interfaces.IAccountDAO
 import co.japl.android.finances.services.interfaces.ICreditCardSvc
 import co.japl.android.finances.services.utils.DateUtils
 import java.math.BigDecimal
@@ -19,7 +22,9 @@ class FinancesModuleIntegrationAdapter @Inject constructor(
     private val boughtDAO: IQuoteCreditCardDAO,
     private val creditDAO: ICreditDAO,
     private val inputDAO: IInputDAO,
-    private val creditCardSvc: ICreditCardSvc
+    private val creditCardSvc: ICreditCardSvc,
+    private val patrimonyDAO: IPatrimonyDAO,
+    private val accountDAO: IAccountDAO
 ) : ExternalFinancialDataPort {
 
     override suspend fun getIncomeYTD(year: Int): BigDecimal {
@@ -132,6 +137,77 @@ class FinancesModuleIntegrationAdapter @Inject constructor(
             }
         }
         return total
+    }
+
+    override suspend fun getIncomeDetails(year: Int): List<FinancialItemDTO> {
+        val inputs = inputDAO.getAll()
+        val details = mutableListOf<FinancialItemDTO>()
+        inputs.forEach { input ->
+            val startOfYear = LocalDate.of(year, 1, 1)
+            val endOfYear = LocalDate.of(year, 12, 31)
+            val start = if (input.dateStart.isBefore(startOfYear)) startOfYear else input.dateStart
+            val end = if (input.dateEnd.isAfter(endOfYear)) endOfYear else input.dateEnd
+
+            if (start.isBefore(end) || start.isEqual(end)) {
+                val months = countOccurrences(start, end, input.kindOf)
+                if (months > 0) {
+                    details.add(FinancialItemDTO(
+                        name = input.name,
+                        value = input.value.multiply(BigDecimal.valueOf(months.toLong())),
+                        date = start,
+                        type = "INCOME"
+                    ))
+                }
+            }
+        }
+        return details
+    }
+
+    override suspend fun getDeductionDetails(year: Int): List<FinancialItemDTO> {
+        val paids = paidDAO.getAll()
+        val details = mutableListOf<FinancialItemDTO>()
+        paids.forEach { paid ->
+             if (paid.date.year == year) {
+                 details.add(FinancialItemDTO(
+                     name = paid.name,
+                     value = paid.value,
+                     date = paid.date,
+                     type = "DEDUCTION"
+                 ))
+             }
+        }
+        return details
+    }
+
+    override suspend fun getWithholdingDetails(year: Int): List<FinancialItemDTO> {
+        return paidDAO.getAll().filter { it.date.year == year && it.name.contains("Retención", ignoreCase = true) }
+            .map { FinancialItemDTO(it.name, it.value, it.date, "WITHHOLDING") }
+    }
+
+    override suspend fun getAssetsAt(date: LocalDate): List<FinancialItemDTO> {
+        val assets = mutableListOf<FinancialItemDTO>()
+        accountDAO.getAll().forEach { account ->
+             assets.add(FinancialItemDTO(account.name, BigDecimal.ZERO, date, "ACCOUNT"))
+        }
+        patrimonyDAO.getAll().forEach { asset ->
+             assets.add(FinancialItemDTO(asset.name, asset.value, date, asset.type))
+        }
+        return assets
+    }
+
+    override suspend fun getLiabilitiesAt(date: LocalDate): List<FinancialItemDTO> {
+        val liabilities = mutableListOf<FinancialItemDTO>()
+        creditDAO.getAll().forEach { credit ->
+            val pending = creditDAO.getPendingToPayAll(date)
+            if (pending > BigDecimal.ZERO) {
+                liabilities.add(FinancialItemDTO("Credit: ${credit.name}", pending, date, "CREDIT"))
+            }
+        }
+        val ccDebt = getCreditCardDebt(date)
+        if (ccDebt > BigDecimal.ZERO) {
+            liabilities.add(FinancialItemDTO("Credit Cards Total", ccDebt, date, "CREDIT_CARD"))
+        }
+        return liabilities
     }
 
     private fun countOccurrences(start: LocalDate, end: LocalDate, periodicity: String): Int {

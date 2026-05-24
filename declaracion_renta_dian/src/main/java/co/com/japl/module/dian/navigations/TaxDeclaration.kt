@@ -1,4 +1,4 @@
-package co.com.japl.module.declaracion_renta_dian.controller
+package co.com.japl.module.dian.navigations
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -7,12 +7,13 @@ import android.view.ViewGroup
 import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import co.com.japl.module.declaracion_renta_dian.view.TaxDeclarationScreen
-import co.com.japl.module.declaracion_renta_dian.viewmodel.TaxDeclarationViewModel
+import co.com.japl.module.dian.views.TaxDeclaration
+import co.com.japl.module.dian.controllers.TaxDeclarationViewModel
+import co.com.japl.ui.theme.MaterialThemeComposeUI
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class TaxDeclarationFragment : Fragment() {
+class TaxDeclaration : Fragment() {
 
     private val viewModel: TaxDeclarationViewModel by viewModels()
 
@@ -23,7 +24,9 @@ class TaxDeclarationFragment : Fragment() {
     ): View {
         return ComposeView(requireContext()).apply {
             setContent {
-                TaxDeclarationScreen(viewModel = viewModel)
+                MaterialThemeComposeUI {
+                    TaxDeclaration(viewModel = viewModel)
+                }
             }
         }
     }

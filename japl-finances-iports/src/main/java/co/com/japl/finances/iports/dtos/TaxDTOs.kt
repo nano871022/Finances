@@ -51,3 +51,10 @@ data class PatrimonyAssetDTO(
     val value: BigDecimal,
     val type: String
 )
+
+data class FinancialItemDTO(
+    val name: String,
+    val value: BigDecimal,
+    val date: LocalDate,
+    val type: String
+)
