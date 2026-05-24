@@ -40,6 +40,16 @@ class GetTaxDeclarationUseCaseImplTest {
             TaxBracketConfig(BigDecimal("1090"), BigDecimal("1700"), 0.19, BigDecimal.ZERO)
         )
         `when`(configPort.getTaxBrackets()).thenReturn(brackets)
+        `when`(configPort.getDependentsDeductionMaxUVT()).thenReturn(BigDecimal("384"))
+        `when`(configPort.getDependentsDeductionRate()).thenReturn(BigDecimal("0.10"))
+        `when`(configPort.getPrepaidHealthMaxUVT()).thenReturn(BigDecimal("192"))
+        `when`(configPort.getMortgageInterestMaxUVT()).thenReturn(BigDecimal("1200"))
+        `when`(configPort.getExemptIncomeRate()).thenReturn(BigDecimal("0.25"))
+        `when`(configPort.getExemptIncomeMaxUVT()).thenReturn(BigDecimal("948"))
+        `when`(configPort.getLimit40PercentRate()).thenReturn(BigDecimal("0.40"))
+        `when`(configPort.getLimitFlatUVT()).thenReturn(BigDecimal("1340"))
+        `when`(configPort.getNextYearAdvanceRate()).thenReturn(BigDecimal("0.75"))
+        `when`(configPort.getRoundingFactor()).thenReturn(BigDecimal("1000"))
 
         val grossIncome = uvt.multiply(BigDecimal("2000"))
 

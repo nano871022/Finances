@@ -13,6 +13,21 @@ interface TaxConfigurationPort {
     fun getWealthThresholdUVT(): BigDecimal
     fun getAlphaSmoothingFactor(): Double
     fun getTaxBrackets(): List<TaxBracketConfig>
+    fun getDependentsDeductionMaxUVT(): BigDecimal
+    fun getDependentsDeductionRate(): BigDecimal
+    fun getPrepaidHealthMaxUVT(): BigDecimal
+    fun getMortgageInterestMaxUVT(): BigDecimal
+    fun getExemptIncomeRate(): BigDecimal
+    fun getExemptIncomeMaxUVT(): BigDecimal
+    fun getLimit40PercentRate(): BigDecimal
+    fun getLimitFlatUVT(): BigDecimal
+    fun getNextYearAdvanceRate(): BigDecimal
+    fun getRoundingFactor(): BigDecimal
+    fun getWithholdingKeyword(): String
+    fun getHealthKeyword(): String
+    fun getPensionKeyword(): String
+    fun getPrepaidKeyword(): String
+    fun getMortgageKeyword(): String
 }
 
 data class TaxBracketConfig(

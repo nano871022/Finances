@@ -21,6 +21,7 @@ import co.com.japl.module.dian.controllers.TaxDeclarationViewModel
 import co.com.japl.finances.iports.dtos.FinancialItemDTO
 import co.com.japl.finances.iports.dtos.dian.Form210DTO
 import co.com.japl.module.declaracion_renta_dian.R
+import co.com.japl.ui.theme.values.Dimensions
 import java.math.BigDecimal
 
 @Composable
@@ -47,7 +48,7 @@ fun TaxDeclaration(viewModel: TaxDeclarationViewModel) {
                     ObligationBanner(decl.obligationReasons)
                 }
 
-                LazyColumn(modifier = Modifier.weight(1f).padding(horizontal = 16.dp)) {
+                LazyColumn(modifier = Modifier.weight(1f).padding(horizontal = Dimensions.PADDING_STANDARD)) {
                     item { SectionHeader(stringResource(R.string.section_patrimony)) }
                     item {
                         TaxLineItem("29", stringResource(R.string.gross_patrimony), decl.grossPatrimony, decl.assetDetails, showCalculatedOnly)
@@ -107,10 +108,10 @@ fun TaxDeclaration(viewModel: TaxDeclarationViewModel) {
 @Composable
 fun ObligationBanner(reasons: List<String>) {
     Card(
-        modifier = Modifier.fillMaxWidth().padding(16.dp),
+        modifier = Modifier.fillMaxWidth().padding(Dimensions.PADDING_STANDARD),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.errorContainer)
     ) {
-        Column(modifier = Modifier.padding(16.dp)) {
+        Column(modifier = Modifier.padding(Dimensions.PADDING_STANDARD)) {
             Text(stringResource(R.string.obligated_to_file), style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.onErrorContainer)
             reasons.forEach { reason ->
                 Text("• $reason", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onErrorContainer)
@@ -125,7 +126,7 @@ fun SectionHeader(title: String) {
         text = title,
         style = MaterialTheme.typography.titleSmall,
         color = MaterialTheme.colorScheme.primary,
-        modifier = Modifier.padding(vertical = 8.dp)
+        modifier = Modifier.padding(vertical = Dimensions.PADDING_VIEW_SPACE)
     )
 }
 
@@ -143,15 +144,15 @@ fun TaxLineItem(
 
     var expanded by remember { mutableStateOf(false) }
 
-    Column(modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp)) {
+    Column(modifier = Modifier.fillMaxWidth().padding(vertical = Dimensions.PADDING_SHORT)) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
                 .clickable(enabled = details.isNotEmpty()) { expanded = !expanded }
-                .padding(vertical = 4.dp),
+                .padding(vertical = Dimensions.PADDING_SHORT),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(text = line, modifier = Modifier.width(30.dp), style = MaterialTheme.typography.bodySmall)
+            Text(text = line, modifier = Modifier.width(Dimensions.TAX_LINE_NUMBER_WIDTH), style = MaterialTheme.typography.bodySmall)
             Text(
                 text = label,
                 modifier = Modifier.weight(1f),
@@ -166,20 +167,20 @@ fun TaxLineItem(
             if (details.isNotEmpty()) {
                 Icon(if (expanded) Icons.Default.ExpandLess else Icons.Default.ExpandMore, contentDescription = null)
             } else {
-                Spacer(modifier = Modifier.width(24.dp))
+                Spacer(modifier = Modifier.width(Dimensions.ICON_SIZE_MEDIUM))
             }
         }
 
         AnimatedVisibility(visible = expanded) {
-            Column(modifier = Modifier.padding(start = 30.dp, end = 24.dp, bottom = 8.dp)) {
+            Column(modifier = Modifier.padding(start = Dimensions.TAX_LINE_NUMBER_WIDTH, end = Dimensions.ICON_SIZE_MEDIUM, bottom = Dimensions.PADDING_VIEW_SPACE)) {
                 details.forEach { item ->
-                    Row(modifier = Modifier.fillMaxWidth().padding(vertical = 2.dp)) {
+                    Row(modifier = Modifier.fillMaxWidth().padding(vertical = Dimensions.PADDING_SHORT)) {
                         Text(item.name, modifier = Modifier.weight(1f), style = MaterialTheme.typography.labelSmall)
                         Text(NumbersUtil.COPtoString(item.value), style = MaterialTheme.typography.labelSmall)
                     }
                 }
             }
         }
-        HorizontalDivider(thickness = 0.5.dp, color = MaterialTheme.colorScheme.outlineVariant)
+        HorizontalDivider(thickness = Dimensions.DIVIDER_THICKNESS, color = MaterialTheme.colorScheme.outlineVariant)
     }
 }

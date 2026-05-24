@@ -13,4 +13,7 @@ object  Dimensions {
      val ICON_SIZE_MEDIUM = 24.dp
 
      val PADDING_TOP_MORE_VERT = 15.dp
+     val TAX_LINE_NUMBER_WIDTH = 30.dp
+     val PADDING_STANDARD = 16.dp
+     val DIVIDER_THICKNESS = 0.5.dp
 }

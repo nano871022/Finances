@@ -5,6 +5,7 @@ import co.com.japl.finances.iports.inbounds.dian.IGetTaxDeclarationUseCase
 import co.com.japl.finances.iports.dtos.FinancialItemDTO
 import co.com.japl.finances.iports.outbounds.ExternalFinancialDataPort
 import co.com.japl.finances.iports.outbounds.TaxConfigurationPort
+import co.com.japl.finances.iports.enums.dian.FinancialItemType
 import java.math.BigDecimal
 import java.math.RoundingMode
 import java.time.LocalDate
@@ -32,28 +33,29 @@ class GetTaxDeclarationUseCaseImpl @Inject constructor(
 
         val grossIncome = incomeDetails.sumOf { it.value }
 
-        val nonConstitutiveIncome = deductionDetails.filter { it.type == "HEALTH_MANDATORY" || it.type == "PENSION_MANDATORY" }
+        val nonConstitutiveIncome = deductionDetails.filter { it.type == FinancialItemType.HEALTH_MANDATORY.value || it.type == FinancialItemType.PENSION_MANDATORY.value }
             .sumOf { it.value }
 
         val netIncomeLine35 = grossIncome.subtract(nonConstitutiveIncome)
 
-        val dependentsDeduction = grossIncome.multiply(BigDecimal("0.10"))
-            .coerceAtMost(BigDecimal("384").multiply(uvt))
+        val dependentsDeduction = grossIncome.multiply(configPort.getDependentsDeductionRate())
+            .coerceAtMost(configPort.getDependentsDeductionMaxUVT().multiply(uvt))
 
-        val prepaidHealth = deductionDetails.filter { it.type == "PREPAID_HEALTH" }.sumOf { it.value }
-            .coerceAtMost(BigDecimal("192").multiply(uvt))
+        val prepaidHealth = deductionDetails.filter { it.type == FinancialItemType.PREPAID_HEALTH.value }.sumOf { it.value }
+            .coerceAtMost(configPort.getPrepaidHealthMaxUVT().multiply(uvt))
 
-        val mortgageInterest = deductionDetails.filter { it.type == "MORTGAGE_INTEREST" }.sumOf { it.value }
-            .coerceAtMost(BigDecimal("1200").multiply(uvt))
+        val mortgageInterest = deductionDetails.filter { it.type == FinancialItemType.MORTGAGE_INTEREST.value }.sumOf { it.value }
+            .coerceAtMost(configPort.getMortgageInterestMaxUVT().multiply(uvt))
 
         val totalDeductionsLine38 = dependentsDeduction.add(prepaidHealth).add(mortgageInterest)
 
-        val exemptIncome25Line36 = netIncomeLine35.subtract(totalDeductionsLine38).multiply(BigDecimal("0.25"))
-            .coerceAtMost(BigDecimal("948").multiply(uvt))
+        val exemptIncome25Line36 = netIncomeLine35.subtract(totalDeductionsLine38)
+            .multiply(configPort.getExemptIncomeRate())
+            .coerceAtMost(configPort.getExemptIncomeMaxUVT().multiply(uvt))
 
         val totalExemptionsAndDeductions = totalDeductionsLine38.add(exemptIncome25Line36)
-        val limit40Percent = netIncomeLine35.multiply(BigDecimal("0.40"))
-        val limitFlat = BigDecimal("1340").multiply(uvt)
+        val limit40Percent = netIncomeLine35.multiply(configPort.getLimit40PercentRate())
+        val limitFlat = configPort.getLimitFlatUVT().multiply(uvt)
 
         val limitedExemptionsAndDeductionsLine40 = totalExemptionsAndDeductions
             .coerceAtMost(limit40Percent)
@@ -67,7 +69,8 @@ class GetTaxDeclarationUseCaseImpl @Inject constructor(
         val previousYearAdvanceLine132 = BigDecimal.ZERO
         val withholdingsLine133 = withholdingDetails.sumOf { it.value }
 
-        val nextYearAdvanceLine134 = taxOnTaxableBaseLine117.multiply(BigDecimal("0.75")).subtract(withholdingsLine133)
+        val nextYearAdvanceLine134 = taxOnTaxableBaseLine117.multiply(configPort.getNextYearAdvanceRate())
+            .subtract(withholdingsLine133)
             .coerceAtLeast(BigDecimal.ZERO)
 
         val totalBalance = taxOnTaxableBaseLine117.subtract(previousYearAdvanceLine132).subtract(withholdingsLine133).add(nextYearAdvanceLine134)
@@ -112,12 +115,13 @@ class GetTaxDeclarationUseCaseImpl @Inject constructor(
     private fun calculateProgressiveTax(baseCOP: BigDecimal, uvt: BigDecimal): BigDecimal {
         val baseUVT = baseCOP.divide(uvt, 2, RoundingMode.HALF_UP)
         val brackets = configPort.getTaxBrackets()
+        val roundingFactor = configPort.getRoundingFactor()
 
         for (bracket in brackets) {
             if (baseUVT > bracket.minLimitUvt && (bracket.maxLimitUvt == null || baseUVT <= bracket.maxLimitUvt)) {
                 val taxUVT = baseUVT.subtract(bracket.minLimitUvt).multiply(BigDecimal.valueOf(bracket.marginalRate)).add(bracket.baseOffsetUvt)
 
-                return taxUVT.multiply(uvt).divide(BigDecimal("1000"), 0, RoundingMode.HALF_UP).multiply(BigDecimal("1000"))
+                return taxUVT.multiply(uvt).divide(roundingFactor, 0, RoundingMode.HALF_UP).multiply(roundingFactor)
             }
         }
         return BigDecimal.ZERO

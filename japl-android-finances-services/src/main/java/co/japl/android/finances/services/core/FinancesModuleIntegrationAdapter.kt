@@ -2,6 +2,8 @@ package co.japl.android.finances.services.core
 
 import co.com.japl.finances.iports.outbounds.ExternalFinancialDataPort
 import co.com.japl.finances.iports.dtos.FinancialItemDTO
+import co.com.japl.finances.iports.enums.dian.FinancialItemType
+import co.com.japl.finances.iports.outbounds.TaxConfigurationPort
 import co.japl.android.finances.services.dao.interfaces.IPaidDAO
 import co.japl.android.finances.services.dao.interfaces.IQuoteCreditCardDAO
 import co.japl.android.finances.services.dao.interfaces.ICreditDAO
@@ -24,7 +26,8 @@ class FinancesModuleIntegrationAdapter @Inject constructor(
     private val inputDAO: IInputDAO,
     private val creditCardSvc: ICreditCardSvc,
     private val patrimonyDAO: IPatrimonyDAO,
-    private val accountDAO: IAccountDAO
+    private val accountDAO: IAccountDAO,
+    private val configPort: TaxConfigurationPort
 ) : ExternalFinancialDataPort {
 
     override suspend fun getIncomeYTD(year: Int): BigDecimal {
@@ -155,7 +158,7 @@ class FinancesModuleIntegrationAdapter @Inject constructor(
                         name = input.name,
                         value = input.value.multiply(BigDecimal.valueOf(months.toLong())),
                         date = start,
-                        type = "INCOME"
+                        type = FinancialItemType.INCOME.value
                     ))
                 }
             }
@@ -166,13 +169,25 @@ class FinancesModuleIntegrationAdapter @Inject constructor(
     override suspend fun getDeductionDetails(year: Int): List<FinancialItemDTO> {
         val paids = paidDAO.getAll()
         val details = mutableListOf<FinancialItemDTO>()
+        val healthKw = configPort.getHealthKeyword()
+        val pensionKw = configPort.getPensionKeyword()
+        val prepaidKw = configPort.getPrepaidKeyword()
+        val mortgageKw = configPort.getMortgageKeyword()
+
         paids.forEach { paid ->
              if (paid.date.year == year) {
+                 val type = when {
+                     paid.name.contains(healthKw, true) -> FinancialItemType.HEALTH_MANDATORY.value
+                     paid.name.contains(pensionKw, true) -> FinancialItemType.PENSION_MANDATORY.value
+                     paid.name.contains(prepaidKw, true) -> FinancialItemType.PREPAID_HEALTH.value
+                     paid.name.contains(mortgageKw, true) -> FinancialItemType.MORTGAGE_INTEREST.value
+                     else -> FinancialItemType.DEDUCTION.value
+                 }
                  details.add(FinancialItemDTO(
                      name = paid.name,
                      value = paid.value,
                      date = paid.date,
-                     type = "DEDUCTION"
+                     type = type
                  ))
              }
         }
@@ -180,14 +195,15 @@ class FinancesModuleIntegrationAdapter @Inject constructor(
     }
 
     override suspend fun getWithholdingDetails(year: Int): List<FinancialItemDTO> {
-        return paidDAO.getAll().filter { it.date.year == year && it.name.contains("Retención", ignoreCase = true) }
-            .map { FinancialItemDTO(it.name, it.value, it.date, "WITHHOLDING") }
+        val withholdingKw = configPort.getWithholdingKeyword()
+        return paidDAO.getAll().filter { it.date.year == year && it.name.contains(withholdingKw, ignoreCase = true) }
+            .map { FinancialItemDTO(it.name, it.value, it.date, FinancialItemType.WITHHOLDING.value) }
     }
 
     override suspend fun getAssetsAt(date: LocalDate): List<FinancialItemDTO> {
         val assets = mutableListOf<FinancialItemDTO>()
         accountDAO.getAll().forEach { account ->
-             assets.add(FinancialItemDTO(account.name, BigDecimal.ZERO, date, "ACCOUNT"))
+             assets.add(FinancialItemDTO(account.name, BigDecimal.ZERO, date, FinancialItemType.ACCOUNT.value))
         }
         patrimonyDAO.getAll().forEach { asset ->
              assets.add(FinancialItemDTO(asset.name, asset.value, date, asset.type))
@@ -200,12 +216,12 @@ class FinancesModuleIntegrationAdapter @Inject constructor(
         creditDAO.getAll().forEach { credit ->
             val pending = creditDAO.getPendingToPayAll(date)
             if (pending > BigDecimal.ZERO) {
-                liabilities.add(FinancialItemDTO("Credit: ${credit.name}", pending, date, "CREDIT"))
+                liabilities.add(FinancialItemDTO("Credit: ${credit.name}", pending, date, FinancialItemType.CREDIT.value))
             }
         }
         val ccDebt = getCreditCardDebt(date)
         if (ccDebt > BigDecimal.ZERO) {
-            liabilities.add(FinancialItemDTO("Credit Cards Total", ccDebt, date, "CREDIT_CARD"))
+            liabilities.add(FinancialItemDTO("Credit Cards Total", ccDebt, date, FinancialItemType.CREDIT_CARD.value))
         }
         return liabilities
     }
