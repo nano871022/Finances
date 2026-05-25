@@ -1,5 +1,6 @@
 package co.japl.finances.core.usercases.implement.dian
 
+import android.content.Context
 import co.com.japl.finances.iports.dtos.FinancialItemDTO
 import co.com.japl.finances.iports.outbounds.ExternalFinancialDataPort
 import co.com.japl.finances.iports.outbounds.TaxBracketConfig
@@ -10,11 +11,15 @@ import org.junit.Before
 import org.junit.Test
 import org.mockito.Mock
 import org.mockito.Mockito.`when`
+import org.mockito.Mockito.anyInt
 import org.mockito.MockitoAnnotations
 import java.math.BigDecimal
 import java.time.LocalDate
 
 class GetTaxDeclarationUseCaseImplTest {
+
+    @Mock
+    private lateinit var context: Context
 
     @Mock
     private lateinit var configPort: TaxConfigurationPort
@@ -27,7 +32,7 @@ class GetTaxDeclarationUseCaseImplTest {
     @Before
     fun setUp() {
         MockitoAnnotations.openMocks(this)
-        useCase = GetTaxDeclarationUseCaseImpl(configPort, financialDataPort)
+        useCase = GetTaxDeclarationUseCaseImpl(context, configPort, financialDataPort)
     }
 
     @Test
@@ -64,6 +69,9 @@ class GetTaxDeclarationUseCaseImplTest {
         `when`(configPort.getWealthThresholdUVT()).thenReturn(BigDecimal("4500"))
         `when`(configPort.getIncomeThresholdUVT()).thenReturn(BigDecimal("1400"))
         `when`(configPort.getConsumptionThresholdUVT()).thenReturn(BigDecimal("1400"))
+        `when`(configPort.getPatrimonyThresholdUVT()).thenReturn(BigDecimal("4500"))
+
+        `when`(context.getString(anyInt())).thenReturn("Mock String")
 
         val result = useCase.getTaxDeclaration(2024)
 
