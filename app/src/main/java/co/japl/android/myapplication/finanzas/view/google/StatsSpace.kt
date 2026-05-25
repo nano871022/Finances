@@ -24,11 +24,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import co.com.japl.ui.components.AlertDialogOkCancel
 import co.com.japl.ui.theme.MaterialThemeComposeUI
+import co.com.japl.ui.theme.values.Dimensions
 import co.japl.android.myapplication.R
 import co.japl.android.myapplication.utils.NumbersUtil
 import kotlinx.coroutines.CoroutineScope
@@ -59,76 +61,82 @@ fun StatsSpace(viewModel: GoogleAuthBackupRestoreViewModel) {
     ) {
         if (isProcessing) {
             LinearProgressIndicator(modifier = Modifier.fillMaxWidth().padding(bottom = 16.dp))
-        }
+            Text(
+                text=stringResource(R.string.loading_data),
+                textAlign = TextAlign.Center,
+                color = MaterialTheme.colorScheme.onBackground,
+                modifier=Modifier.fillMaxWidth().padding(Dimensions.PADDING_TOP))
+        } else {
 
-        // Status Overview Section (Bento Style)
-        CloudSyncStatusCard(isLogged, email.value,spaceUsed.value,spaceMax.value)
+            // Status Overview Section (Bento Style)
+            CloudSyncStatusCard(isLogged, email.value, spaceUsed.value, spaceMax.value)
 
-        if(isLogged) {
-            Spacer(modifier = Modifier.height(16.dp))
+            if (isLogged) {
+                Spacer(modifier = Modifier.height(16.dp))
 
-            LastBackupCard(lastBackup.value, spaceDBKb.value)
-        }
-        if(isLogged) {
-        Spacer(modifier = Modifier.height(24.dp))
-
-        // Main Actions Section
-        Text(
-            stringResource(R.string.data_operations),
-            style = MaterialTheme.typography.labelSmall,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-            letterSpacing = 1.5.sp,
-            fontWeight = FontWeight.Bold
-        )
-
-
-            Spacer(modifier = Modifier.height(12.dp))
-
-            DataOperationCard(
-                title = stringResource(id = R.string.backup),
-                description = stringResource(id = R.string.backup_description),
-                icon = Icons.Rounded.CloudUpload,
-                iconContainerColor = MaterialTheme.colorScheme.primary,
-                iconContentColor = MaterialTheme.colorScheme.onSurface,
-                onClick = {
-                   statusBackupDialog.value = true
-                }
-            )
-        }
-
-        if(isLogged) {
-            Spacer(modifier = Modifier.height(16.dp))
-
-            DataOperationCard(
-                title = stringResource(id = R.string.restore),
-                description = stringResource(id = R.string.restore_description),
-                icon = Icons.Rounded.CloudDownload,
-                iconContainerColor = MaterialTheme.colorScheme.primary,
-                iconContentColor = MaterialTheme.colorScheme.onSecondaryContainer,
-                onClick = {
-                   statusRestoreDialog.value = true
-                }
-            )
-        }
-
-        Spacer(modifier = Modifier.height(24.dp))
-
-        Spacer(modifier = Modifier.height(32.dp))
-    }
-
-    AlertRestore(
-        status = statusRestoreDialog,
-        action= {
-            viewModel.restore()
-        })
-
-    AlertBackup(
-        status = statusBackupDialog,
-        action= {
-            CoroutineScope(Dispatchers.IO).launch {
-                viewModel.backup()
+                LastBackupCard(lastBackup.value, spaceDBKb.value)
             }
-        })
+            if (isLogged) {
+                Spacer(modifier = Modifier.height(24.dp))
+
+                // Main Actions Section
+                Text(
+                    stringResource(R.string.data_operations),
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    letterSpacing = 1.5.sp,
+                    fontWeight = FontWeight.Bold
+                )
+
+
+                Spacer(modifier = Modifier.height(12.dp))
+
+                DataOperationCard(
+                    title = stringResource(id = R.string.backup),
+                    description = stringResource(id = R.string.backup_description),
+                    icon = Icons.Rounded.CloudUpload,
+                    iconContainerColor = MaterialTheme.colorScheme.primary,
+                    iconContentColor = MaterialTheme.colorScheme.onSurface,
+                    onClick = {
+                        statusBackupDialog.value = true
+                    }
+                )
+            }
+
+            if (isLogged) {
+                Spacer(modifier = Modifier.height(16.dp))
+
+                DataOperationCard(
+                    title = stringResource(id = R.string.restore),
+                    description = stringResource(id = R.string.restore_description),
+                    icon = Icons.Rounded.CloudDownload,
+                    iconContainerColor = MaterialTheme.colorScheme.primary,
+                    iconContentColor = MaterialTheme.colorScheme.onSecondaryContainer,
+                    onClick = {
+                        statusRestoreDialog.value = true
+                    }
+                )
+            }
+
+            Spacer(modifier = Modifier.height(24.dp))
+
+            Spacer(modifier = Modifier.height(32.dp))
+        }
+
+        AlertRestore(
+            status = statusRestoreDialog,
+            action = {
+                viewModel.restore()
+            })
+
+        AlertBackup(
+            status = statusBackupDialog,
+            action = {
+                CoroutineScope(Dispatchers.IO).launch {
+                    viewModel.backup()
+                }
+            })
+    }
 }
 
 @Composable

@@ -40,11 +40,12 @@ fun GoogleAuthBackupRestore(viewModel:GoogleAuthBackupRestoreViewModel) {
 fun Body(viewModel:GoogleAuthBackupRestoreViewModel){
     val selectedTabIndex = remember { viewModel.tabIndex }
     val isProcessing = remember { viewModel.isProcessing }
+    val isLogged = remember { viewModel.isLogged }
 
     Scaffold(
         bottomBar = {
 
-                BottomNav(isProcessing,selectedTabIndex)
+                BottomNav(isProcessing,isLogged,selectedTabIndex)
 
         }
     ) { paddingValues ->
@@ -53,40 +54,46 @@ fun Body(viewModel:GoogleAuthBackupRestoreViewModel){
             .padding(paddingValues)
             .padding(top= 0.dp)
             .background(MaterialTheme.colorScheme.background)) {
-
-            when (selectedTabIndex.value) {
-                0 -> LoginSpace(viewModel)
-                1 -> StatsSpace(viewModel)
-                2 -> DataTables(viewModel)
-            }
+                when (selectedTabIndex.value) {
+                    0 -> LoginSpace(viewModel)
+                    1 -> StatsSpace(viewModel)
+                    2 -> DataTables(viewModel)
+                }
         }
     }
 }
 
 @Composable
-fun BottomNav(isProcessing: MutableState<Boolean>, selectedTabIndex: MutableIntState) {
+fun BottomNav(isProcessing: MutableState<Boolean>,isLogged: MutableState<Boolean>, selectedTabIndex: MutableIntState) {
     if(isProcessing.value.not()) {
         NavigationBar(
             containerColor = MaterialTheme.colorScheme.surfaceContainer,
             tonalElevation = 8.dp
         ) {
-            NavigationBarItem(
-                selected = selectedTabIndex.value == 1,
-                onClick = { selectedTabIndex.value = 1 },
-                icon = { Icon(Icons.Rounded.CloudSync, contentDescription = "Sync") },
-                label = { Text("Sync") }
-            )
+            if(isLogged.value) {
+                NavigationBarItem(
+                    selected = selectedTabIndex.value == 1,
+                    onClick = { selectedTabIndex.value = 1 },
+                    icon = {
+                        Icon(
+                            Icons.Rounded.CloudSync,
+                            contentDescription = stringResource(R.string.sync)
+                        )
+                    },
+                    label = { Text(stringResource(R.string.sync)) }
+                )
+            }
             NavigationBarItem(
                 selected = false,
                 onClick = { selectedTabIndex.value = 2 },
-                icon = { Icon(Icons.Rounded.Storage, contentDescription = "Database") },
-                label = { Text("Database") }
+                icon = { Icon(Icons.Rounded.Storage, contentDescription = stringResource(R.string.database)) },
+                label = { Text(stringResource(R.string.database)) }
             )
             NavigationBarItem(
                 selected = selectedTabIndex.value == 0,
                 onClick = { selectedTabIndex.value = 0 },
-                icon = { Icon(Icons.Rounded.Person, contentDescription = "Profile") },
-                label = { Text("Profile") }
+                icon = { Icon(Icons.Rounded.Person, contentDescription = stringResource(R.string.profile)) },
+                label = { Text(stringResource(R.string.profile)) }
             )
         }
     }

@@ -10,6 +10,7 @@ import co.japl.android.finances.services.mapping.PaidMap
 abstract class DBRestore {
 
     fun onRestore(currentDB: SQLiteDatabase?, fromRestoreDB: SQLiteDatabase?,nameConnect:String,nameTable:String,contentValues:(Cursor)->ContentValues){
+        var count = 0
         Log.i(this.javaClass.name,"<<<=== $nameConnect#onRestore - Start")
         currentDB?.execSQL("DELETE FROM $nameTable ")
         fromRestoreDB?.query(
@@ -25,7 +26,8 @@ abstract class DBRestore {
                 val contentValues = contentValues.invoke(it)
                 currentDB?.insert(nameTable,null,contentValues)
             }
+            count = it.count
         }
-        Log.i(this.javaClass.name,"<<<=== $nameConnect#onRestore - END")
+        Log.i(this.javaClass.name,"<<<=== $nameConnect#onRestore ${count} - END")
     }
 }
