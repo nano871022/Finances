@@ -34,18 +34,6 @@ import co.com.japl.finances.iports.inbounds.paid.IProjectionListPort
 import co.com.japl.finances.iports.inbounds.paid.IProjectionsPort
 import co.com.japl.finances.iports.inbounds.paid.ISMSPaidPort
 import co.com.japl.finances.iports.inbounds.paid.ISmsPort
-import co.japl.android.myapplication.bussiness.impl.TaxImpl
-import co.japl.android.myapplication.bussiness.interfaces.ITaxSvc
-import co.japl.android.myapplication.finanzas.bussiness.impl.AddAmortizationImpl
-import co.japl.android.myapplication.finanzas.bussiness.impl.AdditionalCreditImpl
-import co.japl.android.myapplication.finanzas.bussiness.impl.CreditFixImpl
-import co.japl.android.myapplication.finanzas.bussiness.impl.GracePeriodImpl
-import co.japl.android.myapplication.finanzas.bussiness.impl.KindOfTaxImpl
-import co.japl.android.myapplication.finanzas.bussiness.interfaces.IAddAmortizationSvc
-import co.japl.android.myapplication.finanzas.bussiness.interfaces.IAdditionalCreditSvc
-import co.japl.android.myapplication.finanzas.bussiness.interfaces.ICreditFix
-import co.japl.android.myapplication.finanzas.bussiness.interfaces.IGracePeriod
-import co.japl.android.myapplication.finanzas.bussiness.interfaces.IKindOfTaxSvc
 import co.com.japl.finances.iports.inbounds.recap.IRecapPort
 import co.com.japl.finances.iports.outbounds.ExternalFinancialDataPort
 import co.com.japl.finances.iports.outbounds.IExtraValueAmortizationPort
@@ -136,26 +124,10 @@ import dagger.hilt.components.SingletonComponent
 @InstallIn(SingletonComponent::class)
 abstract class AbstractModule {
 
-    @Binds
-    abstract fun bindICreditFixService(implement: CreditFixImpl): ICreditFix
+
 
     @Binds
     abstract fun bindContect(@ApplicationContext context:Context):Context
-
-    @Binds
-    abstract fun binITaxSvc(implement: TaxImpl):ITaxSvc
-
-    @Binds
-    abstract fun bindIAdditionalCreditSvc(implement: AdditionalCreditImpl):IAdditionalCreditSvc
-
-    @Binds
-    abstract fun bindIAddAmortizationSvc(implement: AddAmortizationImpl):IAddAmortizationSvc
-
-    @Binds
-    abstract fun bindIGracePeriodSvc(implement: GracePeriodImpl):IGracePeriod
-
-    @Binds
-    abstract fun bindIKindOfTaxSvc(implement: KindOfTaxImpl): IKindOfTaxSvc
 
     @Binds
     abstract fun bindUserCaseCreditFix(implement: co.japl.finances.core.usercases.implement.common.CreditFixImpl): co.japl.finances.core.usercases.interfaces.common.ICreditFix

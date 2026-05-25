@@ -28,5 +28,12 @@ data class Form210DTO(
     val deductionDetails: List<FinancialItemDTO>,
     val withholdingDetails: List<FinancialItemDTO>,
     val isObligatedToFile: Boolean,
-    val obligationReasons: List<String>
+    val obligationReasons: List<String>,
+    val taxLiqOrd: BigDecimal,
+    val taxExpImp: BigDecimal,
+    val nonConstitutiveCapital: BigDecimal,
+    val taxLiqCapital: BigDecimal,
+    val grossCapital: BigDecimal,
+    val taxLiqGeneral:BigDecimal,
+    val taxLiqCedGen:BigDecimal
 )

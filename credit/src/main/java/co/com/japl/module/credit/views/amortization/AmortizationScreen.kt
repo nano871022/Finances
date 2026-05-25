@@ -11,8 +11,8 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.LinearProgressIndicator
-import androidx.compose.material.Text
+import androidx.compose.material3.LinearProgressIndicator
+import androidx.compose.material3.Text
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
@@ -44,7 +44,13 @@ fun AmortizationScreen(viewModel: AmortizationViewModel) {
     val state by viewModel.state.collectAsState()
 
     if (state.isLoading) {
-        LinearProgressIndicator()
+        Column (modifier = Modifier.fillMaxWidth()){
+            LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
+            Text(text=stringResource(R.string.load_data),
+                color= MaterialTheme.colorScheme.onBackground,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.fillMaxWidth().padding(Dimensions.PADDING_TOP))
+        }
     } else {
         Body(state.amortization)
     }

@@ -2,6 +2,7 @@ package co.com.japl.module.creditcard.controllers.simulator
 
 import android.content.Context
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
@@ -164,20 +165,36 @@ class FormViewModel @Inject constructor(
 
     fun save() = viewModelScope.launch{
         if(isValid() && name.validate()) {
-            simuladorSvc?.save(_simulator.value).takeIf { (it ?: (0.toLong())) > 0.toLong() }
-                ?.let { code ->
-                    _simulator.update {
-                        it.copy(code = code.toInt())
-                    }
-                    snackbar.value
-                        .showSnackbar(
-                            message = context?.getString(R.string.save_success) ?: ""
-                        )
+            if(_simulator.value.code == 0){
+                simuladorSvc?.save(_simulator.value).takeIf { (it ?: (0.toLong())) > 0.toLong() }
+                    ?.let { code ->
+                        _simulator.update {
+                            it.copy(code = code.toInt())
+                        }
+                        Toast.makeText(context,
+                                R.string.save_success,
+                                Toast.LENGTH_LONG
+                            ).show()
 
-                } ?: snackbar.value
-                .showSnackbar(
-                    message = context?.getString(R.string.save_unsuccess) ?: ""
-                )
+                    } ?: {
+                        Toast.makeText(context,
+                        R.string.save_unsuccess,
+                        Toast.LENGTH_LONG
+                        ).show()
+                    }
+            }else{
+                simuladorSvc?.update(_simulator.value,false).takeIf { it == true }
+                    ?.let {
+                        snackbar.value
+                            .showSnackbar(
+                                message = context?.getString(R.string.update_success) ?: ""
+                            )
+
+                    } ?: snackbar.value
+                    .showSnackbar(
+                        message = context?.getString(R.string.update_unsuccess) ?: ""
+                    )
+            }
         }else{
             snackbar.value.showSnackbar("Error los datos no estan completos")
         }

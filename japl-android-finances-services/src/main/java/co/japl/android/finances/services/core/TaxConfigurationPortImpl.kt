@@ -21,6 +21,9 @@ class TaxConfigurationPortImpl @Inject constructor(
     override fun getIncomeThresholdUVT(): BigDecimal =
         properties.getProperty("threshold.income.uvt").toBigDecimal()
 
+    override fun getPatrimonyThresholdUVT(): BigDecimal =
+        properties.getProperty("threshold.patrimony.uvt").toBigDecimal()
+
     override fun getConsumptionThresholdUVT(): BigDecimal =
         properties.getProperty("threshold.consumption.uvt").toBigDecimal()
 

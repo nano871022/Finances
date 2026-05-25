@@ -13,4 +13,11 @@ object Input {
             .build()
         navController.navigate(request)
     }
+
+    fun navigate(codeAccount:Int,codeInput:Int, navController: NavController) {
+        val request = NavDeepLinkRequest.Builder.fromUri(
+            navController.context.getString(R.string.navigate_input_edit, codeAccount,codeInput).toUri())
+            .build()
+        navController.navigate(request)
+    }
 }

@@ -24,6 +24,8 @@ class SimulatorCreditFixImpl @Inject constructor(private val simulator: ISimulat
         require(dto.capitalValue?.toDouble()?:0.0 > 0.0){"Capital Value must be greater than 0"}
         require(dto.interestValue?.toDouble()?:0.0 > 0.0){"Interest Value must be greater than 0"}
         require(dto.code == 0){"Code must be 0"}
+        require(dto.name?.isNotBlank()?:false){"Name must be not blank"}
+        require(!dto.isCreditVariable){"Credit variable must be false"}
         return simulator.save(dto, cache)
     }
 

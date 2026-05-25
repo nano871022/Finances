@@ -1,5 +1,6 @@
 package co.japl.android.finances.services.core
 
+import android.util.Log
 import co.com.japl.finances.iports.outbounds.ExternalFinancialDataPort
 import co.com.japl.finances.iports.dtos.FinancialItemDTO
 import co.com.japl.finances.iports.enums.dian.FinancialItemType
@@ -148,7 +149,7 @@ class FinancesModuleIntegrationAdapter @Inject constructor(
         inputs.forEach { input ->
             val startOfYear = LocalDate.of(year, 1, 1)
             val endOfYear = LocalDate.of(year, 12, 31)
-            val start = if (input.dateStart.isBefore(startOfYear)) startOfYear else input.dateStart
+            val start = if (input.date.isBefore(startOfYear)) startOfYear else input.date
             val end = if (input.dateEnd.isAfter(endOfYear)) endOfYear else input.dateEnd
 
             if (start.isBefore(end) || start.isEqual(end)) {
@@ -238,10 +239,12 @@ class FinancesModuleIntegrationAdapter @Inject constructor(
         }
         var count = 0
         var current = start
+        Log.d(javaClass.name,"Current: $current End: $end Cnt: $count Step: $step")
         while (current.isBefore(end) || current.isEqual(end)) {
             count++
             current = current.plusMonths(step.toLong())
         }
+        Log.d(javaClass.name,"Current: $current End: $end Cnt: $count Step: $step")
         return count
     }
 }

@@ -16,11 +16,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.material.LinearProgressIndicator
-import androidx.compose.material.Text
+import androidx.compose.material3.LinearProgressIndicator
+import androidx.compose.material3.Text
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
@@ -43,7 +44,13 @@ fun  AmortizationTable (viewModel:AmortizationViewModel){
 	val progressState = remember { mutableStateOf(false) } 
 
 	if(progressState.value){
-		LinearProgressIndicator()
+		Column(modifier = Modifier.fillMaxWidth()) {
+			LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
+			Text(text=stringResource(R.string.loading_data),
+				color= MaterialTheme.colorScheme.onBackground,
+				textAlign = TextAlign.Center,
+				modifier = Modifier.fillMaxWidth().padding(Dimensions.PADDING_TOP))
+		}
 	}else{
 		Body(viewModel)
 	}
@@ -110,7 +117,7 @@ private fun HeaderCompact(viewModel:AmortizationViewModel){
 		)
 		FieldView(
 			title = stringResource(R.string.interest),
-			"${viewModel.list.firstOrNull()?.creditRate} % ${viewModel.list.firstOrNull()?.kindRate?.value}",
+			"${NumbersUtil.toString4(viewModel.list.firstOrNull()?.creditRate?:0.0)} % ${viewModel.list.firstOrNull()?.kindRate?.value}",
 			modifier = Modifier
 				.fillMaxWidth()
 				.weight(1f)
@@ -345,8 +352,9 @@ private fun AmortizationDarkVertical(){
 	}
 }
 
+@Composable
 private fun getViewModel(): AmortizationViewModel{
-	return AmortizationViewModel(2).also {
+	return AmortizationViewModel(LocalContext.current,2).also {
 		it.list.add(
 			AmortizationRowDTO(
 				id=1,

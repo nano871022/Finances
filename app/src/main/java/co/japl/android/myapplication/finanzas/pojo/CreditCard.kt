@@ -2,7 +2,6 @@ package co.japl.android.myapplication.pojo
 
 import android.os.Build
 import androidx.annotation.RequiresApi
-import co.japl.android.myapplication.bussiness.DTO.TaxDTO
 import java.math.BigDecimal
 import java.time.LocalDateTime
 import java.util.*

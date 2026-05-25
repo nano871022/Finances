@@ -18,6 +18,7 @@ import androidx.compose.material.icons.rounded.TableChart
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LinearProgressIndicator
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -28,6 +29,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import co.com.japl.finances.iports.enums.KindOfTaxEnum
 import co.com.japl.module.creditcard.R
@@ -48,7 +50,13 @@ fun Simulator(viewModel: FormViewModel){
     val hasProgress = remember { mutableStateOf(false) }
 
     if(hasProgress.value){
-        LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
+        Column(modifier= Modifier.fillMaxWidth()) {
+            LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
+            Text(text=stringResource(R.string.loading_data),
+                color= MaterialTheme.colorScheme.onBackground,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.fillMaxWidth().padding(Dimensions.PADDING_TOP))
+        }
     }else{
         Body(viewModel)
     }
@@ -125,6 +133,7 @@ private fun PopupSave(viewModel: FormViewModel){
 @Composable
 private fun FloatButton(viewModel: FormViewModel){
     val stateCalculation = remember { viewModel.showCalculation }
+    val stateSave = remember {viewModel.statePopUp}
     Column{
         FloatButton  (
             imageVector = Icons.Rounded.CleaningServices,
@@ -152,7 +161,7 @@ private fun FloatButton(viewModel: FormViewModel){
                 imageVector = Icons.Rounded.Save,
                 descriptionIcon = R.string.save,
             ) {
-                viewModel.statePopUp.value = true
+                stateSave.value = true
             }
         }
     }

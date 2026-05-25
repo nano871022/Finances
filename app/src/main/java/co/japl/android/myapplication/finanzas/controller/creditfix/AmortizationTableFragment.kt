@@ -31,9 +31,14 @@ class AmortizationTableFragment : Fragment(){
             owner = this,
             viewModelClass = AmortizationViewModel::class.java,
             build = {
-                val code = arguments?.let{ AmortizationTableParams.download(it)["CREDIT_CODE"] as Long }
+                val code = arguments?.let{
+                    val code = AmortizationTableParams.download(it)["CODE"] as Long
+                    val creditCode = AmortizationTableParams.download(it)["CREDIT_CODE"] as Long
+                    if(code == 0L) creditCode else code
+                }
                 val lastDate = arguments?.let{ AmortizationTableParams.download(it)["LAST_DATE"] as LocalDate }
                 AmortizationViewModel(
+                    context = requireContext(),
                     savedStateHandle=it,
                     code = code?.toInt()!!,
                     lastDate = lastDate?:LocalDate.now(),

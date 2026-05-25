@@ -35,6 +35,7 @@ class ListSave : Fragment() {
             viewModelClass = ListViewModel::class.java,
             build = {
                 ListViewModel(
+                     requireContext(),
                     simulatorVariableSvc,
                     simulatorFixSvc,
                     navController = findNavController())

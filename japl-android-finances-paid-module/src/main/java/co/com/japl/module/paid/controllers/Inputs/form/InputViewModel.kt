@@ -86,7 +86,7 @@ class InputViewModel(private val codeAccount:Int, private val codeInput:Int?, pr
     suspend fun execution(){
         date.value = DateUtils.localDateToStringDate(LocalDate.now())
         kindOfPayment.value = navController.context.getString(MoreOptionsKindPaymentInput.MONTHLY.getName())
-        codeInput?.let {
+        codeInput?.takeIf { it > 0 }?.let {
             inputSvc.getById(codeInput)?.let {
                 _input = it
                 date.value = DateUtils.localDateToStringDate(it.date)

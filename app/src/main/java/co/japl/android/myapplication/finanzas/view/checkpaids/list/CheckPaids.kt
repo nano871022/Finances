@@ -35,7 +35,6 @@ import co.com.japl.ui.theme.values.ModifiersCustom.Weight1f
 import co.japl.android.graphs.utils.NumbersUtil
 import co.japl.android.myapplication.R
 import co.japl.android.myapplication.finanzas.controller.paids.PeriodCheckPaymentViewModel
-import co.japl.android.myapplication.finanzas.pojo.PeriodCheckPaymentsPOJO
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

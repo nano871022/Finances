@@ -8,6 +8,7 @@ import java.time.LocalDate
 interface TaxConfigurationPort {
     fun getUVTValue(year: Int): BigDecimal
     fun getIncomeThresholdUVT(): BigDecimal
+    fun getPatrimonyThresholdUVT(): BigDecimal
     fun getConsumptionThresholdUVT(): BigDecimal
     fun getCreditCardThresholdUVT(): BigDecimal
     fun getWealthThresholdUVT(): BigDecimal

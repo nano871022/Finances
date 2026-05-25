@@ -7,6 +7,7 @@ import co.com.japl.ui.enums.IMoreOptions
 enum class MoreOptionsItemsInput(val i: Int,@StringRes val title: Int) : IMoreOptions {
 
     DELETE(0, R.string.delete_input),
+    EDIT(2,R.string.edit),
     UPDATE_VALUE(1, R.string.update_input_value );
 
     override fun getName(): Int = title

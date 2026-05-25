@@ -33,7 +33,7 @@ class TaxDeclarationViewModel @Inject constructor(
         }
     }
 
-    fun toggleShowCalculatedOnly() {
-        _showCalculatedOnly.value = !_showCalculatedOnly.value
+    fun toggleShowCalculatedOnly(value:Boolean) {
+        _showCalculatedOnly.value = value
     }
 }

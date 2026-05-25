@@ -4,7 +4,6 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ExpandLess
 import androidx.compose.material.icons.filled.ExpandMore
@@ -15,15 +14,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
 import co.japl.android.myapplication.utils.NumbersUtil
 import co.com.japl.module.dian.controllers.TaxDeclarationViewModel
 import co.com.japl.finances.iports.dtos.FinancialItemDTO
-import co.com.japl.finances.iports.dtos.dian.Form210DTO
 import co.com.japl.module.declaracion_renta_dian.R
 import co.com.japl.ui.theme.values.Dimensions
 import java.math.BigDecimal
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TaxDeclaration(viewModel: TaxDeclarationViewModel) {
     val declaration by viewModel.declarationState.collectAsState()
@@ -36,7 +34,7 @@ fun TaxDeclaration(viewModel: TaxDeclarationViewModel) {
                 actions = {
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Text(stringResource(R.string.show_calculated), style = MaterialTheme.typography.bodySmall)
-                        Switch(checked = showCalculatedOnly, onCheckedChange = { viewModel.toggleShowCalculatedOnly() })
+                        Switch(checked = showCalculatedOnly, onCheckedChange = { viewModel.toggleShowCalculatedOnly(it) })
                     }
                 }
             )
@@ -61,31 +59,80 @@ fun TaxDeclaration(viewModel: TaxDeclarationViewModel) {
                     }
 
                     item { SectionHeader(stringResource(R.string.section_income)) }
+
                     item {
                         TaxLineItem("32", stringResource(R.string.gross_income), decl.grossIncome, decl.incomeDetails, showCalculatedOnly)
                     }
                     item {
-                        TaxLineItem("34", stringResource(R.string.non_constitutive_income), decl.nonConstitutiveIncome, emptyList(), showCalculatedOnly)
+                        TaxLineItem("33", stringResource(R.string.non_constitutive_income), decl.nonConstitutiveIncome, emptyList(), showCalculatedOnly)
                     }
                     item {
-                        TaxLineItem("35", stringResource(R.string.net_income), decl.netIncome, emptyList(), showCalculatedOnly, isBold = true)
+                        TaxLineItem("34", stringResource(R.string.net_income), decl.netIncome, emptyList(), showCalculatedOnly, isBold = true)
                     }
                     item {
-                        TaxLineItem("38", stringResource(R.string.deductions), decl.deductions, decl.deductionDetails, showCalculatedOnly)
+                        TaxLineItem("37", stringResource(R.string.tot_tax_exen), decl.exemptIncome25, emptyList(), showCalculatedOnly, isBold=true)
                     }
                     item {
-                        TaxLineItem("36", stringResource(R.string.exempt_income_25), decl.exemptIncome25, emptyList(), showCalculatedOnly)
+                        TaxLineItem("40", stringResource(R.string.tot_deductions_imp), decl.deductions, decl.deductionDetails, showCalculatedOnly, isBold=true)
                     }
                     item {
-                        TaxLineItem("40", stringResource(R.string.limited_exemptions), decl.limitedExemptionsAndDeductions, emptyList(), showCalculatedOnly)
-                    }
-                    item {
-                        TaxLineItem("41", stringResource(R.string.final_net_income), decl.finalNetIncome, emptyList(), showCalculatedOnly, isBold = true)
+                        TaxLineItem("41", stringResource(R.string.limited_exemptions), decl.limitedExemptionsAndDeductions, emptyList(), showCalculatedOnly)
                     }
 
-                    item { SectionHeader(stringResource(R.string.section_settlement)) }
+                    item {
+                        TaxLineItem("42", stringResource(R.string.tax_liq_ord), decl.taxLiqOrd, emptyList(), showCalculatedOnly, isBold = true)
+                    }
+
+                    item {
+                        SectionHeader(stringResource(R.string.section_tax_capital))
+                    }
+
+                    item {
+                        TaxLineItem("58", stringResource(R.string.gross_capital), decl.grossCapital, emptyList(), showCalculatedOnly)
+                    }
+                    item {
+                        TaxLineItem("59", stringResource(R.string.non_constitutive_capital), decl.nonConstitutiveCapital, emptyList(), showCalculatedOnly)
+                    }
+                    item {
+                        TaxLineItem("61", stringResource(R.string.tax_liq), decl.taxLiqCapital, emptyList(), showCalculatedOnly)
+                    }
+
+                    item {
+                        TaxLineItem("70", stringResource(R.string.limited_exemptions), decl.taxLiqCapital, emptyList(), showCalculatedOnly)
+                    }
+
+                    item {
+                        TaxLineItem("72", stringResource(R.string.tax_liq_ord), decl.taxLiqCapital, emptyList(), showCalculatedOnly)
+                    }
+
+
+                    item {
+                        TaxLineItem("91", stringResource(R.string.tax_income_liq), decl.taxLiqGeneral, emptyList(), showCalculatedOnly)
+                    }
+
+                    item {
+                        TaxLineItem("92", stringResource(R.string.tax_income_imp), decl.limitedExemptionsAndDeductions, emptyList(), showCalculatedOnly)
+                    }
+
+                    item {
+                        TaxLineItem("93", stringResource(R.string.tax_income_ord), decl.taxLiqCedGen, emptyList(), showCalculatedOnly)
+                    }
+
+                    item {
+                        TaxLineItem("97", stringResource(R.string.tax_income_grav), decl.taxLiqCedGen, emptyList(), showCalculatedOnly)
+                    }
+
+                    item {
+                            SectionHeader(stringResource(R.string.section_settlement))
+                    }
                     item {
                         TaxLineItem("117", stringResource(R.string.tax_on_income), decl.taxOnTaxableBase, emptyList(), showCalculatedOnly)
+                    }
+                    item {
+                        TaxLineItem("122", stringResource(R.string.tax_on_income_grav), decl.taxOnTaxableBase, emptyList(), showCalculatedOnly, isBold=true)
+                    }
+                    item {
+                        TaxLineItem("127", stringResource(R.string.net_tax_on_income), decl.taxOnTaxableBase, emptyList(), showCalculatedOnly,isBold=true)
                     }
                     item {
                         TaxLineItem("133", stringResource(R.string.withholdings), decl.withholdings, decl.withholdingDetails, showCalculatedOnly)
@@ -94,10 +141,10 @@ fun TaxDeclaration(viewModel: TaxDeclarationViewModel) {
                         TaxLineItem("134", stringResource(R.string.next_year_advance), decl.nextYearAdvance, emptyList(), showCalculatedOnly)
                     }
                     item {
-                        TaxLineItem("136", stringResource(R.string.balance_to_pay), decl.balanceToPay, emptyList(), showCalculatedOnly, isBold = true, color = MaterialTheme.colorScheme.error)
+                        TaxLineItem("137", stringResource(R.string.balance_to_pay), decl.balanceToPay, emptyList(), showCalculatedOnly, isBold = true, color = MaterialTheme.colorScheme.error)
                     }
                     item {
-                        TaxLineItem("137", stringResource(R.string.balance_in_favor), decl.balanceInFavor, emptyList(), showCalculatedOnly, isBold = true, color = Color.Green)
+                        TaxLineItem("138", stringResource(R.string.balance_in_favor), decl.balanceInFavor, emptyList(), showCalculatedOnly, isBold = true, color = Color.Green)
                     }
                 }
             }
@@ -125,7 +172,7 @@ fun SectionHeader(title: String) {
     Text(
         text = title,
         style = MaterialTheme.typography.titleSmall,
-        color = MaterialTheme.colorScheme.primary,
+        color = MaterialTheme.colorScheme.onPrimary,
         modifier = Modifier.padding(vertical = Dimensions.PADDING_VIEW_SPACE)
     )
 }

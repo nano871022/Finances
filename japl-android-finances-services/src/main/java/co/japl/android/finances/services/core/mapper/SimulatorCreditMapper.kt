@@ -4,20 +4,21 @@ import co.com.japl.finances.iports.dtos.SimulatorCreditDTO
 import co.japl.android.finances.services.dto.CalcDTO
 import co.japl.android.finances.services.enums.CalcEnum
 import co.japl.android.finances.services.enums.KindOfTaxEnum
+import java.math.BigDecimal
 
 object SimulatorCreditMapper {
 
     fun mapper(dto: SimulatorCreditDTO): CalcDTO{
         return CalcDTO(
-            dto.name!!,
+            dto.name?:"",
             dto.value,
             dto.tax,
             dto.periods.toLong(),
-            dto.quoteValue!!,
-            if(dto.isCreditVariable){CalcEnum.FIX.name}else{CalcEnum.VARIABLE.name},
+            dto.quoteValue?: BigDecimal.ZERO,
+            if(dto.isCreditVariable){CalcEnum.VARIABLE.name}else{CalcEnum.FIX.name},
             dto.code,
-            dto.interestValue!!,
-            dto.capitalValue!!,
+            dto.interestValue?: BigDecimal.ZERO,
+            dto.capitalValue?: BigDecimal.ZERO,
             KindOfTaxEnum.valueOf(dto.kindOfTax.value).name
         )
     }

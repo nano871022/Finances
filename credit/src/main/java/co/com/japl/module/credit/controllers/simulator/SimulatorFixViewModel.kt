@@ -148,7 +148,6 @@ class SimulatorFixViewModel(
     fun amortization(){
         navigator?.let{
             simuladorSvc?.save(_simulator.value.copy(code=0,name="In simulator"),true)?.let {
-                Log.d("FORM","Amortization:: $it")
                 Simulator.navigate(it.toInt(),navigator)
             }
         }
