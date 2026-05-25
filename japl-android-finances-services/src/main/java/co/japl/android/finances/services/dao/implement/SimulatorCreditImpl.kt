@@ -3,6 +3,7 @@ package co.japl.android.finances.services.dao.implement
 import android.database.sqlite.SQLiteOpenHelper
 import android.os.Build
 import android.provider.BaseColumns
+import android.util.Log
 import androidx.annotation.RequiresApi
 import co.japl.android.finances.services.dto.CalcDB
 import co.japl.android.finances.services.dto.CalcDTO
@@ -33,6 +34,7 @@ class SimulatorCreditImpl @Inject constructor(override var dbConnect: SQLiteOpen
     override fun save(calc: CalcDTO): Long {
         val db = dbConnect.writableDatabase
         val dto = CalcMap().mapping(calc)
+        Log.d(this.javaClass.name,"DTO:: $dto")
         return db?.insert(CalcDB.CalcEntry.TABLE_NAME,null,dto)!!
     }
 
@@ -44,7 +46,9 @@ class SimulatorCreditImpl @Inject constructor(override var dbConnect: SQLiteOpen
             ?.use { cursor ->
                 with(cursor) {
                     while (moveToNext()) {
-                        items.add(CalcMap().mapping(this))
+                        val dto = CalcMap().mapping(this)
+                        items.add(dto)
+                        Log.d(this.javaClass.name," getAll:: $dto")
                     }
                 }
             }

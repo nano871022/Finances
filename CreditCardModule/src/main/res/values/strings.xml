@@ -121,4 +121,7 @@ Messages:
     <string name="loading_data">Cargando Data</string>
     <string name="ai_model">Modelo IA</string>
     <string name="select_ai_model">Seleccionar Modelo IA</string>
+    <string name="update_success">Registro Actualizado</string>
+    <string name="update_unsuccess">No se logro Actualizar</string>
+    <string name="can_not_goto_amortization">No puede ir a la Amortización</string>
 </resources>

@@ -3,6 +3,7 @@ package co.japl.android.finances.services.mapping
 import android.content.ContentValues
 import android.database.Cursor
 import android.os.Build
+import android.util.Log
 import androidx.annotation.RequiresApi
 import co.japl.android.finances.services.dto.CalcDB
 import co.japl.android.finances.services.dto.CalcDTO
@@ -50,7 +51,9 @@ class CalcMap {
             ,id
             ,interestValue
             ,capitalValue
-            ,kindOfTax)
+            ,kindOfTax).also {
+                Log.d(this.javaClass.name,"DTO:: $it")
+        }
     }
 
     @RequiresApi(Build.VERSION_CODES.N)

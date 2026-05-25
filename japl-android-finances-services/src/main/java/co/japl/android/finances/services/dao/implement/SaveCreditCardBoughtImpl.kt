@@ -61,7 +61,7 @@ class SaveCreditCardBoughtImpl @Inject constructor(
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun save(dto: CreditCardBoughtDTO): Long {
-        Log.v(this.javaClass.name, "<<<=== save - Start")
+        Log.d(this.javaClass.name, "<<<=== save - Start")
         if (dto.endDate == LocalDateTime.MAX) {
             dto.endDate = DateUtils.DEFAULT_DATE_TIME
         }
@@ -71,13 +71,13 @@ class SaveCreditCardBoughtImpl @Inject constructor(
             (db?.update(
                 CreditCardBoughtDB.CreditCardBoughtEntry.TABLE_NAME, values, "${BaseColumns._ID}=?",
                 arrayOf(dto.id.toString())
-            )?.toLong() ?: 0).also { Log.v(this.javaClass.name, "<<<=== END:Save $values $it") }
+            )?.toLong() ?: 0).also { Log.d(this.javaClass.name, "<<<=== END:Save $values $it") }
         } else {
             (db?.insert(
                 CreditCardBoughtDB.CreditCardBoughtEntry.TABLE_NAME,
                 null,
                 values
-            )!!).also { Log.v(this.javaClass.name, "<<<=== END:Save $values $it") }
+            )!!).also { Log.d(this.javaClass.name, "<<<=== END:Save $values $it") }
         }
     }
 

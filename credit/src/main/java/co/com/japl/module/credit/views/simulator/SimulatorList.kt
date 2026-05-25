@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.MoreVert
+import androidx.compose.material3.Card
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -18,10 +19,12 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Devices
@@ -36,11 +39,12 @@ import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.com.japl.ui.theme.values.Dimensions
 import co.com.japl.ui.utils.WindowWidthSize
 import co.japl.android.myapplication.utils.NumbersUtil
+import java.math.BigDecimal
 
 @SuppressLint("UnusedBoxWithConstraintsScope")
 @Composable
 fun SimulatorList(viewModel: SimulatorListItemViewModel){
-    if(viewModel.item.isEmpty){
+    if(viewModel.item.value == null){
         return
     }
     BoxWithConstraints {
@@ -51,10 +55,10 @@ fun SimulatorList(viewModel: SimulatorListItemViewModel){
 
 @Composable
 private fun MainBody(viewModel: SimulatorListItemViewModel,size: WindowWidthSize){
-    Surface(
+    Card (
         modifier= Modifier.padding(Dimensions.PADDING_VIEW_SPACE)
     ){
-        Column {
+        Column (modifier = Modifier.padding(Dimensions.PADDING_TOP)){
             Header(viewModel,size)
             BodyHeader(size)
             Body(viewModel,size)
@@ -65,6 +69,7 @@ private fun MainBody(viewModel: SimulatorListItemViewModel,size: WindowWidthSize
 @Composable
 private fun Header(viewModel: SimulatorListItemViewModel,size: WindowWidthSize){
     val stateOptions = remember { mutableStateOf(false) }
+    val item by remember {viewModel.item}
     Row{
         Text(
             text = stringResource(R.string.name),
@@ -72,7 +77,7 @@ private fun Header(viewModel: SimulatorListItemViewModel,size: WindowWidthSize){
             modifier = Modifier.align (Alignment.CenterVertically).weight(0.6f)
         )
         Text(
-            text = "Name of comparetion record",
+            text = item?.name?:"Not Found",
             color = MaterialTheme.colorScheme.onSurface,
             modifier = Modifier.align (Alignment.CenterVertically).weight(2f)
         )
@@ -92,7 +97,7 @@ private fun Header(viewModel: SimulatorListItemViewModel,size: WindowWidthSize){
                 .align (alignment = Alignment.CenterVertically)
         )
         Text(
-            text = NumbersUtil.toString(12.0),
+            text = NumbersUtil.toString(item?.periods?.toLong()?:0L),
             color=MaterialTheme.colorScheme.onSurface,
             modifier = Modifier.weight(1f)
                 .align (alignment = Alignment.CenterVertically)
@@ -104,15 +109,18 @@ private fun Header(viewModel: SimulatorListItemViewModel,size: WindowWidthSize){
                 .align (alignment = Alignment.CenterVertically)
         )
         Text(
-            text = NumbersUtil.toString(25.5),
+            text = NumbersUtil.toString(item?.interestValue?: BigDecimal.ZERO),
             color=MaterialTheme.colorScheme.onSurface,
             textAlign = TextAlign.Right,
             modifier = Modifier.weight(1f)
                 .align (alignment = Alignment.CenterVertically)
                 .padding(end=Dimensions.PADDING_SHORT)
         )
+        val kindOf = item?.kindOfTax?.value?.let{
+            it
+        }?:KindOfTaxEnum.ANUAL_EFFECTIVE.value
         Text(
-            text = KindOfTaxEnum.MONTHLY_EFFECTIVE.value,
+            text = kindOf,
             color=MaterialTheme.colorScheme.onSurface,
             modifier = Modifier.weight(1f)
                 .align (alignment = Alignment.CenterVertically)
@@ -128,7 +136,7 @@ private fun Header(viewModel: SimulatorListItemViewModel,size: WindowWidthSize){
                     .align(alignment = Alignment.CenterVertically)
             )
             Text(
-                text = NumbersUtil.COPtoString(1200000.toDouble()),
+                text = NumbersUtil.COPtoString(item?.value?: BigDecimal.ZERO),
                 color = MaterialTheme.colorScheme.onSurface,
                 modifier = Modifier.weight(1f)
                     .align(alignment = Alignment.CenterVertically)
@@ -140,6 +148,7 @@ private fun Header(viewModel: SimulatorListItemViewModel,size: WindowWidthSize){
 
 @Composable
 private fun Options(viewModel: SimulatorListItemViewModel,state: MutableState<Boolean>){
+    val item by remember {viewModel.item}
     if(state.value) {
         val amortizationTitle = stringResource(R.string.amortization)
         val list = remember { mutableListOf<Pair<Int, String>>(
@@ -151,7 +160,7 @@ private fun Options(viewModel: SimulatorListItemViewModel,state: MutableState<Bo
             onClick = { (code, _) ->
                 state.value = false
                 when(code){
-                    1 -> viewModel.gotoAmortization(viewModel.item.get())
+                    1 -> viewModel.gotoAmortization(item!!)
                 }
 
             }
@@ -198,10 +207,11 @@ private fun BodyHeader(size: WindowWidthSize){
 
 @Composable
 private fun Body(viewModel: SimulatorListItemViewModel,size: WindowWidthSize){
+    val item by remember {viewModel.item}
     Row {
         if(size != WindowWidthSize.COMPACT) {
             Text(
-                text = NumbersUtil.COPtoString(viewModel.item.get().value),
+                text = NumbersUtil.COPtoString(item?.value?: BigDecimal.ZERO),
                 color = MaterialTheme.colorScheme.onSurface,
                 textAlign = TextAlign.Right,
                 modifier = Modifier.weight(1f)
@@ -209,21 +219,21 @@ private fun Body(viewModel: SimulatorListItemViewModel,size: WindowWidthSize){
             )
         }
         Text(
-            text = NumbersUtil.COPtoString(viewModel.item.get().quoteValue?.toDouble()?:0.0),
+            text = NumbersUtil.COPtoString(item?.quoteValue?.toDouble()?:0.0),
             color = MaterialTheme.colorScheme.onSurface,
             textAlign = TextAlign.Right,
             modifier = Modifier.weight(1f)
                 .align(alignment = Alignment.CenterVertically)
         )
         Text(
-            text = NumbersUtil.COPtoString(viewModel.item.get().capitalValue?.toDouble()?:0.0),
+            text = NumbersUtil.COPtoString(item?.capitalValue?.toDouble()?:0.0),
             color = MaterialTheme.colorScheme.onSurface,
             textAlign = TextAlign.Right,
             modifier = Modifier.weight(1f)
                 .align(alignment = Alignment.CenterVertically)
         )
         Text(
-            text = NumbersUtil.COPtoString(viewModel.item.get().interestValue?.toDouble()?:0.0),
+            text = NumbersUtil.COPtoString(item?.interestValue?.toDouble()?:0.0),
             color = MaterialTheme.colorScheme.onSurface,
             textAlign = TextAlign.Right,
             modifier = Modifier.weight(1f)
@@ -281,6 +291,7 @@ private fun SimulatorListPreviewDarkTablet(){
     }
 }
 
+@Composable
 private fun getViewModelItem(): SimulatorListItemViewModel{
     val dto = SimulatorCreditDTO(
         code = 1,
@@ -295,6 +306,7 @@ private fun getViewModelItem(): SimulatorListItemViewModel{
         quoteValue = 1038978.toBigDecimal(),
     )
     return SimulatorListItemViewModel(
+        LocalContext.current,
         dto
     )
 }

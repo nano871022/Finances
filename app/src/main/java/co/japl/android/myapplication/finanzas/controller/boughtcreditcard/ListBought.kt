@@ -9,25 +9,15 @@ import androidx.annotation.RequiresApi
 import androidx.compose.ui.platform.ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
-import co.com.japl.finances.iports.inbounds.creditcard.ICreditCardPort
-import co.com.japl.finances.iports.inbounds.common.IDifferQuotesPort
-import co.com.japl.finances.iports.inbounds.creditcard.bought.lists.IBoughtListPort
 import co.com.japl.ui.theme.MaterialThemeComposeUI
-import co.japl.android.myapplication.bussiness.interfaces.ITaxSvc
 import co.japl.android.myapplication.databinding.FragmentListBoughtBinding
 import co.japl.android.myapplication.finanzas.ApplicationInitial
 import co.japl.android.myapplication.finanzas.putParams.CreditCardQuotesParams
 import co.japl.android.myapplication.finanzas.view.creditcard.bought.BoughtList
 import dagger.hilt.android.AndroidEntryPoint
-import javax.inject.Inject
 
 @AndroidEntryPoint
 class ListBought : Fragment() {
-
-    @Inject lateinit var taxSvc:ITaxSvc
-    @Inject lateinit var boughtListSvc:IBoughtListPort
-    @Inject lateinit var creditCardSvc:ICreditCardPort
-    @Inject lateinit var differInstallmentSvc:IDifferQuotesPort
 
     private var _binding:FragmentListBoughtBinding? = null
     private val binding get() = _binding!!

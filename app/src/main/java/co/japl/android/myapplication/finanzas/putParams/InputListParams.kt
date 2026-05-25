@@ -1,7 +1,6 @@
 package co.japl.android.myapplication.finanzas.putParams
 
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import androidx.core.net.toUri
@@ -13,6 +12,7 @@ import co.japl.android.myapplication.R
 class InputListParams {
     object PARAMS {
         const val PARAM_ACCOUNT_CODE = "account_code"
+        const val PARAM_INPUT_CODE = "input_code"
         const val ARG_DEEPLINK = "android-support-nav:controller:deepLinkIntent"
     }
         companion object {
@@ -27,17 +27,19 @@ class InputListParams {
                 navController.navigate(request)
             }
 
-            fun download(parameters: Bundle):Int {
+            fun download(parameters: Bundle):Map<String,Int> {
                 parameters.let{
                     if(it.containsKey(PARAMS.ARG_DEEPLINK)) {
                         val intent = it[PARAMS.ARG_DEEPLINK] as Intent
                         if(intent.dataString?.toUri()?.getQueryParameter(PARAMS.PARAM_ACCOUNT_CODE) != null){
-                            return intent.dataString?.toUri()?.getQueryParameter(PARAMS.PARAM_ACCOUNT_CODE)!!.toInt().also {
-                                Log.d(this.javaClass.name,"=== PARAM_CREDIT_CODE: $it")
-                            }
+                            val account = intent.dataString?.toUri()?.getQueryParameter(PARAMS.PARAM_ACCOUNT_CODE)?.toInt()
+                            val input = intent.dataString?.toUri()?.getQueryParameter(PARAMS.PARAM_INPUT_CODE)?.toInt()
+                            return mapOf(Pair("ACCOUNT",account?:0),Pair("INPUT",input?:0))
                         }
                     }
-                    return parameters.getInt(PARAMS.PARAM_ACCOUNT_CODE)
+                    val account = parameters.getInt(PARAMS.PARAM_ACCOUNT_CODE)
+                    val input = parameters.getInt(PARAMS.PARAM_INPUT_CODE)
+                    return mapOf(Pair("ACCOUNT",account?:0),Pair("INPUT",input?:0))
                 }
             }
 

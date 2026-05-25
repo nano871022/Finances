@@ -36,6 +36,7 @@ import co.com.japl.ui.enums.IMoreOptions
 import co.com.japl.ui.components.MoreOptionsDialog
 import co.com.japl.ui.components.AlertDialogOkCancel
 import co.com.japl.ui.theme.MaterialThemeComposeUI
+import co.com.japl.ui.theme.values.Dimensions
 import co.japl.android.myapplication.utils.NumbersUtil
 import java.time.LocalDateTime
 import java.time.YearMonth
@@ -62,10 +63,17 @@ fun RecurrentBoughtList(
     if(viewModel.loader.value && viewModel.filteredList.isNotEmpty()) {
         Body(codeCreditCard, viewModel, onEdit, onAlter)
     }else if(viewModel.filteredList.isEmpty() && viewModel.progress.value < 1f){
-        LinearProgressIndicator(
-            progress = { progressStatus },
-            modifier = Modifier.fillMaxWidth(),
-        )
+        Column(modifier=Modifier.fillMaxWidth()) {
+            LinearProgressIndicator(
+                modifier = Modifier.fillMaxWidth(),
+            )
+            Text(
+                text=stringResource(R.string.no_data),
+                textAlign =  TextAlign.Center,
+                color=MaterialTheme.colorScheme.onBackground,
+                modifier = Modifier.fillMaxWidth().padding(Dimensions.PADDING_TOP)
+            )
+        }
     }else{
         Text(
             text=stringResource(id = R.string.no_data),

@@ -1,10 +1,16 @@
 package co.japl.android.finances.services.core
 
+import android.util.Log
 import co.com.japl.finances.iports.outbounds.ExternalFinancialDataPort
+import co.com.japl.finances.iports.dtos.FinancialItemDTO
+import co.com.japl.finances.iports.enums.dian.FinancialItemType
+import co.com.japl.finances.iports.outbounds.TaxConfigurationPort
 import co.japl.android.finances.services.dao.interfaces.IPaidDAO
 import co.japl.android.finances.services.dao.interfaces.IQuoteCreditCardDAO
 import co.japl.android.finances.services.dao.interfaces.ICreditDAO
 import co.japl.android.finances.services.dao.interfaces.IInputDAO
+import co.japl.android.finances.services.dao.interfaces.IPatrimonyDAO
+import co.japl.android.finances.services.dao.interfaces.IAccountDAO
 import co.japl.android.finances.services.interfaces.ICreditCardSvc
 import co.japl.android.finances.services.utils.DateUtils
 import java.math.BigDecimal
@@ -19,7 +25,10 @@ class FinancesModuleIntegrationAdapter @Inject constructor(
     private val boughtDAO: IQuoteCreditCardDAO,
     private val creditDAO: ICreditDAO,
     private val inputDAO: IInputDAO,
-    private val creditCardSvc: ICreditCardSvc
+    private val creditCardSvc: ICreditCardSvc,
+    private val patrimonyDAO: IPatrimonyDAO,
+    private val accountDAO: IAccountDAO,
+    private val configPort: TaxConfigurationPort
 ) : ExternalFinancialDataPort {
 
     override suspend fun getIncomeYTD(year: Int): BigDecimal {
@@ -134,6 +143,90 @@ class FinancesModuleIntegrationAdapter @Inject constructor(
         return total
     }
 
+    override suspend fun getIncomeDetails(year: Int): List<FinancialItemDTO> {
+        val inputs = inputDAO.getAll()
+        val details = mutableListOf<FinancialItemDTO>()
+        inputs.forEach { input ->
+            val startOfYear = LocalDate.of(year, 1, 1)
+            val endOfYear = LocalDate.of(year, 12, 31)
+            val start = if (input.date.isBefore(startOfYear)) startOfYear else input.date
+            val end = if (input.dateEnd.isAfter(endOfYear)) endOfYear else input.dateEnd
+
+            if (start.isBefore(end) || start.isEqual(end)) {
+                val months = countOccurrences(start, end, input.kindOf)
+                if (months > 0) {
+                    details.add(FinancialItemDTO(
+                        name = input.name,
+                        value = input.value.multiply(BigDecimal.valueOf(months.toLong())),
+                        date = start,
+                        type = FinancialItemType.INCOME.value
+                    ))
+                }
+            }
+        }
+        return details
+    }
+
+    override suspend fun getDeductionDetails(year: Int): List<FinancialItemDTO> {
+        val paids = paidDAO.getAll()
+        val details = mutableListOf<FinancialItemDTO>()
+        val healthKw = configPort.getHealthKeyword()
+        val pensionKw = configPort.getPensionKeyword()
+        val prepaidKw = configPort.getPrepaidKeyword()
+        val mortgageKw = configPort.getMortgageKeyword()
+
+        paids.forEach { paid ->
+             if (paid.date.year == year) {
+                 val type = when {
+                     paid.name.contains(healthKw, true) -> FinancialItemType.HEALTH_MANDATORY.value
+                     paid.name.contains(pensionKw, true) -> FinancialItemType.PENSION_MANDATORY.value
+                     paid.name.contains(prepaidKw, true) -> FinancialItemType.PREPAID_HEALTH.value
+                     paid.name.contains(mortgageKw, true) -> FinancialItemType.MORTGAGE_INTEREST.value
+                     else -> FinancialItemType.DEDUCTION.value
+                 }
+                 details.add(FinancialItemDTO(
+                     name = paid.name,
+                     value = paid.value,
+                     date = paid.date,
+                     type = type
+                 ))
+             }
+        }
+        return details
+    }
+
+    override suspend fun getWithholdingDetails(year: Int): List<FinancialItemDTO> {
+        val withholdingKw = configPort.getWithholdingKeyword()
+        return paidDAO.getAll().filter { it.date.year == year && it.name.contains(withholdingKw, ignoreCase = true) }
+            .map { FinancialItemDTO(it.name, it.value, it.date, FinancialItemType.WITHHOLDING.value) }
+    }
+
+    override suspend fun getAssetsAt(date: LocalDate): List<FinancialItemDTO> {
+        val assets = mutableListOf<FinancialItemDTO>()
+        accountDAO.getAll().forEach { account ->
+             assets.add(FinancialItemDTO(account.name, BigDecimal.ZERO, date, FinancialItemType.ACCOUNT.value))
+        }
+        patrimonyDAO.getAll().forEach { asset ->
+             assets.add(FinancialItemDTO(asset.name, asset.value, date, asset.type))
+        }
+        return assets
+    }
+
+    override suspend fun getLiabilitiesAt(date: LocalDate): List<FinancialItemDTO> {
+        val liabilities = mutableListOf<FinancialItemDTO>()
+        creditDAO.getAll().forEach { credit ->
+            val pending = creditDAO.getPendingToPayAll(date)
+            if (pending > BigDecimal.ZERO) {
+                liabilities.add(FinancialItemDTO("Credit: ${credit.name}", pending, date, FinancialItemType.CREDIT.value))
+            }
+        }
+        val ccDebt = getCreditCardDebt(date)
+        if (ccDebt > BigDecimal.ZERO) {
+            liabilities.add(FinancialItemDTO("Credit Cards Total", ccDebt, date, FinancialItemType.CREDIT_CARD.value))
+        }
+        return liabilities
+    }
+
     private fun countOccurrences(start: LocalDate, end: LocalDate, periodicity: String): Int {
         val step = when (periodicity.lowercase()) {
             "mensual" -> 1
@@ -146,10 +239,12 @@ class FinancesModuleIntegrationAdapter @Inject constructor(
         }
         var count = 0
         var current = start
+        Log.d(javaClass.name,"Current: $current End: $end Cnt: $count Step: $step")
         while (current.isBefore(end) || current.isEqual(end)) {
             count++
             current = current.plusMonths(step.toLong())
         }
+        Log.d(javaClass.name,"Current: $current End: $end Cnt: $count Step: $step")
         return count
     }
 }

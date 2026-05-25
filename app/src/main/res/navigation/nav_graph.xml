@@ -549,7 +549,7 @@
 
     <fragment
         android:id="@+id/item_menu_setting_dian"
-        android:name="co.com.japl.module.declaracion_renta_dian.controller.TaxDeclarationFragment"
+        android:name="co.com.japl.module.dian.fragments.TaxDeclarationFragment"
         android:label="@string/dian_tax_declaration"
         tools:layout="@layout/fragment_tax_declaration" >
         <deepLink app:uri="android-app://co.com.japl.finanzas.module.app/dian_tax_declaration"/>

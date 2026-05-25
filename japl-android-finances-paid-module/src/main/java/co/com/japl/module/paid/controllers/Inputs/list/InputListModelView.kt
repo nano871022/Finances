@@ -28,6 +28,7 @@ class InputListModelView (private val context:Context, val accountCode:Int,priva
         when(option){
             MoreOptionsItemsInput.DELETE ->{deleteInput(id)}
             MoreOptionsItemsInput.UPDATE_VALUE ->{ updateValue(id,value) }
+            MoreOptionsItemsInput.EDIT -> { goToInputForm(id) }
         }
     }
 
@@ -55,6 +56,10 @@ class InputListModelView (private val context:Context, val accountCode:Int,priva
 
     fun goToInputForm(){
        navController?.let{Input.navigate(accountCode,navController)}
+    }
+
+    fun goToInputForm(code:Int){
+        navController?.let{Input.navigate(accountCode,code,navController)}
     }
 
     fun main()= runBlocking  {

@@ -3,7 +3,6 @@ package co.japl.android.myapplication.putParams
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import androidx.core.os.bundleOf
 import androidx.navigation.NavController
 import co.japl.android.myapplication.R

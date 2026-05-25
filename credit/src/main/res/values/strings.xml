@@ -118,6 +118,8 @@
     <string name="number_of_quotes">Number of Quotes</string>
     <string name="value">Value</string>
     <string name="quote_num">Numero Cuota</string>
+    <string name="load_data">Cargando Datos</string>
+    <string name="can_not_gotto_amortization">No puedes navegar a amortización</string>
 
     <string-array name="months">
         <item>--- Seleccionar --- </item>

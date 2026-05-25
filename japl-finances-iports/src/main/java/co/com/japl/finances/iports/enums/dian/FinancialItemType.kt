@@ -1,0 +1,14 @@
+package co.com.japl.finances.iports.enums.dian
+
+enum class FinancialItemType(val value: String) {
+    INCOME("INCOME"),
+    DEDUCTION("DEDUCTION"),
+    WITHHOLDING("WITHHOLDING"),
+    ACCOUNT("ACCOUNT"),
+    CREDIT("CREDIT"),
+    CREDIT_CARD("CREDIT_CARD"),
+    HEALTH_MANDATORY("HEALTH_MANDATORY"),
+    PENSION_MANDATORY("PENSION_MANDATORY"),
+    PREPAID_HEALTH("PREPAID_HEALTH"),
+    MORTGAGE_INTEREST("MORTGAGE_INTEREST")
+}

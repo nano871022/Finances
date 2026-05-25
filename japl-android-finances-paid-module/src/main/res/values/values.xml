@@ -86,6 +86,7 @@
     <string name="navigate_account_code">android-app://co.com.japl.finanzas.module.app/accounts/inputs?code_paid=%d</string>
     <string name="navigate_account">android-app://co.com.japl.finanzas.module.app/accounts/inputs</string>
     <string name="navigate_input">android-app://co.com.japl.finanzas.module.app/accounts/input?account_code=%d</string>
+    <string name="navigate_input_edit">android-app://co.com.japl.finanzas.module.app/accounts/input?account_code=%d&amp;input_code=%d</string>
     <string name="navigate_paid">android-app://co.com.japl.finanzas.module.app/paid/form?code_paid=%d&amp;code_account=%d</string>
     <string name="navigate_paid_create">android-app://co.com.japl.finanzas.module.app/paid/form?code_account=%d</string>
     <string name="navigate_paids">android-app://co.com.japl.finanzas.module.app/paid/list?code_account=%d&amp;period=%s</string>

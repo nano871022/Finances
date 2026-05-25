@@ -1,8 +1,6 @@
 package co.japl.android.myapplication.finanzas.controller.boughtcreditcard
 
 import android.app.Application
-import android.content.Context
-import android.util.Log
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
@@ -13,14 +11,11 @@ import co.com.japl.finances.iports.inbounds.common.IDifferQuotesPort
 import co.com.japl.finances.iports.inbounds.creditcard.ITaxPort
 import co.com.japl.finances.iports.inbounds.creditcard.bought.lists.IBoughtListPort
 import co.com.japl.ui.Prefs
-import co.japl.android.myapplication.bussiness.interfaces.ITaxSvc
-import co.japl.android.myapplication.finanzas.enums.TaxEnum
 import co.japl.android.myapplication.finanzas.modules.EntryPoint
 import co.japl.android.myapplication.finanzas.pojo.BoughtCreditCard
 import co.japl.android.myapplication.finanzas.putParams.CashAdvanceParams
 import co.japl.android.myapplication.finanzas.putParams.CreditCardQuotesParams
 import co.japl.android.myapplication.pojo.CreditCard
-import co.japl.finances.core.utils.DateUtils
 import dagger.hilt.EntryPoints
 import kotlinx.coroutines.runBlocking
 import java.time.LocalDateTime

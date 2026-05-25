@@ -70,6 +70,9 @@ fun MoreOptionsItemsInputList(mutableStateId: MutableState<Int>,modelView: Input
                     MoreOptionsItemsInput.UPDATE_VALUE -> {
                         stateDialogUpdate.value = true
                     }
+                    MoreOptionsItemsInput.EDIT -> {
+                        modelView.goToInputForm(mutableStateId.value)
+                    }
                 }
                 stateDialogOptionsMore.value = false
             })

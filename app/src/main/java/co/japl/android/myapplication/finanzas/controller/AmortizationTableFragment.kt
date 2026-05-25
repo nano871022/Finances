@@ -31,7 +31,7 @@ class AmortizationTableFragment : Fragment(){
     ): View {
         val view = FragmentAmortizationTableBinding.inflate(inflater)
         val code = arguments?.let{ AmortizationTableParams.download(it)["CODE"] as Long }
-        val viewModel = AmortizationViewModel( code?.toInt()!!,amortizationSvc,findNavController())
+        val viewModel = AmortizationViewModel( requireContext(),code?.toInt()!!,amortizationSvc,findNavController())
         view.composeViewFat.apply {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {

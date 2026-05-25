@@ -42,13 +42,13 @@ class EmailCreditCardMap : IMapper<EmailCreditCardDTO> {
     fun restore(crsor:Cursor):ContentValues {
         return ContentValues().apply {
             put(BaseColumns._ID, crsor.getLong(0))
-            put(EmailCreditCardDB.EmailCreditCardEntry.COLUMN_SENDER, crsor.getLong(1))
-            put(EmailCreditCardDB.EmailCreditCardEntry.COLUMN_SUBJECT_PATTERN, crsor.getDouble(2))
-            put(EmailCreditCardDB.EmailCreditCardEntry.COLUMN_BODY_PATTERN, crsor.getDouble(3))
-            put(EmailCreditCardDB.EmailCreditCardEntry.COLUMN_CODE_CREDIT_CARD, crsor.getDouble(4))
-            put(EmailCreditCardDB.EmailCreditCardEntry.COLUMN_NAME_CREDIT_CARD, crsor.getDouble(5))
+            put(EmailCreditCardDB.EmailCreditCardEntry.COLUMN_SENDER, crsor.getString(1))
+            put(EmailCreditCardDB.EmailCreditCardEntry.COLUMN_SUBJECT_PATTERN, crsor.getString(2))
+            put(EmailCreditCardDB.EmailCreditCardEntry.COLUMN_BODY_PATTERN, crsor.getString(3))
+            put(EmailCreditCardDB.EmailCreditCardEntry.COLUMN_CODE_CREDIT_CARD, crsor.getInt(4))
+            put(EmailCreditCardDB.EmailCreditCardEntry.COLUMN_NAME_CREDIT_CARD, crsor.getString(5))
             put(EmailCreditCardDB.EmailCreditCardEntry.COLUMN_KIND_INTEREST_RATE, crsor.getString(6))
-            put(EmailCreditCardDB.EmailCreditCardEntry.COLUMN_ACTIVE, crsor.getString(7))
+            put(EmailCreditCardDB.EmailCreditCardEntry.COLUMN_ACTIVE, crsor.getInt(7))
         }
     }
 }

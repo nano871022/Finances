@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="gross_patrimony">Patrimonio Bruto</string>
+    <string name="gross_income">Ingreso Bruto</string>
+    <string name="total_consuptions">Total Consumos</string>
+</resources>

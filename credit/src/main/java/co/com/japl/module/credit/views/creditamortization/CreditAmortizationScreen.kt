@@ -51,7 +51,14 @@ fun CreditAmortizationScreen(viewModel: CreditAmortizationViewModel){
     val state by viewModel.state.collectAsState()
 
     if(state.isLoading){
-        LinearProgressIndicator(modifier=Modifier.fillMaxWidth())
+        Column {
+            LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
+            Text(text=stringResource(R.string.no_data),
+                color= MaterialTheme.colorScheme.onBackground,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.fillMaxWidth().padding(Dimensions.PADDING_TOP)
+            )
+        }
     }else {
         Body(viewModel )
     }
@@ -95,7 +102,7 @@ private fun Header(viewModel: CreditAmortizationViewModel) {
                 )
                 FieldView(
                     title = stringResource(id = R.string.interest_value_short),
-                    value = "${state.credit?.tax} ${state.credit?.kindOfTax}",
+                    value = "${NumbersUtil.toString4(state.credit?.tax?:0.0)} ${state.credit?.kindOfTax?.value?: KindOfTaxEnum.ANUAL_EFFECTIVE.value}",
                     modifier = Modifier.weight(1f)
                 )
             }

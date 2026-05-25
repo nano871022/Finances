@@ -22,6 +22,7 @@ import javax.inject.Inject
 class InputFragment : Fragment(){
 
     private var accountCode:Int = 0
+    private var inputCode:Int = 0
 
     @Inject lateinit var service:IInputPort
 
@@ -33,8 +34,10 @@ class InputFragment : Fragment(){
         savedInstanceState: Bundle?
     ): View? {
         _binding = FragmentInputBinding.inflate(inflater,container,false)
-        accountCode = arguments?.let { InputListParams.download(it) }?:0
-        val viewModel = InputViewModel(accountCode,null,service,findNavController())
+        val arg = arguments?.let { InputListParams.download(it) }?:mapOf()
+        accountCode = arg["ACCOUNT"]?:0
+        inputCode = arg["INPUT"]?:0
+        val viewModel = InputViewModel(accountCode,inputCode,service,findNavController())
         _binding.cvComponentFi.apply {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {

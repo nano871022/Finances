@@ -3,6 +3,7 @@ package co.com.japl.module.creditcard.views.simulator
 import android.annotation.SuppressLint
 import android.content.res.Configuration
 import android.os.Build
+import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
@@ -15,13 +16,16 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.MoreVert
+import androidx.compose.material3.Card
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Devices
@@ -35,11 +39,13 @@ import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.com.japl.ui.theme.values.Dimensions
 import co.com.japl.ui.utils.WindowWidthSize
 import co.japl.android.myapplication.utils.NumbersUtil
+import java.math.BigDecimal
 
 @SuppressLint("UnusedBoxWithConstraintsScope")
 @Composable
 fun SimulatorList(viewModel: SimulatorListItemViewModel) {
-    if(viewModel.item.isEmpty){
+    val dto by remember { viewModel.item }
+    if(dto == null){
         return
     }
     BoxWithConstraints {
@@ -50,11 +56,12 @@ fun SimulatorList(viewModel: SimulatorListItemViewModel) {
 
 @Composable
 private fun MainBody(viewModel: SimulatorListItemViewModel,size:WindowWidthSize){
-    Surface (modifier = Modifier.fillMaxWidth().padding(Dimensions.PADDING_VIEW_SPACE)) {
-        Column {
+    val dto by remember { viewModel.item }
+    Card (modifier = Modifier.fillMaxWidth().padding(Dimensions.PADDING_VIEW_SPACE)) {
+        Column (modifier = Modifier.padding(Dimensions.PADDING_TOP)){
             Header(viewModel,size)
             BodyDes(size)
-            Body(viewModel.item.get(),size)
+            Body(dto,size)
         }
     }
 }
@@ -62,6 +69,8 @@ private fun MainBody(viewModel: SimulatorListItemViewModel,size:WindowWidthSize)
 @Composable
 private fun Header(viewModel: SimulatorListItemViewModel, size:WindowWidthSize){
     val state = remember { viewModel.showOptions }
+    val dto by remember { viewModel.item }
+    Log.d("CreditCard.SimulatorList","Item/DTO: $dto")
     Row {
         Text(
             text = stringResource(R.string.name),
@@ -73,7 +82,7 @@ private fun Header(viewModel: SimulatorListItemViewModel, size:WindowWidthSize){
         )
 
         Text(
-            text = viewModel.item.get().name?:"Not Found",
+            text = dto?.name?:"Not Found",
             color = MaterialTheme.colorScheme.onSurface,
             modifier = Modifier.fillMaxWidth()
                 .weight(1f)
@@ -84,7 +93,7 @@ private fun Header(viewModel: SimulatorListItemViewModel, size:WindowWidthSize){
             onClick = {state.value = true},
             modifier =Modifier
         ){
-            Icon(imageVector = Icons.Rounded.MoreVert, contentDescription = "More Vertical")
+            Icon(imageVector = Icons.Rounded.MoreVert, contentDescription = stringResource(R.string.see_more))
         }
     }
     Row{
@@ -96,7 +105,7 @@ private fun Header(viewModel: SimulatorListItemViewModel, size:WindowWidthSize){
                 .align(alignment = Alignment.CenterVertically)
         )
         Text(
-            text= NumbersUtil.toString(viewModel.item.get().periods.toLong()),
+            text= NumbersUtil.toString(dto?.periods?.toLong()?:0),
             textAlign = TextAlign.Left,
             color = MaterialTheme.colorScheme.onSurface,
             modifier = Modifier.weight(1f)
@@ -111,7 +120,7 @@ private fun Header(viewModel: SimulatorListItemViewModel, size:WindowWidthSize){
 
         )
         Text(
-            text= NumbersUtil.toString(viewModel.item.get().tax),
+            text= NumbersUtil.toString(dto?.tax?:0.0),
             textAlign = TextAlign.Right,
             color = MaterialTheme.colorScheme.onSurface,
             modifier = Modifier.weight(1f)
@@ -121,7 +130,7 @@ private fun Header(viewModel: SimulatorListItemViewModel, size:WindowWidthSize){
         )
         if(size != WindowWidthSize.COMPACT) {
             Text(
-                text = stringResource(viewModel.item.get().kindOfTax.title),
+                text = stringResource(dto?.kindOfTax?.title!!),
                 textAlign = TextAlign.Left,
                 color = MaterialTheme.colorScheme.onSurface,
                 modifier = Modifier.weight(2f)
@@ -129,7 +138,7 @@ private fun Header(viewModel: SimulatorListItemViewModel, size:WindowWidthSize){
             )
         }else{
             Text(
-                text = viewModel.item.get().kindOfTax.value,
+                text = dto?.kindOfTax?.value?: KindOfTaxEnum.ANUAL_EFFECTIVE.value,
                 textAlign = TextAlign.Left,
                 color = MaterialTheme.colorScheme.onSurface,
                 modifier = Modifier.weight(1f)
@@ -148,7 +157,7 @@ private fun Header(viewModel: SimulatorListItemViewModel, size:WindowWidthSize){
             )
 
             Text(
-                text = NumbersUtil.COPtoString(viewModel.item.get().value),
+                text = NumbersUtil.COPtoString(dto?.value?: BigDecimal.ZERO),
                 textAlign = TextAlign.Left,
                 color = MaterialTheme.colorScheme.onSurface,
                 modifier = Modifier.weight(1.5f)
@@ -157,7 +166,7 @@ private fun Header(viewModel: SimulatorListItemViewModel, size:WindowWidthSize){
         }
     }
     Options(state=state,actionAmortization={
-      viewModel.gotoAmortization(viewModel.item.get().code)
+      viewModel.gotoAmortization(dto?.code?:0)
     })
 }
 
@@ -223,12 +232,12 @@ private fun BodyDes(size:WindowWidthSize){
 }
 
 @Composable
-private fun Body(dto: SimulatorCreditDTO, size:WindowWidthSize){
+private fun Body(dto: SimulatorCreditDTO?, size:WindowWidthSize){
 
             Row {
                 if(size != WindowWidthSize.COMPACT) {
                     Text(
-                        text = NumbersUtil.COPtoString(dto.value),
+                        text = NumbersUtil.COPtoString(dto?.value?: BigDecimal.ZERO),
                         textAlign = TextAlign.End,
                         color = MaterialTheme.colorScheme.onSurface,
                         modifier = Modifier.weight(1f)
@@ -237,7 +246,7 @@ private fun Body(dto: SimulatorCreditDTO, size:WindowWidthSize){
                 }
 
                 Text(
-                    text = NumbersUtil.COPtoString(dto.quoteValue?.toDouble()?:0.0),
+                    text = NumbersUtil.COPtoString(dto?.quoteValue?.toDouble()?:0.0),
                     textAlign = TextAlign.End,
                     color = MaterialTheme.colorScheme.onSurface,
                     modifier = Modifier.weight(1f)
@@ -245,7 +254,7 @@ private fun Body(dto: SimulatorCreditDTO, size:WindowWidthSize){
                 )
 
                 Text(
-                    text = NumbersUtil.COPtoString(dto.capitalValue?.toDouble()?:0.0),
+                    text = NumbersUtil.COPtoString(dto?.capitalValue?.toDouble()?:0.0),
                     textAlign = TextAlign.End,
                     color = MaterialTheme.colorScheme.onSurface,
                     modifier = Modifier.weight(1f)
@@ -253,7 +262,7 @@ private fun Body(dto: SimulatorCreditDTO, size:WindowWidthSize){
                 )
 
                 Text(
-                    text = NumbersUtil.COPtoString(dto.interestValue?.toDouble()?:0.0),
+                    text = NumbersUtil.COPtoString(dto?.interestValue?.toDouble()?:0.0),
                     textAlign = TextAlign.End,
                     color = MaterialTheme.colorScheme.onSurface,
                     modifier = Modifier.weight(1f)
@@ -337,5 +346,5 @@ private fun getViewModel(): SimulatorListItemViewModel{
         quoteValue = 1038978.toBigDecimal(),
         capitalValue = 833333.toBigDecimal()
     )
-    return SimulatorListItemViewModel(itemValue = dto)
+    return SimulatorListItemViewModel(LocalContext.current,itemValue = dto)
 }
