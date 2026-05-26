@@ -157,8 +157,10 @@ class GoogleAuthBackupRestoreViewModel(private val activity:Activity?, private v
        (loginSvc?.getAccount() as? GoogleSignInAccount)?.let { account ->
            if (account.email?.isNotBlank() == true) {
                driveSvc?.backup(account)?.let {
+                   spaceDBKb.value = it.toDouble()
                    result.value = "${result.value} \n $it"
                    updateStorageInfo(account)
+
                    isProcessing.value = false
                }
            } else {

@@ -2,12 +2,13 @@ package co.japl.finances.core.usercases.interfaces.creditcard
 
 import co.com.japl.finances.iports.dtos.EmailCreditCardDTO
 import co.com.japl.finances.iports.dtos.EmailValidationDTO
+import java.time.LocalDateTime
 
 interface IEmailCreditCard {
 
     fun validateMessagePattern(dto: EmailCreditCardDTO, numDaysRead: Int): List<EmailValidationDTO>
 
-    fun getEmailList(sender: String, subject: String, numDaysRead: Int): List<String>
+    fun getEmailList(sender: String, subject: String, numDaysRead: Int): List<Pair<String, LocalDateTime>>
 
     fun create(dto: EmailCreditCardDTO): Int
 

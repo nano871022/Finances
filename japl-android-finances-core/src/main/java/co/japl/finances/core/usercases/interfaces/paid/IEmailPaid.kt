@@ -2,6 +2,7 @@ package co.japl.finances.core.usercases.interfaces.paid
 
 import co.com.japl.finances.iports.dtos.EmailPaidDTO
 import co.com.japl.finances.iports.dtos.EmailValidationDTO
+import java.time.LocalDateTime
 
 interface IEmailPaid {
     fun create(dto: EmailPaidDTO): Int
@@ -12,7 +13,7 @@ interface IEmailPaid {
     fun activate(id: Int, active: Boolean): Boolean
     fun clone(id: Int): Boolean
     fun validateMessagePattern(dto: EmailPaidDTO, numDaysRead: Int): List<EmailValidationDTO>
-    fun getEmailList(sender: String, subject: String, numDaysRead: Int): List<String>
+    fun getEmailList(sender: String, subject: String, numDaysRead: Int): List<Pair<String, LocalDateTime>>
 
     fun read(numDaysRead: Int)
 }

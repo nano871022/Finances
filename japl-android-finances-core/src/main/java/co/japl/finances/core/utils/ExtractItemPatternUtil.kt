@@ -5,25 +5,29 @@ import java.time.LocalTime
 
 object ExtractItemPatternUtil {
 
-    fun getValues(values:List<String>):Triple<String,Double,LocalDateTime>?{
-        if(values.size >= 3) {
-            val date = values.firstOrNull {
+    fun getValues(groupValuesExpReg:List<String>,defaultDate:LocalDateTime):Triple<String,Double,LocalDateTime>?{
+            val date = groupValuesExpReg.firstOrNull {
                 it.isNotBlank() &&
                 DateUtils.isLocalDateRegex(it)
-            }?.let(DateUtils::toLocalDateRegex)
-            val value = values.firstOrNull{
+            }?.let{
+                val dtStr = DateUtils.toLocalDateRegex(it)
+                LocalDateTime.of(dtStr,LocalTime.MAX)
+            }
+
+            val value = groupValuesExpReg.firstOrNull{
                 it.isNotBlank() &&
                 NumbersUtil.isNumberRegex(it)
-            }?.let(NumbersUtil::toDoubleOrZero)
-            val name = values.subList(1,values.size).firstOrNull{
-                !DateUtils.isLocalDateRegex(it) &&
+            }?.let{NumbersUtil.toDoubleOrZero(it)}
+
+            val name = groupValuesExpReg.subList(1,groupValuesExpReg.size).firstOrNull{
+                it.isNotBlank() &&
                 !NumbersUtil.isNumberRegex(it) &&
-                        it.isNotBlank()
+                !DateUtils.isLocalDateRegex(it)
             }
-            if(name?.isNotBlank() == true && value != null && date != null) {
-                return Triple(name, value, LocalDateTime.of(date,LocalTime.MAX))
+
+            if(name?.isNotBlank() == true && value != null) {
+                return Triple(name, value, date?:defaultDate)
             }
-        }
         return null
     }
 }

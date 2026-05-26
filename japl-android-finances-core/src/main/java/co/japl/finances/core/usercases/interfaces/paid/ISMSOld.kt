@@ -24,13 +24,13 @@ interface ISMSOld {
         pattern: String,numDaysRead:Int
     ): List<Triple<String, Double, LocalDateTime>>
 
-    fun getSmsMessages(pattern: String, message: String): Triple<String, Double, LocalDateTime>?
+    fun getSmsMessages(pattern: String, message: String,defaultDate:LocalDateTime): Triple<String, Double, LocalDateTime>?
 
     fun enable(codeSMSPaidDTO: Int): Boolean
 
     fun disable(codeSMSPaidDTO: Int): Boolean
 
-    fun getSmsList(phoneNumber: String): List<String>
+    fun getSmsList(phoneNumber: String): List<Pair<String,LocalDateTime>>
 
     fun read(numDaysRead: Int)
 }

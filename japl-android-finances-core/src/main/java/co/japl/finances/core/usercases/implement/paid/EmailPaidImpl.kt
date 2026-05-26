@@ -7,6 +7,7 @@ import co.com.japl.finances.iports.outbounds.IEmailPaidPort
 import co.japl.finances.core.usercases.interfaces.paid.IEmailPaid
 import co.japl.finances.core.usercases.interfaces.paid.ISms2
 import co.japl.finances.core.utils.DateUtils
+import java.time.LocalDateTime
 import javax.inject.Inject
 
 class EmailPaidImpl @Inject constructor(val svc: IEmailPaidPort, val messageSvc: IEmailPaidPattern, val paidSmsSvc: ISms2) : IEmailPaid {
@@ -26,7 +27,7 @@ class EmailPaidImpl @Inject constructor(val svc: IEmailPaidPort, val messageSvc:
 
     override fun validateMessagePattern(dto: EmailPaidDTO, numDaysRead: Int): List<EmailValidationDTO> = messageSvc.validateMessagePattern(dto, numDaysRead)
 
-    override fun getEmailList(sender: String, subject: String, numDaysRead: Int): List<String> = messageSvc.getEmailList(sender, subject, numDaysRead)
+    override fun getEmailList(sender: String, subject: String, numDaysRead: Int): List<Pair<String, LocalDateTime>> = messageSvc.getEmailList(sender, subject, numDaysRead)
 
     override fun read(numDaysRead: Int) {
         svc.getAll().filter { it.active }.forEach { emailConfig ->

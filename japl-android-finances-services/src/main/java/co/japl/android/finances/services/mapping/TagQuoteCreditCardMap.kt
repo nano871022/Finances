@@ -42,8 +42,8 @@ class TagQuoteCreditCardMap : IMapper<TagsQuoteCreditCardDTO>{
     fun restore(crsor:Cursor):ContentValues {
         return ContentValues().apply {
             put(BaseColumns._ID, crsor.getLong(0))
-            put(TagsQuoteCreditCardDB.Entry.COLUMN_CODE_QUOTE_CREDIT_CARD, crsor.getInt(1))
-            put(TagsQuoteCreditCardDB.Entry.COLUMN_CODE_TAG, crsor.getInt(2))
+            put(TagsQuoteCreditCardDB.Entry.COLUMN_CODE_TAG, crsor.getInt(1))
+            put(TagsQuoteCreditCardDB.Entry.COLUMN_CODE_QUOTE_CREDIT_CARD, crsor.getInt(2))
             put(TagsQuoteCreditCardDB.Entry.COLUMN_DATE_CREATE, crsor.getString(3))
             put(TagsQuoteCreditCardDB.Entry.COLUMN_ACTIVE, crsor.getInt(4))
         }

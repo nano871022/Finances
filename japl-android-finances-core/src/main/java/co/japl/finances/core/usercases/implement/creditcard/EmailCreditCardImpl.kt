@@ -8,6 +8,7 @@ import co.japl.finances.core.usercases.interfaces.creditcard.IEmailCreditCard
 import co.japl.finances.core.usercases.interfaces.creditcard.bought.lists.IBoughtSms
 import co.japl.finances.core.utils.DateUtils
 import java.time.LocalDate
+import java.time.LocalDateTime
 import javax.inject.Inject
 
 class EmailCreditCardImpl @Inject constructor(val svc: IEmailCreditCardPort, val messageSvc: IEmailCreditCardPattern, val boughtSmsSvc: IBoughtSms) : IEmailCreditCard {
@@ -27,7 +28,7 @@ class EmailCreditCardImpl @Inject constructor(val svc: IEmailCreditCardPort, val
 
     override fun validateMessagePattern(dto: EmailCreditCardDTO, numDaysRead: Int): List<EmailValidationDTO> = messageSvc.validateMessagePattern(dto, numDaysRead)
 
-    override fun getEmailList(sender: String, subject: String, numDaysRead: Int): List<String> = messageSvc.getEmailList(sender, subject, numDaysRead)
+    override fun getEmailList(sender: String, subject: String, numDaysRead: Int): List<Pair<String, LocalDateTime>> = messageSvc.getEmailList(sender, subject, numDaysRead)
 
     override fun read(numDaysRead: Int) {
         val startDate = LocalDate.now().minusDays(numDaysRead.toLong())

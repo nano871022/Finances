@@ -7,6 +7,7 @@ import co.japl.android.myapplication.finanzas.bussiness.DB.connections.ConnectDB
 import co.japl.android.myapplication.finanzas.bussiness.interfaces.IGoogleDriveService
 import co.japl.android.myapplication.finanzas.pojo.BackupStorageInfo
 import co.japl.android.myapplication.utils.DatabaseConstants
+import co.japl.android.myapplication.utils.NumbersUtil
 import com.google.android.gms.auth.api.identity.AuthorizationResult
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.api.client.googleapis.json.GoogleJsonResponseException
@@ -141,12 +142,12 @@ class GoogleDriveImpl(private val context:Context, private val dbConnect:Connect
                 val mimeType = Files.probeContentType(file.toPath())
                 val mediaContent = FileContent(mimeType, file)
                 drive.files().update(idFile, null, mediaContent).execute()?.let {
-                    "== Finished Backup Process - Update Size: ${file.length() / (1024)}Kb"
+                    NumbersUtil.bytesConvert(file.length())
                 }
-            } ?: "== NOT-BACKUP-UPDATE"
+            } ?: "0 B"
         } catch (e: Exception) {
             Log.e(this.javaClass.name, "Error updating backup: ${e.message}", e)
-            "== ERROR-BACKUP-UPDATE: ${e.message}"
+            "0 B"
         }
     }
 
@@ -161,12 +162,12 @@ class GoogleDriveImpl(private val context:Context, private val dbConnect:Connect
                 fileMetadata.parents = Collections.singletonList(PARAMETER_FOLDER)
                 drive.files().create(fileMetadata, mediaContent)
                     .setFields("id").execute()?.let {
-                        "== Finished Backup Process - Create Size: ${file.length() / (1024)}Kb"
+                        file.length().toString()
                     }
-            } ?: "== NOT-BACKUP-CREATE"
+            } ?: "0"
         } catch (e: Exception) {
             Log.e(this.javaClass.name, "Error creating backup: ${e.message}", e)
-            "== ERROR-BACKUP-CREATE: ${e.message}"
+            "0"
         }
     }
 

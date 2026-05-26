@@ -28,12 +28,12 @@ interface ISMSCreditCard {
         phoneNumber: String,
         pattern: String,numDaysRead:Int
     ): List<Triple<String, Double, LocalDateTime>>
-    fun getSmsMessages(pattern: String,sms:String):Triple<String,Double,LocalDateTime>?
+    fun getSmsMessages(pattern: String,sms:String,defaultDate:LocalDateTime):Triple<String,Double,LocalDateTime>?
     fun enable(codeSMSCreditCard: Int): Boolean
 
     fun disable(codeSMSCreditCard: Int): Boolean
 
-    fun getSmsList(phoneNumber: String): List<String>
+    fun getSmsList(phoneNumber: String): List<Pair<String,LocalDateTime>>
 
     fun read(numDaysRead: Int)
 }

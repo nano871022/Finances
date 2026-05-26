@@ -44,9 +44,9 @@ import javax.inject.Inject
 class SMS @Inject constructor(private val observable:ISMSObservablePublicher,private val context:Context):ISMSBoadcastReceiver ,
     ISMSRead, BroadcastReceiver(){
 
-        override fun load(number: String,numDaysRead:Int):List<String>{
+        override fun load(number: String,numDaysRead:Int):List<Pair<String, LocalDateTime>>{
             val startDate = LocalDateTime.now().withHour(0).withMinute(0).withSecond(0).minusDays(numDaysRead.toLong())
-            val list = arrayListOf<String>()
+            val list = arrayListOf<Pair<String,LocalDateTime>>()
             val contentResolver = context.contentResolver
             val cursor = contentResolver.query(
                 Telephony.Sms.CONTENT_URI,
@@ -63,7 +63,7 @@ class SMS @Inject constructor(private val observable:ISMSObservablePublicher,pri
                     val date = cursor.getString(cursor.getColumnIndexOrThrow(Telephony.Sms.DATE_SENT))
                     val sentDate = LocalDateTime.ofInstant(Instant.ofEpochMilli(date.toLong()), ZoneId.systemDefault())
                     if(startDate.isBefore(sentDate) &&sender == number) {
-                            list.add(message)
+                            list.add(Pair(message.replace("\\s+".toRegex()," "),sentDate))
                     }
                 }while (cursor.moveToNext())
             }

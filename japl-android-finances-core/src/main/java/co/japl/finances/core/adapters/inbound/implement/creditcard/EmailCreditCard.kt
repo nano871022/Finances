@@ -58,7 +58,7 @@ class EmailCreditCard @Inject constructor(val svc: IEmailCreditCard) : IEmailCre
     }
 
     override fun getEmailList(sender: String, subject: String, numDaysRead: Int): List<String> {
-        return svc.getEmailList(sender, subject, numDaysRead)
+        return svc.getEmailList(sender, subject, numDaysRead).map{it.first}
     }
 
     override fun read(numDaysRead: Int) {

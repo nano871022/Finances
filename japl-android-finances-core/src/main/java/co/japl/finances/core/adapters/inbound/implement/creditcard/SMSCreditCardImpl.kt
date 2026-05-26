@@ -59,7 +59,7 @@ class SMSCreditCardImpl @Inject constructor(private val svc:ISMSCreditCard) : IS
     ): Triple<String, Double, LocalDateTime>? {
         require(pattern.isNotEmpty()){"Pattern must not be empty"}
         require(sms.isNotEmpty()){"Sms must not be empty"}
-        return svc.getSmsMessages(pattern,sms)
+        return svc.getSmsMessages(pattern,sms, LocalDateTime.now())
     }
 
     override fun enable(codeSMSCreditCard: Int): Boolean {
@@ -71,7 +71,7 @@ class SMSCreditCardImpl @Inject constructor(private val svc:ISMSCreditCard) : IS
     }
 
     override fun getSmsList(phoneNumber: String): List<String> {
-        return svc.getSmsList(phoneNumber)
+        return svc.getSmsList(phoneNumber).map { it.first }
     }
 
     override fun read(numDaysRead: Int) {

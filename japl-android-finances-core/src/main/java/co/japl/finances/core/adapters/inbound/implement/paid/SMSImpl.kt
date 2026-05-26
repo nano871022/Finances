@@ -51,7 +51,7 @@ class SMSImpl @Inject constructor(private val svc:ISMSOld, private val smsSvc: I
     override fun getSmsMessages(pattern: String, message: String): Triple<String, Double, LocalDateTime>? {
         require(pattern.isNotEmpty()){"Pattern must not be empty"}
         require(message.isNotEmpty()){"Message must not be empty"}
-        return svc.getSmsMessages(pattern,message)
+        return svc.getSmsMessages(pattern,message, LocalDateTime.now())
     }
 
     override fun enable(codeSMSPaidDTO: Int): Boolean {
@@ -63,10 +63,11 @@ class SMSImpl @Inject constructor(private val svc:ISMSOld, private val smsSvc: I
     }
 
     override fun getSmsList(phoneNumber: String): List<String> {
-        return svc.getSmsList(phoneNumber)
+        return svc.getSmsList(phoneNumber).map{it.first}
     }
 
     override fun read(numDaysRead: Int) {
+        require(numDaysRead > 0){"Num Days is ZERO"}
         svc.read(numDaysRead)
     }
 

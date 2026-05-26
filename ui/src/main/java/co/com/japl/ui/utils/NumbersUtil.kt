@@ -169,5 +169,20 @@ class NumbersUtil {
             }
             return "${toString(bytes)} B"
         }
+
+        fun bytesConvert(bytes:Long): String{
+            if(bytes > 1024) {
+                val kb = bytes / 1024
+                if (kb > 1024) {
+                    val mb = kb / 1024
+                    if (mb > 1024) {
+                        return "${toString(mb / 1024)} Gb"
+                    }
+                    return "${toString(mb)} Mb"
+                }
+                return "${toString(kb)} Kb"
+            }
+            return "${toString(bytes)} B"
+        }
     }
 }

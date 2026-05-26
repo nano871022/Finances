@@ -15,6 +15,7 @@ import java.time.Period
 import java.time.ZoneOffset
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
+import java.util.Locale
 
 class DateUtils {
     companion object {
@@ -28,6 +29,15 @@ class DateUtils {
         @RequiresApi(Build.VERSION_CODES.O)
         fun toLocalDateTime(value: String): LocalDateTime {
             require(value.isNotBlank()) { "Value cannot be blank" }
+
+            try {
+                val formatter =
+                    DateTimeFormatter.ofPattern("E, d MMM yyyy HH:mm:ss Z", Locale.ENGLISH);
+                return LocalDateTime.parse(value, formatter);
+            }catch(e:Exception){
+                //Log.e(javaClass.name,"Error message ${e.message}",e)
+            }
+
             if (value.contains("/")) {
                 val date = value.split("/")
                 require (date.size > 1) { "Value is not valid $date" }
