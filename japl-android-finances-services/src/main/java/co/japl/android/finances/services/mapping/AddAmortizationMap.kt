@@ -3,9 +3,11 @@ package co.japl.android.finances.services.mapping
 import android.content.ContentValues
 import android.database.Cursor
 import android.os.Build
+import android.provider.BaseColumns
 import androidx.annotation.RequiresApi
 import co.japl.android.finances.services.dto.AddAmortizationDB
 import co.japl.android.finances.services.dto.AddAmortizationDTO
+import co.japl.android.finances.services.dto.BuyCreditCardSettingDB
 import co.japl.android.finances.services.utils.DateUtils
 
 class AddAmortizationMap {
@@ -31,4 +33,14 @@ class AddAmortizationMap {
              )
          }
      }
+
+    fun restore(crsor:Cursor):ContentValues {
+        return ContentValues().apply {
+            put(BaseColumns._ID, crsor.getLong(0))
+            put(AddAmortizationDB.Entry.COLUMN_DATE_CREATE, crsor.getString(1))
+            put(AddAmortizationDB.Entry.COLUMN_CODE, crsor.getInt(2))
+            put(AddAmortizationDB.Entry.COLUMN_NBR_QUOTE, crsor.getDouble(3))
+            put(AddAmortizationDB.Entry.COLUMN_VALUE, crsor.getDouble(4))
+        }
+    }
 }

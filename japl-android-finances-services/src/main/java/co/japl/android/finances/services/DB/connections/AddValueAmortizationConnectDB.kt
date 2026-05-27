@@ -4,8 +4,11 @@ import android.database.sqlite.SQLiteDatabase
 import android.util.Log
 import co.japl.android.finances.services.DB.connections.abstracs.DBRestore
 import co.japl.android.finances.services.dto.AddAmortizationDB
+import co.japl.android.finances.services.dto.AdditionalCreditDB
 import co.japl.android.finances.services.dto.CalcDB
 import co.japl.android.finances.services.interfaces.IConnectDB
+import co.japl.android.finances.services.mapping.AddAmortizationMap
+import co.japl.android.finances.services.mapping.AdditionalMap
 import co.japl.android.finances.services.queries.AddValueAmortizationQuery
 
 class AddValueAmortizationConnectDB: DBRestore(), IConnectDB {
@@ -32,6 +35,8 @@ class AddValueAmortizationConnectDB: DBRestore(), IConnectDB {
     }
 
     override fun onRestore(currentDB: SQLiteDatabase?, fromRestoreDB: SQLiteDatabase?) {
+        onRestore(currentDB,fromRestoreDB,javaClass.simpleName,AdditionalCreditDB.Entry.TABLE_NAME,
+            AddAmortizationMap()::restore)
     }
 
     override fun onStats(connectionDB: SQLiteDatabase?): Pair<String, Long> {
