@@ -52,12 +52,12 @@ class CreditCardSettingMap {
     fun restore(crsor:Cursor):ContentValues {
         return ContentValues().apply {
             put(BaseColumns._ID, crsor.getLong(0))
-            put(CreditCardSettingDB.CreditCardEntry.COLUMN_NAME, crsor.getString(1))
-            put(CreditCardSettingDB.CreditCardEntry.COLUMN_VALUE, crsor.getString(2))
-            put(CreditCardSettingDB.CreditCardEntry.COLUMN_TYPE, crsor.getString(3))
-            put(CreditCardSettingDB.CreditCardEntry.COLUMN_ACTIVE, crsor.getShort(4))
-            put(CreditCardSettingDB.CreditCardEntry.COLUMN_COD_CREDIT_CARD, crsor.getInt(5))
-            put(CreditCardSettingDB.CreditCardEntry.COLUMN_CREATE_DATE, crsor.getString(6))
+            put(CreditCardSettingDB.CreditCardEntry.COLUMN_COD_CREDIT_CARD, crsor.getInt(1))
+            put(CreditCardSettingDB.CreditCardEntry.COLUMN_ACTIVE, crsor.getShort(2))
+            put(CreditCardSettingDB.CreditCardEntry.COLUMN_CREATE_DATE, crsor.getString(3))
+            put(CreditCardSettingDB.CreditCardEntry.COLUMN_NAME, crsor.getString(4))
+            put(CreditCardSettingDB.CreditCardEntry.COLUMN_VALUE, crsor.getString(5))
+            put(CreditCardSettingDB.CreditCardEntry.COLUMN_TYPE, crsor.getString(6))
         }
     }
 }

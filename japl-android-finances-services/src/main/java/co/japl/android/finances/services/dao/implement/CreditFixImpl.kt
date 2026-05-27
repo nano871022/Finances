@@ -228,6 +228,21 @@ class CreditFixImpl @Inject constructor(override var dbConnect: SQLiteOpenHelper
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
+    override fun getPendingToPayFor(credit:CreditDTO,date:LocalDate): BigDecimal {
+        return listOf(credit).map {
+            val gracePeriods = getCountGracePeriods(it.id)
+            val periodPaid = ChronoUnit.MONTHS.between(it.date,date).toInt() - gracePeriods
+            it.value - calc.getCreditValue(
+                creditValue = it.value,
+                tax = it.tax,
+                periodPaid = periodPaid,
+                period = it.periods,
+                quote = it.quoteValue,
+                kindOfTax = it.kindOfTax)
+        }.reduceOrNull{ acc, bigDecimal->acc+bigDecimal} ?: BigDecimal.ZERO
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun getAdditionalAll(date:LocalDate): BigDecimal {
         return additionalSvc.getAll().filter { it.endDate > date }.map { it.value }
             .reduceOrNull { acc, bigDecimal ->  acc +  bigDecimal} ?: BigDecimal.ZERO

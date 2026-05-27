@@ -13,6 +13,7 @@ interface ICreditDAO: SaveSvc<CreditDTO>, ISaveSvc<CreditDTO> {
     fun getCapitalAll(date:LocalDate):BigDecimal
     fun getQuoteAll(date: LocalDate):BigDecimal
     fun getPendingToPayAll(date:LocalDate):BigDecimal
+    fun getPendingToPayFor(credit:CreditDTO,date:LocalDate):BigDecimal
     fun getAdditionalAll(date:LocalDate):BigDecimal
     fun getPeriods():List<PeriodCreditDTO>
     fun getTotalQuote(date: LocalDate):BigDecimal

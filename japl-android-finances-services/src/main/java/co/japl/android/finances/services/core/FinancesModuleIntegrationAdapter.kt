@@ -11,6 +11,7 @@ import co.japl.android.finances.services.dao.interfaces.ICreditDAO
 import co.japl.android.finances.services.dao.interfaces.IInputDAO
 import co.japl.android.finances.services.dao.interfaces.IPatrimonyDAO
 import co.japl.android.finances.services.dao.interfaces.IAccountDAO
+import co.japl.android.finances.services.dto.PaidDTO
 import co.japl.android.finances.services.interfaces.ICreditCardSvc
 import co.japl.android.finances.services.utils.DateUtils
 import java.math.BigDecimal
@@ -168,26 +169,26 @@ class FinancesModuleIntegrationAdapter @Inject constructor(
     }
 
     override suspend fun getDeductionDetails(year: Int): List<FinancialItemDTO> {
-        val paids = paidDAO.getAll()
+        val deductions = emptyList<PaidDTO>()//this its not right , it'll implement a interface to it
         val details = mutableListOf<FinancialItemDTO>()
         val healthKw = configPort.getHealthKeyword()
         val pensionKw = configPort.getPensionKeyword()
         val prepaidKw = configPort.getPrepaidKeyword()
         val mortgageKw = configPort.getMortgageKeyword()
 
-        paids.forEach { paid ->
-             if (paid.date.year == year) {
+        deductions.forEach { deduction ->
+             if (deduction.date.year == year) {
                  val type = when {
-                     paid.name.contains(healthKw, true) -> FinancialItemType.HEALTH_MANDATORY.value
-                     paid.name.contains(pensionKw, true) -> FinancialItemType.PENSION_MANDATORY.value
-                     paid.name.contains(prepaidKw, true) -> FinancialItemType.PREPAID_HEALTH.value
-                     paid.name.contains(mortgageKw, true) -> FinancialItemType.MORTGAGE_INTEREST.value
+                     deduction.name.contains(healthKw, true) -> FinancialItemType.HEALTH_MANDATORY.value
+                     deduction.name.contains(pensionKw, true) -> FinancialItemType.PENSION_MANDATORY.value
+                     deduction.name.contains(prepaidKw, true) -> FinancialItemType.PREPAID_HEALTH.value
+                     deduction.name.contains(mortgageKw, true) -> FinancialItemType.MORTGAGE_INTEREST.value
                      else -> FinancialItemType.DEDUCTION.value
                  }
                  details.add(FinancialItemDTO(
-                     name = paid.name,
-                     value = paid.value,
-                     date = paid.date,
+                     name = deduction.name,
+                     value = deduction.value,
+                     date = deduction.date,
                      type = type
                  ))
              }
@@ -203,9 +204,7 @@ class FinancesModuleIntegrationAdapter @Inject constructor(
 
     override suspend fun getAssetsAt(date: LocalDate): List<FinancialItemDTO> {
         val assets = mutableListOf<FinancialItemDTO>()
-        accountDAO.getAll().forEach { account ->
-             assets.add(FinancialItemDTO(account.name, BigDecimal.ZERO, date, FinancialItemType.ACCOUNT.value))
-        }
+        //its not right, it'll implement a interface for it
         patrimonyDAO.getAll().forEach { asset ->
              assets.add(FinancialItemDTO(asset.name, asset.value, date, asset.type))
         }
@@ -215,7 +214,7 @@ class FinancesModuleIntegrationAdapter @Inject constructor(
     override suspend fun getLiabilitiesAt(date: LocalDate): List<FinancialItemDTO> {
         val liabilities = mutableListOf<FinancialItemDTO>()
         creditDAO.getAll().forEach { credit ->
-            val pending = creditDAO.getPendingToPayAll(date)
+            val pending = creditDAO.getPendingToPayFor(credit,date)
             if (pending > BigDecimal.ZERO) {
                 liabilities.add(FinancialItemDTO("Credit: ${credit.name}", pending, date, FinancialItemType.CREDIT.value))
             }

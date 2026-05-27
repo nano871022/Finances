@@ -38,8 +38,8 @@ class BuyCreditCardSettingMap {
     fun restore(crsor:Cursor):ContentValues {
         return ContentValues().apply {
             put(BaseColumns._ID, crsor.getLong(0))
-            put(BuyCreditCardSettingDB.Entry.COLUMN_COD_BUY_CREDIT_CARD, crsor.getInt(1))
-            put(BuyCreditCardSettingDB.Entry.COLUMN_COD_CREDIT_CARD_SETTING, crsor.getInt(2))
+            put(BuyCreditCardSettingDB.Entry.COLUMN_COD_CREDIT_CARD_SETTING, crsor.getInt(1))
+            put(BuyCreditCardSettingDB.Entry.COLUMN_COD_BUY_CREDIT_CARD, crsor.getInt(2))
             put(BuyCreditCardSettingDB.Entry.COLUMN_ACTIVE, crsor.getInt(3))
             put(BuyCreditCardSettingDB.Entry.COLUMN_CREATE_DATE, crsor.getString(4))
         }
