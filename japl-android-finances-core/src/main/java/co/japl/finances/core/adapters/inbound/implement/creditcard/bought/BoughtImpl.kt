@@ -7,6 +7,7 @@ import co.com.japl.finances.iports.enums.KindInterestRateEnum
 import co.com.japl.finances.iports.enums.KindOfTaxEnum
 import co.com.japl.finances.iports.inbounds.creditcard.bought.IBoughtPort
 import co.com.japl.finances.iports.inbounds.creditcard.bought.IBoughtSmsPort
+import co.japl.finances.core.enums.AutoLoadKind
 import co.japl.finances.core.usercases.interfaces.creditcard.bought.lists.IBought
 import co.japl.finances.core.usercases.interfaces.creditcard.bought.lists.IBoughtSms
 import co.japl.finances.core.utils.DateUtils
@@ -93,7 +94,7 @@ class BoughtImpl @Inject constructor(private val service:IBought, private  val s
                 nameCreditCard = "",
                 recurrent = 0
             )
-            smsImpl.createBySms(dto)
+            smsImpl.createByAutoLoad(dto, AutoLoadKind.SMS)
     }
 
 }

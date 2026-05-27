@@ -5,6 +5,7 @@ import co.com.japl.finances.iports.dtos.SMSCreditCard
 import co.com.japl.finances.iports.enums.KindInterestRateEnum
 import co.com.japl.finances.iports.inbounds.common.ISMSRead
 import co.com.japl.finances.iports.outbounds.ISMSCreditCardPort
+import co.japl.finances.core.enums.AutoLoadKind
 import co.japl.finances.core.usercases.interfaces.common.ICreditCard
 import co.japl.finances.core.usercases.interfaces.creditcard.ISMSCreditCard
 import co.japl.finances.core.usercases.interfaces.creditcard.bought.lists.IBoughtSms
@@ -106,7 +107,7 @@ class SMSCreditCardImpl @Inject constructor(private val svc:ISMSCreditCardPort, 
             ).forEach { kind ->
                 svc.getByCreditCardAndKindInterest(ccDto.id, kind).forEach { sms ->
                     getSmsMessages(sms.phoneNumber, sms.pattern, numDaysRead).forEach {
-                        boughtSmsSvc.createBySms(
+                        boughtSmsSvc.createByAutoLoad(
                             co.com.japl.finances.iports.dtos.CreditCardBoughtDTO(
                                 id = 0,
                                 nameItem = it.first,
@@ -122,7 +123,8 @@ class SMSCreditCardImpl @Inject constructor(private val svc:ISMSCreditCardPort, 
                                 month = 1,
                                 nameCreditCard = "",
                                 recurrent = 0
-                            )
+                            ),
+                            AutoLoadKind.SMS
                         )
                     }
                 }

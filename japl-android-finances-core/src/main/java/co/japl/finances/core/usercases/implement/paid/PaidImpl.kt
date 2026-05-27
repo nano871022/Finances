@@ -4,6 +4,7 @@ import co.com.japl.finances.iports.dtos.PaidDTO
 import co.com.japl.finances.iports.dtos.PaidRecapDTO
 import co.com.japl.finances.iports.outbounds.IPaidPort
 import co.com.japl.finances.iports.outbounds.IPaidRecapPort
+import co.japl.finances.core.enums.AutoLoadKind
 import co.japl.finances.core.usercases.interfaces.paid.IPaid
 
 import co.japl.finances.core.usercases.interfaces.paid.ISms2
@@ -61,9 +62,9 @@ class PaidImpl @Inject constructor(private val recapSvc: IPaidRecapPort,private 
         }?:false
     }
 
-    override fun createBySms(dto: PaidDTO): Boolean {
+    override fun createByAutoLoad(dto: PaidDTO, kind: AutoLoadKind): Boolean {
         return paidSvc.findByNameValueDate(dto).takeIf { it.isNotEmpty() }?.let {
             return false
-        } ?: paidSvc.create(dto.copy(itemName = "(SMS) ${dto.itemName}")) > 0
+        } ?: paidSvc.create(dto.copy(itemName = "(${kind.name}) ${dto.itemName}")) > 0
     }
 }

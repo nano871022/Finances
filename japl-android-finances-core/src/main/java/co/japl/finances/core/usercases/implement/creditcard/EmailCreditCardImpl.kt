@@ -4,6 +4,7 @@ import co.com.japl.finances.iports.dtos.EmailCreditCardDTO
 import co.com.japl.finances.iports.dtos.EmailValidationDTO
 import co.com.japl.finances.iports.outbounds.IEmailCreditCardPattern
 import co.com.japl.finances.iports.outbounds.IEmailCreditCardPort
+import co.japl.finances.core.enums.AutoLoadKind
 import co.japl.finances.core.usercases.interfaces.creditcard.IEmailCreditCard
 import co.japl.finances.core.usercases.interfaces.creditcard.bought.lists.IBoughtSms
 import co.japl.finances.core.utils.DateUtils
@@ -37,7 +38,7 @@ class EmailCreditCardImpl @Inject constructor(val svc: IEmailCreditCardPort, val
                 val date = validation.date?.let { DateUtils.toLocalDateRegex(it) }
                 val value = validation.value?.toDoubleOrNull()
                 if (date != null && value != null && (date.isAfter(startDate) || date.isEqual(startDate))) {
-                    boughtSmsSvc.createBySms(
+                    boughtSmsSvc.createByAutoLoad(
                         co.com.japl.finances.iports.dtos.CreditCardBoughtDTO(
                             id = 0,
                             nameItem = validation.name ?: "",
@@ -53,7 +54,8 @@ class EmailCreditCardImpl @Inject constructor(val svc: IEmailCreditCardPort, val
                             month = 1,
                             nameCreditCard = "",
                             recurrent = 0
-                        )
+                        ),
+                        AutoLoadKind.EMAIL
                     )
                 }
             }

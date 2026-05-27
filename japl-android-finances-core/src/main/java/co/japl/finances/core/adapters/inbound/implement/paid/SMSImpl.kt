@@ -5,6 +5,7 @@ import co.com.japl.finances.iports.dtos.SMSPaidDTO
 import co.com.japl.finances.iports.enums.KindInterestRateEnum
 import co.com.japl.finances.iports.inbounds.paid.ISMSPaidPort
 import co.com.japl.finances.iports.inbounds.paid.ISmsPort
+import co.japl.finances.core.enums.AutoLoadKind
 import co.japl.finances.core.usercases.interfaces.paid.ISMSOld
 import co.japl.finances.core.usercases.interfaces.paid.ISms2
 import java.time.LocalDateTime
@@ -72,7 +73,7 @@ class SMSImpl @Inject constructor(private val svc:ISMSOld, private val smsSvc: I
     }
 
     override fun createBySms(name: String, value: Double, date: LocalDateTime,codeAccount:Int) {
-        smsSvc.createBySms(
+        smsSvc.createByAutoLoad(
             PaidDTO(
                 id=0,
                 itemName =name,
@@ -81,7 +82,8 @@ class SMSImpl @Inject constructor(private val svc:ISMSOld, private val smsSvc: I
                 account=codeAccount,
                 recurrent= false,
                 end= LocalDateTime.now()
-            )
+            ),
+            AutoLoadKind.SMS
         )
     }
 }

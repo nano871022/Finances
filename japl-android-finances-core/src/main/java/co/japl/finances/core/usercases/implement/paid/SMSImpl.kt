@@ -4,6 +4,7 @@ import co.com.japl.finances.iports.dtos.EmailValidationDTO
 import co.com.japl.finances.iports.dtos.SMSPaidDTO
 import co.com.japl.finances.iports.inbounds.common.ISMSRead
 import co.com.japl.finances.iports.outbounds.ISMSPaidPort
+import co.japl.finances.core.enums.AutoLoadKind
 import co.japl.finances.core.usercases.interfaces.IAccount
 import co.japl.finances.core.usercases.interfaces.paid.ISMSOld
 import co.japl.finances.core.usercases.interfaces.paid.ISms2
@@ -95,7 +96,7 @@ class SMSImpl @Inject constructor(private val svc:ISMSPaidPort, private val smsS
         accountSvc.getAllActive().forEach { dto ->
             svc.getByCodeAccount(dto.id).forEach { sms ->
                 getSmsMessages(sms.phoneNumber, sms.pattern, numDaysRead).forEach {
-                    paidSmsSvc.createBySms(
+                    paidSmsSvc.createByAutoLoad(
                         co.com.japl.finances.iports.dtos.PaidDTO(
                             id = 0,
                             itemName = it.first,
@@ -104,7 +105,8 @@ class SMSImpl @Inject constructor(private val svc:ISMSPaidPort, private val smsS
                             account = dto.id,
                             recurrent = false,
                             end = LocalDateTime.now()
-                        )
+                        ),
+                        AutoLoadKind.SMS
                     )
                 }
             }

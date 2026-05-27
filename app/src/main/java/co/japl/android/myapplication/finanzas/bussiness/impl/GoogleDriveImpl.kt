@@ -142,12 +142,12 @@ class GoogleDriveImpl(private val context:Context, private val dbConnect:Connect
                 val mimeType = Files.probeContentType(file.toPath())
                 val mediaContent = FileContent(mimeType, file)
                 drive.files().update(idFile, null, mediaContent).execute()?.let {
-                    NumbersUtil.bytesConvert(file.length())
+                    file.length().toString()
                 }
-            } ?: "0 B"
+            } ?: "0"
         } catch (e: Exception) {
             Log.e(this.javaClass.name, "Error updating backup: ${e.message}", e)
-            "0 B"
+            "0"
         }
     }
 

@@ -4,6 +4,7 @@ import co.com.japl.finances.iports.dtos.EmailPaidDTO
 import co.com.japl.finances.iports.dtos.EmailValidationDTO
 import co.com.japl.finances.iports.outbounds.IEmailPaidPattern
 import co.com.japl.finances.iports.outbounds.IEmailPaidPort
+import co.japl.finances.core.enums.AutoLoadKind
 import co.japl.finances.core.usercases.interfaces.paid.IEmailPaid
 import co.japl.finances.core.usercases.interfaces.paid.ISms2
 import co.japl.finances.core.utils.DateUtils
@@ -38,7 +39,7 @@ class EmailPaidImpl @Inject constructor(val svc: IEmailPaidPort, val messageSvc:
 
                 val value = validation.value?.toDoubleOrNull()
                 if (date != null && value != null) {
-                    paidSmsSvc.createBySms(
+                    paidSmsSvc.createByAutoLoad(
                         co.com.japl.finances.iports.dtos.PaidDTO(
                             id = 0,
                             itemName = validation.name ?: "",
@@ -47,7 +48,8 @@ class EmailPaidImpl @Inject constructor(val svc: IEmailPaidPort, val messageSvc:
                             account = emailConfig.codeAccount,
                             recurrent = false,
                             end = java.time.LocalDateTime.now()
-                        )
+                        ),
+                        AutoLoadKind.EMAIL
                     )
                 }
             }
