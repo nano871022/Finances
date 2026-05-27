@@ -9,6 +9,7 @@ import co.japl.android.finances.services.dto.PaidDB
 import co.japl.android.finances.services.dto.PatrimonyDB
 import co.japl.android.finances.services.interfaces.IConnectDB
 import co.japl.android.finances.services.mapping.PaidMap
+import co.japl.android.finances.services.mapping.PatrimonyMap
 import co.japl.android.finances.services.queries.PaidQuery
 import co.japl.android.finances.services.queries.PatrimonyQuery
 
@@ -42,7 +43,8 @@ class PatrimonyDB: DBRestore(), IConnectDB {
     }
 
     override fun onRestore(currentDB:SQLiteDatabase?,fromRestoreDB:SQLiteDatabase?){
-        onRestore(currentDB,fromRestoreDB,"PatrimonyDB",PatrimonyDB.PatrimonyEntry.TABLE_NAME,PaidMap()::restore)
+        onRestore(currentDB,fromRestoreDB,"PatrimonyDB",PatrimonyDB.PatrimonyEntry.TABLE_NAME,
+            PatrimonyMap::restore)
     }
 
     override fun onStats(connectionDB: SQLiteDatabase?): Pair<String, Long> {

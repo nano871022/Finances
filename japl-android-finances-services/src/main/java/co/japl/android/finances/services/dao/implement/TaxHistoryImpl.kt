@@ -5,6 +5,7 @@ import android.database.sqlite.SQLiteOpenHelper
 import co.japl.android.finances.services.dao.interfaces.ITaxHistoryDAO
 import co.japl.android.finances.services.dto.TaxHistoryDB
 import co.japl.android.finances.services.dto.TaxHistoryDTO
+import co.japl.android.finances.services.mapping.TaxHistoryMap
 import java.time.LocalDate
 import javax.inject.Inject
 
@@ -34,14 +35,7 @@ class TaxHistoryImpl @Inject constructor(override var dbConnect: SQLiteOpenHelpe
         val historyList = mutableListOf<TaxHistoryDTO>()
         with(cursor) {
             while (moveToNext()) {
-                historyList.add(
-                    TaxHistoryDTO(
-                        id = getLong(getColumnIndexOrThrow(TaxHistoryDB.TaxHistoryEntry.COLUMN_ID)),
-                        fiscalYear = getInt(getColumnIndexOrThrow(TaxHistoryDB.TaxHistoryEntry.COLUMN_FISCAL_YEAR)),
-                        taxValueCOP = getString(getColumnIndexOrThrow(TaxHistoryDB.TaxHistoryEntry.COLUMN_TAX_VALUE_COP)).toBigDecimal(),
-                        date = LocalDate.parse(getString(getColumnIndexOrThrow(TaxHistoryDB.TaxHistoryEntry.COLUMN_DATE)))
-                    )
-                )
+                historyList.add(TaxHistoryMap.mapping(this))
             }
             close()
         }

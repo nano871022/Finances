@@ -1,10 +1,8 @@
 package co.japl.android.finances.services.DB.connections
 
 import android.database.sqlite.SQLiteDatabase
-import android.icu.util.IslamicCalendar.CalculationType
 import android.util.Log
 import co.japl.android.finances.services.DB.connections.abstracs.DBRestore
-import co.japl.android.finances.services.dto.AdditionalCreditDB
 import co.japl.android.finances.services.dto.CalcDB
 import co.japl.android.finances.services.interfaces.IConnectDB
 import co.japl.android.finances.services.mapping.CalculationMap
@@ -50,7 +48,7 @@ class CalculationConnectDB : DBRestore(), IConnectDB{
     }
 
     override fun onRestore(currentDB: SQLiteDatabase?, fromRestoreDB: SQLiteDatabase?) {
-        onRestore(currentDB,fromRestoreDB,javaClass.simpleName,AdditionalCreditDB.Entry.TABLE_NAME,
+        onRestore(currentDB,fromRestoreDB,javaClass.simpleName,CalcDB.CalcEntry.TABLE_NAME,
             CalculationMap()::restore)
     }
 

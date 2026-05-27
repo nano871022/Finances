@@ -18,8 +18,8 @@ android {
         applicationId "co.japl.android.myapplication"
         minSdk 26
         targetSdk 36
-        versionCode 4_08_02_180
-        versionName "V 4.08.02 build 180 Improve DIAN Taxes"
+        versionCode 4_08_02_181
+        versionName "V 4.08.02 build 181 Improve DIAN Taxes"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }

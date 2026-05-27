@@ -9,6 +9,7 @@ import co.japl.android.finances.services.dto.PaidDB
 import co.japl.android.finances.services.dto.TaxHistoryDB
 import co.japl.android.finances.services.interfaces.IConnectDB
 import co.japl.android.finances.services.mapping.PaidMap
+import co.japl.android.finances.services.mapping.TaxHistoryMap
 import co.japl.android.finances.services.queries.PaidQuery
 import co.japl.android.finances.services.queries.TaxHistoryQuery
 
@@ -42,7 +43,8 @@ class TaxHistoryDB: DBRestore(), IConnectDB {
     }
 
     override fun onRestore(currentDB:SQLiteDatabase?,fromRestoreDB:SQLiteDatabase?){
-        onRestore(currentDB,fromRestoreDB,"TaxHistoryDB",TaxHistoryDB.TaxHistoryEntry.TABLE_NAME,PaidMap()::restore)
+        onRestore(currentDB,fromRestoreDB,"TaxHistoryDB",TaxHistoryDB.TaxHistoryEntry.TABLE_NAME,
+            TaxHistoryMap::restore)
     }
 
     override fun onStats(connectionDB: SQLiteDatabase?): Pair<String, Long> {
