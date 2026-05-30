@@ -13,13 +13,23 @@ import co.com.japl.finances.iports.dtos.PaidDTO
 import co.com.japl.finances.iports.inbounds.inputs.IAccountPort
 import co.com.japl.finances.iports.inbounds.paid.IPaidPort
 import co.com.japl.module.paid.R
-import co.japl.android.myapplication.utils.NumbersUtil
+import co.com.japl.ui.utils.NumbersUtil
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.runBlocking
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
 
-class PaidViewModel (private val codeAccount:Int?,private val codePaid:Int?,private val accountSvc: IAccountPort?,private val paidSvc: IPaidPort?,private val navController: NavController?) :ViewModel(){
+@HiltViewModel(assistedFactory = PaidViewModel.Factory::class)
+class PaidViewModel @AssistedInject constructor(@Assisted private val codeAccount:Int?, @Assisted private val codePaid:Int?, private val accountSvc: IAccountPort?, private val paidSvc: IPaidPort?, @Assisted private val navController: NavController?) :ViewModel(){
+
+    @AssistedFactory
+    interface Factory {
+        fun create(codeAccount: Int?, codePaid: Int?, navController: NavController?): PaidViewModel
+    }
     private var _paid: PaidDTO? = null
     var accountList :List<AccountDTO>? = null
     val accountListPair = mutableStateListOf<Pair<Int,String>>()

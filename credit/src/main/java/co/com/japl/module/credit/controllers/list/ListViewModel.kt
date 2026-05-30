@@ -11,15 +11,23 @@ import co.com.japl.finances.iports.inbounds.credit.IPeriodGracePort
 import co.com.japl.module.credit.R
 import co.com.japl.module.credit.navigations.CreditList
 import co.com.japl.module.credit.pojo.CreditPeriodGraceDTO
-import dagger.hilt.android.scopes.ViewModelScoped
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.YearMonth
 
-@ViewModelScoped
-class ListViewModel(private val period:YearMonth, private val creditSvc:ICreditPort?, val periodGraceSvc:IPeriodGracePort?, private val navController: NavController?) : ViewModel() {
+@HiltViewModel(assistedFactory = ListViewModel.Factory::class)
+class ListViewModel @AssistedInject constructor(@Assisted private val period:YearMonth, private val creditSvc:ICreditPort?, val periodGraceSvc:IPeriodGracePort?, @Assisted private val navController: NavController?) : ViewModel() {
+
+    @AssistedFactory
+    interface Factory {
+        fun create(period: YearMonth, navController: NavController?): ListViewModel
+    }
 
     val progress = mutableStateOf(true)
     val list = mutableListOf<CreditPeriodGraceDTO>()

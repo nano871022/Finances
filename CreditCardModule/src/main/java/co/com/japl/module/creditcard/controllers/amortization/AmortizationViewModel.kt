@@ -9,13 +9,21 @@ import androidx.navigation.NavController
 import co.com.japl.finances.iports.dtos.AmortizationRowDTO
 import co.com.japl.finances.iports.enums.KindAmortization
 import co.com.japl.finances.iports.inbounds.creditcard.IAmortizationTablePort
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.launch
 
-@HiltViewModel
-class  AmortizationViewModel(@ApplicationContext private val context: Context, private val id:Int, private val svc: IAmortizationTablePort?=null, private val navController: NavController?=null):
+@HiltViewModel(assistedFactory = AmortizationViewModel.Factory::class)
+class  AmortizationViewModel @AssistedInject constructor(@ApplicationContext private val context: Context, @Assisted private val id:Int, private val svc: IAmortizationTablePort?=null, @Assisted private val navController: NavController?=null):
 	ViewModel(){
+
+	@AssistedFactory
+	interface Factory {
+		fun create(id: Int, navController: NavController?): AmortizationViewModel
+	}
 	val progressStatus = mutableStateOf(true)
 	val list = mutableListOf<AmortizationRowDTO>()
 

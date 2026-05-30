@@ -11,11 +11,21 @@ import co.com.japl.finances.iports.dtos.CreditCardSettingDTO
 import co.com.japl.finances.iports.inbounds.creditcard.ICreditCardPort
 import co.com.japl.finances.iports.inbounds.creditcard.ICreditCardSettingPort
 import co.com.japl.module.creditcard.R
-import co.japl.android.myapplication.utils.NumbersUtil
+import co.com.japl.ui.utils.NumbersUtil
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.runBlocking
 import java.time.LocalDateTime
 
-class CreditCardSettingViewModel(private val codeCreditCard:Int?, private val codeCreditCardSetting:Int?, private val creditCardSvc:ICreditCardPort?, private val creditCardSettingSvc:ICreditCardSettingPort?, private val navController: NavController?) : ViewModel() {
+@HiltViewModel(assistedFactory = CreditCardSettingViewModel.Factory::class)
+class CreditCardSettingViewModel @AssistedInject constructor(@Assisted private val codeCreditCard:Int?, @Assisted private val codeCreditCardSetting:Int?, private val creditCardSvc:ICreditCardPort?, private val creditCardSettingSvc:ICreditCardSettingPort?, @Assisted private val navController: NavController?) : ViewModel() {
+
+    @AssistedFactory
+    interface Factory {
+        fun create(codeCreditCard: Int?, codeCreditCardSetting: Int?, navController: NavController?): CreditCardSettingViewModel
+    }
 
     var progress = mutableFloatStateOf(0f)
     var showProgress = mutableStateOf(true)

@@ -18,7 +18,11 @@ import co.com.japl.module.paid.enums.PaidListOptions
 import co.com.japl.module.paid.navigations.Paid
 import co.com.japl.ui.Prefs
 import co.com.japl.ui.utils.DateUtils
-import co.japl.android.myapplication.utils.NumbersUtil
+import co.com.japl.ui.utils.NumbersUtil
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -28,8 +32,14 @@ import java.time.YearMonth
 import java.time.format.DateTimeFormatter
 import java.util.Locale
 
-class PaidViewModel(private val accountCode:Int, private val period:YearMonth, private val paidSvc:IPaidPort?=null,
-                    val prefs:Prefs?, private val navController: NavController? = null, private val emailSvc:IEmailPaidPort? = null, private val paidSmsSvc:ISmsPort?): ViewModel(){
+@HiltViewModel(assistedFactory = PaidViewModel.Factory::class)
+class PaidViewModel @AssistedInject constructor(@Assisted private val accountCode:Int, @Assisted private val period:YearMonth, private val paidSvc:IPaidPort?=null,
+                    val prefs:Prefs?, @Assisted private val navController: NavController? = null, private val emailSvc:IEmailPaidPort? = null, private val paidSmsSvc:ISmsPort?): ViewModel(){
+
+    @AssistedFactory
+    interface Factory {
+        fun create(accountCode: Int, period: YearMonth, navController: NavController?): PaidViewModel
+    }
 
     val progressStatus = mutableFloatStateOf(0.0f)
     val loaderState = mutableStateOf(true)

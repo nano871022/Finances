@@ -11,9 +11,18 @@ import co.com.japl.finances.iports.inbounds.creditcard.ICreditCardPort
 import co.com.japl.module.creditcard.R
 import co.com.japl.module.creditcard.navigations.CreditCard
 import co.com.japl.module.creditcard.navigations.ListCreditCardSettings
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.runBlocking
+import javax.inject.Inject
 
-class CreditCardListViewModel(private val creditCardSvc:ICreditCardPort?, private val navController:NavController?) : ViewModel(){
+@HiltViewModel
+class CreditCardListViewModel @Inject constructor(private val creditCardSvc:ICreditCardPort?) : ViewModel(){
+
+    private var navController: NavController? = null
+
+    fun setNavController(navController: NavController){
+        this.navController = navController
+    }
 
 
     val list = mutableStateListOf<CreditCardDTO?>()

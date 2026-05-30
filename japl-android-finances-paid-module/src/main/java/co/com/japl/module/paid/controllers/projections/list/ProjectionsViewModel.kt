@@ -10,6 +10,9 @@ import co.com.japl.finances.iports.dtos.ProjectionRecap
 import co.com.japl.finances.iports.inbounds.paid.IProjectionsPort
 import co.com.japl.module.paid.navigations.Projections
 import co.com.japl.ui.utils.initialFieldState
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -17,8 +20,13 @@ import java.math.BigDecimal
 import java.util.logging.Handler
 import javax.inject.Inject
 
-@HiltViewModel
-class ProjectionsViewModel @Inject constructor(private val savedStateHandler: SavedStateHandle?=null,private val projectionSvc: IProjectionsPort?=null, private val navController: NavController?=null) : ViewModel() {
+@HiltViewModel(assistedFactory = ProjectionsViewModel.Factory::class)
+class ProjectionsViewModel @AssistedInject constructor(@Assisted private val savedStateHandler: SavedStateHandle,private val projectionSvc: IProjectionsPort?, @Assisted private val navController: NavController?) : ViewModel() {
+
+    @AssistedFactory
+    interface Factory {
+        fun create(savedStateHandler: SavedStateHandle, navController: NavController?): ProjectionsViewModel
+    }
 
     val loadingStatus = mutableStateOf(false)
     val projectionsList = mutableStateListOf<ProjectionRecap>()

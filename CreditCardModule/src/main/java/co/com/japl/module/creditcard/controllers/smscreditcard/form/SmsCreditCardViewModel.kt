@@ -19,13 +19,23 @@ import co.com.japl.finances.iports.inbounds.creditcard.ISMSCreditCardPort
 import co.com.japl.module.creditcard.R
 import co.com.japl.ui.Prefs
 import com.google.android.material.snackbar.BaseTransientBottomBar
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import kotlin.time.Duration
 
-class SmsCreditCardViewModel(private val codeSMSCC:Int?, private val svc:ISMSCreditCardPort?, private val creditCardSvc:ICreditCardPort?, private val navController: NavController?, private val llmService: ILLMService? = null, private val prefs: Prefs?=null): ViewModel() {
+@HiltViewModel(assistedFactory = SmsCreditCardViewModel.Factory::class)
+class SmsCreditCardViewModel @AssistedInject constructor(@Assisted private val codeSMSCC:Int?, private val svc:ISMSCreditCardPort?, private val creditCardSvc:ICreditCardPort?, @Assisted private val navController: NavController?, private val llmService: ILLMService? = null, private val prefs: Prefs?=null): ViewModel() {
+
+    @AssistedFactory
+    interface Factory {
+        fun create(codeSMSCC: Int?, navController: NavController?): SmsCreditCardViewModel
+    }
 
     val  load = mutableStateOf(true)
     val  progress = mutableFloatStateOf(0.0f)

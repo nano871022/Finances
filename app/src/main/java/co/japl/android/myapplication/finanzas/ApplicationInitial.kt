@@ -3,7 +3,7 @@ package co.japl.android.myapplication.finanzas
 import android.app.Application
 import android.util.Log
 import co.com.japl.ui.Prefs
-import co.japl.android.myapplication.finanzas.bussiness.DB.connections.ConnectDB
+import co.japl.android.finances.services.DB.connections.ConnectDB
 import com.google.android.gms.security.ProviderInstaller
 import dagger.hilt.android.HiltAndroidApp
 import javax.inject.Inject

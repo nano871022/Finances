@@ -37,7 +37,7 @@ import co.com.japl.ui.components.MoreOptionsDialog
 import co.com.japl.ui.components.AlertDialogOkCancel
 import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.com.japl.ui.theme.values.Dimensions
-import co.japl.android.myapplication.utils.NumbersUtil
+import co.com.japl.ui.utils.NumbersUtil
 import java.time.LocalDateTime
 import java.time.YearMonth
 import java.time.format.DateTimeFormatter

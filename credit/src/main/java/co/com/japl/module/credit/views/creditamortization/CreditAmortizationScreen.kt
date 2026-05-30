@@ -41,7 +41,7 @@ import co.com.japl.finances.iports.enums.KindPaymentsEnums
 import co.com.japl.ui.components.FloatButton
 import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.com.japl.ui.utils.WindowWidthSize
-import co.japl.android.myapplication.utils.NumbersUtil
+import co.com.japl.ui.utils.NumbersUtil
 import java.time.LocalDate
 import java.time.YearMonth
 

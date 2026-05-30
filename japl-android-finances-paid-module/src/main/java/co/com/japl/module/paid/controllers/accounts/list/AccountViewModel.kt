@@ -9,10 +9,18 @@ import co.com.japl.finances.iports.dtos.AccountDTO
 import co.com.japl.finances.iports.inbounds.inputs.IAccountPort
 import co.com.japl.finances.iports.inbounds.inputs.IInputPort
 import co.com.japl.module.paid.navigations.Account
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.runBlocking
+import javax.inject.Inject
 
-class AccountViewModel(private val accountSvc:IAccountPort?, val inputSvc:IInputPort?,
-                       val navController: NavController?): ViewModel(){
+@HiltViewModel
+class AccountViewModel @Inject constructor(private val accountSvc:IAccountPort?, val inputSvc:IInputPort?): ViewModel(){
+
+    private var navController: NavController? = null
+
+    fun setNavController(navController: NavController){
+        this.navController = navController
+    }
 
     val progress = mutableFloatStateOf(0f)
     val loading = mutableStateOf(true)

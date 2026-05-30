@@ -9,8 +9,8 @@ import androidx.annotation.RequiresApi
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.Fragment
 import co.com.japl.ui.theme.MaterialThemeComposeUI
-import co.japl.android.myapplication.databinding.FragmentSettingsAppBinding
-import co.japl.android.myapplication.finanzas.ApplicationInitial
+import co.com.japl.module.credit.databinding.FragmentSettingsAppBinding
+import co.com.japl.ui.Prefs
 import co.japl.android.myapplication.finanzas.view.setting.SettingsApp
 
 class SettingsApp : Fragment() {

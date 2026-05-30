@@ -10,8 +10,8 @@ import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.Fragment
 import co.com.japl.finances.iports.inbounds.common.ILLMService
 import co.com.japl.ui.theme.MaterialThemeComposeUI
-import co.japl.android.myapplication.databinding.FragmentLlmConnectionBinding
-import co.japl.android.myapplication.finanzas.ApplicationInitial
+import co.com.japl.module.credit.databinding.FragmentLlmConnectionBinding
+import co.com.japl.ui.Prefs
 import co.japl.android.myapplication.finanzas.view.setting.LLMConnectionForm
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject

@@ -9,21 +9,28 @@ import androidx.lifecycle.viewModelScope
 import co.com.japl.finances.iports.dtos.AmortizationRowDTO
 import co.com.japl.finances.iports.enums.KindAmortization
 import co.com.japl.finances.iports.inbounds.credit.IAmortizationTablePort
-import dagger.hilt.android.qualifiers.ApplicationContext
-import dagger.hilt.android.scopes.ViewModelScoped
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 
-@ViewModelScoped
-class AmortizationViewModel(
-    @ApplicationContext private val context: Context,
-    private val savedStateHandle: SavedStateHandle?=null,
-    private val code:Int=0,
-    private val lastDate: LocalDate = LocalDate.now(),
+@HiltViewModel(assistedFactory = AmortizationViewModel.Factory::class)
+class AmortizationViewModel @AssistedInject constructor(
+    @Assisted private val context: Context,
+    @Assisted private val savedStateHandle: SavedStateHandle,
+    @Assisted private val code:Int=0,
+    @Assisted private val lastDate: LocalDate = LocalDate.now(),
     private val amortizationSvc: IAmortizationTablePort?=null
 ) : ViewModel() {
+
+    @AssistedFactory
+    interface Factory {
+        fun create(context: Context, savedStateHandle: SavedStateHandle, code: Int, lastDate: LocalDate): AmortizationViewModel
+    }
     private val _state = MutableStateFlow(AmortizationState())
     val state = _state.asStateFlow()
 

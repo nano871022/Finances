@@ -11,7 +11,7 @@ import co.com.japl.homeconnect.about.ui.About
 import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.japl.android.myapplication.BuildConfig
 import co.japl.android.myapplication.R
-import co.japl.android.myapplication.databinding.FragmentAboutItBinding
+import co.com.japl.module.credit.databinding.FragmentAboutItBinding
 
 class AboutIt : Fragment() {
 

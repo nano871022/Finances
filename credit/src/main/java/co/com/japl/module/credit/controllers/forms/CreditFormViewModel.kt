@@ -15,8 +15,11 @@ import co.com.japl.finances.iports.inbounds.credit.ICreditFormPort
 import co.com.japl.module.credit.R
 import co.com.japl.module.credit.navigations.CreditList
 import co.com.japl.ui.utils.initialFieldState
-import co.japl.android.myapplication.utils.NumbersUtil
-import dagger.hilt.android.scopes.ViewModelScoped
+import co.com.japl.ui.utils.NumbersUtil
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -25,8 +28,13 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 
-@ViewModelScoped
-class CreditFormViewModel(private val savedStateHandle: SavedStateHandle?=null, var id:Int?, val creditSvc: ICreditFormPort?, val context:Context?, val navController: NavController?): ViewModel() {
+@HiltViewModel(assistedFactory = CreditFormViewModel.Factory::class)
+class CreditFormViewModel @AssistedInject constructor(@Assisted private val savedStateHandle: SavedStateHandle, @Assisted var id:Int?, val creditSvc: ICreditFormPort?, @Assisted val context:Context?, @Assisted val navController: NavController?): ViewModel() {
+
+    @AssistedFactory
+    interface Factory {
+        fun create(savedStateHandle: SavedStateHandle, id: Int?, context: Context?, navController: NavController?): CreditFormViewModel
+    }
     var progress = mutableFloatStateOf(0f)
     var showProgress = mutableStateOf(false)
     val snackbarHostState = SnackbarHostState()

@@ -13,10 +13,20 @@ import co.com.japl.finances.iports.inbounds.inputs.IInputPort
 import co.com.japl.module.paid.R
 import co.com.japl.module.paid.enums.MoreOptionsItemsInput
 import co.com.japl.module.paid.navigations.Input
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 
-class InputListModelView (private val context:Context, val accountCode:Int,private val navController: NavController?,private val inputSvc:IInputPort?) : ViewModel() {
+@HiltViewModel(assistedFactory = InputListModelView.Factory::class)
+class InputListModelView @AssistedInject constructor(@Assisted private val context:Context, @Assisted val accountCode:Int, @Assisted private val navController: NavController?,private val inputSvc:IInputPort?) : ViewModel() {
+
+    @AssistedFactory
+    interface Factory {
+        fun create(context: Context, accountCode: Int, navController: NavController?): InputListModelView
+    }
 
     var _items = mutableStateListOf<InputDTO>()
 

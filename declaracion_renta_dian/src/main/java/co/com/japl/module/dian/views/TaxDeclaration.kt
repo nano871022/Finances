@@ -14,7 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import co.japl.android.myapplication.utils.NumbersUtil
+import co.com.japl.ui.utils.NumbersUtil
 import co.com.japl.module.dian.controllers.TaxDeclarationViewModel
 import co.com.japl.finances.iports.dtos.FinancialItemDTO
 import co.com.japl.module.declaracion_renta_dian.R

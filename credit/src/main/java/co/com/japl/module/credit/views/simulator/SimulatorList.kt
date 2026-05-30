@@ -38,7 +38,7 @@ import co.com.japl.ui.components.MoreOptionsDialogPair
 import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.com.japl.ui.theme.values.Dimensions
 import co.com.japl.ui.utils.WindowWidthSize
-import co.japl.android.myapplication.utils.NumbersUtil
+import co.com.japl.ui.utils.NumbersUtil
 import java.math.BigDecimal
 
 @SuppressLint("UnusedBoxWithConstraintsScope")

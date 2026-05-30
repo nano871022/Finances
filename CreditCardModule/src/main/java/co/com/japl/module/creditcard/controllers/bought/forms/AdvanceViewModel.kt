@@ -17,7 +17,7 @@ import co.com.japl.module.creditcard.R
 import co.com.japl.ui.Prefs
 import co.com.japl.ui.utils.DateUtils
 import co.com.japl.ui.utils.initialFieldState
-import co.japl.android.myapplication.utils.NumbersUtil
+import co.com.japl.ui.utils.NumbersUtil
 import kotlinx.coroutines.runBlocking
 import java.time.LocalDate
 import java.time.LocalDateTime

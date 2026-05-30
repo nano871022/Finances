@@ -12,9 +12,19 @@ import co.com.japl.finances.iports.enums.KindInterestRateEnum
 import co.com.japl.finances.iports.inbounds.creditcard.ICreditCardPort
 import co.com.japl.finances.iports.inbounds.creditcard.ISMSCreditCardPort
 import co.com.japl.module.creditcard.R
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.runBlocking
 
-class SmsCreditCardViewModel(private val svc:ISMSCreditCardPort?, private val creditCardSvc:ICreditCardPort?, private val navController: NavController?): ViewModel() {
+@HiltViewModel(assistedFactory = SmsCreditCardViewModel.Factory::class)
+class SmsCreditCardViewModel @AssistedInject constructor(private val svc:ISMSCreditCardPort?, private val creditCardSvc:ICreditCardPort?, @Assisted private val navController: NavController?): ViewModel() {
+
+    @AssistedFactory
+    interface Factory {
+        fun create(navController: NavController?): SmsCreditCardViewModel
+    }
 
     val  load = mutableStateOf(true)
     val  progress = mutableFloatStateOf(0.0f)

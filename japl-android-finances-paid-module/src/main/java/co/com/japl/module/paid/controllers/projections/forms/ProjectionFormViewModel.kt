@@ -14,7 +14,10 @@ import co.com.japl.finances.iports.inbounds.paid.IProjectionFormPort
 import co.com.japl.module.paid.R
 import co.com.japl.ui.utils.DateUtils
 import co.com.japl.ui.utils.initialFieldState
-import co.japl.android.myapplication.utils.NumbersUtil
+import co.com.japl.ui.utils.NumbersUtil
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
@@ -23,13 +26,18 @@ import java.math.BigDecimal
 import java.time.LocalDate
 import javax.inject.Inject
 
-@HiltViewModel
-class ProjectionFormViewModel @Inject constructor(
-    private val context: Context,
-    private val saveStateHandler: SavedStateHandle?=null,
-    private val id:Int?=null,
-    private val projectionSvc: IProjectionFormPort?=null,
-    private val navController: NavController?=null): ViewModel(){
+@HiltViewModel(assistedFactory = ProjectionFormViewModel.Factory::class)
+class ProjectionFormViewModel @AssistedInject constructor(
+    @Assisted private val context: Context,
+    @Assisted private val saveStateHandler: SavedStateHandle,
+    @Assisted private val id:Int?=null,
+    private val projectionSvc: IProjectionFormPort?,
+    @Assisted private val navController: NavController?): ViewModel(){
+
+    @AssistedFactory
+    interface Factory {
+        fun create(context: Context, saveStateHandler: SavedStateHandle, id: Int?, navController: NavController?): ProjectionFormViewModel
+    }
     val loaderStatus = mutableStateOf(false)
     val disableSaveStatus = mutableStateOf(true)
     private val periodsOpt = KindPaymentsEnums.entries.map{ Pair(it.month,context.getString(it.title) ) }

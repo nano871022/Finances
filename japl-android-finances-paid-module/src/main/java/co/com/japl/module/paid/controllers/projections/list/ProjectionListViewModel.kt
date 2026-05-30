@@ -11,16 +11,24 @@ import co.com.japl.finances.iports.dtos.ProjectionDTO
 import co.com.japl.finances.iports.inbounds.paid.IProjectionListPort
 import co.com.japl.module.paid.R
 import co.com.japl.module.paid.navigations.Projections
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-@HiltViewModel
-class ProjectionListViewModel @Inject constructor(
-    private val context: Context,
-    private val projectionListPort: IProjectionListPort? = null,
-    private val navController: NavController? = null
+@HiltViewModel(assistedFactory = ProjectionListViewModel.Factory::class)
+class ProjectionListViewModel @AssistedInject constructor(
+    @Assisted private val context: Context,
+    private val projectionListPort: IProjectionListPort?,
+    @Assisted private val navController: NavController?
 ): ViewModel() {
+
+    @AssistedFactory
+    interface Factory {
+        fun create(context: Context, navController: NavController?): ProjectionListViewModel
+    }
     val snackbarHost = SnackbarHostState()
     val loader = mutableStateOf(false)
     private val _list = mutableStateListOf<ProjectionDTO>()

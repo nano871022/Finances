@@ -26,7 +26,7 @@ import co.com.japl.ui.Prefs
 import co.com.japl.ui.utils.DateUtils
 import co.com.japl.ui.utils.FormUIState
 import co.com.japl.ui.utils.initialFieldState
-import co.japl.android.myapplication.utils.NumbersUtil
+import co.com.japl.ui.utils.NumbersUtil
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow

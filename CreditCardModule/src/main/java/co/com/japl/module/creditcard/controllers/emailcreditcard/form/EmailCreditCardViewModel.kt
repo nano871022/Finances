@@ -18,19 +18,29 @@ import co.com.japl.finances.iports.inbounds.creditcard.ICreditCardPort
 import co.com.japl.finances.iports.inbounds.creditcard.IEmailCreditCardPort
 import co.com.japl.module.creditcard.R
 import co.com.japl.ui.Prefs
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class EmailCreditCardViewModel(
-    private val codeEmailCC: Int?,
+@HiltViewModel(assistedFactory = EmailCreditCardViewModel.Factory::class)
+class EmailCreditCardViewModel @AssistedInject constructor(
+    @Assisted private val codeEmailCC: Int?,
     private val svc: IEmailCreditCardPort?,
     private val creditCardSvc: ICreditCardPort?,
-    private val navController: NavController?,
+    @Assisted private val navController: NavController?,
     private val llmService: ILLMService? = null,
     private val prefs: Prefs? = null,
-    private val context: Context? = null
+    @Assisted private val context: Context? = null
 ) : ViewModel() {
+
+    @AssistedFactory
+    interface Factory {
+        fun create(codeEmailCC: Int?, navController: NavController?, context: Context?): EmailCreditCardViewModel
+    }
 
     val load = mutableStateOf(true)
     val progress = mutableFloatStateOf(0.0f)

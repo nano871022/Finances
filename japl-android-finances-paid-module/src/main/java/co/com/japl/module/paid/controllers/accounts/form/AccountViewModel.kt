@@ -8,10 +8,20 @@ import androidx.navigation.NavController
 import co.com.japl.finances.iports.dtos.AccountDTO
 import co.com.japl.finances.iports.inbounds.inputs.IAccountPort
 import co.com.japl.module.paid.R
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.runBlocking
 import java.time.LocalDate
 
-class AccountViewModel(private val codeAccount:Int?, private val accountSvc:IAccountPort, private val navController: NavController):ViewModel(){
+@HiltViewModel(assistedFactory = AccountViewModel.Factory::class)
+class AccountViewModel @AssistedInject constructor(@Assisted private val codeAccount:Int?, private val accountSvc:IAccountPort, @Assisted private val navController: NavController):ViewModel(){
+
+    @AssistedFactory
+    interface Factory {
+        fun create(codeAccount: Int?, navController: NavController): AccountViewModel
+    }
 
     var loader = mutableStateOf(true)
     var progress = mutableFloatStateOf( 0f)

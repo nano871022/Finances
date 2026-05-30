@@ -131,7 +131,7 @@
         tools:layout="@layout/fragment_about_it" />
     <fragment
         android:id="@+id/item_menu_setting_credit_card"
-        android:name="co.japl.android.myapplication.finanzas.controller.creditcard.ListCreditCard"
+        android:name="co.com.japl.module.creditcard.fragments.ListCreditCard"
         android:label="@string/credit_cards"
         tools:layout="@layout/fragment_list_credit_card" >
         <action
@@ -146,7 +146,7 @@
     </fragment>
     <fragment
         android:id="@+id/createCreditCard"
-        android:name="co.japl.android.myapplication.finanzas.controller.creditcard.CreateCreditCard"
+        android:name="co.com.japl.module.creditcard.fragments.CreateCreditCard"
         android:label="@string/create_credit_card"
         tools:layout="@layout/fragment_create_credit_card" >
         <action
@@ -194,7 +194,7 @@
         tools:layout="@layout/fragment_g_drive_connect" />
     <fragment
         android:id="@+id/creditCardSettingFragment"
-        android:name="co.japl.android.myapplication.finanzas.controller.creditcard.CreditCardSettingFragment"
+        android:name="co.com.japl.module.creditcard.fragments.CreditCardSettingFragment"
         android:label="@string/title_toolbar_fragment_credit_card_setting"
         tools:layout="@layout/fragment_credit_card_setting" >
         <deepLink app:uri="android-app://co.com.japl.finanzas.module.app/credit_card_setting"/>
@@ -202,7 +202,7 @@
 
     <fragment
         android:id="@+id/listCreditCardSetting"
-        android:name="co.japl.android.myapplication.finanzas.controller.creditcard.ListCreditCardSetting"
+        android:name="co.com.japl.module.creditcard.fragments.ListCreditCardSetting"
         android:label="@string/title_toolbar_fragment_list_credit_card_setting"
         tools:layout="@layout/fragment_list_credit_card_setting" >
         <action
@@ -221,7 +221,7 @@
     </fragment>
     <fragment
         android:id="@+id/amortizationTableFragment"
-        android:name="co.japl.android.myapplication.finanzas.controller.AmortizationTableFragment"
+        android:name="co.com.japl.module.creditcard.fragments.AmortizationTableFragment"
         android:label="@string/amortization_table"
         tools:layout="@layout/fragment_amortization_table" >
         <action
@@ -231,21 +231,21 @@
     </fragment>
     <fragment
         android:id="@+id/amortizationTableFixFragment"
-        android:name="co.japl.android.myapplication.finanzas.controller.creditfix.AmortizationTableFragment"
+        android:name="co.com.japl.module.credit.fragments.AmortizationTableFragment"
         android:label="@string/amortization_table"
         tools:layout="@layout/fragment_amortization_fix_table" >
         <deepLink app:uri="android-app://co.com.japl.finanzas.module.app/simulator/fix/amortization"/>
     </fragment>
     <fragment
         android:id="@+id/additionalCreditFragment"
-        android:name="co.japl.android.myapplication.finanzas.controller.creditfix.AdditionalCreditFragment"
+        android:name="co.com.japl.module.credit.fragments.AdditionalCreditFragment"
         android:label="@string/aditional"
         tools:layout="@layout/fragment_additional_credit" >
         <deepLink app:uri="android-app://co.com.japl.finanzas.module.app/additional_credit_form"/>
     </fragment>
     <fragment
         android:id="@+id/additionalListFragment"
-        android:name="co.japl.android.myapplication.finanzas.controller.creditfix.AdditionalListFragment"
+        android:name="co.com.japl.module.credit.fragments.AdditionalListFragment"
         android:label="@string/additional_list"
         tools:layout="@layout/fragment_additional_list" >
         <action
@@ -255,7 +255,7 @@
     </fragment>
     <fragment
         android:id="@+id/creditFixFragment"
-        android:name="co.japl.android.myapplication.finanzas.controller.creditfix.CreditFixFragment"
+        android:name="co.com.japl.module.credit.fragments.CreditFixFragment"
         android:label="@string/credit_fix"
         tools:layout="@layout/fragment_credit_fix" >
         <action
@@ -268,7 +268,7 @@
     </fragment>
     <fragment
         android:id="@+id/amortizationCreditFragment"
-        android:name="co.japl.android.myapplication.finanzas.controller.AmortizationCreditFragment"
+        android:name="co.com.japl.module.credit.fragments.AmortizationCreditFragment"
         android:label="@string/amortization_table"
         tools:layout="@layout/fragment_amortization_credit" >
         <action
@@ -281,7 +281,7 @@
     </fragment>
     <fragment
         android:id="@+id/creditListFragment"
-        android:name="co.japl.android.myapplication.finanzas.controller.creditfix.CreditListFragment"
+        android:name="co.com.japl.module.credit.fragments.CreditListFragment"
         android:label="@string/credit_list"
         tools:layout="@layout/fragment_credit_list" >
         <action
@@ -296,7 +296,7 @@
     </fragment>
     <fragment
         android:id="@+id/monthlyCreditListFragment"
-        android:name="co.japl.android.myapplication.finanzas.controller.creditfix.MonthlyCreditListFragment"
+        android:name="co.com.japl.module.credit.fragments.MonthlyCreditListFragment"
         android:label="@string/credit_list"
         tools:layout="@layout/fragment_monthly_credit_list" >
         <action
@@ -309,7 +309,7 @@
     </fragment>
     <fragment
         android:id="@+id/periodCreditListFragment"
-        android:name="co.japl.android.myapplication.finanzas.controller.creditfix.PeriodCreditListFragment"
+        android:name="co.com.japl.module.credit.fragments.PeriodCreditListFragment"
         android:label="@string/list_periods"
         tools:layout="@layout/fragment_period_credit_list" >
         <action
@@ -319,7 +319,7 @@
     </fragment>
     <fragment
         android:id="@+id/item_menu_setting_account"
-        android:name="co.japl.android.myapplication.finanzas.controller.account.AccountListFragment"
+        android:name="co.com.japl.module.paid.fragments.AccountListFragment"
         android:label="@string/list_account"
         tools:layout="@layout/fragment_account_list" >
         <action
@@ -330,7 +330,7 @@
 
     <fragment
         android:id="@+id/inputListFragment"
-        android:name="co.japl.android.myapplication.finanzas.controller.account.InputListFragment"
+        android:name="co.com.japl.module.paid.fragments.InputListFragment"
         android:label="@string/list_inputs"
         tools:layout="@layout/fragment_account_list" >
         <action
@@ -340,7 +340,7 @@
 
     <fragment
         android:id="@+id/accountFragment"
-        android:name="co.japl.android.myapplication.finanzas.controller.account.AccountFragment"
+        android:name="co.com.japl.module.paid.fragments.AccountFragment"
         android:label="@string/account"
         tools:layout="@layout/fragment_account" >
         <action
@@ -350,14 +350,14 @@
     </fragment>
     <fragment
         android:id="@+id/inputFragment"
-        android:name="co.japl.android.myapplication.finanzas.controller.account.InputFragment"
+        android:name="co.com.japl.module.paid.fragments.InputFragment"
         android:label="@string/input"
         tools:layout="@layout/fragment_input" >
         <deepLink app:uri="android-app://co.com.japl.finanzas.module.app/accounts/input"/>
     </fragment>
     <fragment
         android:id="@+id/paidFragment"
-        android:name="co.japl.android.myapplication.finanzas.controller.paids.PaidFragment"
+        android:name="co.com.japl.module.paid.fragments.PaidFragment"
         android:label="@string/paid"
         tools:layout="@layout/fragment_paid" >
         <deepLink app:uri="android-app://co.com.japl.finanzas.module.app/paid/form"/>
@@ -383,7 +383,7 @@
     </fragment>
     <fragment
         android:id="@+id/paidListFragment"
-        android:name="co.japl.android.myapplication.finanzas.controller.paids.PaidListFragment"
+        android:name="co.com.japl.module.paid.fragments.PaidListFragment"
         android:label="@string/list_paid"
         tools:layout="@layout/fragment_paid_list">
         <deepLink app:uri="android-app://co.com.japl.finanzas.module.app/paid/list"/>
@@ -400,7 +400,7 @@
     </fragment>
     <fragment
         android:id="@+id/menu_projections"
-        android:name="co.japl.android.myapplication.finanzas.controller.projections.ProjectionsFragment"
+        android:name="co.com.japl.module.paid.fragments.ProjectionsFragment"
         android:label="@string/projections"
         tools:layout="@layout/fragment_projections" >
         <action
@@ -413,7 +413,7 @@
     </fragment>
     <fragment
         android:id="@+id/listProjectFragment"
-        android:name="co.japl.android.myapplication.finanzas.controller.projections.ListProjectFragment"
+        android:name="co.com.japl.module.paid.fragments.ListProjectFragment"
         android:label="@string/projections"
         tools:layout="@layout/fragment_list_projection" >
         <action
@@ -423,7 +423,7 @@
     </fragment>
     <fragment
         android:id="@+id/projectionFragment"
-        android:name="co.japl.android.myapplication.finanzas.controller.projections.ProjectionFragment"
+        android:name="co.com.japl.module.paid.fragments.ProjectionFragment"
         android:label="@string/projection"
         tools:layout="@layout/fragment_projection" >
         <deepLink app:uri="android-app://co.com.japl.finanzas.module.app/paid/projection/form"/>
@@ -452,7 +452,7 @@
     </fragment>
     <fragment
         android:id="@+id/sms_list_credit_card"
-        android:name="co.japl.android.myapplication.finanzas.controller.boughtcreditcard.SmsListFragment"
+        android:name="co.com.japl.module.creditcard.fragments.SmsListFragment"
         android:label="@string/fragment_list_sms_credit_card"
         tools:layout="@layout/fragment_list_sms_credit_card" >
         <action
@@ -461,7 +461,7 @@
     </fragment>
     <fragment
         android:id="@+id/sms_credit_card"
-        android:name="co.japl.android.myapplication.finanzas.controller.boughtcreditcard.SmsFragment"
+        android:name="co.com.japl.module.creditcard.fragments.SmsFragment"
         android:label="@string/fragment_sms_credit_card"
         tools:layout="@layout/fragment_sms_credit_card" >
         <deepLink app:uri="android-app://co.com.japl.finanzas.modulo.app/sms_credit_card"/>
@@ -514,7 +514,7 @@
 
     <fragment
         android:id="@+id/email_credit_card"
-        android:name="co.japl.android.myapplication.finanzas.controller.boughtcreditcard.EmailFragment"
+        android:name="co.com.japl.module.creditcard.fragments.EmailFragment"
         android:label="@string/email_address"
         tools:layout="@layout/fragment_email_credit_card">
         <deepLink app:uri="android-app://co.com.japl.finanzas.modulo.app/email_credit_card" />

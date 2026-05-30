@@ -8,7 +8,7 @@ import co.com.japl.finances.iports.inbounds.creditcard.bought.lists.IBoughtListP
 import co.com.japl.ui.Prefs
 import java.time.LocalDateTime
 import co.com.japl.module.creditcard.enums.MoreOptionsRecurrentBought
-import co.japl.android.myapplication.utils.NumbersUtil
+import co.com.japl.ui.utils.NumbersUtil
 import java.time.YearMonth
 
 class RecurrentBoughtViewModel(

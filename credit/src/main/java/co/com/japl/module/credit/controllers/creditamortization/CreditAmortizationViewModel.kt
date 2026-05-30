@@ -15,17 +15,27 @@ import co.com.japl.finances.iports.inbounds.credit.IAmortizationTablePort
 import co.com.japl.module.credit.model.CreditAmortizationState
 import co.com.japl.module.credit.navigations.CreditList
 import co.com.japl.module.credit.navigations.ExtraValueList
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
+import dagger.hilt.android.lifecycle.HiltViewModel
 import java.time.LocalDate
 
-class CreditAmortizationViewModel(
-    private val creditCode: Int,
-    private val lastDate: LocalDate,
+@HiltViewModel(assistedFactory = CreditAmortizationViewModel.Factory::class)
+class CreditAmortizationViewModel @AssistedInject constructor(
+    @Assisted private val creditCode: Int,
+    @Assisted private val lastDate: LocalDate,
     private val creditSvc: ICreditPort?=null,
     private val additionalSvc: IAdditional?=null,
     private val gracePeriodSvc: IPeriodGracePort?=null,
     private val amortizationSvc: IAmortizationTablePort?=null,
-    private val navController: NavController?=null
+    @Assisted private val navController: NavController?=null
 ): ViewModel() {
+
+    @AssistedFactory
+    interface Factory {
+        fun create(creditCode: Int, lastDate: LocalDate, navController: NavController?): CreditAmortizationViewModel
+    }
 
     private val _state = MutableStateFlow(CreditAmortizationState())
     val state = _state.asStateFlow()
