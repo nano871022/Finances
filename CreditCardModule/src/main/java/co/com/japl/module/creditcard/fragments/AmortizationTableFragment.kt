@@ -13,7 +13,7 @@ import androidx.navigation.fragment.findNavController
 import co.com.japl.module.creditcard.controllers.amortization.AmortizationViewModel
 import co.com.japl.module.creditcard.views.amortization.AmortizationTable
 import co.com.japl.ui.theme.MaterialThemeComposeUI
-import co.com.japl.finances.iports.params.AmortizationTableParams
+import co.com.japl.module.creditcard.params.AmortizationTableParams
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 

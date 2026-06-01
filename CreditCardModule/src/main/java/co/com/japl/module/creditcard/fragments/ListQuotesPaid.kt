@@ -13,7 +13,7 @@ import androidx.navigation.fragment.findNavController
 import co.com.japl.finances.iports.inbounds.creditcard.bought.lists.IBoughtListPort
 import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.com.japl.module.credit.databinding.FragmentListPeriodsBinding
-import co.com.japl.finances.iports.params.PeriodsParams
+import co.com.japl.module.creditcard.params.PeriodsParams
 import co.com.japl.module.creditcard.controllers.paid.BoughtCreditCardViewModel
 import co.com.japl.module.creditcard.views.paid.PaidList
 import co.com.japl.ui.Prefs

@@ -13,7 +13,7 @@ import androidx.navigation.fragment.findNavController
 import co.com.japl.module.credit.controllers.creditamortization.CreditAmortizationViewModel
 import co.com.japl.module.credit.views.creditamortization.CreditAmortizationScreen
 import co.com.japl.ui.theme.MaterialThemeComposeUI
-import co.com.japl.finances.iports.params.AmortizationCreditParams
+import co.com.japl.module.credit.params.AmortizationCreditParams
 import dagger.hilt.android.AndroidEntryPoint
 import java.time.LocalDate
 import javax.inject.Inject

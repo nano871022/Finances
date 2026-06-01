@@ -21,7 +21,7 @@ import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.com.japl.module.credit.databinding.BuysCreditCardBinding
 import co.com.japl.ui.Prefs
 import co.com.japl.ui.factory.ViewModelFactory
-import co.com.japl.finances.iports.params.CreditCardQuotesParams
+import co.com.japl.module.creditcard.params.CreditCardQuotesParams
 import dagger.hilt.android.AndroidEntryPoint
 import java.time.LocalDateTime
 import javax.inject.Inject

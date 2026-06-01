@@ -1,9 +1,10 @@
-package co.com.japl.finances.iports.enums
+package co.com.japl.module.creditcard.enums
 
 import androidx.annotation.StringRes
 import co.com.japl.ui.R
+import co.com.japl.ui.enums.IMoreOptions
 
-enum class MoreOptionsItemsCreditCard(@StringRes val title: Int) {
+enum class MoreOptionsItemsCreditCard(@StringRes val title: Int) : IMoreOptions {
 
     EDIT(R.string.ccio_edit),
     AMORTIZATION(R.string.ccio_amortization),
@@ -13,4 +14,6 @@ enum class MoreOptionsItemsCreditCard(@StringRes val title: Int) {
     DIFFER_INSTALLMENT(R.string.differ_installment),
     CLONE(R.string.ccio_clone)
     ,RESTORE(R.string.ccio_restore);
+
+    override fun getName() = title
 }

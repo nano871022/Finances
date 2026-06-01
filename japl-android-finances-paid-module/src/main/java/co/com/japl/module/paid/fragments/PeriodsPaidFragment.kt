@@ -14,7 +14,7 @@ import co.com.japl.module.paid.controllers.period.list.PeriodsViewModel
 import co.com.japl.module.paid.views.periods.list.Period
 import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.com.japl.module.credit.databinding.FragmentPeriodsPaidBinding
-import co.com.japl.finances.iports.params.PeriodPaidParam
+import co.com.japl.module.paid.params.PeriodPaidParam
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 

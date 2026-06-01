@@ -20,7 +20,7 @@ import co.com.japl.module.paid.views.monthly.list.Monthly
 import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.com.japl.module.credit.databinding.FragmentPaidsBinding
 import co.com.japl.ui.Prefs
-import co.com.japl.finances.iports.params.PaidsParams
+import co.com.japl.module.paid.params.PaidsParams
 import dagger.hilt.android.AndroidEntryPoint
 import java.time.YearMonth
 import javax.inject.Inject

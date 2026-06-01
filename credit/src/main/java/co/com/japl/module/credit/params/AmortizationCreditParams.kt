@@ -1,11 +1,11 @@
-package co.com.japl.finances.iports.params
+package co.com.japl.module.credit.params
 
 import android.content.Intent
 import android.os.Bundle
 import androidx.core.net.toUri
 import androidx.navigation.NavController
 import co.com.japl.ui.utils.DateUtils
-import co.com.japl.finances.iports.params.AdditionalCreditParams.Params
+import co.com.japl.module.credit.params.AdditionalCreditParams.Params
 import java.time.LocalDate
 
 class AmortizationCreditParams {

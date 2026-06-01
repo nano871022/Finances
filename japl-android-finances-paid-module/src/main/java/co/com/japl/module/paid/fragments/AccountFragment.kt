@@ -11,7 +11,7 @@ import androidx.navigation.fragment.findNavController
 import co.com.japl.finances.iports.inbounds.inputs.IAccountPort
 import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.com.japl.module.credit.databinding.FragmentAccountBinding
-import co.com.japl.finances.iports.params.AccountParams
+import co.com.japl.module.paid.params.AccountParams
 import co.com.japl.module.paid.views.accounts.form.AccountForm
 import co.com.japl.module.paid.controllers.accounts.form.AccountViewModel
 import dagger.hilt.android.AndroidEntryPoint

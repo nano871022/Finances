@@ -12,7 +12,7 @@ import androidx.navigation.fragment.findNavController
 import co.com.japl.finances.iports.inbounds.inputs.IInputPort
 import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.com.japl.module.credit.databinding.FragmentInputBinding
-import co.com.japl.finances.iports.params.InputListParams
+import co.com.japl.module.paid.params.InputListParams
 import co.com.japl.module.paid.views.Inputs.form.InputForm
 import co.com.japl.module.paid.controllers.Inputs.form.InputViewModel
 import dagger.hilt.android.AndroidEntryPoint

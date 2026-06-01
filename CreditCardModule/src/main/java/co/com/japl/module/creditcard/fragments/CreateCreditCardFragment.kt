@@ -13,7 +13,7 @@ import androidx.navigation.fragment.findNavController
 import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.com.japl.module.creditcard.controllers.account.CreditCardViewModel
 import co.com.japl.module.creditcard.views.account.forms.CreditCard
-import co.com.japl.finances.iports.params.CreditCardParams
+import co.com.japl.module.creditcard.params.CreditCardParams
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 

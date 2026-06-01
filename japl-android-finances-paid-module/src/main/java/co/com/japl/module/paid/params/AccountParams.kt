@@ -1,4 +1,4 @@
-package co.com.japl.finances.iports.params
+package co.com.japl.module.paid.params
 
 import android.content.Intent
 import android.net.Uri
@@ -39,8 +39,8 @@ class AccountParams {
 
         fun download(parameters:Bundle):Int{
             parameters.let{
-                if(it.containsKey(InputListParams.PARAMS.ARG_DEEPLINK)) {
-                    val intent = it.get(InputListParams.PARAMS.ARG_DEEPLINK) as Intent
+                if(it.containsKey(PARAMS.ARG_DEEPLINK)) {
+                    val intent = it.get(PARAMS.ARG_DEEPLINK) as Intent
                     if(Uri.parse(intent.dataString).getQueryParameter(PARAMS.PARAM_ID_ACCOUNT) != null){
                         return Uri.parse(intent.dataString).getQueryParameter(PARAMS.PARAM_ID_ACCOUNT)!!.toInt()
                     }

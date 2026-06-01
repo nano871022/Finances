@@ -1,4 +1,4 @@
-package co.com.japl.finances.iports.params
+package co.com.japl.module.credit.params
 
 import android.os.Build
 import android.os.Bundle

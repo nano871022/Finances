@@ -18,7 +18,7 @@ import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.com.japl.module.credit.databinding.CashAdvanceCreditCardBinding
 import co.com.japl.ui.Prefs
 import co.com.japl.ui.factory.ViewModelFactory
-import co.com.japl.finances.iports.params.CashAdvanceParams
+import co.com.japl.module.creditcard.params.CashAdvanceParams
 import dagger.hilt.android.AndroidEntryPoint
 import java.time.LocalDateTime
 import javax.inject.Inject

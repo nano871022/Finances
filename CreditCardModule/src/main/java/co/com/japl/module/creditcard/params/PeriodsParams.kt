@@ -1,4 +1,4 @@
-package co.com.japl.finances.iports.params
+package co.com.japl.module.creditcard.params
 
 import android.content.Intent
 import android.net.Uri

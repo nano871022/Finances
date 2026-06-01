@@ -1,4 +1,4 @@
-package co.com.japl.finances.iports.params
+package co.com.japl.module.creditcard.params
 
 import android.content.Intent
 import android.net.Uri
@@ -8,7 +8,6 @@ import androidx.core.os.bundleOf
 import androidx.fragment.app.FragmentManager
 import androidx.navigation.NavController
 import co.com.japl.ui.R
-import co.com.japl.finances.iports.params.CreditCardParams.Params.ARG_PARAM_CODE
 
 class SmsCreditCardParams(var parentFragmentManagers: FragmentManager) {
     object Params {

@@ -13,7 +13,7 @@ import co.com.japl.module.credit.controllers.extravalue.ExtraValueListViewModel
 import co.com.japl.module.credit.views.extravalue.ExtraValueListScreen
 import co.com.japl.ui.R
 import co.com.japl.module.credit.databinding.FragmentExtraValueListBinding
-import co.com.japl.finances.iports.params.ExtraValueListParam
+import co.com.japl.module.credit.params.ExtraValueListParam
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 

@@ -17,7 +17,7 @@ import co.com.japl.module.creditcard.views.sms.forms.Sms
 import co.com.japl.ui.Prefs
 import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.com.japl.module.credit.databinding.FragmentSmsCreditCardBinding
-import co.com.japl.finances.iports.params.SmsCreditCardParams
+import co.com.japl.module.creditcard.params.SmsCreditCardParams
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
