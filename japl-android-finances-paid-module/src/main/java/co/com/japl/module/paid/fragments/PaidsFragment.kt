@@ -1,4 +1,4 @@
-package co.japl.android.myapplication.finanzas.controller.paids
+package co.com.japl.module.paid.fragments
 
 import android.os.Build
 import android.os.Bundle
@@ -7,7 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.RequiresApi
-import androidx.compose.ui.platform.ViewCompositionStrategy
+import androidx.compose.ui.platform.ComposeView
 import androidx.navigation.fragment.findNavController
 import co.com.japl.finances.iports.inbounds.inputs.IAccountPort
 import co.com.japl.finances.iports.inbounds.inputs.IInputPort
@@ -18,12 +18,11 @@ import co.com.japl.finances.iports.inbounds.paid.ISmsPort
 import co.com.japl.module.paid.controllers.monthly.list.MonthlyViewModel
 import co.com.japl.module.paid.views.monthly.list.Monthly
 import co.com.japl.ui.theme.MaterialThemeComposeUI
-import co.com.japl.module.credit.databinding.FragmentPaidsBinding
-import co.com.japl.ui.Prefs
 import co.com.japl.module.paid.params.PaidsParams
 import dagger.hilt.android.AndroidEntryPoint
 import java.time.YearMonth
 import javax.inject.Inject
+import co.japl.android.myapplication.finanzas.ApplicationInitial
 
 @AndroidEntryPoint
 class PaidsFragment : Fragment() {
@@ -44,7 +43,6 @@ class PaidsFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val root = FragmentPaidsBinding.inflate(inflater,container,false)
         val period = arguments?.let{PaidsParams.downloadPeriod(it)}
         val viewModel = MonthlyViewModel(
             paidSvc = service,
@@ -56,15 +54,12 @@ class PaidsFragment : Fragment() {
             smsSvc = smsSvc,
             navController = findNavController()
         )
-        root.cvPaidsFp.apply {
-            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+        return ComposeView(requireContext()).apply {
             setContent {
                 MaterialThemeComposeUI {
                     Monthly(viewModel = viewModel)
                 }
             }
         }
-
-        return root.root.rootView
     }
 }

@@ -1,4 +1,4 @@
-package co.japl.android.myapplication.finanzas.controller.paids
+package co.com.japl.module.paid.fragments
 
 import android.os.Build
 import android.os.Bundle
@@ -6,11 +6,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.RequiresApi
-import androidx.compose.ui.platform.ViewCompositionStrategy
+import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.Fragment
 import co.com.japl.finances.iports.inbounds.common.ICheckPaymentPort
 import co.com.japl.ui.theme.MaterialThemeComposeUI
-import co.com.japl.module.credit.databinding.FragmentCheckPaymentsBinding
 import co.com.japl.module.paid.views.checkpaids.CheckList
 import dagger.hilt.android.AndroidEntryPoint
 import java.time.YearMonth
@@ -27,18 +26,15 @@ class CheckPaymentsFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val root = FragmentCheckPaymentsBinding.inflate(inflater)
         val period = YearMonth.now()
         val viewModel = CheckListViewModel(period,svc)
-        root.cvComponentFcp.apply {
-            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+        return ComposeView(requireContext()).apply {
             setContent {
                 MaterialThemeComposeUI {
                     CheckList(viewModel = viewModel)
                 }
             }
         }
-        return root.root.rootView
     }
 
 

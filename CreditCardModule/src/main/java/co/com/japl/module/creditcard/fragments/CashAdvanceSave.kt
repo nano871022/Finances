@@ -1,4 +1,4 @@
-package co.japl.android.myapplication.finanzas.controller.boughtcreditcard
+package co.com.japl.module.creditcard.fragments
 
 import android.os.Build
 import android.os.Bundle
@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.RequiresApi
+import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -15,13 +16,12 @@ import co.com.japl.finances.iports.inbounds.creditcard.bought.IBoughtPort
 import co.com.japl.module.creditcard.controllers.bought.forms.AdvanceViewModel
 import co.com.japl.module.creditcard.views.bought.forms.Advance
 import co.com.japl.ui.theme.MaterialThemeComposeUI
-import co.com.japl.module.credit.databinding.CashAdvanceCreditCardBinding
-import co.com.japl.ui.Prefs
 import co.com.japl.ui.factory.ViewModelFactory
 import co.com.japl.module.creditcard.params.CashAdvanceParams
 import dagger.hilt.android.AndroidEntryPoint
 import java.time.LocalDateTime
 import javax.inject.Inject
+import co.japl.android.myapplication.finanzas.ApplicationInitial
 
 @AndroidEntryPoint
 class CashAdvanceSave: Fragment() {
@@ -56,16 +56,13 @@ class CashAdvanceSave: Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val root = CashAdvanceCreditCardBinding.inflate(inflater,container,false)
-
-        root.cvComposeCacc.apply {
+        return ComposeView(requireContext()).apply {
             setContent {
                 MaterialThemeComposeUI {
                     Advance(viewModel = viewModel)
                 }
             }
         }
-        return root.root.rootView
     }
 
 }
