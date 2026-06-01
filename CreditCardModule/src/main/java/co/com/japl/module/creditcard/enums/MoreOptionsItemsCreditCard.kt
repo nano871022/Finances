@@ -1,7 +1,7 @@
 package co.com.japl.module.creditcard.enums
 
 import androidx.annotation.StringRes
-import co.com.japl.ui.R
+import co.com.japl.module.creditcard.R
 import co.com.japl.ui.enums.IMoreOptions
 
 enum class MoreOptionsItemsCreditCard(@StringRes val title: Int) : IMoreOptions {

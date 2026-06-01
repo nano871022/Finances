@@ -9,8 +9,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import co.japl.android.myapplication.R
-import co.japl.android.myapplication.finanzas.bussiness.interfaces.IGoogleDriveService
-import co.japl.android.myapplication.finanzas.bussiness.interfaces.IGoogleSignInService
+import co.com.japl.finances.iports.dtos.StorageInfo
+import co.com.japl.finances.iports.inbounds.common.IGoogleDriveService
+import co.com.japl.finances.iports.inbounds.common.IGoogleSignInService
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.api.client.googleapis.json.GoogleJsonResponseException
 import kotlinx.coroutines.CoroutineScope
@@ -18,7 +19,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
 
-class GoogleAuthBackupRestoreViewModel(private val activity:Activity?, private val loginSvc: IGoogleSignInService?, private val loginSimpleSvc: IGoogleSignInService?, private val loginWebSvc: IGoogleSignInService?, private val driveSvc: IGoogleDriveService?): ViewModel() {
+class GoogleAuthBackupRestoreViewModel(private val activity:Activity?, private val loginSvc: IGoogleSignInService?, private val driveSvc: IGoogleDriveService?): ViewModel() {
     var loginValue = mutableStateOf("Powered by Google LogIn")
     var nameValue = mutableStateOf("name")
     var photoUrlValue = mutableStateOf<String?>(null)
@@ -116,6 +117,8 @@ class GoogleAuthBackupRestoreViewModel(private val activity:Activity?, private v
             e.details.forEach{
                 result.value = "${result.value} \n ${it.key}: ${it.value}"
             }
+        } catch(e:Exception){
+            result.value = "${result.value} \n Error: ${e.message}"
         } finally {
             isProcessing.value = false
         }

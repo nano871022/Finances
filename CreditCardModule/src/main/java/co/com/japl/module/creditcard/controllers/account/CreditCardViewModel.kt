@@ -11,21 +11,23 @@ import co.com.japl.finances.iports.inbounds.creditcard.ICreditCardPort
 import co.com.japl.module.creditcard.R
 import co.com.japl.module.creditcard.navigations.ListCreditCardSettings
 import co.com.japl.ui.utils.NumbersUtil
-import dagger.assisted.Assisted
-import dagger.assisted.AssistedFactory
-import dagger.assisted.AssistedInject
+import co.com.japl.module.creditcard.params.CreditCardParams
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.runBlocking
 import java.math.BigDecimal
 import java.time.LocalDateTime
+import androidx.lifecycle.SavedStateHandle
+import javax.inject.Inject
 
-@HiltViewModel(assistedFactory = CreditCardViewModel.Factory::class)
-class CreditCardViewModel @AssistedInject constructor(@Assisted private val codeCreditCard:Int?, private val creditCardSvc:ICreditCardPort, @Assisted private val navController: NavController):ViewModel() {
+@HiltViewModel
+class CreditCardViewModel @Inject constructor(
+    private val savedStateHandle: SavedStateHandle,
+    private val creditCardSvc:ICreditCardPort
+):ViewModel() {
 
-    @AssistedFactory
-    interface Factory {
-        fun create(codeCreditCard: Int?, navController: NavController): CreditCardViewModel
-    }
+    private val codeCreditCard: Int? = savedStateHandle.get<String>(CreditCardParams.Params.ARG_PARAM_CODE)?.toIntOrNull()
+    var navController: NavController? = null
+
     var showProgress = mutableStateOf(true)
     var progress = mutableFloatStateOf(0f)
     var showButtonUpdate = mutableStateOf(false)
@@ -72,18 +74,22 @@ class CreditCardViewModel @AssistedInject constructor(@Assisted private val code
             _creditCardDto?.let {
                 val id = creditCardSvc.create(it)
                 if (id > 0) {
-                    Toast.makeText(
-                        navController.context,
-                        R.string.toast_successful_insert,
-                        Toast.LENGTH_LONG
-                    ).show()
-                    navController.navigateUp()
+                    navController?.let { nav ->
+                        Toast.makeText(
+                            nav.context,
+                            R.string.toast_successful_insert,
+                            Toast.LENGTH_LONG
+                        ).show()
+                        nav.navigateUp()
+                    }
                 } else {
-                    Toast.makeText(
-                        navController.context,
-                        R.string.toast_unsuccessful_insert,
-                        Toast.LENGTH_LONG
-                    ).show()
+                    navController?.let { nav ->
+                        Toast.makeText(
+                            nav.context,
+                            R.string.toast_unsuccessful_insert,
+                            Toast.LENGTH_LONG
+                        ).show()
+                    }
                 }
             }
         }else{
@@ -94,17 +100,21 @@ class CreditCardViewModel @AssistedInject constructor(@Assisted private val code
     fun update(){
         _creditCardDto?.let{
             if(creditCardSvc.update(_creditCardDto!!)){
-                Toast.makeText(navController.context, R.string.toast_successful_update,Toast.LENGTH_LONG).show()
-                navController.navigateUp()
+                navController?.let { nav ->
+                    Toast.makeText(nav.context, R.string.toast_successful_update,Toast.LENGTH_LONG).show()
+                    nav.navigateUp()
+                }
             }else{
-                Toast.makeText(navController.context, R.string.toast_dont_successful_update,Toast.LENGTH_LONG).show()
+                navController?.let { nav ->
+                    Toast.makeText(nav.context, R.string.toast_dont_successful_update,Toast.LENGTH_LONG).show()
+                }
             }
         }
     }
     fun goSettings(){
-        navController?.let {
+        navController?.let { nav ->
             codeCreditCard?.let {id->
-                ListCreditCardSettings.navigate(codeCreditCard,navController)
+                ListCreditCardSettings.navigate(codeCreditCard, nav)
             }
         }
     }

@@ -9,25 +9,22 @@ import android.view.ViewGroup
 import androidx.annotation.RequiresApi
 import androidx.compose.ui.platform.ComposeView
 import androidx.navigation.fragment.findNavController
-import co.com.japl.finances.iports.inbounds.inputs.IAccountPort
-import co.com.japl.finances.iports.inbounds.inputs.IInputPort
 import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.com.japl.module.paid.views.accounts.list.AccountList
 import co.com.japl.module.paid.controllers.accounts.list.AccountViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import javax.inject.Inject
+import androidx.fragment.app.viewModels
 
 @AndroidEntryPoint
 class AccountListFragment : Fragment() {
-    @Inject lateinit var service:IAccountPort
-    @Inject lateinit var inputSvc:IInputPort
+    private val viewModel: AccountViewModel by viewModels()
 
     @RequiresApi(Build.VERSION_CODES.S)
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val viewModel = AccountViewModel(service,inputSvc, findNavController())
+        viewModel.navController = findNavController()
         return ComposeView(requireContext()).apply {
             setContent {
                 MaterialThemeComposeUI {

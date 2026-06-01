@@ -3,155 +3,115 @@ package co.com.japl.module.paid.views.projections.list
 import android.content.res.Configuration
 import android.os.Build
 import androidx.annotation.RequiresApi
-import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.RemoveRedEye
-import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.unit.dp
 import co.com.japl.finances.iports.dtos.ProjectionRecap
 import co.com.japl.module.paid.R
 import co.com.japl.module.paid.controllers.projections.list.ProjectionsViewModel
-import co.com.japl.ui.components.CardValues
-import co.com.japl.ui.components.Carousel
 import co.com.japl.ui.components.FieldView
 import co.com.japl.ui.components.FloatButton
 import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.com.japl.ui.theme.values.Dimensions
-import co.com.japl.ui.utils.DateUtils
+import co.com.japl.ui.theme.values.ModifiersCustom.Weight1f
+import co.com.japl.ui.theme.values.ModifiersCustom.Weight1fAndPaddintRightSpace
 import co.com.japl.ui.utils.NumbersUtil
+import androidx.lifecycle.SavedStateHandle
 import java.math.BigDecimal
 import java.time.LocalDate
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun Projections(viewModel: ProjectionsViewModel){
-    val progressStatus = remember { viewModel.loadingStatus }
-
-    if (progressStatus.value) {
-        LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
-    }else {
-        Scafold(viewModel=viewModel)
-    }
-}
-
-@Composable
-private fun Scafold(viewModel: ProjectionsViewModel){
     Scaffold (
         floatingActionButton = {
-            FloatButton(viewModel)
+            Buttons(viewModel)
         }
-    ) {
-        Body(viewModel=viewModel,modifier = Modifier.padding(it))
+    ){
+        Column(modifier = Modifier.padding(it)) {
+            Header(viewModel)
+            Body(viewModel)
+        }
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
-private fun Body(viewModel: ProjectionsViewModel,modifier: Modifier){
-    val list = remember { viewModel.projectionsList }
-  Column (modifier = modifier.padding(Dimensions.PADDING_SHORT)){
-      Header(viewModel = viewModel)
-
-      Carousel(
-          size = list.size,
-          modifier = Modifier.height(200.dp)
-      ) { pos ->
-          list[pos].let {
-              when (pos) {
-                  0 -> Card(titleCard = R.string.projection_closed,it)
-                  1 -> Card(titleCard = R.string.projection_far,it)
-              }
-          }
-      }
-
-  }
-}
-
-@Composable
-private fun Card(@StringRes titleCard:Int, projection: ProjectionRecap){
-    CardValues (title = stringResource(titleCard)){
-            Column {
-                Row {
-                    FieldView(
-                        title = stringResource(R.string.limite_date),
-                        value = DateUtils.localDateToStringDate(projection.limitDate),
-                        modifier = Modifier.weight(1f).padding(end = Dimensions.PADDING_SHORT)
-                    )
-
-                    FieldView(
-                        title = stringResource(R.string.months_left_to_pay),
-                        value = projection.monthsLeft.toString(),
-                        modifier = Modifier.weight(1f)
-                    )
-                }
-
-                FieldView(
-                    title = stringResource(R.string.saved_cash),
-                    value = NumbersUtil.COPtoString(projection.savedCash),
-                    modifier = Modifier.padding(top = Dimensions.PADDING_SHORT).fillMaxWidth()
-                )
-            }
-
+private fun Buttons(viewModel: ProjectionsViewModel){
+    Column {
+        FloatButton(imageVector = Icons.Rounded.RemoveRedEye, descriptionIcon = R.string.go_to_list) {
+            viewModel.goToList()
+        }
+        FloatButton(imageVector = Icons.Rounded.Add, descriptionIcon = R.string.add_projection) {
+            viewModel.goToCreate()
+        }
     }
 }
 
 @Composable
 private fun Header(viewModel: ProjectionsViewModel){
+    val totalCount = viewModel.totalCount.value.collectAsState()
     val totalSaved = viewModel.totalSaved.value.collectAsState()
-    Row (modifier = Modifier.fillMaxWidth()){
 
+    Row(modifier = Modifier.padding(Dimensions.PADDING_SHORT)) {
         FieldView(
-            title = stringResource(R.string.products_count),
-            value = viewModel.totalCount.valueStr,
-            modifier = Modifier.weight(1f).padding(end  = Dimensions.PADDING_SHORT)
+            name = stringResource(id = R.string.count_projection),
+            value = totalCount.value.toString(),
+            modifier = Weight1fAndPaddintRightSpace(),
+            isMoney = false
         )
 
         FieldView(
-            title = stringResource(R.string.products_cost),
-            value = NumbersUtil.COPtoString(totalSaved.value),
-            modifier = Modifier.weight(1f)
+            name = stringResource(id = R.string.total_saved),
+            value = NumbersUtil.toString(totalSaved.value?.toDouble()?:0.0),
+            modifier = Weight1f()
         )
-
     }
 }
 
 @Composable
-private fun FloatButton(viewModel: ProjectionsViewModel){
-    Column {
-        FloatButton(
-            imageVector = Icons.Rounded.RemoveRedEye,
-            descriptionIcon = R.string.list_projection
-        ) {
-            viewModel.goToList()
-        }
+private fun Body(viewModel: ProjectionsViewModel){
+    val list = viewModel.projectionsList
 
-        FloatButton(
-            imageVector = Icons.Rounded.Add,
-            descriptionIcon = R.string.add_projection
-        ) {
-            viewModel.goToCreate()
+    Column(modifier = Modifier.padding(Dimensions.PADDING_SHORT)) {
+        list.forEach {
+            ProjectionItem(it)
+        }
+    }
+}
+
+@Composable
+private fun ProjectionItem(recap: ProjectionRecap){
+    androidx.compose.material3.Card(modifier = Modifier.padding(bottom = 8.dp).fillMaxWidth()) {
+        Column(modifier = Modifier.padding(8.dp)) {
+            Text(text = recap.limitDate.toString(), fontWeight = FontWeight.Bold)
+            Row {
+                Text(text = "Saved: ", modifier = Modifier.weight(1f))
+                Text(text = NumbersUtil.toString(recap.savedCash.toDouble()))
+            }
+            Row {
+                Text(text = "Months left: ", modifier = Modifier.weight(1f))
+                Text(text = recap.monthsLeft.toString())
+            }
         }
     }
 }
 
 @RequiresApi(Build.VERSION_CODES.S)
 @Composable
-@Preview(showBackground = true, showSystemUi = true, uiMode = Configuration.UI_MODE_NIGHT_NO, backgroundColor = 0x000000)
-fun PreviewLight(){
+@Preview(showBackground = true, showSystemUi = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
+fun ProjectionsPreview(){
     MaterialThemeComposeUI {
         Projections(getViewModel())
     }
@@ -159,8 +119,8 @@ fun PreviewLight(){
 
 @RequiresApi(Build.VERSION_CODES.S)
 @Composable
-@Preview(showBackground = true, showSystemUi = true, uiMode = Configuration.UI_MODE_NIGHT_YES, backgroundColor = 0xffffff)
-fun PreviewDark(){
+@Preview(showBackground = true, showSystemUi = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
+fun ProjectionsPreviewDark(){
     MaterialThemeComposeUI {
         Projections(getViewModel())
     }
@@ -168,7 +128,7 @@ fun PreviewDark(){
 
 @Composable
 fun getViewModel(): ProjectionsViewModel{
-    val vm =  ProjectionsViewModel()
+    val vm =  ProjectionsViewModel(SavedStateHandle(), null, null)
     vm.projectionsList.add(ProjectionRecap(
         limitDate = LocalDate.now(),
         savedCash = BigDecimal.TEN,

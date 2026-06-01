@@ -1,4 +1,4 @@
-package co.japl.android.myapplication.finanzas.controller.simulators.list
+package co.com.japl.module.credit.fragments
 
 import android.content.Context
 import android.util.Log
@@ -11,7 +11,7 @@ import androidx.navigation.NavController
 import co.com.japl.finances.iports.dtos.SimulatorCreditDTO
 import co.com.japl.finances.iports.inbounds.credit.ISimulatorCreditFixPort
 import co.com.japl.finances.iports.inbounds.creditcard.ISimulatorCreditVariablePort
-import co.com.japl.module.creditcard.controllers.simulator.SimulatorListItemViewModel
+// Removed: import co.com.japl.module.creditcard.controllers.simulator.SimulatorListItemViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import co.com.japl.module.credit.controllers.simulator.SimulatorListItemViewModel as SimulatorListItemViewModelCredit
 import kotlinx.coroutines.launch
@@ -26,14 +26,11 @@ class ListViewModel(@ApplicationContext val context: Context, private val simula
     }
 
 
-    fun createViewModelQuoteVariable(dto: SimulatorCreditDTO): SimulatorListItemViewModel{
-        return SimulatorListItemViewModel(
-            context,
-            dto,
-            simulatorVariableSvc,
-            navController
-        )
+    /*
+    fun createViewModelQuoteVariable(dto: SimulatorCreditDTO): Any?{
+        return null
     }
+    */
 
     fun createViewModelQuoteFix(dto: SimulatorCreditDTO): SimulatorListItemViewModelCredit{
         return SimulatorListItemViewModelCredit(

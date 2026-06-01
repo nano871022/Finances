@@ -5,7 +5,7 @@ import android.net.Uri
 import android.os.Bundle
 import androidx.core.os.bundleOf
 import androidx.navigation.NavController
-import co.com.japl.ui.R
+import co.com.japl.module.creditcard.R
 import co.com.japl.ui.utils.NumbersUtil
 
 class CashAdvanceParams {

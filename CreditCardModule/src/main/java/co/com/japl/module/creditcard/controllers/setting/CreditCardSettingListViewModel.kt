@@ -12,19 +12,20 @@ import co.com.japl.finances.iports.dtos.CreditCardSettingDTO
 import co.com.japl.finances.iports.inbounds.creditcard.ICreditCardSettingPort
 import co.com.japl.module.creditcard.R
 import co.com.japl.module.creditcard.navigations.CreditCardSetting
-import dagger.assisted.Assisted
-import dagger.assisted.AssistedFactory
-import dagger.assisted.AssistedInject
+import co.com.japl.module.creditcard.params.ListCreditCardSettingParams
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.runBlocking
+import androidx.lifecycle.SavedStateHandle
+import javax.inject.Inject
 
-@HiltViewModel(assistedFactory = CreditCardSettingListViewModel.Factory::class)
-class CreditCardSettingListViewModel @AssistedInject constructor(@Assisted private val codCreditCard:Int, private val creditCardSettingSvc:ICreditCardSettingPort?, @Assisted private val navController: NavController?):ViewModel() {
+@HiltViewModel
+class CreditCardSettingListViewModel @Inject constructor(
+    private val savedStateHandle: SavedStateHandle,
+    private val creditCardSettingSvc:ICreditCardSettingPort?
+):ViewModel() {
 
-    @AssistedFactory
-    interface Factory {
-        fun create(codCreditCard: Int, navController: NavController?): CreditCardSettingListViewModel
-    }
+    private val codCreditCard: Int = savedStateHandle.get<Int>(ListCreditCardSettingParams.Params.ARG_CODE_CREDIT_CARD) ?: 0
+    var navController: NavController? = null
 
     var showProgress : MutableState<Boolean> = mutableStateOf(true)
     var progress : MutableFloatState = mutableFloatStateOf(0f)

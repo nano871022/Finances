@@ -11,29 +11,30 @@ import co.com.japl.finances.iports.inbounds.credit.IPeriodGracePort
 import co.com.japl.module.credit.R
 import co.com.japl.module.credit.navigations.CreditList
 import co.com.japl.module.credit.pojo.CreditPeriodGraceDTO
-import dagger.assisted.Assisted
-import dagger.assisted.AssistedFactory
-import dagger.assisted.AssistedInject
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.YearMonth
+import androidx.lifecycle.SavedStateHandle
+import javax.inject.Inject
 
-@HiltViewModel(assistedFactory = ListViewModel.Factory::class)
-class ListViewModel @AssistedInject constructor(@Assisted private val period:YearMonth, private val creditSvc:ICreditPort?, val periodGraceSvc:IPeriodGracePort?, @Assisted private val navController: NavController?) : ViewModel() {
+@HiltViewModel
+class ListViewModel @Inject constructor(
+    private val creditsSvc:ICreditPort?, 
+    val periodGraceSvc:IPeriodGracePort?,
+    private val savedStateHandle: SavedStateHandle
+) : ViewModel() {
 
-    @AssistedFactory
-    interface Factory {
-        fun create(period: YearMonth, navController: NavController?): ListViewModel
-    }
+    val period: YearMonth = savedStateHandle.get<String>("PERIOD")?.let { YearMonth.parse(it) } ?: YearMonth.now()
+    var navController: NavController? = null
 
     val progress = mutableStateOf(true)
     val list = mutableListOf<CreditPeriodGraceDTO>()
 
     fun delete(id:Int){
-       creditSvc?.let{
+       creditsSvc?.let{
            if(it.delete(id)){
                Toast.makeText(navController?.context, R.string.toast_successful_deleted, Toast.LENGTH_LONG).show().apply {
                    progress.value = true
@@ -58,7 +59,7 @@ class ListViewModel @AssistedInject constructor(@Assisted private val period:Yea
 
     fun amortization(id:Int){
         val credit = list.first { credit -> credit.credit.id == id }
-        navController?.let{CreditList.amortization(credit.credit,LocalDate.now(),navController)}
+        navController?.let{CreditList.amortization(credit.credit,LocalDate.now(),navController!!)}
     }
 
     fun periodGrace(codeCredit:Int,period:Int,startDate: LocalDate,endDate: LocalDate){
@@ -75,7 +76,7 @@ class ListViewModel @AssistedInject constructor(@Assisted private val period:Yea
     }
 
     fun additional(id:Int){
-        navController?.let{CreditList.additional(id,navController)}
+        navController?.let{CreditList.additional(id,navController!!)}
     }
 
     fun execute() {
@@ -86,7 +87,7 @@ class ListViewModel @AssistedInject constructor(@Assisted private val period:Yea
 
     suspend fun load(){
         progress.value = true
-        creditSvc?.getCreditEnable(period)?.takeIf { it.isNotEmpty() }?.let{
+        creditsSvc?.getCreditEnable(period)?.takeIf { it.isNotEmpty() }?.let{
             list.clear()
             val credits = it.map {
                 CreditPeriodGraceDTO(it, periodGraceSvc?.hasGracePeriod(it.id) ?: false)

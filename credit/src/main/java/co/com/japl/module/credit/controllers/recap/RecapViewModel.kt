@@ -7,23 +7,23 @@ import androidx.navigation.NavController
 import co.com.japl.finances.iports.dtos.RecapCreditDTO
 import co.com.japl.finances.iports.inbounds.credit.ICreditPort
 import co.com.japl.module.credit.navigations.CreditList
-import dagger.assisted.Assisted
-import dagger.assisted.AssistedFactory
-import dagger.assisted.AssistedInject
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.time.YearMonth
+import androidx.lifecycle.SavedStateHandle
 import javax.inject.Inject
 
-@HiltViewModel(assistedFactory = RecapViewModel.Factory::class)
-class RecapViewModel @AssistedInject constructor(private val creditsSvc:ICreditPort?, @Assisted val yearMonth:YearMonth, @Assisted private val navController: NavController?) : ViewModel() {
+@HiltViewModel
+class RecapViewModel @Inject constructor(
+    private val creditsSvc:ICreditPort?, 
+    private val savedStateHandle: SavedStateHandle
+) : ViewModel() {
 
-    @AssistedFactory
-    interface Factory {
-        fun create(yearMonth: YearMonth, navController: NavController?): RecapViewModel
-    }
+    val yearMonth: YearMonth = savedStateHandle.get<String>("YEAR_MONTH")?.let { YearMonth.parse(it) } ?: YearMonth.now()
+    var navController: NavController? = null
+
     val loader = mutableStateOf(true)
     val progress = mutableFloatStateOf(0f)
     val listCredits = mutableListOf<RecapCreditDTO>()

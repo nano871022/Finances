@@ -24,11 +24,11 @@ import java.time.LocalDateTime
 import java.time.LocalTime
 
 @HiltViewModel(assistedFactory = PaidViewModel.Factory::class)
-class PaidViewModel @AssistedInject constructor(@Assisted private val codeAccount:Int?, @Assisted private val codePaid:Int?, private val accountSvc: IAccountPort?, private val paidSvc: IPaidPort?, @Assisted private val navController: NavController?) :ViewModel(){
+class PaidViewModel @AssistedInject constructor(@Assisted("codeAccount") private val codeAccount:Int?, @Assisted("codePaid") private val codePaid:Int?, private val accountSvc: IAccountPort?, private val paidSvc: IPaidPort?, @Assisted private val navController: NavController?) :ViewModel(){
 
     @AssistedFactory
     interface Factory {
-        fun create(codeAccount: Int?, codePaid: Int?, navController: NavController?): PaidViewModel
+        fun create(@Assisted("codeAccount") codeAccount: Int?, @Assisted("codePaid") codePaid: Int?, @Assisted navController: NavController?): PaidViewModel
     }
     private var _paid: PaidDTO? = null
     var accountList :List<AccountDTO>? = null

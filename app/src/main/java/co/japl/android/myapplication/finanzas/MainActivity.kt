@@ -4,15 +4,12 @@ import android.Manifest
 import android.content.BroadcastReceiver
 import android.content.IntentFilter
 import android.content.pm.PackageManager
-import android.os.Build
 import android.os.Bundle
-import android.os.StrictMode
 import android.provider.Telephony
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
-import androidx.annotation.RequiresApi
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
@@ -23,16 +20,13 @@ import androidx.drawerlayout.widget.DrawerLayout
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.*
-import co.com.japl.ui.interfaces.ISMSObserver
-import co.com.japl.module.creditcard.params.CreditCardQuotesParams
+import co.com.japl.finances.iports.observables.ISMSObserver
 import co.japl.android.myapplication.finanzas.controller.*
-import co.japl.android.myapplication.finanzas.interfaces.ISMSBoadcastReceiver
-import co.japl.android.myapplication.finanzas.modules.EntryPoint
+import co.com.japl.finances.iports.inbounds.common.ISMSBoadcastReceiver
 
 import com.google.android.gms.drive.*
 import com.google.android.material.navigation.NavigationView
 import dagger.hilt.android.AndroidEntryPoint
-import java.util.Arrays
 import javax.inject.Inject
 import kotlin.IllegalArgumentException
 
@@ -44,7 +38,7 @@ class MainActivity : AppCompatActivity(){
     lateinit var  appBarConfiguration:AppBarConfiguration
 
     @Inject lateinit var smsBroadcastReceiver: ISMSBoadcastReceiver
-    @Inject lateinit var subscribers:Map<Class<out ISMSObserver>,@JvmSuppressWildcards ISMSObserver>
+    @Inject lateinit var subscribers:Map<Class<*>,@JvmSuppressWildcards ISMSObserver>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         installSplashScreen()

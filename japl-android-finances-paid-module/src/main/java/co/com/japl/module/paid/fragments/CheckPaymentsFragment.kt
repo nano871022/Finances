@@ -10,7 +10,7 @@ import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.Fragment
 import co.com.japl.finances.iports.inbounds.common.ICheckPaymentPort
 import co.com.japl.ui.theme.MaterialThemeComposeUI
-import co.com.japl.module.paid.views.checkpaids.CheckList
+//import co.com.japl.module.paid.views.checkpaids.CheckList
 import dagger.hilt.android.AndroidEntryPoint
 import java.time.YearMonth
 import javax.inject.Inject
@@ -31,7 +31,7 @@ class CheckPaymentsFragment : Fragment() {
         return ComposeView(requireContext()).apply {
             setContent {
                 MaterialThemeComposeUI {
-                    CheckList(viewModel = viewModel)
+                    //CheckList(viewModel = viewModel)
                 }
             }
         }

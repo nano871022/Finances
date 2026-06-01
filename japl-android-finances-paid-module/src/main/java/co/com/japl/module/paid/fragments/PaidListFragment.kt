@@ -19,7 +19,7 @@ import co.com.japl.module.paid.params.PaidsParams
 import dagger.hilt.android.AndroidEntryPoint
 import java.time.YearMonth
 import javax.inject.Inject
-import co.japl.android.myapplication.finanzas.ApplicationInitial
+import co.com.japl.ui.Prefs
 
 @AndroidEntryPoint
 class PaidListFragment : Fragment()  {
@@ -42,7 +42,7 @@ class PaidListFragment : Fragment()  {
             accountCode = codeAccount?:0,
             period= if(date != null) YearMonth.of(date.year,date.monthValue) else YearMonth.now(),
             paidSvc = paidSvc,
-            prefs = ApplicationInitial.prefs,
+            prefs = Prefs(requireContext().applicationContext),
             navController = findNavController(),
             emailSvc = emailSvc,
             paidSmsSvc = paidSmsSvc

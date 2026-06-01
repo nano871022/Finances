@@ -210,7 +210,11 @@ private fun AdditionalPreviewNight(){
 
 @Composable
 private fun getViewModel(): AdditionalViewModel{
-    val vm = AdditionalViewModel(LocalContext.current,0,null,null)
+    val vm = AdditionalViewModel(
+        LocalContext.current,
+        savedStateHandle = TODO(),
+        additionalSvc = TODO(),
+    )
     vm.list.add(AdditionalCreditDTO(
         id = 1,
         name = "Test",

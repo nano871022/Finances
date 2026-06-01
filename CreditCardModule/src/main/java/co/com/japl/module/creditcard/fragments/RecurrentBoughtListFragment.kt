@@ -12,12 +12,9 @@ import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.com.japl.ui.Prefs
 import co.com.japl.finances.iports.inbounds.creditcard.bought.lists.IBoughtListPort
 import co.com.japl.finances.iports.inbounds.creditcard.ICreditCardPort
-import co.japl.android.myapplication.finanzas.modules.EntryPoint
-import dagger.hilt.EntryPoints
 import dagger.hilt.android.AndroidEntryPoint
 import androidx.navigation.fragment.findNavController
 import co.com.japl.module.creditcard.params.CreditCardQuotesParams
-import co.com.japl.ui.Prefs
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -32,7 +29,7 @@ class RecurrentBoughtListFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         val codeCreditCard = arguments?.getString(CreditCardQuotesParams.Params.PARAM_CREDIT_CARD_CODE)?.toIntOrNull() ?: 0
-        val prefs = ApplicationInitial.prefs
+        val prefs = Prefs(requireContext().applicationContext)
 
         viewModel = RecurrentBoughtViewModel(boughtSvc, prefs)
 

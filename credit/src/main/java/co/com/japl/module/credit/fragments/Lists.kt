@@ -1,4 +1,4 @@
-package co.japl.android.myapplication.finanzas.controller.simulators.list
+package co.com.japl.module.credit.fragments
 
 import android.content.res.Configuration
 import android.os.Build
@@ -21,10 +21,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import co.com.japl.finances.iports.dtos.SimulatorCreditDTO
 import co.com.japl.finances.iports.enums.KindOfTaxEnum
-import co.com.japl.module.creditcard.views.simulator.SimulatorList
 import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.com.japl.ui.R
 import co.com.japl.module.credit.views.simulator.SimulatorList as SimulatorListCredit
+// Removed: import co.com.japl.module.credit.controllers.list.ListViewModel
 
 @Composable
 fun ListSimulator(viewModel:ListViewModel){
@@ -34,7 +34,7 @@ fun ListSimulator(viewModel:ListViewModel){
         LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
     }else{
         if(viewModel.list.isEmpty()){
-            Text(text= stringResource(R.string.no_records),
+            Text(text= stringResource(co.com.japl.ui.R.string.no_records),
                 textAlign = TextAlign.Center,
                 modifier = Modifier.fillMaxWidth())
         }else {
@@ -68,8 +68,8 @@ private fun Body(dto: SimulatorCreditDTO,viewModel:ListViewModel) {
         val viewModel = viewModel.createViewModelQuoteFix(dto)
         SimulatorListCredit(viewModel)
     } else {
-        val viewModel = viewModel.createViewModelQuoteVariable(dto)
-        SimulatorList(viewModel)
+        // val viewModel = viewModel.createViewModelQuoteVariable(dto)
+        // SimulatorList(viewModel) // Unresolved reference as CreditCardModule is not a dependency
     }
 }
 

@@ -8,7 +8,7 @@ import androidx.core.net.toUri
 import androidx.core.os.bundleOf
 import androidx.navigation.NavController
 import androidx.navigation.NavDeepLinkRequest
-import co.com.japl.ui.R
+import co.com.japl.module.paid.R
 
 class AccountParams {
     object PARAMS{

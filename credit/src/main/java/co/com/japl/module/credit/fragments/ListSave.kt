@@ -8,8 +8,8 @@ import android.view.ViewGroup
 import androidx.annotation.RequiresApi
 import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.Fragment
-import co.japl.android.myapplication.finanzas.controller.simulators.list.ListSimulator
-import co.japl.android.myapplication.finanzas.controller.simulators.list.ListViewModel
+// Removed: import co.japl.android.myapplication.finanzas.controller.simulators.list.ListSimulator
+// Removed: import co.japl.android.myapplication.finanzas.controller.simulators.list.ListViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController

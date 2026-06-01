@@ -1,4 +1,4 @@
-package co.japl.android.myapplication.finanzas.controller.paids
+package co.com.japl.module.paid.fragments
 
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateMapOf

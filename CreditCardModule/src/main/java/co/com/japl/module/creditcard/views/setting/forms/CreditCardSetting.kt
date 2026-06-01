@@ -3,166 +3,152 @@ package co.com.japl.module.creditcard.views.setting.forms
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Cancel
 import androidx.compose.material.icons.rounded.Create
-import androidx.compose.material.icons.rounded.Update
+import androidx.compose.material.icons.rounded.Save
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import co.com.japl.module.creditcard.R
 import co.com.japl.module.creditcard.controllers.setting.CreditCardSettingViewModel
-import co.com.japl.ui.theme.MaterialThemeComposeUI
-import co.com.japl.module.creditcard.enums.MoreOptionsItemsTypeSettings
-import co.com.japl.ui.components.CheckBoxField
-import co.com.japl.ui.components.FieldSelect
 import co.com.japl.ui.components.FieldText
 import co.com.japl.ui.components.FieldView
 import co.com.japl.ui.components.FloatButton
-import co.com.japl.ui.components.MoreOptionsDialog
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import co.com.japl.ui.theme.MaterialThemeComposeUI
+import co.com.japl.ui.theme.values.Dimensions
+import co.com.japl.ui.theme.values.ModifiersCustom.Weight1f
+import androidx.lifecycle.SavedStateHandle
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Switch
 
 @Composable
-fun CreditCardSetting(viewModel: CreditCardSettingViewModel){
-    val stateProgres = remember {viewModel.showProgress}
-    val progress = remember {viewModel.progress}
-    
-    CoroutineScope(Dispatchers.IO).launch { 
-        viewModel.main()       
-    }
-    
-    if(stateProgres.value){
-        LinearProgressIndicator(
-            progress = { progress.value },
-        )
-    }else{
-        Scaffold (
-            floatingActionButton = {
-                Buttons(viewModel = viewModel)
-            }   
-        ){
-            Body(viewModel = viewModel,modifier = Modifier.padding(it))
+fun CreditCardSetting(viewModel: CreditCardSettingViewModel) {
+    val showProgress = remember { viewModel.showProgress }
+    val progress = remember { viewModel.progress }
+
+    if (showProgress.value) {
+        Column(modifier = Modifier.fillMaxWidth()) {
+            LinearProgressIndicator(
+                progress = { progress.floatValue },
+                modifier = Modifier.fillMaxWidth()
+            )
+            Text(
+                text = stringResource(R.string.loading_data),
+                textAlign = TextAlign.Center,
+                modifier = Modifier.fillMaxWidth()
+            )
         }
+    } else {
+        Body(viewModel)
     }
-        
 }
 
 @Composable
-private fun Body(viewModel: CreditCardSettingViewModel, modifier:Modifier) {
-    val stateType = remember { mutableStateOf(false) }
-    val nameState = remember { viewModel.name }
-    val valueState = remember { viewModel.value }
-    val typeState = remember {viewModel.type}
-    val activeState = remember{viewModel.active}
+private fun Body(viewModel: CreditCardSettingViewModel) {
+    Scaffold(
+        floatingActionButton = {
+            Buttons(viewModel)
+        }
+    ) {
+        Column(
+            modifier = Modifier
+                .padding(it)
+                .verticalScroll(rememberScrollState())
+                .padding(Dimensions.PADDING_SHORT)
+        ) {
+            Header(viewModel)
+            Form(viewModel)
+        }
+    }
+}
 
-    val nameIsErrorState = remember { viewModel.nameIsError }
-    val valueIsErrorState = remember { viewModel.valueIsError }
-    val typeIsErrorState = remember { viewModel.typeIsError }
-    val context = LocalContext.current
+@Composable
+private fun Header(viewModel: CreditCardSettingViewModel) {
+    viewModel.creditCard?.let {
+        FieldView(
+            name = R.string.credit_card,
+            value = it.name,
+            modifier = Modifier.fillMaxWidth()
+        )
+    }
+}
+
+@Composable
+private fun Form(viewModel: CreditCardSettingViewModel) {
+    val name = remember { viewModel.name }
+    val value = remember { viewModel.value }
+    val type = remember { viewModel.type }
+    val active = remember { viewModel.active }
 
     Column {
+        FieldText(
+            title = stringResource(R.string.name),
+            value = name.value,
+            callback = { name.value = it; viewModel.validate() },
+            modifier = Modifier.fillMaxWidth()
+        )
 
-        FieldView(title = stringResource(id = R.string.credit_card)
-            , value = viewModel.creditCard?.name?:""
-            , modifier = Modifier
-                .fillMaxWidth()
-                .padding(5.dp))
+        FieldText(
+            title = stringResource(R.string.value),
+            value = value.value,
+            callback = { value.value = it; viewModel.validate() },
+            modifier = Modifier.fillMaxWidth()
+        )
 
-        FieldSelect(title = stringResource(id = R.string.credit_card_setting_type),
-            value = typeState.value,
-            list = MoreOptionsItemsTypeSettings.values().toList(),
-            isError = typeIsErrorState,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(5.dp),
-            callable = {
-                typeState.value =  it?.let { context.getString(it.getName()) }?:""
+        FieldText(
+            title = stringResource(R.string.type),
+            value = type.value,
+            callback = { type.value = it; viewModel.validate() },
+            modifier = Modifier.fillMaxWidth()
+        )
 
-                viewModel.validate()
-            })
-
-        FieldText(title = stringResource(id = R.string.name)
-            , value=nameState.value
-            , hasErrorState =  nameIsErrorState
-            , validation = {viewModel.validate()}
-            , icon=Icons.Rounded.Cancel
-            , callback = {nameState.value = it}
-            , modifier = Modifier
-                .fillMaxWidth()
-                .padding(5.dp))
-
-
-        FieldText(title = stringResource(id = R.string.value)
-                , value = valueState.value
-                , icon =  Icons.Rounded.Cancel
-                , hasErrorState = valueIsErrorState
-                , callback = { valueState.value = it}
-                , validation = {viewModel.validate()}
-                , keyboardType = KeyboardOptions(keyboardType = KeyboardType.Decimal)
-                , modifier = Modifier
-                .fillMaxWidth()
-                .padding(5.dp))
-
-
-        CheckBoxField(title = stringResource(id = R.string.active),
-            value = activeState.value,
-            callback = {
-                activeState.value = it
-                viewModel.validate()
-                       },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(5.dp))
-
-
-        if (stateType.value) {
-            MoreOptionsDialog(listOptions = MoreOptionsItemsTypeSettings.values().toList(),
-                onDismiss = { stateType.value = false },
-                onClick = {
-                    viewModel.dto?.type = context.getString(it.getName())
-                    stateType.value = false
-                })
+        Row(modifier = Modifier.padding(top = Dimensions.PADDING_SHORT)) {
+            Text(
+                text = stringResource(R.string.active),
+                modifier = Weight1f()
+            )
+            Switch(checked = active.value, onCheckedChange = { active.value = it; viewModel.validate() })
         }
     }
 }
 
 @Composable
 private fun Buttons(viewModel: CreditCardSettingViewModel) {
-    remember {viewModel.showButtons}
-    val newOneState = remember {viewModel.newOne}
-        if (!newOneState.value) {
-            FloatButton(
-                imageVector = Icons.Rounded.Update,
-                descriptionIcon = R.string.save) {
-                viewModel.update()
-            }
-        } else {
-            FloatButton(
-                imageVector = Icons.Rounded.Create,
-                descriptionIcon =R.string.save) {
-                viewModel.create()
-            }
+    val newOne = remember { viewModel.newOne }
+    if (newOne.value.not()) {
+        FloatButton(
+            imageVector = Icons.Rounded.Save,
+            descriptionIcon = R.string.update
+        ) {
+            viewModel.update()
         }
+    } else {
+        FloatButton(
+            imageVector = Icons.Rounded.Create,
+            descriptionIcon = R.string.save
+        ) {
+            viewModel.create()
+        }
+    }
 }
 
 @RequiresApi(Build.VERSION_CODES.S)
 @Composable
 @Preview(showBackground = true, showSystemUi = true)
-private fun CreditCardSettingPreview(){
-    val viewModel = CreditCardSettingViewModel(codeCreditCard = null,codeCreditCardSetting = null, creditCardSvc = null,creditCardSettingSvc = null, navController=null)
+private fun CreditCardSettingPreview() {
+    val viewModel = CreditCardSettingViewModel(SavedStateHandle(), null, null)
     viewModel.showProgress.value = false
     MaterialThemeComposeUI {
         CreditCardSetting(viewModel = viewModel)

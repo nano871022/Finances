@@ -28,6 +28,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import co.japl.android.myapplication.finanzas.controller.google.GoogleAuthBackupRestoreViewModel
 import co.com.japl.ui.components.AlertDialogOkCancel
 import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.com.japl.ui.theme.values.Dimensions
@@ -410,7 +411,7 @@ private fun StatsSpaceLogedPreview(){
 
 @Composable
 private fun getViewModel():GoogleAuthBackupRestoreViewModel{
-    val vm =  GoogleAuthBackupRestoreViewModel(null,null,null,null,null)
+    val vm =  GoogleAuthBackupRestoreViewModel(null,null,null)
     vm.spaceMax.value = 15000000000.0
     vm.spaceUsed.value = 10.0
     vm.spaceDBKb.value = 1000.0

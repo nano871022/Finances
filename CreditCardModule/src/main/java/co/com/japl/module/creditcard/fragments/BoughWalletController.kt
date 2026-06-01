@@ -21,7 +21,7 @@ import co.com.japl.module.creditcard.params.BoughWalletParams
 import dagger.hilt.android.AndroidEntryPoint
 import java.time.LocalDateTime
 import javax.inject.Inject
-import co.japl.android.myapplication.finanzas.ApplicationInitial
+import co.com.japl.ui.Prefs
 
 @AndroidEntryPoint
 class BoughWalletController: Fragment() {
@@ -44,7 +44,7 @@ class BoughWalletController: Fragment() {
                     boughtSvc=boughtSvc,
                     creditRateSvc=taxSvc,
                     navController =  findNavController(),
-                    prefs = ApplicationInitial.prefs)
+                    prefs = Prefs(requireContext().applicationContext))
             }
         )
     }

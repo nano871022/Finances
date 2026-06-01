@@ -10,25 +10,18 @@ import androidx.annotation.RequiresApi
 import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.Fragment
 import co.com.japl.ui.theme.MaterialThemeComposeUI
-import co.japl.android.myapplication.finanzas.bussiness.DB.connections.ConnectDB
-import co.com.japl.module.credit.databinding.FragmentGDriveConnectBinding
-import co.japl.android.myapplication.finanzas.bussiness.impl.GoogleDriveImpl
-import co.japl.android.myapplication.finanzas.bussiness.impl.GoogleSignInSimpleImplement
-import co.japl.android.myapplication.finanzas.bussiness.impl.GoogleSignInWebImplement
-import co.japl.android.myapplication.finanzas.bussiness.impl.GoogleSignInnImplement
-import co.japl.android.myapplication.finanzas.bussiness.interfaces.IGoogleDriveService
-import co.japl.android.myapplication.finanzas.bussiness.interfaces.IGoogleSignInService
+import co.japl.android.finances.services.implement.GoogleLoginService
+import co.japl.android.finances.services.implement.GoogleDriveServiceImpl
+import co.com.japl.finances.iports.inbounds.common.IGoogleDriveService
+import co.com.japl.finances.iports.inbounds.common.IGoogleSignInService
 import co.japl.android.myapplication.finanzas.controller.google.views.GoogleAuthBackupRestore
-import co.japl.android.myapplication.finanzas.controller.google.views.GoogleAuthBackupRestoreViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
 @AndroidEntryPoint
 class GDriveConnectFragment : Fragment() {
-    private lateinit var service :IGoogleSignInService
-    private lateinit var driveSvc:IGoogleDriveService
-    private lateinit var loginSimpleSvc :IGoogleSignInService
-    private lateinit var loginWebSvc :IGoogleSignInService
+    private var service :IGoogleSignInService? = null
+    private var driveSvc:IGoogleDriveService? = null
 
     @Inject lateinit var dbConnect: SQLiteOpenHelper
 
@@ -37,11 +30,10 @@ class GDriveConnectFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        service = GoogleSignInnImplement(requireActivity())
-        driveSvc = GoogleDriveImpl(requireActivity(),dbConnect as ConnectDB)
-        loginSimpleSvc = GoogleSignInSimpleImplement(requireActivity())
-        loginWebSvc = GoogleSignInWebImplement(requireActivity())
-        val viewModel = GoogleAuthBackupRestoreViewModel(requireActivity(),service,loginSimpleSvc,loginWebSvc,driveSvc)
+        service = GoogleLoginService(requireActivity(), 101)
+        driveSvc = GoogleDriveServiceImpl()
+        
+        val viewModel = GoogleAuthBackupRestoreViewModel(requireActivity(), service, driveSvc)
         return ComposeView(requireContext()).apply {
             setContent {
                 MaterialThemeComposeUI {

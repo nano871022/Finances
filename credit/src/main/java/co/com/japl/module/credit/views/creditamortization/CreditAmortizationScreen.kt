@@ -35,6 +35,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.SavedStateHandle
 import co.com.japl.finances.iports.dtos.CreditDTO
 import co.com.japl.finances.iports.enums.KindOfTaxEnum
 import co.com.japl.finances.iports.enums.KindPaymentsEnums
@@ -323,7 +324,13 @@ private fun CreditAmortizationScreenPreviewDarkTablet() {
 private fun getViewModel():CreditAmortizationViewModel{
     val creditCode = 1
     val lastDate = LocalDate.now()
-    val viewModel = CreditAmortizationViewModel(creditCode, lastDate)
+    val viewModel = CreditAmortizationViewModel(
+        SavedStateHandle(),
+        creditSvc = TODO(),
+        additionalSvc = TODO(),
+        gracePeriodSvc = TODO(),
+        amortizationSvc = TODO(),
+    )
     viewModel.state.value.isLoading=false
     viewModel.state.value.credit = CreditDTO(
         id = 1,

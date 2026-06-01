@@ -16,11 +16,7 @@ import javax.inject.Inject
 @HiltViewModel
 class AccountViewModel @Inject constructor(private val accountSvc:IAccountPort?, val inputSvc:IInputPort?): ViewModel(){
 
-    private var navController: NavController? = null
-
-    fun setNavController(navController: NavController){
-        this.navController = navController
-    }
+    var navController: NavController? = null
 
     val progress = mutableFloatStateOf(0f)
     val loading = mutableStateOf(true)
@@ -29,13 +25,13 @@ class AccountViewModel @Inject constructor(private val accountSvc:IAccountPort?,
 
     fun add(){
         navController?.let {
-            Account.navigate(navController)
+            Account.navigate(it)
         }
     }
 
     fun edit(codeAccount:Int){
         navController?.let {
-            Account.navigate(codeAccount,navController)
+            Account.navigate(codeAccount,it)
         }
     }
 

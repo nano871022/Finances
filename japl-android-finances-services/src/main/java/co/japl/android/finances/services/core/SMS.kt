@@ -1,15 +1,12 @@
 package co.japl.android.finances.services.core
 
-import android.app.Activity
 import android.content.BroadcastReceiver
-import android.content.ContentResolver
 import android.content.Context
 import android.content.Intent
 import android.provider.Telephony
-import co.com.japl.ui.interfaces.ISMSObservablePublicher
 import co.com.japl.finances.iports.inbounds.common.ISMSRead
-import co.com.japl.ui.Prefs
 import co.com.japl.finances.iports.inbounds.common.ISMSBoadcastReceiver
+import co.com.japl.finances.iports.observables.ISMSObservablePublicher
 import java.time.Instant
 import java.time.LocalDateTime
 import java.time.ZoneId
@@ -41,7 +38,7 @@ import javax.inject.Inject
  *
  * You need to set sender and body regex uin UI to make it work
  * */
-class SMS @Inject constructor(private val observable:ISMSObservablePublicher,private val context:Context):ISMSBoadcastReceiver ,
+class SMS @Inject constructor(private val observable: ISMSObservablePublicher, private val context:Context):ISMSBoadcastReceiver ,
     ISMSRead, BroadcastReceiver(){
 
         override fun load(number: String,numDaysRead:Int):List<Pair<String, LocalDateTime>>{

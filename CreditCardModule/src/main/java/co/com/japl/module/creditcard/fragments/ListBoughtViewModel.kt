@@ -1,4 +1,4 @@
-package co.japl.android.myapplication.finanzas.controller.boughtcreditcard
+package co.com.japl.module.creditcard.fragments
 
 import android.app.Application
 import androidx.compose.runtime.mutableFloatStateOf
@@ -11,12 +11,10 @@ import co.com.japl.finances.iports.inbounds.common.IDifferQuotesPort
 import co.com.japl.finances.iports.inbounds.creditcard.ITaxPort
 import co.com.japl.finances.iports.inbounds.creditcard.bought.lists.IBoughtListPort
 import co.com.japl.ui.Prefs
-import co.japl.android.myapplication.finanzas.modules.EntryPoint
 import co.com.japl.finances.iports.pojo.BoughtCreditCard
 import co.com.japl.module.creditcard.params.CashAdvanceParams
 import co.com.japl.module.creditcard.params.CreditCardQuotesParams
 import co.japl.android.myapplication.pojo.CreditCard
-import dagger.hilt.EntryPoints
 import kotlinx.coroutines.runBlocking
 import java.time.LocalDateTime
 import java.time.YearMonth
@@ -26,13 +24,17 @@ import javax.inject.Inject
 class ListBoughtViewModel @Inject constructor(
     private val application: Application,
     private var navController: NavController?,
-    val prefs:Prefs
+    val prefs:Prefs,
+    private val taxSvc: ITaxPort,
+    private val boughtListSvc: IBoughtListPort,
+    private val creditCardSvc: ICreditCardPort,
+    private val differInstallmentSvc: IDifferQuotesPort
 ) : ViewModel() {
 
-    private  var _taxSvc: ITaxPort = EntryPoints.get(application, EntryPoint::class.java).getInboundTaxPort()
-    private  var _boughtListSvc: IBoughtListPort = EntryPoints.get(application, EntryPoint::class.java).getBoughtCreditCardSvc()
-    private  var _creditCardSvc: ICreditCardPort = EntryPoints.get(application, EntryPoint::class.java).getCreditCardSvc()
-    private var _differInstallmentSvc: IDifferQuotesPort = EntryPoints.get(application, EntryPoint::class.java).getDifferInstallmentSvc()
+    private  var _taxSvc: ITaxPort = taxSvc
+    private  var _boughtListSvc: IBoughtListPort = boughtListSvc
+    private  var _creditCardSvc: ICreditCardPort = creditCardSvc
+    private var _differInstallmentSvc: IDifferQuotesPort = differInstallmentSvc
 
     val cache = mutableStateOf(prefs.simulator)
     val cashAdvance = mutableStateOf(false)

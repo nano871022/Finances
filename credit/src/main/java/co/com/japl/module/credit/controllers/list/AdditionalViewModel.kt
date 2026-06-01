@@ -11,23 +11,25 @@ import co.com.japl.finances.iports.dtos.AdditionalCreditDTO
 import co.com.japl.finances.iports.inbounds.credit.IAdditional
 import co.com.japl.module.credit.R
 import co.com.japl.module.credit.navigations.AdditionalList
-import dagger.assisted.Assisted
-import dagger.assisted.AssistedFactory
-import dagger.assisted.AssistedInject
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import java.time.LocalDate
+import androidx.lifecycle.SavedStateHandle
+import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 
-@HiltViewModel(assistedFactory = AdditionalViewModel.Factory::class)
-class AdditionalViewModel @AssistedInject constructor(@Assisted private val context: Context, @Assisted private val code:Int=0, private val additionalSvc: IAdditional?, @Assisted private val navController: NavController? ): ViewModel(){
+@HiltViewModel
+class AdditionalViewModel @Inject constructor(
+    @ApplicationContext private val context: Context, 
+    private val savedStateHandle: SavedStateHandle,
+    private val additionalSvc: IAdditional?
+): ViewModel(){
 
-    @AssistedFactory
-    interface Factory {
-        fun create(context: Context, code: Int, navController: NavController?): AdditionalViewModel
-    }
+    private val code: Int = savedStateHandle.get<Long>("CREDIT_CODE")?.toInt() ?: 0
+    var navController: NavController? = null
 
     val list = mutableStateListOf<AdditionalCreditDTO>()
     private val _loading = MutableStateFlow<Boolean>(false)

@@ -4,10 +4,9 @@ import co.com.japl.finances.iports.dtos.SMSCreditCard
 import co.com.japl.finances.iports.enums.KindInterestRateEnum
 import co.com.japl.finances.iports.inbounds.creditcard.ICreditCardPort
 import co.com.japl.finances.iports.inbounds.creditcard.ISMSCreditCardPort
-import co.com.japl.finances.iports.inbounds.creditcard.bought.IBoughtPort
 import co.com.japl.finances.iports.inbounds.creditcard.bought.IBoughtSmsPort
-import co.com.japl.ui.interfaces.ISMSObservableSubscriber
-import co.com.japl.ui.interfaces.ISMSObserver
+import co.com.japl.finances.iports.observables.ISMSObservableSubscriber
+import co.com.japl.finances.iports.observables.ISMSObserver
 import javax.inject.Inject
 
 class SMSObserver @Inject constructor(private val smsSvc:ISMSCreditCardPort,private val subscriber: ISMSObservableSubscriber,private val ccSvc:ICreditCardPort,private val svc:IBoughtSmsPort,private val msmSvc:ISMSCreditCardPort): ISMSObserver{

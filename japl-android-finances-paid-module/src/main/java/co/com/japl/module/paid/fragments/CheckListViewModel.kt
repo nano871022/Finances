@@ -1,4 +1,4 @@
-package co.japl.android.myapplication.finanzas.controller.paids
+package co.com.japl.module.paid.fragments
 
 import android.content.Context
 import android.widget.Toast
@@ -32,10 +32,9 @@ class CheckListViewModel(private val period:YearMonth, private val svc:ICheckPay
             it.id == 0
         }?.forEach { svc?.save(it) }
 
-        Toast.makeText(context, R.string.toast_save_successful, Toast.LENGTH_LONG).show().also {
-            loaderStatus.value = true
-            loaderProgressStatus.value = false
-        }
+        Toast.makeText(context, R.string.toast_save_successful, Toast.LENGTH_LONG).show()
+        loaderStatus.value = true
+        loaderProgressStatus.value = false
 
     }
 

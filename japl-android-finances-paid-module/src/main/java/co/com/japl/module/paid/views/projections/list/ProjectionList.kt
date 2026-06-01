@@ -247,7 +247,7 @@ private fun ProjectionListPreviewLight(){
 
 @Composable
 private fun getViewModelList(): ProjectionListViewModel {
-    val vm = ProjectionListViewModel(context = LocalContext.current)
+    val vm = ProjectionListViewModel(context = LocalContext.current, projectionListPort = null, navController = null)
     vm.list.add(
         ProjectionDTO(
             id = 0,

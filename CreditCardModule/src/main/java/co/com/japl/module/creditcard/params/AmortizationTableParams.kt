@@ -5,9 +5,10 @@ import android.os.Bundle
 import androidx.core.net.toUri
 import androidx.core.os.bundleOf
 import androidx.navigation.NavController
+import co.com.japl.finances.iports.dtos.CalcDTO
 import co.com.japl.ui.utils.DateUtils
-import co.com.japl.ui.R
-import co.japl.android.finances.services.dto.CalcDTO
+import co.com.japl.module.creditcard.R
+
 
 import co.com.japl.finances.iports.enums.AmortizationKindOfEnum
 import co.com.japl.module.creditcard.params.PeriodsParams.Params
@@ -22,7 +23,7 @@ class AmortizationTableParams {
     }
 
     companion object{
-        fun newInstance(creditValue:CalcDTO,navController: NavController){
+        fun newInstance(creditValue: CalcDTO, navController: NavController){
             val parameters = bundleOf(params.ARG_PARAM_CREDIT_VALUE to Gson().toJson(creditValue),params.ARG_PARAM_KIND_OF_AMORTIZATION to AmortizationKindOfEnum.EXTRA_VALUE_AMORTIZATION)
             navController.navigate(R.id.action_item_menu_side_listsave_to_amortizationTableFragment,parameters)
         }

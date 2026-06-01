@@ -207,7 +207,10 @@ fun CreditCardSettingListPreviewDARK(){
 }
 
 fun getViewModel():CreditCardSettingListViewModel{
-    val viewModel = CreditCardSettingListViewModel(0, null,null)
+    val viewModel = CreditCardSettingListViewModel(
+        savedStateHandle = TODO(),
+        creditCardSettingSvc = TODO()
+    )
     viewModel.showProgress.value = false
     viewModel.progress.floatValue = 0.7f
     viewModel.list.add(CreditCardSettingDTO(1,2,"test","test","", LocalDateTime.now(),Short.MIN_VALUE))

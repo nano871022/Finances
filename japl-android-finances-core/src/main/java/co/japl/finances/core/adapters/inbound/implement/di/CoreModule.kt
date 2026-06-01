@@ -33,8 +33,8 @@ import co.com.japl.finances.iports.inbounds.paid.ISMSPaidPort
 import co.com.japl.finances.iports.inbounds.paid.ISmsPort
 import co.com.japl.finances.iports.inbounds.recap.IRecapPort
 import co.com.japl.ui.impls.SMSObservable
-import co.com.japl.ui.interfaces.ISMSObservablePublicher
-import co.com.japl.ui.interfaces.ISMSObservableSubscriber
+import co.com.japl.finances.iports.observables.ISMSObservablePublicher
+import co.com.japl.finances.iports.observables.ISMSObservableSubscriber
 import co.japl.finances.core.adapters.inbound.implement.common.CheckPaymentsImpl
 import co.japl.finances.core.adapters.inbound.implement.common.LLMServiceImpl
 import co.japl.finances.core.adapters.inbound.implement.credit.AdditionalPort
@@ -81,7 +81,6 @@ import co.japl.finances.core.usercases.interfaces.creditcard.ICreditCardSetting
 import co.japl.finances.core.usercases.interfaces.creditcard.ISMSCreditCard
 import co.japl.finances.core.usercases.interfaces.creditcard.ITag
 import co.japl.finances.core.usercases.interfaces.creditcard.ITax
-import co.com.japl.finances.iports.inbounds.creditcard.bought.lists.IBought
 import co.japl.finances.core.usercases.interfaces.creditcard.bought.lists.IBoughtList
 import co.japl.finances.core.usercases.interfaces.creditcard.bought.lists.IBoughtSms
 import co.japl.finances.core.usercases.interfaces.creditcard.paid.lists.IPaidList

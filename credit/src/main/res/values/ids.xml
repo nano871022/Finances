@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item type="id" name="action_item_menu_side_simulatorCredit_to_amortizationTableFixFragment" />
+    <item type="id" name="action_item_menu_side_listsave_to_amortizationTableFragment" />
+    <item type="id" name="action_creditFixFragment_to_additionalListFragment" />
+    <item type="id" name="action_creditFixFragment_to_amortizationCreditFragment" />
+    <item type="id" name="action_amortizationCreditFragment_to_additionalListFragment" />
+    <item type="id" name="action_amortizationCreditFragment_to_extraValueListController" />
+    <item type="id" name="action_creditListFragment_to_creditFixFragment" />
+    <item type="id" name="action_creditListFragment_to_monthlyCreditListFragment" />
+    <item type="id" name="action_creditListFragment_to_periodCreditListFragment" />
+    <item type="id" name="action_monthlyCreditListFragment_to_amortizationCreditFragment" />
+    <item type="id" name="action_monthlyCreditListFragment_to_additionalListFragment" />
+    <item type="id" name="action_periodCreditListFragment_to_monthlyCreditListFragment" />
+    <item type="id" name="action_amortizationTableFragment_to_extraValueListController" />
+    <item type="id" name="action_list_bought_to_amortizationTableFragment" />
+</resources>

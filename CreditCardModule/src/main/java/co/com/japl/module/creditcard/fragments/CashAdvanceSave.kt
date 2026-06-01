@@ -21,7 +21,7 @@ import co.com.japl.module.creditcard.params.CashAdvanceParams
 import dagger.hilt.android.AndroidEntryPoint
 import java.time.LocalDateTime
 import javax.inject.Inject
-import co.japl.android.myapplication.finanzas.ApplicationInitial
+import co.com.japl.ui.Prefs
 
 @AndroidEntryPoint
 class CashAdvanceSave: Fragment() {
@@ -44,7 +44,7 @@ class CashAdvanceSave: Fragment() {
                     creditRateSvc,
                     creditCardSvc,
                     navController = findNavController(),
-                    prefs = ApplicationInitial.prefs
+                    prefs = co.com.japl.ui.Prefs(requireContext().applicationContext)
                 )
             }
         )

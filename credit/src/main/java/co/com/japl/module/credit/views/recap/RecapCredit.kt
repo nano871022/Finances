@@ -225,7 +225,10 @@ fun RecapEmptyPreviewDark(){
 }
 
 fun viewModel():RecapViewModel{
-    val viewModel = RecapViewModel(null, YearMonth.now(),null)
+    val viewModel = RecapViewModel(
+        creditsSvc = TODO(),
+        savedStateHandle = TODO()
+    )
     viewModel.listCredits.add(
         RecapCreditDTO(
             month = 4,

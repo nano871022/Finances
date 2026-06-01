@@ -21,7 +21,7 @@ import co.com.japl.module.creditcard.views.bought.BoughtMonthly
 import co.com.japl.ui.theme.MaterialThemeComposeUI
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
-import co.japl.android.myapplication.finanzas.ApplicationInitial
+import co.com.japl.ui.Prefs
 
 @AndroidEntryPoint
 class ListCreditCardQuote : Fragment(){
@@ -41,7 +41,7 @@ class ListCreditCardQuote : Fragment(){
                 creditCardPort,
                 boughtSvc,
                 navController = findNavController(),
-                ApplicationInitial.prefs,
+                Prefs(requireContext().applicationContext),
                 msmSvc,
                 svc
             )

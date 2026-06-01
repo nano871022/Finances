@@ -14,9 +14,7 @@ import co.com.japl.finances.iports.inbounds.credit.IAdditionalFormPort
 import co.com.japl.module.credit.R
 import co.com.japl.ui.utils.initialFieldState
 import co.com.japl.ui.utils.NumbersUtil
-import dagger.assisted.Assisted
-import dagger.assisted.AssistedFactory
-import dagger.assisted.AssistedInject
+import co.com.japl.module.credit.params.AdditionalCreditParams
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
@@ -24,14 +22,20 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import java.math.BigDecimal
 import java.time.LocalDate
+import dagger.hilt.android.qualifiers.ApplicationContext
+import javax.inject.Inject
 
-@HiltViewModel(assistedFactory = AdditionalFormViewModel.Factory::class)
-class AdditionalFormViewModel @AssistedInject constructor(@Assisted private val context: Context, @Assisted private val savedStateHandle: SavedStateHandle, @Assisted private val id:Int=-1, @Assisted private val codeCredit:Int=0, private val additionalSvc: IAdditionalFormPort?, @Assisted private val navController: NavController?) : ViewModel(){
+@HiltViewModel
+class AdditionalFormViewModel @Inject constructor(
+    @ApplicationContext private val context: Context, 
+    private val savedStateHandle: SavedStateHandle, 
+    private val additionalSvc: IAdditionalFormPort?
+) : ViewModel(){
 
-    @AssistedFactory
-    interface Factory {
-        fun create(context: Context, savedStateHandle: SavedStateHandle, id: Int, codeCredit: Int, navController: NavController?): AdditionalFormViewModel
-    }
+    private val id: Int = savedStateHandle.get<Int>(AdditionalCreditParams.Params.PARAM_ID_ADDITIONAL_CREDIT) ?: -1
+    private val codeCredit: Int = savedStateHandle.get<Int>(AdditionalCreditParams.Params.PARAM_CREDIT_CODE) ?: 0
+    var navController: NavController? = null
+
     private val _dto = MutableStateFlow<AdditionalCreditDTO>(AdditionalCreditDTO(
         id=id,
         creditCode = codeCredit.toLong(),
@@ -43,7 +47,7 @@ class AdditionalFormViewModel @AssistedInject constructor(@Assisted private val 
     val hostState: SnackbarHostState = SnackbarHostState()
     val loading = mutableStateOf(false)
     val name = initialFieldState(
-        savedStateHandle!!,
+        savedStateHandle,
         "FORM_NAME",
         initialValue = "",
         validator = { it.isNotBlank()},
@@ -52,7 +56,7 @@ class AdditionalFormViewModel @AssistedInject constructor(@Assisted private val 
         }}
     )
     val value = initialFieldState<BigDecimal>(
-        savedStateHandle!!,
+        savedStateHandle,
         "FORM_VALUE",
         initialValue = BigDecimal.ZERO,
         formatter = { if(it.isNotBlank() && NumbersUtil.isNumber(it)) NumbersUtil.toBigDecimal(it) else BigDecimal.ZERO  },
@@ -66,7 +70,7 @@ class AdditionalFormViewModel @AssistedInject constructor(@Assisted private val 
         it.onValueChangeStr("")
     }
     val startDate = initialFieldState(
-        savedStateHandle!!,
+        savedStateHandle,
         "FORM_START_DATE",
         initialValue = LocalDate.now(),
         validator = { it.isAfter(LocalDate.now().withYear(2000))},

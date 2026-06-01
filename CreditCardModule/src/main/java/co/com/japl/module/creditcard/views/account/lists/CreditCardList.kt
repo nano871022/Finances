@@ -228,7 +228,7 @@ fun CreditCardListPreviewDark(){
 }
 
 fun getViewModel():CreditCardListViewModel{
- val viewModel = CreditCardListViewModel(creditCardSvc = null,navController = null)
+ val viewModel = CreditCardListViewModel(creditCardSvc = null)
     viewModel.showProgress.value = false
     viewModel.progress.floatValue = 0.7f
     return viewModel

@@ -5,7 +5,7 @@ import android.os.Bundle
 import androidx.annotation.RequiresApi
 import androidx.core.os.bundleOf
 import androidx.navigation.NavController
-import co.com.japl.ui.R
+import co.com.japl.module.credit.R
 import co.com.japl.ui.utils.DateUtils
 import java.time.LocalDate
 

@@ -4,7 +4,11 @@ import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import co.japl.android.finances.services.DB.connections.ConnectDB
-import co.com.japl.ui.Prefs
+import co.japl.android.finances.services.cache.impl.QuoteCreditCardCache
+import co.japl.android.finances.services.cache.impl.SimulatorCreditCache
+import co.japl.android.finances.services.cache.interfaces.IQuoteCreditCardCache
+import co.japl.android.finances.services.cache.interfaces.ISimulatorCreditCache
+import co.japl.android.finances.services.dao.interfaces.IQuoteCreditCardDAO
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -34,7 +38,13 @@ object ProvidesModule {
 
     @Singleton
     @Provides
-    fun providePrefs(@ApplicationContext context: Context): Prefs {
-        return Prefs(context)
+    fun provideBoughtCache(implement: IQuoteCreditCardDAO): IQuoteCreditCardCache {
+        return QuoteCreditCardCache(implement)
+    }
+
+    @Singleton
+    @Provides
+    fun provideSimulatorCache(): ISimulatorCreditCache {
+        return SimulatorCreditCache()
     }
 }

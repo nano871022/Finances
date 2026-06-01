@@ -1,4 +1,4 @@
-package co.com.japl.ui.interfaces
+package co.com.japl.finances.iports.observables
 
 interface ISMSObservableSubscriber {
 

@@ -9,7 +9,7 @@ import androidx.annotation.RequiresApi
 import androidx.core.os.bundleOf
 import androidx.fragment.app.FragmentManager
 import androidx.navigation.NavController
-import co.com.japl.ui.R
+import co.com.japl.module.creditcard.R
 import java.util.*
 
 class CreditCardParams(var parentFragmentManagers: FragmentManager) {
@@ -22,7 +22,7 @@ class CreditCardParams(var parentFragmentManagers: FragmentManager) {
         @JvmStatic
         fun newInstance(param1: String,navController:NavController) {
             val parameter = bundleOf(
-                    ARG_PARAM_CODE to param1
+                    Params.ARG_PARAM_CODE to param1
             )
             navController.navigate(R.id.action_listCreditCard_to_createCreditCard,parameter)
         }
@@ -39,8 +39,8 @@ class CreditCardParams(var parentFragmentManagers: FragmentManager) {
         fun download(argument:Bundle):Optional<String>{
             Log.d(javaClass.name,"=== download $argument ${argument.keySet().toSet()}")
             argument.let {
-                if(it.get(ARG_PARAM_CODE) != null) {
-                    return Optional.ofNullable(it.get(ARG_PARAM_CODE).toString())
+                if(it.get(Params.ARG_PARAM_CODE) != null) {
+                    return Optional.ofNullable(it.get(Params.ARG_PARAM_CODE).toString())
                 }else if(it[Params.ARG_DEEPLINK] != null){
                     return Optional.ofNullable(Uri.parse((it[Params.ARG_DEEPLINK] as Intent).dataString).getQueryParameter(Params.ARG_PARAM_CODE_CREDIT_CARD))
 

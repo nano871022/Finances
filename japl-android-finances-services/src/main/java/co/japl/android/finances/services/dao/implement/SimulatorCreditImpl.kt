@@ -5,8 +5,8 @@ import android.os.Build
 import android.provider.BaseColumns
 import android.util.Log
 import androidx.annotation.RequiresApi
-import co.japl.android.finances.services.dto.CalcDB
-import co.japl.android.finances.services.dto.CalcDTO
+import co.com.japl.finances.iports.dtos.CalcDB
+import co.com.japl.finances.iports.dtos.CalcDTO
 import co.japl.android.finances.services.dao.interfaces.ISimulatorCreditDAO
 import co.japl.android.finances.services.enums.CalcEnum
 import co.japl.android.finances.services.mapping.CalcMap

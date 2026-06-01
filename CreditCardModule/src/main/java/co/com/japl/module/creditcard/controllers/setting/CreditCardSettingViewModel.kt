@@ -12,20 +12,23 @@ import co.com.japl.finances.iports.inbounds.creditcard.ICreditCardPort
 import co.com.japl.finances.iports.inbounds.creditcard.ICreditCardSettingPort
 import co.com.japl.module.creditcard.R
 import co.com.japl.ui.utils.NumbersUtil
-import dagger.assisted.Assisted
-import dagger.assisted.AssistedFactory
-import dagger.assisted.AssistedInject
+import co.com.japl.module.creditcard.params.CreditCardSettingParams
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.runBlocking
 import java.time.LocalDateTime
+import androidx.lifecycle.SavedStateHandle
+import javax.inject.Inject
 
-@HiltViewModel(assistedFactory = CreditCardSettingViewModel.Factory::class)
-class CreditCardSettingViewModel @AssistedInject constructor(@Assisted private val codeCreditCard:Int?, @Assisted private val codeCreditCardSetting:Int?, private val creditCardSvc:ICreditCardPort?, private val creditCardSettingSvc:ICreditCardSettingPort?, @Assisted private val navController: NavController?) : ViewModel() {
+@HiltViewModel
+class CreditCardSettingViewModel @Inject constructor(
+    private val savedStateHandle: SavedStateHandle,
+    private val creditCardSvc:ICreditCardPort?, 
+    private val creditCardSettingSvc:ICreditCardSettingPort?
+) : ViewModel() {
 
-    @AssistedFactory
-    interface Factory {
-        fun create(codeCreditCard: Int?, codeCreditCardSetting: Int?, navController: NavController?): CreditCardSettingViewModel
-    }
+    private val codeCreditCard: Int? = savedStateHandle.get<Int>(CreditCardSettingParams.Params.ARG_CODE_CREDIT_CARD)
+    private val codeCreditCardSetting: Int? = savedStateHandle.get<Int>(CreditCardSettingParams.Params.ARG_ID)
+    var navController: NavController? = null
 
     var progress = mutableFloatStateOf(0f)
     var showProgress = mutableStateOf(true)

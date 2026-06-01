@@ -1,4 +1,4 @@
-package co.japl.android.finances.services.dto
+package co.com.japl.finances.iports.dtos
 
 import android.provider.BaseColumns
 import java.math.BigDecimal

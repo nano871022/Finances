@@ -38,6 +38,7 @@ import co.com.japl.ui.theme.values.Dimensions
 import co.com.japl.ui.utils.WindowWidthSize
 import co.com.japl.ui.utils.NumbersUtil
 import java.math.BigDecimal
+import androidx.lifecycle.SavedStateHandle
 
 @Composable
 fun  AmortizationTable (viewModel:AmortizationViewModel){
@@ -354,7 +355,7 @@ private fun AmortizationDarkVertical(){
 
 @Composable
 private fun getViewModel(): AmortizationViewModel{
-	return AmortizationViewModel(LocalContext.current,2).also {
+	return AmortizationViewModel(LocalContext.current, SavedStateHandle().apply { set("CODE", 2L) }, null).also {
 		it.list.add(
 			AmortizationRowDTO(
 				id=1,

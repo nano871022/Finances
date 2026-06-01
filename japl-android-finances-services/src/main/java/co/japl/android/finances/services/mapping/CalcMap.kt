@@ -5,8 +5,8 @@ import android.database.Cursor
 import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
-import co.japl.android.finances.services.dto.CalcDB
-import co.japl.android.finances.services.dto.CalcDTO
+import co.com.japl.finances.iports.dtos.CalcDB
+import co.com.japl.finances.iports.dtos.CalcDTO
 import co.japl.android.finances.services.dto.CreditCardBoughtDTO
 import co.japl.android.finances.services.dto.QuoteCreditCard
 import co.japl.android.finances.services.enums.KindOfTaxEnum

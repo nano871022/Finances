@@ -124,4 +124,13 @@ Messages:
     <string name="update_success">Registro Actualizado</string>
     <string name="update_unsuccess">No se logro Actualizar</string>
     <string name="can_not_goto_amortization">No puede ir a la Amortización</string>
+    <string name="ccio_edit">Editar</string>
+    <string name="ccio_amortization">Amortización</string>
+    <string name="ccio_delete">Eliminar</string>
+    <string name="ccio_ending">Finalizar</string>
+    <string name="ccio_update_value">Actualizar Valor</string>
+    <string name="differ_installment">Diferir el Capital Restante</string>
+    <string name="ccio_clone">Copiar</string>
+    <string name="ccio_restore">Restaurar</string>
+    <string name="type">Tipo</string>
 </resources>

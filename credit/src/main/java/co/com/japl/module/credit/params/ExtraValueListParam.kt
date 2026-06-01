@@ -5,7 +5,7 @@ import android.os.Bundle
 import androidx.core.net.toUri
 import androidx.core.os.bundleOf
 import androidx.navigation.NavController
-import co.com.japl.ui.R
+import co.com.japl.module.credit.R
 import co.com.japl.finances.iports.enums.AmortizationKindOfEnum
 
 class ExtraValueListParam {

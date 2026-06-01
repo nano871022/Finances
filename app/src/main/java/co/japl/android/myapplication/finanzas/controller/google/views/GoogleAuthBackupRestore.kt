@@ -25,6 +25,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import co.japl.android.myapplication.finanzas.controller.google.GoogleAuthBackupRestoreViewModel
 import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.com.japl.ui.theme.values.Dimensions
 import co.japl.android.myapplication.R
@@ -123,5 +124,5 @@ internal fun GoogleAuthBackupRestore2Preview(){
 
 @Composable
 private fun getViewModel():GoogleAuthBackupRestoreViewModel{
-    return  GoogleAuthBackupRestoreViewModel(null,null,null,null,null)
+    return  GoogleAuthBackupRestoreViewModel(null,null,null)
 }

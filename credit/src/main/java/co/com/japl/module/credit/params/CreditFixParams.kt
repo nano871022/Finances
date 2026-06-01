@@ -9,8 +9,8 @@ import androidx.annotation.RequiresApi
 import androidx.core.os.bundleOf
 import androidx.navigation.NavController
 import co.com.japl.finances.iports.utils.BigDecimalDeserializer
-import co.com.japl.ui.R
-import co.japl.android.finances.services.dto.CreditDTO
+import co.com.japl.module.credit.R
+import co.com.japl.finances.iports.dtos.CreditDTO
 import co.com.japl.ui.utils.DateUtils
 
 import com.google.gson.Gson

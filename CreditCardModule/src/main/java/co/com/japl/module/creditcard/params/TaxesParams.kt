@@ -5,7 +5,7 @@ import android.net.Uri
 import android.os.Bundle
 import androidx.core.os.bundleOf
 import androidx.navigation.NavController
-import co.com.japl.ui.R
+import co.com.japl.module.creditcard.R
 import co.com.japl.module.creditcard.params.TaxesParams.Params.ARG_CODE_CREDIT_CARD
 import co.com.japl.module.creditcard.params.TaxesParams.Params.ARG_CODE_CREDIT_RATE
 import co.com.japl.module.creditcard.params.TaxesParams.Params.ARG_PARAM1

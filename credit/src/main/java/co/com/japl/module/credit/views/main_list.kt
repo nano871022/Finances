@@ -187,7 +187,11 @@ private fun Options(dto:CreditPeriodGraceDTO,state:MutableState<Boolean>,delete:
 
     @Composable
     fun getViewModel():ListViewModel{
-        return ListViewModel(YearMonth.now(),null,null,null).apply {
+        return ListViewModel(
+            creditsSvc = TODO(),
+            periodGraceSvc = TODO(),
+            savedStateHandle = TODO()
+        ).apply {
             list.add(CreditPeriodGraceDTO(CreditDTO(1,"test",LocalDate.now(),1.2,36,(1500000).toBigDecimal(),(50000).toBigDecimal(),
                 KindPaymentsEnums.MONTHLY,
                 KindOfTaxEnum.MONTHLY_EFFECTIVE),false))

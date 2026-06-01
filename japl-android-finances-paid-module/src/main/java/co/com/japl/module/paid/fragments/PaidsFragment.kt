@@ -22,7 +22,7 @@ import co.com.japl.module.paid.params.PaidsParams
 import dagger.hilt.android.AndroidEntryPoint
 import java.time.YearMonth
 import javax.inject.Inject
-import co.japl.android.myapplication.finanzas.ApplicationInitial
+import co.com.japl.ui.Prefs
 
 @AndroidEntryPoint
 class PaidsFragment : Fragment() {
@@ -50,7 +50,7 @@ class PaidsFragment : Fragment() {
             incomesSvc = incomesSvc,
             period = period?:YearMonth.now(),
             paidSmsSvc = paidSmsSvc,
-            prefs = ApplicationInitial.prefs,
+            prefs = Prefs(requireContext().applicationContext),
             smsSvc = smsSvc,
             navController = findNavController()
         )

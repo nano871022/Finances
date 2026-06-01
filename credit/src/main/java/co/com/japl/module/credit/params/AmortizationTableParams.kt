@@ -6,8 +6,8 @@ import androidx.core.net.toUri
 import androidx.core.os.bundleOf
 import androidx.navigation.NavController
 import co.com.japl.ui.utils.DateUtils
-import co.com.japl.ui.R
-import co.japl.android.finances.services.dto.CalcDTO
+import co.com.japl.module.credit.R
+import co.com.japl.finances.iports.dtos.CalcDTO
 
 import co.com.japl.finances.iports.enums.AmortizationKindOfEnum
 import co.com.japl.module.credit.params.AdditionalCreditParams.Params

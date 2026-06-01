@@ -18,7 +18,7 @@ import co.com.japl.module.creditcard.views.paid.PaidList
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 import kotlin.properties.Delegates
-import co.japl.android.myapplication.finanzas.ApplicationInitial
+import co.com.japl.ui.Prefs
 
 @AndroidEntryPoint
 class ListQuotesPaid : Fragment() {
@@ -38,7 +38,7 @@ class ListQuotesPaid : Fragment() {
         return ComposeView(requireContext()).apply {
                 setContent {
                     MaterialThemeComposeUI {
-                        PaidList(viewModel = BoughtCreditCardViewModel(port,creditCardId,findNavController(),ApplicationInitial.prefs))
+                        PaidList(viewModel = BoughtCreditCardViewModel(port,creditCardId,findNavController(),Prefs(requireContext().applicationContext)))
 
                 }
             }

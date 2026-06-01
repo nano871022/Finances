@@ -14,30 +14,18 @@ import co.com.japl.module.credit.controllers.list.ListViewModel
 import co.com.japl.module.credit.views.CreditList
 import co.com.japl.ui.theme.MaterialThemeComposeUI
 import dagger.hilt.android.AndroidEntryPoint
-import java.time.YearMonth
-import javax.inject.Inject
 
 @AndroidEntryPoint
 class MonthlyCreditListFragment : Fragment() {
 
-    @Inject
-    lateinit var factory: ListViewModel.Factory
-
-    private val viewModel: ListViewModel by viewModels {
-        ViewModelFactory(
-            owner = this,
-            viewModelClass = ListViewModel::class.java,
-            build = {
-                factory.create(YearMonth.now(), findNavController())
-            }
-        )
-    }
+    private val viewModel: ListViewModel by viewModels()
 
     @RequiresApi(Build.VERSION_CODES.S)
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        viewModel.navController = findNavController()
         return ComposeView(requireContext()).apply {
             setContent {
                 MaterialThemeComposeUI {

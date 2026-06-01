@@ -8,7 +8,7 @@ import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.core.os.bundleOf
 import androidx.navigation.NavController
-import co.com.japl.ui.R
+import co.com.japl.module.creditcard.R
 
 class PeriodsParams {
     object Params{

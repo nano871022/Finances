@@ -15,27 +15,24 @@ import co.com.japl.finances.iports.inbounds.credit.IAmortizationTablePort
 import co.com.japl.module.credit.model.CreditAmortizationState
 import co.com.japl.module.credit.navigations.CreditList
 import co.com.japl.module.credit.navigations.ExtraValueList
-import dagger.assisted.Assisted
-import dagger.assisted.AssistedFactory
-import dagger.assisted.AssistedInject
 import dagger.hilt.android.lifecycle.HiltViewModel
 import java.time.LocalDate
+import androidx.lifecycle.SavedStateHandle
+import javax.inject.Inject
 
-@HiltViewModel(assistedFactory = CreditAmortizationViewModel.Factory::class)
-class CreditAmortizationViewModel @AssistedInject constructor(
-    @Assisted private val creditCode: Int,
-    @Assisted private val lastDate: LocalDate,
-    private val creditSvc: ICreditPort?=null,
-    private val additionalSvc: IAdditional?=null,
-    private val gracePeriodSvc: IPeriodGracePort?=null,
-    private val amortizationSvc: IAmortizationTablePort?=null,
-    @Assisted private val navController: NavController?=null
+@HiltViewModel
+class CreditAmortizationViewModel @Inject constructor(
+    private val savedStateHandle: SavedStateHandle,
+    private val creditSvc: ICreditPort?,
+    private val additionalSvc: IAdditional?,
+    private val gracePeriodSvc: IPeriodGracePort?,
+    private val amortizationSvc: IAmortizationTablePort?
 ): ViewModel() {
 
-    @AssistedFactory
-    interface Factory {
-        fun create(creditCode: Int, lastDate: LocalDate, navController: NavController?): CreditAmortizationViewModel
-    }
+    private val creditCode: Int = savedStateHandle.get<Long>("CREDIT_CODE")?.toInt() ?: 0
+    private val lastDate: LocalDate = savedStateHandle.get<LocalDate>("LAST_DATE") ?: LocalDate.now()
+    lateinit var navController: NavController
+        set
 
     private val _state = MutableStateFlow(CreditAmortizationState())
     val state = _state.asStateFlow()
@@ -68,7 +65,7 @@ class CreditAmortizationViewModel @AssistedInject constructor(
         val gracePeriodList = gracePeriodSvc?.get(creditCode)
         val amortizationTable = amortizationSvc?.getAmortization(creditCode, KindAmortization.FIXED_QUOTE, false)
         val additional = additionalList?.sumOf { it.value }
-        val gracePeriods = gracePeriodList?.filter { it.create > lastDate || it.end < lastDate }.takeIf { it?.isNotEmpty() == true }?.sumOf{it.periods.toInt()}
+        val gracePeriods = gracePeriodList?.filter { it.create > lastDate || it.end < lastDate }?.takeIf { it.isNotEmpty() }?.sumOf{it.periods.toInt()}
         val months = ChronoUnit.MONTHS.between(credit?.date, lastDate)
         _state.value = _state.value.copy(
             credit = credit,
@@ -81,5 +78,3 @@ class CreditAmortizationViewModel @AssistedInject constructor(
     }
 
 }
-
-

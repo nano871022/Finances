@@ -13,34 +13,19 @@ import androidx.navigation.fragment.findNavController
 import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.com.japl.module.creditcard.controllers.account.CreditCardViewModel
 import co.com.japl.module.creditcard.views.account.forms.CreditCard
-import co.com.japl.module.creditcard.params.CreditCardParams
 import dagger.hilt.android.AndroidEntryPoint
-import javax.inject.Inject
 
 @AndroidEntryPoint
 class CreateCreditCard : Fragment() {
 
-    @Inject
-    lateinit var factory: CreditCardViewModel.Factory
-
-    private val viewModel: CreditCardViewModel by viewModels {
-        val code = arguments?.let {
-            CreditCardParams.download(it).orElse("0")
-        } ?: "0"
-        ViewModelFactory(
-            owner = this,
-            viewModelClass = CreditCardViewModel::class.java,
-            build = {
-                factory.create(code.toInt(), findNavController())
-            }
-        )
-    }
+    private val viewModel: CreditCardViewModel by viewModels()
 
     @RequiresApi(Build.VERSION_CODES.S)
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        viewModel.navController = findNavController()
         return ComposeView(requireContext()).apply {
             setContent {
                 MaterialThemeComposeUI {
@@ -48,22 +33,5 @@ class CreateCreditCard : Fragment() {
                 }
             }
         }
-    }
-}
-
-private class ViewModelFactory<T : androidx.lifecycle.ViewModel>(
-    owner: androidx.savedstate.SavedStateRegistryOwner,
-    private val viewModelClass: Class<T>,
-    private val build: () -> T
-) : androidx.lifecycle.AbstractSavedStateViewModelFactory(owner, null) {
-    override fun <T : androidx.lifecycle.ViewModel> create(
-        key: String,
-        modelClass: Class<T>,
-        handle: androidx.lifecycle.SavedStateHandle
-    ): T {
-        if (modelClass.isAssignableFrom(viewModelClass)) {
-            return build() as T
-        }
-        throw IllegalArgumentException("Unknown ViewModel class")
     }
 }

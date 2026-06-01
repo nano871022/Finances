@@ -17,6 +17,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import co.japl.android.myapplication.finanzas.controller.google.GoogleAuthBackupRestoreViewModel
 import co.com.japl.ui.components.DataTable
 import co.com.japl.ui.model.datatable.Header
 import co.com.japl.ui.theme.MaterialThemeComposeUI
@@ -117,7 +118,7 @@ internal  fun DataTablesPreview(){
 
 @Composable
 private fun getViewModel():GoogleAuthBackupRestoreViewModel{
-    val vm = GoogleAuthBackupRestoreViewModel(null, null, null, null, null)
+    val vm = GoogleAuthBackupRestoreViewModel(null, null, null)
     vm.statsLocalProgess.value = false
     vm.statsLocal.add(Pair("tb_tb1",10))
     vm.statsLocal.add(Pair("tb_tb2",20))
