@@ -1,4 +1,4 @@
-package co.japl.android.myapplication.finanzas.controller.paids
+package co.com.japl.module.paid.fragments
 
 import android.os.Build
 import android.os.Bundle
@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.RequiresApi
+import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -16,7 +17,6 @@ import co.com.japl.module.paid.controllers.emailpaid.form.EmailPaidViewModel
 import co.com.japl.module.paid.views.email.form.EmailPaid
 import co.com.japl.ui.Prefs
 import co.com.japl.ui.theme.MaterialThemeComposeUI
-import co.com.japl.module.credit.databinding.FragmentEmailCreditCardBinding
 import co.com.japl.ui.factory.ViewModelFactory
 import co.com.japl.module.paid.params.EmailPaidsParams
 import dagger.hilt.android.AndroidEntryPoint
@@ -54,16 +54,13 @@ class EmailPaidFragment: Fragment(){
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val root = FragmentEmailCreditCardBinding.inflate(inflater,container,false)
-
-        root.cvComposeEmailCc.apply {
+        return ComposeView(requireContext()).apply {
             setContent {
                 MaterialThemeComposeUI {
                     EmailPaid(viewModel = viewModel)
                 }
             }
         }
-        return root.root
     }
 
 }

@@ -1,4 +1,4 @@
-package co.japl.android.myapplication.finanzas.controller.account
+package co.com.japl.module.paid.fragments
 
 import android.os.Build
 import android.os.Bundle
@@ -7,11 +7,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.RequiresApi
-import androidx.compose.ui.platform.ViewCompositionStrategy
+import androidx.compose.ui.platform.ComposeView
 import androidx.navigation.fragment.findNavController
 import co.com.japl.finances.iports.inbounds.inputs.IInputPort
 import co.com.japl.ui.theme.MaterialThemeComposeUI
-import co.com.japl.module.credit.databinding.FragmentInputListBinding
 import co.com.japl.module.paid.params.AccountParams
 import co.com.japl.module.paid.views.Inputs.list.InputList
 import co.com.japl.module.paid.controllers.Inputs.list.InputListModelView
@@ -24,25 +23,18 @@ class InputListFragment : Fragment(){
 
     @Inject lateinit var portSvc:IInputPort
 
-    private var _binding: FragmentInputListBinding? = null
-    private val binding get() = _binding!!
-
     @RequiresApi(Build.VERSION_CODES.S)
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentInputListBinding.inflate(inflater,container,false)
-        val root = binding.root
         accountCode = arguments?.let{AccountParams.download(it)}?:0
-        binding.listViewComposableIl.apply {
-            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+        return ComposeView(requireContext()).apply {
             setContent {
                 MaterialThemeComposeUI {
                     InputList(modelView = InputListModelView(requireContext(),accountCode,findNavController() ,portSvc))
                 }
             }
         }
-        return root
     }
 }

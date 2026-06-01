@@ -1,4 +1,4 @@
-package co.japl.android.myapplication.finanzas.controller.taxes
+package co.com.japl.module.creditcard.fragments
 
 import android.os.Build
 import android.os.Bundle
@@ -6,7 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.RequiresApi
-import androidx.compose.ui.platform.ViewCompositionStrategy
+import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import co.com.japl.finances.iports.inbounds.creditcard.ICreditCardPort
@@ -14,7 +14,6 @@ import co.com.japl.finances.iports.inbounds.creditcard.ITaxPort
 import co.com.japl.module.creditcard.controllers.creditrate.forms.CreateRateViewModel
 import co.com.japl.module.creditcard.views.creditrate.forms.CreditRate
 import co.com.japl.ui.theme.MaterialThemeComposeUI
-import co.com.japl.module.credit.databinding.FragmentTaxesBinding
 import co.com.japl.module.creditcard.params.TaxesParams
 import co.com.japl.ui.utils.NumbersUtil
 import dagger.hilt.android.AndroidEntryPoint
@@ -26,7 +25,6 @@ class Taxes : Fragment() {
     @Inject lateinit var service:ITaxPort
     @Inject lateinit var creditCardSvc:ICreditCardPort
 
-    private lateinit var _binding : FragmentTaxesBinding
     private var codeCreditCard:Int? = null
     private var codeCreditRate:Int? = null
 
@@ -36,18 +34,15 @@ class Taxes : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding = FragmentTaxesBinding.inflate(inflater)
         getParameters()
         val viewModel = CreateRateViewModel(codeCreditCard,codeCreditRate,service,creditCardSvc,findNavController())
-        _binding.cvComponentFts.apply {
-            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+        return ComposeView(requireContext()).apply {
             setContent {
                 MaterialThemeComposeUI {
                     CreditRate(viewModel = viewModel)
                 }
             }
         }
-        return _binding.root.rootView
     }
 
     private fun getParameters(){

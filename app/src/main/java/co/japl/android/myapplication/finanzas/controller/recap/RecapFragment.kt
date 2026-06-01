@@ -6,24 +6,22 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.RequiresApi
-import androidx.compose.ui.platform.ViewCompositionStrategy
+import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import co.com.japl.finances.iports.inbounds.recap.IRecapPort
 import co.com.japl.ui.theme.MaterialThemeComposeUI
-import co.com.japl.module.credit.databinding.FragmentRecapBinding
-import co.com.japl.ui.Prefs
 import co.japl.android.myapplication.finanzas.controller.recap.views.Recap
 import co.japl.finances.core.usercases.interfaces.creditcard.bought.lists.IBought
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
+import co.japl.android.myapplication.finanzas.ApplicationInitial
 
 @AndroidEntryPoint
 class RecapFragment @Inject constructor() : Fragment() {
     @Inject lateinit var recapSvc:IRecapPort
     @Inject lateinit var boughtCreditCardSvc : IBought
 
-    private var _binding: FragmentRecapBinding? = null
     private val recapViewModel by lazy {RecapViewModel(recapSvc,boughtCreditCardSvc,ApplicationInitial.prefs,findNavController())}
 
     @RequiresApi(Build.VERSION_CODES.S)
@@ -31,17 +29,13 @@ class RecapFragment @Inject constructor() : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding = FragmentRecapBinding.inflate(inflater, container, false)
-        val root = _binding?.root
-        _binding?.firstCardCompose?.apply {
-            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+        return ComposeView(requireContext()).apply {
             setContent {
                 MaterialThemeComposeUI {
                     Recap(recapViewModel)
                 }
             }
         }
-        return root
     }
 
 }

@@ -1,19 +1,17 @@
-package co.japl.android.myapplication.finanzas.controller
+package co.com.japl.module.credit.fragments
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.compose.ui.platform.ComposeView
-import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import co.com.japl.finances.iports.inbounds.credit.IExtraValueAmortizationCreditPort
 import co.com.japl.module.credit.controllers.extravalue.ExtraValueListViewModel
 import co.com.japl.module.credit.views.extravalue.ExtraValueListScreen
-import co.com.japl.ui.R
-import co.com.japl.module.credit.databinding.FragmentExtraValueListBinding
 import co.com.japl.module.credit.params.ExtraValueListParam
+import co.com.japl.ui.factory.ViewModelFactory
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -41,13 +39,12 @@ class ExtraValueListController : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val root = FragmentExtraValueListBinding.inflate(inflater)
-        root.composeView.apply {
-            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+        return ComposeView(requireContext()).apply {
             setContent {
+                co.com.japl.ui.theme.MaterialThemeComposeUI {
                     ExtraValueListScreen(viewModel)
+                }
             }
         }
-        return root.root
     }
 }

@@ -7,7 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.RequiresApi
-import androidx.compose.ui.platform.ViewCompositionStrategy
+import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.Fragment
 import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.japl.android.myapplication.finanzas.bussiness.DB.connections.ConnectDB
@@ -37,20 +37,17 @@ class GDriveConnectFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val root = FragmentGDriveConnectBinding.inflate(inflater)
         service = GoogleSignInnImplement(requireActivity())
         driveSvc = GoogleDriveImpl(requireActivity(),dbConnect as ConnectDB)
         loginSimpleSvc = GoogleSignInSimpleImplement(requireActivity())
         loginWebSvc = GoogleSignInWebImplement(requireActivity())
-        root.cwComposeFddc.apply {
-            val viewModel = GoogleAuthBackupRestoreViewModel(requireActivity(),service,loginSimpleSvc,loginWebSvc,driveSvc)
-            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+        val viewModel = GoogleAuthBackupRestoreViewModel(requireActivity(),service,loginSimpleSvc,loginWebSvc,driveSvc)
+        return ComposeView(requireContext()).apply {
             setContent {
                 MaterialThemeComposeUI {
                     GoogleAuthBackupRestore(viewModel)
                 }
             }
         }
-        return root.root.rootView
     }
 }
