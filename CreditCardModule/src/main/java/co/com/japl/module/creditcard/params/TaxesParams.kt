@@ -1,4 +1,4 @@
-package co.com.japl.finances.iports.params
+package co.com.japl.module.creditcard.params
 
 import android.content.Intent
 import android.net.Uri
@@ -6,10 +6,10 @@ import android.os.Bundle
 import androidx.core.os.bundleOf
 import androidx.navigation.NavController
 import co.com.japl.ui.R
-import co.com.japl.finances.iports.params.TaxesParams.Params.ARG_CODE_CREDIT_CARD
-import co.com.japl.finances.iports.params.TaxesParams.Params.ARG_CODE_CREDIT_RATE
-import co.com.japl.finances.iports.params.TaxesParams.Params.ARG_PARAM1
-import co.com.japl.finances.iports.params.TaxesParams.Params.ARG_PARAM2
+import co.com.japl.module.creditcard.params.TaxesParams.Params.ARG_CODE_CREDIT_CARD
+import co.com.japl.module.creditcard.params.TaxesParams.Params.ARG_CODE_CREDIT_RATE
+import co.com.japl.module.creditcard.params.TaxesParams.Params.ARG_PARAM1
+import co.com.japl.module.creditcard.params.TaxesParams.Params.ARG_PARAM2
 
 class TaxesParams {
     object Params {

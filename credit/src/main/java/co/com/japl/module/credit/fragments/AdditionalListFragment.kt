@@ -13,7 +13,7 @@ import androidx.navigation.fragment.findNavController
 import co.com.japl.module.credit.controllers.list.AdditionalViewModel
 import co.com.japl.module.credit.views.lists.Additional
 import co.com.japl.ui.theme.MaterialThemeComposeUI
-import co.com.japl.finances.iports.params.CreditFixParams
+import co.com.japl.module.credit.params.CreditFixParams
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 

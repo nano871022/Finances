@@ -16,7 +16,7 @@ import co.japl.android.myapplication.finanzas.modules.EntryPoint
 import dagger.hilt.EntryPoints
 import dagger.hilt.android.AndroidEntryPoint
 import androidx.navigation.fragment.findNavController
-import co.com.japl.finances.iports.params.CreditCardQuotesParams
+import co.com.japl.module.creditcard.params.CreditCardQuotesParams
 import co.com.japl.ui.Prefs
 import javax.inject.Inject
 

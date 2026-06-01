@@ -15,7 +15,7 @@ import co.com.japl.module.creditcard.controllers.creditrate.forms.CreateRateView
 import co.com.japl.module.creditcard.views.creditrate.forms.CreditRate
 import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.com.japl.module.credit.databinding.FragmentTaxesBinding
-import co.com.japl.finances.iports.params.TaxesParams
+import co.com.japl.module.creditcard.params.TaxesParams
 import co.com.japl.ui.utils.NumbersUtil
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject

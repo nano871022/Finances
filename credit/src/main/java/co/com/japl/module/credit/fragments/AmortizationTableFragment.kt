@@ -12,7 +12,7 @@ import androidx.fragment.app.viewModels
 import co.com.japl.module.credit.controllers.amortization.AmortizationViewModel
 import co.com.japl.module.credit.views.amortization.AmortizationScreen
 import co.com.japl.ui.theme.MaterialThemeComposeUI
-import co.com.japl.finances.iports.params.AmortizationTableParams
+import co.com.japl.module.credit.params.AmortizationTableParams
 import dagger.hilt.android.AndroidEntryPoint
 import java.time.LocalDate
 import javax.inject.Inject

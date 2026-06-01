@@ -16,7 +16,7 @@ import co.com.japl.module.paid.views.sms.form.Sms
 import co.com.japl.ui.Prefs
 import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.com.japl.module.credit.databinding.FragmentSmsPaidBinding
-import co.com.japl.finances.iports.params.SmsPaidParams
+import co.com.japl.module.paid.params.SmsPaidParams
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 

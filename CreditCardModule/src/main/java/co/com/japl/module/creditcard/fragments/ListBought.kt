@@ -12,7 +12,7 @@ import androidx.navigation.fragment.findNavController
 import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.com.japl.module.credit.databinding.FragmentListBoughtBinding
 import co.com.japl.ui.Prefs
-import co.com.japl.finances.iports.params.CreditCardQuotesParams
+import co.com.japl.module.creditcard.params.CreditCardQuotesParams
 import co.japl.android.myapplication.finanzas.view.creditcard.bought.BoughtList
 import dagger.hilt.android.AndroidEntryPoint
 

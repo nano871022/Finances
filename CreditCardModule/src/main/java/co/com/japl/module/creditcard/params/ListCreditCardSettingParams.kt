@@ -1,4 +1,4 @@
-package co.com.japl.finances.iports.params
+package co.com.japl.module.creditcard.params
 
 import android.content.Intent
 import android.net.Uri
@@ -7,7 +7,7 @@ import android.util.Log
 import androidx.core.os.bundleOf
 import androidx.navigation.NavController
 import co.com.japl.ui.R
-import co.com.japl.finances.iports.params.CreditCardSettingParams.Params.ARG_CODE_CREDIT_CARD
+import co.com.japl.module.creditcard.params.CreditCardSettingParams.Params.ARG_CODE_CREDIT_CARD
 
 class ListCreditCardSettingParams {
     object Params {

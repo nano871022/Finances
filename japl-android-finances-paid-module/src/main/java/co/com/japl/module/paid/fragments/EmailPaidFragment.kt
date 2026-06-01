@@ -18,7 +18,7 @@ import co.com.japl.ui.Prefs
 import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.com.japl.module.credit.databinding.FragmentEmailCreditCardBinding
 import co.com.japl.ui.factory.ViewModelFactory
-import co.com.japl.finances.iports.params.EmailPaidsParams
+import co.com.japl.module.paid.params.EmailPaidsParams
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 

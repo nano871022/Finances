@@ -13,8 +13,8 @@ import co.com.japl.finances.iports.inbounds.creditcard.bought.lists.IBoughtListP
 import co.com.japl.ui.Prefs
 import co.japl.android.myapplication.finanzas.modules.EntryPoint
 import co.com.japl.finances.iports.pojo.BoughtCreditCard
-import co.com.japl.finances.iports.params.CashAdvanceParams
-import co.com.japl.finances.iports.params.CreditCardQuotesParams
+import co.com.japl.module.creditcard.params.CashAdvanceParams
+import co.com.japl.module.creditcard.params.CreditCardQuotesParams
 import co.japl.android.myapplication.pojo.CreditCard
 import dagger.hilt.EntryPoints
 import kotlinx.coroutines.runBlocking

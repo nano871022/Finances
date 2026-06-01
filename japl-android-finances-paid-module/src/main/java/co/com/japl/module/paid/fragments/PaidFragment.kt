@@ -15,7 +15,7 @@ import co.com.japl.module.paid.controllers.paid.form.PaidViewModel
 import co.com.japl.module.paid.views.paid.form.Paid
 import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.com.japl.module.credit.databinding.FragmentPaidBinding
-import co.com.japl.finances.iports.params.PaidsParams
+import co.com.japl.module.paid.params.PaidsParams
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 

@@ -18,7 +18,7 @@ import co.com.japl.module.creditcard.views.email.list.EmailList
 import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.com.japl.module.credit.databinding.FragmentEmailCreditCardBinding
 import co.com.japl.ui.factory.ViewModelFactory
-import co.com.japl.finances.iports.params.EmailCreditCardParams
+import co.com.japl.module.creditcard.params.EmailCreditCardParams
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 import kotlin.getValue

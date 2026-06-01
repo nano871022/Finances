@@ -1,4 +1,4 @@
-package co.com.japl.finances.iports.params
+package co.com.japl.module.credit.params
 
 import android.content.Intent
 import android.os.Bundle
@@ -10,7 +10,7 @@ import co.com.japl.ui.R
 import co.japl.android.finances.services.dto.CalcDTO
 
 import co.com.japl.finances.iports.enums.AmortizationKindOfEnum
-import co.com.japl.finances.iports.params.AdditionalCreditParams.Params
+import co.com.japl.module.credit.params.AdditionalCreditParams.Params
 import com.google.gson.Gson
 import java.time.LocalDate
 
