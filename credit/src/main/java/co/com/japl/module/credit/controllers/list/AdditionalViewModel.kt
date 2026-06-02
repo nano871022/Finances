@@ -1,8 +1,8 @@
 package co.com.japl.module.credit.controllers.list
 
 import android.content.Context
-import androidx.compose.material.SnackbarDuration
-import androidx.compose.material.SnackbarHostState
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -12,10 +12,11 @@ import co.com.japl.finances.iports.inbounds.credit.IAdditional
 import co.com.japl.module.credit.R
 import co.com.japl.module.credit.navigations.AdditionalList
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
 import java.time.LocalDate
 import androidx.lifecycle.SavedStateHandle
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -48,26 +49,23 @@ class AdditionalViewModel @Inject constructor(
     }
 
     fun deleteAdditional(idCode:Int){
-        additionalSvc?.let{
-            it.delete(idCode).also{ resp ->
-                viewModelScope.launch {
-                    when(resp) {
-                       true -> hostState.showSnackbar(
-                            message = context.getString(R.string.delete_record),
-                            actionLabel = context.getString(R.string.close),
-                            duration = SnackbarDuration.Short
-                        ).also {
-                            viewModelScope.launch {
-                                main()
-                            }
-                       }
-                        false -> hostState.showSnackbar(
-                            message = context.getString(R.string.error_delete_record),
-                            actionLabel = context.getString(R.string.close),
-                            duration = SnackbarDuration.Short
-                        )
-                    }
-                }
+        viewModelScope.launch {
+            val resp = withContext(Dispatchers.IO) {
+                additionalSvc?.delete(idCode) ?: false
+            }
+            when(resp) {
+               true -> hostState.showSnackbar(
+                    message = context.getString(R.string.delete_record),
+                    actionLabel = context.getString(R.string.close),
+                    duration = SnackbarDuration.Short
+                ).also {
+                    main()
+               }
+                false -> hostState.showSnackbar(
+                    message = context.getString(R.string.error_delete_record),
+                    actionLabel = context.getString(R.string.close),
+                    duration = SnackbarDuration.Short
+                )
             }
         }
     }
@@ -78,7 +76,7 @@ class AdditionalViewModel @Inject constructor(
         }
     }
 
-    fun main()= runBlocking {
+    fun main() {
         _loading.value = true
         viewModelScope.launch {
             execute()
@@ -86,10 +84,9 @@ class AdditionalViewModel @Inject constructor(
     }
 
     suspend fun execute(){
-        additionalSvc?.let{
-            list.clear()
-            it.getAdditional(code).forEach(list::add)
-        }
+        withContext(Dispatchers.IO) {
+            additionalSvc?.getAdditional(code)
+        }?.forEach(list::add)
         _loading.value = false
     }
 }

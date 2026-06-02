@@ -23,10 +23,12 @@ import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.math.BigDecimal
 import javax.inject.Inject
 import kotlin.compareTo
@@ -146,7 +148,9 @@ class FormViewModel @AssistedInject constructor(
     }
 
     fun calculate() = viewModelScope.launch{
-        simuladorSvc.calculate(_simulator.value)?.let{ calc->
+        withContext(Dispatchers.IO) {
+            simuladorSvc.calculate(_simulator.value)
+        }?.let{ calc->
             _simulator.update {
                 it.copy(
                     capitalValue = calc.capitalValue,
@@ -172,7 +176,9 @@ class FormViewModel @AssistedInject constructor(
     fun save() = viewModelScope.launch{
         if(isValid() && name.validate()) {
             if(_simulator.value.code == 0){
-                simuladorSvc.save(_simulator.value).takeIf { (it ?: (0.toLong())) > 0.toLong() }
+                withContext(Dispatchers.IO) {
+                    simuladorSvc.save(_simulator.value)
+                }.takeIf { (it ?: (0.toLong())) > 0.toLong() }
                     ?.let { code ->
                         _simulator.update {
                             it.copy(code = code.toInt())
@@ -189,7 +195,9 @@ class FormViewModel @AssistedInject constructor(
                         ).show()
                     }
             }else{
-                simuladorSvc.update(_simulator.value,false).takeIf { it == true }
+                withContext(Dispatchers.IO) {
+                    simuladorSvc.update(_simulator.value,false)
+                }.takeIf { it == true }
                     ?.let {
                         snackbar.value
                             .showSnackbar(

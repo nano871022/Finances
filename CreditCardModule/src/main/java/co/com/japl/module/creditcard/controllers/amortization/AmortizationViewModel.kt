@@ -11,7 +11,9 @@ import co.com.japl.finances.iports.enums.KindAmortization
 import co.com.japl.finances.iports.inbounds.creditcard.IAmortizationTablePort
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import androidx.lifecycle.SavedStateHandle
 import javax.inject.Inject
 import co.com.japl.module.creditcard.params.AmortizationTableParams
@@ -34,12 +36,10 @@ class AmortizationViewModel @Inject constructor(
 	}
 	
 	fun execute() = viewModelScope.launch{
-		callApi()
-	}
-
-	suspend fun callApi(){
 		try {
-			svc?.getAmortization(id, KindAmortization.VARIABLE_QUOTE_SIMULATOR, true)?.let {
+			withContext(Dispatchers.IO) {
+				svc?.getAmortization(id, KindAmortization.VARIABLE_QUOTE_SIMULATOR, true)
+			}?.let {
 				list.addAll(it)
 			}
 			progressStatus.value = false

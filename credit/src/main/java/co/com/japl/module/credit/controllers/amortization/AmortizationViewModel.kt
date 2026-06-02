@@ -9,9 +9,11 @@ import co.com.japl.finances.iports.dtos.AmortizationRowDTO
 import co.com.japl.finances.iports.enums.KindAmortization
 import co.com.japl.finances.iports.inbounds.credit.IAmortizationTablePort
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.time.LocalDate
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
@@ -38,8 +40,9 @@ class AmortizationViewModel @Inject constructor(
     private fun getAmortization() = viewModelScope.launch {
         try {
             _state.value = _state.value.copy(isLoading = true)
-            amortizationSvc?.getAmortization(code, KindAmortization.FIXED_QUOTE_SIMULATOR, true)
-                ?.let {
+            withContext(Dispatchers.IO) {
+                amortizationSvc?.getAmortization(code, KindAmortization.FIXED_QUOTE_SIMULATOR, true)
+            }?.let {
                     _state.value = _state.value.copy(
                         amortization = it,
                         isLoading = false

@@ -106,7 +106,7 @@
 
     <fragment
         android:id="@+id/item_menu_side_listsave"
-        android:name="co.com.japl.module.credit.fragments.ListSave"
+        android:name="co.japl.android.myapplication.finanzas.controller.simulators.list.ListSimulatorFragment"
         android:label="@string/list_save"
         tools:layout="@layout/fragment_list_save" >
         <action

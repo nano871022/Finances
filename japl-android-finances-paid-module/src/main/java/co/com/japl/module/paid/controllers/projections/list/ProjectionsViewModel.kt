@@ -14,8 +14,9 @@ import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
 import java.math.BigDecimal
 import java.util.logging.Handler
 import javax.inject.Inject
@@ -60,14 +61,16 @@ class ProjectionsViewModel @AssistedInject constructor(@Assisted private val sav
         }
     }
 
-    fun main() = runBlocking {
+    fun main() = viewModelScope.launch {
         loadingStatus.value = true
         execute()
     }
 
     suspend fun execute(){
-        projectionSvc?.let{
-            it.getProjectionRecap().let{
+        projectionSvc?.let{ svcPort ->
+            withContext(Dispatchers.IO) {
+                svcPort.getProjectionRecap()
+            }.let{
                 it.first.let(totalCount::onValueChange)
                 it.second.let(totalSaved::onValueChange)
                 it.third.let{

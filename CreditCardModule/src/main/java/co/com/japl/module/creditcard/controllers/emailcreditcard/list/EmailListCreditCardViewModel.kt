@@ -30,60 +30,45 @@ class EmailListCreditCardViewModel(val svc: IEmailCreditCardPort?, val navContro
     }
 
     fun activate(id:Int,active:Boolean){
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch {
             runCatching {
-                svc?.activate(id, active)?:false
-            }.onFailure { e ->
-                withContext(Dispatchers.Main) {
-
+                withContext(Dispatchers.IO) {
+                    svc?.activate(id, active) ?: false
                 }
+            }.onFailure { e ->
             }.onSuccess { resp ->
-                withContext(Dispatchers.Main) {
-                    if (resp) {
-                        main()
-                    } else {
-
-                    }
+                if (resp) {
+                    main()
                 }
             }
         }
     }
 
     fun delete(id:Int){
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch {
             runCatching {
-                svc?.delete(id)?:false
-            }.onFailure { e ->
-                withContext(Dispatchers.Main) {
-
+                withContext(Dispatchers.IO) {
+                    svc?.delete(id) ?: false
                 }
+            }.onFailure { e ->
             }.onSuccess { resp ->
-                withContext(Dispatchers.Main) {
-                    if (resp) {
-                        main()
-                    } else {
-
-                    }
+                if (resp) {
+                    main()
                 }
             }
         }
     }
 
     fun clone(id:Int){
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch {
             runCatching {
-                svc?.clone(id)?:false
-            }.onFailure { e ->
-                withContext(Dispatchers.Main) {
-
+                withContext(Dispatchers.IO) {
+                    svc?.clone(id) ?: false
                 }
+            }.onFailure { e ->
             }.onSuccess { resp ->
-                withContext(Dispatchers.Main) {
-                    if (resp) {
-
-                    } else {
-
-                    }
+                if (resp) {
+                    main()
                 }
             }
         }

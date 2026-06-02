@@ -5,9 +5,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import co.com.japl.finances.iports.dtos.ExtraValueAmortizationDTO
 import co.com.japl.finances.iports.inbounds.credit.IExtraValueAmortizationCreditPort
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 //@HiltViewModel
@@ -31,13 +33,18 @@ class ExtraValueListViewModel @Inject constructor(
     }
 
     private suspend fun loadExtraValues(creditId: Int) {
-            extraValueAmortizationCreditSvc?.getAll(creditId)?.let{
+            withContext(Dispatchers.IO) {
+                extraValueAmortizationCreditSvc?.getAll(creditId)
+            }?.let{
                 _extraValues.value = it
             }
     }
 
     fun create( numQuotes: Int, value: Double)= viewModelScope.launch {
-            if((extraValueAmortizationCreditSvc?.save(id, numQuotes.toLong(), value) ?: 0) > 0){
+            val result = withContext(Dispatchers.IO) {
+                extraValueAmortizationCreditSvc?.save(id, numQuotes.toLong(), value) ?: 0
+            }
+            if(result > 0){
                 exec()
             }
         }
