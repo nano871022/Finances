@@ -69,8 +69,14 @@ class LLMOutboundAdapter @Inject constructor() : ILLMOutboundPort {
                 val candidates = jsonResponse.getJSONArray("candidates")
                 val contentRes = candidates.getJSONObject(0).getJSONObject("content")
                 val partsRes = contentRes.getJSONArray("parts")
-                val text = partsRes.getJSONObject(0).getString("text")
-                cleanResponse(text)
+                var lastText = ""
+                for (i in 0 until partsRes.length()) {
+                    val part = partsRes.getJSONObject(i)
+                    if (!part.optBoolean("thought", false)) {
+                        lastText = part.optString("text")
+                    }
+                }
+                cleanResponse(lastText.trim())
             } else {
                 throw Exception("Error: ${connection.responseCode} ${connection.errorStream?.bufferedReader()?.readText()}")
             }
