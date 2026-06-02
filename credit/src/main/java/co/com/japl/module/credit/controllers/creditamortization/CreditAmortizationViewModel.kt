@@ -16,6 +16,8 @@ import co.com.japl.module.credit.model.CreditAmortizationState
 import co.com.japl.module.credit.navigations.CreditList
 import co.com.japl.module.credit.navigations.ExtraValueList
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import java.time.LocalDate
 import androidx.lifecycle.SavedStateHandle
 import javax.inject.Inject
@@ -62,10 +64,10 @@ class CreditAmortizationViewModel @Inject constructor(
 
     suspend fun loadData(){
         _state.value = _state.value.copy(isLoading = true)
-        val credit = creditSvc?.getCredit(creditCode)
-        val additionalList = additionalSvc?.getAdditional(creditCode)
-        val gracePeriodList = gracePeriodSvc?.get(creditCode)
-        val amortizationTable = amortizationSvc?.getAmortization(creditCode, KindAmortization.FIXED_QUOTE, false)
+        val credit = withContext(Dispatchers.IO) { creditSvc?.getCredit(creditCode) }
+        val additionalList = withContext(Dispatchers.IO) { additionalSvc?.getAdditional(creditCode) }
+        val gracePeriodList = withContext(Dispatchers.IO) { gracePeriodSvc?.get(creditCode) }
+        val amortizationTable = withContext(Dispatchers.IO) { amortizationSvc?.getAmortization(creditCode, KindAmortization.FIXED_QUOTE, false) }
         val additional = additionalList?.sumOf { it.value }
         val gracePeriods = gracePeriodList?.filter { it.create > lastDate || it.end < lastDate }?.takeIf { it.isNotEmpty() }?.sumOf{it.periods.toInt()}
         val months = ChronoUnit.MONTHS.between(credit?.date, lastDate)

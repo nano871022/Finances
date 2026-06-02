@@ -174,10 +174,8 @@ class GoogleAuthBackupRestoreViewModel(private val activity:Activity?, private v
        }
     }
 
-    fun onload(){
-        CoroutineScope(Dispatchers.IO).launch {
-            statsLocal()
-        }
+    fun onload()=viewModelScope.launch{
+        statsLocal()
     }
 
     fun restore() {

@@ -52,13 +52,16 @@ dependencies {
     kapt("com.google.dagger:hilt-android-compiler:2.52")
 
     implementation("com.google.android.gms:play-services-auth:21.2.0")
+    implementation("com.google.android.gms:play-services-base:18.10.0")
     implementation("com.google.android.gms:play-services-drive:17.0.0")
+    implementation("com.google.api-client:google-api-client-android:2.6.0")
+    implementation("com.google.oauth-client:google-oauth-client-jetty:1.36.0")
+    implementation("com.google.apis:google-api-services-drive:v3-rev20240123-2.0.0")
     implementation("com.google.http-client:google-http-client-gson:1.42.3")
     implementation("com.google.apis:google-api-services-gmail:v1-rev20231023-2.0.0")
     implementation("com.google.api-client:google-api-client-android:2.2.0")
     implementation("com.google.apis:google-api-services-script:v1-rev20220323-2.0.0")
     implementation("com.squareup.okio:okio:3.6.0")
-
 
     implementation("androidx.core:core-ktx:1.13.1")
     implementation(platform("org.jetbrains.kotlin:kotlin-bom:2.0.0"))

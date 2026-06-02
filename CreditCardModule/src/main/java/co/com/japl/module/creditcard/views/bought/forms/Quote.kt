@@ -50,8 +50,11 @@ import co.com.japl.ui.components.FieldText
 import co.com.japl.ui.components.FieldView
 import co.com.japl.ui.components.FloatButton
 import co.com.japl.ui.components.IconButton
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.text.style.TextAlign
 import co.com.japl.ui.components.Popup
 import co.com.japl.ui.theme.MaterialThemeComposeUI
+import kotlinx.coroutines.launch
 import co.com.japl.ui.theme.values.Dimensions
 import co.com.japl.ui.theme.values.ModifiersCustom
 import java.time.LocalDateTime
@@ -64,7 +67,15 @@ fun Quote (viewModel:QuoteViewModel){
     val loadingState = remember { viewModel.progress }
 
     if(isLoadingState.value){
-        LinearProgressIndicator(progress = loadingState.floatValue,modifier=Modifier.fillMaxWidth())
+        Column(modifier=Modifier.fillMaxWidth()) {
+            LinearProgressIndicator(
+                modifier = Modifier.fillMaxWidth()
+            )
+            Text(text=stringResource(R.string.loading_data),
+                textAlign = TextAlign.Center,
+                color= MaterialTheme.colorScheme.onBackground,
+                modifier = Modifier.fillMaxWidth())
+        }
     }else {
         viewModel.creditRateEmpty()
         Scaffold(
@@ -269,6 +280,7 @@ private fun Body(viewModel: QuoteViewModel,modifier:Modifier){
 @Composable
 private fun PopupTags(tagPopupState:MutableState<Boolean>,viewModel: QuoteViewModel) {
     val tagName = remember {mutableStateOf("")}
+    val coroutineScope = rememberCoroutineScope()
     if(tagPopupState.value){
         Popup(title = R.string.tag,
             state = tagPopupState) {
@@ -291,10 +303,12 @@ private fun PopupTags(tagPopupState:MutableState<Boolean>,viewModel: QuoteViewMo
                             descriptionContent = R.string.add_tag,
                             onClick = {
                                 tagName.value.takeIf { it.isNotBlank() }?.let {
+                                    coroutineScope.launch {
                                     viewModel.createTag(tagName.value)?.let {
                                         viewModel.tagSelected.list.add(it)
                                         viewModel.tagSelected.onValueChange(it)
                                         tagPopupState.value = false
+                                    }
                                     }
                                 }
                             }, modifier = Modifier

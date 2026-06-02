@@ -2,6 +2,7 @@ package co.japl.android.finances.services.core.di
 
 import co.com.japl.finances.iports.inbounds.common.ISMSRead
 import co.com.japl.finances.iports.inbounds.common.IEmailRead
+import co.com.japl.finances.iports.inbounds.common.IGoogleDriveService
 import co.com.japl.finances.iports.outbounds.ExternalFinancialDataPort
 import co.com.japl.finances.iports.outbounds.IExtraValueAmortizationPort
 import co.com.japl.finances.iports.outbounds.IAdditionalPort
@@ -244,4 +245,7 @@ abstract class ServiceModule {
 
     @Binds
     abstract fun bindTaxHistoryDAO(impl: co.japl.android.finances.services.dao.implement.TaxHistoryImpl): co.japl.android.finances.services.dao.interfaces.ITaxHistoryDAO
+
+    @Binds
+    abstract fun bindGoogleDriveService(impl: co.japl.android.finances.services.implement.GoogleDriveServiceImpl): IGoogleDriveService
 }

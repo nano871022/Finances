@@ -68,7 +68,7 @@ fun RecurrentBoughtList(
                 modifier = Modifier.fillMaxWidth(),
             )
             Text(
-                text=stringResource(R.string.no_data),
+                text=stringResource(R.string.loading_data),
                 textAlign =  TextAlign.Center,
                 color=MaterialTheme.colorScheme.onBackground,
                 modifier = Modifier.fillMaxWidth().padding(Dimensions.PADDING_TOP)

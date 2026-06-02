@@ -62,13 +62,15 @@ class PaidViewModel @AssistedInject constructor(@Assisted private val accountCod
         }
     }
 
-    fun delete(id:Int){
-        paidSvc?.let {
-            if(it.delete(id)){
+    fun delete(id:Int) {
+        viewModelScope.launch {
+            val result = withContext(Dispatchers.IO) {
+                paidSvc?.delete(id) ?: false
+            }
+            if(result){
                 navController?.let{
                     Toast.makeText(it.context, R.string.toast_successful_deleted,Toast.LENGTH_LONG).show()
                         .also { loaderState.value = true }
-
                 }
             }else{
                 navController?.let{
@@ -85,8 +87,11 @@ class PaidViewModel @AssistedInject constructor(@Assisted private val accountCod
     }
 
     fun endRecurrent(id:Int){
-        paidSvc?.let{
-            if(it.endRecurrent(id)){
+        viewModelScope.launch {
+            val result = withContext(Dispatchers.IO) {
+                paidSvc?.endRecurrent(id) ?: false
+            }
+            if(result){
                         navController?.let{ Toast.makeText(it.context, R.string.toast_successful_end_recurrent,Toast.LENGTH_LONG).show().also {
                             loaderState.value = true
                         }}
@@ -94,12 +99,14 @@ class PaidViewModel @AssistedInject constructor(@Assisted private val accountCod
                 navController?.let{ Toast.makeText(it.context, R.string.toast_unsuccessful_end_recurrent,Toast.LENGTH_LONG).show() }
             }
         }
-
     }
 
     fun copy(id:Int){
-        paidSvc?.let{
-            if(it.copy(id)){
+        viewModelScope.launch {
+            val result = withContext(Dispatchers.IO) {
+                paidSvc?.copy(id) ?: false
+            }
+            if(result){
                 navController?.let{ Toast.makeText(it.context, R.string.toast_successful_copy,Toast.LENGTH_LONG).show().also {
                     loaderState.value = true
                 }}
@@ -162,16 +169,20 @@ class PaidViewModel @AssistedInject constructor(@Assisted private val accountCod
         return list
     }
 
-    fun main()= runBlocking {
+    fun main() {
         periodOfList.value  = period.format(DateTimeFormatter.ofPattern("MMMM yyyy", Locale("es","CO")))
         progressStatus.value = 0.0f
-        execute()
-        progressStatus.value = 1.0f
+        viewModelScope.launch {
+            execute()
+            progressStatus.value = 1.0f
+        }
     }
 
     suspend fun execute() {
-        paidSvc?.let{
-            it.get(accountCode,period).takeIf { it.isNotEmpty() }?.let{
+        paidSvc?.let{ svcPort ->
+            withContext(Dispatchers.IO) {
+                svcPort.get(accountCode,period)
+            }.takeIf { it.isNotEmpty() }?.let{
                 list.clear()
                 progressStatus.value = 0.3f
 

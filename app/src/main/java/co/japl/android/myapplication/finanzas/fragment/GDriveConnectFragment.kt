@@ -21,8 +21,8 @@ import javax.inject.Inject
 
 @AndroidEntryPoint
 class GDriveConnectFragment : Fragment() {
-    private var service : IGoogleSignInService? = null
-    private var driveSvc: IGoogleDriveService? = null
+    private var service : IGoogleSignInService?=null
+    @Inject lateinit var driveSvc: IGoogleDriveService
 
     @Inject
     lateinit var dbConnect: SQLiteOpenHelper
@@ -33,7 +33,7 @@ class GDriveConnectFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         service = GoogleLoginService(requireActivity(), 101)
-        driveSvc = GoogleDriveServiceImpl()
+        //driveSvc = GoogleDriveServiceImpl()
 
         val viewModel = GoogleAuthBackupRestoreViewModel(requireActivity(), service, driveSvc)
         return ComposeView(requireContext()).apply {

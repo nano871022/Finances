@@ -21,13 +21,13 @@ class EmailListPaidViewModel(
     val list = mutableStateListOf<EmailPaidDTO>()
 
     fun main() {
-        viewModelScope.launch(Dispatchers.IO) {
-            svc?.getAll()?.let {
-                withContext(Dispatchers.Main) {
-                    list.clear()
-                    list.addAll(it)
-                    load.value = false
-                }
+        viewModelScope.launch {
+            withContext(Dispatchers.IO) {
+                svc?.getAll()
+            }?.let {
+                list.clear()
+                list.addAll(it)
+                load.value = false
             }
         }
     }
@@ -41,31 +41,36 @@ class EmailListPaidViewModel(
     }
 
     fun delete(id: Int) {
-        viewModelScope.launch(Dispatchers.IO) {
-            if (svc?.delete(id) == true) {
-                withContext(Dispatchers.Main) {
-                    list.removeIf { it.id == id }
-                }
+        viewModelScope.launch {
+            val result = withContext(Dispatchers.IO) {
+                svc?.delete(id) == true
+            }
+            if (result) {
+                list.removeIf { it.id == id }
             }
         }
     }
 
     fun activate(id: Int, active: Boolean) {
-        viewModelScope.launch(Dispatchers.IO) {
-            if (svc?.activate(id, active) == true) {
-                withContext(Dispatchers.Main) {
-                    val index = list.indexOfFirst { it.id == id }
-                    if (index != -1) {
-                        list[index] = list[index].copy(active = active)
-                    }
+        viewModelScope.launch {
+            val result = withContext(Dispatchers.IO) {
+                svc?.activate(id, active) == true
+            }
+            if (result) {
+                val index = list.indexOfFirst { it.id == id }
+                if (index != -1) {
+                    list[index] = list[index].copy(active = active)
                 }
             }
         }
     }
 
     fun clone(id: Int) {
-        viewModelScope.launch(Dispatchers.IO) {
-            if (svc?.clone(id) == true) {
+        viewModelScope.launch {
+            val result = withContext(Dispatchers.IO) {
+                svc?.clone(id) == true
+            }
+            if (result) {
                 main()
             }
         }

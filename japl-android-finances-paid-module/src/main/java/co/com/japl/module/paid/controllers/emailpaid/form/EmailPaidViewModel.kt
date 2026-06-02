@@ -56,13 +56,13 @@ class EmailPaidViewModel(
 
     fun loadEmailSamples() {
         if (sender.value.isNotEmpty()) {
-            viewModelScope.launch(Dispatchers.IO) {
-                svc?.getEmailList(sender.value, subjectPattern.value, 30)?.let { list ->
-                    withContext(Dispatchers.Main) {
-                        emailSamples.clear()
-                        list.map { Pair(it, false) }.forEach(emailSamples::add)
-                        showEmailDialog.value = true
-                    }
+            viewModelScope.launch {
+                withContext(Dispatchers.IO) {
+                    svc?.getEmailList(sender.value, subjectPattern.value, 30)
+                }?.let { list ->
+                    emailSamples.clear()
+                    list.map { Pair(it, false) }.forEach(emailSamples::add)
+                    showEmailDialog.value = true
                 }
             }
         }
@@ -71,35 +71,31 @@ class EmailPaidViewModel(
     fun generateRegexWithAI() {
         val selectedEmails = emailSamples.filter { it.second }.map { it.first }
         if (selectedEmails.isNotEmpty()) {
-            viewModelScope.launch(Dispatchers.IO) {
-                withContext(Dispatchers.Main) {
-                    load.value = true
-                    progress.floatValue = 0.1f
-                }
+            viewModelScope.launch {
+                load.value = true
+                progress.floatValue = 0.1f
                 val prompt = context?.getString(R.string.promt_email_expreg, selectedEmails.joinToString("\n")) ?: ""
-                llmService?.getAiResponse(prompt, selectedLLMModel.value?.second)?.onSuccess { response ->
-                    withContext(Dispatchers.Main) {
-                        val lines = response.trim().lines()
-                        lines.forEach { line ->
-                            if (line.startsWith("SUBJECT:", ignoreCase = true)) {
-                                subjectPattern.value = line.substringAfter("SUBJECT:").trim()
-                            } else if (line.startsWith("BODY:", ignoreCase = true)) {
-                                bodyPattern.value = line.substringAfter("BODY:").trim().removeSurrounding("`").removePrefix("regex").trim()
-                            }
+                withContext(Dispatchers.IO) {
+                    llmService?.getAiResponse(prompt, selectedLLMModel.value?.second)
+                }?.onSuccess { response ->
+                    val lines = response.trim().lines()
+                    lines.forEach { line ->
+                        if (line.startsWith("SUBJECT:", ignoreCase = true)) {
+                            subjectPattern.value = line.substringAfter("SUBJECT:").trim()
+                        } else if (line.startsWith("BODY:", ignoreCase = true)) {
+                            bodyPattern.value = line.substringAfter("BODY:").trim().removeSurrounding("`").removePrefix("regex").trim()
                         }
-                        if (lines.size == 1 && !response.contains("SUBJECT:", ignoreCase = true)) {
-                            bodyPattern.value = response.trim().removeSurrounding("`").removePrefix("regex").trim()
-                        }
-                        load.value = false
-                        showEmailDialog.value = false
-                        context?.let { Toast.makeText(it, R.string.ai_response, Toast.LENGTH_SHORT).show() }
                     }
+                    if (lines.size == 1 && !response.contains("SUBJECT:", ignoreCase = true)) {
+                        bodyPattern.value = response.trim().removeSurrounding("`").removePrefix("regex").trim()
+                    }
+                    load.value = false
+                    showEmailDialog.value = false
+                    context?.let { Toast.makeText(it, R.string.ai_response, Toast.LENGTH_SHORT).show() }
                 }?.onFailure {
-                    withContext(Dispatchers.Main) {
-                        aiFailed.value = true
-                        load.value = false
-                        showEmailDialog.value = false
-                    }
+                    aiFailed.value = true
+                    load.value = false
+                    showEmailDialog.value = false
                 }
             }
         }
@@ -111,29 +107,26 @@ class EmailPaidViewModel(
         validate()
         emailPaid?.let { dto ->
             if (!errorAccount.value && !errorSender.value && !errorSubjectPattern.value && !errorBodyPattern.value) {
-                viewModelScope.launch(Dispatchers.IO) {
+                viewModelScope.launch {
                     if (dto.id == 0) {
-                        val id = svc?.create(dto) ?: 0
+                        val id = withContext(Dispatchers.IO) {
+                            svc?.create(dto) ?: 0
+                        }
                         if (id > 0) {
-                            withContext(Dispatchers.Main) {
-                                context?.let { Toast.makeText(it, R.string.toast_save_successful, Toast.LENGTH_SHORT).show() }
-                                navController?.popBackStack()
-                            }
+                            context?.let { Toast.makeText(it, R.string.toast_save_successful, Toast.LENGTH_SHORT).show() }
+                            navController?.popBackStack()
                         } else {
-                            withContext(Dispatchers.Main) {
-                                context?.let { Toast.makeText(it, R.string.toast_save_error, Toast.LENGTH_SHORT).show() }
-                            }
+                            context?.let { Toast.makeText(it, R.string.toast_save_error, Toast.LENGTH_SHORT).show() }
                         }
                     } else {
-                        if (svc?.update(dto) == true) {
-                            withContext(Dispatchers.Main) {
-                                context?.let { Toast.makeText(it, R.string.toast_update_successful, Toast.LENGTH_SHORT).show() }
-                                navController?.popBackStack()
-                            }
+                        val result = withContext(Dispatchers.IO) {
+                            svc?.update(dto) == true
+                        }
+                        if (result) {
+                            context?.let { Toast.makeText(it, R.string.toast_update_successful, Toast.LENGTH_SHORT).show() }
+                            navController?.popBackStack()
                         } else {
-                            withContext(Dispatchers.Main) {
-                                context?.let { Toast.makeText(it, R.string.toast_update_error, Toast.LENGTH_SHORT).show() }
-                            }
+                            context?.let { Toast.makeText(it, R.string.toast_update_error, Toast.LENGTH_SHORT).show() }
                         }
                     }
                 }
@@ -156,18 +149,16 @@ class EmailPaidViewModel(
     fun validatePatternWithMessages() {
         validate()
         emailPaid?.let { dto ->
-            viewModelScope.launch(Dispatchers.IO) {
-                withContext(Dispatchers.Main) {
-                    validating.value = true
-                    showPopup.value = true
-                    validationResults.clear()
-                }
-                svc?.validateMessagePattern(dto, 30)?.let { list ->
-                    withContext(Dispatchers.Main) {
-                        validating.value = false
-                        validationResults.addAll(list)
-                        validationResult.value = if (list.isNotEmpty()) "Success" else "Not found messages"
-                    }
+            viewModelScope.launch {
+                validating.value = true
+                showPopup.value = true
+                validationResults.clear()
+                withContext(Dispatchers.IO) {
+                    svc?.validateMessagePattern(dto, 30)
+                }?.let { list ->
+                    validating.value = false
+                    validationResults.addAll(list)
+                    validationResult.value = if (list.isNotEmpty()) "Success" else "Not found messages"
                 }
             }
         }
@@ -193,31 +184,33 @@ class EmailPaidViewModel(
     }
 
     fun main() {
-        viewModelScope.launch(Dispatchers.IO) {
-            accountSvc?.getAll()?.forEach { accountList.add(Pair(it.id, it.name)) }
+        viewModelScope.launch {
+            withContext(Dispatchers.IO) {
+                accountSvc?.getAll()
+            }?.forEach { accountList.add(Pair(it.id, it.name)) }
             codeEmailPaid?.takeIf { it > 0 }?.let { id ->
-                svc?.getById(id)?.let { dto ->
+                withContext(Dispatchers.IO) {
+                    svc?.getById(id)
+                }?.let { dto ->
                     emailPaid = dto
-                    withContext(Dispatchers.Main) {
-                        sender.value = dto.sender
-                        subjectPattern.value = dto.subjectPattern
-                        bodyPattern.value = dto.bodyPattern
-                        account.value = Pair(dto.codeAccount, dto.nameAccount)
-                    }
+                    sender.value = dto.sender
+                    subjectPattern.value = dto.subjectPattern
+                    bodyPattern.value = dto.bodyPattern
+                    account.value = Pair(dto.codeAccount, dto.nameAccount)
                 }
             }
-            withContext(Dispatchers.Main) {
-                llmService?.getModels()?.onSuccess { models ->
-                    llmModels.clear()
-                    models.forEachIndexed { index, name ->
-                        llmModels.add(Pair(index, name))
-                    }
-                    val model = prefs?.llmModel ?: ""
-                    selectedLLMModel.value = llmModels.firstOrNull { it.second == model } ?: llmModels.firstOrNull()
+            withContext(Dispatchers.IO) {
+                llmService?.getModels()
+            }?.onSuccess { models ->
+                llmModels.clear()
+                models.forEachIndexed { index, name ->
+                    llmModels.add(Pair(index, name))
                 }
+                val model = prefs?.llmModel ?: ""
+                selectedLLMModel.value = llmModels.firstOrNull { it.second == model } ?: llmModels.firstOrNull()
+            }
 
-                load.value = false
-            }
+            load.value = false
         }
     }
 }

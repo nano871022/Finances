@@ -27,7 +27,7 @@ import javax.inject.Inject
 import co.com.japl.ui.Prefs
 
 @AndroidEntryPoint
-class QuoteBought : Fragment(){
+class QuoteBoughtFragment : Fragment(){
 
 
     @Inject lateinit var taxSvc: ITaxPort

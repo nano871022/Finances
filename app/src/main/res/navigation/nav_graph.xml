@@ -57,7 +57,7 @@
 
     <fragment
         android:id="@+id/item_menu_side_quoteCreditVariable"
-        android:name="co.com.japl.module.creditcard.fragments.QuoteCreditVariable"
+        android:name="co.com.japl.module.creditcard.fragments.QuoteCreditVariableFragment"
         android:label="@string/quote_credit_variable"
         tools:layout="@layout/quote_credit_variable">
 
@@ -106,7 +106,7 @@
 
     <fragment
         android:id="@+id/item_menu_side_listsave"
-        android:name="co.com.japl.module.credit.fragments.ListSave"
+        android:name="co.japl.android.myapplication.finanzas.controller.simulators.list.ListSimulatorFragment"
         android:label="@string/list_save"
         tools:layout="@layout/fragment_list_save" >
         <action
@@ -118,7 +118,7 @@
 
     <fragment
         android:id="@+id/buy_credit_card"
-        android:name="co.com.japl.module.creditcard.fragments.QuoteBought"
+        android:name="co.com.japl.module.creditcard.fragments.QuoteBoughtFragment"
         android:label="@string/add_buy"
         tools:layout="@layout/buys_credit_card" >
         <deepLink app:uri="android-app://co.com.japl.finanzas.module.app/bought"/>
@@ -189,8 +189,8 @@
 
     <fragment
         android:id="@+id/item_menu_setting_google_login"
-        android:name="co.japl.android.myapplication.finanzas.controller.GDriveConnectFragment"
-        android:label="Login on Google"
+        android:name="co.japl.android.myapplication.finanzas.fragment.GDriveConnectFragment"
+        android:label="@string/title_toolbar_account_google"
         tools:layout="@layout/fragment_g_drive_connect" />
     <fragment
         android:id="@+id/creditCardSettingFragment"

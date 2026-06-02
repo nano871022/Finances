@@ -18,7 +18,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class QuoteCreditVariable : Fragment(){
+class QuoteCreditVariableFragment : Fragment(){
 
     @Inject lateinit var quoteCreditScv: ISimulatorCreditVariablePort
 

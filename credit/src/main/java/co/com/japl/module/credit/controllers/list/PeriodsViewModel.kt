@@ -7,11 +7,12 @@ import co.com.japl.finances.iports.dtos.PeriodCreditDTO
 import co.com.japl.finances.iports.inbounds.credit.IPeriodCreditPort
 import co.com.japl.ui.utils.FormUIState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 
@@ -28,13 +29,17 @@ class PeriodsViewModel @Inject constructor(private val periodSvc: IPeriodCreditP
         }
     }
 
-    fun main()= runBlocking {
-        execute()
+    fun main() {
+        viewModelScope.launch {
+            execute()
+        }
     }
 
     suspend fun execute(){
 
-        periodSvc?.getRecords()?.let(records::addAll)
+        withContext(Dispatchers.IO) {
+            periodSvc?.getRecords()
+        }?.let(records::addAll)
 
         _uiState.value = FormUIState.Current
 

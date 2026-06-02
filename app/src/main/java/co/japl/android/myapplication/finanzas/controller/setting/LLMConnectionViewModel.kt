@@ -11,8 +11,10 @@ import co.com.japl.finances.iports.enums.LLMType
 import co.com.japl.finances.iports.inbounds.common.ILLMService
 import co.com.japl.ui.Prefs
 import co.japl.android.myapplication.R
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class LLMConnectionViewModel(private val prefs: Prefs, private val context: Context, private val llmService: ILLMService) : ViewModel() {
     val llmEnabled = mutableStateOf(prefs.llmEnabled)
@@ -34,7 +36,9 @@ class LLMConnectionViewModel(private val prefs: Prefs, private val context: Cont
                 loadProgress.value = 0.1f
                 isLoadingModels.value = true
                 loadProgress.value = 0.3f
-                llmService.getModels().onSuccess { models ->
+                withContext(Dispatchers.IO) {
+                    llmService.getModels()
+                }.onSuccess { models ->
                     loadProgress.value = 0.5f
                     modelsList.clear()
                     models.forEachIndexed { index, s ->

@@ -13,9 +13,11 @@ import co.com.japl.finances.iports.inbounds.credit.ICreditFormPort
 import co.com.japl.module.credit.params.CreditFixParams
 import co.com.japl.ui.utils.initialFieldState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.math.BigDecimal
 import java.time.LocalDate
 import javax.inject.Inject
@@ -136,15 +138,11 @@ class CreditFormViewModel @Inject constructor(
 
     fun executeSave() = viewModelScope.launch {
         showProgress.value = true
-        saveRunning()
-        showProgress.value = false
-    }
-
-    private fun saveRunning() {
-        creditSvc?.let {
-            it.save(_creditDto.value)
-            navController?.popBackStack()
+        withContext(Dispatchers.IO) {
+            creditSvc?.save(_creditDto.value)
         }
+        navController?.popBackStack()
+        showProgress.value = false
     }
 
     fun execute() = viewModelScope.launch {
@@ -153,9 +151,11 @@ class CreditFormViewModel @Inject constructor(
         showProgress.value = false
     }
 
-    private fun running() {
+    private suspend fun running() {
         id?.takeIf { it > 0 }?.let { code ->
-            creditSvc?.findCreditById(code)?.let { dto ->
+            withContext(Dispatchers.IO) {
+                creditSvc?.findCreditById(code)
+            }?.let { dto ->
                 _creditDto.value = dto
                 name.onValueChange(dto.name)
                 value.onValueChange(dto.value.toString())

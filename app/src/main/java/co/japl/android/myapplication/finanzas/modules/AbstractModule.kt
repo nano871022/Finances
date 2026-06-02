@@ -33,9 +33,6 @@ abstract class AbstractModule {
     abstract fun bindSMSBroadcastReceiver(sms: co.japl.android.finances.services.core.SMS): ISMSBoadcastReceiver
 
     @Binds
-    abstract fun bindGoogleDriveService(impl: co.japl.android.finances.services.implement.GoogleDriveServiceImpl): IGoogleDriveService
-
-    @Binds
     abstract fun bindGoogleSignInService(impl: co.japl.android.finances.services.implement.GoogleLoginService): IGoogleSignInService
 
     companion object {

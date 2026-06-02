@@ -1,4 +1,4 @@
-package co.japl.android.myapplication.finanzas.controller.boughtcreditcard
+package co.com.japl.module.creditcard.fragments
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -11,7 +11,6 @@ import co.com.japl.module.creditcard.controllers.bought.lists.RecurrentBoughtVie
 import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.com.japl.ui.Prefs
 import co.com.japl.finances.iports.inbounds.creditcard.bought.lists.IBoughtListPort
-import co.com.japl.finances.iports.inbounds.creditcard.ICreditCardPort
 import dagger.hilt.android.AndroidEntryPoint
 import androidx.navigation.fragment.findNavController
 import co.com.japl.module.creditcard.params.CreditCardQuotesParams
