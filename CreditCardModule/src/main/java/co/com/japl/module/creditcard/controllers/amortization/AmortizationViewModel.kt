@@ -14,6 +14,7 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.launch
 import androidx.lifecycle.SavedStateHandle
 import javax.inject.Inject
+import co.com.japl.module.creditcard.params.AmortizationTableParams
 
 @HiltViewModel
 class AmortizationViewModel @Inject constructor(
@@ -22,7 +23,7 @@ class AmortizationViewModel @Inject constructor(
     private val svc: IAmortizationTablePort?
 ): ViewModel(){
 
-	private val id: Int = savedStateHandle.get<Long>("CODE")?.toInt() ?: 0
+	private val id: Int by lazy { (AmortizationTableParams.download(savedStateHandle).get("CODE") as? Long)?.toInt() ?: 0 }
 	var navController: NavController? = null
 
 	val progressStatus = mutableStateOf(true)

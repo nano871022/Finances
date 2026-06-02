@@ -2,11 +2,13 @@ package co.com.japl.module.creditcard.params
 
 import android.content.Intent
 import android.net.Uri
+import androidx.core.net.toUri
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.core.os.bundleOf
+import androidx.lifecycle.SavedStateHandle
 import androidx.navigation.NavController
 import co.com.japl.module.creditcard.R
 
@@ -40,6 +42,20 @@ class PeriodsParams {
                         Uri.parse(intent.dataString).getQueryParameter(Params.PARAM_CODE_CREDIT_CARD)?.let {
                             return it.toInt()
                         }
+                    }
+                }
+                return 0
+            }
+
+            @RequiresApi(Build.VERSION_CODES.O)
+            fun download(savedStateHandle: SavedStateHandle): Int {
+                val code = savedStateHandle.get<Int>(Params.PARAM_CREDIT_CARD_CODE)
+                if (code != null) {
+                    return code
+                }
+                savedStateHandle.get<Intent>(Params.PARAM_DEEPLINK)?.let { intent ->
+                    intent.dataString?.toUri()?.getQueryParameter(Params.PARAM_CODE_CREDIT_CARD)?.let {
+                        return it.toIntOrNull() ?: 0
                     }
                 }
                 return 0

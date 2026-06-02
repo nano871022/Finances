@@ -2,11 +2,13 @@ package co.com.japl.module.creditcard.params
 
 import android.content.Intent
 import android.net.Uri
+import androidx.core.net.toUri
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.core.os.bundleOf
+import androidx.lifecycle.SavedStateHandle
 import androidx.fragment.app.FragmentManager
 import androidx.navigation.NavController
 import co.com.japl.module.creditcard.R
@@ -45,6 +47,18 @@ class CreditCardParams(var parentFragmentManagers: FragmentManager) {
                     return Optional.ofNullable(Uri.parse((it[Params.ARG_DEEPLINK] as Intent).dataString).getQueryParameter(Params.ARG_PARAM_CODE_CREDIT_CARD))
 
                 }
+            }
+            return Optional.empty()
+        }
+
+        @RequiresApi(Build.VERSION_CODES.N)
+        fun download(savedStateHandle: SavedStateHandle):Optional<String>{
+            val code = savedStateHandle.get<String>(Params.ARG_PARAM_CODE)
+            if(code != null){
+                return Optional.ofNullable(code)
+            }
+            savedStateHandle.get<Intent>(Params.ARG_DEEPLINK)?.let { intent ->
+                return Optional.ofNullable(intent.dataString?.toUri()?.getQueryParameter(Params.ARG_PARAM_CODE_CREDIT_CARD))
             }
             return Optional.empty()
         }

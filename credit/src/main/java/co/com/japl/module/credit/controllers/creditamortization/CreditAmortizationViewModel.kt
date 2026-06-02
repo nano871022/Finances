@@ -19,6 +19,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import java.time.LocalDate
 import androidx.lifecycle.SavedStateHandle
 import javax.inject.Inject
+import co.com.japl.module.credit.params.AmortizationCreditParams
 
 @HiltViewModel
 class CreditAmortizationViewModel @Inject constructor(
@@ -29,8 +30,9 @@ class CreditAmortizationViewModel @Inject constructor(
     private val amortizationSvc: IAmortizationTablePort?
 ): ViewModel() {
 
-    private val creditCode: Int = savedStateHandle.get<Long>("CREDIT_CODE")?.toInt() ?: 0
-    private val lastDate: LocalDate = savedStateHandle.get<LocalDate>("LAST_DATE") ?: LocalDate.now()
+    private val params: Map<String, Any> by lazy { AmortizationCreditParams.download(savedStateHandle) }
+    private val creditCode: Int get() = (params.get("CREDIT_CODE") as? Long)?.toInt() ?: 0
+    private val lastDate: LocalDate get() = params.get("LAST_DATE") as? LocalDate ?: LocalDate.now()
     lateinit var navController: NavController
         set
 

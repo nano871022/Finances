@@ -2,10 +2,12 @@ package co.com.japl.module.creditcard.params
 
 import android.content.Intent
 import android.net.Uri
+import androidx.core.net.toUri
 import android.os.Build
 import android.os.Bundle
 import androidx.annotation.RequiresApi
 import androidx.core.os.bundleOf
+import androidx.lifecycle.SavedStateHandle
 import androidx.navigation.NavController
 import co.com.japl.module.creditcard.R
 import co.com.japl.ui.utils.DateUtils
@@ -108,6 +110,26 @@ class CreditCardQuotesParams {
                 }
             }
 
+            @RequiresApi(Build.VERSION_CODES.O)
+            fun download(savedStateHandle: SavedStateHandle): Triple<Int, LocalDateTime, Short> {
+                val code = savedStateHandle.get<Int>(Params.PARAM_CREDIT_CARD_CODE)
+                val cutOff = savedStateHandle.get<String>(Params.PARAM_CREDIT_CARD_CUTOFF)?.let { DateUtils.toLocalDateTime(it) }
+                val cutoffDay = savedStateHandle.get<Short>(Params.PARAM_CREDIT_CARD_CUTOFF_DAY)
+
+                if (code != null && cutOff != null && cutoffDay != null) {
+                    return Triple(code, cutOff, cutoffDay)
+                }
+
+                savedStateHandle.get<Intent>(Params.PARAM_DEEPLINK)?.let { intent ->
+                    val uri = intent.dataString?.toUri()
+                    val c = uri?.getQueryParameter(Params.PARAM_CODE_CREDIT_CARD)?.toIntOrNull() ?: 0
+                    val co = uri?.getQueryParameter(Params.PARAM_CUTOFF)?.let { DateUtils.toLocalDateTime(it) } ?: LocalDateTime.now()
+                    val cd = uri?.getQueryParameter(Params.PARAM_CUTOFF_DAY)?.toShortOrNull() ?: 0
+                    return Triple(c, co, cd)
+                }
+                return Triple(0, LocalDateTime.now(), 0)
+            }
+
             fun toBack(navController: NavController) {
                 navController.popBackStack()
             }
@@ -141,6 +163,26 @@ class CreditCardQuotesParams {
                         return Triple(code, name, id)
                     }
                 }
+            }
+
+            @RequiresApi(Build.VERSION_CODES.O)
+            fun download(savedStateHandle: SavedStateHandle): Triple<Int, String, Int> {
+                val code = savedStateHandle.get<Int>(Params.PARAM_CREDIT_CARD_CODE)
+                val name = savedStateHandle.get<String>(Params.PARAM_CREDIT_CARD_NAME)
+                val id = savedStateHandle.get<Int>(Params.PARAM_BOUGHT_ID)
+
+                if (code != null && name != null && id != null) {
+                    return Triple(code, name, id)
+                }
+
+                savedStateHandle.get<Intent>(Params.PARAM_DEEPLINK)?.let { intent ->
+                    val uri = intent.dataString?.toUri()
+                    val c = uri?.getQueryParameter(Params.PARAM_CREDIT_CARD_CODE)?.toIntOrNull() ?: 0
+                    val n = uri?.getQueryParameter(Params.PARAM_CREDIT_CARD_NAME) ?: ""
+                    val b = uri?.getQueryParameter(Params.PARAM_BOUGHT_ID)?.toIntOrNull() ?: 0
+                    return Triple(c, n, b)
+                }
+                return Triple(0, "", 0)
             }
 
             fun downloadOldBoughtId(argument: Bundle): Int {

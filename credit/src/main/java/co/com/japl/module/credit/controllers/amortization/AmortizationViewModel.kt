@@ -15,6 +15,7 @@ import kotlinx.coroutines.launch
 import java.time.LocalDate
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
+import co.com.japl.module.credit.params.AmortizationTableParams
 
 @HiltViewModel
 class AmortizationViewModel @Inject constructor(
@@ -23,8 +24,9 @@ class AmortizationViewModel @Inject constructor(
     private val amortizationSvc: IAmortizationTablePort?
 ) : ViewModel() {
 
-    private val code: Int = savedStateHandle.get<Long>("CODE")?.toInt() ?: 0
-    private val lastDate: LocalDate = savedStateHandle.get<LocalDate>("LAST_DATE") ?: LocalDate.now()
+    private val params: Map<String, Any> by lazy { AmortizationTableParams.download(savedStateHandle) }
+    private val code: Int get() = (params.get("CODE") as? Long)?.toInt() ?: 0
+    private val lastDate: LocalDate get() = params.get("LAST_DATE") as? LocalDate ?: LocalDate.now()
 
     private val _state = MutableStateFlow(AmortizationState())
     val state = _state.asStateFlow()
