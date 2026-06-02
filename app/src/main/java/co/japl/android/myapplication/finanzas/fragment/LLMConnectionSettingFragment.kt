@@ -1,4 +1,4 @@
-package co.japl.android.myapplication.finanzas.controller.recap
+package co.japl.android.myapplication.finanzas.fragment
 
 import android.os.Build
 import android.os.Bundle
@@ -9,20 +9,32 @@ import androidx.annotation.RequiresApi
 import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import co.com.japl.finances.iports.inbounds.common.ILLMService
 import co.com.japl.finances.iports.inbounds.recap.IRecapPort
+import co.com.japl.ui.Prefs
 import co.com.japl.ui.theme.MaterialThemeComposeUI
-import co.japl.android.myapplication.finanzas.controller.recap.views.Recap
+import co.japl.android.myapplication.finanzas.ApplicationInitial
+import co.japl.android.myapplication.finanzas.controller.recap.RecapViewModel
+import co.japl.android.myapplication.finanzas.controller.setting.LLMConnectionViewModel
+import co.japl.android.myapplication.finanzas.view.recap.Recap
+import co.japl.android.myapplication.finanzas.view.setting.LLMConnectionForm
 import co.japl.finances.core.usercases.interfaces.creditcard.bought.lists.IBought
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
-import co.japl.android.myapplication.finanzas.ApplicationInitial
 
 @AndroidEntryPoint
-class RecapFragment @Inject constructor() : Fragment() {
-    @Inject lateinit var recapSvc:IRecapPort
-    @Inject lateinit var boughtCreditCardSvc : IBought
+class LLMConnectionSettingFragment : Fragment() {
 
-    private val recapViewModel by lazy {RecapViewModel(recapSvc,boughtCreditCardSvc,ApplicationInitial.prefs,findNavController())}
+    @Inject lateinit var prefs: Prefs
+    @Inject lateinit var llmSvc: ILLMService
+
+    private val viewModel by lazy {
+        LLMConnectionViewModel(
+            prefs=prefs,
+            context=requireContext(),
+            llmService=llmSvc
+        )
+    }
 
     @RequiresApi(Build.VERSION_CODES.S)
     override fun onCreateView(
@@ -32,7 +44,7 @@ class RecapFragment @Inject constructor() : Fragment() {
         return ComposeView(requireContext()).apply {
             setContent {
                 MaterialThemeComposeUI {
-                    Recap(recapViewModel)
+                    LLMConnectionForm(viewModel)
                 }
             }
         }

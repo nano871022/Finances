@@ -1,4 +1,4 @@
-package co.japl.android.myapplication.finanzas.controller.google.views
+package co.japl.android.myapplication.finanzas.view.google
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable

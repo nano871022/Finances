@@ -1,4 +1,4 @@
-package co.japl.android.myapplication.finanzas.controller.recap.views
+package co.japl.android.myapplication.finanzas.view.recap
 
 import android.content.Intent
 import android.content.res.Configuration
@@ -22,7 +22,6 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -39,6 +38,7 @@ import co.com.japl.ui.Prefs
 import co.japl.android.myapplication.R
 import co.japl.android.myapplication.finanzas.controller.recap.RecapViewModel
 import co.com.japl.ui.components.Carousel
+import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.com.japl.ui.theme.values.Dimensions
 import co.japl.android.myapplication.finanzas.view.components.PieceOfPieDraw
 
@@ -176,7 +176,7 @@ fun PreviewRecap() {
      warningValueCreditCard = 80000.0
     )
     model.setRecap(recap)
-    co.com.japl.ui.theme.MaterialThemeComposeUI {
+    MaterialThemeComposeUI {
         Recap(model)
     }
 }
@@ -198,7 +198,7 @@ fun PreviewRecapDark() {
         warningValueCreditCard = 80000.0
     )
     model.setRecap(recap)
-    co.com.japl.ui.theme.MaterialThemeComposeUI {
+    MaterialThemeComposeUI {
         Recap(model)
     }
 }

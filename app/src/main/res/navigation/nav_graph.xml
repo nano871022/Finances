@@ -430,7 +430,7 @@
     </fragment>
     <fragment
         android:id="@+id/item_menu_side_recap"
-        android:name="co.japl.android.myapplication.finanzas.controller.recap.RecapFragment"
+        android:name="co.japl.android.myapplication.finanzas.fragment.RecapFragment"
         android:label="@string/recap"
         tools:layout="@layout/fragment_recap" />
     <fragment
@@ -485,7 +485,7 @@
     </fragment>
     <fragment
         android:id="@+id/item_menu_setting_settings_application"
-        android:name="co.japl.android.myapplication.finanzas.controller.setting.SettingsApp"
+        android:name="co.japl.android.myapplication.finanzas.fragment.SettingsApp"
         android:label="@string/settings_app"
         tools:layout="@layout/fragment_settings_app" />
 
@@ -498,7 +498,7 @@
 
     <fragment
         android:id="@+id/item_menu_setting_llm_connection"
-        android:name="co.japl.android.myapplication.finanzas.controller.setting.LLMConnectionSetting"
+        android:name="co.japl.android.myapplication.finanzas.fragment.LLMConnectionSettingFragment"
         android:label="@string/llm_connection"
         tools:layout="@layout/fragment_llm_connection" />
 
