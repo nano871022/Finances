@@ -25,7 +25,7 @@ class CreditCardViewModel @Inject constructor(
     private val creditCardSvc:ICreditCardPort
 ):ViewModel() {
 
-    private val codeCreditCard: Int? = savedStateHandle.get<String>(CreditCardParams.Params.ARG_PARAM_CODE)?.toIntOrNull()
+    private val codeCreditCard: Int? = CreditCardParams.download(savedStateHandle).orElse(null)?.toIntOrNull()
     var navController: NavController? = null
 
     var showProgress = mutableStateOf(true)
