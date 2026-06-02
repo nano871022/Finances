@@ -64,9 +64,12 @@ fun Sms(viewModel:SmsCreditCardViewModel){
         viewModel.main()
     }
     if(load){
-        LinearProgressIndicator(
-            modifier = Modifier.fillMaxWidth(),
-        )
+        Column (modifier=Modifier.fillMaxWidth()){
+            LinearProgressIndicator(
+                modifier = Modifier.fillMaxWidth(),
+            )
+            Text(text=stringResource(R.string.loading_data))
+        }
     }else{
         Form(viewModel = viewModel)
     }

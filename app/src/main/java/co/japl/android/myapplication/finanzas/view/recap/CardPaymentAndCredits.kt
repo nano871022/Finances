@@ -1,4 +1,4 @@
-package co.japl.android.myapplication.finanzas.controller.recap.views
+package co.japl.android.myapplication.finanzas.view.recap
 
 import androidx.compose.foundation.layout.Row
 import androidx.compose.material3.MaterialTheme

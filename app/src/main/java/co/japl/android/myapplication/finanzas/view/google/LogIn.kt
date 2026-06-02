@@ -1,4 +1,4 @@
-package co.japl.android.myapplication.finanzas.controller.google.views
+package co.japl.android.myapplication.finanzas.view.google
 
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
