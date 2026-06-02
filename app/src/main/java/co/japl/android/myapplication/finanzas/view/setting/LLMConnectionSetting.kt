@@ -12,6 +12,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import co.com.japl.finances.iports.inbounds.common.ILLMService
 import co.com.japl.ui.Prefs
@@ -38,7 +39,11 @@ fun LLMConnectionForm(viewModel: LLMConnectionViewModel) {
                 progress = { progress.value },
                 modifier = Modifier.fillMaxWidth(),
             )
-            Text(text= stringResource( R.string.loading_data))
+            Text(text= stringResource( R.string.loading_data),
+                textAlign = TextAlign.Center,
+                color= MaterialTheme.colorScheme.onBackground,
+                modifier=Modifier.fillMaxWidth()
+            )
         } else {
             Body(viewModel)
         }
@@ -152,6 +157,19 @@ private fun FormLLMPreview(){
 @Preview(showBackground = true, showSystemUi = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Composable
 private fun FormLLMProgressPreview(){
+    val vm = getLLMConnectFViewModel()
+    vm.loadProgress.value = 0.5f
+    vm.isLoadingModels.value = true
+    MaterialThemeComposeUI {
+        LLMConnectionForm(
+            viewModel=vm
+        )
+    }
+}
+
+@Preview(showBackground = true, showSystemUi = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Composable
+private fun FormLLMProgressDarkPreview(){
     val vm = getLLMConnectFViewModel()
     vm.loadProgress.value = 0.5f
     vm.isLoadingModels.value = true
