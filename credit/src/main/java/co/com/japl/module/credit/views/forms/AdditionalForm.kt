@@ -11,6 +11,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.CleaningServices
 import androidx.compose.material.icons.rounded.Save
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -35,6 +36,9 @@ import java.time.LocalDate
 @Composable
 fun AdditionalForm(viewModel: AdditionalFormViewModel){
     Scaffold (
+        snackbarHost = {
+            SnackbarHost(hostState = viewModel.hostState)
+        },
         floatingActionButton = {
             Buttons(viewModel)
         }

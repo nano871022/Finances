@@ -15,7 +15,9 @@ import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel(assistedFactory = ProjectionListViewModel.Factory::class)
@@ -51,33 +53,34 @@ class ProjectionListViewModel @AssistedInject constructor(
     }
 
     fun delete(id: Int) {
-        projectionListPort?.let { svc ->
-            svc.delete(id).let {
-                viewModelScope.launch {
-                    if (it) {
-                        snackbarHost.showSnackbar(
-                            message = context.getString(R.string.record_was_remove_success),
-                            actionLabel = context.getString(R.string.close),
-                            duration = SnackbarDuration.Short
-                        ).also {
-                            load()
-                        }
-                    } else {
-                        snackbarHost.showSnackbar(
-                            message = context.getString(R.string.record_was_remove_error),
-                            actionLabel = context.getString(R.string.close),
-                            duration = SnackbarDuration.Short
-                        )
-                    }
+        viewModelScope.launch {
+            val result = withContext(Dispatchers.IO) {
+                projectionListPort?.delete(id) ?: false
+            }
+            if (result) {
+                snackbarHost.showSnackbar(
+                    message = context.getString(R.string.record_was_remove_success),
+                    actionLabel = context.getString(R.string.close),
+                    duration = SnackbarDuration.Short
+                ).also {
+                    load()
                 }
+            } else {
+                snackbarHost.showSnackbar(
+                    message = context.getString(R.string.record_was_remove_error),
+                    actionLabel = context.getString(R.string.close),
+                    duration = SnackbarDuration.Short
+                )
             }
         }
     }
 
     private fun load() = viewModelScope.launch {
         loader.value = true
-        projectionListPort?.let {
-            it.getProjections().let {
+        projectionListPort?.let { svcPort ->
+            withContext(Dispatchers.IO) {
+                svcPort.getProjections()
+            }.let {
                 _list.clear()
                 _list.addAll(it)
             }

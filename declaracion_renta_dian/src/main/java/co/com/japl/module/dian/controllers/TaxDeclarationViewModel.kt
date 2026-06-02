@@ -5,9 +5,11 @@ import androidx.lifecycle.viewModelScope
 import co.com.japl.finances.iports.dtos.dian.Form210DTO
 import co.com.japl.finances.iports.inbounds.dian.IGetTaxDeclarationUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.time.LocalDate
 import javax.inject.Inject
 
@@ -29,7 +31,9 @@ class TaxDeclarationViewModel @Inject constructor(
     fun loadData() {
         val currentYear = LocalDate.now().year
         viewModelScope.launch {
-            _declarationState.value = getTaxDeclarationUseCase.getTaxDeclaration(currentYear)
+            _declarationState.value = withContext(Dispatchers.IO) {
+                getTaxDeclarationUseCase.getTaxDeclaration(currentYear)
+            }
         }
     }
 

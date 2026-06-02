@@ -14,7 +14,9 @@ import co.com.japl.finances.iports.inbounds.creditcard.ISimulatorCreditVariableP
 // Removed: import co.com.japl.module.creditcard.controllers.simulator.SimulatorListItemViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import co.com.japl.module.credit.controllers.simulator.SimulatorListItemViewModel as SimulatorListItemViewModelCredit
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 
 class ListViewModel(@ApplicationContext val context: Context, private val simulatorVariableSvc: ISimulatorCreditVariablePort?=null, private val simulatorFixSvc: ISimulatorCreditFixPort?=null, private val navController: NavController?=null):ViewModel() {
@@ -48,11 +50,15 @@ class ListViewModel(@ApplicationContext val context: Context, private val simula
     }
 
     suspend fun running(){
-        simulatorFixSvc?.let{
-            list.addAll(it.getList())
+        withContext(Dispatchers.IO) {
+            simulatorFixSvc?.getList()
+        }?.let{
+            list.addAll(it)
         }
-        simulatorVariableSvc?.let{
-            list.addAll(it.getList())
+        withContext(Dispatchers.IO) {
+            simulatorVariableSvc?.getList()
+        }?.let{
+            list.addAll(it)
         }
     }
 }
