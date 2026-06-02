@@ -12,10 +12,14 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.CleaningServices
 import androidx.compose.material.icons.rounded.Save
+import androidx.compose.material.icons.rounded.Update
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Snackbar
+import androidx.compose.material3.SnackbarHost
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -41,9 +45,13 @@ import java.time.LocalDate
 
 @Composable
 fun ProjectionForm(viewModel: ProjectionFormViewModel){
+    val snackbarState = remember { viewModel.hostState}
     Scaffold (
         floatingActionButton = {
             Buttons(viewModel)
+        },
+        snackbarHost = {
+            SnackbarHost( hostState = snackbarState)
         }
     ){
         Column(modifier = Modifier.padding(it)) {
@@ -58,12 +66,19 @@ private fun Buttons(viewModel: ProjectionFormViewModel){
         FloatButton(imageVector = Icons.Rounded.CleaningServices, descriptionIcon = R.string.clean_form) {
             viewModel.clear()
         }
-        FloatButton(imageVector = Icons.Rounded.Save, descriptionIcon = R.string.save) {
-            viewModel.save()
+        if(viewModel.id == null) {
+            FloatButton(imageVector = Icons.Rounded.Save, descriptionIcon = R.string.save) {
+                viewModel.save()
+            }
+        }else {
+            FloatButton(imageVector = Icons.Rounded.Update, descriptionIcon = R.string.update) {
+                viewModel.update()
+            }
         }
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
 @Composable
 private fun Form(viewModel: ProjectionFormViewModel){
     val name by viewModel.name.value.collectAsState()
@@ -81,13 +96,28 @@ private fun Form(viewModel: ProjectionFormViewModel){
             validation = { viewModel.name.validate() }
         )
 
-        Row(modifier = Modifier.fillMaxWidth().padding(top = Dimensions.PADDING_SHORT)) {
+        FieldDatePicker(
+            title = R.string.date_of_projection,
+            value = DateUtils.localDateToString(datePayment),
+            callable = { date -> viewModel.datePayment.onValueChange(DateUtils.toLocalDate(date)) },
+            validation = { viewModel.datePayment.validate() },
+            modifier = Modifier.padding(top= Dimensions.PADDING_SHORT)
+        )
+
+        FieldSelect(
+            title = stringResource(id = R.string.period_projection),
+            value = period.second,
+            list = KindPaymentsEnums.entries.map { Pair(it.ordinal, it.name) }.toMutableStateList(),
+            modifier = Modifier.padding(top= Dimensions.PADDING_SHORT),
+            callAble = { pair -> pair?.let { viewModel.period.onValueChange(it) } }
+        )
+
             FieldText(
                 title = stringResource(id = R.string.value_projection),
                 value = value.takeIf { it > BigDecimal.ZERO }?.toString()?:"",
                 callback = { viewModel.value.onValueChangeStr(it) },
-                modifier = Weight1fAndPaddintRightSpace(),
                 validation = { viewModel.value.validate() },
+                modifier = Modifier.fillMaxWidth().padding(top= Dimensions.PADDING_SHORT),
                 currency = true
             )
 
@@ -95,29 +125,10 @@ private fun Form(viewModel: ProjectionFormViewModel){
                 title = stringResource(id = R.string.quote_projection),
                 value = quote.takeIf { it > BigDecimal.ZERO }?.toString()?:"",
                 callback = { viewModel.quote.onValueChangeStr(it) },
-                modifier = Weight1f(),
                 validation = { viewModel.quote.validate() },
+                modifier = Modifier.fillMaxWidth().padding(top= Dimensions.PADDING_SHORT),
                 currency = true
             )
-        }
-
-        Row(modifier = Modifier.fillMaxWidth().padding(top = Dimensions.PADDING_SHORT)) {
-            FieldDatePicker(
-                title = R.string.date_of_projection,
-                value = DateUtils.localDateToString(datePayment),
-                callable = { date -> viewModel.datePayment.onValueChange(DateUtils.toLocalDate(date)) },
-                modifier = Weight1fAndPaddintRightSpace(),
-                validation = { viewModel.datePayment.validate() }
-            )
-
-            FieldSelect(
-                title = stringResource(id = R.string.period_projection),
-                value = period.second,
-                list = KindPaymentsEnums.entries.map { Pair(it.ordinal, it.name) }.toMutableStateList(),
-                modifier = Weight1f(),
-                callAble = { pair -> pair?.let { viewModel.period.onValueChange(it) } }
-            )
-        }
     }
 }
 

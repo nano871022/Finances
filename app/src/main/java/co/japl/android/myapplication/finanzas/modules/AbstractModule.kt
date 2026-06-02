@@ -17,6 +17,9 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import dagger.multibindings.IntoMap
 import dagger.multibindings.ClassKey
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
+import javax.inject.Qualifier
 import javax.inject.Singleton
 
 @Module
@@ -60,5 +63,9 @@ abstract class AbstractModule {
         fun provideMutableStateBooleanOf(): MutableState<Boolean> {
             return mutableStateOf(false)
         }
+
+
+        @Provides
+        fun provideIoDispatcher(): CoroutineDispatcher = Dispatchers.IO
     }
 }

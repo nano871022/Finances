@@ -1,8 +1,9 @@
 package co.com.japl.module.paid.controllers.projections.forms
 
 import android.content.Context
-import androidx.compose.material.SnackbarDuration
-import androidx.compose.material.SnackbarHostState
+import android.util.Log
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
@@ -19,20 +20,23 @@ import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.math.BigDecimal
 import java.time.LocalDate
-import javax.inject.Inject
 
 @HiltViewModel(assistedFactory = ProjectionFormViewModel.Factory::class)
 class ProjectionFormViewModel @AssistedInject constructor(
     @Assisted private val context: Context,
     @Assisted private val saveStateHandler: SavedStateHandle,
-    @Assisted private val id:Int?=null,
+    @Assisted public val id:Int?=null,
     private val projectionSvc: IProjectionFormPort?,
-    @Assisted private val navController: NavController?): ViewModel(){
+    @Assisted private val navController: NavController?,
+    private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO): ViewModel(){
 
     @AssistedFactory
     interface Factory {
@@ -80,6 +84,7 @@ class ProjectionFormViewModel @AssistedInject constructor(
             projection.update {
                 it.copy(type = it.type)
             }
+            validate()
         })
     val name = initialFieldState<String>(
         saveStateHandler!!,
@@ -90,6 +95,7 @@ class ProjectionFormViewModel @AssistedInject constructor(
             projection.update{
                 it.copy(name = it.name)
             }
+            validate()
         })
     val value = initialFieldState<BigDecimal>(
         saveStateHandler!!,
@@ -101,6 +107,7 @@ class ProjectionFormViewModel @AssistedInject constructor(
             projection.update{
                 it.copy(value = it.value)
             }
+            validate()
         }).also {
         it.onValueChangeStr("")
     }
@@ -114,6 +121,7 @@ class ProjectionFormViewModel @AssistedInject constructor(
             projection.update{
                 it.copy(quote = it.quote)
             }
+            validate()
         }).also {
         it.onValueChangeStr("")
     }
@@ -122,12 +130,13 @@ class ProjectionFormViewModel @AssistedInject constructor(
         main()
     }
 
-    fun save(){
+    fun save()= viewModelScope.launch {
         if(disableSaveStatus.value.not()){
             projectionSvc?.let{
-                it.save(projection.value).let{
-                    viewModelScope.launch {
-                        if (it) {
+                withContext(ioDispatcher) {
+                    it.save(projection.value)
+                }.let{resp->
+                        if (resp) {
                             hostState.showSnackbar(
                                 message = context.getString(R.string.save_project_success),
                                 actionLabel = context.getString(R.string.close),
@@ -148,14 +157,15 @@ class ProjectionFormViewModel @AssistedInject constructor(
                 }
             }
         }
-    }
 
-    fun update(){
+
+    fun update() = viewModelScope.launch {
         if(disableSaveStatus.value.not()){
             projectionSvc?.let{
-                it.save(projection.value).let{
-                    viewModelScope.launch {
-                        if (it) {
+                withContext(ioDispatcher) {
+                    it.save(projection.value)
+                }.let{ resp->
+                        if (resp) {
                             hostState.showSnackbar(
                                 message = context.getString(R.string.update_project_success),
                                 actionLabel = context.getString(R.string.close),
@@ -176,7 +186,7 @@ class ProjectionFormViewModel @AssistedInject constructor(
                 }
             }
         }
-    }
+
 
     fun validate(){
         datePayment.validate()
@@ -204,7 +214,9 @@ class ProjectionFormViewModel @AssistedInject constructor(
         loaderStatus.value = true
         projectionSvc?.let{
             id?.let {
-                projectionSvc.findById(id)?.let{ dto ->
+                withContext(ioDispatcher) {
+                    projectionSvc.findById(id)
+                }?.let{ dto ->
                     projection.update {
                         dto
                     }
@@ -217,7 +229,13 @@ class ProjectionFormViewModel @AssistedInject constructor(
     private fun quoteCalculation()= viewModelScope.launch {
         loaderStatus.value = true
         projectionSvc?.let{
-            it.calculateQuote(KindPaymentsEnums.findByIndex(period.value.value.first),datePayment.value.value,value.value.value).let(quote::onValueChange)
+            withContext(ioDispatcher) {
+                it.calculateQuote(
+                    KindPaymentsEnums.findByIndex(period.value.value.first),
+                    datePayment.value.value,
+                    value.value.value
+                )
+            }.let(quote::onValueChange)
         }
         loaderStatus.value = false
     }
