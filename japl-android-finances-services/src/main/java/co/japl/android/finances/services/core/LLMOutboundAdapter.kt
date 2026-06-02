@@ -69,7 +69,8 @@ class LLMOutboundAdapter @Inject constructor() : ILLMOutboundPort {
                 val candidates = jsonResponse.getJSONArray("candidates")
                 val contentRes = candidates.getJSONObject(0).getJSONObject("content")
                 val partsRes = contentRes.getJSONArray("parts")
-                partsRes.getJSONObject(0).getString("text")
+                val text = partsRes.getJSONObject(0).getString("text")
+                cleanResponse(text)
             } else {
                 throw Exception("Error: ${connection.responseCode} ${connection.errorStream?.bufferedReader()?.readText()}")
             }
@@ -129,7 +130,8 @@ class LLMOutboundAdapter @Inject constructor() : ILLMOutboundPort {
                 val jsonResponse = JSONObject(response)
                 val choices = jsonResponse.getJSONArray("choices")
                 val messageObj = choices.getJSONObject(0).getJSONObject("message")
-                messageObj.getString("content")
+                val content = messageObj.getString("content")
+                cleanResponse(content)
             } else {
                 throw Exception("Error: ${connection.responseCode} ${connection.errorStream?.bufferedReader()?.readText()}")
             }
@@ -159,5 +161,30 @@ class LLMOutboundAdapter @Inject constructor() : ILLMOutboundPort {
                 throw Exception("Error: ${connection.responseCode} ${connection.errorStream?.bufferedReader()?.readText()}")
             }
         }
+    }
+
+    internal fun cleanResponse(content: String): String {
+        val thinkRegex = Regex("<think>.*?</think>", RegexOption.DOT_MATCHES_ALL)
+        var cleaned = content.replace(thinkRegex, "").trim()
+
+        if (cleaned.startsWith("{") && cleaned.endsWith("}")) {
+            try {
+                val json = JSONObject(cleaned)
+                val keys = listOf("response", "answer", "content")
+                val thinkingKeys = listOf("thinking", "thought", "reasoning")
+
+                if (thinkingKeys.any { json.has(it) }) {
+                    for (key in keys) {
+                        if (json.has(key)) {
+                            return json.getString(key).trim()
+                        }
+                    }
+                }
+            } catch (e: Exception) {
+                // Not a JSON or doesn't match expected pattern
+            }
+        }
+
+        return cleaned
     }
 }
