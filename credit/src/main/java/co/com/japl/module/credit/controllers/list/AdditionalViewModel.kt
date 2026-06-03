@@ -19,6 +19,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.time.LocalDate
 import androidx.lifecycle.SavedStateHandle
+import co.com.japl.module.credit.params.AdditionalCreditParams
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 
@@ -29,7 +30,7 @@ class AdditionalViewModel @Inject constructor(
     private val additionalSvc: IAdditional?
 ): ViewModel(){
 
-    private val code: Int = savedStateHandle.get<Long>("CREDIT_CODE")?.toInt() ?: 0
+    private val code: Int = AdditionalCreditParams.download(savedStateHandle).second
     var navController: NavController? = null
 
     val list = mutableStateListOf<AdditionalCreditDTO>()

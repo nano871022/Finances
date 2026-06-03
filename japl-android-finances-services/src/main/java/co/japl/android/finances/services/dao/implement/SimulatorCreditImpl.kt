@@ -66,7 +66,7 @@ class SimulatorCreditImpl @Inject constructor(override var dbConnect: SQLiteOpen
         db.query(
             CalcDB.CalcEntry.TABLE_NAME,
             COLUMNS_CALC,
-            " id = ?",
+            " ${BaseColumns._ID} = ?",
             arrayOf(id.toString()),
             null,
             null,

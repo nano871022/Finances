@@ -12,6 +12,7 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import co.com.japl.finances.iports.inbounds.paid.IProjectionFormPort
 import co.com.japl.module.paid.controllers.projections.forms.ProjectionFormViewModel
+import co.com.japl.module.paid.params.ProjectionParams
 import co.com.japl.module.paid.views.projections.form.ProjectionForm
 import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.com.japl.ui.factory.ViewModelFactory
@@ -28,7 +29,7 @@ class ProjectionFragment : Fragment() {
             owner = this,
             viewModelClass = ProjectionFormViewModel::class.java,
             build = {
-                val id:Int? = null
+                val id:Int? = arguments?.let{ProjectionParams.download(it)}
                 ProjectionFormViewModel(
                     saveStateHandler = it,
                     context = context?.applicationContext!!,

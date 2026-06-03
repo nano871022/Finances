@@ -5,6 +5,7 @@ import android.os.Build
 import android.os.Bundle
 import androidx.annotation.RequiresApi
 import androidx.core.net.toUri
+import androidx.lifecycle.SavedStateHandle
 
 class AdditionalCreditParams {
     object Params{
@@ -16,10 +17,9 @@ class AdditionalCreditParams {
     companion object{
 
         @RequiresApi(Build.VERSION_CODES.O)
-        fun download(argument:Bundle):Pair<Int,Int> {
+        fun download(argument: SavedStateHandle):Pair<Int,Int> {
             argument.let {
-                if( it.containsKey(Params.PARAM_DEEPLINK) ){
-                    val intent = it.get(Params.PARAM_DEEPLINK) as Intent
+                argument.get<Intent>(Params.PARAM_DEEPLINK)?.let{ intent->
                     val codeCredit = intent.dataString?.toUri()?.getQueryParameter(Params.PARAM_CREDIT_CODE)?.let{
                         it.toInt()
                     }?:0

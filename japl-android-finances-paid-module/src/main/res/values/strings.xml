@@ -137,4 +137,5 @@ Email Samples:
     <string name="total_paids">Total Pagado</string>
     <string name="total">Total</string>
     <string name="num_paids">#</string>
+    <string name="quote_value_short">Cuota</string>
 </resources>

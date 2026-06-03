@@ -79,6 +79,7 @@ private fun Body(dto: SimulatorCreditDTO,viewModel: SimulatorListViewModel) {
 @Preview( showBackground = true, backgroundColor = 0x000000, showSystemUi = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
 private fun ListSimulatorPreviewLight(){
     val viewModel = getSimulatorViewModel()
+    viewModel.progres.value = true
     MaterialThemeComposeUI {
         ListSimulator(viewModel)
     }
@@ -119,6 +120,7 @@ private fun ListSimulatorPreviewDark(){
 @Composable
 private fun getSimulatorViewModel(): SimulatorListViewModel {
     val viewModel = SimulatorListViewModel(LocalContext.current)
+    viewModel.progres.value = false
     viewModel.list.add(
         SimulatorCreditDTO(
             code = 1,

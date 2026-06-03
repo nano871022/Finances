@@ -34,6 +34,7 @@ import co.com.japl.finances.iports.dtos.SimulatorCreditDTO
 import co.com.japl.finances.iports.enums.KindOfTaxEnum
 import co.com.japl.module.creditcard.R
 import co.com.japl.module.creditcard.controllers.simulator.SimulatorListItemViewModel
+import co.com.japl.ui.components.FieldViewCards
 import co.com.japl.ui.components.MoreOptionsDialogPair
 import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.com.japl.ui.theme.values.Dimensions
@@ -72,21 +73,12 @@ private fun Header(viewModel: SimulatorListItemViewModel, size:WindowWidthSize){
     val dto by remember { viewModel.item }
     Log.d("CreditCard.SimulatorList","Item/DTO: $dto")
     Row {
-        Text(
-            text = stringResource(R.string.name),
-            color = MaterialTheme.colorScheme.onSurface,
-            modifier = Modifier.fillMaxWidth()
-                .weight(0.3f)
-                .align (alignment = Alignment.CenterVertically)
-                .padding(end= Dimensions.PADDING_SHORT)
-        )
-
-        Text(
-            text = dto?.name?:"Not Found",
-            color = MaterialTheme.colorScheme.onSurface,
-            modifier = Modifier.fillMaxWidth()
-                .weight(1f)
-                .align (alignment = Alignment.CenterVertically)
+        FieldViewCards(
+            R.string.name,
+            value = dto?.name?:"Not Found",
+            modifier = Modifier.align(Alignment.CenterVertically).weight(1f),
+            textAlign = TextAlign.Left,
+            color = MaterialTheme.colorScheme.onSurface
         )
 
         IconButton(
@@ -105,7 +97,7 @@ private fun Header(viewModel: SimulatorListItemViewModel, size:WindowWidthSize){
                 .align(alignment = Alignment.CenterVertically)
         )
         Text(
-            text= NumbersUtil.toString(dto?.periods?.toLong()?:0),
+            text= NumbersUtil.toStringLong(dto?.periods?.toLong()?:0),
             textAlign = TextAlign.Left,
             color = MaterialTheme.colorScheme.onSurface,
             modifier = Modifier.weight(1f)
@@ -158,7 +150,7 @@ private fun Header(viewModel: SimulatorListItemViewModel, size:WindowWidthSize){
 
             Text(
                 text = NumbersUtil.COPtoString(dto?.value?: BigDecimal.ZERO),
-                textAlign = TextAlign.Left,
+                textAlign = TextAlign.Right,
                 color = MaterialTheme.colorScheme.onSurface,
                 modifier = Modifier.weight(1.5f)
                     .align(alignment = Alignment.CenterVertically)
