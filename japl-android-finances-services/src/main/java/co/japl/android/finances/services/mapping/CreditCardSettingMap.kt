@@ -1,5 +1,6 @@
 package co.japl.android.finances.services.mapping
 
+import android.annotation.SuppressLint
 import android.content.ContentValues
 import android.database.Cursor
 import android.os.Build
@@ -25,16 +26,17 @@ class CreditCardSettingMap {
         }
     }
 
+    @SuppressLint("Range")
     @RequiresApi(Build.VERSION_CODES.O)
     fun mapping(cursor:Cursor):Optional<CreditCardSettingDTO>{
         if(cursor.columnCount == 7) {
-            val codeCreditCard = cursor.getInt(1)
-            val name = cursor.getString(2)
-            val value = cursor.getString(3)
-            val type = cursor.getString(4)
-            val active = cursor.getShort(5)
-            val createDate = DateUtils.toLocalDateTime(cursor.getString(6))
-            val id = cursor.getString(0).toInt()
+            val codeCreditCard = cursor.getInt(cursor.getColumnIndex(CreditCardSettingDB.CreditCardEntry.COLUMN_COD_CREDIT_CARD))
+            val name = cursor.getString(cursor.getColumnIndex(CreditCardSettingDB.CreditCardEntry.COLUMN_NAME))
+            val value = cursor.getString(cursor.getColumnIndex(CreditCardSettingDB.CreditCardEntry.COLUMN_VALUE))
+            val type = cursor.getString(cursor.getColumnIndex(CreditCardSettingDB.CreditCardEntry.COLUMN_TYPE))
+            val active = cursor.getShort(cursor.getColumnIndex(CreditCardSettingDB.CreditCardEntry.COLUMN_ACTIVE))
+            val createDate = DateUtils.toLocalDateTime(cursor.getString(cursor.getColumnIndex(CreditCardSettingDB.CreditCardEntry.COLUMN_CREATE_DATE)))
+            val id = cursor.getString(cursor.getColumnIndex(BaseColumns._ID)).toInt()
             return Optional.of(CreditCardSettingDTO(
                 id,
                 codeCreditCard,

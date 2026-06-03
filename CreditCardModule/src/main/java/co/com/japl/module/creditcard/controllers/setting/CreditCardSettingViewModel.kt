@@ -1,8 +1,8 @@
 package co.com.japl.module.creditcard.controllers.setting
 
+import android.content.Context
 import android.util.Log
 import android.widget.Toast
-import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.navigation.NavController
@@ -14,57 +14,108 @@ import co.com.japl.module.creditcard.R
 import co.com.japl.ui.utils.NumbersUtil
 import co.com.japl.module.creditcard.params.CreditCardSettingParams
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.runBlocking
 import java.time.LocalDateTime
 import androidx.lifecycle.SavedStateHandle
+import androidx.lifecycle.viewModelScope
+import co.com.japl.ui.utils.initialFieldState
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import java.math.BigDecimal
 import javax.inject.Inject
 
 @HiltViewModel
 class CreditCardSettingViewModel @Inject constructor(
+    private val context: Context,
     private val savedStateHandle: SavedStateHandle,
-    private val creditCardSvc:ICreditCardPort?, 
-    private val creditCardSettingSvc:ICreditCardSettingPort?
+    private val creditCardSvc:ICreditCardPort,
+    private val creditCardSettingSvc:ICreditCardSettingPort
 ) : ViewModel() {
-
-    private val codeCreditCard: Int? = savedStateHandle.get<Int>(CreditCardSettingParams.Params.ARG_CODE_CREDIT_CARD)
-    private val codeCreditCardSetting: Int? = savedStateHandle.get<Int>(CreditCardSettingParams.Params.ARG_ID)
+    private val paramsArgs = CreditCardSettingParams.download(savedStateHandle)
+    private val codeCreditCard: Int? = paramsArgs[CreditCardSettingParams.Params.ARG_CODE_CREDIT_CARD]
+    private val codeCreditCardSetting: Int? = paramsArgs[CreditCardSettingParams.Params.ARG_ID]
     var navController: NavController? = null
 
-    var progress = mutableFloatStateOf(0f)
+
     var showProgress = mutableStateOf(true)
     var newOne = mutableStateOf(true)
 
-    var dto:CreditCardSettingDTO ? = null
+    var dto = MutableStateFlow(CreditCardSettingDTO(
+        id = 0,
+        codeCreditCard = 0,
+        name = "",
+        value = "0",
+        type = "",
+        create = LocalDateTime.now(),
+        active = 1
+    ))
 
     var creditCard:CreditCardDTO?= null
 
-    var name = mutableStateOf("")
-    var nameIsError = mutableStateOf(false)
-    var value = mutableStateOf("")
-    var valueIsError = mutableStateOf(false)
-    var type = mutableStateOf("")
-    var typeIsError = mutableStateOf(false)
-    var active = mutableStateOf(false)
+    var name = initialFieldState(
+        savedStateHandler = savedStateHandle,
+        key = "FORM_CREDIT_CARD_SETTING_NAME",
+        initialValue = "",
+        validator = { it.isNotBlank() },
+        onValueChangeCallBack = {
+            dto.update { upd->
+                upd.copy(name=it)
+            }
+            validate()
+        }
+    )
+
+    var value = initialFieldState(
+        savedStateHandler = savedStateHandle,
+        key = "FORM_CREDIT_CARD_SETTING_VALUE",
+        initialValue = dto.value.value?:"",
+        validator = { it.isNotBlank() },
+        onValueChangeCallBack = {
+            dto.update { upd->
+                upd.copy(value=it)
+            }
+            validate()
+        }
+    )
+
+    var type = initialFieldState(
+        savedStateHandler = savedStateHandle,
+        key = "FORM_CREDIT_CARD_SETTING_TYPE",
+        initialValue = dto.value.type,
+        validator = { it.isNotBlank() },
+        onValueChangeCallBack = {
+            dto.update{ upd->
+                upd.copy(type = it)
+            }
+            validate()
+        }
+    )
+
+    var active = initialFieldState<Boolean>(
+        savedStateHandler = savedStateHandle,
+        key = "FORM_CREDIT_CARD_SETTING_ACTIVE",
+        initialValue = dto.value.active>0,
+        validator = { true },
+        onValueChangeCallBack = {
+            dto.update{upd->
+                upd.copy(active = if(it) 1 else 0)
+            }
+            validate()
+        }
+    )
     var showButtons = mutableStateOf(false)
 
     fun validate(){
-        name.value.takeIf { it.isEmpty() }?.let{ nameIsError.value = true}
-        name.value.takeIf{it.isNotEmpty()}?.let{nameIsError.value = false}
-        value.value.takeIf { it.isEmpty() || !NumbersUtil.isNumber(it) }?.let{ valueIsError.value = true}
-        value.value.takeIf{ it.isNotEmpty() && NumbersUtil.isNumber(it)}?.let{ valueIsError.value = false}
-        type.value?.takeIf { it.isEmpty() }?.let{typeIsError.value = true}
-        type.value?.takeIf { it.isNotEmpty()}?.let {typeIsError.value = false }
-        showButtons.value = !validation()
+        showButtons.value = name.validate() &&
+                            value.validate() &&
+                            type.validate()
+
     }
 
     fun update(){
-        dto?.let {
-            it.name = name.value
-            it.value = value . value
-            it.type = type.value
-            it.active = active.value.takeIf { it }?.let { 1 }?:0
-        }
-        if(creditCardSettingSvc?.update(dto!!) == true){
+        if(creditCardSettingSvc?.update(dto.value) == true){
             navController?.navigateUp()
             Toast.makeText(navController?.context, R.string.toast_successful_update,Toast.LENGTH_LONG).show()
         }else{
@@ -72,58 +123,41 @@ class CreditCardSettingViewModel @Inject constructor(
         }
     }
 
-    private fun validation():Boolean{
-        return nameIsError.value || valueIsError.value || typeIsError.value
-    }
-
     fun create(){
-        Log.d(javaClass.name,"<<<=== Create $dto")
-        dto = CreditCardSettingDTO(id = 0, codeCreditCard = codeCreditCard?:0, name = "", value = "", type = "",create=LocalDateTime.now(), active = 1)
-        dto?.let {
-            it.name = name.value
-            it.value = value . value
-            it.type = type.value
-            it.active = active.value.takeIf { it }?.let { 1 }?:0
-        }
         dto?.let {  dto->
-            creditCardSettingSvc?.create(dto)?.let{
-                dto.id = it
+            creditCardSettingSvc.create(dto.value)?.let{
+                dto.value.id = it
                 navController?.navigateUp()
                 Toast.makeText(navController?.context, R.string.toast_successful_insert,Toast.LENGTH_LONG).show()
             }?:Toast.makeText(navController?.context, R.string.toast_unsuccessful_insert,Toast.LENGTH_LONG).show()
-
         }
-
     }
 
-    fun main()= runBlocking {
-        progress.floatValue = 0.2f
-        execute()
-        progress.floatValue= 1f
-
-    }
-
-    suspend fun execute(){
+    fun execute() = viewModelScope.launch{
         Log.d(javaClass.name,"execute CreditCard: $codeCreditCard Setting: $codeCreditCardSetting")
-        progress.floatValue = 0.4f
-      creditCardSvc?.getCreditCard(codeCreditCard?:0)?.let{
+
+        withContext(Dispatchers.IO){
+            creditCardSvc.getCreditCard(codeCreditCard?:0)
+        }?.let{
           creditCard = it
-          showProgress.value= false
+            dto.value.codeCreditCard = it.id
       }
-        progress.floatValue= 0.6f
-        creditCardSettingSvc?.get(codeCreditCard?:0,codeCreditCardSetting?:0)?.let {
-            dto = it
-        }
-        progress.floatValue = 0.7f
-        dto?.let {
-            active.value = it.active.takeIf { it.toInt() > 0 }?.let { true }?:false
+
+        withContext(Dispatchers.IO){
+            creditCardSettingSvc.get(codeCreditCard?:0,codeCreditCardSetting?:0)
+        }?.let {
+            dto.update { upd->
+                it
+            }
+            active.onValueChange(it.active > 0)
             newOne.value = it.id <= 0
-            name.value = it.name
-            value.value = it.value
-            type.value = it.type
+            name.onValueChange(it.name)
+            value.onValueChange(it.value)
+            type.onValueChange(it.type)
             showButtons.value = true
         }
-        progress.floatValue = 0.8f
+
+        showProgress.value= false
     }
 
 }

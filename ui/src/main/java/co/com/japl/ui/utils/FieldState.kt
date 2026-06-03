@@ -68,14 +68,14 @@ class FieldState<T>(
             savedStateHandler[key] = it
             valueStr = newValue
             error.value = validator.invoke(it).not()
-            Log.d("onValueChangeStr","$it ${error.value}")
+            Log.d(javaClass.simpleName,"onValueChangeStr:F: $it ${error.value} ${valueStr}")
             if(error.value.not()) {
                 onValueChangeCallBack.invoke(it)
             }
         }?:{
             valueStr = newValue
             error.value = validator.invoke(newValue as T).not()
-            Log.d("onValueChangeStr","$newValue ${error.value}")
+            Log.d(javaClass.simpleName,"onValueChangeStr: $newValue ${error.value}")
             if(error.value.not()) {
                 onValueChangeCallBack.invoke(newValue)
             }

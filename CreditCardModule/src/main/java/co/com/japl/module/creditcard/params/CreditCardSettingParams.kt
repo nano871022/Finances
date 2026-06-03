@@ -4,7 +4,9 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
+import androidx.core.net.toUri
 import androidx.core.os.bundleOf
+import androidx.lifecycle.SavedStateHandle
 import androidx.navigation.NavController
 import co.com.japl.module.creditcard.R
 import co.com.japl.module.creditcard.params.CreditCardSettingParams.Params.ARG_CODE_CREDIT_CARD
@@ -66,8 +68,15 @@ class CreditCardSettingParams {
             return HashMap<String,Int>()
         }
 
-        fun toBack(codeCreditCard:Int,navController: NavController){
-            navController.popBackStack()
+        fun download(argument: SavedStateHandle):Map<String,Int>{
+            val map = mutableMapOf<String,Int>()
+
+            argument.get<Intent>(Params.ARG_DEEPLINK)?.let{ intent->
+                val uri = intent.dataString?.toUri()
+                map[ARG_CODE_CREDIT_CARD] = uri?.getQueryParameter(ARG_CODE_CREDIT_CARD)?.toInt()?:0
+                map[ARG_ID] = uri?.getQueryParameter(Params.ARG_CODE_CREDIT_CARD_SETTING)?.toInt()?:0
+            }
+            return map.also { Log.d(javaClass.name,"download $it") }
         }
-    }
+   }
 }
