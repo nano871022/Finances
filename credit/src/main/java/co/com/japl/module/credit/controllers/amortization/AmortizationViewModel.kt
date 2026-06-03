@@ -27,8 +27,8 @@ class AmortizationViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val params: Map<String, Any> by lazy { AmortizationTableParams.download(savedStateHandle) }
-    private val code: Int get() = (params.get("CODE") as? Long)?.toInt() ?: 0
-    private val lastDate: LocalDate get() = params.get("LAST_DATE") as? LocalDate ?: LocalDate.now()
+    private val code: Int get() = (params["CODE"] as? Long)?.toInt() ?: 0
+    private val lastDate: LocalDate get() = params["LAST_DATE"] as? LocalDate ?: LocalDate.now()
 
     private val _state = MutableStateFlow(AmortizationState())
     val state = _state.asStateFlow()
@@ -41,8 +41,11 @@ class AmortizationViewModel @Inject constructor(
         try {
             _state.value = _state.value.copy(isLoading = true)
             withContext(Dispatchers.IO) {
-                amortizationSvc?.getAmortization(code, KindAmortization.FIXED_QUOTE_SIMULATOR, true)
+                amortizationSvc?.getAmortization(code, KindAmortization.FIXED_QUOTE_SIMULATOR, false)
             }?.let {
+                it.takeIf { it.isEmpty() }?.let{
+
+                }
                     _state.value = _state.value.copy(
                         amortization = it,
                         isLoading = false

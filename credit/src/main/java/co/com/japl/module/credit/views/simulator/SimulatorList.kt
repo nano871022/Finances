@@ -97,7 +97,7 @@ private fun Header(viewModel: SimulatorListItemViewModel,size: WindowWidthSize){
                 .align (alignment = Alignment.CenterVertically)
         )
         Text(
-            text = NumbersUtil.toString(item?.periods?.toLong()?:0L),
+            text = NumbersUtil.toStringLong(item?.periods?.toLong()?:0L),
             color=MaterialTheme.colorScheme.onSurface,
             modifier = Modifier.weight(1f)
                 .align (alignment = Alignment.CenterVertically)
@@ -109,7 +109,7 @@ private fun Header(viewModel: SimulatorListItemViewModel,size: WindowWidthSize){
                 .align (alignment = Alignment.CenterVertically)
         )
         Text(
-            text = NumbersUtil.toString(item?.interestValue?: BigDecimal.ZERO),
+            text = NumbersUtil.toString(item?.tax?: 0.0),
             color=MaterialTheme.colorScheme.onSurface,
             textAlign = TextAlign.Right,
             modifier = Modifier.weight(1f)
@@ -138,6 +138,7 @@ private fun Header(viewModel: SimulatorListItemViewModel,size: WindowWidthSize){
             Text(
                 text = NumbersUtil.COPtoString(item?.value?: BigDecimal.ZERO),
                 color = MaterialTheme.colorScheme.onSurface,
+                textAlign = TextAlign.Right,
                 modifier = Modifier.weight(1f)
                     .align(alignment = Alignment.CenterVertically)
             )

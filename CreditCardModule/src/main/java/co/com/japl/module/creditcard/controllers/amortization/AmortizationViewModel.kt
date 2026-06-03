@@ -1,6 +1,7 @@
 package co.com.japl.module.creditcard.controllers.amortization
 
 import android.content.Context
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
@@ -38,8 +39,10 @@ class AmortizationViewModel @Inject constructor(
 	fun execute() = viewModelScope.launch{
 		try {
 			withContext(Dispatchers.IO) {
-				svc?.getAmortization(id, KindAmortization.VARIABLE_QUOTE_SIMULATOR, true)
+				svc?.getAmortization(id, KindAmortization.VARIABLE_QUOTE_SIMULATOR, false)
 			}?.let {
+				Log.d(javaClass.simpleName,"Org: ${list.size} New: ${it.size}")
+				list.clear()
 				list.addAll(it)
 			}
 			progressStatus.value = false

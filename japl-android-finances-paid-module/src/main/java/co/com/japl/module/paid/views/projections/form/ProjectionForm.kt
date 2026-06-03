@@ -4,18 +4,17 @@ import android.content.res.Configuration
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.CleaningServices
 import androidx.compose.material.icons.rounded.Save
 import androidx.compose.material.icons.rounded.Update
+import androidx.compose.material3.LinearProgressIndicator
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Snackbar
 import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -24,6 +23,7 @@ import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import co.com.japl.finances.iports.enums.KindPaymentsEnums
 import co.com.japl.module.paid.R
@@ -34,28 +34,42 @@ import co.com.japl.ui.components.FieldText
 import co.com.japl.ui.components.FloatButton
 import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.com.japl.ui.theme.values.Dimensions
-import co.com.japl.ui.theme.values.ModifiersCustom.Weight1f
-import co.com.japl.ui.theme.values.ModifiersCustom.Weight1fAndPaddintRightSpace
 import co.com.japl.ui.utils.DateUtils
 import androidx.lifecycle.SavedStateHandle
 import androidx.navigation.NavController
+import co.com.japl.finances.iports.dtos.ProjectionDTO
 import co.com.japl.finances.iports.inbounds.paid.IProjectionFormPort
+import co.com.japl.finances.iports.inbounds.paid.IProjectionsPort
 import java.math.BigDecimal
 import java.time.LocalDate
 
 @Composable
 fun ProjectionForm(viewModel: ProjectionFormViewModel){
     val snackbarState = remember { viewModel.hostState}
-    Scaffold (
-        floatingActionButton = {
-            Buttons(viewModel)
-        },
-        snackbarHost = {
-            SnackbarHost( hostState = snackbarState)
+    val status = remember { viewModel.loaderStatus }
+
+    if(status.value) {
+        Column(modifier=Modifier.fillMaxWidth()) {
+            LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
+            Text(text=stringResource(R.string.loading_data),
+                textAlign = TextAlign.Center,
+                color= MaterialTheme.colorScheme.onBackground,
+                modifier=Modifier.fillMaxWidth())
         }
-    ){
-        Column(modifier = Modifier.padding(it)) {
-            Form(viewModel)
+    }else {
+
+
+        Scaffold(
+            floatingActionButton = {
+                Buttons(viewModel)
+            },
+            snackbarHost = {
+                SnackbarHost(hostState = snackbarState)
+            }
+        ) {
+            Column(modifier = Modifier.padding(it)) {
+                Form(viewModel)
+            }
         }
     }
 }
@@ -152,11 +166,37 @@ fun ProjectionFormPreviewDark(){
 
 @Composable
 private fun getViewModel(): ProjectionFormViewModel{
-    val vm = ProjectionFormViewModel(context= LocalContext.current, saveStateHandler = SavedStateHandle(), id = null, projectionSvc = null, navController = null)
+    val context = LocalContext.current
+    val vm = ProjectionFormViewModel(context= LocalContext.current, saveStateHandler = SavedStateHandle(),
+        id = null,
+        projectionSvc = object: IProjectionFormPort{
+            override fun save(projection: ProjectionDTO): Boolean {
+                TODO("Not yet implemented")
+            }
+
+            override fun update(projection: ProjectionDTO): Boolean {
+                TODO("Not yet implemented")
+            }
+
+            override fun findById(id: Int): ProjectionDTO? {
+                TODO("Not yet implemented")
+            }
+
+            override fun calculateQuote(
+                period: KindPaymentsEnums,
+                date: LocalDate,
+                value: BigDecimal
+            ): BigDecimal {
+                TODO("Not yet implemented")
+            }
+        },
+        navController = NavController(context)
+    )
     vm.datePayment.onValueChange(LocalDate.now())
     vm.period.onValueChange(Pair(KindPaymentsEnums.MONTHLY.month,KindPaymentsEnums.MONTHLY.name))
     vm.name.onValueChange("Salario")
     vm.value.onValueChange(BigDecimal.valueOf(1_000_000))
     vm.quote.onValueChange(BigDecimal.valueOf(100_000))
+    vm.loaderStatus.value = false
     return vm
 }

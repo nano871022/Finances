@@ -42,7 +42,7 @@ import androidx.lifecycle.SavedStateHandle
 
 @Composable
 fun  AmortizationTable (viewModel:AmortizationViewModel){
-	val progressState = remember { mutableStateOf(false) } 
+	val progressState = remember { viewModel.progressStatus }
 
 	if(progressState.value){
 		Column(modifier = Modifier.fillMaxWidth()) {

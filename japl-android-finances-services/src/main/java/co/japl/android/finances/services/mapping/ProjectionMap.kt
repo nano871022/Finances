@@ -1,5 +1,6 @@
 package co.japl.android.finances.services.mapping
 
+import android.annotation.SuppressLint
 import android.content.ContentValues
 import android.database.Cursor
 import android.os.Build
@@ -14,31 +15,26 @@ import java.time.LocalDateTime
 
 class ProjectionMap {
 
+    @SuppressLint("Range")
     @RequiresApi(Build.VERSION_CODES.O)
     fun mapping(cursor: Cursor):ProjectionDTO{
-        val id  = cursor.getInt(0)
-        val name = cursor.getString(1)
-        val value = cursor.getString(2).toBigDecimal()
-        val type = cursor.getString(3)
-        val active = cursor.getShort(4)
-        val quote = cursor.getString(5).toBigDecimal()
-        var start :LocalDate = LocalDate.now()
-            try {
-             start = DateUtils.toLocalDate(cursor.getString(6))
-        }catch(e:Exception){
-            if(e.message?.contains("Invalid date") == false){
-                Log.e("Projectionmap",e.message.toString())
-            }
-        }
-        var end:LocalDate = LocalDate.now()
-            try{
-            DateUtils.toLocalDate(cursor.getString(7))
-        }catch(e:Exception){
-                if(e.message?.contains("Invalid date") == false){
-                    Log.e("Projectionmap",e.message.toString())
-                }
-        }
-        return ProjectionDTO(id,start,end,name,type,value,quote,active)
+        val id  = cursor.getInt(cursor.getColumnIndex(BaseColumns._ID))
+        val name = cursor.getString(cursor.getColumnIndex(ProjectionDB.Entry.COLUMN_NAME))
+        val value = cursor.getString(cursor.getColumnIndex(ProjectionDB.Entry.COLUMN_VALUE)).toBigDecimal()
+        val type = cursor.getString(cursor.getColumnIndex(ProjectionDB.Entry.COLUMN_TYPE))
+        val active = cursor.getShort(cursor.getColumnIndex(ProjectionDB.Entry.COLUMN_ACTIVE))
+        val quote = cursor.getString(cursor.getColumnIndex(ProjectionDB.Entry.COLUMN_QUOTE)).toBigDecimal()
+        var  start = DateUtils.toLocalDate(cursor.getString(cursor.getColumnIndex(ProjectionDB.Entry.COLUMN_DATE_CREATE)))
+        var end = DateUtils.toLocalDate(cursor.getString(cursor.getColumnIndex(ProjectionDB.Entry.COLUMN_DATE_END)))
+        return ProjectionDTO(
+            id=id,
+            create=start,
+            end=end,
+            name=name,
+            type=type,
+            value=value,
+            quote=quote,
+            active=active)
     }
 
     @RequiresApi(Build.VERSION_CODES.O)

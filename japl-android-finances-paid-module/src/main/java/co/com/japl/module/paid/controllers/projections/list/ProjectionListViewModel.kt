@@ -62,9 +62,9 @@ class ProjectionListViewModel @AssistedInject constructor(
                     message = context.getString(R.string.record_was_remove_success),
                     actionLabel = context.getString(R.string.close),
                     duration = SnackbarDuration.Short
-                ).also {
-                    load()
-                }
+                )
+                load()
+
             } else {
                 snackbarHost.showSnackbar(
                     message = context.getString(R.string.record_was_remove_error),

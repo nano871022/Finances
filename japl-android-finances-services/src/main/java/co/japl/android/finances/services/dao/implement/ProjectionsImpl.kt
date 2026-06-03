@@ -4,6 +4,7 @@ import android.content.ContentValues
 import android.database.sqlite.SQLiteOpenHelper
 import android.os.Build
 import android.provider.BaseColumns
+import android.util.Log
 import androidx.annotation.RequiresApi
 import co.japl.android.finances.services.dao.interfaces.IProjectionsSvc
 import co.japl.android.finances.services.dto.ProjectionDB
@@ -50,6 +51,7 @@ class ProjectionsImpl @Inject constructor(override var dbConnect: SQLiteOpenHelp
     override fun save(dto: ProjectionDTO): Long {
         val db = dbConnect.writableDatabase
         val content: ContentValues = ProjectionMap().mapping(dto)
+        Log.d(javaClass.simpleName,"Content: $content DTO: $dto")
         return if (dto.id > 0) {
             db?.update(
                 ProjectionDB.Entry.TABLE_NAME,
@@ -97,7 +99,9 @@ class ProjectionsImpl @Inject constructor(override var dbConnect: SQLiteOpenHelp
         )?.use { cursor ->
             with(cursor) {
                 while (moveToNext()) {
-                    return@get Optional.ofNullable(mapper.mapping(cursor))
+                    return@get Optional.ofNullable(mapper.mapping(cursor)).also{
+                        Log.d(javaClass.simpleName,"Get: $it")
+                    }
                 }
             }
         }

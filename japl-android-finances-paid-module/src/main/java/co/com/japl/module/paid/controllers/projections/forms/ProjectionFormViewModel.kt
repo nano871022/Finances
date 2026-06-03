@@ -14,6 +14,7 @@ import co.com.japl.finances.iports.enums.KindPaymentsEnums
 import co.com.japl.finances.iports.inbounds.paid.IProjectionFormPort
 import co.com.japl.module.paid.R
 import co.com.japl.ui.utils.DateUtils
+import co.com.japl.ui.utils.FieldState
 import co.com.japl.ui.utils.initialFieldState
 import co.com.japl.ui.utils.NumbersUtil
 import dagger.assisted.Assisted
@@ -34,15 +35,16 @@ class ProjectionFormViewModel @AssistedInject constructor(
     @Assisted private val context: Context,
     @Assisted private val saveStateHandler: SavedStateHandle,
     @Assisted public val id:Int?=null,
-    private val projectionSvc: IProjectionFormPort?,
-    @Assisted private val navController: NavController?,
+    private val projectionSvc: IProjectionFormPort,
+    @Assisted private val navController: NavController,
     private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO): ViewModel(){
 
     @AssistedFactory
     interface Factory {
-        fun create(context: Context, saveStateHandler: SavedStateHandle, id: Int?, navController: NavController?): ProjectionFormViewModel
+        fun create(context: Context, saveStateHandler: SavedStateHandle, id: Int?, navController: NavController): ProjectionFormViewModel
     }
-    val loaderStatus = mutableStateOf(false)
+
+    val loaderStatus = mutableStateOf(true)
     val disableSaveStatus = mutableStateOf(true)
     private val periodsOpt = KindPaymentsEnums.entries.map{ Pair(it.month,context.getString(it.title) ) }
     val hostState: SnackbarHostState = SnackbarHostState()
@@ -55,76 +57,74 @@ class ProjectionFormViewModel @AssistedInject constructor(
          quote= BigDecimal.ZERO,
          monthsLeft = 0,
          amountSaved = BigDecimal.ZERO,
+         type= KindPaymentsEnums.MONTHLY
     ))
 
-    val datePayment = initialFieldState<LocalDate>(
+    val datePayment: FieldState<LocalDate> = initialFieldState<LocalDate>(
         saveStateHandler!!,
         "FORM_DATE_PAYMENT",
-        initialValue = LocalDate.now(),
-        formatter = {
-            if(it.isNotBlank()) {
-                DateUtils.toLocalDate(it)
-            }else{
-                null
-            }
-        },
+        initialValue = projection.value.end,
+        formatter = {DateUtils.toLocalDate(it)},
         validator = { !it.isBefore(LocalDate.now()) },
         onValueChangeCallBack = {date->
             projection.update {
-            it.copy(end = date)
-        }}
+                it.copy(end = date)
+            }
+            validate()
+            quoteCalculation()
+        }
     )
-    val period = initialFieldState<Pair<Int,String>>(
+    val period: FieldState<Pair<Int,String>> = initialFieldState<Pair<Int,String>>(
         saveStateHandler!!,
         "FORM_PERIOD",
-        initialValue = periodsOpt.first(),
+        initialValue = periodsOpt.find{ it.first == projection.value.type.month}?:periodsOpt.first(),
         validator = { KindPaymentsEnums.existIndex( it.first ) },
         list = periodsOpt,
-        onValueChangeCallBack = {
+        onValueChangeCallBack = { newPeriod ->
             projection.update {
-                it.copy(type = it.type)
+                it.copy(type = KindPaymentsEnums.findByIndex(newPeriod.first))
             }
             validate()
-        })
-    val name = initialFieldState<String>(
+            quoteCalculation()
+        }
+    )
+    val name: FieldState<String> = initialFieldState<String>(
         saveStateHandler!!,
         "FORM_NAME",
-        initialValue = "",
+        initialValue = projection.value.name,
         validator = { it.isNotBlank() },
-        onValueChangeCallBack = {
+        onValueChangeCallBack = { newName ->
             projection.update{
-                it.copy(name = it.name)
+                it.copy(name = newName)
             }
             validate()
         })
-    val value = initialFieldState<BigDecimal>(
+    val value: FieldState<BigDecimal> = initialFieldState<BigDecimal>(
         saveStateHandler!!,
         "FORM_VALUE",
-        initialValue = BigDecimal.ZERO,
+        initialValue = projection.value.value,
         formatter = { if(NumbersUtil.isNumber(it)) BigDecimal(it) else BigDecimal.ZERO },
         validator = { it > BigDecimal.ZERO },
-        onValueChangeCallBack = {
+        onValueChangeCallBack = { newValue ->
             projection.update{
-                it.copy(value = it.value)
+                it.copy(value = newValue)
             }
             validate()
-        }).also {
-        it.onValueChangeStr("")
-    }
-    val quote = initialFieldState<BigDecimal>(
+            quoteCalculation()
+        })
+
+    val quote: FieldState<BigDecimal> = initialFieldState<BigDecimal>(
         saveStateHandler!!,
         "FORM_QUOTE",
-        initialValue = BigDecimal.ZERO,
+        initialValue = projection.value.quote,
         formatter = { if(NumbersUtil.isNumber(it)) BigDecimal(it) else BigDecimal.ZERO },
         validator = { it > BigDecimal.ZERO },
-        onValueChangeCallBack = {
+        onValueChangeCallBack = { newValue ->
             projection.update{
-                it.copy(quote = it.quote)
+                it.copy(quote = newValue)
             }
             validate()
-        }).also {
-        it.onValueChangeStr("")
-    }
+        })
 
     init {
         main()
@@ -134,6 +134,7 @@ class ProjectionFormViewModel @AssistedInject constructor(
         if(disableSaveStatus.value.not()){
             projectionSvc?.let{
                 withContext(ioDispatcher) {
+                    Log.d(javaClass.simpleName,"DTO:: ${projection.value}")
                     it.save(projection.value)
                 }.let{resp->
                         if (resp) {
@@ -193,9 +194,9 @@ class ProjectionFormViewModel @AssistedInject constructor(
         period.validate()
         name.validate()
         value.validate()
-        if(datePayment.error.value.not() && period.error.value.not() && name.error.value.not() && value.error.value.not()){
+        quote.validate()
+        if(datePayment.error.value.not() && period.error.value.not() && name.error.value.not() && value.error.value.not() && quote.error.value.not()){
             disableSaveStatus.value = false
-            quoteCalculation()
         }else{
             disableSaveStatus.value = true
         }
@@ -211,15 +212,35 @@ class ProjectionFormViewModel @AssistedInject constructor(
     }
 
     fun main() = viewModelScope.launch {
+        Log.d(javaClass.simpleName,"Runing Execution projections get data")
+
         loaderStatus.value = true
         projectionSvc?.let{
             id?.let {
                 withContext(ioDispatcher) {
+                    Log.d(javaClass.simpleName,"Execution findById")
                     projectionSvc.findById(id)
                 }?.let{ dto ->
+                    Log.d(javaClass.simpleName,"DTO: $dto")
                     projection.update {
-                        dto
+                        it.copy(id=dto.id,
+                            create=dto.create,
+                            end=dto.end,
+                            name=dto.name,
+                            type=dto.type,
+                            value=dto.value,
+                            quote=dto.quote,
+                            monthsLeft =dto.monthsLeft,
+                            amountSaved = dto.amountSaved,
+                            active = dto.active
+                        )
                     }
+                    datePayment.onValueChange(dto.end)
+                    name.onValueChange(dto.name)
+                    value.onValueChange(dto.value)
+                    quote.onValueChange(dto.quote)
+                    period.onValueChange(periodsOpt.find { it.first == dto.type.month } ?: periodsOpt.first())
+
                 }
             }
         }
@@ -227,16 +248,22 @@ class ProjectionFormViewModel @AssistedInject constructor(
     }
 
     private fun quoteCalculation()= viewModelScope.launch {
-        loaderStatus.value = true
-        projectionSvc?.let{
-            withContext(ioDispatcher) {
-                it.calculateQuote(
-                    KindPaymentsEnums.findByIndex(period.value.value.first),
-                    datePayment.value.value,
-                    value.value.value
-                )
-            }.let(quote::onValueChange)
+        if(datePayment.error.value.not() && period.error.value.not() && value.error.value.not()) {
+            loaderStatus.value = true
+            projectionSvc?.let {
+                withContext(ioDispatcher) {
+                    Log.d(
+                        javaClass.simpleName,
+                        "Month: ${period.value.value.first} Date: ${datePayment.value.value} Value: ${value.value.value}"
+                    )
+                    it.calculateQuote(
+                        KindPaymentsEnums.findByIndex(period.value.value.first),
+                        datePayment.value.value,
+                        value.value.value
+                    )
+                }.let(quote::onValueChange)
+            }
+            loaderStatus.value = false
         }
-        loaderStatus.value = false
     }
 }
