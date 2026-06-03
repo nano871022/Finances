@@ -60,7 +60,6 @@ class FieldState<T>(
     }
 
     fun onValueChangeStr(newValue:String){
-        Log.d("onValueChangeStr","$newValue")
         if(touched.not()){
             touched = true
         }
@@ -68,9 +67,10 @@ class FieldState<T>(
             savedStateHandler[key] = it
         }
         valueStr = newValue
-        error.value = validator.invoke(value.value).not()
+        error.value = validator.invoke(newValue as T).not()
+        Log.d("onValueChangeStr","$newValue ${error.value}")
         if(error.value.not()) {
-            onValueChangeCallBack.invoke(value.value)
+            onValueChangeCallBack.invoke(newValue)
         }
     }
 

@@ -10,7 +10,7 @@ import androidx.annotation.RequiresApi
 import androidx.compose.ui.platform.ComposeView
 import co.com.japl.finances.iports.inbounds.common.ICheckPaymentPort
 import co.com.japl.ui.theme.MaterialThemeComposeUI
-//import co.com.japl.module.paid.views.checkpaids.list.CheckPaids
+import co.com.japl.module.paid.views.checkpaids.list.CheckPaids
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -28,7 +28,7 @@ class PeriodCheckPaymentsFragment : Fragment() {
         return ComposeView(requireContext()).apply {
             setContent {
                 MaterialThemeComposeUI {
-                    //CheckPaids(viewModel = viewModel)
+                    CheckPaids(viewModel = viewModel)
                 }
             }
         }

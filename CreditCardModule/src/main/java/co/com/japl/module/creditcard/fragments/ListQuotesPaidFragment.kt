@@ -21,7 +21,7 @@ import kotlin.properties.Delegates
 import co.com.japl.ui.Prefs
 
 @AndroidEntryPoint
-class ListQuotesPaid : Fragment() {
+class ListQuotesPaidFragment : Fragment() {
     var creditCardId by Delegates.notNull<Int>()
 
     @Inject lateinit var port: IBoughtListPort

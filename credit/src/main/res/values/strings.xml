@@ -19,6 +19,7 @@
     <string name="navigate_amortization">android-app://co.com.japl.finanzas.module.app/amortization_credit?credit_code=%d&amp;last_date=%s</string>
     <string name="navigate_additional">android-app://co.com.japl.finanzas.module.app/additionals_credit?CREDIT_CODE=%d</string>
     <string name="navigate_add_credit">android-app://co.com.japl.finanzas.module.app/add_credit_fix</string>
+    <string name="navigate_upd_credit">android-app://co.com.japl.finanzas.module.app/add_credit_fix?credit_code=%d</string>
     <string name="navigate_detail_credits">android-app://co.com.japl.finanzas.module.app/monthly_credit_list</string>
     <string name="navigate_period_credits">android-app://co.com.japl.finanzas.module.app/period_credits</string>
     <string name="delete_period_grace">Eliminar Periodo de Gracia</string>
@@ -120,6 +121,7 @@
     <string name="quote_num">Numero Cuota</string>
     <string name="load_data">Cargando Datos</string>
     <string name="can_not_gotto_amortization">No puedes navegar a amortización</string>
+    <string name="cnt_short">#</string>
 
     <string-array name="months">
         <item>--- Seleccionar --- </item>

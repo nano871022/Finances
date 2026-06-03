@@ -1,4 +1,4 @@
-package co.com.japl.module.paid.fragments
+package co.com.japl.module.paid.controllers.checkpaids
 
 import android.content.Context
 import android.widget.Toast
@@ -6,17 +6,16 @@ import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import co.com.japl.finances.iports.dtos.CheckPaymentDTO
 import co.com.japl.finances.iports.inbounds.common.ICheckPaymentPort
-import co.com.japl.ui.R
-import kotlinx.coroutines.launch
+import co.com.japl.module.paid.R
 import kotlinx.coroutines.runBlocking
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.YearMonth
+import javax.inject.Inject
 
-class CheckListViewModel(private val period:YearMonth, private val svc:ICheckPaymentPort?): ViewModel() {
+class CheckListViewModel @Inject constructor(private val period:YearMonth, private val svc:ICheckPaymentPort?): ViewModel() {
     val progression = mutableFloatStateOf(0.0f)
     val listState = mutableStateListOf<CheckPaymentDTO>()
     val loaderStatus = mutableStateOf(true)
@@ -32,21 +31,22 @@ class CheckListViewModel(private val period:YearMonth, private val svc:ICheckPay
             it.id == 0
         }?.forEach { svc?.save(it) }
 
-        Toast.makeText(context, R.string.toast_save_successful, Toast.LENGTH_LONG).show()
-        loaderStatus.value = true
-        loaderProgressStatus.value = false
+        Toast.makeText(context, R.string.toast_save_successful, Toast.LENGTH_LONG).show().also {
+            loaderStatus.value = true
+            loaderProgressStatus.value = false
+        }
 
     }
 
     fun remove(dto:CheckPaymentDTO){
-            svc?.delete(dto)?.takeIf { it }?.let {
-                loaderStatus.value = true
-                loaderProgressStatus.value = true
-                main()
-                loaderProgressStatus.value = false
-            }
+        svc?.delete(dto)?.takeIf { it }?.let {
+            loaderStatus.value = true
+            loaderProgressStatus.value = true
+            main()
+            loaderProgressStatus.value = false
+        }
     }
-    
+
     fun main() = runBlocking {
         progression.floatValue = 0.1f
         execute()

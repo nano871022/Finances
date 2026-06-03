@@ -32,8 +32,7 @@ class BoughtMonthlyViewModel(
                                         private val boughtCreditCardSvc: IBoughtPort?,
                                         private val navController: NavController?,
                                         private val prefs:Prefs,
-                                        private val msmSvc: ISMSCreditCardPort?,
-                                        private val svc: IBoughtSmsPort?
+                                        private val msmSvc: ISMSCreditCardPort?
                                         ) : ViewModel(){
 
     val cache = mutableStateOf(prefs.simulator)

@@ -1,4 +1,4 @@
-package co.com.japl.module.credit.fragments
+package co.com.japl.module.credit.views
 
 import android.content.res.Configuration
 import android.os.Build
@@ -21,20 +21,21 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import co.com.japl.finances.iports.dtos.SimulatorCreditDTO
 import co.com.japl.finances.iports.enums.KindOfTaxEnum
+import co.com.japl.module.credit.controllers.simulator.SimulatorListViewModel
 import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.com.japl.ui.R
-import co.com.japl.module.credit.views.simulator.SimulatorList as SimulatorListCredit
-// Removed: import co.com.japl.module.credit.controllers.list.ListViewModel
+
+
 
 @Composable
-fun ListSimulator(viewModel:ListViewModel){
+fun ListSimulator(viewModel: SimulatorListViewModel){
     val progres = remember { viewModel.progres }
 
     if(progres.value){
         LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
     }else{
         if(viewModel.list.isEmpty()){
-            Text(text= stringResource(co.com.japl.ui.R.string.no_records),
+            Text(text= stringResource(R.string.no_records),
                 textAlign = TextAlign.Center,
                 modifier = Modifier.fillMaxWidth())
         }else {
@@ -45,7 +46,7 @@ fun ListSimulator(viewModel:ListViewModel){
 }
 
 @Composable
-private fun BodyList(viewModel:ListViewModel){
+private fun BodyList(viewModel: SimulatorListViewModel){
     val list = remember{ viewModel.list.sortedByDescending { it.code } }
     Scaffold (
         modifier = Modifier
@@ -63,13 +64,13 @@ private fun BodyList(viewModel:ListViewModel){
 }
 
 @Composable
-private fun Body(dto: SimulatorCreditDTO,viewModel:ListViewModel) {
+private fun Body(dto: SimulatorCreditDTO,viewModel: SimulatorListViewModel) {
     if (dto.isCreditVariable.not()) {
         val viewModel = viewModel.createViewModelQuoteFix(dto)
-        SimulatorListCredit(viewModel)
+        //SimulatorListCredit(viewModel)
     } else {
         // val viewModel = viewModel.createViewModelQuoteVariable(dto)
-        // SimulatorList(viewModel) // Unresolved reference as CreditCardModule is not a dependency
+         //SimulatorList(viewModel) // Unresolved reference as CreditCardModule is not a dependency
     }
 }
 
@@ -77,7 +78,7 @@ private fun Body(dto: SimulatorCreditDTO,viewModel:ListViewModel) {
 @Composable
 @Preview( showBackground = true, backgroundColor = 0x000000, showSystemUi = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
 private fun ListSimulatorPreviewLight(){
-    val viewModel = getViewModel()
+    val viewModel = getSimulatorViewModel()
     MaterialThemeComposeUI {
         ListSimulator(viewModel)
     }
@@ -87,7 +88,7 @@ private fun ListSimulatorPreviewLight(){
 @Composable
 @Preview( showBackground = true, backgroundColor = 0x000000, showSystemUi = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
 private fun ListSimulatorPreviewLightNoRecords(){
-    val viewModel = getViewModel()
+    val viewModel = getSimulatorViewModel()
     viewModel.list.clear()
     MaterialThemeComposeUI {
         ListSimulator(viewModel)
@@ -98,7 +99,7 @@ private fun ListSimulatorPreviewLightNoRecords(){
 @Composable
 @Preview( showBackground = true, backgroundColor = 0x000000, showSystemUi = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
 private fun ListSimulatorPreviewLightProgress(){
-    val viewModel = getViewModel()
+    val viewModel = getSimulatorViewModel()
     viewModel.progres.value = true
     MaterialThemeComposeUI {
         ListSimulator(viewModel)
@@ -109,15 +110,15 @@ private fun ListSimulatorPreviewLightProgress(){
 @Composable
 @Preview( showBackground = true,  backgroundColor = 0x000000, showSystemUi = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
 private fun ListSimulatorPreviewDark(){
-    val viewModel = getViewModel()
+    val viewModel = getSimulatorViewModel()
     MaterialThemeComposeUI {
         ListSimulator(viewModel)
     }
 }
 
 @Composable
-private fun getViewModel(): ListViewModel{
-    val viewModel =  ListViewModel(LocalContext.current)
+private fun getSimulatorViewModel(): SimulatorListViewModel {
+    val viewModel = SimulatorListViewModel(LocalContext.current)
     viewModel.list.add(
         SimulatorCreditDTO(
             code = 1,

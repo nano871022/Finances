@@ -18,7 +18,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class ListTaxCreditCard : Fragment() {
+class ListTaxCreditCardFragment : Fragment() {
 
     @Inject lateinit var creditRateSvc: ITaxPort
     @Inject lateinit var creditCardSvc2: ICreditCardPort

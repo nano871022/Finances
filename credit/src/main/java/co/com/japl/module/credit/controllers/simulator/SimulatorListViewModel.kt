@@ -1,25 +1,20 @@
-package co.com.japl.module.credit.fragments
+package co.com.japl.module.credit.controllers.simulator
 
 import android.content.Context
-import android.util.Log
-import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import co.com.japl.finances.iports.dtos.SimulatorCreditDTO
 import co.com.japl.finances.iports.inbounds.credit.ISimulatorCreditFixPort
 import co.com.japl.finances.iports.inbounds.creditcard.ISimulatorCreditVariablePort
-// Removed: import co.com.japl.module.creditcard.controllers.simulator.SimulatorListItemViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
-import co.com.japl.module.credit.controllers.simulator.SimulatorListItemViewModel as SimulatorListItemViewModelCredit
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-
-class ListViewModel(@ApplicationContext val context: Context, private val simulatorVariableSvc: ISimulatorCreditVariablePort?=null, private val simulatorFixSvc: ISimulatorCreditFixPort?=null, private val navController: NavController?=null):ViewModel() {
+class SimulatorListViewModel(@ApplicationContext val context: Context, private val simulatorVariableSvc: ISimulatorCreditVariablePort?=null, private val simulatorFixSvc: ISimulatorCreditFixPort?=null, private val navController: NavController?=null):
+    ViewModel() {
     val progres = mutableStateOf(false)
     val list = mutableListOf<SimulatorCreditDTO>()
 
@@ -34,8 +29,8 @@ class ListViewModel(@ApplicationContext val context: Context, private val simula
     }
     */
 
-    fun createViewModelQuoteFix(dto: SimulatorCreditDTO): SimulatorListItemViewModelCredit{
-        return SimulatorListItemViewModelCredit(
+    fun createViewModelQuoteFix(dto: SimulatorCreditDTO): SimulatorListItemViewModel {
+        return SimulatorListItemViewModel(
             context,
             dto,
             simulatorFixSvc,
