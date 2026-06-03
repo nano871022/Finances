@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/item_menu_side_boughtmade"
-        android:name="co.com.japl.module.creditcard.fragments.ListCreditCardQuote"
+        android:name="co.com.japl.module.creditcard.fragments.ListCreditCardQuoteFragment"
         android:label="@string/bought_made"
         tools:layout="@layout/list_credit_card_quote">
 
@@ -68,7 +68,7 @@
 
     <fragment
         android:id="@+id/list_bought"
-        android:name="co.com.japl.module.creditcard.fragments.ListBought"
+        android:name="co.com.japl.module.creditcard.fragments.ListBoughtFragment"
         android:label="@string/list_save"
         tools:layout="@layout/fragment_list_bought">
         <action
@@ -91,7 +91,7 @@
 
     <fragment
         android:id="@+id/list_periods"
-        android:name="co.com.japl.module.creditcard.fragments.ListQuotesPaid"
+        android:name="co.com.japl.module.creditcard.fragments.ListQuotesPaidFragment"
         android:label="@string/list_periods"
         tools:layout="@layout/fragment_list_periods">
 
@@ -159,7 +159,7 @@
 
     <fragment
         android:id="@+id/item_menu_setting_taxes"
-        android:name="co.com.japl.module.creditcard.fragments.ListTaxCreditCard"
+        android:name="co.com.japl.module.creditcard.fragments.ListTaxCreditCardFragment"
         android:label="@string/taxs_credit_card"
         tools:layout="@layout/fragment_list_tax_credit_card" >
         <action
@@ -172,7 +172,7 @@
     </fragment>
     <fragment
         android:id="@+id/taxes"
-        android:name="co.com.japl.module.creditcard.fragments.Taxes"
+        android:name="co.com.japl.module.creditcard.fragments.TaxesFragment"
         android:label="@string/tax"
         tools:layout="@layout/fragment_taxes" >
         <deepLink app:uri="android-app://co.com.japl.finanzas.modulo.app/credit_rate"/>
@@ -180,7 +180,7 @@
 
     <fragment
         android:id="@+id/cash_advance_fragment"
-        android:name="co.com.japl.module.creditcard.fragments.CashAdvanceSave"
+        android:name="co.com.japl.module.creditcard.fragments.CashAdvanceSaveFragment"
         android:label="@string/cash_advance"
         tools:layout="@layout/cash_advance_credit_card" >
         <deepLink app:uri="android-app://co.com.japl.finanzas.module.app/cashAdvanceBought"/>
@@ -214,7 +214,7 @@
     </fragment>
     <fragment
         android:id="@+id/boughWalletController"
-        android:name="co.com.japl.module.creditcard.fragments.BoughWalletController"
+        android:name="co.com.japl.module.creditcard.fragments.BoughWalletFragment"
         android:label="@string/bough_wallet"
         tools:layout="@layout/buy_wallet_credit_card">
         <deepLink app:uri="android-app://co.com.japl.finanzas.module.app/boughtWalletBought"/>

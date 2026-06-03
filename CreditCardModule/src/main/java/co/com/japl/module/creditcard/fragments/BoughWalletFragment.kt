@@ -24,7 +24,7 @@ import javax.inject.Inject
 import co.com.japl.ui.Prefs
 
 @AndroidEntryPoint
-class BoughWalletController: Fragment() {
+class BoughWalletFragment: Fragment() {
     @Inject lateinit var boughtSvc: IBoughtPort
     @Inject lateinit var taxSvc:ITaxPort
     @Inject lateinit var creditCardSvc: ICreditCardPort

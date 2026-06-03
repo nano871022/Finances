@@ -20,7 +20,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class Taxes : Fragment() {
+class TaxesFragment : Fragment() {
 
     @Inject lateinit var service:ITaxPort
     @Inject lateinit var creditCardSvc:ICreditCardPort

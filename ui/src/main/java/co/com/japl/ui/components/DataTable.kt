@@ -203,6 +203,30 @@ private fun RowScope.HeaderRow(
     }
 }
 
+@Composable
+fun DataTable2(records:Int, item : @Composable (Int)->Unit?){
+    Text(text="Called $records")
+   /* for(i in 0 until records){
+        item(i)
+    }
+    */
+
+}
+
+@RequiresApi(Build.VERSION_CODES.S)
+@Composable
+@Preview( showSystemUi = true, showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
+private fun DataTable2Light(){
+    val list = arrayListOf<String>("Apple","Other")
+    MaterialThemeComposeUI {
+        Column {
+            DataTable2(list.size) {
+                Text(text = "$it ${list[it]}")
+            }
+        }
+    }
+}
+
 @RequiresApi(Build.VERSION_CODES.S)
 @Composable
 @Preview( showBackground = true, showSystemUi = true, backgroundColor = 0xFFFFFFFF, uiMode = 0x1)
@@ -228,9 +252,11 @@ private fun DatatableLight(){
     }
 }
 
+
+
 @RequiresApi(Build.VERSION_CODES.S)
 @Composable
-@Preview( showBackground = true, showSystemUi = true, backgroundColor = 0x00000000, uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Preview( showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
 private fun DatatableDark(){
     val listHeader = getHeaders()
     val listValue = getBody()

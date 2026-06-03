@@ -1,10 +1,20 @@
 package co.com.japl.module.creditcard.di
 
+import dagger.Binds
+import dagger.Module
+import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.EntryPoint
 import dagger.hilt.components.SingletonComponent
+import java.time.YearMonth
+import javax.inject.Singleton
 
-@EntryPoint
+@Module
 @InstallIn(SingletonComponent::class)
-interface CreditCardEntryPoint {
+object CreditCardEntryPoint {
+
+    @Singleton
+    @Provides
+    fun bindYearMonth():YearMonth=YearMonth.now()
+
 }

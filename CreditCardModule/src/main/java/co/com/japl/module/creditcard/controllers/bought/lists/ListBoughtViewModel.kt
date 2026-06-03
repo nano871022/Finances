@@ -1,4 +1,4 @@
-package co.com.japl.module.creditcard.fragments
+package co.com.japl.module.creditcard.controllers.bought.lists
 
 import android.app.Application
 import androidx.compose.runtime.mutableFloatStateOf
@@ -6,14 +6,14 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.navigation.NavController
 import co.com.japl.finances.iports.enums.KindInterestRateEnum
-import co.com.japl.finances.iports.inbounds.creditcard.ICreditCardPort
 import co.com.japl.finances.iports.inbounds.common.IDifferQuotesPort
+import co.com.japl.finances.iports.inbounds.creditcard.ICreditCardPort
 import co.com.japl.finances.iports.inbounds.creditcard.ITaxPort
 import co.com.japl.finances.iports.inbounds.creditcard.bought.lists.IBoughtListPort
-import co.com.japl.ui.Prefs
 import co.com.japl.finances.iports.pojo.BoughtCreditCard
 import co.com.japl.module.creditcard.params.CashAdvanceParams
 import co.com.japl.module.creditcard.params.CreditCardQuotesParams
+import co.com.japl.ui.Prefs
 import co.japl.android.myapplication.pojo.CreditCard
 import kotlinx.coroutines.runBlocking
 import java.time.LocalDateTime
@@ -24,7 +24,7 @@ import javax.inject.Inject
 class ListBoughtViewModel @Inject constructor(
     private val application: Application,
     private var navController: NavController?,
-    val prefs:Prefs,
+    val prefs: Prefs,
     private val taxSvc: ITaxPort,
     private val boughtListSvc: IBoughtListPort,
     private val creditCardSvc: ICreditCardPort,
@@ -39,11 +39,11 @@ class ListBoughtViewModel @Inject constructor(
     val cache = mutableStateOf(prefs.simulator)
     val cashAdvance = mutableStateOf(false)
     val creditCard = mutableStateOf(false)
-    private lateinit var _boughtCreditCard:BoughtCreditCard
+    private lateinit var _boughtCreditCard: BoughtCreditCard
     val boughtCreditCard get() = _boughtCreditCard
 
     private lateinit var _params: Triple<Int, LocalDateTime, Short>
-    private lateinit var _creditCard:CreditCard
+    private lateinit var _creditCard: CreditCard
 
     var progress = mutableFloatStateOf(0f)
     var isLoad = mutableStateOf(false)
@@ -60,7 +60,7 @@ class ListBoughtViewModel @Inject constructor(
 
     fun goToCashAdvance(){
         navController?.let {
-            CashAdvanceParams.newInstanceFloat(
+            CashAdvanceParams.Companion.newInstanceFloat(
                 _creditCard.codeCreditCard.get(), it
             )
         }
@@ -102,7 +102,13 @@ class ListBoughtViewModel @Inject constructor(
                 YearMonth.from(it.boughtDate)
         }?: emptyMap()
         progress.floatValue = 0.9f
-        _boughtCreditCard= BoughtCreditCard(bought.recap,group,creditCardDto,differ, cutOff = _creditCard.cutOff.get())
+        _boughtCreditCard= BoughtCreditCard(
+            bought.recap,
+            group,
+            creditCardDto,
+            differ,
+            cutOff = _creditCard.cutOff.get()
+        )
         progress.floatValue = 1f
         isLoad.value = true
     }

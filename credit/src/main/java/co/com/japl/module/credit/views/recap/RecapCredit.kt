@@ -69,7 +69,7 @@ private fun Body(viewModel:RecapViewModel){
         if(viewModel.listCredits.isEmpty()){
             Column {
                 Text(text = stringResource(R.string.no_data),
-                modifier = Modifier.fillMaxWidth())
+                modifier = Modifier.fillMaxWidth().padding(it))
             }
     }else{
             List(viewModel.listCredits, yearMonth = viewModel.yearMonth)

@@ -6,7 +6,10 @@ import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import androidx.annotation.RequiresApi
+import androidx.compose.ui.text.toLowerCase
+import androidx.core.net.toUri
 import androidx.core.os.bundleOf
+import androidx.lifecycle.SavedStateHandle
 import androidx.navigation.NavController
 import co.com.japl.finances.iports.utils.BigDecimalDeserializer
 import co.com.japl.module.credit.R
@@ -17,6 +20,7 @@ import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import java.math.BigDecimal
 import java.time.LocalDate
+import java.time.YearMonth
 
 class CreditFixParams {
     object Params{
@@ -67,6 +71,16 @@ class CreditFixParams {
                 value.date = date
                 return Pair(value,dateCurrent)
             }
+        }
+
+        fun download(savedStateHandle: SavedStateHandle): Map<String,Any>{
+            savedStateHandle.get<Intent>(CreditFixListParams.Params.PARAM_DEEPLINK)?.let { intent ->
+                val uri = intent.dataString?.toUri()
+                return mapOf<String,Any>(
+                    Params.PARAMS_CREDIT_CODE to (uri?.getQueryParameter(Params.PARAMS_CREDIT_CODE.toLowerCase())?.toLongOrNull()?: 0)
+                )
+            }
+            return emptyMap()
         }
 
         fun downloadAdditionalList(arguments:Bundle):Long{

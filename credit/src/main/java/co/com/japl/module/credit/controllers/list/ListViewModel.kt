@@ -45,6 +45,12 @@ class ListViewModel @Inject constructor(
        }
     }
 
+    fun edit(id:Int){
+        navController?.let {
+            CreditList.updCredit(id,it)
+        }
+    }
+
     fun deletePeriodGrace(id:Int){
         periodGraceSvc?.let{
             if(it.delete(id)){

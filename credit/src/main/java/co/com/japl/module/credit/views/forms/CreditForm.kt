@@ -5,6 +5,7 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
@@ -16,8 +17,10 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import co.com.japl.module.credit.R
@@ -34,6 +37,7 @@ import co.com.japl.ui.utils.DateUtils
 import androidx.lifecycle.SavedStateHandle
 import co.com.japl.finances.iports.enums.KindOfTaxEnum
 import co.com.japl.finances.iports.enums.KindPaymentsEnums
+import co.com.japl.ui.utils.NumbersUtil
 import java.math.BigDecimal
 
 @Composable
@@ -61,6 +65,7 @@ private fun Buttons(viewModel: CreditFormViewModel){
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
 @Composable
 private fun Form(viewModel: CreditFormViewModel){
     val name by viewModel.name.value.collectAsState()
@@ -73,40 +78,90 @@ private fun Form(viewModel: CreditFormViewModel){
     val kindRate by viewModel.kindRate.value.collectAsState()
 
     Column(modifier = Modifier.padding(Dimensions.PADDING_SHORT)) {
+        FieldDatePicker(
+            title = R.string.date_credit,
+            value = creditDate,
+            callable = { date -> viewModel.creditDate.onValueChange(date) },
+            modifier = Modifier.fillMaxWidth(),
+            validation = { viewModel.creditDate.validate() }
+        )
+
+            FieldSelect(
+                title = stringResource(id = R.string.type_payment_credit),
+                value = kindPayment?.second ?: "",
+                list = KindPaymentsEnums.entries.map { Pair(it.ordinal, stringResource(it.title)) }
+                    .toMutableStateList(),
+                modifier = Modifier.fillMaxWidth().padding(top= Dimensions.PADDING_SHORT),
+                callAble = { pair ->
+                    pair?.let {
+                        viewModel.kindPayment.onValueChange(
+                            Triple(
+                                it.first,
+                                it.second,
+                                KindPaymentsEnums.entries[it.first]
+                            )
+                        )
+                    }
+                }
+            )
+
         FieldText(
             title = stringResource(id = R.string.name_credit),
             value = name,
             callback = { viewModel.name.onValueChange(it) },
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth().padding(top= Dimensions.PADDING_SHORT),
             validation = { viewModel.name.validate() }
         )
 
+        FieldText(
+            title = stringResource(id = R.string.value_credit),
+            value = value,
+            callback = { viewModel.value.onValueChange(it) },
+            modifier = Modifier.fillMaxWidth().padding(top= Dimensions.PADDING_SHORT),
+            validation = { viewModel.value.validate() },
+            currency = true
+        )
+
         Row(modifier = Modifier.fillMaxWidth().padding(top = Dimensions.PADDING_SHORT)) {
-            FieldText(
-                title = stringResource(id = R.string.value_credit),
-                value = value,
-                callback = { viewModel.value.onValueChangeStr(it) },
-                modifier = Weight1fAndPaddintRightSpace(),
-                validation = { viewModel.value.validate() },
-                currency = true
-            )
+
 
             FieldText(
                 title = stringResource(id = R.string.rate_credit),
                 value = rate,
-                callback = { viewModel.rate.onValueChangeStr(it) },
-                modifier = Weight1f(),
+                callback = { viewModel.rate.onValueChange(it) },
+                modifier = Weight1f().padding(end= Dimensions.PADDING_SHORT),
                 validation = { viewModel.rate.validate() },
                 decimal = true
             )
+
+
+            FieldSelect(
+                title = stringResource(id = R.string.kind_rate),
+                value = kindRate.third.value,
+                list = KindOfTaxEnum.entries.map { Pair(it.ordinal, stringResource(it.title)) }
+                    .toMutableStateList(),
+                modifier = Weight1f(),
+                callAble = { pair ->
+                    pair?.let {
+                        viewModel.kindRate.onValueChange(
+                            Triple(
+                                it.first,
+                                it.second,
+                                KindOfTaxEnum.entries[it.first]
+                            )
+                        )
+                    }
+                }
+            )
         }
 
-        Row(modifier = Modifier.fillMaxWidth().padding(top = Dimensions.PADDING_SHORT)) {
+
+
             FieldText(
                 title = stringResource(id = R.string.periods_credit),
                 value = month,
-                callback = { viewModel.month.onValueChangeStr(it) },
-                modifier = Weight1fAndPaddintRightSpace(),
+                callback = { viewModel.month.onValueChange(it) },
+                modifier = Modifier.fillMaxWidth().padding(top= Dimensions.PADDING_SHORT),
                 validation = { viewModel.month.validate() },
                 decimal = true
             )
@@ -114,38 +169,14 @@ private fun Form(viewModel: CreditFormViewModel){
             FieldText(
                 title = stringResource(id = R.string.quote_credit),
                 value = quoteCredit,
-                callback = { viewModel.quoteCredit.onValueChangeStr(it) },
-                modifier = Weight1f(),
+                callback = { viewModel.quoteCredit.onValueChange(it) },
+                modifier = Modifier.fillMaxWidth().padding(top= Dimensions.PADDING_SHORT),
                 validation = { viewModel.quoteCredit.validate() },
                 currency = true
             )
-        }
 
-        Row(modifier = Modifier.fillMaxWidth().padding(top = Dimensions.PADDING_SHORT)) {
-            FieldDatePicker(
-                title = R.string.date_credit,
-                value = DateUtils.localDateToString(creditDate),
-                callable = { date -> viewModel.creditDate.onValueChange(DateUtils.toLocalDate(date)) },
-                modifier = Weight1fAndPaddintRightSpace(),
-                validation = { viewModel.creditDate.validate() }
-            )
 
-            FieldSelect(
-                title = stringResource(id = R.string.type_payment_credit),
-                value = kindPayment?.second ?: "",
-                list = KindPaymentsEnums.entries.map { Pair(it.ordinal, it.name) }.toMutableStateList(),
-                modifier = Weight1f(),
-                callAble = { pair -> pair?.let { viewModel.kindPayment.onValueChange(Triple(it.first, it.second, KindPaymentsEnums.entries[it.first])) } }
-            )
-        }
 
-        FieldSelect(
-            title = stringResource(id = R.string.kind_rate),
-            value = kindRate?.second ?: "",
-            list = KindOfTaxEnum.entries.map { Pair(it.ordinal, it.name) }.toMutableStateList(),
-            modifier = Modifier.fillMaxWidth().padding(top = Dimensions.PADDING_SHORT),
-            callAble = { pair -> pair?.let { viewModel.kindRate.onValueChange(Triple(it.first, it.second, KindOfTaxEnum.entries[it.first])) } }
-        )
     }
 }
 
@@ -167,9 +198,11 @@ fun CreditFormPreviewDark(){
     }
 }
 
+@Composable
 fun creditViewModel(): CreditFormViewModel {
     return CreditFormViewModel(
+        LocalContext.current,
         SavedStateHandle(),
-        creditSvc = TODO()
+        creditSvc = null
     )
 }

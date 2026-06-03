@@ -21,10 +21,9 @@ import co.com.japl.module.creditcard.params.CashAdvanceParams
 import dagger.hilt.android.AndroidEntryPoint
 import java.time.LocalDateTime
 import javax.inject.Inject
-import co.com.japl.ui.Prefs
 
 @AndroidEntryPoint
-class CashAdvanceSave: Fragment() {
+class CashAdvanceSaveFragment: Fragment() {
     @Inject lateinit var creditCardSvc: ICreditCardPort
     @Inject lateinit var boughtSvc: IBoughtPort
     @Inject lateinit var creditRateSvc:ITaxPort

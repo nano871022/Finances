@@ -25,6 +25,7 @@ class CreditListFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        viewModel.navController = findNavController()
         return ComposeView(requireContext()).apply {
             setContent {
                 MaterialThemeComposeUI {
