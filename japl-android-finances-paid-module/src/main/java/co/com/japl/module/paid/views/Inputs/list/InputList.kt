@@ -3,6 +3,7 @@ package co.com.japl.module.paid.views.Inputs.list
 import android.content.res.Configuration
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -12,6 +13,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.FloatingActionButton
 import androidx.compose.material.FloatingActionButtonDefaults
+import androidx.compose.material.Surface
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.AttachMoney
 import androidx.compose.material.icons.rounded.MoreVert
@@ -36,10 +38,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import co.com.japl.finances.iports.dtos.InputDTO
 import co.com.japl.module.paid.R
 import co.com.japl.module.paid.controllers.Inputs.list.InputListModelView
 import co.com.japl.ui.components.Carousel
 import co.com.japl.ui.components.FieldView
+import co.com.japl.ui.components.FieldViewCards
 import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.com.japl.ui.theme.values.Dimensions
 import co.com.japl.ui.theme.values.ModifiersCustom.Weight1f
@@ -47,7 +51,10 @@ import co.com.japl.ui.utils.NumbersUtil
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.math.BigDecimal
 import java.time.LocalDate
+import java.time.format.TextStyle
+import java.util.Locale
 
 @Composable
 fun InputList(modelView: InputListModelView){
@@ -113,48 +120,66 @@ private fun Content(modelView: InputListModelView, modifier:Modifier) {
                 }
             }.sum())
 
-        stateList.forEach{item->
-            InputItem(
-                date = item.date,
-                nameInput = item.name,
-                valueInput = item.value.toDouble()
-            ) {
-                stateOptionsId.value = item.id
-                stateOptions.value = !stateOptions.value
+        val yearly = stateList.groupBy { it.date.year }
+
+        for( item in yearly){
+            val monthly = item.value.groupBy { it.date.month.getDisplayName( TextStyle.FULL, Locale("es","CO")) }
+            Surface(
+                border = BorderStroke(1.dp, MaterialTheme.colorScheme.onBackground),
+                modifier=Modifier.padding(Dimensions.PADDING_SHORT)) {
+                Column(modifier=Modifier.padding(Dimensions.PADDING_SHORT)){
+                Text(text = "${item.key}")
+                for (item in monthly) {
+                    Surface(border = BorderStroke(1.dp, MaterialTheme.colorScheme.onBackground),
+                        modifier=Modifier.padding(Dimensions.PADDING_SHORT)) {
+                        Column(modifier=Modifier.padding(Dimensions.PADDING_SHORT)) {
+                            Text(text = "${item.key}")
+                            for (item in monthly.values.flatten()) {
+                                InputItem(
+                                    date = item.date,
+                                    nameInput = item.name,
+                                    valueInput = item.value.toDouble()
+                                ) {
+                                    stateOptionsId.value = item.id
+                                    stateOptions.value = !stateOptions.value
+                                }
+                            }
+                        }
+                    }
+                }
+                }
             }
         }
-
             MoreOptionsItemsInputList(stateOptionsId, modelView = modelView)
     }
 }
 
 @Composable
 private fun InputItem(date:LocalDate,nameInput:String,valueInput:Double,onClick:()->Unit){
-    Card(modifier = Modifier.padding(bottom=Dimensions.PADDING_SHORT)) {
-        Row(verticalAlignment = Alignment.CenterVertically
-        , modifier = Modifier.padding(5.dp)){
+    Card(modifier = Modifier.padding(Dimensions.PADDING_SHORT)) {
+        Column {
+            Row(
+                verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(5.dp)
+            ) {
 
-            Column (modifier = Modifier.weight(1f)){
-                Text(text = stringArrayResource(id = R.array.months_short)[date.monthValue])
-                Text(text = "${date.dayOfMonth} ${date.year}")
+                Text(
+                    text = "${date.dayOfMonth}",
+                    modifier = Modifier.padding(end = Dimensions.PADDING_SHORT)
+                )
+                Text(text = nameInput, modifier = Modifier.weight(1f))
+
+                IconButton(onClick=onClick) {
+                    Icon(imageVector = Icons.Rounded.MoreVert, contentDescription = stringResource(
+                        co.com.japl.ui.R.string.see_more))
+                }
+                }
             }
-
-            Column (modifier = Modifier.weight(1f)) {
-                Text(text = stringResource(id = R.string.name))
-
-                Text(text = nameInput)
-            }
-
-            Column (modifier = Modifier.weight(1f)) {
-                Text(text = stringResource(id = R.string.value))
-
-                Text(text = NumbersUtil.COPtoString(valueInput))
-            }
-
-            IconButton(onClick = onClick) {
-                Icon( imageVector = Icons.Rounded.MoreVert, contentDescription = "more options")
-            }
-        }
+        FieldViewCards(
+            name=R.string.value,
+            value=NumbersUtil.COPtoString(valueInput),
+            textAlign = TextAlign.Right,
+            modifier=Modifier.padding(Dimensions.PADDING_SHORT)
+        )
     }
 
 }
@@ -202,5 +227,15 @@ private fun getViewModel():InputListModelView{
     val viewModel = InputListModelView(context = context, accountCode = 0,null,null)
     viewModel.stateDialogOptionsMore.value = false
     viewModel.stateLoader.value = false
+    viewModel._items.add(InputDTO(
+        id = 0,
+        date = LocalDate.now(),
+        accountCode = 0,
+        kindOf = "",
+        name = "Name",
+        value = BigDecimal.ZERO,
+        dateStart = LocalDate.now(),
+        dateEnd = LocalDate.now(),
+    ))
     return viewModel
 }

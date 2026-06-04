@@ -138,4 +138,5 @@ Email Samples:
     <string name="total">Total</string>
     <string name="num_paids">#</string>
     <string name="quote_value_short">Cuota</string>
+    <string name="subject_email">Asunto</string>
 </resources>

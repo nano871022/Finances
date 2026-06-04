@@ -83,7 +83,7 @@ class InputListModelView @AssistedInject constructor(@Assisted private val conte
         inputSvc?.let{
             _items.clear()
             it.getInputs(accountCode).let {
-                _items.addAll(it)
+                _items.addAll(it.sortedByDescending { it.date })
                 progress.value = 0.7f
                 stateLoader.value = false
             }

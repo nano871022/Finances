@@ -1,6 +1,7 @@
 package co.com.japl.module.paid.views.email.list
 
 import android.content.res.Configuration
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -11,6 +12,7 @@ import androidx.compose.material.icons.rounded.Delete
 import androidx.compose.material.icons.rounded.MoreVert
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -20,7 +22,10 @@ import co.com.japl.module.paid.R
 import co.com.japl.module.paid.controllers.emailpaid.list.EmailListPaidViewModel
 import co.com.japl.module.paid.enums.MoreOptionsItemsEmail
 import co.com.japl.ui.components.AlertDialogOkCancel
+import co.com.japl.ui.components.Carousel
 import co.com.japl.ui.components.FieldText
+import co.com.japl.ui.components.FieldView
+import co.com.japl.ui.components.FieldViewCards
 import co.com.japl.ui.components.FloatButton
 import co.com.japl.ui.components.MoreOptionsDialog
 import co.com.japl.ui.enums.IMoreOptions
@@ -47,7 +52,7 @@ fun EmailListPaid(viewModel: EmailListPaidViewModel) {
 
 @Composable
 fun Body(viewModel: EmailListPaidViewModel){
-    val list = viewModel.list
+    val list = viewModel.list.groupBy { it.nameAccount }
     Scaffold(
         floatingActionButton = {
             FloatButton(
@@ -56,15 +61,31 @@ fun Body(viewModel: EmailListPaidViewModel){
             ) { viewModel.add() }
         }
     ) {
-        Column(modifier = Modifier.padding(it).fillMaxWidth()) {
+        Carousel(
+            size=list.size,
+            modifier=Modifier.padding(it)
+        ) {
+            val items = list.entries.elementAt(it)
+            Column(modifier = Modifier.fillMaxWidth().padding(Dimensions.PADDING_SHORT)) {
 
+                FieldView(
+                    title=stringResource(R.string.account),
+                    value=items.key,
+                    modifier=Modifier.fillMaxWidth()
+                )
                 LazyColumn {
-                    items(list) { item ->
-                        EmailItem(item, edit = { viewModel.edit(it) }, clone = { viewModel.clone(it) }, delete = { viewModel.delete(it) }, activate = { id, active -> viewModel.activate(id, active) })
+                    items(items.value) { item ->
+                        EmailItem(
+                            item,
+                            edit = { viewModel.edit(it) },
+                            clone = { viewModel.clone(it) },
+                            delete = { viewModel.delete(it) },
+                            activate = { id, active -> viewModel.activate(id, active) })
                     }
                     item { Spacer(modifier = Modifier.height(100.dp)) }
                 }
 
+            }
         }
     }
 }
@@ -73,29 +94,54 @@ fun Body(viewModel: EmailListPaidViewModel){
     fun EmailItem(item: EmailPaidDTO, edit:(Int)->Unit, clone:(Int)->Unit, delete:(Int)->Unit, activate:(Int,Boolean)->Unit){
         var moreOptions by remember { mutableStateOf(false) }
         var showPopup by remember { mutableStateOf(false) }
+        var color = if(item.active) MaterialTheme.colorScheme.onBackground else MaterialTheme.colorScheme.surface
 
-        Card(modifier = Modifier.fillMaxWidth().padding(Dimensions.PADDING_SHORT)) {
+        Card(
+            border= BorderStroke(1.dp,color),
+            modifier = Modifier.fillMaxWidth().padding(Dimensions.PADDING_SHORT)) {
+            Column {
                 Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
-                    Text(text = item.nameAccount,
-                        color = MaterialTheme.colorScheme.onBackground,
-                        modifier=Modifier.padding(Dimensions.PADDING_TOP_MORE_VERT).weight(1f))
-                    Text(text = item.sender,
-                        color = MaterialTheme.colorScheme.onBackground,
-                        modifier=Modifier.padding(Dimensions.PADDING_TOP_MORE_VERT).weight(1f))
+
+                    FieldViewCards(
+                        name = R.string.sender,
+                        value = item.sender,
+                        modifier = Modifier.weight(1f).align(alignment = Alignment.CenterVertically)
+                    )
+
                     IconButton(onClick = { moreOptions = true }) {
-                        Icon(imageVector = Icons.Rounded.MoreVert,
-                            contentDescription = stringResource(co.com.japl.ui.R.string.see_more))
+                        Icon(
+                            imageVector = Icons.Rounded.MoreVert,
+                            contentDescription = stringResource(co.com.japl.ui.R.string.see_more)
+                        )
                     }
                 }
+                FieldViewCards(
+                    name = R.string.subject_email,
+                    value=item.subjectPattern,
+                    modifier=Modifier
+                )
+            }
         }
         if(moreOptions){
             MoreOptions(item.active,onClick = { opt ->
                 when(opt){
                     MoreOptionsItemsEmail.EDIT->edit(item.id)
-                    MoreOptionsItemsEmail.CLONE->clone(item.id)
-                    MoreOptionsItemsEmail.DISABLED->activate(item.id,false)
-                    MoreOptionsItemsEmail.ENABLED->activate(item.id,true)
-                    MoreOptionsItemsEmail.DELETE->showPopup=true
+                    MoreOptionsItemsEmail.CLONE->{
+                        moreOptions = false
+                        clone(item.id)
+                    }
+                    MoreOptionsItemsEmail.DISABLED->{
+                        moreOptions = false
+                        activate(item.id,false)
+                    }
+                    MoreOptionsItemsEmail.ENABLED->{
+                        moreOptions = false
+                        activate(item.id,true)
+                    }
+                    MoreOptionsItemsEmail.DELETE->{
+                        moreOptions=false
+                        showPopup=true
+                    }
                 }
             },
                 onDismiss = {moreOptions=false})
@@ -147,6 +193,17 @@ private fun EmailListPaidPreview(){
 @Composable
 private fun getViewModel(): EmailListPaidViewModel {
     val vm =  EmailListPaidViewModel(svc = null, navController = null)
+    vm.list.add(
+        EmailPaidDTO(
+            id = 0,
+            sender = "@asd.com",
+            subjectPattern = "Notificaciones",
+            bodyPattern = ".+",
+            codeAccount = 0,
+            nameAccount = "Account",
+            active = false,
+        )
+    )
     vm.load.value = false
     return vm
 }

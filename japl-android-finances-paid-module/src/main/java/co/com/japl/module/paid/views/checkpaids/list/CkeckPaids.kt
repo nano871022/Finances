@@ -3,6 +3,7 @@ package co.com.japl.module.paid.views.checkpaids.list
 import android.content.res.Configuration
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -24,6 +25,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import co.com.japl.finances.iports.dtos.PeriodCheckPaymentDTO
 import co.com.japl.ui.components.FieldView
 import co.com.japl.ui.components.FieldViewCards
@@ -33,6 +35,7 @@ import co.com.japl.ui.theme.values.ModifiersCustom.Weight1f
 import co.japl.android.graphs.utils.NumbersUtil
 import co.com.japl.module.paid.R
 import co.com.japl.module.paid.fragments.PeriodCheckPaymentViewModel
+import co.com.japl.ui.components.LoadingProgress
 
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -47,25 +50,18 @@ import kotlin.text.get
 @Composable
 fun CheckPaids(viewModel: PeriodCheckPaymentViewModel) {
     val loaderStatus = remember { viewModel.loader }
-    val progressState = remember { viewModel.progression }
 
-    CoroutineScope(Dispatchers.IO).launch {
-        viewModel.main()
-    }
 
-    if (loaderStatus.value) {
-        LinearProgressIndicator( progress = progressState.value, modifier = Modifier.fillMaxWidth())
-        LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
-    } else if(viewModel.map.isNotEmpty()) {
-        Column (modifier = Modifier.padding(Dimensions.PADDING_SHORT)) {
+    LoadingProgress(
+        message = R.string.loading_data,
+        showProgress = loaderStatus,
+        execute = viewModel::execute,
+        validateData = viewModel.map::isNotEmpty,
+        messageNoData = R.string.no_data
+    ) {
+        Column(modifier = Modifier.padding(Dimensions.PADDING_SHORT)) {
             Header(viewModel = viewModel)
             Body(viewModel = viewModel)
-        }
-    }else{
-        Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
-            Text(text = stringResource(id = R.string.not_data),
-                textAlign = TextAlign.Center,
-                color = MaterialTheme.colorScheme.onBackground)
         }
     }
 }
@@ -90,7 +86,7 @@ private fun Header(viewModel: PeriodCheckPaymentViewModel){
     val totalState = remember { mutableStateOf( NumbersUtil.toString(viewModel.map.values.flatten().sumOf{it.paid}))}
 
     Row (modifier = Modifier.padding(bottom=Dimensions.PADDING_SHORT)) {
-        FieldView(name = R.string.count, value = countState.value, modifier = Weight1f())
+        FieldView(name = R.string.count, value = countState.value, modifier = Weight1f(), isMoney = false)
 
         FieldView(name = R.string.total_paids, value = totalState.value, modifier = Weight1f())
     }
@@ -101,15 +97,19 @@ private fun Year(year:Int, list:List<PeriodCheckPaymentDTO>){
     val colapseState = remember {mutableStateOf(false)}
     val countState = remember {mutableStateOf(list.sumOf { it.count })}
     val totalState = remember {mutableStateOf( NumbersUtil.toString(list.sumOf { it.paid }))}
-    Surface (modifier = Modifier.padding(bottom=Dimensions.PADDING_SHORT)){
+    Surface (
+        border = BorderStroke(1.dp,color= MaterialTheme.colorScheme.onSurface),
+        modifier = Modifier.padding(bottom=Dimensions.PADDING_SHORT)){
 
         Column (modifier = Modifier.padding(Dimensions.PADDING_SHORT)){
+
+            Text(text = year.toString(),modifier= Modifier
+                .padding(start = Dimensions.PADDING_SHORT))
+
             Row (modifier = Modifier.clickable {
                 colapseState.value = colapseState.value.not()
             }) {
-                Text(text = year.toString(),modifier= Modifier
-                    .align(alignment = Alignment.CenterVertically)
-                    .padding(start = Dimensions.PADDING_SHORT))
+
 
                 FieldView(
                     name = R.string.count,
@@ -153,7 +153,7 @@ private fun Items(item:PeriodCheckPaymentDTO){
                 FieldViewCards(name = R.string.num_paids, value = numPaidsState.value, modifier = Modifier.weight(2f))
             }
 
-            FieldViewCards(name = R.string.total_paids, value = totalPaidState.value, modifier=Modifier)
+            FieldViewCards(name = R.string.total_paids, value = totalPaidState.value, textAlign = TextAlign.Right, modifier=Modifier)
 
         }
 
@@ -165,6 +165,7 @@ private fun Items(item:PeriodCheckPaymentDTO){
 @Preview(showBackground = true, showSystemUi = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
 internal fun CheckPaidsPreview(){
     val viewModel = getViewModel()
+    viewModel.loader.value=false
     MaterialThemeComposeUI {
         CheckPaids(viewModel = viewModel)
     }
