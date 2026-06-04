@@ -53,27 +53,21 @@ import co.com.japl.ui.components.FieldText
 import co.com.japl.ui.components.FloatButton
 import co.com.japl.ui.components.Popup
 import co.com.japl.ui.components.CheckBoxField
+import co.com.japl.ui.components.LoadingProgress
 import co.com.japl.ui.theme.values.Dimensions
 import co.com.japl.ui.theme.values.ModifiersCustom.Weight1f
 
 @Composable
 fun Sms(viewModel:SmsCreditCardViewModel){
-    val load by remember {viewModel.load}
+    val load = remember {viewModel.load}
 
-    LaunchedEffect(Unit) {
-        viewModel.main()
-    }
-    if(load){
-        Column (modifier=Modifier.fillMaxWidth()){
-            LinearProgressIndicator(
-                modifier = Modifier.fillMaxWidth(),
-            )
-            Text(text=stringResource(R.string.loading_data))
-        }
-    }else{
+    LoadingProgress(
+        message = R.string.loading_data,
+        showProgress = load,
+        execute = viewModel::execute
+    ) {
         Form(viewModel = viewModel)
     }
-
 }
 
 @Composable
@@ -112,7 +106,7 @@ private fun Body(viewModel: SmsCreditCardViewModel,modifier:Modifier){
           value = creditCard.value?.second?:"",
           list = listCreditCard,
           isError = errorCreditCard,
-          modifier = modifier,
+          modifier = Modifier.fillMaxWidth(),
           callAble = {
               it?.let{
                   creditCard.value = it
@@ -125,7 +119,7 @@ private fun Body(viewModel: SmsCreditCardViewModel,modifier:Modifier){
           value = kindInterest.value?.second?:"",
           list = kinInterestList,
           isError = errorKindInterest,
-          modifier = modifier,
+          modifier = Modifier.fillMaxWidth(),
           callAble = {
               it?.let{
                   kindInterest.value = it
@@ -141,7 +135,7 @@ private fun Body(viewModel: SmsCreditCardViewModel,modifier:Modifier){
           callback = {
               phoneNumber.value = it
                      },
-          modifier = modifier)
+          modifier = Modifier.fillMaxWidth())
 
       FieldText(title = stringResource(id = R.string.pattern)
           , value = pattern.value
@@ -152,7 +146,7 @@ private fun Body(viewModel: SmsCreditCardViewModel,modifier:Modifier){
           callback = {
               pattern.value = it
           },
-          modifier = modifier)
+          modifier = Modifier.fillMaxWidth())
 
       if(aiEnabled) {
           Button(

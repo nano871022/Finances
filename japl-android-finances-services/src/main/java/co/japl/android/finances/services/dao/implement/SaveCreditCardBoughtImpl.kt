@@ -34,6 +34,7 @@ import java.time.YearMonth
 import java.time.ZoneOffset
 import java.util.*
 import javax.inject.Inject
+import kotlin.jvm.optionals.getOrNull
 
 class SaveCreditCardBoughtImpl @Inject constructor(
     val context: Context,
@@ -477,7 +478,7 @@ class SaveCreditCardBoughtImpl @Inject constructor(
                 this.javaClass.name,
                 "<<<=== STARTING::getRecurrentBuys key: $key CutOff: $cutOff"
             )
-            val cutOffDay = creditCardSvc.get(key).get().cutOffDay
+            val cutOffDay = creditCardSvc.get(key).getOrNull()?.cutOffDay?:0
             val db = dbConnect.readableDatabase
             val cutOffLastMonth = DateUtils.cutOffLastMonth(cutOffDay, cutOff)
             val startCutOffLastMonth = DateUtils.startDateFromCutoff(cutOffDay, cutOffLastMonth)
@@ -574,7 +575,7 @@ class SaveCreditCardBoughtImpl @Inject constructor(
             "<<<=== STARTING::getRecurrentPendingQuotes Code CreditCard: $key CutOff: $cutOff"
         )
         val db = dbConnect.readableDatabase
-        val cutOffDay = creditCardSvc.get(key).get().cutOffDay
+        val cutOffDay = creditCardSvc.get(key).getOrNull()?.cutOffDay?:0
         val cutOffLastMonth = DateUtils.cutOffLastMonth(cutOffDay, cutOff)
 
         val items = mutableListOf<CreditCardBoughtDTO>()

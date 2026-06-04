@@ -38,7 +38,6 @@ class SmsCreditCardViewModel @AssistedInject constructor(@Assisted private val c
     }
 
     val  load = mutableStateOf(true)
-    val  progress = mutableFloatStateOf(0.0f)
     val aiFaile = mutableStateOf<Boolean>(false)
 
     private var creditCardLists = mutableListOf<CreditCardDTO>()
@@ -86,15 +85,11 @@ class SmsCreditCardViewModel @AssistedInject constructor(@Assisted private val c
         if (selectedSms.isNotEmpty()) {
             viewModelScope.launch {
                 load.value = true
-                progress.floatValue = 0.1f
                 val prompt = navController?.context?.getString(R.string.promt_sms_expreg, selectedSms.joinToString("\n"))?:""
-                progress.floatValue = 0.3f
                 withContext(Dispatchers.IO) {
                     llmService?.getAiResponse(prompt, selectedLLMModel.value?.second)
                 }?.onSuccess { response ->
-                    progress.floatValue = 0.6f
                     pattern.value = response.trim().removeSurrounding("`").removePrefix("regex").trim()
-                    progress.floatValue = 1.0f
                     load.value = false
                     showSmsDialog.value = false
                     navController?.let { Toast.makeText(it.context, R.string.ai_response, Toast.LENGTH_SHORT).show() }
@@ -103,7 +98,6 @@ class SmsCreditCardViewModel @AssistedInject constructor(@Assisted private val c
                     aiFaile.value=true
                     load.value = false
                     showSmsDialog.value = false
-                    progress.floatValue = 1.0f
                 }
             }
         }
@@ -147,7 +141,6 @@ class SmsCreditCardViewModel @AssistedInject constructor(@Assisted private val c
         validate.value = ""
         creditCard.value = null
         smsCreditCard = null
-        progress.floatValue = 0.0f
         load.value = true
         errorKindInterestRate.value = false
         errorPhoneNumber.value = false
@@ -223,15 +216,7 @@ class SmsCreditCardViewModel @AssistedInject constructor(@Assisted private val c
         }
     }
 
-    fun main() {
-        viewModelScope.launch {
-            progress.floatValue = 0.1f
-            execute()
-            progress.floatValue = 1.0f
-        }
-    }
-
-    suspend fun execute(){
+    fun execute()=viewModelScope.launch{
         svc?.let{
             codeSMSCC?.let {
                 withContext(Dispatchers.IO) {
@@ -243,7 +228,6 @@ class SmsCreditCardViewModel @AssistedInject constructor(@Assisted private val c
                     }
                     phoneNumber.value = it.phoneNumber
                     pattern.value = it.pattern
-                    progress.floatValue = 0.3f
                 }
             }
         }
@@ -256,7 +240,6 @@ class SmsCreditCardViewModel @AssistedInject constructor(@Assisted private val c
                 creditCardLists.add(it)
                 creditCardList.add(Pair(it.id,it.name))
             }
-                .also { progress.floatValue = 0.6f }
             smsCreditCard?.let{sms->
                 creditCardLists.firstOrNull { it.id == sms.codeCreditCard }?.let { creditCard.value = Pair(it.id,it.name) }
             }
@@ -264,7 +247,6 @@ class SmsCreditCardViewModel @AssistedInject constructor(@Assisted private val c
 
         kindInterestRateList.clear()
         KindInterestRateEnum.values().map { Pair(it.getCode().toInt(), it.name)}.forEach(kindInterestRateList::add)
-            .also { progress.floatValue = 0.8f }
 
         withContext(Dispatchers.IO) {
             llmService?.getModels()

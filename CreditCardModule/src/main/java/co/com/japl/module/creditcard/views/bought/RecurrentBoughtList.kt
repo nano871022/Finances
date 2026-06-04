@@ -35,6 +35,10 @@ import co.com.japl.ui.Prefs
 import co.com.japl.ui.enums.IMoreOptions
 import co.com.japl.ui.components.MoreOptionsDialog
 import co.com.japl.ui.components.AlertDialogOkCancel
+import co.com.japl.ui.components.Carousel
+import co.com.japl.ui.components.FieldView
+import co.com.japl.ui.components.FieldViewCards
+import co.com.japl.ui.components.LoadingProgress
 import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.com.japl.ui.theme.values.Dimensions
 import co.com.japl.ui.utils.NumbersUtil
@@ -52,37 +56,17 @@ fun RecurrentBoughtList(
     onEdit: (CreditCardBoughtItemDTO) -> Unit,
     onAlter: (CreditCardBoughtItemDTO) -> Unit
 ) {
-    var progressStatus by remember {viewModel!!.progress}
+    val loader = remember {viewModel.loader}
 
-    LaunchedEffect(codeCreditCard, viewModel.loader.value) {
-        if (!viewModel.loader.value) {
-            viewModel.load(codeCreditCard)
-        }
-    }
-
-    if(viewModel.loader.value && viewModel.filteredList.isNotEmpty()) {
+    LoadingProgress(
+        message = R.string.loading_data,
+        showProgress = loader,
+        execute = {
+                viewModel.load(codeCreditCard)
+            }
+    ) {
         Body(codeCreditCard, viewModel, onEdit, onAlter)
-    }else if(viewModel.filteredList.isEmpty() && viewModel.progress.value < 1f){
-        Column(modifier=Modifier.fillMaxWidth()) {
-            LinearProgressIndicator(
-                modifier = Modifier.fillMaxWidth(),
-            )
-            Text(
-                text=stringResource(R.string.loading_data),
-                textAlign =  TextAlign.Center,
-                color=MaterialTheme.colorScheme.onBackground,
-                modifier = Modifier.fillMaxWidth().padding(Dimensions.PADDING_TOP)
-            )
-        }
-    }else{
-        Text(
-            text=stringResource(id = R.string.no_data),
-            modifier=Modifier.fillMaxWidth(),
-            textAlign = TextAlign.Center,
-            color = MaterialTheme.colorScheme.onBackground,
-        )
     }
-
 }
 
 @Composable
@@ -93,32 +77,57 @@ private fun Body( codeCreditCard: Int,
     Scaffold(
         topBar = { TopBar(viewModel)   }
     ) { paddingValues ->
-        val groupedList = viewModel.filteredList.groupBy { YearMonth.of(it.boughtDate.year, it.boughtDate.month) }
+        val groupList = viewModel.filteredList.groupBy { it.nameCreditCard }
+        Carousel(size = groupList.size,modifier=Modifier.padding(Dimensions.PADDING_SHORT)) {
+            val entry = groupList.entries.elementAt(it)
+            val groupedList = entry.value.groupBy { YearMonth.of(it.boughtDate.year, it.boughtDate.month) }
 
-        LazyColumn(modifier = Modifier.padding(paddingValues)) {
-            groupedList.forEach { (month, items) ->
+            LazyColumn(modifier = Modifier.padding(paddingValues)) {
                 item {
-                    Row(modifier=Modifier.fillMaxWidth()) {
+                    FieldView(title = stringResource(R.string.credit_card),
+                        value=entry.key,
+                        modifier=Modifier.fillMaxWidth())
+                }
+
+                if (groupedList.isNotEmpty()) {
+                    groupedList.forEach { (month, items) ->
+                        item {
+
+                            Column {
+
+                                Row(modifier = Modifier.fillMaxWidth()) {
+                                    Text(
+                                        text = month.format(DateTimeFormatter.ofPattern("MMM yyyy")),
+                                        modifier = Weight1f().padding(8.dp),
+                                        style = MaterialTheme.typography.titleMedium
+                                    )
+                                    Text(
+                                        text = NumbersUtil.COPtoString(items.sumOf { it.valueItem }),
+                                        modifier = Weight1f().padding(8.dp),
+                                        style = MaterialTheme.typography.titleMedium,
+                                        textAlign = TextAlign.Right
+                                    )
+                                }
+                            }
+                        }
+                        items(items) { item ->
+                            RecurrentBoughtItem(
+                                item = item,
+                                viewModel = viewModel,
+                                onEdit = onEdit,
+                                onAlter = onAlter
+                            )
+                        }
+                    }
+                } else {
+                    item {
                         Text(
-                            text = month.format(DateTimeFormatter.ofPattern("MMM yyyy")),
-                            modifier = Weight1f().padding(8.dp),
-                            style = MaterialTheme.typography.titleMedium
-                        )
-                        Text(
-                            text = NumbersUtil.COPtoString(items.sumOf { it.valueItem }),
-                            modifier = Weight1f().padding(8.dp),
-                            style = MaterialTheme.typography.titleMedium,
-                            textAlign = TextAlign.Right
+                            text = stringResource(R.string.no_data),
+                            color = MaterialTheme.colorScheme.onBackground,
+                            textAlign = TextAlign.Center,
+                            modifier = Modifier.fillMaxWidth()
                         )
                     }
-                }
-                items(items) { item ->
-                    RecurrentBoughtItem(
-                        item = item,
-                        viewModel = viewModel,
-                        onEdit = onEdit,
-                        onAlter = onAlter
-                    )
                 }
             }
         }
@@ -127,7 +136,9 @@ private fun Body( codeCreditCard: Int,
 
 @Composable
 private fun TopBar(viewModel: RecurrentBoughtViewModel){
-    Column(modifier = Modifier.fillMaxWidth().padding(16.dp)) {
+    Column(modifier = Modifier
+        .fillMaxWidth()
+        .padding(16.dp)) {
 
         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly) {
             Text(
@@ -205,33 +216,48 @@ private fun RecurrentBoughtItem(
     }
 
     Card(
-        modifier = Modifier.padding(8.dp).fillMaxWidth(),
+        modifier = Modifier
+            .padding(8.dp)
+            .fillMaxWidth(),
         border = if (isActive) BorderStroke(2.dp, borderColor) else null
     ) {
-        Row(
-            modifier = Modifier.padding(16.dp).fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Column(modifier = Modifier.weight(1f)) {
-                Row(modifier=Modifier.fillMaxWidth()) {
-                    Text(
-                        text = item.boughtDate.format(DateTimeFormatter.ofPattern("dd"))
-                        , style = androidx.compose.ui.text.TextStyle.Default
-                        , modifier=Modifier.padding(end=8.dp).padding(top=4.dp)
-                    )
-                    Text(text = item.nameItem,
-                        modifier=Modifier.weight(2f))
-                    Text(
-                        text = NumbersUtil.COPtoString(item.valueItem)
-                        , style = androidx.compose.ui.text.TextStyle.Default
-                        , textAlign = TextAlign.Right
-                        ,modifier=Weight1f().padding(top=4.dp)
+        Column {
+            Row(
+                modifier = Modifier.padding(start= Dimensions.PADDING_SHORT)
+                    .fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Column(modifier = Modifier.weight(1f)) {
+                    Row(modifier = Modifier.fillMaxWidth()) {
+                        Text(
+                            text = item.boughtDate.format(DateTimeFormatter.ofPattern("dd")),
+                            style = androidx.compose.ui.text.TextStyle.Default,
+                            modifier = Modifier
+                                .padding(end = 8.dp)
+                                .padding(top = 4.dp)
+                        )
+                        Text(
+                            text = item.nameItem,
+                            modifier = Modifier.weight(2f)
+                        )
+
+                    }
+
+                }
+                IconButton(onClick = { showMenu = true }) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.more_vertical),
+                        contentDescription = null
                     )
                 }
             }
-            IconButton(onClick = { showMenu = true }) {
-                Icon(painter = painterResource(id = R.drawable.more_vertical), contentDescription = null)
-            }
+            FieldViewCards(
+                name = R.string.value_product,
+                value = NumbersUtil.COPtoString(item.valueItem),
+                modifier = Modifier.padding(top = Dimensions.PADDING_SHORT),
+                textAlign = TextAlign.Right,
+                color = MaterialTheme.colorScheme.onSurface
+            )
         }
     }
 }
@@ -247,6 +273,7 @@ private fun RecurrentPreviewLight() {
             Prefs(context)
         )
     }
+    vm.loader.value = false
     MaterialThemeComposeUI {
         RecurrentBoughtList(
             codeCreditCard = 1,

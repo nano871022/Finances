@@ -18,12 +18,14 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -34,9 +36,11 @@ import co.com.japl.module.creditcard.controllers.smscreditcard.list.SmsCreditCar
 import co.com.japl.module.creditcard.enums.MoreOptionsItemSmsCreditCard
 import co.com.japl.ui.components.AlertDialogOkCancel
 import co.com.japl.ui.components.Carousel
+import co.com.japl.ui.components.FieldView
 import co.com.japl.ui.components.FloatButton
 import co.com.japl.ui.components.HelpWikiButton
 import co.com.japl.ui.components.IconButton
+import co.com.japl.ui.components.LoadingProgress
 import co.com.japl.ui.components.MoreOptionsDialog
 import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.com.japl.ui.theme.values.Dimensions
@@ -48,18 +52,10 @@ import kotlinx.coroutines.launch
 @Composable
 fun SMS(viewModel:SmsCreditCardViewModel) {
     val loader = remember {viewModel.load}
-    val progress = remember {viewModel.progress}
-
-    CoroutineScope(Dispatchers.IO).launch {
-        viewModel.main()
-    }
-
-    if(loader.value){
-        LinearProgressIndicator(
-            progress = { progress.floatValue },
-            modifier = Modifier.fillMaxWidth(),
-        )
-    }else{
+    LoadingProgress(
+        message=R.string.loading_data,
+        execute = viewModel::execute,
+        showProgress = loader){
         Body(viewModel = viewModel)
     }
 
@@ -94,7 +90,12 @@ private fun Content(viewModel: SmsCreditCardViewModel,modifier: Modifier){
                 Column(
                     modifier = modifier.padding(bottom = Dimensions.PADDING_BOTTOM_SPACE_FLOATING_BUTTON)
                 ) {
-                    list[it]?.values?.forEach {
+                    list[it].values.forEach {
+                        FieldView(
+                            title = stringResource(R.string.credit_card),
+                            value=it.first().nameCreditCard,
+                            modifier=Modifier.fillMaxWidth().padding(Dimensions.PADDING_SHORT)
+                        )
                         for (i in it) {
                             Card(sms = i, modifier = Modifier, edit = {
                                 viewModel.edit(it)
@@ -131,9 +132,9 @@ private fun Card(sms:SMSCreditCard,modifier:Modifier=Modifier,edit:(Int)->Unit,d
             verticalAlignment = Alignment.CenterVertically
             ,modifier = Modifier.padding(Dimensions.PADDING_SHORT)
         ) {
-            Text(text = sms.nameCreditCard,modifier=Weight1f())
 
-            Text(text = sms.kindInterestRateEnum.name,modifier=Weight1f())
+            Text(text = stringResource(sms.kindInterestRateEnum.getName()),
+                modifier=Weight1f())
 
             Text(text = sms.phoneNumber,modifier=Weight1f(), textAlign = TextAlign.End)
 

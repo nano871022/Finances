@@ -1,5 +1,6 @@
 package co.com.japl.module.creditcard.controllers.emailcreditcard.list
 
+import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import co.com.japl.finances.iports.dtos.EmailCreditCardDTO
 import co.com.japl.finances.iports.inbounds.creditcard.IEmailCreditCardPort
@@ -14,7 +15,7 @@ import kotlinx.coroutines.withContext
 
 class EmailListCreditCardViewModel(val svc: IEmailCreditCardPort?, val navController: NavController?) : ViewModel(){
 
-    val load = mutableStateOf(false)
+    val load = mutableStateOf(true)
     val list = mutableListOf<EmailCreditCardDTO>()
 
     fun create(){
@@ -38,7 +39,7 @@ class EmailListCreditCardViewModel(val svc: IEmailCreditCardPort?, val navContro
             }.onFailure { e ->
             }.onSuccess { resp ->
                 if (resp) {
-                    main()
+                    load.value = true
                 }
             }
         }
@@ -53,7 +54,7 @@ class EmailListCreditCardViewModel(val svc: IEmailCreditCardPort?, val navContro
             }.onFailure { e ->
             }.onSuccess { resp ->
                 if (resp) {
-                    main()
+                    load.value = true
                 }
             }
         }
@@ -68,23 +69,24 @@ class EmailListCreditCardViewModel(val svc: IEmailCreditCardPort?, val navContro
             }.onFailure { e ->
             }.onSuccess { resp ->
                 if (resp) {
-                    main()
+                    load.value = true
                 }
             }
         }
     }
 
-    fun main () = runBlocking {
-        load.value = true
-        execution()
-    }
 
-    suspend fun execution(){
-        svc?.getAll()?.let{
-            list.clear()
-            list.addAll(it)
-            load.value = false
+    fun execution()=viewModelScope.launch{
+        svc?.let{
+            withContext(Dispatchers.IO){
+                it.getAll()
+            }.let{
+                list.clear()
+                list.addAll(it)
+                Log.d(javaClass.simpleName,"${it.size}")
+            }
         }
+        load.value = false
     }
 
 }

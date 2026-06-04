@@ -3,6 +3,7 @@ package co.com.japl.module.creditcard.params
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import androidx.core.net.toUri
 
 
 object EmailCreditCardParams {
@@ -12,7 +13,7 @@ object EmailCreditCardParams {
     fun download(bundle: Bundle): Int {
         if(bundle.containsKey(PARAM_DEEPLINK)) {
             val intent = bundle.get(PARAM_DEEPLINK) as Intent
-            val value = Uri.parse(intent.dataString).getQueryParameter(CODE_EMAIL_CC)
+            val value = intent.dataString?.toUri()?.getQueryParameter(CODE_EMAIL_CC)
             return value?.toInt()?:0
         }
         return bundle.getInt(CODE_EMAIL_CC, 0)
