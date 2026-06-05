@@ -132,7 +132,7 @@ private fun Header(count: Int, value: Double) {
 
         FieldView(name = R.string.value,
             value = NumbersUtil.toString(value),
-            modifier = Weight1f())
+            modifier = Modifier.weight(3f))
     }
 }
 
@@ -197,23 +197,24 @@ private fun Item(item:PeriodPaidDTO,goTo:(YearMonth)->Unit){
 
 @Composable
 private fun HeaderYearRecap(year:Int,count:Int,value:Double,onclick:()->Unit){
-    Row (modifier=Modifier.padding(bottom = Dimensions.PADDING_SHORT)){
-        FieldView(name = R.string.year,
-            value = year.toString(),
-            isMoney = false,
-            modifier = Weight1f()
-        ,onClick = onclick)
+    Column() {
+        Text(text = "$year")
+        Row(modifier = Modifier.padding(bottom = Dimensions.PADDING_SHORT)) {
+            FieldView(
+                name = R.string.count,
+                value = count.toString(),
+                isMoney = false,
+                modifier = Weight1f(),
+                onClick = onclick
+            )
 
-        FieldView(name = R.string.count,
-            value = count.toString(),
-            isMoney = false,
-            modifier = Weight1f(),
-            onClick = onclick)
-
-        FieldView(name = R.string.value,
-            value = NumbersUtil.toString(value),
-            modifier = Weight1f(),
-            onClick = onclick)
+            FieldView(
+                name = R.string.value,
+                value = NumbersUtil.toString(value),
+                modifier = Modifier.weight(3f),
+                onClick = onclick
+            )
+        }
     }
 }
 
