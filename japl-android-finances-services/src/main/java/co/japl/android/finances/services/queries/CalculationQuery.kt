@@ -1,7 +1,7 @@
 package co.japl.android.finances.services.queries
 
 import android.provider.BaseColumns
-import co.com.japl.finances.iports.dtos.CalcDB
+import co.japl.android.finances.services.dto.CalcDB
 
 object CalculationQuery {
     const val SQL_CREATE_ENTRIES = """CREATE TABLE ${CalcDB.CalcEntry.TABLE_NAME}(

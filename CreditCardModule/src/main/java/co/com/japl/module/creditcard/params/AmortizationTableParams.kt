@@ -1,7 +1,6 @@
 package co.com.japl.module.creditcard.params
 
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import androidx.core.net.toUri
 import androidx.core.os.bundleOf

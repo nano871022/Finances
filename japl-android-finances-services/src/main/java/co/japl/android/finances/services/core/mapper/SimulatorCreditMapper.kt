@@ -1,7 +1,7 @@
 package co.japl.android.finances.services.core.mapper
 
 import co.com.japl.finances.iports.dtos.SimulatorCreditDTO
-import co.com.japl.finances.iports.dtos.CalcDTO
+import co.japl.android.finances.services.dto.CalcDTO
 import co.japl.android.finances.services.enums.CalcEnum
 import co.japl.android.finances.services.enums.KindOfTaxEnum
 import java.math.BigDecimal
