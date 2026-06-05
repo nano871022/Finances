@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
@@ -34,14 +35,10 @@ class AdditionalViewModel @Inject constructor(
     var navController: NavController? = null
 
     val list = mutableStateListOf<AdditionalCreditDTO>()
-    private val _loading = MutableStateFlow<Boolean>(false)
-    val loading = _loading.asStateFlow()
+    val loading = mutableStateOf<Boolean>(true)
+
     val hostState: SnackbarHostState = SnackbarHostState()
 
-
-    init{
-        main()
-    }
 
     fun addAdditional(){
         navController?.let{
@@ -60,7 +57,7 @@ class AdditionalViewModel @Inject constructor(
                     actionLabel = context.getString(R.string.close),
                     duration = SnackbarDuration.Short
                 ).also {
-                    main()
+                    loading.value=true
                }
                 false -> hostState.showSnackbar(
                     message = context.getString(R.string.error_delete_record),
@@ -77,17 +74,10 @@ class AdditionalViewModel @Inject constructor(
         }
     }
 
-    fun main() {
-        _loading.value = true
-        viewModelScope.launch {
-            execute()
-        }
-    }
-
-    suspend fun execute(){
+    fun execute() = viewModelScope.launch {
         withContext(Dispatchers.IO) {
             additionalSvc?.getAdditional(code)
         }?.forEach(list::add)
-        _loading.value = false
+        loading.value = false
     }
 }

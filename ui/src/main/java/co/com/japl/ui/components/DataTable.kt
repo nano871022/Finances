@@ -5,6 +5,8 @@ import android.content.res.Configuration
 import android.icu.text.DecimalFormat
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.annotation.StringRes
+import androidx.appcompat.R
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -37,6 +39,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ShaderBrush
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Constraints
@@ -57,6 +60,7 @@ fun DataTable(
     splitPos: Int = 0,
     splitEnable:Boolean?=true,
     highlightPos:Int = -1,
+    @StringRes messageNoData:Int?=null,
     footer: @Composable RowScope.(Dp) -> Unit?,
     split: @Composable (Int,Dp) -> Unit? = {_,_->},
     listBody: @Composable RowScope.(Int, Dp) -> Unit
@@ -66,7 +70,24 @@ fun DataTable(
         val width = maxWidth
         Column {
             Header(textColor, listHeader(width))
-            Body(textColor, sizeBody, width, splitPos,highlightPos,splitEnable?:true,footer, split,listBody)
+            if(sizeBody == 0 && messageNoData != null ) {
+                Text(text= stringResource(messageNoData),
+                    color= MaterialTheme.colorScheme.onBackground,
+                    textAlign = TextAlign.Center,
+                    modifier=Modifier.fillMaxWidth().padding(Dimensions.PADDING_TOP))
+            }else{
+                Body(
+                    textColor,
+                    sizeBody,
+                    width,
+                    splitPos,
+                    highlightPos,
+                    splitEnable ?: true,
+                    footer,
+                    split,
+                    listBody
+                )
+            }
         }
     }
 }

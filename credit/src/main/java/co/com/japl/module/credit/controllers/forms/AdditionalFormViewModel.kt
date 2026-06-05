@@ -4,13 +4,14 @@ import android.content.Context
 import android.util.Log
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHostState
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import co.com.japl.finances.iports.dtos.AdditionalCreditDTO
-import co.com.japl.finances.iports.inbounds.credit.IAdditionalFormPort
+import co.com.japl.finances.iports.outbounds.IAdditionalPort
 import co.com.japl.module.credit.R
 import co.com.japl.ui.utils.initialFieldState
 import co.com.japl.ui.utils.NumbersUtil
@@ -28,14 +29,16 @@ import javax.inject.Inject
 
 @HiltViewModel
 class AdditionalFormViewModel @Inject constructor(
-    @ApplicationContext private val context: Context, 
-    private val savedStateHandle: SavedStateHandle, 
-    private val additionalSvc: IAdditionalFormPort?
+    @ApplicationContext private val context: Context,
+    private val savedStateHandle: SavedStateHandle,
+    private val additionalSvc: IAdditionalPort
 ) : ViewModel(){
 
-    private val id: Int = savedStateHandle.get<Int>(AdditionalCreditParams.Params.PARAM_ID_ADDITIONAL_CREDIT) ?: -1
-    private val codeCredit: Int = savedStateHandle.get<Int>(AdditionalCreditParams.Params.PARAM_CREDIT_CODE) ?: 0
+    private val params = AdditionalCreditParams.download(savedStateHandle)
+    private val id: Int = params.first
+    private val codeCredit: Int = params.second
     var navController: NavController? = null
+
 
     private val _dto = MutableStateFlow<AdditionalCreditDTO>(AdditionalCreditDTO(
         id=id,
@@ -46,7 +49,7 @@ class AdditionalFormViewModel @Inject constructor(
         endDate = LocalDate.now()
     ))
     val hostState: SnackbarHostState = SnackbarHostState()
-    val loading = mutableStateOf(false)
+    val loading = mutableStateOf(true)
     val name = initialFieldState(
         savedStateHandle,
         "FORM_NAME",
@@ -81,10 +84,6 @@ class AdditionalFormViewModel @Inject constructor(
             }
         }
     )
-
-    init{
-        main()
-    }
 
     fun create() {
         if (validation()) {
@@ -161,15 +160,9 @@ class AdditionalFormViewModel @Inject constructor(
         return name.error.value.not() && value.error.value.not() && startDate.error.value.not()
     }
 
-    fun main() {
-        loading.value = true
-        viewModelScope.launch {
-            execute()
-        }
-    }
-
-    suspend fun execute(){
+    fun execute()=viewModelScope.launch{
         additionalSvc?.let{ svcPort ->
+            Log.d(this.javaClass.name,"<<<=== Execute:List $id $codeCredit")
             id.takeIf { it > 0 }?.let {
                 withContext(Dispatchers.IO) {
                     svcPort.get(id)

@@ -32,7 +32,10 @@ import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.SavedStateHandle
+import co.com.japl.finances.iports.dtos.CreditDTO
 import co.com.japl.finances.iports.dtos.RecapCreditDTO
+import co.com.japl.finances.iports.inbounds.credit.ICreditPort
 import co.com.japl.module.credit.R
 import co.com.japl.module.credit.controllers.recap.RecapViewModel
 import co.com.japl.ui.components.FloatButton
@@ -224,10 +227,27 @@ fun RecapEmptyPreviewDark(){
     }
 }
 
+@Composable
 fun viewModel():RecapViewModel{
     val viewModel = RecapViewModel(
-        creditsSvc = TODO(),
-        savedStateHandle = TODO()
+        creditsSvc = object: ICreditPort{
+            override fun getCreditEnable(period: YearMonth): List<CreditDTO> {
+                TODO("Not yet implemented")
+            }
+
+            override fun delete(id: Int): Boolean {
+                TODO("Not yet implemented")
+            }
+
+            override fun getCreditsEnables(period: YearMonth): List<RecapCreditDTO> {
+                TODO("Not yet implemented")
+            }
+
+            override fun getCredit(code: Int): CreditDTO? {
+                TODO("Not yet implemented")
+            }
+        },
+        savedStateHandle = SavedStateHandle()
     )
     viewModel.listCredits.add(
         RecapCreditDTO(

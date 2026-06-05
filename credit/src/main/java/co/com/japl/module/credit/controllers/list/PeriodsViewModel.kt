@@ -1,6 +1,7 @@
 package co.com.japl.module.credit.controllers.list
 
 import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import co.com.japl.finances.iports.dtos.PeriodCreditDTO
@@ -19,29 +20,15 @@ import javax.inject.Inject
 @HiltViewModel
 class PeriodsViewModel @Inject constructor(private val periodSvc: IPeriodCreditPort?): ViewModel(){
     val records  = mutableStateListOf<PeriodCreditDTO>()
-    private val _uiState = MutableStateFlow<FormUIState>(FormUIState.Loading)
-    val viewState: StateFlow<FormUIState> = _uiState.asStateFlow()
+    val loading = mutableStateOf(true)
 
-
-    init{
-        viewModelScope.launch {
-            main()
-        }
-    }
-
-    fun main() {
-        viewModelScope.launch {
-            execute()
-        }
-    }
-
-    suspend fun execute(){
+     fun execute() = viewModelScope.launch {
 
         withContext(Dispatchers.IO) {
             periodSvc?.getRecords()
         }?.let(records::addAll)
 
-        _uiState.value = FormUIState.Current
+        loading.value = false
 
     }
 

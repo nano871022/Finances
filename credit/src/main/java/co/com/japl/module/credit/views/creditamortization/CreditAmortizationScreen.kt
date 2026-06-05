@@ -10,16 +10,23 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.Divider
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Addchart
+import androidx.compose.material.icons.rounded.KeyboardArrowDown
+import androidx.compose.material.icons.rounded.KeyboardArrowUp
 import androidx.compose.material.icons.rounded.PlusOne
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import co.com.japl.module.credit.R
@@ -36,9 +43,17 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.SavedStateHandle
+import co.com.japl.finances.iports.dtos.AdditionalCreditDTO
 import co.com.japl.finances.iports.dtos.CreditDTO
+import co.com.japl.finances.iports.dtos.GracePeriodDTO
+import co.com.japl.finances.iports.dtos.RecapCreditDTO
+import co.com.japl.finances.iports.enums.KindAmortization
 import co.com.japl.finances.iports.enums.KindOfTaxEnum
 import co.com.japl.finances.iports.enums.KindPaymentsEnums
+import co.com.japl.finances.iports.inbounds.credit.IAdditional
+import co.com.japl.finances.iports.inbounds.credit.IAmortizationTablePort
+import co.com.japl.finances.iports.inbounds.credit.ICreditPort
+import co.com.japl.finances.iports.inbounds.credit.IPeriodGracePort
 import co.com.japl.ui.components.FloatButton
 import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.com.japl.ui.utils.WindowWidthSize
@@ -85,6 +100,8 @@ private fun Body(viewModel: CreditAmortizationViewModel) {
 @SuppressLint("UnusedBoxWithConstraintsScope")
 @Composable
 private fun Header(viewModel: CreditAmortizationViewModel) {
+    val show = remember { mutableStateOf(true) }
+    val btn = if(show.value) Icons.Rounded.KeyboardArrowUp else Icons.Rounded.KeyboardArrowDown
     BoxWithConstraints {
         val size = WindowWidthSize.fromDp(maxWidth)
         Column {
@@ -95,38 +112,61 @@ private fun Header(viewModel: CreditAmortizationViewModel) {
                 modifier = Modifier.fillMaxWidth()
             )
 
-            Row(modifier = Modifier.fillMaxWidth()) {
-                FieldView(
-                    title = stringResource(id = R.string.periods),
-                    value = state.credit?.periods.toString(),
-                    modifier = Modifier.weight(1f).align(alignment = Alignment.CenterVertically)
-                )
-                FieldView(
-                    title = stringResource(id = R.string.interest_value_short),
-                    value = "${NumbersUtil.toString4(state.credit?.tax?:0.0)} ${state.credit?.kindOfTax?.value?: KindOfTaxEnum.ANUAL_EFFECTIVE.value}",
-                    modifier = Modifier.weight(1f)
-                )
-            }
 
             Row(modifier = Modifier.fillMaxWidth()) {
-                FieldView(
-                    title = stringResource(id = R.string.interest_to_pay_value),
-                    value = NumbersUtil.COPtoString(state.credit?.quoteValue ?: BigDecimal.ZERO),
-                    modifier = Modifier.weight(1f)
+                HorizontalDivider(
+                    color = MaterialTheme.colorScheme.onBackground,
+                    modifier = Modifier.weight(1f).padding(Dimensions.PADDING_SHORT)
+                        .align(alignment = Alignment.CenterVertically)
                 )
+                IconButton(onClick = {show.value = !show.value}) {
 
-                FieldView(
-                    title = stringResource(id = R.string.additional_monthly),
-                    value = NumbersUtil.COPtoString(state.additional ?: BigDecimal.ZERO),
-                    modifier = Modifier.weight(1f)
-                )
+                    Icon(
+                        imageVector = btn,
+                        contentDescription = stringResource(id = R.string.see_more),
+                        tint = MaterialTheme.colorScheme.onBackground
+                    )
+                }
             }
-            if(size == WindowWidthSize.COMPACT) {
-                FieldView(
-                    title = stringResource(id = R.string.quote_value),
-                    value = NumbersUtil.COPtoString(state.credit?.quoteValue ?: BigDecimal.ZERO),
-                    modifier = Modifier.fillMaxWidth()
-                )
+
+            if (show.value) {
+                Row(modifier = Modifier.fillMaxWidth()) {
+                    FieldView(
+                        title = stringResource(id = R.string.periods),
+                        value = state.credit?.periods.toString(),
+                        modifier = Modifier.weight(1f).align(alignment = Alignment.CenterVertically)
+                    )
+                    FieldView(
+                        title = stringResource(id = R.string.interest_value_short),
+                        value = "${NumbersUtil.toString4(state.credit?.tax ?: 0.0)} ${state.credit?.kindOfTax?.value ?: KindOfTaxEnum.ANUAL_EFFECTIVE.value}",
+                        modifier = Modifier.weight(1f)
+                    )
+                }
+
+                Row(modifier = Modifier.fillMaxWidth()) {
+                    FieldView(
+                        title = stringResource(id = R.string.interest_to_pay_value),
+                        value = NumbersUtil.COPtoString(
+                            state.credit?.quoteValue ?: BigDecimal.ZERO
+                        ),
+                        modifier = Modifier.weight(1f)
+                    )
+
+                    FieldView(
+                        title = stringResource(id = R.string.additional_monthly),
+                        value = NumbersUtil.COPtoString(state.additional ?: BigDecimal.ZERO),
+                        modifier = Modifier.weight(1f)
+                    )
+                }
+                if (size == WindowWidthSize.COMPACT) {
+                    FieldView(
+                        title = stringResource(id = R.string.quote_value),
+                        value = NumbersUtil.COPtoString(
+                            state.credit?.quoteValue ?: BigDecimal.ZERO
+                        ),
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                }
             }
         }
     }
@@ -178,7 +218,7 @@ private fun Table(quotesPaid:Int,amortization: List<AmortizationRowDTO>,yearMont
         highlightPos = quotesPaid,
         split = { pos,size ->
             val year =  yearMonth.plusMonths(pos.toLong()).year
-            val record = amortization.subList(pos,pos+12)
+            val record = try{amortization.subList(pos,pos+12)}catch(e:Exception){amortization.subList(pos,amortization.size)}
             val interest = record.sumOf { it.interestValue }
             val capital = record.sumOf{ it.capitalValue }
             Split(year,capital,interest, WindowWidthSize.fromDp(size))
@@ -321,15 +361,64 @@ private fun CreditAmortizationScreenPreviewDarkTablet() {
     }
 }
 
+@Composable
 private fun getViewModel():CreditAmortizationViewModel{
     val creditCode = 1
     val lastDate = LocalDate.now()
     val viewModel = CreditAmortizationViewModel(
         SavedStateHandle(),
-        creditSvc = TODO(),
-        additionalSvc = TODO(),
-        gracePeriodSvc = TODO(),
-        amortizationSvc = TODO(),
+        creditSvc = object: ICreditPort{
+            override fun getCreditEnable(period: YearMonth): List<CreditDTO> {
+                TODO("Not yet implemented")
+            }
+
+            override fun delete(id: Int): Boolean {
+                TODO("Not yet implemented")
+            }
+
+            override fun getCreditsEnables(period: YearMonth): List<RecapCreditDTO> {
+                TODO("Not yet implemented")
+            }
+
+            override fun getCredit(code: Int): CreditDTO? {
+                TODO("Not yet implemented")
+            }
+        },
+        additionalSvc = object: IAdditional{
+            override fun getAdditional(code: Int): List<AdditionalCreditDTO> {
+                TODO("Not yet implemented")
+            }
+
+            override fun delete(code: Int): Boolean {
+                TODO("Not yet implemented")
+            }
+        },
+        gracePeriodSvc = object: IPeriodGracePort{
+            override fun add(dto: GracePeriodDTO): Boolean {
+                TODO("Not yet implemented")
+            }
+
+            override fun delete(codeCredit: Int): Boolean {
+                TODO("Not yet implemented")
+            }
+
+            override fun hasGracePeriod(codeCredit: Int): Boolean {
+                TODO("Not yet implemented")
+            }
+
+            override fun get(codeCredit: Int): List<GracePeriodDTO> {
+                TODO("Not yet implemented")
+            }
+        },
+        amortizationSvc = object: IAmortizationTablePort{
+            override fun getAmortization(
+                code: Int,
+                kind: KindAmortization,
+                cache: Boolean
+            ): List<AmortizationRowDTO> {
+                TODO("Not yet implemented")
+            }
+        },
     )
     viewModel.state.value.isLoading=false
     viewModel.state.value.credit = CreditDTO(

@@ -30,21 +30,30 @@ import co.com.japl.ui.theme.values.ModifiersCustom.Weight1f
 import co.com.japl.ui.theme.values.ModifiersCustom.Weight1fAndPaddintRightSpace
 import co.com.japl.ui.utils.DateUtils
 import androidx.lifecycle.SavedStateHandle
+import co.com.japl.finances.iports.dtos.AdditionalCreditDTO
+import co.com.japl.finances.iports.outbounds.IAdditionalPort
+import co.com.japl.ui.components.LoadingProgress
 import java.math.BigDecimal
-import java.time.LocalDate
 
 @Composable
 fun AdditionalForm(viewModel: AdditionalFormViewModel){
-    Scaffold (
-        snackbarHost = {
-            SnackbarHost(hostState = viewModel.hostState)
-        },
-        floatingActionButton = {
-            Buttons(viewModel)
-        }
-    ){
-        Column(modifier = Modifier.padding(it)) {
-            Form(viewModel)
+
+    LoadingProgress(
+        message = R.string.load_data,
+        showProgress = viewModel.loading,
+        execute = viewModel::execute
+    ) {
+        Scaffold(
+            snackbarHost = {
+                SnackbarHost(hostState = viewModel.hostState)
+            },
+            floatingActionButton = {
+                Buttons(viewModel)
+            }
+        ) {
+            Column(modifier = Modifier.padding(it)) {
+                Form(viewModel)
+            }
         }
     }
 }
@@ -68,6 +77,14 @@ private fun Form(viewModel: AdditionalFormViewModel){
     val startDate by viewModel.startDate.value.collectAsState()
 
     Column(modifier = Modifier.padding(Dimensions.PADDING_SHORT)) {
+        FieldDatePicker(
+            title = R.string.start_date,
+            value = DateUtils.localDateToString(startDate),
+            callable = { date -> viewModel.startDate.onValueChange(DateUtils.toLocalDate(date)) },
+            modifier = Modifier.fillMaxWidth(),
+            validation = { viewModel.startDate.validate() }
+        )
+
         FieldText(
             title = stringResource(id = R.string.name),
             value = name,
@@ -76,24 +93,16 @@ private fun Form(viewModel: AdditionalFormViewModel){
             validation = { viewModel.name.validate() }
         )
 
-        Row(modifier = Modifier.fillMaxWidth().padding(top = Dimensions.PADDING_SHORT)) {
             FieldText(
                 title = stringResource(id = R.string.value),
                 value = value.takeIf { it > BigDecimal.ZERO }?.toString()?:"",
                 callback = { viewModel.value.onValueChangeStr(it) },
-                modifier = Weight1fAndPaddintRightSpace(),
+                modifier = Modifier.fillMaxWidth(),
                 validation = { viewModel.value.validate() },
                 currency = true
             )
 
-            FieldDatePicker(
-                title = R.string.start_date,
-                value = DateUtils.localDateToString(startDate),
-                callable = { date -> viewModel.startDate.onValueChange(DateUtils.toLocalDate(date)) },
-                modifier = Weight1f(),
-                validation = { viewModel.startDate.validate() }
-            )
-        }
+
     }
 }
 
@@ -119,7 +128,27 @@ fun AdditionalFormPreviewDark(){
 private fun getViewModel(): AdditionalFormViewModel{
     val vm = AdditionalFormViewModel(
         context = LocalContext.current, savedStateHandle = SavedStateHandle(),
-        additionalSvc = TODO(),
+        additionalSvc = object: IAdditionalPort{
+            override fun getAdditional(code: Int): List<AdditionalCreditDTO> {
+                TODO("Not yet implemented")
+            }
+
+            override fun delete(code: Int): Boolean {
+                TODO("Not yet implemented")
+            }
+
+            override fun create(dto: AdditionalCreditDTO): Boolean {
+                TODO("Not yet implemented")
+            }
+
+            override fun update(dto: AdditionalCreditDTO): Boolean {
+                TODO("Not yet implemented")
+            }
+
+            override fun get(id: Int): AdditionalCreditDTO? {
+                TODO("Not yet implemented")
+            }
+        },
     )
     vm.loading.value = false
     return vm

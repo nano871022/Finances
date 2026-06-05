@@ -18,6 +18,8 @@ import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.YearMonth
 import androidx.lifecycle.SavedStateHandle
+import co.com.japl.ui.utils.DateUtils
+import java.time.LocalDateTime
 import javax.inject.Inject
 
 @HiltViewModel
@@ -48,6 +50,12 @@ class ListViewModel @Inject constructor(
     fun edit(id:Int){
         navController?.let {
             CreditList.updCredit(id,it)
+        }
+    }
+
+    fun create(){
+        navController?.let {
+            CreditList.addCredit(it)
         }
     }
 
@@ -83,6 +91,17 @@ class ListViewModel @Inject constructor(
 
     fun additional(id:Int){
         navController?.let{CreditList.additional(id,navController!!)}
+    }
+
+    fun getMonthPaid(max:Int,date:LocalDate):Long{
+        val months = DateUtils.getMonths(
+            date,
+            LocalDateTime.now()
+        )
+        if(months > max){
+            return max.toLong()
+        }
+        return months
     }
 
     fun execute() {

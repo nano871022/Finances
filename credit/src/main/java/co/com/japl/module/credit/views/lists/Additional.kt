@@ -25,14 +25,17 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import co.com.japl.finances.iports.dtos.AdditionalCreditDTO
+import co.com.japl.finances.iports.inbounds.credit.IAdditional
 import co.com.japl.module.credit.R
 import co.com.japl.module.credit.controllers.list.AdditionalViewModel
 import co.com.japl.ui.components.AlertDialogOkCancel
 import co.com.japl.ui.components.DataTable
 import co.com.japl.ui.components.FloatButton
 import co.com.japl.ui.components.IconButton
+import co.com.japl.ui.components.LoadingProgress
 import co.com.japl.ui.components.MoreOptionsDialogPair
 import co.com.japl.ui.model.datatable.Header
 import co.com.japl.ui.theme.MaterialThemeComposeUI
@@ -42,12 +45,14 @@ import java.time.LocalDate
 
 @Composable
 fun Additional(viewModel: AdditionalViewModel = viewModel()){
-    val loading = viewModel.loading.collectAsState()
-    if(loading.value) {
-        LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
-    }else {
-        ScaffoldBody(viewModel=viewModel)
-    }
+    val loading = remember {viewModel.loading}
+
+    LoadingProgress(
+        message = R.string.load_data,
+        showProgress = loading,
+        execute = viewModel::execute,
+
+    ) { ScaffoldBody(viewModel=viewModel)}
 }
 
 @Composable
@@ -89,6 +94,7 @@ private fun ListBody(viewModel: AdditionalViewModel){
     DataTable(
         listHeader =  { _-> listHeaders} ,
         sizeBody = list.size,
+        messageNoData = R.string.no_data,
         footer = { _ -> RowFooter(viewModel) },
         listBody = { pos,_->RowListBody(pos, viewModel) }
     )
@@ -193,6 +199,7 @@ private fun ButtonsFloating(viewModel: AdditionalViewModel ){
 @Preview(showBackground = true, showSystemUi = true,  backgroundColor = 0x000000, uiMode = Configuration.UI_MODE_NIGHT_NO)
 private fun AdditionalPreview(){
     val vm = getViewModel()
+    vm.loading.value = false
     MaterialThemeComposeUI {
         Additional(vm)
     }
@@ -203,6 +210,7 @@ private fun AdditionalPreview(){
 @Preview(showBackground = true, showSystemUi = true, backgroundColor = 0xffffff, uiMode = Configuration.UI_MODE_NIGHT_YES)
 private fun AdditionalPreviewNight(){
     val vm = getViewModel()
+    vm.loading.value = false
     MaterialThemeComposeUI {
         Additional(vm)
     }
@@ -212,8 +220,17 @@ private fun AdditionalPreviewNight(){
 private fun getViewModel(): AdditionalViewModel{
     val vm = AdditionalViewModel(
         LocalContext.current,
-        savedStateHandle = TODO(),
-        additionalSvc = TODO(),
+        savedStateHandle = SavedStateHandle(),
+        additionalSvc = object: IAdditional{
+            override fun getAdditional(code: Int): List<AdditionalCreditDTO> {
+                TODO("Not yet implemented")
+            }
+
+            override fun delete(code: Int): Boolean {
+                TODO("Not yet implemented")
+            }
+
+        },
     )
     vm.list.add(AdditionalCreditDTO(
         id = 1,
