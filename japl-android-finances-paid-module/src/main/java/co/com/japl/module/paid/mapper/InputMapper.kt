@@ -2,7 +2,7 @@ package co.com.japl.module.paid.mapper
 
 import co.com.japl.finances.iports.dtos.InputDTO
 import co.com.japl.ui.utils.DateUtils
-import co.japl.android.myapplication.utils.NumbersUtil
+import co.com.japl.ui.utils.NumbersUtil
 import java.time.LocalDate
 
 object InputMapper {

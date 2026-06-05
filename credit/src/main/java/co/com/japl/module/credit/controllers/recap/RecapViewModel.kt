@@ -7,13 +7,23 @@ import androidx.navigation.NavController
 import co.com.japl.finances.iports.dtos.RecapCreditDTO
 import co.com.japl.finances.iports.inbounds.credit.ICreditPort
 import co.com.japl.module.credit.navigations.CreditList
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.time.YearMonth
+import androidx.lifecycle.SavedStateHandle
 import javax.inject.Inject
 
-class RecapViewModel @Inject constructor(private val creditsSvc:ICreditPort?, val yearMonth:YearMonth,private val navController: NavController?) : ViewModel() {
+@HiltViewModel
+class RecapViewModel @Inject constructor(
+    private val creditsSvc:ICreditPort?, 
+    private val savedStateHandle: SavedStateHandle
+) : ViewModel() {
+
+    val yearMonth: YearMonth = savedStateHandle.get<String>("YEAR_MONTH")?.let { YearMonth.parse(it) } ?: YearMonth.now()
+    var navController: NavController? = null
+
     val loader = mutableStateOf(true)
     val progress = mutableFloatStateOf(0f)
     val listCredits = mutableListOf<RecapCreditDTO>()

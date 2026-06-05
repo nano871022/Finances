@@ -1,0 +1,110 @@
+package co.com.japl.module.creditcard.views.bought
+
+import android.annotation.SuppressLint
+import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
+import co.com.japl.finances.iports.dtos.CreditCardBoughtItemDTO
+import co.com.japl.module.creditcard.controllers.bought.lists.BoughtMonthlyListViewModel
+import co.com.japl.module.creditcard.R
+import co.com.japl.ui.utils.WindowWidthSize
+import java.time.YearMonth
+import java.time.format.DateTimeFormatter
+
+@SuppressLint("UnusedBoxWithConstraintsScope")
+@Composable
+internal fun HeaderMonthly(key: YearMonth, list:List<CreditCardBoughtItemDTO>, monthlyState:BoughtMonthlyListViewModel) {
+    BoxWithConstraints {
+        val maxWidth = maxWidth
+        Row(
+            modifier = Modifier
+                .padding(2.dp)
+                .fillMaxWidth()
+        ) {
+            when(WindowWidthSize.fromDp(maxWidth)){
+                WindowWidthSize.COMPACT -> HeaderCompact(key = key, list = list, monthlyState = monthlyState)
+                WindowWidthSize.MEDIUM -> HeaderMedium(key = key, list = list, monthlyState = monthlyState)
+                else -> HeaderLarge(key = key, list = list, monthlyState = monthlyState)
+            }
+        }
+    }
+}
+
+@Composable
+private fun RowScope.HeaderCompact(key: YearMonth, list:List<CreditCardBoughtItemDTO>, monthlyState:BoughtMonthlyListViewModel) {
+
+    Column (modifier=Modifier.weight(1f)){
+        Text(text = key.format(DateTimeFormatter.ofPattern("MMM")))
+        Text(text = "${list.size}")
+    }
+    Column(modifier=Modifier.weight(1f)) {
+        Text(text = stringResource(id = R.string.total))
+        Text(text = monthlyState.totalBought)
+    }
+
+    Column(modifier=Modifier.weight(1f)) {
+        Text(text = stringResource(id = R.string.total_quote))
+        Text(text = monthlyState.totalQuote)
+    }
+}
+
+@Composable
+private fun RowScope.HeaderMedium(key: YearMonth, list:List<CreditCardBoughtItemDTO>, monthlyState:BoughtMonthlyListViewModel) {
+    Column {
+        Text(text = key.format(DateTimeFormatter.ofPattern("MMM")))
+        Text(text = "${list.size}")
+    }
+
+    Text(text = stringResource(id = R.string.total),modifier= Modifier
+        .weight(1f)
+        .padding(2.dp))
+    Text(text = monthlyState.totalBought,modifier= Modifier
+        .weight(1f)
+        .padding(2.dp))
+
+    Text(text = stringResource(id = R.string.total_quote_value_short),modifier= Modifier
+        .weight(1f)
+        .padding(2.dp))
+    Text(text = monthlyState.totalQuote,modifier= Modifier
+        .weight(1f)
+        .padding(2.dp))
+}
+
+@Composable
+fun RowScope.HeaderLarge(key: YearMonth, list:List<CreditCardBoughtItemDTO>, monthlyState: BoughtMonthlyListViewModel) {
+    Text(text = key.format(DateTimeFormatter.ofPattern("MMM")),modifier= Modifier
+        .weight(1f)
+        .padding(2.dp))
+    Text(text = "# ${list.size}",modifier= Modifier
+        .weight(1f)
+        .padding(2.dp))
+
+    Text(text = stringResource(id = R.string.total),modifier= Modifier
+        .weight(1f)
+        .padding(2.dp))
+    Text(text = monthlyState.totalBought,modifier= Modifier
+        .weight(1f)
+        .padding(2.dp))
+
+    Text(text = stringResource(id = R.string.interest_value_short),modifier= Modifier
+        .weight(1f)
+        .padding(2.dp))
+    Text(text = monthlyState.totalInterest,modifier= Modifier
+        .weight(1f)
+        .padding(2.dp))
+
+    Text(text = stringResource(id = R.string.total_quote),modifier= Modifier
+        .weight(1f)
+        .padding(2.dp))
+    Text(text = monthlyState.totalQuote,modifier= Modifier
+        .weight(1f)
+        .padding(2.dp))
+}

@@ -11,16 +11,26 @@ import co.com.japl.finances.iports.dtos.ProjectionDTO
 import co.com.japl.finances.iports.inbounds.paid.IProjectionListPort
 import co.com.japl.module.paid.R
 import co.com.japl.module.paid.navigations.Projections
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
-@HiltViewModel
-class ProjectionListViewModel @Inject constructor(
-    private val context: Context,
-    private val projectionListPort: IProjectionListPort? = null,
-    private val navController: NavController? = null
+@HiltViewModel(assistedFactory = ProjectionListViewModel.Factory::class)
+class ProjectionListViewModel @AssistedInject constructor(
+    @Assisted private val context: Context,
+    private val projectionListPort: IProjectionListPort?,
+    @Assisted private val navController: NavController?
 ): ViewModel() {
+
+    @AssistedFactory
+    interface Factory {
+        fun create(context: Context, navController: NavController?): ProjectionListViewModel
+    }
     val snackbarHost = SnackbarHostState()
     val loader = mutableStateOf(false)
     private val _list = mutableStateListOf<ProjectionDTO>()
@@ -43,33 +53,34 @@ class ProjectionListViewModel @Inject constructor(
     }
 
     fun delete(id: Int) {
-        projectionListPort?.let { svc ->
-            svc.delete(id).let {
-                viewModelScope.launch {
-                    if (it) {
-                        snackbarHost.showSnackbar(
-                            message = context.getString(R.string.record_was_remove_success),
-                            actionLabel = context.getString(R.string.close),
-                            duration = SnackbarDuration.Short
-                        ).also {
-                            load()
-                        }
-                    } else {
-                        snackbarHost.showSnackbar(
-                            message = context.getString(R.string.record_was_remove_error),
-                            actionLabel = context.getString(R.string.close),
-                            duration = SnackbarDuration.Short
-                        )
-                    }
-                }
+        viewModelScope.launch {
+            val result = withContext(Dispatchers.IO) {
+                projectionListPort?.delete(id) ?: false
+            }
+            if (result) {
+                snackbarHost.showSnackbar(
+                    message = context.getString(R.string.record_was_remove_success),
+                    actionLabel = context.getString(R.string.close),
+                    duration = SnackbarDuration.Short
+                )
+                load()
+
+            } else {
+                snackbarHost.showSnackbar(
+                    message = context.getString(R.string.record_was_remove_error),
+                    actionLabel = context.getString(R.string.close),
+                    duration = SnackbarDuration.Short
+                )
             }
         }
     }
 
     private fun load() = viewModelScope.launch {
         loader.value = true
-        projectionListPort?.let {
-            it.getProjections().let {
+        projectionListPort?.let { svcPort ->
+            withContext(Dispatchers.IO) {
+                svcPort.getProjections()
+            }.let {
                 _list.clear()
                 _list.addAll(it)
             }

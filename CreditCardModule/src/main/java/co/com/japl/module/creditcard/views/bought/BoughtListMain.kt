@@ -1,0 +1,228 @@
+package co.com.japl.module.creditcard.views.bought
+
+import android.annotation.SuppressLint
+import android.util.Log
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material.FloatingActionButton
+import androidx.compose.material.FloatingActionButtonDefaults
+import androidx.compose.material.IconButton
+import androidx.compose.material.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.AddBox
+import androidx.compose.material.icons.rounded.SettingsSuggest
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.LinearProgressIndicator
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.TooltipBox
+import androidx.compose.material3.TooltipDefaults
+import androidx.compose.material3.rememberTooltipState
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
+import co.com.japl.finances.iports.pojo.BoughtCreditCard
+import co.com.japl.module.creditcard.controllers.bought.lists.ListBoughtViewModel
+import co.com.japl.module.creditcard.R
+import co.com.japl.ui.utils.WindowWidthSize
+import co.com.japl.ui.components.FieldView
+import co.com.japl.ui.utils.NumbersUtil
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+
+@Composable
+fun BoughtListMain(listBoughtViewModel: ListBoughtViewModel,settingVM:SettingsViewModel){
+
+
+    val isLoad = remember {  listBoughtViewModel.isLoad }
+    val progress = remember { listBoughtViewModel.progress }
+
+    CoroutineScope(Dispatchers.Default).launch {
+        listBoughtViewModel.main()
+    }
+
+    if (isLoad.value.not()) {
+        Column(modifier=Modifier.fillMaxWidth()) {
+            LinearProgressIndicator(
+                modifier = Modifier.fillMaxWidth()
+            )
+        }
+    }else {
+        ListBought(listBoughtViewModel,isLoad, settingVM)
+    }
+}
+
+@SuppressLint("UnusedBoxWithConstraintsScope")
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+private fun ListBought(listBoughtViewModel:ListBoughtViewModel,loader:MutableState<Boolean>,settingVM: SettingsViewModel){
+
+    val popupState = remember { mutableStateOf(false) }
+    Scaffold(
+        floatingActionButton = {
+            Buttons(listBoughtViewModel = listBoughtViewModel)
+        }
+    ) {
+
+
+        Column(modifier = Modifier
+            .fillMaxWidth()
+            .padding(it)) {
+            BoxWithConstraints {
+                if (WindowWidthSize.MEDIUM.isEqualTo(maxWidth)) {
+                    Column {
+                        MainCompact(
+                            listBoughtViewModel.boughtCreditCard, popupState,
+                            modifier = Modifier,
+                            modifierHeader = Modifier,
+                            settingViewModel = settingVM
+                        )
+                    }
+                } else {
+                    Row {
+                        MainCompact(
+                            listBoughtViewModel.boughtCreditCard,
+                            popupState,
+                            modifier = Modifier.weight(1f),
+                            modifierHeader = Modifier.weight(2f),
+                            settingViewModel = settingVM
+                        )
+                    }
+                }
+            }
+
+            BoughList(
+                data = listBoughtViewModel.boughtCreditCard,
+                listBoughtViewModel.prefs,
+                loader = loader,
+                colorPendingValue = Color(0xFFFFA500),
+                boughtCCSvc = listBoughtViewModel.boughtListSvc,
+                simulatorSvc = listBoughtViewModel.simulatorSvc
+            )
+
+
+        }
+        Popup(listBoughtViewModel.boughtCreditCard.recap, popupState = popupState)
+
+
+    }
+}
+
+@Composable
+private fun Buttons(listBoughtViewModel:ListBoughtViewModel){
+    val cashAdvanceState = remember { listBoughtViewModel.cashAdvance }
+    val creditCardState = remember { listBoughtViewModel.creditCard }
+    Column {
+        if (cashAdvanceState.value) {
+
+            FloatingActionButton(
+                onClick = {
+                    Log.d("FloatingButton", "cash advance button")
+                    listBoughtViewModel.goToCashAdvance()
+                },
+                elevation = FloatingActionButtonDefaults.elevation(10.dp),
+                backgroundColor=MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.5f),
+                modifier = Modifier
+            ) {
+                Icon(Icons.Filled.Add, stringResource(id = R.string.cash_advance))
+
+            }
+        }
+
+        if (creditCardState.value) {
+            FloatingActionButton(
+                onClick = {
+                    Log.d("FloatingButton", "credit card button")
+                    listBoughtViewModel.goToCreditCard()
+                },
+                elevation = FloatingActionButtonDefaults.elevation(10.dp),
+                backgroundColor=MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.5f),
+                modifier = Modifier
+            ) {
+                Icon(Icons.Filled.AddBox, stringResource(id = R.string.credit_card))
+
+            }
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun MainCompact(data: BoughtCreditCard, popupState: MutableState<Boolean>,
+                        modifier:Modifier=Modifier,
+                        modifierHeader:Modifier=Modifier,
+                        settingViewModel: SettingsViewModel){
+    val settingState = remember { settingViewModel.state }
+    Header(data.recap.totalCapital, data.recap.totalInterest, data.recap.quoteValue,modifierHeader)
+
+    Row(modifier=modifier) {
+
+
+        OutlinedButton(
+            onClick = { popupState.value = !popupState.value },
+            border = BorderStroke(1.dp, MaterialTheme.colorScheme.onPrimaryContainer),
+            modifier = modifier
+                .padding(top = 5.dp, start = 10.dp, end = 10.dp, bottom = 5.dp)
+                .weight(2f)
+        ) {
+            Text(
+                text = stringResource(id = R.string.see_more),
+                color = MaterialTheme.colorScheme.onPrimaryContainer
+            )
+        }
+
+        TooltipBox(
+            tooltip = {
+                Text(text = stringResource(id = R.string.settings_credit_card_boughts))
+            }, state = rememberTooltipState()
+            , positionProvider = TooltipDefaults.rememberPlainTooltipPositionProvider()
+        ) {
+            IconButton(onClick = { settingState.value = true }) {
+                Icon(
+                    imageVector = Icons.Rounded.SettingsSuggest,
+                    contentDescription = stringResource(
+                        id = R.string.settings_credit_card_boughts
+                    )
+
+                )
+            }
+        }
+    }
+    if(settingState.value){
+        PopupSetting(viewModel = settingViewModel, state = settingState)
+    }
+}
+
+
+@Composable
+private fun Header(capital:Double, interest:Double, quote:Double,modifier:Modifier=Modifier.fillMaxWidth()){
+    Row(modifier=modifier) {
+
+        FieldView(name = stringResource(id = R.string.capital_value_short)
+            , value = NumbersUtil.toString(capital)
+            , modifier = Modifier.weight(1f))
+
+        FieldView(name = stringResource(id = R.string.interest_value_short)
+            , value = NumbersUtil.toString(interest)
+            , modifier = Modifier.weight(1f))
+
+        FieldView(name = stringResource(id = R.string.total_quote)
+            , value = NumbersUtil.toString(quote)
+            , modifier = Modifier.weight(1f))
+    }
+}
+

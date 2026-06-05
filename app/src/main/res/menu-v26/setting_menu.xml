@@ -84,7 +84,7 @@
     <item
         android:id="@+id/item_menu_setting_google_login"
         android:icon="@drawable/ic_credit_card_foreground"
-        android:title="LogIn on Google" />
+        android:title="@string/title_toolbar_account_google" />
 
 
 </menu>

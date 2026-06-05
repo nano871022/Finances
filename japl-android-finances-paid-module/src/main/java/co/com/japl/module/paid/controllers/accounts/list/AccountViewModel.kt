@@ -9,10 +9,14 @@ import co.com.japl.finances.iports.dtos.AccountDTO
 import co.com.japl.finances.iports.inbounds.inputs.IAccountPort
 import co.com.japl.finances.iports.inbounds.inputs.IInputPort
 import co.com.japl.module.paid.navigations.Account
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.runBlocking
+import javax.inject.Inject
 
-class AccountViewModel(private val accountSvc:IAccountPort?, val inputSvc:IInputPort?,
-                       val navController: NavController?): ViewModel(){
+@HiltViewModel
+class AccountViewModel @Inject constructor(private val accountSvc:IAccountPort?, val inputSvc:IInputPort?): ViewModel(){
+
+    var navController: NavController? = null
 
     val progress = mutableFloatStateOf(0f)
     val loading = mutableStateOf(true)
@@ -21,13 +25,13 @@ class AccountViewModel(private val accountSvc:IAccountPort?, val inputSvc:IInput
 
     fun add(){
         navController?.let {
-            Account.navigate(navController)
+            Account.navigate(it)
         }
     }
 
     fun edit(codeAccount:Int){
         navController?.let {
-            Account.navigate(codeAccount,navController)
+            Account.navigate(codeAccount,it)
         }
     }
 

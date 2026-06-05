@@ -34,12 +34,13 @@ import co.com.japl.module.paid.R
 import co.com.japl.module.paid.controllers.projections.list.ProjectionListViewModel
 import co.com.japl.ui.components.AlertDialogOkCancel
 import co.com.japl.ui.components.FieldView
+import co.com.japl.ui.components.FieldViewCards
 import co.com.japl.ui.components.FloatButton
 import co.com.japl.ui.components.IconButton
 import co.com.japl.ui.components.MoreOptionsDialogPair
 import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.com.japl.ui.theme.values.Dimensions
-import co.japl.android.myapplication.utils.NumbersUtil
+import co.com.japl.ui.utils.NumbersUtil
 import java.math.BigDecimal
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -159,19 +160,26 @@ private fun RowBody(item: ProjectionDTO,edit:(Int)->Unit,delete:(Int)->Unit){
                 )
             }
             if(showStatus.value) {
-                Row {
-                    FieldView(
-                        title = stringResource(R.string.months_left_to_pay_short),
-                        value = item.monthsLeft.toString(),
-                        modifier = Modifier.weight(1f))
-                    FieldView(
-                        title = stringResource(R.string.saved_cash),
+                Column {
+                    Row {
+                        FieldViewCards(
+                            name = R.string.months_left_to_pay_short,
+                            value = item.monthsLeft.toString(),
+                            modifier = Modifier.weight(0.4f)
+                        )
+                        FieldViewCards(
+                            name = R.string.quote_value_short,
+                            value = NumbersUtil.COPtoString(item.quote),
+                            textAlign = TextAlign.Right,
+                            modifier = Modifier.weight(1f)
+                        )
+                    }
+                    FieldViewCards(
+                        name = R.string.saved_cash,
                         value = NumbersUtil.COPtoString(item.amountSaved),
-                        modifier = Modifier.weight(1f))
-                    FieldView(
-                        title = stringResource(R.string.quote_value),
-                        value = NumbersUtil.COPtoString(item.quote),
-                        modifier = Modifier.weight(1f))
+                        textAlign = TextAlign.Right,
+                        modifier = Modifier.fillMaxWidth()
+                    )
                 }
             }
         }
@@ -247,7 +255,7 @@ private fun ProjectionListPreviewLight(){
 
 @Composable
 private fun getViewModelList(): ProjectionListViewModel {
-    val vm = ProjectionListViewModel(context = LocalContext.current)
+    val vm = ProjectionListViewModel(context = LocalContext.current, projectionListPort = null, navController = null)
     vm.list.add(
         ProjectionDTO(
             id = 0,

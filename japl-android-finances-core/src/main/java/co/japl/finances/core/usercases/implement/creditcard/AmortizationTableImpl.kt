@@ -32,24 +32,28 @@ class AmortizationTableImpl @Inject constructor(private val simulatorSvc: ISimul
         return listOf()
     }
     private fun getVariableQuoteSimulator(code:Int,cache:Boolean):List<AmortizationRowDTO>{
-        simulatorSvc.findByCode(code,cache)?.let{ dto ->
+        return (
+                simulatorSvc.findByCode(code,cache)?.let{ dto ->
             Log.d(javaClass.simpleName,"<<<=== GetVariableQuoteSimulator:: $code $dto")
-            return Array(dto.periods.toInt()){
-                val calculate = simulatorCredit.calculateQuote(dto.value,dto.tax,dto.kindOfTax,it,dto.periods.toInt(),it)
+            return@let Array(dto.periods.toInt()){
+                Pair(it,simulatorCredit.calculateQuote(dto.value,dto.tax,dto.kindOfTax,it,dto.periods.toInt(),it))
+            }.map{
                 AmortizationRowDTO(
-                    (it + 1).toShort(),
+                    (it.first + 1).toShort(),
                     dto.periods,
                     dto.tax,
                     dto.kindOfTax,
                     dto.value,
-                    dto.value - (calculate.second * it.toBigDecimal()),
-                    calculate.second,
-                    calculate.first,
-                    calculate.third
+                    dto.value - (it.second.second * it.first.toBigDecimal()),
+                    it.second.second,
+                    it.second.first,
+                    it.second.third
                 )
             }.toList()
+        }?: listOf<AmortizationRowDTO>()
+                ).also{
+            Log.d(javaClass.simpleName,"<<<=== GetVariableQuoteSimulator ${it.size}")
         }
-        return listOf()
     }
     private fun getFixedQuoteSimulator(code:Int,cache:Boolean):List<AmortizationRowDTO>{
         return listOf()

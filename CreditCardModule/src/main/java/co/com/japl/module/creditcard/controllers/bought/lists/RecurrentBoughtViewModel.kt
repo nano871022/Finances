@@ -3,12 +3,16 @@ package co.com.japl.module.creditcard.controllers.bought.lists
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import co.com.japl.finances.iports.dtos.CreditCardBoughtItemDTO
 import co.com.japl.finances.iports.inbounds.creditcard.bought.lists.IBoughtListPort
 import co.com.japl.ui.Prefs
 import java.time.LocalDateTime
 import co.com.japl.module.creditcard.enums.MoreOptionsRecurrentBought
-import co.japl.android.myapplication.utils.NumbersUtil
+import co.com.japl.ui.utils.NumbersUtil
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.time.YearMonth
 
 class RecurrentBoughtViewModel(
@@ -19,21 +23,23 @@ class RecurrentBoughtViewModel(
     val list = mutableStateListOf<CreditCardBoughtItemDTO>()
     val filteredList = mutableStateListOf<CreditCardBoughtItemDTO>()
     val totalActive = mutableStateOf("$ 0.00")
-    val loader = mutableStateOf(false)
+    val loader = mutableStateOf(true)
     val filterActive = mutableStateOf<Boolean?>(null) // null: All, true: Active, false: Inactive
 
     val progress = mutableStateOf<Float>(0f)
 
     private var codeCreditCard: Int = 0
 
-    fun load(codeCreditCard: Int) {
-        this.codeCreditCard = codeCreditCard
-        loader.value = false // Loading
-        val result = boughtCreditCardSvc.getAllRecurrent(codeCreditCard)
-        list.clear()
-        list.addAll(result)
+    fun load(codeCC: Int) = viewModelScope.launch {
+        codeCreditCard = codeCC
+        withContext(Dispatchers.IO){
+            boughtCreditCardSvc.getAllRecurrent(codeCreditCard)
+        }.let{
+            list.clear()
+            list.addAll(it)
+        }
         applyFilter()
-        loader.value = true // Loaded
+        loader.value = false
     }
 
     fun applyFilter() {

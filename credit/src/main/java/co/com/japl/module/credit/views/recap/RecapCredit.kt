@@ -32,7 +32,10 @@ import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.SavedStateHandle
+import co.com.japl.finances.iports.dtos.CreditDTO
 import co.com.japl.finances.iports.dtos.RecapCreditDTO
+import co.com.japl.finances.iports.inbounds.credit.ICreditPort
 import co.com.japl.module.credit.R
 import co.com.japl.module.credit.controllers.recap.RecapViewModel
 import co.com.japl.ui.components.FloatButton
@@ -40,7 +43,7 @@ import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.com.japl.ui.theme.values.Dimensions
 import co.japl.android.graphs.interfaces.IGraph
 import co.japl.android.graphs.pieceofpie.PieceOfPie
-import co.japl.android.myapplication.utils.NumbersUtil
+import co.com.japl.ui.utils.NumbersUtil
 import java.math.BigDecimal
 import java.time.YearMonth
 import co.com.japl.ui.components.FieldView
@@ -69,7 +72,7 @@ private fun Body(viewModel:RecapViewModel){
         if(viewModel.listCredits.isEmpty()){
             Column {
                 Text(text = stringResource(R.string.no_data),
-                modifier = Modifier.fillMaxWidth())
+                modifier = Modifier.fillMaxWidth().padding(it))
             }
     }else{
             List(viewModel.listCredits, yearMonth = viewModel.yearMonth)
@@ -224,8 +227,28 @@ fun RecapEmptyPreviewDark(){
     }
 }
 
+@Composable
 fun viewModel():RecapViewModel{
-    val viewModel = RecapViewModel(null, YearMonth.now(),null)
+    val viewModel = RecapViewModel(
+        creditsSvc = object: ICreditPort{
+            override fun getCreditEnable(period: YearMonth): List<CreditDTO> {
+                TODO("Not yet implemented")
+            }
+
+            override fun delete(id: Int): Boolean {
+                TODO("Not yet implemented")
+            }
+
+            override fun getCreditsEnables(period: YearMonth): List<RecapCreditDTO> {
+                TODO("Not yet implemented")
+            }
+
+            override fun getCredit(code: Int): CreditDTO? {
+                TODO("Not yet implemented")
+            }
+        },
+        savedStateHandle = SavedStateHandle()
+    )
     viewModel.listCredits.add(
         RecapCreditDTO(
             month = 4,

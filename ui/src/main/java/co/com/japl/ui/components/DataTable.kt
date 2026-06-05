@@ -5,6 +5,8 @@ import android.content.res.Configuration
 import android.icu.text.DecimalFormat
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.annotation.StringRes
+import androidx.appcompat.R
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -37,6 +39,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ShaderBrush
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Constraints
@@ -57,6 +60,7 @@ fun DataTable(
     splitPos: Int = 0,
     splitEnable:Boolean?=true,
     highlightPos:Int = -1,
+    @StringRes messageNoData:Int?=null,
     footer: @Composable RowScope.(Dp) -> Unit?,
     split: @Composable (Int,Dp) -> Unit? = {_,_->},
     listBody: @Composable RowScope.(Int, Dp) -> Unit
@@ -66,7 +70,24 @@ fun DataTable(
         val width = maxWidth
         Column {
             Header(textColor, listHeader(width))
-            Body(textColor, sizeBody, width, splitPos,highlightPos,splitEnable?:true,footer, split,listBody)
+            if(sizeBody == 0 && messageNoData != null ) {
+                Text(text= stringResource(messageNoData),
+                    color= MaterialTheme.colorScheme.onBackground,
+                    textAlign = TextAlign.Center,
+                    modifier=Modifier.fillMaxWidth().padding(Dimensions.PADDING_TOP))
+            }else{
+                Body(
+                    textColor,
+                    sizeBody,
+                    width,
+                    splitPos,
+                    highlightPos,
+                    splitEnable ?: true,
+                    footer,
+                    split,
+                    listBody
+                )
+            }
         }
     }
 }
@@ -203,6 +224,30 @@ private fun RowScope.HeaderRow(
     }
 }
 
+@Composable
+fun DataTable2(records:Int, item : @Composable (Int)->Unit?){
+    Text(text="Called $records")
+   /* for(i in 0 until records){
+        item(i)
+    }
+    */
+
+}
+
+@RequiresApi(Build.VERSION_CODES.S)
+@Composable
+@Preview( showSystemUi = true, showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
+private fun DataTable2Light(){
+    val list = arrayListOf<String>("Apple","Other")
+    MaterialThemeComposeUI {
+        Column {
+            DataTable2(list.size) {
+                Text(text = "$it ${list[it]}")
+            }
+        }
+    }
+}
+
 @RequiresApi(Build.VERSION_CODES.S)
 @Composable
 @Preview( showBackground = true, showSystemUi = true, backgroundColor = 0xFFFFFFFF, uiMode = 0x1)
@@ -228,9 +273,11 @@ private fun DatatableLight(){
     }
 }
 
+
+
 @RequiresApi(Build.VERSION_CODES.S)
 @Composable
-@Preview( showBackground = true, showSystemUi = true, backgroundColor = 0x00000000, uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Preview( showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
 private fun DatatableDark(){
     val listHeader = getHeaders()
     val listValue = getBody()

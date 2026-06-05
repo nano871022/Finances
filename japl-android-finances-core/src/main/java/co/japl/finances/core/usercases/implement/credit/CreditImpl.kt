@@ -6,11 +6,13 @@ import co.com.japl.finances.iports.enums.KindInterestRateEnum
 import co.com.japl.finances.iports.enums.KindOfTaxEnum
 import co.com.japl.finances.iports.outbounds.IAdditionalRecapPort
 import co.com.japl.finances.iports.outbounds.ICreditPort
+import co.com.japl.ui.utils.DateUtils
 import co.japl.finances.core.usercases.calculations.InterestCalculations
 import co.japl.finances.core.usercases.calculations.InterestRateCalculation
 import co.japl.finances.core.usercases.calculations.ValuesCalculation
 import co.japl.finances.core.usercases.interfaces.credit.ICredit
 import java.math.BigDecimal
+import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.YearMonth
@@ -28,7 +30,10 @@ class CreditImpl @Inject constructor(private val creditSvc:ICreditPort, private 
         return creditSvc.delete(id)
     }
 
-    override fun getCreditsEnables(period: YearMonth): List<RecapCreditDTO> = creditSvc.getAllActive(period).map (this::getRecapCreditByCredit)
+    override fun getCreditsEnables(period: YearMonth): List<RecapCreditDTO> = creditSvc.getAllActive(period)
+        .filter{ DateUtils.getMonths(it.date, LocalDateTime.of(period.year,period.monthValue,1,23,59)) < it.periods }
+        .map (this::getRecapCreditByCredit)
+
     override fun save(credit: CreditDTO): Int {
         return creditSvc.save(credit)
     }

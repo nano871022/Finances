@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item type="id" name="action_accountListFragment_to_accountFragment" />
+    <item type="id" name="action_inputListFragment_to_inputFragment" />
+    <item type="id" name="action_accountFragment_to_inputListFragment" />
+    <item type="id" name="action_paidsFragment_to_paidFragment" />
+    <item type="id" name="action_paidsFragment_to_paidListFragment" />
+    <item type="id" name="action_menu_item_paids_to_periodsPaidFragment" />
+    <item type="id" name="action_menu_item_paids_to_accountFragment" />
+    <item type="id" name="action_periodsPaidFragment_to_paidListFragment" />
+    <item type="id" name="action_menu_projections_to_listProjectFragment" />
+    <item type="id" name="action_menu_projections_to_projectionFragment" />
+    <item type="id" name="action_listProjectFragment_to_projectionFragment" />
+    <item type="id" name="action_sms_list_paid_to_sms_paid" />
+    <item type="id" name="action_email_list_paid_to_email_paid" />
+    <item type="id" name="action_sms_list_credit_card_to_smsFragment" />
+</resources>

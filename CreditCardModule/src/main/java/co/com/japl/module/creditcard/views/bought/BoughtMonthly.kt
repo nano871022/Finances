@@ -68,7 +68,7 @@ import co.com.japl.ui.utils.DateUtils
 import co.com.japl.ui.utils.WindowWidthSize
 import co.japl.android.graphs.interfaces.IGraph
 import co.japl.android.graphs.pieceofpie.PieceOfPie
-import co.japl.android.myapplication.utils.NumbersUtil
+import co.com.japl.ui.utils.NumbersUtil
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -817,7 +817,7 @@ fun BoughtMonthlyPreviewFold(){
 
 private fun getViewMoel(context:Context):BoughtMonthlyViewModel{
     val prefs = Prefs(context)
-    val viewModel = BoughtMonthlyViewModel(null,null,null,null,prefs,null,null)
+    val viewModel = BoughtMonthlyViewModel(null,null,null,null,prefs,null)
     viewModel.loader.value = true
     viewModel.graphList.addAll(arrayListOf(Pair("Issue 1",1000.0),Pair("Issue 2",2000.0)))
     viewModel.graphListPeriod.addAll(arrayListOf(Pair("Issue 3",500.0),Pair("Issue 4",300.0)))

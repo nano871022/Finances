@@ -18,6 +18,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
@@ -75,13 +76,17 @@ fun FieldView(name:String, value:String, modifier: Modifier, color: Color = Mate
 }
 
 
-@Composable fun FieldViewCards(@StringRes name:Int, value:String, modifier: Modifier, color: Color = MaterialTheme.colorScheme.onPrimaryContainer){
+@Composable fun FieldViewCards(@StringRes name:Int, value:String, modifier: Modifier, textAlign: TextAlign= TextAlign.Left, color: Color = MaterialTheme.colorScheme.onPrimaryContainer){
 
     Row (modifier = modifier.fillMaxWidth()) {
-        Text(text= stringResource(id = name), color = MaterialTheme.colorScheme.onPrimaryContainer, modifier = Modifier
-            .padding(Dimensions.PADDING_SHORT)
-            .weight(1f))
-        Text(text=value, color = color, modifier = Modifier
+        Text(text= stringResource(id = name),
+            color = MaterialTheme.colorScheme.onPrimaryContainer,
+            modifier = Modifier.padding(Dimensions.PADDING_SHORT)
+            )
+        Text(text=value,
+            color = color,
+            textAlign = textAlign,
+            modifier = Modifier
             .padding(Dimensions.PADDING_SHORT)
             .weight(1f))
     }

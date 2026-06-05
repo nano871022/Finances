@@ -42,7 +42,12 @@ import co.com.japl.ui.enums.IMoreOptions
 import co.com.japl.ui.theme.MaterialThemeComposeUI
 
 @Composable
-fun FieldSelect(title:String,value:String?,list:List<IMoreOptions>?,isError:MutableState<Boolean> = mutableStateOf(false),modifier: Modifier,callable:(IMoreOptions?)->Unit){
+fun FieldSelect(title:String,
+                value:String?,
+                list:List<IMoreOptions>?,
+                isError:MutableState<Boolean> = mutableStateOf(false),
+                modifier: Modifier,
+                callable:(IMoreOptions?)->Unit){
     val context = LocalContext.current
     val state = remember { mutableStateOf(false) }
     val stateValue = remember { mutableStateOf("") }

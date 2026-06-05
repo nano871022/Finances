@@ -13,6 +13,7 @@ import co.japl.finances.core.usercases.interfaces.credit.IExtraValueAmortization
 import java.math.BigDecimal
 import java.time.LocalDate
 import javax.inject.Inject
+import kotlin.collections.listOf
 
 class AmortizationTableImpl @Inject constructor(
     private val simulatorSvc: ISimulatorCreditPort,
@@ -91,7 +92,7 @@ class AmortizationTableImpl @Inject constructor(
         return listOf()
     }
     private fun getFixedQuoteSimulator(code:Int,cache:Boolean):List<AmortizationRowDTO>{
-        simulatorSvc.findByCode(code,cache)?.let{ dto ->
+        return (simulatorSvc.findByCode(code,cache)?.let{ dto ->
             Log.d(javaClass.simpleName,"<<<=== GetFixQuoteSimulator:: $code $dto")
             return Array(dto.periods.toInt()){
                 val (interest,capital,quoteAndPending) = simulatorCredit.calculateFixQuote(
@@ -114,7 +115,8 @@ class AmortizationTableImpl @Inject constructor(
                     quote
                 )
             }.toList()
+        }?: listOf<AmortizationRowDTO>()).also{
+            Log.d(javaClass.name,"<<<=== END: GetFixedQuoteSimulator ${it.size}")
         }
-        return listOf()
     }
 }

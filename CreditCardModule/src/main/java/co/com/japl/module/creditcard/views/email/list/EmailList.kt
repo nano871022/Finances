@@ -24,17 +24,23 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import co.com.japl.finances.iports.dtos.EmailCreditCardDTO
 import co.com.japl.finances.iports.enums.KindInterestRateEnum
 import co.com.japl.module.creditcard.R
 import co.com.japl.module.creditcard.controllers.emailcreditcard.list.EmailListCreditCardViewModel
 import co.com.japl.module.creditcard.enums.MoreOptionsItemEmailListCC
 import co.com.japl.ui.components.AlertDialogOkCancel
+import co.com.japl.ui.components.Carousel
+import co.com.japl.ui.components.FieldView
+import co.com.japl.ui.components.FieldViewCards
 import co.com.japl.ui.components.IconButton
+import co.com.japl.ui.components.LoadingProgress
 import co.com.japl.ui.components.MoreOptionsDialog
 import co.com.japl.ui.enums.IMoreOptions
 import co.com.japl.ui.theme.MaterialThemeComposeUI
@@ -42,17 +48,13 @@ import co.com.japl.ui.theme.values.Dimensions
 
 @Composable
 fun EmailList(viewModel: EmailListCreditCardViewModel){
-    val load by viewModel.load
+    val load = remember { viewModel.load}
 
-    LaunchedEffect (Unit){
-        viewModel.main()
-    }
-
-    if(load){
-        LinearProgressIndicator(
-            modifier = Modifier.fillMaxWidth()
-        )
-    }else{
+    LoadingProgress(
+        message = R.string.loading_data,
+        showProgress = load,
+        execute = viewModel::execution
+    ) {
         BodyMain(viewModel)
     }
 
@@ -69,20 +71,29 @@ private fun BodyMain(viewModel: EmailListCreditCardViewModel){
             }
         }
     ) {
-        Body(viewModel, modifier=Modifier.padding(it))
+        Banks(viewModel,Modifier.padding(it))
     }
 }
 
+
 @Composable
-private fun Body(viewModel: EmailListCreditCardViewModel,modifier:Modifier){
+private fun Banks(viewModel: EmailListCreditCardViewModel,modifier:Modifier){
     val deleteAlert = remember { mutableStateOf<Boolean>(false) }
     val idRecord = remember { mutableStateOf<Int>(0) }
-    val list = viewModel.list
-    LazyColumn (modifier = Modifier.fillMaxWidth().padding(Dimensions.PADDING_SHORT),
-        userScrollEnabled = true) {
-        items(list.size){
-            Column {
-                EmailItem(list[it], onClick = { opt,id ->
+    val list = viewModel.list.groupBy { it.nameCreditCard }
+
+    Carousel(
+        size=list.size
+    ){
+        val list2 = list.entries.elementAt(it)
+
+        Column (modifier=Modifier.fillMaxWidth().padding(Dimensions.PADDING_TOP)) {
+            FieldView(
+                title=stringResource(R.string.credit_card),
+                value=list2.key,
+                modifier=Modifier.fillMaxWidth().padding(Dimensions.PADDING_SHORT))
+            for(item in list2.value) {
+                EmailItem(item){opt,id->
                     when(opt){
                         MoreOptionsItemEmailListCC.EDIT -> viewModel.edit(id)
                         MoreOptionsItemEmailListCC.DISABLED -> viewModel.activate(id,false)
@@ -93,7 +104,7 @@ private fun Body(viewModel: EmailListCreditCardViewModel,modifier:Modifier){
                         }
                         MoreOptionsItemEmailListCC.CLONE -> viewModel.clone(id)
                     }
-                })
+                }
             }
         }
     }
@@ -112,23 +123,31 @@ private fun Body(viewModel: EmailListCreditCardViewModel,modifier:Modifier){
 private fun EmailItem(dto: EmailCreditCardDTO,onClick:(IMoreOptions,Int)->Unit){
     val moreOptions = remember { mutableStateOf<Boolean>(false) }
     val id = dto.id
+    val color = if(dto.active) MaterialTheme.colorScheme.onSurface else MaterialTheme.colorScheme.surface
+    Card (
+        border=BorderStroke(1.dp,color),
+        modifier = Modifier.fillMaxWidth().padding(Dimensions.PADDING_SHORT)){
+        Column(modifier=Modifier.fillMaxWidth()) {
+            Row(modifier = Modifier.fillMaxWidth().padding(Dimensions.PADDING_SHORT)) {
 
-    Card (modifier = Modifier.fillMaxWidth().padding(Dimensions.PADDING_SHORT)){
-        Row(modifier=Modifier.fillMaxWidth().padding(Dimensions.PADDING_SHORT)){
+                Text(
+                    text = stringResource(dto.kindInterestRateEnum.getName()),
+                    color = MaterialTheme.colorScheme.onBackground,
+                    modifier = Modifier.weight(1f).padding(Dimensions.PADDING_SHORT).align(alignment = Alignment.CenterVertically)
+                )
 
-            Text(text=dto.nameCreditCard,
-                color = MaterialTheme.colorScheme.onBackground,
-                modifier = Modifier.weight(1f).padding(Dimensions.PADDING_TOP_MORE_VERT))
+                IconButton(
+                    imageVector = Icons.Rounded.MoreVert,
+                    descriptionContent = R.string.more_options,
+                    onClick = { moreOptions.value = true },
+                    modifier = Modifier.weight(1f)
+                )
+            }
 
-            Text(text=dto.sender,
-                color = MaterialTheme.colorScheme.onBackground,
-                modifier = Modifier.weight(1f).padding(Dimensions.PADDING_TOP_MORE_VERT))
-
-            IconButton(
-                imageVector = Icons.Rounded.MoreVert,
-                descriptionContent = R.string.more_options,
-                onClick = { moreOptions.value = true },
-                modifier = Modifier.weight(1f)
+            FieldViewCards(
+                name=R.string.sender,
+                value=dto.sender,
+                modifier=Modifier.fillMaxWidth().padding(start=Dimensions.PADDING_SHORT)
             )
         }
     }
@@ -191,12 +210,23 @@ private fun getViewModel(): EmailListCreditCardViewModel {
 
     ))
     vm.list.add(EmailCreditCardDTO(
-        id = 2,
+        id = 1,
         sender = "sender@email.com",
         subjectPattern = "Bought .+",
         bodyPattern = "Bought .+ value .+ in .+",
         kindInterestRateEnum = KindInterestRateEnum.CREDIT_CARD,
         codeCreditCard = 10,
+        nameCreditCard = "Bank 1",
+        active = false
+
+    ))
+    vm.list.add(EmailCreditCardDTO(
+        id = 2,
+        sender = "sender@email.com",
+        subjectPattern = "Bought .+",
+        bodyPattern = "Bought .+ value .+ in .+",
+        kindInterestRateEnum = KindInterestRateEnum.CREDIT_CARD,
+        codeCreditCard = 11,
         nameCreditCard = "Bank 2",
         active = true
 

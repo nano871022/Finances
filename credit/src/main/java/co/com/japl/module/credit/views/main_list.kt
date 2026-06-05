@@ -2,18 +2,29 @@ package co.com.japl.module.credit.views
 
 import android.content.res.Configuration
 import android.os.Build
+import androidx.compose.material3.Surface
 import androidx.annotation.RequiresApi
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Column
+
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.RowScope
+
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.Divider
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.MoreVert
+import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
@@ -26,6 +37,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.SavedStateHandle
 import co.com.japl.finances.iports.dtos.CreditDTO
 import co.com.japl.finances.iports.enums.KindOfTaxEnum
 import co.com.japl.finances.iports.enums.KindPaymentsEnums
@@ -35,15 +47,13 @@ import co.com.japl.module.credit.enums.MoreOptionsItemCreditsEnum
 import co.com.japl.module.credit.pojo.CreditPeriodGraceDTO
 import co.com.japl.module.credit.views.popups.PeriodGrace
 import co.com.japl.ui.components.AlertDialogOkCancel
-import co.com.japl.ui.components.DataTable
-import co.com.japl.ui.components.FieldView
+import co.com.japl.ui.components.FieldViewCards
+import co.com.japl.ui.components.FloatButton
 import co.com.japl.ui.components.MoreOptionsDialog
-import co.com.japl.ui.model.datatable.Header
 import co.com.japl.ui.theme.MaterialThemeComposeUI
-import co.com.japl.ui.utils.DateUtils
+import co.com.japl.ui.theme.values.Dimensions
 import co.japl.android.graphs.utils.NumbersUtil
 import java.time.LocalDate
-import java.time.YearMonth
 
 @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
 @Composable
@@ -52,83 +62,183 @@ fun CreditList(viewModel:ListViewModel) {
 
     if(progress){
         viewModel.execute()
-        LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
+        Column(modifier=Modifier.fillMaxWidth()) {
+            LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
+            Text(text=stringResource(R.string.load_data),
+                textAlign = TextAlign.Center,
+                color = MaterialTheme.colorScheme.onBackground,
+                modifier = Modifier.fillMaxWidth())
+        }
     }else {
-        Credit(viewModel)
+        Body(viewModel)
     }
 }
 
-@RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
 @Composable
-private fun Credit(viewModel:ListViewModel){
+private fun Body(viewModel:ListViewModel){
     val list = remember {viewModel.list}
-    val listHeader = arrayListOf(
-            Header(title= stringResource(id = R.string.quote_payment_date_short), tooltip = stringResource(id = R.string.quote_payment_date),weight=1f),
-            Header(title=stringResource(id = R.string.quote_payment_name_short), tooltip = stringResource(id = R.string.quote_payment_name),weight=1f) ,
-            Header(title=stringResource(id = R.string.quote_payment_value_short), tooltip = stringResource(id = R.string.quote_payment_value),weight=1f)
-        )
+    Scaffold (
+     floatingActionButton = {FloatButtons(viewModel::create)}
+    ){
+    Column(modifier=Modifier.fillMaxWidth().padding(it).verticalScroll(rememberScrollState())){
 
+            FieldViewCards(name = R.string.total_due,
+                value = NumbersUtil.COPtoString( list
+                    .filter{ viewModel.getMonthPaid(it.credit.periods,it.credit.date) < it.credit.periods }
+                    .sumOf { it.credit.value }),
+                textAlign = TextAlign.Right,
+                modifier = Modifier.fillMaxWidth())
 
-    Column (modifier = Modifier.padding(10.dp)){
+            Row(modifier=Modifier.fillMaxWidth()){
+                FieldViewCards(name = R.string.cnt_short,
+                    value = list.size.toString(),
+                    modifier = Modifier.weight(1f))
 
-        FieldView(name = R.string.total_due,
-                  value = NumbersUtil.toString( list.sumOf { it.credit.value }),
-                  alignment = Alignment.Center,
-                  modifier = Modifier.fillMaxWidth())
-        Row(modifier=Modifier.fillMaxWidth()){
-            FieldView(name = R.string.credit_cnt_short,
-                      value = list.size.toString(),
-                      isMoney = false,
-                      alignment = Alignment.Center,
-                      modifier = Modifier.weight(1f))
+                FieldViewCards(name = R.string.total_quote,
+                    value = NumbersUtil.COPtoString( list
+                        .filter{ viewModel.getMonthPaid(it.credit.periods,it.credit.date) < it.credit.periods }
+                        .filter{!it.periodGrace}.sumOf { it.credit.quoteValue }),
+                    textAlign = TextAlign.Right,
+                    modifier = Modifier
+                        .weight(2f)
+                        .border(
+                            1.dp,
+                            MaterialTheme.colorScheme.onBackground,
+                            RoundedCornerShape(10.dp)
+                        ))
+            }
 
-            FieldView(name = R.string.total_quote,
-                      value = NumbersUtil.toString( list.filter{!it.periodGrace}.sumOf { it.credit.quoteValue }),
-                      alignment = Alignment.Center,
-                      modifier = Modifier.weight(2f))
+            Divider(color= MaterialTheme.colorScheme.onBackground,modifier = Modifier
+                .fillMaxWidth()
+                .padding(Dimensions.PADDING_BOTTOM))
+
+            val  group =  list.groupBy { it.credit.date.year }
+        for (item in group) {
+            Yearly(
+                item.key, item.value,
+                delete = viewModel::delete,
+                amortization = viewModel::amortization,
+                periodGrace = { codeCredit,period,date ->
+                    viewModel.periodGrace(codeCredit,period,date, date.plusMonths(period.toLong()))
+                              },
+                additional = viewModel::additional,
+                deletePeriodGrace = viewModel::deletePeriodGrace,
+                edit = viewModel::edit,
+                getMonthsPaid = viewModel::getMonthPaid
+            )
         }
-
-        DataTable(listHeader = {_->  listHeader },
-            sizeBody = list.size,
-            footer = {_->}) {pos,_->
-            Item(dto = list[pos],
-                delete = {viewModel.delete(it)},
-                amortization = {viewModel.amortization(it)},
-                periodGrace = {id,period,date-> viewModel.periodGrace(id,period,date,date.plusMonths(period.toLong()))},
-                additional = {viewModel.additional(it)},
-                deletePeriodGrace = {viewModel.deletePeriodGrace(it)})
+    }
         }
+}
+
+@Composable
+private fun Yearly(year:Int,items: List<CreditPeriodGraceDTO>,delete:(Int)->Unit,amortization:(Int)->Unit,periodGrace:(Int,Int,LocalDate)->Unit,additional:(Int)->Unit,deletePeriodGrace:(Int)->Unit, edit:(Int)->Unit,getMonthsPaid:(Int,LocalDate)->Long){
+    Surface(modifier=Modifier.padding(Dimensions.PADDING_SHORT)){
+        Column(modifier=Modifier.border(1.dp, MaterialTheme.colorScheme.onBackground,
+            RoundedCornerShape(10.dp)
+        )) {
+            var group = items.groupBy { it.credit.date.month }
+            Text(text = year.toString(), modifier = Modifier.padding(Dimensions.PADDING_SHORT))
+            for(item in group) {
+                Monthly(item.key.name, item.value, delete,amortization,periodGrace,additional,deletePeriodGrace,edit,getMonthsPaid)
+            }
+        }
+    }
+}
+
+@Composable
+private fun Monthly(month: String,items: List<CreditPeriodGraceDTO>,delete:(Int)->Unit,amortization:(Int)->Unit,periodGrace:(Int,Int,LocalDate)->Unit,additional:(Int)->Unit,deletePeriodGrace:(Int)->Unit, edit:(Int)->Unit,getMonthsPaid:(Int,LocalDate)->Long){
+    Surface(modifier=Modifier.padding(Dimensions.PADDING_SHORT)){
+        Column(modifier=Modifier.border(1.dp, MaterialTheme.colorScheme.onBackground,
+            RoundedCornerShape(10.dp)
+        )) {
+            Text(text = month, modifier=Modifier.padding(Dimensions.PADDING_SHORT))
+            for(item in items) {
+                Item(item, delete,amortization,periodGrace,additional,deletePeriodGrace,edit,getMonthsPaid)
+            }
+        }
+    }
+}
+
+@Composable
+private fun Item(item: CreditPeriodGraceDTO,delete:(Int)->Unit,amortization:(Int)->Unit,periodGrace:(Int,Int,LocalDate)->Unit,additional:(Int)->Unit,deletePeriodGrace:(Int)->Unit, edit:(Int)->Unit,getMonthsPaid:(Int,LocalDate)->Long){
+    val itemMore = remember {mutableStateOf(false)}
+    val itemExpand = remember {mutableStateOf(false)}
+    val monthsPaid = getMonthsPaid(item.credit.periods,item.credit.date)
+    val color = if(monthsPaid == item.credit.periods.toLong()) MaterialTheme.colorScheme.onSurface else MaterialTheme.colorScheme.surface
+
+    Card (
+        modifier=Modifier.padding(Dimensions.PADDING_SHORT),
+        onClick = {itemExpand.value=!itemExpand.value},
+        border = BorderStroke(1.dp, color)){
+        Column {
+            Row() {
+                Text(
+                    text = "${item.credit.date.dayOfMonth}",
+                    modifier = Modifier
+                        .padding(
+                            start = Dimensions.PADDING_SHORT,
+                            end = Dimensions.PADDING_SHORT
+                        )
+                        .align(alignment = Alignment.CenterVertically)
+                )
+                Text(
+                    text = "${item.credit.name}",
+                    modifier = Modifier
+                        .weight(1f)
+                        .align(alignment = Alignment.CenterVertically)
+                )
+                Text(
+                    text = "${monthsPaid}/${item.credit.periods}",
+                    modifier = Modifier.align(alignment = Alignment.CenterVertically)
+                )
+                IconButton(onClick = { itemMore.value = true }) {
+                    Icon(
+                        imageVector = Icons.Rounded.MoreVert,
+                        contentDescription = stringResource(R.string.see_more)
+                    )
+                }
+            }
+            if (itemExpand.value) {
+                FieldViewCards(
+                    name = R.string.value,
+                    value = co.com.japl.ui.utils.NumbersUtil.COPtoString(item.credit.value),
+                    textAlign = TextAlign.Right,
+                    modifier = Modifier
+                )
+
+                Row(modifier = Modifier.fillMaxWidth()) {
+                    FieldViewCards(
+                        name = R.string.interest,
+                        value = "${co.com.japl.ui.utils.NumbersUtil.toString(item.credit.tax)} ${item.credit.kindOfTax.value}",
+                        textAlign = TextAlign.Right,
+                        modifier = Modifier.weight(1f)
+                    )
+
+                    FieldViewCards(
+                        name = R.string.quote,
+                        value = co.com.japl.ui.utils.NumbersUtil.COPtoString(item.credit.quoteValue),
+                        textAlign = TextAlign.Right,
+                        color = if (item.periodGrace) {
+                            MaterialTheme.colorScheme.onErrorContainer
+                        } else {
+                            MaterialTheme.colorScheme.onSurface
+                        },
+                        modifier = Modifier.weight(1f)
+                    )
+                }
+
+            }
+        }
+    }
+    if(itemMore.value){
+        Options(item,itemMore,delete,amortization,periodGrace,additional,deletePeriodGrace,edit)
     }
 }
 
 @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
 @Composable
-private fun RowScope.Item(dto:CreditPeriodGraceDTO,delete:(Int)->Unit,amortization:(Int)->Unit,periodGrace:(Int,Int,LocalDate)->Unit,additional:(Int)->Unit,deletePeriodGrace:(Int)->Unit){
-    val states = remember{ mutableStateOf(false) }
-
-    Text(text=DateUtils.localDateToStringDate(dto.credit.date),
-        color=MaterialTheme.colorScheme.onBackground,
-        modifier = Modifier.weight(1f).align(alignment = Alignment.CenterVertically))
-    Text(text=dto.credit.name,
-        color=MaterialTheme.colorScheme.onBackground,
-        modifier = Modifier.weight(1f).align(alignment = Alignment.CenterVertically))
-    Text(text=NumbersUtil.COPtoString(dto.credit.quoteValue),
-        textAlign = TextAlign.Right,
-        color= dto.periodGrace.takeIf { !it }?.let{MaterialTheme.colorScheme.onBackground}?:MaterialTheme.colorScheme.error,
-        modifier = Modifier.weight(1f).align(alignment = Alignment.CenterVertically))
-    IconButton(onClick = { states.value = true }) {
-        Icon( imageVector = Icons.Rounded.MoreVert,
-            tint=MaterialTheme .colorScheme.onBackground,
-            contentDescription = "More")
-    }
-    if(states.value){
-        Options(dto,states,delete,amortization,periodGrace,additional,deletePeriodGrace)
-    }
-}
-
-@RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
-@Composable
-private fun Options(dto:CreditPeriodGraceDTO,state:MutableState<Boolean>,delete:(Int)->Unit,amortization:(Int)->Unit,periodGrace:(Int,Int,LocalDate)->Unit,additional:(Int)->Unit,deletePeriodGrace:(Int)->Unit) {
+private fun Options(dto:CreditPeriodGraceDTO,state:MutableState<Boolean>,delete:(Int)->Unit,amortization:(Int)->Unit,periodGrace:(Int,Int,LocalDate)->Unit,additional:(Int)->Unit,deletePeriodGrace:(Int)->Unit, edit:(Int)->Unit) {
     val stateDelete = remember { mutableStateOf(false) }
     val stateDeletePeriodGrace = remember { mutableStateOf(false) }
     val periodGraceStatus = remember { mutableStateOf(false) }
@@ -141,6 +251,7 @@ private fun Options(dto:CreditPeriodGraceDTO,state:MutableState<Boolean>,delete:
                             },
         onDismiss = { state.value = false }) {
         when (it) {
+            MoreOptionsItemCreditsEnum.EDIT -> edit.invoke(dto.credit.id)
             MoreOptionsItemCreditsEnum.DELETE -> stateDelete.value = true
             MoreOptionsItemCreditsEnum.PERIOD_GRACE -> periodGraceStatus.value = true
             MoreOptionsItemCreditsEnum.ADDITIONAL -> additional.invoke(dto.credit.id)
@@ -184,17 +295,14 @@ private fun Options(dto:CreditPeriodGraceDTO,state:MutableState<Boolean>,delete:
     }
 }
 
+@Composable
+private fun FloatButtons(create:()->Unit){
+    FloatButton(
+        imageVector =Icons.Rounded.Add,
+        descriptionIcon = R.string.add_credit,
+    ) { create() }
 
-    @Composable
-    fun getViewModel():ListViewModel{
-        return ListViewModel(YearMonth.now(),null,null,null).apply {
-            list.add(CreditPeriodGraceDTO(CreditDTO(1,"test",LocalDate.now(),1.2,36,(1500000).toBigDecimal(),(50000).toBigDecimal(),
-                KindPaymentsEnums.MONTHLY,
-                KindOfTaxEnum.MONTHLY_EFFECTIVE),false))
-            list.add(CreditPeriodGraceDTO(CreditDTO(2,"test",LocalDate.now(),1.2,36,(1400000).toBigDecimal(),(60000).toBigDecimal(),KindPaymentsEnums.MONTHLY,KindOfTaxEnum.MONTHLY_EFFECTIVE),false))
-            list.add(CreditPeriodGraceDTO(CreditDTO(3,"test",LocalDate.now(),1.2,36,(1700000).toBigDecimal(),(70000).toBigDecimal(),KindPaymentsEnums.MONTHLY,KindOfTaxEnum.MONTHLY_EFFECTIVE),false))
-        }
-    }
+}
 
     @RequiresApi(Build.VERSION_CODES.S)
     @Composable
@@ -218,6 +326,22 @@ private fun Options(dto:CreditPeriodGraceDTO,state:MutableState<Boolean>,delete:
         }
     }
 
+@Composable
+fun getViewModel():ListViewModel{
+    return ListViewModel(
+        creditsSvc = null,
+        periodGraceSvc = null,
+        savedStateHandle = SavedStateHandle()
+    ).apply {
+        list.add(CreditPeriodGraceDTO(CreditDTO(1,"test",LocalDate.now(),1.2,36,(1500000).toBigDecimal(),(50000).toBigDecimal(),
+            KindPaymentsEnums.MONTHLY,
+            KindOfTaxEnum.MONTHLY_EFFECTIVE),false))
+        list.add(CreditPeriodGraceDTO(CreditDTO(2,"test1",LocalDate.now().minusMonths(2),1.2,36,(1400000).toBigDecimal(),(60000).toBigDecimal(),KindPaymentsEnums.MONTHLY,KindOfTaxEnum.MONTHLY_EFFECTIVE),false))
+        list.add(CreditPeriodGraceDTO(CreditDTO(3,"test2",LocalDate.now().minusYears(1),1.2,36,(1700000).toBigDecimal(),(70000).toBigDecimal(),KindPaymentsEnums.MONTHLY,KindOfTaxEnum.MONTHLY_EFFECTIVE),true))
+        list.add(CreditPeriodGraceDTO(CreditDTO(4,"test3",LocalDate.now().plusDays(3).minusYears(1),1.2,36,(1700000).toBigDecimal(),(70000).toBigDecimal(),KindPaymentsEnums.MONTHLY,KindOfTaxEnum.MONTHLY_EFFECTIVE),true))
+        list.add(CreditPeriodGraceDTO(CreditDTO(5,"test4",LocalDate.now().plusDays(3).minusYears(3),1.2,24,(1700000).toBigDecimal(),(70000).toBigDecimal(),KindPaymentsEnums.MONTHLY,KindOfTaxEnum.MONTHLY_EFFECTIVE),true))
+    }
+}
 
 
 

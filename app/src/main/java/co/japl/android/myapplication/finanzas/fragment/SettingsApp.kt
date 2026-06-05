@@ -1,0 +1,39 @@
+package co.japl.android.myapplication.finanzas.fragment
+
+import android.os.Build
+import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.annotation.RequiresApi
+import androidx.compose.ui.platform.ComposeView
+import androidx.fragment.app.Fragment
+import co.com.japl.ui.theme.MaterialThemeComposeUI
+import co.japl.android.myapplication.finanzas.ApplicationInitial
+import co.japl.android.myapplication.finanzas.controller.setting.SettingsAppViewModel
+import co.japl.android.myapplication.finanzas.view.setting.SettingsApp
+
+class SettingsApp : Fragment() {
+
+
+    @RequiresApi(Build.VERSION_CODES.S)
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+        ): View?{
+
+        val viewModel = SettingsAppViewModel(
+            prefs = ApplicationInitial.Companion.prefs,
+            context = requireContext()
+        )
+        return ComposeView(requireContext()).apply {
+            setContent {
+                MaterialThemeComposeUI {
+                    SettingsApp(viewModel = viewModel)
+                }
+            }
+        }
+    }
+
+}

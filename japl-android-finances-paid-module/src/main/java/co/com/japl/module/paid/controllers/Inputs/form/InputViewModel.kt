@@ -11,11 +11,21 @@ import co.com.japl.module.paid.R
 import co.com.japl.module.paid.enums.MoreOptionsKindPaymentInput
 import co.com.japl.module.paid.mapper.InputMapper
 import co.com.japl.ui.utils.DateUtils
-import co.japl.android.myapplication.utils.NumbersUtil
+import co.com.japl.ui.utils.NumbersUtil
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.runBlocking
 import java.time.LocalDate
 
-class InputViewModel(private val codeAccount:Int, private val codeInput:Int?, private val inputSvc:IInputPort, private val navController: NavController): ViewModel(){
+@HiltViewModel(assistedFactory = InputViewModel.Factory::class)
+class InputViewModel @AssistedInject constructor(@Assisted private val codeAccount:Int, @Assisted private val codeInput:Int?, private val inputSvc:IInputPort, @Assisted private val navController: NavController): ViewModel(){
+
+    @AssistedFactory
+    interface Factory {
+        fun create(codeAccount: Int, codeInput: Int?, navController: NavController): InputViewModel
+    }
 
     var loader = mutableStateOf(true)
     var progress = mutableFloatStateOf( 0f)

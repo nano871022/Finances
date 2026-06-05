@@ -7,4 +7,6 @@
     <string name="close">Cerrar</string>
     <string name="money">Dinero</string>
     <string name="any_data_to_show">No hay datos que mostrar</string>
+    <string name="toast_save_successful">Se guardo correctamente</string>
+    <string name="no_records">No se encontraron registros</string>
 </resources>

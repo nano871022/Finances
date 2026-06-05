@@ -7,6 +7,7 @@ import javax.inject.Inject
 
 class CreditCardSettingImpl @Inject constructor(private val creditCardSettingSvc:ICreditCardSetting) : ICreditCardSettingPort {
     override fun getAll(codeCreditCard: Int): List<CreditCardSettingDTO> {
+        require(codeCreditCard > 0){"Code credit card can  not be ZERO"}
         return creditCardSettingSvc.getAll(codeCreditCard)
     }
 

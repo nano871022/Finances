@@ -1,6 +1,8 @@
 plugins {
     id("com.android.library")
     id("org.jetbrains.kotlin.android")
+    id("kotlin-kapt")
+    id("com.google.dagger.hilt.android")
 }
 
 android {
@@ -67,7 +69,8 @@ dependencies {
     implementation("com.google.apis:google-api-services-script:v1-rev20220323-2.0.0")
     implementation("com.google.android.material:material:1.12.0")
     implementation("androidx.loader:loader:1.1.0")
-    implementation("com.google.dagger:hilt-android:2.52")
+    implementation("com.google.dagger:hilt-android:2.56.2")
+    kapt("com.google.dagger:hilt-compiler:2.56.2")
 
 
 

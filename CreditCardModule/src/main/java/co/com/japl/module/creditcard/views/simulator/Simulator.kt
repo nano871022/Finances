@@ -6,7 +6,6 @@ import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
-
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Calculate
@@ -39,11 +38,16 @@ import co.com.japl.ui.components.FieldText
 import co.com.japl.ui.components.FieldView
 import co.com.japl.ui.components.FloatButton
 import co.com.japl.ui.components.Popup
-
 import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.com.japl.ui.theme.values.Dimensions
 import co.japl.android.graphs.utils.NumbersUtil
 import java.math.BigDecimal
+import androidx.compose.ui.platform.LocalContext
+import androidx.lifecycle.SavedStateHandle
+import androidx.navigation.NavController
+import co.com.japl.finances.iports.inbounds.creditcard.ISimulatorCreditVariablePort
+import co.com.japl.finances.iports.dtos.SimulatorCreditDTO
+import java.util.Optional
 
 @Composable
 fun Simulator(viewModel: FormViewModel){
@@ -264,8 +268,9 @@ private fun BodyCalc(viewModel: FormViewModel){
 @Composable
 @Preview(showBackground = true, showSystemUi = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
 private fun SimulatorPreviewLight(){
+    val context = LocalContext.current
     MaterialThemeComposeUI {
-        Simulator(getViewModel())
+        Simulator(getViewModel(context))
     }
 }
 
@@ -273,8 +278,9 @@ private fun SimulatorPreviewLight(){
 @Composable
 @Preview(showBackground = true, showSystemUi = true, uiMode = Configuration.UI_MODE_NIGHT_YES, backgroundColor = 0xFF000000)
 private fun SimulatorPreviewDark(){
+    val context = LocalContext.current
     MaterialThemeComposeUI {
-        Simulator(getViewModel())
+        Simulator(getViewModel(context))
     }
 }
 
@@ -282,15 +288,22 @@ private fun SimulatorPreviewDark(){
 @Composable
 @Preview(showBackground = true, showSystemUi = true, uiMode = Configuration.UI_MODE_NIGHT_YES, backgroundColor = 0xFF000000)
 private fun SimulatorPreviewDarkPopup(){
-    val viewModel = getViewModel()
+    val context = LocalContext.current
+    val viewModel = getViewModel(context)
     viewModel.statePopUp.value = true
     MaterialThemeComposeUI {
         Simulator(viewModel)
     }
 }
 
-private fun getViewModel():FormViewModel{
-    return FormViewModel().also {
+private fun getViewModel(context: android.content.Context):FormViewModel{
+    return FormViewModel(context, object : ISimulatorCreditVariablePort {
+        override fun calculate(dto: SimulatorCreditDTO): SimulatorCreditDTO = dto
+        override fun save(dto: SimulatorCreditDTO, cache: Boolean): Long = 0
+        override fun update(dto: SimulatorCreditDTO, cache: Boolean): Boolean = false
+        override fun getList(): List<SimulatorCreditDTO> = emptyList()
+        override fun setSimulation(dto: SimulatorCreditDTO): Boolean = false
+    }, SavedStateHandle(), NavController(context)).also {
         it.month.onValueChange(12)
         it.creditRate.onValueChange(13.0)
         it.creditValue.onValueChange(BigDecimal.valueOf(1000000))

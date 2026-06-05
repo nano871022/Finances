@@ -5,6 +5,7 @@ import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import co.com.japl.finances.iports.dtos.CreditCardDTO
 import co.com.japl.finances.iports.dtos.SMSCreditCard
@@ -12,12 +13,25 @@ import co.com.japl.finances.iports.enums.KindInterestRateEnum
 import co.com.japl.finances.iports.inbounds.creditcard.ICreditCardPort
 import co.com.japl.finances.iports.inbounds.creditcard.ISMSCreditCardPort
 import co.com.japl.module.creditcard.R
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
+import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.scopes.ViewModelScoped
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
 
-class SmsCreditCardViewModel(private val svc:ISMSCreditCardPort?, private val creditCardSvc:ICreditCardPort?, private val navController: NavController?): ViewModel() {
+@HiltViewModel(assistedFactory = SmsCreditCardViewModel.Factory::class)
+class SmsCreditCardViewModel @AssistedInject constructor(private val svc:ISMSCreditCardPort?, private val creditCardSvc:ICreditCardPort?, @Assisted private val navController: NavController?): ViewModel() {
+
+    @AssistedFactory
+    interface Factory {
+        fun create(navController: NavController?): SmsCreditCardViewModel
+    }
 
     val  load = mutableStateOf(true)
-    val  progress = mutableFloatStateOf(0.0f)
 
     val list = mutableStateListOf<Map<Int,List<SMSCreditCard>>>()
 
@@ -45,7 +59,6 @@ class SmsCreditCardViewModel(private val svc:ISMSCreditCardPort?, private val cr
         require(code > 0){"The code must be greater than 0"}
         svc?.getById(code)?.let{
             svc?.create(it.copy( id = 0  ))?.let{
-                progress.floatValue = 0f
                 load.value = true
             }
         }
@@ -69,16 +82,13 @@ class SmsCreditCardViewModel(private val svc:ISMSCreditCardPort?, private val cr
         }?:navController?.let { Toast.makeText(it.context, R.string.toast_dont_successful_deleted, Toast.LENGTH_SHORT).show() }
     }
 
-    fun main() = runBlocking {
-        progress.floatValue = 0.1f
-        execute()
-        progress.floatValue = 1.0f
-    }
 
-    suspend fun execute() {
+    fun execute() = viewModelScope.launch{
         svc?.let {
             creditCardSvc?.let {
-                it.getAll().takeIf { it.isNotEmpty() }?.map{ dto->
+                withContext(Dispatchers.IO) {
+                    it.getAll()
+                }.takeIf { it.isNotEmpty() }?.map{ dto->
                     val list = svc.getAllByCodeCreditCard(dto.id)
                     list.map { it.copy(nameCreditCard = dto.name) }
                 }?.flatten()?.groupBy{it.codeCreditCard}?.let{
@@ -89,7 +99,7 @@ class SmsCreditCardViewModel(private val svc:ISMSCreditCardPort?, private val cr
                             list.addAll(it)
                         }
 
-                    }.also { progress.floatValue = 0.5f }
+                    }
             }
         }
         load.value = false
