@@ -36,12 +36,13 @@ import co.com.japl.ui.model.datatable.Header
 import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.com.japl.ui.theme.values.Dimensions
 import co.com.japl.ui.utils.WindowWidthSize
-import co.japl.android.myapplication.utils.NumbersUtil
+import co.com.japl.ui.utils.NumbersUtil
 import java.math.BigDecimal
+import androidx.lifecycle.SavedStateHandle
 
 @Composable
 fun  AmortizationTable (viewModel:AmortizationViewModel){
-	val progressState = remember { mutableStateOf(false) } 
+	val progressState = remember { viewModel.progressStatus }
 
 	if(progressState.value){
 		Column(modifier = Modifier.fillMaxWidth()) {
@@ -354,7 +355,7 @@ private fun AmortizationDarkVertical(){
 
 @Composable
 private fun getViewModel(): AmortizationViewModel{
-	return AmortizationViewModel(LocalContext.current,2).also {
+	return AmortizationViewModel(LocalContext.current, SavedStateHandle().apply { set("CODE", 2L) }, null).also {
 		it.list.add(
 			AmortizationRowDTO(
 				id=1,

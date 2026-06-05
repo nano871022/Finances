@@ -203,7 +203,7 @@ fun AccountListPreviewDark() {
 }
 
 fun getViewModel(): AccountViewModel {
-    val viewModel = AccountViewModel(accountSvc = null, inputSvc = null,navController = null)
+    val viewModel = AccountViewModel(accountSvc = null, inputSvc = null)
     viewModel.loading.value = false
     viewModel.list.add(AccountDTO(1, LocalDate.now(),"",true))
     return viewModel

@@ -27,7 +27,6 @@ class ProjectionImpl @Inject constructor(private val projectionSvc: IProjection)
     }
 
     override fun save(projection: ProjectionDTO): Boolean {
-        require(projection.id == 0){"El id no puede ser mayor a cero"}
         return projectionSvc.save(projection)
     }
 

@@ -31,6 +31,11 @@ object CreditList {
         navController.navigate(request)
     }
 
+    fun updCredit(id:Int,navController: NavController){
+        val request = NavDeepLinkRequest.Builder.fromUri(navController.context.getString(R.string.navigate_upd_credit,id).toUri()).build()
+        navController.navigate(request)
+    }
+
     fun detailCredits(navController: NavController){
         val request = NavDeepLinkRequest.Builder.fromUri(navController.context.getString(R.string.navigate_detail_credits).toUri()).build()
         navController.navigate(request)

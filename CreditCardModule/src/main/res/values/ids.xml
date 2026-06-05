@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item type="id" name="action_list_cc_quote_to_list_bought" />
+    <item type="id" name="action_item_menu_side_boughtmade_to_buy_credit_card" />
+    <item type="id" name="action_item_menu_side_boughtmade_to_cash_advance_fragment" />
+    <item type="id" name="action_item_menu_side_boughtmade_to_list_periods" />
+    <item type="id" name="action_item_menu_side_boughtmade_to_boughWalletController" />
+    <item type="id" name="action_item_menu_side_boughtmade_to_createCreditCard" />
+    <item type="id" name="action_item_menu_side_boughtmade_to_taxes" />
+    <item type="id" name="action_item_menu_side_quoteCreditVariable_to_amortizationTableFragment" />
+    <item type="id" name="action_list_bought_to_amortizationTableFragment" />
+    <item type="id" name="action_list_bought_to_buy_credit_card" />
+    <item type="id" name="action_list_bought_to_cash_advance_fragment" />
+    <item type="id" name="action_list_bought_to_buy_credit_card2" />
+    <item type="id" name="action_list_bought_to_boughWalletController" />
+    <item type="id" name="action_list_periods_to_list_bought" />
+    <item type="id" name="action_listCreditCard_to_createCreditCard" />
+    <item type="id" name="action_item_menu_setting_credit_card_to_listCreditCardSetting" />
+    <item type="id" name="action_createCreditCard_to_listCreditCardSetting" />
+    <item type="id" name="action_item_menu_setting_taxes_to_taxes" />
+    <item type="id" name="action_listCreditCardSetting_to_creditCardSettingFragment" />
+    <item type="id" name="action_sms_list_credit_card_to_smsFragment" />
+    <item type="id" name="buy_credit_card" />
+    <item type="id" name="taxes" />
+    <item type="id" name="action_item_menu_side_listsave_to_amortizationTableFragment" />
+    <item type="id" name="list_bought" />
+    <item type="id" name="cash_advance_fragment" />
+    <item type="id" name="list_periods" />
+    <item type="id" name="boughWalletController" />
+    <item type="id" name="createCreditCard" />
+    <item type="id" name="amortizationTableFragment" />
+    <item type="id" name="listCreditCardSetting" />
+    <item type="id" name="creditCardSettingFragment" />
+    <item type="id" name="sms_credit_card" />
+    <item type="id" name="email_credit_card" />
+</resources>

@@ -25,6 +25,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -34,6 +35,8 @@ import co.com.japl.module.paid.R
 import co.com.japl.module.paid.controllers.sms.list.SmsViewModel
 import co.com.japl.ui.components.AlertDialogOkCancel
 import co.com.japl.ui.components.Carousel
+import co.com.japl.ui.components.FieldView
+import co.com.japl.ui.components.FieldViewCards
 import co.com.japl.ui.components.FloatButton
 import co.com.japl.ui.components.HelpWikiButton
 import co.com.japl.ui.components.IconButton
@@ -94,7 +97,12 @@ private fun Content(viewModel: SmsViewModel,modifier: Modifier){
             Column(
                 modifier = modifier.padding(bottom = Dimensions.PADDING_BOTTOM_SPACE_FLOATING_BUTTON)
             ) {
-                list[it]?.values?.forEach {
+                FieldView(
+                    title= stringResource( R.string.account),
+                    value=list[it].values.first().first().nameAccount,
+                    modifier=Modifier.fillMaxWidth().padding(Dimensions.PADDING_SHORT)
+                )
+                list[it].values.forEach {
                     for (i in it) {
                         Card(sms = i, modifier = Modifier, edit = {
                             viewModel.edit(it)
@@ -129,9 +137,11 @@ private fun Card(sms:SMSPaidDTO,modifier:Modifier=Modifier,edit:(Int)->Unit,dele
             verticalAlignment = Alignment.CenterVertically
             ,modifier = Modifier.padding(Dimensions.PADDING_SHORT)
         ) {
-            Text(text = sms.nameAccount,modifier=Weight1f())
-
-            Text(text = sms.phoneNumber,modifier=Weight1f(), textAlign = TextAlign.End)
+            FieldViewCards(
+                name=R.string.msm_read_num,
+                value= sms.phoneNumber,
+                modifier=Weight1f()
+            )
 
             IconButton(imageVector = Icons.Rounded.MoreVert,
                 descriptionContent = co.com.japl.ui.R.string.see_more, onClick = {

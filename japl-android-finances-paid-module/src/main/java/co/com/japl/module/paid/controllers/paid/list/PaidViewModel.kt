@@ -18,7 +18,11 @@ import co.com.japl.module.paid.enums.PaidListOptions
 import co.com.japl.module.paid.navigations.Paid
 import co.com.japl.ui.Prefs
 import co.com.japl.ui.utils.DateUtils
-import co.japl.android.myapplication.utils.NumbersUtil
+import co.com.japl.ui.utils.NumbersUtil
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -28,8 +32,14 @@ import java.time.YearMonth
 import java.time.format.DateTimeFormatter
 import java.util.Locale
 
-class PaidViewModel(private val accountCode:Int, private val period:YearMonth, private val paidSvc:IPaidPort?=null,
-                    val prefs:Prefs?, private val navController: NavController? = null, private val emailSvc:IEmailPaidPort? = null, private val paidSmsSvc:ISmsPort?): ViewModel(){
+@HiltViewModel(assistedFactory = PaidViewModel.Factory::class)
+class PaidViewModel @AssistedInject constructor(@Assisted private val accountCode:Int, @Assisted private val period:YearMonth, private val paidSvc:IPaidPort?=null,
+                    val prefs:Prefs?, @Assisted private val navController: NavController? = null, private val emailSvc:IEmailPaidPort? = null, private val paidSmsSvc:ISmsPort?): ViewModel(){
+
+    @AssistedFactory
+    interface Factory {
+        fun create(accountCode: Int, period: YearMonth, navController: NavController?): PaidViewModel
+    }
 
     val progressStatus = mutableFloatStateOf(0.0f)
     val loaderState = mutableStateOf(true)
@@ -52,13 +62,15 @@ class PaidViewModel(private val accountCode:Int, private val period:YearMonth, p
         }
     }
 
-    fun delete(id:Int){
-        paidSvc?.let {
-            if(it.delete(id)){
+    fun delete(id:Int) {
+        viewModelScope.launch {
+            val result = withContext(Dispatchers.IO) {
+                paidSvc?.delete(id) ?: false
+            }
+            if(result){
                 navController?.let{
                     Toast.makeText(it.context, R.string.toast_successful_deleted,Toast.LENGTH_LONG).show()
                         .also { loaderState.value = true }
-
                 }
             }else{
                 navController?.let{
@@ -75,8 +87,11 @@ class PaidViewModel(private val accountCode:Int, private val period:YearMonth, p
     }
 
     fun endRecurrent(id:Int){
-        paidSvc?.let{
-            if(it.endRecurrent(id)){
+        viewModelScope.launch {
+            val result = withContext(Dispatchers.IO) {
+                paidSvc?.endRecurrent(id) ?: false
+            }
+            if(result){
                         navController?.let{ Toast.makeText(it.context, R.string.toast_successful_end_recurrent,Toast.LENGTH_LONG).show().also {
                             loaderState.value = true
                         }}
@@ -84,12 +99,14 @@ class PaidViewModel(private val accountCode:Int, private val period:YearMonth, p
                 navController?.let{ Toast.makeText(it.context, R.string.toast_unsuccessful_end_recurrent,Toast.LENGTH_LONG).show() }
             }
         }
-
     }
 
     fun copy(id:Int){
-        paidSvc?.let{
-            if(it.copy(id)){
+        viewModelScope.launch {
+            val result = withContext(Dispatchers.IO) {
+                paidSvc?.copy(id) ?: false
+            }
+            if(result){
                 navController?.let{ Toast.makeText(it.context, R.string.toast_successful_copy,Toast.LENGTH_LONG).show().also {
                     loaderState.value = true
                 }}
@@ -152,16 +169,20 @@ class PaidViewModel(private val accountCode:Int, private val period:YearMonth, p
         return list
     }
 
-    fun main()= runBlocking {
+    fun main() {
         periodOfList.value  = period.format(DateTimeFormatter.ofPattern("MMMM yyyy", Locale("es","CO")))
         progressStatus.value = 0.0f
-        execute()
-        progressStatus.value = 1.0f
+        viewModelScope.launch {
+            execute()
+            progressStatus.value = 1.0f
+        }
     }
 
     suspend fun execute() {
-        paidSvc?.let{
-            it.get(accountCode,period).takeIf { it.isNotEmpty() }?.let{
+        paidSvc?.let{ svcPort ->
+            withContext(Dispatchers.IO) {
+                svcPort.get(accountCode,period)
+            }.takeIf { it.isNotEmpty() }?.let{
                 list.clear()
                 progressStatus.value = 0.3f
 

@@ -18,19 +18,29 @@ import co.com.japl.finances.iports.inbounds.creditcard.ICreditCardPort
 import co.com.japl.finances.iports.inbounds.creditcard.IEmailCreditCardPort
 import co.com.japl.module.creditcard.R
 import co.com.japl.ui.Prefs
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class EmailCreditCardViewModel(
-    private val codeEmailCC: Int?,
+@HiltViewModel(assistedFactory = EmailCreditCardViewModel.Factory::class)
+class EmailCreditCardViewModel @AssistedInject constructor(
+    @Assisted private val codeEmailCC: Int?,
     private val svc: IEmailCreditCardPort?,
     private val creditCardSvc: ICreditCardPort?,
-    private val navController: NavController?,
+    @Assisted private val navController: NavController?,
     private val llmService: ILLMService? = null,
     private val prefs: Prefs? = null,
-    private val context: Context? = null
+    @Assisted private val context: Context? = null
 ) : ViewModel() {
+
+    @AssistedFactory
+    interface Factory {
+        fun create(codeEmailCC: Int?, navController: NavController?, context: Context?): EmailCreditCardViewModel
+    }
 
     val load = mutableStateOf(true)
     val progress = mutableFloatStateOf(0.0f)
@@ -64,13 +74,13 @@ class EmailCreditCardViewModel(
 
     fun loadEmailSamples() {
         if (sender.value.isNotEmpty()) {
-            viewModelScope.launch(Dispatchers.IO) {
-                svc?.getEmailList(sender.value, subjectPattern.value, 30)?.let { list ->
-                    withContext(Dispatchers.Main) {
-                        emailSamples.clear()
-                        list.map { Pair(it, false) }.forEach(emailSamples::add)
-                        showEmailDialog.value = true
-                    }
+            viewModelScope.launch {
+                withContext(Dispatchers.IO) {
+                    svc?.getEmailList(sender.value, subjectPattern.value, 30)
+                }?.let { list ->
+                    emailSamples.clear()
+                    list.map { Pair(it, false) }.forEach(emailSamples::add)
+                    showEmailDialog.value = true
                 }
             }
         }
@@ -79,42 +89,36 @@ class EmailCreditCardViewModel(
     fun generateRegexWithAI() {
         val selectedEmails = emailSamples.filter { it.second }.map { it.first }
         if (selectedEmails.isNotEmpty()) {
-            viewModelScope.launch(Dispatchers.IO) {
-                withContext(Dispatchers.Main) {
-                    load.value = true
-                    progress.floatValue = 0.1f
-                }
+            viewModelScope.launch {
+                load.value = true
+                progress.floatValue = 0.1f
                 val prompt = context?.getString(R.string.promt_email_expreg, selectedEmails.joinToString("\n")) ?: ""
-                withContext(Dispatchers.Main) {
-                    progress.floatValue = 0.3f
-                }
-                llmService?.getAiResponse(prompt, selectedLLMModel.value?.second)?.onSuccess { response ->
-                    withContext(Dispatchers.Main) {
-                        progress.floatValue = 0.6f
-                        val lines = response.trim().lines()
-                        lines.forEach { line ->
-                            if (line.startsWith("SUBJECT:", ignoreCase = true)) {
-                                subjectPattern.value = line.substringAfter("SUBJECT:").trim()
-                            } else if (line.startsWith("BODY:", ignoreCase = true)) {
-                                bodyPattern.value = line.substringAfter("BODY:").trim().removeSurrounding("`").removePrefix("regex").trim()
-                            }
+                progress.floatValue = 0.3f
+                withContext(Dispatchers.IO) {
+                    llmService?.getAiResponse(prompt, selectedLLMModel.value?.second)
+                }?.onSuccess { response ->
+                    progress.floatValue = 0.6f
+                    val lines = response.trim().lines()
+                    lines.forEach { line ->
+                        if (line.startsWith("SUBJECT:", ignoreCase = true)) {
+                            subjectPattern.value = line.substringAfter("SUBJECT:").trim()
+                        } else if (line.startsWith("BODY:", ignoreCase = true)) {
+                            bodyPattern.value = line.substringAfter("BODY:").trim().removeSurrounding("`").removePrefix("regex").trim()
                         }
-                        if (lines.size == 1 && !response.contains("SUBJECT:", ignoreCase = true)) {
-                             bodyPattern.value = response.trim().removeSurrounding("`").removePrefix("regex").trim()
-                        }
-                        progress.floatValue = 1.0f
-                        load.value = false
-                        showEmailDialog.value = false
-                        context?.let { Toast.makeText(it, R.string.ai_response, Toast.LENGTH_SHORT).show() }
                     }
+                    if (lines.size == 1 && !response.contains("SUBJECT:", ignoreCase = true)) {
+                         bodyPattern.value = response.trim().removeSurrounding("`").removePrefix("regex").trim()
+                    }
+                    progress.floatValue = 1.0f
+                    load.value = false
+                    showEmailDialog.value = false
+                    context?.let { Toast.makeText(it, R.string.ai_response, Toast.LENGTH_SHORT).show() }
                 }?.onFailure {
                     Log.e("EmailCCViewModel", "Error: ${it.message}")
-                    withContext(Dispatchers.Main) {
-                        aiFailed.value = true
-                        load.value = false
-                        showEmailDialog.value = false
-                        progress.floatValue = 1.0f
-                    }
+                    aiFailed.value = true
+                    load.value = false
+                    showEmailDialog.value = false
+                    progress.floatValue = 1.0f
                 }
             }
         }
@@ -128,31 +132,27 @@ class EmailCreditCardViewModel(
         validate()
         emailCreditCard?.let { dto ->
             if (!errorKindInterestRate.value && !errorSender.value && !errorSubjectPattern.value && !errorBodyPattern.value && !errorCreditCard.value) {
-                viewModelScope.launch(Dispatchers.IO) {
+                viewModelScope.launch {
                     if (dto.id == 0) {
-                        val id = svc?.create(dto) ?: 0
+                        val id = withContext(Dispatchers.IO) {
+                            svc?.create(dto) ?: 0
+                        }
                         if (id > 0) {
                             emailCreditCard = dto.copy(id = id)
-                            withContext(Dispatchers.Main) {
-                                context?.let { Toast.makeText(it, R.string.toast_successful_insert, Toast.LENGTH_SHORT).show() }
-                                navController?.popBackStack()
-                            }
+                            context?.let { Toast.makeText(it, R.string.toast_successful_insert, Toast.LENGTH_SHORT).show() }
+                            navController?.popBackStack()
                         } else {
-                            withContext(Dispatchers.Main) {
-                                context?.let { Toast.makeText(it, R.string.toast_unsuccessful_insert, Toast.LENGTH_SHORT).show() }
-                            }
+                            context?.let { Toast.makeText(it, R.string.toast_unsuccessful_insert, Toast.LENGTH_SHORT).show() }
                         }
                     } else {
-                        val result = svc?.update(dto) ?: false
+                        val result = withContext(Dispatchers.IO) {
+                            svc?.update(dto) ?: false
+                        }
                         if (result) {
-                            withContext(Dispatchers.Main) {
-                                context?.let { Toast.makeText(it, R.string.toast_successful_update, Toast.LENGTH_SHORT).show() }
-                                navController?.popBackStack()
-                            }
+                            context?.let { Toast.makeText(it, R.string.toast_successful_update, Toast.LENGTH_SHORT).show() }
+                            navController?.popBackStack()
                         } else {
-                            withContext(Dispatchers.Main) {
-                                context?.let { Toast.makeText(it, R.string.toast_dont_successful_update, Toast.LENGTH_SHORT).show() }
-                            }
+                            context?.let { Toast.makeText(it, R.string.toast_dont_successful_update, Toast.LENGTH_SHORT).show() }
                         }
                     }
                 }
@@ -183,28 +183,24 @@ class EmailCreditCardViewModel(
     fun validatePatternWithMessages() {
         validate()
         emailCreditCard?.let { dto ->
-            viewModelScope.launch(Dispatchers.IO) {
-                withContext(Dispatchers.Main) {
-                    validating.value = true
-                    showPopup.value = true
-                    validationResults.clear()
-                }
+            viewModelScope.launch {
+                validating.value = true
+                showPopup.value = true
+                validationResults.clear()
                 runCatching {
-                    svc?.validateMessagePattern(dto, 30) ?: emptyList()
-                }.onFailure { e ->
-                    withContext(Dispatchers.Main) {
-                        validating.value = false
-                        validationResult.value = "Error: ${e.message}"
+                    withContext(Dispatchers.IO) {
+                        svc?.validateMessagePattern(dto, 30) ?: emptyList()
                     }
+                }.onFailure { e ->
+                    validating.value = false
+                    validationResult.value = "Error: ${e.message}"
                 }.onSuccess { list ->
-                    withContext(Dispatchers.Main) {
-                        validating.value = false
-                        validationResults.addAll(list)
-                        if (list.isNotEmpty()) {
-                            validationResult.value = "Success"
-                        } else {
-                            validationResult.value = "Not found messages"
-                        }
+                    validating.value = false
+                    validationResults.addAll(list)
+                    if (list.isNotEmpty()) {
+                        validationResult.value = "Success"
+                    } else {
+                        validationResult.value = "Not found messages"
                     }
                 }
             }
@@ -233,63 +229,61 @@ class EmailCreditCardViewModel(
     }
 
     fun main() {
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch {
             progress.floatValue = 0.1f
             execute()
-            withContext(Dispatchers.Main) {
-                progress.floatValue = 1.0f
-                load.value = false
-            }
+            progress.floatValue = 1.0f
+            load.value = false
         }
     }
 
     private suspend fun execute() {
         svc?.let { port ->
             codeEmailCC?.takeIf { it > 0 }?.let { id ->
-                port.getById(id)?.let { dto ->
+                withContext(Dispatchers.IO) {
+                    port.getById(id)
+                }?.let { dto ->
                     emailCreditCard = dto
-                    withContext(Dispatchers.Main) {
-                        kindInterestRate.value = dto.kindInterestRateEnum.let { kind ->
-                            Pair(kind.getCode().toInt(), kind.name)
-                        }
-                        sender.value = dto.sender
-                        subjectPattern.value = dto.subjectPattern
-                        bodyPattern.value = dto.bodyPattern
+                    kindInterestRate.value = dto.kindInterestRateEnum.let { kind ->
+                        Pair(kind.getCode().toInt(), kind.name)
                     }
+                    sender.value = dto.sender
+                    subjectPattern.value = dto.subjectPattern
+                    bodyPattern.value = dto.bodyPattern
                     progress.floatValue = 0.3f
                 }
             }
         }
         creditCardSvc?.let { port ->
-            val list = port.getAll()
-            withContext(Dispatchers.Main) {
-                creditCardList.clear()
-                creditCardLists.clear()
-                list.forEach { cc ->
-                    creditCardLists.add(cc)
-                    creditCardList.add(Pair(cc.id, cc.name))
-                }
-                emailCreditCard?.let { email ->
-                    creditCardLists.firstOrNull { it.id == email.codeCreditCard }?.let { cc ->
-                        creditCard.value = Pair(cc.id, cc.name)
-                    }
+            val list = withContext(Dispatchers.IO) {
+                port.getAll()
+            }
+            creditCardList.clear()
+            creditCardLists.clear()
+            list.forEach { cc ->
+                creditCardLists.add(cc)
+                creditCardList.add(Pair(cc.id, cc.name))
+            }
+            emailCreditCard?.let { email ->
+                creditCardLists.firstOrNull { it.id == email.codeCreditCard }?.let { cc ->
+                    creditCard.value = Pair(cc.id, cc.name)
                 }
             }
             progress.floatValue = 0.6f
         }
 
-        withContext(Dispatchers.Main) {
-            kindInterestRateList.clear()
-            KindInterestRateEnum.entries.map { Pair(it.getCode().toInt(), it.name) }.forEach { kindInterestRateList.add(it) }
+        kindInterestRateList.clear()
+        KindInterestRateEnum.entries.map { Pair(it.getCode().toInt(), it.name) }.forEach { kindInterestRateList.add(it) }
 
-            llmService?.getModels()?.onSuccess { models ->
-                llmModels.clear()
-                models.forEachIndexed { index, name ->
-                    llmModels.add(Pair(index, name))
-                }
-                val model = prefs?.llmModel ?: ""
-                selectedLLMModel.value = llmModels.firstOrNull { it.second == model } ?: llmModels.firstOrNull()
+        withContext(Dispatchers.IO) {
+            llmService?.getModels()
+        }?.onSuccess { models ->
+            llmModels.clear()
+            models.forEachIndexed { index, name ->
+                llmModels.add(Pair(index, name))
             }
+            val model = prefs?.llmModel ?: ""
+            selectedLLMModel.value = llmModels.firstOrNull { it.second == model } ?: llmModels.firstOrNull()
         }
         progress.floatValue = 0.8f
     }

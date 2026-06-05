@@ -9,5 +9,5 @@ interface IGoogleLoginService {
     fun check():Boolean
     fun logout()
     fun response(requestCode:Int, data:Intent)
-    fun getAccount(): GoogleSignInAccount
+    fun getAccount(): GoogleSignInAccount?
 }

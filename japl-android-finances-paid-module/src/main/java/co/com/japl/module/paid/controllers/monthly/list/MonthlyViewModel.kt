@@ -25,7 +25,7 @@ import co.com.japl.module.paid.navigations.Period
 import co.com.japl.module.paid.R
 import co.com.japl.ui.Prefs
 import co.com.japl.ui.utils.DateUtils
-import co.japl.android.myapplication.utils.NumbersUtil
+import co.com.japl.ui.utils.NumbersUtil
 import kotlinx.coroutines.Dispatchers
 
 import kotlinx.coroutines.runBlocking

@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".finanzas.controller.setting.LLMConnectionSetting">
+    tools:context=".finanzas.fragment.LLMConnectionSettingFragment">
 
     <androidx.compose.ui.platform.ComposeView
         android:layout_width="match_parent"

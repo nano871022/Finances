@@ -60,18 +60,27 @@ class FieldState<T>(
     }
 
     fun onValueChangeStr(newValue:String){
-        Log.d("onValueChangeStr","$newValue")
         if(touched.not()){
             touched = true
         }
+        if(newValue.isNotBlank()){
         formatter.invoke(newValue)?.let{
             savedStateHandler[key] = it
-        }
-        valueStr = newValue
-        error.value = validator.invoke(value.value).not()
-        if(error.value.not()) {
-            onValueChangeCallBack.invoke(value.value)
-        }
+            valueStr = newValue
+            error.value = validator.invoke(it).not()
+            Log.d(javaClass.simpleName,"onValueChangeStr:F: $it ${error.value} ${valueStr}")
+            if(error.value.not()) {
+                onValueChangeCallBack.invoke(it)
+            }
+        }?:{
+            valueStr = newValue
+            error.value = validator.invoke(newValue as T).not()
+            Log.d(javaClass.simpleName,"onValueChangeStr: $newValue ${error.value}")
+            if(error.value.not()) {
+                onValueChangeCallBack.invoke(newValue)
+            }
+        }}
+
     }
 
     fun validate():Boolean {

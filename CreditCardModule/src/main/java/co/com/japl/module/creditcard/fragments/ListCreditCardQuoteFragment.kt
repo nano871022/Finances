@@ -1,0 +1,53 @@
+package co.com.japl.module.creditcard.fragments
+
+import android.os.Build
+import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.annotation.RequiresApi
+import androidx.compose.ui.platform.ComposeView
+import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
+import co.com.japl.finances.iports.inbounds.creditcard.ICreditCardPort
+import co.com.japl.finances.iports.inbounds.creditcard.ISMSCreditCardPort
+import co.com.japl.finances.iports.inbounds.creditcard.ITaxPort
+import co.com.japl.finances.iports.inbounds.creditcard.bought.IBoughtPort
+import co.com.japl.finances.iports.inbounds.creditcard.bought.IBoughtSmsPort
+import co.com.japl.module.creditcard.controllers.bought.lists.BoughtMonthlyViewModel
+import co.com.japl.module.creditcard.views.bought.BoughtMonthly
+import co.com.japl.ui.theme.MaterialThemeComposeUI
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
+import co.com.japl.ui.Prefs
+
+@AndroidEntryPoint
+class ListCreditCardQuoteFragment : Fragment(){
+    @Inject lateinit var creditCardPort: ICreditCardPort
+    @Inject lateinit var boughtSvc:IBoughtPort
+    @Inject lateinit var creditRateSvc:ITaxPort
+    @Inject lateinit var msmSvc: ISMSCreditCardPort
+
+    @RequiresApi(Build.VERSION_CODES.S)
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+            val viewModel = BoughtMonthlyViewModel(
+                creditRateSvc,
+                creditCardPort,
+                boughtSvc,
+                navController = findNavController(),
+                Prefs(requireContext().applicationContext),
+                msmSvc
+            )
+            return ComposeView(requireContext()).apply {
+                setContent {
+                    MaterialThemeComposeUI {
+                        BoughtMonthly(viewModel = viewModel)
+                    }
+                }
+            }
+
+    }
+}

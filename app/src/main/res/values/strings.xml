@@ -541,4 +541,5 @@
     <string name="loading_data">Cargando Datos</string>
     <string name="total_records">"Total Registros: "</string>
     <string name="dialog_backup">"Esta seguro que desea realizar backup de la base de datos local de la aplicación "</string>
+    <string name="title_toolbar_account_google">Cuenta Google</string>
 </resources>

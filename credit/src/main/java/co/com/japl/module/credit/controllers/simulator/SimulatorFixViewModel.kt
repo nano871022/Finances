@@ -17,10 +17,12 @@ import co.com.japl.module.credit.views.simulator.Simulator
 import co.com.japl.ui.utils.initialFieldState
 import co.japl.android.graphs.utils.NumbersUtil
 import dagger.hilt.android.scopes.ViewModelScoped
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.math.BigDecimal
 
 @ViewModelScoped
@@ -130,7 +132,9 @@ class SimulatorFixViewModel(
     }
 
     fun calculate() = viewModelScope.launch{
-        simuladorSvc?.calculate(_simulator.value)?.let{ calc->
+        withContext(Dispatchers.IO) {
+            simuladorSvc?.calculate(_simulator.value)
+        }?.let{ calc->
             _simulator.update {
                 it.copy(
                     capitalValue = calc.capitalValue,
@@ -155,7 +159,9 @@ class SimulatorFixViewModel(
 
     fun save() = viewModelScope.launch{
         if(isValid() && name.validate()) {
-            simuladorSvc?.save(_simulator.value,false)?.takeIf { (it ?: (0.toLong())) > 0.toLong() }
+            withContext(Dispatchers.IO) {
+                simuladorSvc?.save(_simulator.value,false)
+            }?.takeIf { (it ?: (0.toLong())) > 0.toLong() }
                 ?.let { code ->
                     _simulator.update {
                         it.copy(code = code.toInt())

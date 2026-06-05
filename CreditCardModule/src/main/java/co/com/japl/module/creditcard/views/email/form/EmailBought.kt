@@ -66,7 +66,9 @@ fun EmailBought(viewModel: EmailCreditCardViewModel){
             )
 
             Text(text = stringResource(id = R.string.loading_data),
-                color = MaterialTheme.colorScheme.onPrimary)
+                textAlign = TextAlign.Center,
+                color = MaterialTheme.colorScheme.onPrimary,
+                modifier=Modifier.fillMaxWidth())
         } else {
             Body(viewModel)
         }
@@ -126,7 +128,7 @@ private fun Body(viewModel: EmailCreditCardViewModel) {
                 isError = isErrorKCB,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = Dimensions.PADDING_TOP)
+
             ) {
                 valueKCB.value = it
             }
@@ -137,7 +139,7 @@ private fun Body(viewModel: EmailCreditCardViewModel) {
                 hasErrorState = isErrorSender,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = Dimensions.PADDING_TOP)
+
             ) {
                 sender.value = it
             }
@@ -148,7 +150,7 @@ private fun Body(viewModel: EmailCreditCardViewModel) {
                 hasErrorState = isErrorSubjectPattern,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = Dimensions.PADDING_TOP)
+
             ) {
                 subjectPattern.value = it
             }
@@ -159,7 +161,7 @@ private fun Body(viewModel: EmailCreditCardViewModel) {
                 hasErrorState = isErrorBodyPattern,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = Dimensions.PADDING_TOP)
+
             ) {
                 bodyPattern.value = it
             }

@@ -1,5 +1,6 @@
 package co.com.japl.module.creditcard.controllers.emailcreditcard.list
 
+import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import co.com.japl.finances.iports.dtos.EmailCreditCardDTO
 import co.com.japl.finances.iports.inbounds.creditcard.IEmailCreditCardPort
@@ -14,7 +15,7 @@ import kotlinx.coroutines.withContext
 
 class EmailListCreditCardViewModel(val svc: IEmailCreditCardPort?, val navController: NavController?) : ViewModel(){
 
-    val load = mutableStateOf(false)
+    val load = mutableStateOf(true)
     val list = mutableListOf<EmailCreditCardDTO>()
 
     fun create(){
@@ -30,76 +31,62 @@ class EmailListCreditCardViewModel(val svc: IEmailCreditCardPort?, val navContro
     }
 
     fun activate(id:Int,active:Boolean){
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch {
             runCatching {
-                svc?.activate(id, active)?:false
-            }.onFailure { e ->
-                withContext(Dispatchers.Main) {
-
+                withContext(Dispatchers.IO) {
+                    svc?.activate(id, active) ?: false
                 }
+            }.onFailure { e ->
             }.onSuccess { resp ->
-                withContext(Dispatchers.Main) {
-                    if (resp) {
-                        main()
-                    } else {
-
-                    }
+                if (resp) {
+                    load.value = true
                 }
             }
         }
     }
 
     fun delete(id:Int){
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch {
             runCatching {
-                svc?.delete(id)?:false
-            }.onFailure { e ->
-                withContext(Dispatchers.Main) {
-
+                withContext(Dispatchers.IO) {
+                    svc?.delete(id) ?: false
                 }
+            }.onFailure { e ->
             }.onSuccess { resp ->
-                withContext(Dispatchers.Main) {
-                    if (resp) {
-                        main()
-                    } else {
-
-                    }
+                if (resp) {
+                    load.value = true
                 }
             }
         }
     }
 
     fun clone(id:Int){
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch {
             runCatching {
-                svc?.clone(id)?:false
-            }.onFailure { e ->
-                withContext(Dispatchers.Main) {
-
+                withContext(Dispatchers.IO) {
+                    svc?.clone(id) ?: false
                 }
+            }.onFailure { e ->
             }.onSuccess { resp ->
-                withContext(Dispatchers.Main) {
-                    if (resp) {
-
-                    } else {
-
-                    }
+                if (resp) {
+                    load.value = true
                 }
             }
         }
     }
 
-    fun main () = runBlocking {
-        load.value = true
-        execution()
-    }
 
-    suspend fun execution(){
-        svc?.getAll()?.let{
-            list.clear()
-            list.addAll(it)
-            load.value = false
+    fun execution()=viewModelScope.launch{
+        svc?.let{
+            withContext(Dispatchers.IO){
+                it.getAll()
+            }.let{
+                list.clear()
+                list.addAll(it)
+                Log.d(javaClass.simpleName,"${it.size}")
+            }
         }
+        load.value = false
     }
 
 }

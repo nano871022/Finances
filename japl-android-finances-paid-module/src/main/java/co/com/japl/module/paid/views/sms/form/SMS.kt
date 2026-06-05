@@ -107,7 +107,7 @@ private fun Body(viewModel: SmsViewModel,modifier:Modifier) {
             value = creditCard.value?.second ?: "",
             list = listCreditCard,
             isError = errorCreditCard,
-            modifier = modifier,
+            modifier = Modifier,
             callAble = {
                 it?.let {
                     creditCard.value = it
@@ -125,7 +125,7 @@ private fun Body(viewModel: SmsViewModel,modifier:Modifier) {
             callback = {
                 phoneNumber.value = it
             },
-            modifier = modifier
+            modifier = Modifier.fillMaxWidth()
         )
 
         FieldText(
@@ -138,7 +138,7 @@ private fun Body(viewModel: SmsViewModel,modifier:Modifier) {
             callback = {
                 pattern.value = it
             },
-            modifier = modifier
+            modifier = Modifier.fillMaxWidth()
         )
 
         if(AIValid) {

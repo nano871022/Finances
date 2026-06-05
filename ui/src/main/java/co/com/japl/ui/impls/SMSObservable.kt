@@ -1,8 +1,8 @@
 package co.com.japl.ui.impls
 
-import co.com.japl.ui.interfaces.ISMSObservablePublicher
-import co.com.japl.ui.interfaces.ISMSObservableSubscriber
-import co.com.japl.ui.interfaces.ISMSObserver
+import co.com.japl.finances.iports.observables.ISMSObservablePublicher
+import co.com.japl.finances.iports.observables.ISMSObservableSubscriber
+import co.com.japl.finances.iports.observables.ISMSObserver
 
 class SMSObservable : ISMSObservableSubscriber, ISMSObservablePublicher{
     private val observers = mutableListOf<ISMSObserver>()

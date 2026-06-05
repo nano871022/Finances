@@ -10,4 +10,7 @@
     <string name="monthly_effective">Efectivo Mensual</string>
     <string name="anual_nominal">Nominal Anual</string>
     <string name="monthly_nominal">Nominal Mensual</string>
+    <string name="credit_Card">Tarjeta Crédito</string>
+    <string name="wallet_buy">Compra Cartera</string>
+    <string name="cash_advance">Avance</string>
 </resources>

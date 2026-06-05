@@ -32,6 +32,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
+import co.japl.android.myapplication.finanzas.controller.google.GoogleAuthBackupRestoreViewModel
 import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.japl.android.myapplication.R
 import coil.compose.AsyncImage
@@ -480,5 +481,5 @@ fun ProfileLogedPreview(){
 
 @Composable
 private fun getViewModel(): GoogleAuthBackupRestoreViewModel{
-    return GoogleAuthBackupRestoreViewModel(null,null,null,null,null)
+    return GoogleAuthBackupRestoreViewModel(null,null,null)
 }

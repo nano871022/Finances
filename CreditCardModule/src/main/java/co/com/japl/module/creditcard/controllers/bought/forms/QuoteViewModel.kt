@@ -26,12 +26,14 @@ import co.com.japl.ui.Prefs
 import co.com.japl.ui.utils.DateUtils
 import co.com.japl.ui.utils.FormUIState
 import co.com.japl.ui.utils.initialFieldState
-import co.japl.android.myapplication.utils.NumbersUtil
+import co.com.japl.ui.utils.NumbersUtil
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
 import java.math.BigDecimal
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -220,23 +222,37 @@ class QuoteViewModel(private val codeCreditCard:Int,
 
     }
 
-    fun create(){
+    fun create() = viewModelScope.launch {
         validate()
         if(validate) {
-            boughtSvc?.let {
+            boughtSvc?.let { svcPort ->
                 bought?.let { bought ->
-                    val id = it.create(bought, prefs.simulator)
+                    val id = withContext(Dispatchers.IO) {
+                        svcPort.create(bought, prefs.simulator)
+                    }
                     if (id > 0) {
                         if (oldBoughtId > 0) {
-                            boughtSvc.endingRecurrentPayment(oldBoughtId, LocalDateTime.now())
+                            withContext(Dispatchers.IO) {
+                                svcPort.endingRecurrentPayment(oldBoughtId, LocalDateTime.now())
+                            }
                         }
                         buyCreditCardSettingSvc?.let { svc ->
                             settingName.value.value?.let { value ->
-                                svc.createOrUpdate(getBuyCreditCardSetting(id, value.first))
-                            } ?: buySetting?.let { svc.delete(it.id) }
+                                withContext(Dispatchers.IO) {
+                                    svc.createOrUpdate(getBuyCreditCardSetting(id, value.first))
+                                }
+                            } ?: buySetting?.let {
+                                withContext(Dispatchers.IO) {
+                                    svc.delete(it.id)
+                                }
+                            }
                         }
                         tagSvc?.let { svc ->
-                            tagSelected.value.value?.let { value -> svc.createOrUpdate(value.id, id) }
+                            tagSelected.value.value?.let { value ->
+                                withContext(Dispatchers.IO) {
+                                    svc.createOrUpdate(value.id, id)
+                                }
+                            }
                         }
                         navController?.let { navController ->
                             Toast.makeText(
@@ -259,23 +275,37 @@ class QuoteViewModel(private val codeCreditCard:Int,
         }
     }
 
-    fun createAndBack(){
+    fun createAndBack() = viewModelScope.launch {
         validate()
         if(validate) {
-            boughtSvc?.let {
+            boughtSvc?.let { svcPort ->
                 bought?.let { bought ->
-                    val id = it.create(bought, prefs.simulator)
+                    val id = withContext(Dispatchers.IO) {
+                        svcPort.create(bought, prefs.simulator)
+                    }
                     if (id > 0) {
                         if (oldBoughtId > 0) {
-                            boughtSvc.endingRecurrentPayment(oldBoughtId, LocalDateTime.now())
+                            withContext(Dispatchers.IO) {
+                                svcPort.endingRecurrentPayment(oldBoughtId, LocalDateTime.now())
+                            }
                         }
                         buyCreditCardSettingSvc?.let { svc ->
                             settingName.value.value?.let { value ->
-                                svc.createOrUpdate(getBuyCreditCardSetting(id, value.first))
-                            } ?: buySetting?.let { svc.delete(it.id) }
+                                withContext(Dispatchers.IO) {
+                                    svc.createOrUpdate(getBuyCreditCardSetting(id, value.first))
+                                }
+                            } ?: buySetting?.let {
+                                withContext(Dispatchers.IO) {
+                                    svc.delete(it.id)
+                                }
+                            }
                         }
                         tagSvc?.let { svc ->
-                            tagSelected.value.value?.let { value -> svc.createOrUpdate(value.id, id) }
+                            tagSelected.value.value?.let { value ->
+                                withContext(Dispatchers.IO) {
+                                    svc.createOrUpdate(value.id, id)
+                                }
+                            }
                         }
                         navController?.let { navController ->
                             Toast.makeText(
@@ -298,18 +328,33 @@ class QuoteViewModel(private val codeCreditCard:Int,
         }
     }
 
-    fun update(){
+    fun update() = viewModelScope.launch {
         validate()
         if(validate) {
-            boughtSvc?.let {
-                if(it.update(bought!!,prefs.simulator)) {
+            boughtSvc?.let { svcPort ->
+                val result = withContext(Dispatchers.IO) {
+                    svcPort.update(bought!!, prefs.simulator)
+                }
+                if(result) {
                     buyCreditCardSettingSvc?.let{svc->
                         settingName.value.value?.let{ value ->
-                            bought?.let{dto->svc.createOrUpdate(getBuyCreditCardSetting(dto.id,value.first))}
-                        }?:buySetting?.let {svc.delete(it.id)}
+                            bought?.let{dto->
+                                withContext(Dispatchers.IO) {
+                                    svc.createOrUpdate(getBuyCreditCardSetting(dto.id, value.first))
+                                }
+                            }
+                        }?:buySetting?.let {
+                            withContext(Dispatchers.IO) {
+                                svc.delete(it.id)
+                            }
+                        }
                     }
                     tagSvc?.let { svc ->
-                        tagSelected.value.value?.let{svc.createOrUpdate(it.id,codeBought)}
+                        tagSelected.value.value?.let{
+                            withContext(Dispatchers.IO) {
+                                svc.createOrUpdate(it.id, codeBought)
+                            }
+                        }
                     }
                     navController?.let { navController ->
                         Toast.makeText(
@@ -331,7 +376,7 @@ class QuoteViewModel(private val codeCreditCard:Int,
         }
     }
 
-    fun createTag(tagName:String):TagDTO?=
+    suspend fun createTag(tagName:String):TagDTO?=
          tagSvc?.let {
             val tag = TagDTO(
                 id = 0,
@@ -339,7 +384,9 @@ class QuoteViewModel(private val codeCreditCard:Int,
                 active = true,
                 create = LocalDate.now()
             )
-            val id =  it.create(tag)
+            val id = withContext(Dispatchers.IO) {
+                it.create(tag)
+            }
             return tag.copy(id = id)
         }
 
@@ -361,8 +408,11 @@ class QuoteViewModel(private val codeCreditCard:Int,
         }
     }
 
-    fun deleteTag(codeTag:Int){
-        if(tagSvc?.delete(codeTag) == true){
+    fun deleteTag(codeTag:Int) = viewModelScope.launch {
+        val result = withContext(Dispatchers.IO) {
+            tagSvc?.delete(codeTag) == true
+        }
+        if(result){
             navController?.let {navController->
                 Toast.makeText(navController.context,R.string.toast_successful_deleted,Toast.LENGTH_SHORT).show().also {
                     loadTags()
@@ -467,7 +517,7 @@ class QuoteViewModel(private val codeCreditCard:Int,
         }
     }
 
-    fun main()= runBlocking {
+    fun main() = viewModelScope.launch {
         progress.floatValue = 0.1f
         execute()
         progress.floatValue = 1.0f
@@ -478,8 +528,10 @@ class QuoteViewModel(private val codeCreditCard:Int,
         progress.floatValue = 0.2f
         dateBought.onValueChange(DateUtils.localDateToStringDate(LocalDate.now()))
         progress.floatValue = 0.3f
-        creditCardSvc?.let {
-            it.getCreditCard(codeCreditCard)?.let {
+        creditCardSvc?.let { svcPort ->
+            withContext(Dispatchers.IO) {
+                svcPort.getCreditCard(codeCreditCard)
+            }?.let {
                 creditCardName.onValueChange(it.name)
                 DateUtils.cutOff(it.cutOffDay, period.toLocalDate())?.let {
                     cutOffDate = it
@@ -488,17 +540,21 @@ class QuoteViewModel(private val codeCreditCard:Int,
             }
         }
 
-        creditRateSvc?.let {
-            it.get(codeCreditCard,cutOffDate?.monthValue!!,cutOffDate?.year!!,KindInterestRateEnum.CREDIT_CARD)?.let {
+        creditRateSvc?.let { svcPort ->
+            withContext(Dispatchers.IO) {
+                svcPort.get(codeCreditCard, cutOffDate?.monthValue!!, cutOffDate?.year!!, KindInterestRateEnum.CREDIT_CARD)
+            }?.let {
                 taxDto = it
                 creditRate.onValueChange(it.value.toString())
                 creditRateKind.onValueChange( it.kindOfTax?.getName()?: KindOfTaxEnum.MONTHLY_EFFECTIVE.name)
             }
         }
 
-        boughtSvc?.let {
+        boughtSvc?.let { svcPort ->
             if (oldBoughtId > 0) {
-                it.getById(oldBoughtId, prefs.simulator)?.let {
+                withContext(Dispatchers.IO) {
+                    svcPort.getById(oldBoughtId, prefs.simulator)
+                }?.let {
                     nameProduct.onValueChange(it.nameItem)
                     valueProduct.onValueChange(NumbersUtil.toString(it.valueItem))
                     monthProduct.onValueChange(it.month.toString())
@@ -509,7 +565,9 @@ class QuoteViewModel(private val codeCreditCard:Int,
             }
 
             if(codeBought > 0) {
-                it.getById(codeBought, prefs.simulator)?.let {
+                withContext(Dispatchers.IO) {
+                    svcPort.getById(codeBought, prefs.simulator)
+                }?.let {
                     bought = it
                     isNew.value = false
 
@@ -533,9 +591,11 @@ class QuoteViewModel(private val codeCreditCard:Int,
 
     }
 
-    private fun loadSettings(){
-        creditCardSettingSvc?.let {
-            it.getAll(codeCreditCard)?.let {
+    private suspend fun loadSettings(){
+        creditCardSettingSvc?.let { svcPort ->
+            withContext(Dispatchers.IO) {
+                svcPort.getAll(codeCreditCard)
+            }?.let {
                 settingList.clear()
                 settingKind.list.clear()
                 settingList.addAll(it)
@@ -547,8 +607,10 @@ class QuoteViewModel(private val codeCreditCard:Int,
             }
         }
 
-        buyCreditCardSettingSvc?.let{
-            it.get(codeBought)?.let{dto->
+        buyCreditCardSettingSvc?.let{ svcPort ->
+            withContext(Dispatchers.IO) {
+                svcPort.get(codeBought)
+            }?.let{dto->
                 buySetting = dto
                 settingKind.onValueChange( settingList.filter { it.id == dto.codeCreditCardSetting }?.map {setting->
                     settingKind.list.first { it?.second == setting.type }
@@ -559,14 +621,18 @@ class QuoteViewModel(private val codeCreditCard:Int,
         }
     }
 
-    private fun loadTags(){
-        tagSvc?.let {
-            it.getAll()?.let {
+    private suspend fun loadTags(){
+        tagSvc?.let { svcPort ->
+            withContext(Dispatchers.IO) {
+                svcPort.getAll()
+            }?.let {
                 tagSelected.list.clear()
                 tagSelected.list.addAll(it)
                 progress.floatValue = 0.7f
             }
-            it.get(codeBought)?.let {
+            withContext(Dispatchers.IO) {
+                svcPort.get(codeBought)
+            }?.let {
                 tagSelected.onValueChange( it )
                 progress.floatValue = 0.75f
             }

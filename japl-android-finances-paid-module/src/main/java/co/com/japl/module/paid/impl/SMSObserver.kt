@@ -4,8 +4,8 @@ import co.com.japl.finances.iports.dtos.SMSPaidDTO
 import co.com.japl.finances.iports.inbounds.inputs.IAccountPort
 import co.com.japl.finances.iports.inbounds.paid.ISMSPaidPort
 import co.com.japl.finances.iports.inbounds.paid.ISmsPort
-import co.com.japl.ui.interfaces.ISMSObservableSubscriber
-import co.com.japl.ui.interfaces.ISMSObserver
+import co.com.japl.finances.iports.observables.ISMSObservableSubscriber
+import co.com.japl.finances.iports.observables.ISMSObserver
 import javax.inject.Inject
 
 class SMSObserver @Inject constructor(
