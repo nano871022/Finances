@@ -6,13 +6,16 @@ import androidx.compose.material3.Surface
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.border
+import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.layout.Column
 
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.RowScope
+
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Divider
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.MoreVert
@@ -77,7 +80,7 @@ fun CreditList(viewModel:ListViewModel) {
 @Composable
 private fun Body(viewModel:ListViewModel){
     val list = remember {viewModel.list}
-    Column(modifier=Modifier.fillMaxWidth()){
+    Column(modifier=Modifier.fillMaxWidth().verticalScroll(rememberScrollState())){
 
             FieldViewCards(name = R.string.total_due,
                 value = NumbersUtil.COPtoString( list.sumOf { it.credit.value }),
