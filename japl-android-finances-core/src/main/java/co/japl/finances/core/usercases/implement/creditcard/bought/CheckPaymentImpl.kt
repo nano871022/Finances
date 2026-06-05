@@ -32,7 +32,7 @@ class CheckPaymentImpl @Inject constructor(private val svc:ICreditCardCheckPayme
                 }
             }
         }.groupBy { it?.period }.map{
-            PeriodCheckPaymentDTO(it.key!!,
+            PeriodCheckPaymentDTO(it?.key?: YearMonth.now(),
                 it.value.sumOf { it?.count?:0 },
                 it.value.sumOf { it?.amount?:0.0 },
                 it.value.sumOf { it?.paid?:0.0 })
