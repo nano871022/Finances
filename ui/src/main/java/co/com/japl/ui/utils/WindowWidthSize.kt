@@ -5,6 +5,8 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
 enum class WindowWidthSize(private val size: Dp?) {
+    NANO(200.dp),
+    MICRO(250.dp),
     COMPACT(500.dp),
     MEDIUM(740.dp),
     MEDIUMX(800.dp),

@@ -54,6 +54,21 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+
+
+        <receiver
+            android:name="co.japl.android.myapplication.finanzas.controller.widget.MonthlyToPayWidgetReceiver"
+            android:exported="true"
+            android:label="@string/recap_paid">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/monthly_to_pay_widget_info" />
+        </receiver>
+
     </application>
 
 </manifest>

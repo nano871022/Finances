@@ -76,7 +76,7 @@ private fun CarouselView(model:RecapViewModel){
             0 -> CardRecap(
                 title = stringResource(id = R.string.recap),
                 model.totalInbound,
-                model.totalPayed + model.totalCredits + model.totalCreditCard
+                model.totalToPay
             )
 
             1 -> CardProjections(
