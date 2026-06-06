@@ -36,6 +36,7 @@ class RecapViewModel @Inject constructor(private var recapSvc:IRecapPort?,privat
     val totalCredits : Double get() =  _recap?.totalQuoteCredit?:0.0
     val totalCreditCard : Double get() =  _recap?.totalQuoteCreditCard?:0.0
     val warningValue : Double get() =  _recap?.warningValueCreditCard?:0.0
+    val totalToPay : Double get() = totalPayed + totalCredits + totalCreditCard
 
 
     fun setRecap(recap:RecapDTO){
