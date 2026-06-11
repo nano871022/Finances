@@ -19,6 +19,7 @@ import co.japl.finances.core.model.Tax
 import co.japl.finances.core.usercases.calculations.InterestCalculations
 import co.japl.finances.core.usercases.calculations.ValuesCalculation
 import co.japl.finances.core.usercases.interfaces.common.IQuoteCreditCard
+import co.japl.finances.core.usercases.interfaces.creditcard.bought.lists.IBoughtList
 import co.japl.finances.core.usercases.mapper.CreditCardMap
 import co.japl.finances.core.utils.DateUtils
 import java.math.BigDecimal
@@ -34,6 +35,7 @@ class QuoteCreditCardImpl @Inject constructor(private val creditCardSvc:ICreditC
 ,private val valuesCalculation: ValuesCalculation
     ,private val interestCalculation: InterestCalculations
     , private val listBoughts: ListBoughts
+    ,private val boughtSvc: IBoughtList
 ): IQuoteCreditCard {
 
     override fun getTotalQuote(cache:Boolean): BigDecimal {
@@ -41,15 +43,8 @@ class QuoteCreditCardImpl @Inject constructor(private val creditCardSvc:ICreditC
             val creditCardPojo = CreditCardMap.mapper(creditCard)
             val endDate = DateUtils.cutOffLastMonth(creditCardPojo.cutoffDay)
             val startDate = DateUtils.startDateFromCutoff(creditCardPojo.cutoffDay,endDate)
-            val capital = getCapital(creditCard.id, startDate, endDate,cache)?:BigDecimal.ZERO
-            val capitalQuotes =
-                getCapitalPendingQuotes(creditCard.id, startDate, endDate,cache)?:BigDecimal.ZERO
-            val interest = getInterest(creditCard.id, startDate, endDate,cache)?:BigDecimal.ZERO
-            val interestQuote =
-                getInterestPendingQuotes(creditCard.id, startDate, endDate,cache)?:BigDecimal.ZERO
-            capital + capitalQuotes+ interest + interestQuote.also{
-                Log.d(javaClass.name,"<<<=== getTotalQuote - Capital $capital Capital Quotes $capitalQuotes Interest $interest Interest Quote $interestQuote Response $it")
-            }
+            val list = boughtSvc.getBoughtList(CreditCardMap.mapper(creditCard),endDate,cache);
+            list.list.sumOf{it.quoteValue}.toBigDecimal()
         }
     }
 

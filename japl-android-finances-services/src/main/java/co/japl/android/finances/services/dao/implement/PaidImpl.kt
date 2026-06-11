@@ -202,10 +202,9 @@ class PaidImpl @Inject constructor(override var dbConnect: SQLiteOpenHelper) : I
                     val datePaid = cursor.getString(2).let { DateUtils.toLocalDate(it) }
                     val endDate = cursor.getString(3).let { DateUtils.toLocalDate(it) }
                     val value = cursor.getDouble(0)
-                    if (((recurrent == 1 && endDate >= date.withDayOfMonth(1).plusMonths(1)) ||
-                                datePaid in date.withDayOfMonth(1)..date.plusMonths(1)
-                            .withDayOfMonth(1).minusDays(1)) &&
-                        endDate >= date.withDayOfMonth(1).plusMonths(1)
+                    if (recurrent == 1 &&
+                        ((endDate >= date.withDayOfMonth(1).plusMonths(1)) ||
+                                 datePaid in date.withDayOfMonth(1)..date.plusMonths(1).withDayOfMonth(1).minusDays(1))
                     ) {
                         listValues.add(value)
                     }

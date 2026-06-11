@@ -30,7 +30,7 @@ class MonthlyToPayViewModel (val context: Context, private val prefs:Prefs){
     suspend fun load(){
         withContext(Dispatchers.IO) {
             runCatching {
-                recapSvc.getTotalValues(LocalDate.now(), prefs.simulator)
+                recapSvc.getTotalValues(LocalDate.now(), false)
             }.let{
                 dto = it
             }

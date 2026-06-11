@@ -25,13 +25,13 @@ import javax.inject.Inject
 class Bought @Inject constructor(private val boughtSvc:IQuoteCreditCardPort,private val service:IBoughtList,private val creditRateSvc:ITax, private val interestCalculation:InterestCalculations, private val valuesCalculation:ValuesCalculation):IBought{
 
     override fun getRecap(creditCard:CreditCardDTO,cutOffDate:LocalDateTime,cache:Boolean): RecapMonthly {
-        return RecapMonthly(getCurrentRecap(
+        return RecapMonthly(current=getCurrentRecap(
             CreditCardMap.mapper(creditCard),
             cutOffDate,cache
-        ),getLastRecap(
+        ),last=getLastRecap(
             CreditCardMap.mapper(creditCard),
             cutOffDate,cache
-        ),getGraphList(
+        ),graph=getGraphList(
             CreditCardMap.mapper(creditCard),
             cutOffDate,cache
         ))
