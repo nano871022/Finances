@@ -18,8 +18,8 @@ android {
         applicationId "co.japl.android.myapplication"
         minSdk 26
         targetSdk 36
-        versionCode 4_08_02_182
-        versionName "V 4.08.02 build 182 Improve DIAN Taxes"
+        versionCode 4_09_00_183
+        versionName "V 4.09.00 build 183 Create Widget with recap information and fix some issues in views and credits when was finish keep show it"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }

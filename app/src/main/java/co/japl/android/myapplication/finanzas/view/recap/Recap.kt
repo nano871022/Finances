@@ -70,7 +70,7 @@ fun Recap(model:RecapViewModel= viewModel()) {
 @Composable
 private fun CarouselView(model:RecapViewModel){
     Carousel(
-        size = 4, modifier = Modifier.height(250.dp)
+        size = 5, modifier = Modifier.height(250.dp)
     ) {
         when (it) {
             0 -> CardRecap(
@@ -96,6 +96,12 @@ private fun CarouselView(model:RecapViewModel){
                 title = stringResource(id = R.string.credit_cards),
                 totalCC = model.totalCreditCard,
                 warningValue = model.warningValue
+            )
+
+            4 -> CardMonthlyToPay(
+                totalPayed = model.totalPayed,
+                totalCredits = model.totalCredits,
+                totalCreditCard = model.totalCreditCard
             )
         }
     }
