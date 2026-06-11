@@ -542,4 +542,12 @@
     <string name="total_records">"Total Registros: "</string>
     <string name="dialog_backup">"Esta seguro que desea realizar backup de la base de datos local de la aplicación "</string>
     <string name="title_toolbar_account_google">Cuenta Google</string>
+    <string name="total_paid_short">Pagado</string>
+    <string name="total_credits_short">Creditos</string>
+    <string name="total_quote_credit_card_short">Tarjeta Crédito</string>
+    <string name="recap_paid">Resumen de Pagos</string>
+    <string name="total_short">Tot</string>
+    <string name="total_quote_credit_card_sshort">TC</string>
+    <string name="total_credits_sshort">Cred</string>
+    <string name="total_paid_sshort">Pags</string>
 </resources>

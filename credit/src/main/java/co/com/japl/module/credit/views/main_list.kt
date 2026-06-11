@@ -53,7 +53,10 @@ import co.com.japl.ui.components.MoreOptionsDialog
 import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.com.japl.ui.theme.values.Dimensions
 import co.japl.android.graphs.utils.NumbersUtil
+import java.text.SimpleDateFormat
 import java.time.LocalDate
+import java.time.format.DateTimeFormatter
+import java.util.Locale
 
 @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
 @Composable
@@ -133,14 +136,15 @@ private fun Body(viewModel:ListViewModel){
 
 @Composable
 private fun Yearly(year:Int,items: List<CreditPeriodGraceDTO>,delete:(Int)->Unit,amortization:(Int)->Unit,periodGrace:(Int,Int,LocalDate)->Unit,additional:(Int)->Unit,deletePeriodGrace:(Int)->Unit, edit:(Int)->Unit,getMonthsPaid:(Int,LocalDate)->Long){
+    val sdf = DateTimeFormatter.ofPattern("MMMM", Locale("es"))
     Surface(modifier=Modifier.padding(Dimensions.PADDING_SHORT)){
         Column(modifier=Modifier.border(1.dp, MaterialTheme.colorScheme.onBackground,
             RoundedCornerShape(10.dp)
         )) {
-            var group = items.groupBy { it.credit.date.month }
+            var group = items.groupBy {it.credit.date.format(sdf) }
             Text(text = year.toString(), modifier = Modifier.padding(Dimensions.PADDING_SHORT))
             for(item in group) {
-                Monthly(item.key.name, item.value, delete,amortization,periodGrace,additional,deletePeriodGrace,edit,getMonthsPaid)
+                Monthly(item.key, item.value, delete,amortization,periodGrace,additional,deletePeriodGrace,edit,getMonthsPaid)
             }
         }
     }

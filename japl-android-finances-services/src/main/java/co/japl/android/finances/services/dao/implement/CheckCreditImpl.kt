@@ -6,11 +6,15 @@ import android.os.Build
 import android.provider.BaseColumns
 import android.util.Log
 import androidx.annotation.RequiresApi
+import co.com.japl.finances.iports.dtos.CheckPaymentDTO
 import co.japl.android.finances.services.dto.*
 import co.japl.android.finances.services.dao.interfaces.ICheckCreditDAO
 import co.japl.android.finances.services.mapping.CheckCreditMap
 import co.japl.android.finances.services.pojo.PeriodCheckPaymentsPOJO
 import co.japl.android.finances.services.utils.DatabaseConstants
+import java.time.LocalDateTime
+import java.time.YearMonth
+import java.time.format.DateTimeFormatter
 import java.util.*
 import javax.inject.Inject
 import kotlin.collections.ArrayList
