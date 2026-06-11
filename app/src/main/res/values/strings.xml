@@ -546,4 +546,8 @@
     <string name="total_credits_short">Creditos</string>
     <string name="total_quote_credit_card_short">Tarjeta Crédito</string>
     <string name="recap_paid">Resumen de Pagos</string>
+    <string name="total_short">Tot</string>
+    <string name="total_quote_credit_card_sshort">TC</string>
+    <string name="total_credits_sshort">Cred</string>
+    <string name="total_paid_sshort">Pags</string>
 </resources>

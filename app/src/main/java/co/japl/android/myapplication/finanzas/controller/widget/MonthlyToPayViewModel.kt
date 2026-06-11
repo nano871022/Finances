@@ -19,7 +19,11 @@ class MonthlyToPayViewModel (val context: Context, private val prefs:Prefs){
     fun value(value:Double,widthSz: WindowWidthSize):String{
         if(widthSz == WindowWidthSize.COMPACT){
             return "${NumbersUtil.COPtoString(value / 1000)}K"
+        }else if(widthSz == WindowWidthSize.NANO){
+            return "${NumbersUtil.COPtoString((value / 1000) / 1000)}M"
         }
+
+
         return NumbersUtil.COPtoString(value)
     }
 

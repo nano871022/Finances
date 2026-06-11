@@ -67,12 +67,52 @@ import co.japl.android.myapplication.finanzas.controller.widget.MonthlyToPayView
     @Composable
     private fun WidgetContent(context: Context,recap: RecapDTO,value:(Double, WindowWidthSize)->String) {
         val size = LocalSize.current
-        if(WindowWidthSize.MICRO.isEqualTo(size.width)) {
+        if(WindowWidthSize.NANO.isEqualTo(size.width)) {
+            ContentNano(context, recap,value)
+        }else if(WindowWidthSize.MICRO.isEqualTo(size.width)) {
             ContentCompact(context, recap,value)
         }else{
             ContentLarge(context, recap,value)
         }
     }
+
+@Composable
+private fun ContentNano(context: Context, recap: RecapDTO, value:(Double, WindowWidthSize)->String) {
+    val total = recap.totalPaid + recap.totalQuoteCredit + recap.totalQuoteCreditCard
+    Column(
+        modifier = GlanceModifier
+            .fillMaxSize()
+            .background(GlanceTheme.colors.surface)
+            .padding(16.dp)
+            .cornerRadius(16.dp)
+    ) {
+        Text(
+            text = context.getString(R.string.to_pay),
+            style = TextStyle(
+                fontWeight = FontWeight.Bold,
+                color = GlanceTheme.colors.onSurface,
+            ),
+            modifier = GlanceModifier.padding(bottom = 10.dp)
+        )
+
+        FieldRow(label=R.string.total_paid_sshort,value=value(recap.totalPaid,
+            WindowWidthSize.NANO),context=context)
+        FieldRow(label=R.string.total_credits_sshort,value= value(recap.totalQuoteCredit,
+            WindowWidthSize.NANO),context=context)
+        FieldRow(label=R.string.total_quote_credit_card_sshort, value=value(recap.totalQuoteCreditCard,
+            WindowWidthSize.NANO),context=context)
+
+        Spacer(
+            modifier = GlanceModifier.height(1.dp).fillMaxWidth()
+                .background(GlanceTheme.colors.onPrimary)
+        )
+
+        FieldRow(label=R.string.total_short,value=value(total, WindowWidthSize.NANO),
+            isTotal = true,context=context
+
+        )
+    }
+}
 
     @Composable
     private fun ContentCompact(context: Context, recap: RecapDTO, value:(Double, WindowWidthSize)->String) {
