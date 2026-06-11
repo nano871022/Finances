@@ -13,6 +13,7 @@ import java.time.LocalDateTime
 import java.time.YearMonth
 import java.time.format.DateTimeFormatter
 import javax.inject.Inject
+import kotlin.text.toLong
 
 class CreditCheckPaymentImpl @Inject constructor(private val svc:ICheckCreditDAO) : ICreditCheckPaymentPort {
     override fun getPeriodsPayment(): List<PeriodCheckPaymentDTO> {
@@ -29,6 +30,7 @@ class CreditCheckPaymentImpl @Inject constructor(private val svc:ICheckCreditDAO
                 period = period.format(DateTimeFormatter.ofPattern("yyyyMM")),
             )
         ).map{CheckPaymentMapper.mapper(it,CheckPaymentsEnum.CREDITS)}
+
     }
 
     override fun save(check: CheckPaymentDTO): CheckPaymentDTO {

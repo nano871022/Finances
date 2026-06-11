@@ -10,10 +10,11 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.FloatingActionButton
 import androidx.compose.material.FloatingActionButtonDefaults
-import androidx.compose.material.Surface
+import androidx.compose.material3.Surface
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.AttachMoney
 import androidx.compose.material.icons.rounded.MoreVert
@@ -126,11 +127,13 @@ private fun Content(modelView: InputListModelView, modifier:Modifier) {
             val monthly = item.value.groupBy { it.date.month.getDisplayName( TextStyle.FULL, Locale("es","CO")) }
             Surface(
                 border = BorderStroke(1.dp, MaterialTheme.colorScheme.onBackground),
+                shape= RoundedCornerShape(10.dp),
                 modifier=Modifier.padding(Dimensions.PADDING_SHORT)) {
                 Column(modifier=Modifier.padding(Dimensions.PADDING_SHORT)){
                 Text(text = "${item.key}")
                 for (item in monthly) {
                     Surface(border = BorderStroke(1.dp, MaterialTheme.colorScheme.onBackground),
+                        shape= RoundedCornerShape(10.dp),
                         modifier=Modifier.padding(Dimensions.PADDING_SHORT)) {
                         Column(modifier=Modifier.padding(Dimensions.PADDING_SHORT)) {
                             Text(text = "${item.key}")

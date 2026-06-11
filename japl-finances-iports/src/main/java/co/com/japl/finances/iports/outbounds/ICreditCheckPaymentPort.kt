@@ -11,5 +11,4 @@ interface ICreditCheckPaymentPort {
     fun getCheckPayments(period: YearMonth): List<CheckPaymentDTO>
 
     fun save(check: CheckPaymentDTO): CheckPaymentDTO
-
 }

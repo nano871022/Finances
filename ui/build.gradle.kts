@@ -41,6 +41,7 @@ android {
 }
 
 dependencies {
+    implementation("androidx.glance:glance:1.1.1")
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.0.4")
     implementation(project(":japl-finances-iports"))
     implementation(project(":japl-android-graphs"))
@@ -84,6 +85,8 @@ dependencies {
     implementation("androidx.compose.ui:ui-tooling-preview")
     implementation("androidx.compose.ui:ui")
     implementation("androidx.compose.ui:ui-graphics")
+
+    implementation("androidx.glance:glance-material3:1.1.1")
 
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.2.1")

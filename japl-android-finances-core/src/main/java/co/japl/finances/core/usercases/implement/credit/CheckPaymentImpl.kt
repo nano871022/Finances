@@ -6,13 +6,15 @@ import co.com.japl.finances.iports.enums.CheckPaymentsEnum
 import co.com.japl.finances.iports.outbounds.IAdditionalRecapPort
 import co.com.japl.finances.iports.outbounds.ICreditCheckPaymentPort
 import co.com.japl.finances.iports.outbounds.ICreditPort
+import co.com.japl.finances.iports.outbounds.IPeriodGracePort
 import co.japl.finances.core.usercases.interfaces.credit.ICheckPayment
+import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.YearMonth
 import javax.inject.Inject
 
-class CheckPaymentImpl @Inject constructor(private val svc:ICreditCheckPaymentPort,private val creditSvc:ICreditPort,private val additionalSvc:IAdditionalRecapPort):ICheckPayment {
+class CheckPaymentImpl @Inject constructor(private val svc:ICreditCheckPaymentPort,private val creditSvc:ICreditPort,private val additionalSvc:IAdditionalRecapPort, private val periodGraceSvc: IPeriodGracePort):ICheckPayment {
     override fun getPeriodsPayment(): List<PeriodCheckPaymentDTO> {
         return svc.getPeriodsPayment()
     }
@@ -29,18 +31,25 @@ class CheckPaymentImpl @Inject constructor(private val svc:ICreditCheckPaymentPo
         }?: emptyList()
         list.addAll(check)
         creditSvc.getAllActive(period).takeIf { it.isNotEmpty() && it.size > check.size }
-            ?.map { credit ->
+            ?.mapNotNull { credit ->
                 val additional = additionalSvc.getListByIdCredit(credit.id.toLong()).sumOf { it.value }.toDouble()
-                CheckPaymentDTO(
-                    id = 0,
-                    name = credit.name,
-                    amount = credit.quoteValue.toDouble() + additional,
-                    date = LocalDateTime.of(credit.date, LocalTime.MAX),
-                    codPaid = credit.id.toLong(),
-                    period = period,
-                    type = CheckPaymentsEnum.CREDITS
-                )
-        }?.takeIf { it.isNotEmpty() }?.let(list::addAll)
+                val periodGraceCnt = periodGraceSvc.getList(credit.id).count()
+                val date = credit.date
+                    .plusMonths(credit.periods.toLong())
+                    .plusMonths(periodGraceCnt.toLong())
+                if(date > LocalDate.now()) {
+                    return@mapNotNull CheckPaymentDTO(
+                        id = 0,
+                        name = credit.name,
+                        amount = credit.quoteValue.toDouble() + additional,
+                        date = LocalDateTime.of(credit.date, LocalTime.MAX),
+                        codPaid = credit.id.toLong(),
+                        period = period,
+                        type = CheckPaymentsEnum.CREDITS
+                    )
+                }
+                return@mapNotNull null
+               }?.takeIf { it.isNotEmpty() }?.let(list::addAll)
 
         return list.sortedByDescending { it.date }.distinctBy { it.codPaid }
     }
