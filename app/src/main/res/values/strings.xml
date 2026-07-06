@@ -541,6 +541,9 @@
     <string name="loading_data">Cargando Datos</string>
     <string name="total_records">"Total Registros: "</string>
     <string name="dialog_backup">"Esta seguro que desea realizar backup de la base de datos local de la aplicación "</string>
+    <string name="premiummember">Miembro VIP</string>
+    <string name="grant_permissions_title">Garantizar Permisos</string>
+    <string name="grant_permissions_message">Esta aplicación requiere permisos para acceder a su Google Drive (para copias de seguridad) y Gmail (para leer notificaciones de transacciones). ¿Desea continuar?</string>
     <string name="title_toolbar_account_google">Cuenta Google</string>
     <string name="total_paid_short">Pagado</string>
     <string name="total_credits_short">Creditos</string>
