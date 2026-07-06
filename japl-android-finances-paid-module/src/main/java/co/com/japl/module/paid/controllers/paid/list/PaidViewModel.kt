@@ -25,7 +25,6 @@ import dagger.assisted.AssistedInject
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import java.time.LocalDateTime
 import java.time.YearMonth
@@ -170,7 +169,7 @@ class PaidViewModel @AssistedInject constructor(@Assisted private val accountCod
     }
 
     fun main() {
-        periodOfList.value  = period.format(DateTimeFormatter.ofPattern("MMMM yyyy", Locale("es","CO")))
+        periodOfList.value = period.format(DateTimeFormatter.ofPattern("MMMM yyyy", Locale("es", "CO")))
         progressStatus.value = 0.0f
         viewModelScope.launch {
             execute()

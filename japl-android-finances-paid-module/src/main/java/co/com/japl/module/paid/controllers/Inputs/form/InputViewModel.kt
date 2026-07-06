@@ -16,7 +16,10 @@ import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.runBlocking
+import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.time.LocalDate
 
 @HiltViewModel(assistedFactory = InputViewModel.Factory::class)
@@ -87,17 +90,23 @@ class InputViewModel @AssistedInject constructor(@Assisted private val codeAccou
         }
     }
 
-    fun main()= runBlocking  {
-        progress.value = 0.1f
-        execution()
-        progress.value = 1f
+    fun main() {
+        viewModelScope.launch {
+            progress.value = 0.1f
+            execution()
+            progress.value = 1f
+        }
     }
 
-    suspend fun execution(){
+    suspend fun execution() {
         date.value = DateUtils.localDateToStringDate(LocalDate.now())
-        kindOfPayment.value = navController.context.getString(MoreOptionsKindPaymentInput.MONTHLY.getName())
-        codeInput?.takeIf { it > 0 }?.let {
-            inputSvc.getById(codeInput)?.let {
+        kindOfPayment.value =
+            navController.context.getString(MoreOptionsKindPaymentInput.MONTHLY.getName())
+        codeInput?.takeIf { it > 0 }?.let { code ->
+            val result = withContext(Dispatchers.IO) {
+                inputSvc.getById(code)
+            }
+            result?.let {
                 _input = it
                 date.value = DateUtils.localDateToStringDate(it.date)
                 kindOfPayment.value = it.kindOf
@@ -107,7 +116,7 @@ class InputViewModel @AssistedInject constructor(@Assisted private val codeAccou
             }
         }
 
-            loader.value = false
+        loader.value = false
 
     }
 

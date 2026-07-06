@@ -12,6 +12,7 @@ import androidx.compose.material.icons.rounded.Settings
 import androidx.compose.material.icons.rounded.Update
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -35,7 +36,7 @@ fun CreditCard(viewModel: CreditCardViewModel){
     remember { viewModel.showButtons }
     val buttonUpdateState = remember { viewModel.showButtonUpdate}
 
-    CoroutineScope(Dispatchers.IO).launch {
+    LaunchedEffect(Unit) {
         viewModel.main()
     }
 

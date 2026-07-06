@@ -12,7 +12,10 @@ import co.com.japl.finances.iports.inbounds.creditcard.ICreditCardPort
 import co.com.japl.finances.iports.inbounds.creditcard.ITaxPort
 import co.com.japl.module.creditcard.R
 import co.com.japl.module.creditcard.navigations.ListCreditRate
-import kotlinx.coroutines.runBlocking
+import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class CreditRateListViewModel(private val context:Context?, private val creditCardSvc:ICreditCardPort?, private val creditRateSvc:ITaxPort?, private val navController: NavController?):ViewModel() {
 
@@ -98,30 +101,33 @@ class CreditRateListViewModel(private val context:Context?, private val creditCa
         navController?.let { ListCreditRate.navigate(codeCreditCard,codeCreditRate,navigate = navController)}
     }
 
-    fun main() = runBlocking {
-        progress.floatValue = 0.1f
-        execute()
-        progress.floatValue = 1f
+    fun main() {
+        viewModelScope.launch {
+            progress.floatValue = 0.1f
+            execute()
+            progress.floatValue = 1f
+        }
     }
 
-    suspend fun execute(){
-        creditCardSvc?.let {
-            creditCardSvc.getAll()?.let { list ->
-                progress.floatValue = 0.5f
-                list.flatMap {
-                    creditRateSvc?.let{svc->
-                        svc.getByCreditCard(it.id)?.sortedByDescending { it.create }
-                    }?: listOf()
-                }.groupBy { rate ->
-                    list.find {
-                        it.id == rate.codCreditCard
+    suspend fun execute() {
+        creditCardSvc?.let { svc ->
+            val result = withContext(Dispatchers.IO) {
+                svc.getAll()?.let { list ->
+                    progress.floatValue = 0.5f
+                    list.flatMap {
+                        creditRateSvc?.let { svcTax ->
+                            svcTax.getByCreditCard(it.id)?.sortedByDescending { it.create }
+                        } ?: listOf()
+                    }.groupBy { rate ->
+                        list.find {
+                            it.id == rate.codCreditCard
+                        }
                     }
                 }
-            }.let {
-                progress.floatValue = 0.8f
-                creditCard = it?.toMutableMap()
-                showProgress.value = false
             }
+            progress.floatValue = 0.8f
+            creditCard = result?.toMutableMap()
+            showProgress.value = false
         }
     }
 

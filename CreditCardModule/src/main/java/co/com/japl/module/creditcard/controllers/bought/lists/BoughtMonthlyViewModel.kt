@@ -21,7 +21,10 @@ import co.com.japl.module.creditcard.navigations.Bought
 import co.com.japl.module.creditcard.navigations.ListCreditRate
 import co.com.japl.ui.Prefs
 import co.com.japl.ui.utils.DateUtils
-import kotlinx.coroutines.runBlocking
+import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.Period
@@ -123,16 +126,20 @@ class BoughtMonthlyViewModel(
         showCreditRate.value = false
     }
 
-    fun mainCreditCard()= runBlocking {
-        executeCreditCard()
+    fun mainCreditCard() {
+        viewModelScope.launch {
+            executeCreditCard()
+        }
     }
 
     suspend fun executeCreditCard() {
-        creditCardSvc?.getAll()?.let {
+        withContext(Dispatchers.IO) {
+            creditCardSvc?.getAll()
+        }?.let {
             listCreditCard = it
             creditCardList.clear()
             creditCardList.addAll(it.map { Pair<Int, String>(it.id, it.name) })
-            if(it.size == 1 && creditCard.value.isBlank()){
+            if (it.size == 1 && creditCard.value.isBlank()) {
                 creditCardCode.intValue = it.first().id
                 creditCard.value = it.first().name
                 main()
@@ -140,34 +147,38 @@ class BoughtMonthlyViewModel(
         }
     }
 
-    fun main()= runBlocking {
-        loader.value = false
-        progress.floatValue = 1f
-        execute()
-        progress.floatValue = 100f
-        loader.value = true
-        readSms()
-    }
-
-
-    suspend fun readSms(){
-        try {
-            msmSvc?.read(prefs.creditCardSMSDaysRead)
-        }catch (e:Exception){
-            Log.e(javaClass.name,e.message,e)
+    fun main() {
+        viewModelScope.launch {
+            loader.value = false
+            progress.floatValue = 1f
+            execute()
+            progress.floatValue = 100f
+            loader.value = true
+            readSms()
         }
     }
 
-    suspend fun execute(){
+
+    suspend fun readSms() {
+        try {
+            withContext(Dispatchers.IO) {
+                msmSvc?.read(prefs.creditCardSMSDaysRead)
+            }
+        } catch (e: Exception) {
+            Log.e(javaClass.name, e.message, e)
+        }
+    }
+
+    suspend fun execute() {
         if (creditCardCode.intValue != 0) {
             clear()
-            listCreditCard?.first { it.id == creditCardCode.intValue }?.let {creditCard->
+            listCreditCard?.first { it.id == creditCardCode.intValue }?.let { creditCard ->
                 progress.floatValue = 0.2f
                 creditCardSelected = creditCard
                 DateUtils.cutOff(creditCard.cutOffDay, LocalDate.now())?.let {
                     cutOff.value = it
                 }
-                daysLeftCutOff.value = Period.between(LocalDate.now(),cutOff.value.toLocalDate()).days
+                daysLeftCutOff.value = Period.between(LocalDate.now(), cutOff.value.toLocalDate()).days
                 progress.floatValue = 0.3f
                 DateUtils.cutOffLastMonth(creditCard.cutOffDay, cutOff.value)?.let {
                     lastMonthPaid.value = it
@@ -175,7 +186,10 @@ class BoughtMonthlyViewModel(
                 progress.floatValue = 0.4f
                 warningValue.value = creditCard.warningValue.toDouble()
                 progress.floatValue = 0.5f
-                boughtCreditCardSvc?.getRecap(creditCard, cutOff.value,cache.value)?.let {
+
+                withContext(Dispatchers.IO) {
+                    boughtCreditCardSvc?.getRecap(creditCard, cutOff.value, cache.value)
+                }?.let {
                     it.current?.let {
                         progress.floatValue = 0.6f
                         capitalValue.value = it.capitalValue
@@ -197,29 +211,52 @@ class BoughtMonthlyViewModel(
                     }
                 }
 
-                boughtCreditCardSvc?.getBoughtCurrentPeriodList(creditCard,cutOff.value,cache.value)?.let{
+                withContext(Dispatchers.IO) {
+                    boughtCreditCardSvc?.getBoughtCurrentPeriodList(creditCard, cutOff.value, cache.value)
+                }?.let {
                     graphListPeriod.addAll(it)
                     progress.floatValue = 0.8f
                 }
 
-                creditRate?.let {
+                creditRate?.let { svc ->
 
-                    it.get(creditCard.id,cutOff.value.monthValue,cutOff.value.year,KindInterestRateEnum.CREDIT_CARD)?.let{
+                    withContext(Dispatchers.IO) {
+                        svc.get(
+                            creditCard.id,
+                            cutOff.value.monthValue,
+                            cutOff.value.year,
+                            KindInterestRateEnum.CREDIT_CARD
+                        )
+                    }?.let {
                         showBought.value = true
                         showList.value = true
                         progress.floatValue = 0.85f
                     }
 
-                    it.get(creditCard.id,cutOff.value.monthValue,cutOff.value.year,KindInterestRateEnum.CASH_ADVANCE)?.let{
+                    withContext(Dispatchers.IO) {
+                        svc.get(
+                            creditCard.id,
+                            cutOff.value.monthValue,
+                            cutOff.value.year,
+                            KindInterestRateEnum.CASH_ADVANCE
+                        )
+                    }?.let {
                         showAdvance.value = true
                         progress.floatValue = 0.9f
                     }
 
-                    it.get(creditCard.id,cutOff.value.monthValue,cutOff.value.year,KindInterestRateEnum.WALLET_BUY)?.let{
+                    withContext(Dispatchers.IO) {
+                        svc.get(
+                            creditCard.id,
+                            cutOff.value.monthValue,
+                            cutOff.value.year,
+                            KindInterestRateEnum.WALLET_BUY
+                        )
+                    }?.let {
                         showWallet.value = true
                         progress.floatValue = 0.95f
                     }
-                    if(showWallet.value.not() and showAdvance.value.not() and showBought.value.not()){
+                    if (showWallet.value.not() and showAdvance.value.not() and showBought.value.not()) {
                         showCreditRate.value = true
                     }
                     progress.floatValue = 100f

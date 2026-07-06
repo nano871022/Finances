@@ -14,7 +14,10 @@ import co.com.japl.finances.iports.inbounds.creditcard.ICreditCardPort
 import co.com.japl.finances.iports.inbounds.creditcard.ITaxPort
 import co.com.japl.module.creditcard.R
 import co.com.japl.ui.utils.NumbersUtil
-import kotlinx.coroutines.runBlocking
+import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.YearMonth
@@ -129,60 +132,70 @@ class CreateRateViewModel(private val codeCreditCard:Int?, private val codeCredi
 
 
 
-    fun main() = runBlocking {
-        progress.floatValue = 0.1f
-        execute()
-        progress.floatValue = 1.0f
+    fun main() {
+        viewModelScope.launch {
+            progress.floatValue = 0.1f
+            execute()
+            progress.floatValue = 1.0f
+        }
     }
 
-    suspend fun execute(){
-        codeCreditCard?.let {
-            creditCardSvc?.let {
-                it.getCreditCard(codeCreditCard)?.let {
+    suspend fun execute() {
+        codeCreditCard?.let { code ->
+            withContext(Dispatchers.IO) {
+                creditCardSvc?.getCreditCard(code)
+            }?.let {
                 _creditCardDto = it
-
-                    creditCard.value = it.id.toString()
-
-                progress.floatValue = 0.3f
+                creditCard.value = it.id.toString()
             }
-            }
+            progress.floatValue = 0.3f
         }
-        creditCardSvc?.let {
-           _listCreditCards = it.getAll()
-            progress.floatValue = 0.6f
-            loader.value = false
+
+        withContext(Dispatchers.IO) {
+            creditCardSvc?.getAll()
+        }?.let {
+            _listCreditCards = it
         }
+        progress.floatValue = 0.6f
+        loader.value = false
 
         year.value = LocalDate.now().year.toString()
         month.value = LocalDate.now().monthValue.toString()
         creditRateKind.value = KindOfTaxEnum.ANUAL_EFFECTIVE.getName()
         creditCardKind.value = KindInterestRateEnum.CREDIT_CARD.getCode().toString()
 
-        creditRateSvc?.let{svc->
-            codeCreditCard?.let {
+        creditRateSvc?.let { svc ->
+            codeCreditCard?.let { code ->
                 val yearMonth = YearMonth.of(year.value.toInt(), month.value.toInt()).minusMonths(1)
-                svc.get(
-                    codeCreditCard,
-                    yearMonth.monthValue,
-                    yearMonth.year,
-                    kind = KindInterestRateEnum.findByOrdinal(creditCardKind.value?.toShort()?:0))?.let {
-                        rate.value = it.value.toString()
-                    }
+                withContext(Dispatchers.IO) {
+                    svc.get(
+                        code,
+                        yearMonth.monthValue,
+                        yearMonth.year,
+                        kind = KindInterestRateEnum.findByOrdinal(
+                            creditCardKind.value?.toShort() ?: 0
+                        )
+                    )
+                }?.let {
+                    rate.value = it.value.toString()
+                }
             }
-            codeCreditRate?.let {
-                svc.getById(it)?.let {
+            codeCreditRate?.let { codeRate ->
+                withContext(Dispatchers.IO) {
+                    svc.getById(codeRate)
+                }?.let {
                     _creditRateDto = it
                     year.value = it.year.toString()
                     month.value = it.month.toString()
                     rate.value = it.value.toString()
                     creditCardKind.value = it.kind.getCode().toString()
-                    creditRateKind.value = it.kindOfTax?.getName()?:KindOfTaxEnum.ANUAL_EFFECTIVE.getName()
+                    creditRateKind.value =
+                        it.kindOfTax?.getName() ?: KindOfTaxEnum.ANUAL_EFFECTIVE.getName()
                     period.value = it.period.toString()
-                    status.value = it.status>0
+                    status.value = it.status > 0
                 }
             }
         }
-
     }
 
 }

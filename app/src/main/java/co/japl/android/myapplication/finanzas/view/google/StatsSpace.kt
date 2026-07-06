@@ -34,16 +34,16 @@ import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.com.japl.ui.theme.values.Dimensions
 import co.japl.android.myapplication.R
 import co.com.japl.ui.utils.NumbersUtil
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import androidx.compose.runtime.LaunchedEffect
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.Locale.getDefault
 
 @Composable
 fun StatsSpace(viewModel: GoogleAuthBackupRestoreViewModel) {
-    viewModel.onload()
+    LaunchedEffect(Unit) {
+        viewModel.onload()
+    }
     val isProcessing by remember { viewModel.isProcessing }
     val isLogged by remember { viewModel.isLogged }
     val email = remember { viewModel.loginValue }
@@ -133,9 +133,7 @@ fun StatsSpace(viewModel: GoogleAuthBackupRestoreViewModel) {
         AlertBackup(
             status = statusBackupDialog,
             action = {
-                CoroutineScope(Dispatchers.IO).launch {
-                    viewModel.backup()
-                }
+                viewModel.backup()
             })
     }
 }
