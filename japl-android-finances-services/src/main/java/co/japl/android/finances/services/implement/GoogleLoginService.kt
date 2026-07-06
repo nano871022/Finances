@@ -17,7 +17,11 @@ class GoogleLoginService(private val activity:Activity, override val RC_SIGN_IN:
     private val googleSignInOptions = GoogleSignInOptions
         .Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
         .requestEmail()
-        .requestScopes(Scope(GmailScopes.GMAIL_READONLY))
+        .requestScopes(
+            Scope(GmailScopes.GMAIL_READONLY),
+            Scope(DriveScopes.DRIVE_FILE),
+            Scope(DriveScopes.DRIVE_APPDATA)
+        )
         .build()
     val signInClient = GoogleSignIn.getClient(activity,googleSignInOptions)
 
