@@ -9,6 +9,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.Scope
 import com.google.api.services.gmail.GmailScopes
+import com.google.api.services.drive.DriveScopes
 import co.com.japl.finances.iports.inbounds.common.IGoogleSignInService
 
 class GoogleLoginService(private val activity:Activity, override val RC_SIGN_IN: Int) :IGoogleLoginService, IGoogleSignInService {
@@ -16,7 +17,11 @@ class GoogleLoginService(private val activity:Activity, override val RC_SIGN_IN:
     private val googleSignInOptions = GoogleSignInOptions
         .Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
         .requestEmail()
-        .requestScopes(Scope(GmailScopes.GMAIL_READONLY))
+        .requestScopes(
+            Scope(GmailScopes.GMAIL_READONLY),
+            Scope(DriveScopes.DRIVE_FILE),
+            Scope(DriveScopes.DRIVE_APPDATA)
+        )
         .build()
     val signInClient = GoogleSignIn.getClient(activity,googleSignInOptions)
 
@@ -38,7 +43,16 @@ class GoogleLoginService(private val activity:Activity, override val RC_SIGN_IN:
     override fun isEmailAccessGranted(): Boolean = signInAccount?.grantedScopes?.any { it.scopeUri.contains("gmail") } ?: false
     override fun isSmsAccessGranted(): Boolean = true
     override fun getConnection(): Any? = getIntent()
-    override fun requestPermissions(activity: Activity) {}
+    override fun requestPermissions(activity: Activity) {
+        val scopes = arrayOf(
+            Scope(DriveScopes.DRIVE_FILE),
+            Scope(DriveScopes.DRIVE_APPDATA),
+            Scope(GmailScopes.GMAIL_READONLY)
+        )
+        signInAccount?.let {
+            GoogleSignIn.requestPermissions(activity, RC_SIGN_IN, it, *scopes)
+        }
+    }
     override fun requestSmsPermission(activity: Activity) {}
 
     override fun getIntent():Intent{

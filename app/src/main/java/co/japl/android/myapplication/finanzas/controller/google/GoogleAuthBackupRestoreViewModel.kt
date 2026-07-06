@@ -14,9 +14,9 @@ import co.com.japl.finances.iports.inbounds.common.IGoogleDriveService
 import co.com.japl.finances.iports.inbounds.common.IGoogleSignInService
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.api.client.googleapis.json.GoogleJsonResponseException
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.time.LocalDateTime
 
 class GoogleAuthBackupRestoreViewModel(private val activity:Activity?, private val loginSvc: IGoogleSignInService?, private val driveSvc: IGoogleDriveService?): ViewModel() {
@@ -38,9 +38,10 @@ class GoogleAuthBackupRestoreViewModel(private val activity:Activity?, private v
     val isEmailAccessGranted = mutableStateOf(false)
     val isSmsAccessGranted = mutableStateOf(false)
     val isAllPermissionsGranted = derivedStateOf { isGoogleDriveGranted.value && isEmailAccessGranted.value && isSmsAccessGranted.value }
+    val showPermissionDialog = mutableStateOf(false)
 
     init{
-        CoroutineScope(Dispatchers.IO).launch {
+        viewModelScope.launch {
             validation()
         }
     }
@@ -61,16 +62,17 @@ class GoogleAuthBackupRestoreViewModel(private val activity:Activity?, private v
 
      fun responseConnection(activity:androidx.activity.result.ActivityResult){
          val actvty = this.activity
-         CoroutineScope(Dispatchers.IO).launch {
+         viewModelScope.launch {
              result.value = "${result.value} \n ${activity.resultCode} ${
                  (activity.data?.extras?.keySet()?.map { it }) ?: "Any Information Found"
              }"
              if (activity.resultCode == Activity.RESULT_OK) {
                  activity.data?.let { data ->
-                     loginSvc?.login(activity.resultCode, activity.resultCode, data).let {
-                         result.value = "${result.value} \n $it"
-                         validation()
+                     val loginResult = withContext(Dispatchers.IO) {
+                         loginSvc?.login(activity.resultCode, activity.resultCode, data)
                      }
+                     result.value = "${result.value} \n $loginResult"
+                     validation()
                  }
              } else {
                  activity.data?.extras?.keySet()?.filter { it.isNotBlank() }?.forEach { status ->
@@ -90,7 +92,7 @@ class GoogleAuthBackupRestoreViewModel(private val activity:Activity?, private v
         try {
             isProcessing.value = true
             loginSvc?.let { svc ->
-                if (svc.check()) {
+                if (withContext(Dispatchers.IO) { svc.check() }) {
                     isLogged.value = true
                     (svc.getAccount() as? GoogleSignInAccount)?.let { account ->
                         account.email?.let { loginValue.value = it }
@@ -101,9 +103,13 @@ class GoogleAuthBackupRestoreViewModel(private val activity:Activity?, private v
                         isEmailAccessGranted.value = svc.isEmailAccessGranted()
 
                         if (account.email?.isNotBlank() == true) {
-                            driveSvc?.infoBackup(account)?.let { info ->
-                                result.value = "${result.value} \n $info"
-                                updateStorageInfo(account)
+                            withContext(Dispatchers.IO) {
+                                driveSvc?.infoBackup(account)?.let { info ->
+                                    withContext(Dispatchers.Main) {
+                                        result.value = "${result.value} \n $info"
+                                    }
+                                    updateStorageInfo(account)
+                                }
                             }
                         }
                     }
@@ -130,11 +136,14 @@ class GoogleAuthBackupRestoreViewModel(private val activity:Activity?, private v
 
     private suspend fun updateStorageInfo(account: GoogleSignInAccount) {
         if (account.email?.isNotBlank() == true) {
-            driveSvc?.getStorageInfo(account)?.let { info ->
-                spaceUsed.value = info.spaceUsed.toDouble()
-                spaceMax.value = info.spaceMax.toDouble()
-                info.lastBackup?.let { lastBackup.value = it }
-                spaceDBKb.value = info.spaceDBKb.toDouble()
+            val info = withContext(Dispatchers.IO) {
+                driveSvc?.getStorageInfo(account)
+            }
+            info?.let {
+                spaceUsed.value = it.spaceUsed.toDouble()
+                spaceMax.value = it.spaceMax.toDouble()
+                it.lastBackup?.let { lastBackup.value = it }
+                spaceDBKb.value = it.spaceDBKb.toDouble()
             }
         }
     }
@@ -155,22 +164,27 @@ class GoogleAuthBackupRestoreViewModel(private val activity:Activity?, private v
         }
     }
 
-   suspend fun backup() {
+   fun backup() {
        isProcessing.value = true
-       (loginSvc?.getAccount() as? GoogleSignInAccount)?.let { account ->
-           if (account.email?.isNotBlank() == true) {
-               driveSvc?.backup(account)?.let {
-                   spaceDBKb.value = it.toDouble()
-                   result.value = "${result.value} \n $it"
-                   updateStorageInfo(account)
+       viewModelScope.launch {
+           (loginSvc?.getAccount() as? GoogleSignInAccount)?.let { account ->
+               if (account.email?.isNotBlank() == true) {
+                   val backupResult = withContext(Dispatchers.IO) {
+                       driveSvc?.backup(account)
+                   }
+                   backupResult?.let {
+                       spaceDBKb.value = it.toDouble()
+                       result.value = "${result.value} \n $it"
+                       updateStorageInfo(account)
 
+                       isProcessing.value = false
+                   }
+               } else {
                    isProcessing.value = false
                }
-           } else {
+           } ?: run {
                isProcessing.value = false
            }
-       } ?: run {
-           isProcessing.value = false
        }
     }
 
@@ -180,11 +194,14 @@ class GoogleAuthBackupRestoreViewModel(private val activity:Activity?, private v
 
     fun restore() {
         isProcessing.value = true
-        CoroutineScope(Dispatchers.IO).launch {
+        viewModelScope.launch {
             isProcessing.value.takeIf { it }?.let {
                 (loginSvc?.getAccount() as? GoogleSignInAccount)?.let { account ->
                     if (account.email?.isNotBlank() == true) {
-                        driveSvc?.restore(account)?.let {
+                        val restoreResult = withContext(Dispatchers.IO) {
+                            driveSvc?.restore(account)
+                        }
+                        restoreResult?.let {
                             result.value = "${result.value} \n $it"
                             updateStorageInfo(account)
                             isProcessing.value = false
@@ -201,7 +218,10 @@ class GoogleAuthBackupRestoreViewModel(private val activity:Activity?, private v
 
     private suspend fun statsLocal() {
         statsLocalProgess.value.takeIf { it }?.let {
-           driveSvc?.stats()?.let {
+           val stats = withContext(Dispatchers.IO) {
+               driveSvc?.stats()
+           }
+           stats?.let {
                statsLocal.clear()
                statsLocal.addAll(it)
                statsLocalProgess.value = false

@@ -30,6 +30,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import java.time.Duration
+import java.time.LocalDateTime
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import co.japl.android.myapplication.finanzas.controller.google.GoogleAuthBackupRestoreViewModel
@@ -84,7 +86,8 @@ fun LoginSpace(viewModel: GoogleAuthBackupRestoreViewModel) {
                     isLogged.value,
                     loginValue.value,
                     nameValue.value,
-                    photoUrlValue.value
+                    photoUrlValue.value,
+                    viewModel.lastBackup.value
                 )
             }
 
@@ -112,7 +115,7 @@ fun LoginSpace(viewModel: GoogleAuthBackupRestoreViewModel) {
 }
 
 @Composable
-private fun ProfileHeader(isLogged: Boolean, email: String, name:String, photoUrl: String?) {
+private fun ProfileHeader(isLogged: Boolean, email: String, name:String, photoUrl: String?, lastSync: LocalDateTime?) {
     Column(
         modifier = Modifier.fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally
@@ -169,13 +172,13 @@ private fun ProfileHeader(isLogged: Boolean, email: String, name:String, photoUr
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             Badge(
                 icon = Icons.Rounded.VerifiedUser,
-                text = "Premium Member",
+                text = stringResource(R.string.premiummember),
                 containerColor = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.2f),
                 contentColor = MaterialTheme.colorScheme.onSecondaryContainer
             )
             Badge(
                 icon = Icons.Rounded.History,
-                text = "Last sync: 2m ago",
+                text = "Last sync: ${formatRelativeTime(lastSync)}",
                 containerColor = MaterialTheme.colorScheme.surfaceVariant,
                 contentColor = MaterialTheme.colorScheme.onSurfaceVariant
             )
@@ -289,6 +292,28 @@ private fun PermissionsAndStatusSection(viewModel: GoogleAuthBackupRestoreViewMo
     val isGoogleDriveGranted = viewModel.isGoogleDriveGranted.value
     val isEmailAccessGranted = viewModel.isEmailAccessGranted.value
     val isSmsAccessGranted = viewModel.isSmsAccessGranted.value
+    val showPermissionDialog = viewModel.showPermissionDialog
+
+    if (showPermissionDialog.value) {
+        AlertDialog(
+            onDismissRequest = { showPermissionDialog.value = false },
+            title = { Text(stringResource(R.string.grant_permissions_title)) },
+            text = { Text(stringResource(R.string.grant_permissions_message)) },
+            confirmButton = {
+                TextButton(onClick = {
+                    showPermissionDialog.value = false
+                    viewModel.grantGooglePermissions()
+                }) {
+                    Text(stringResource(R.string.ok))
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { showPermissionDialog.value = false }) {
+                    Text(stringResource(R.string.cancel))
+                }
+            }
+        )
+    }
 
     Column {
         val allGranted = isGoogleDriveGranted && isEmailAccessGranted && isSmsAccessGranted
@@ -323,7 +348,7 @@ private fun PermissionsAndStatusSection(viewModel: GoogleAuthBackupRestoreViewMo
                         title = stringResource(R.string.google_drive),
                         description = stringResource(R.string.google_drive_detail),
                         isGranted = isGoogleDriveGranted,
-                        onGrant = { viewModel.grantGooglePermissions() }
+                        onGrant = { showPermissionDialog.value = true }
                     )
 
                     Spacer(modifier = Modifier.height(12.dp))
@@ -333,7 +358,7 @@ private fun PermissionsAndStatusSection(viewModel: GoogleAuthBackupRestoreViewMo
                         title = stringResource(R.string.email_access),
                         description = stringResource(R.string.email_access_detail),
                         isGranted = isEmailAccessGranted,
-                        onGrant = { viewModel.grantGooglePermissions() }
+                        onGrant = { showPermissionDialog.value = true }
                     )
                 }
 
@@ -482,4 +507,17 @@ fun ProfileLogedPreview(){
 @Composable
 private fun getViewModel(): GoogleAuthBackupRestoreViewModel{
     return GoogleAuthBackupRestoreViewModel(null,null,null)
+}
+
+private fun formatRelativeTime(dateTime: LocalDateTime?): String {
+    if (dateTime == null) return "Never"
+    val now = LocalDateTime.now()
+    val duration = Duration.between(dateTime, now)
+    val seconds = duration.seconds
+    return when {
+        seconds < 60 -> "${seconds}s ago"
+        seconds < 3600 -> "${seconds / 60}m ago"
+        seconds < 86400 -> "${seconds / 3600}h ago"
+        else -> "${seconds / 86400}d ago"
+    }
 }
