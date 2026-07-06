@@ -33,6 +33,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -80,7 +81,7 @@ fun BoughtMonthly(viewModel:BoughtMonthlyViewModel?=null) {
     var loaderStatus by remember {viewModel!!.loader}
     var progressStatus by remember {viewModel!!.progress}
 
-    CoroutineScope(Dispatchers.IO).launch{
+    LaunchedEffect(Unit) {
         viewModel?.mainCreditCard()
     }
 

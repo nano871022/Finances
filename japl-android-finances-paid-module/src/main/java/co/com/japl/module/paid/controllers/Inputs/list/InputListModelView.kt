@@ -17,8 +17,9 @@ import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
 
 @HiltViewModel(assistedFactory = InputListModelView.Factory::class)
 class InputListModelView @AssistedInject constructor(@Assisted private val context:Context, @Assisted val accountCode:Int, @Assisted private val navController: NavController?,private val inputSvc:IInputPort?) : ViewModel() {
@@ -72,22 +73,24 @@ class InputListModelView @AssistedInject constructor(@Assisted private val conte
         navController?.let{Input.navigate(accountCode,code,navController)}
     }
 
-    fun main()= runBlocking  {
-        progress.value = 0.1f
-        getItems()
-        progress.value = 1f
+    fun main() {
+        viewModelScope.launch {
+            progress.value = 0.1f
+            getItems()
+            progress.value = 1f
+        }
     }
 
     suspend fun getItems() {
         progress.value = 0.2f
-        inputSvc?.let{
-            _items.clear()
-            it.getInputs(accountCode).let {
-                _items.addAll(it.sortedByDescending { it.date })
-                progress.value = 0.7f
-                stateLoader.value = false
+        inputSvc?.let { svc ->
+            val result = withContext(Dispatchers.IO) {
+                svc.getInputs(accountCode)
             }
-
+            _items.clear()
+            _items.addAll(result.sortedByDescending { it.date })
+            progress.value = 0.7f
+            stateLoader.value = false
         }
         progress.value = 0.8f
     }

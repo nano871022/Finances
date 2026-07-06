@@ -28,7 +28,6 @@ import co.com.japl.ui.utils.DateUtils
 import co.com.japl.ui.utils.NumbersUtil
 import kotlinx.coroutines.Dispatchers
 
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.time.YearMonth
@@ -87,49 +86,63 @@ class MonthlyViewModel(private val period:YearMonth, private val paidSvc: IPaidP
     }
 
 
-    fun main()= runBlocking {
-        progressStatus.value = 0.0f
-        execute()
-        progressStatus.value = 0.6f
-        readSms()
-        progressStatus.value = 0.8f
+    fun main() {
+        viewModelScope.launch {
+            progressStatus.value = 0.0f
+            execute()
+            progressStatus.value = 0.6f
+            readSms()
+            progressStatus.value = 0.8f
 
-        progressStatus.value = 1.0f
+            progressStatus.value = 1.0f
+        }
     }
 
     suspend fun execute() {
-        periodState.value = "${period?.month?.getDisplayName(TextStyle.FULL, Locale("es","CO"))} ${period?.year}"
-        accountSvc?.let {
-            it.getAllActive().takeIf { it.isNotEmpty() }?.let { list ->
+        periodState.value =
+            "${period?.month?.getDisplayName(TextStyle.FULL, Locale("es", "CO"))} ${period?.year}"
+        accountSvc?.let { svc ->
+            val list = withContext(Dispatchers.IO) {
+                svc.getAllActive()
+            }
+            list.takeIf { it.isNotEmpty() }?.let { activeList ->
                 accountList.clear()
-                _accounts = list
-                list.forEach {
-                    accountList.add(Pair(it.id,it.name))
+                _accounts = activeList
+                activeList.forEach {
+                    accountList.add(Pair(it.id, it.name))
                 }
-                list.takeIf { it.isNotEmpty() && it.size == 1 }?.let {
+                activeList.takeIf { it.isNotEmpty() && it.size == 1 }?.let {
                     accountState.value = it.first()
                 }
                 progressStatus.value = 0.3f
             }
         }
 
-        accountState.value?.let {account->
-            paidSvc?.let {
-               period?.let {_period->
-                   it.getRecap(codeAccount = account.id, period = _period)?.let { recap ->
-                       countState.value = recap.count
-                       paidTotalState.value = recap.totalPaid
+        accountState.value?.let { account ->
+            paidSvc?.let { svc ->
+                period?.let { _period ->
+                    val recap = withContext(Dispatchers.IO) {
+                        svc.getRecap(codeAccount = account.id, period = _period)
+                    }
+                    recap?.let {
+                        countState.value = it.count
+                        paidTotalState.value = it.totalPaid
 
-                       progressStatus.value = 0.6f
-                   }
-                   it.getListGraph(codeAccount = account.id, period = _period).takeIf{it.isNotEmpty()}?.forEach (listGraph::add)
-               }
+                        progressStatus.value = 0.6f
+                    }
+                    withContext(Dispatchers.IO) {
+                        svc.getListGraph(codeAccount = account.id, period = _period)
+                    }.takeIf { it.isNotEmpty() }?.forEach(listGraph::add)
+                }
 
             }
-            incomesSvc?.let {
+            incomesSvc?.let { svc ->
                 period?.let { _period ->
-                    it.getTotalInputs(account.id, _period)?.let { total ->
-                        incomesTotalState.value = total
+                    val total = withContext(Dispatchers.IO) {
+                        svc.getTotalInputs(account.id, _period)
+                    }
+                    total?.let {
+                        incomesTotalState.value = it
                         progressStatus.value = 0.7f
                     }
                 }
@@ -139,11 +152,13 @@ class MonthlyViewModel(private val period:YearMonth, private val paidSvc: IPaidP
         loaderState.value = false
     }
 
-    suspend fun readSms(){
+    suspend fun readSms() {
         try {
-            smsSvc?.read(prefs?.paidSMSDaysRead?:0)
-        }catch (e:Exception){
-            Log.e(javaClass.name,e.message,e)
+            withContext(Dispatchers.IO) {
+                smsSvc?.read(prefs?.paidSMSDaysRead ?: 0)
+            }
+        } catch (e: Exception) {
+            Log.e(javaClass.name, e.message, e)
         }
     }
 }

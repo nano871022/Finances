@@ -10,7 +10,10 @@ import co.com.japl.finances.iports.inbounds.inputs.IAccountPort
 import co.com.japl.finances.iports.inbounds.inputs.IInputPort
 import co.com.japl.module.paid.navigations.Account
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.runBlocking
+import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
@@ -43,16 +46,21 @@ class AccountViewModel @Inject constructor(private val accountSvc:IAccountPort?,
     }
 
 
-    fun main() = runBlocking {
-        progress.value = 0.1f
-        services()
-        progress.value = 1f
+    fun main() {
+        viewModelScope.launch {
+            progress.value = 0.1f
+            services()
+            progress.value = 1f
+        }
     }
 
-    suspend fun services(){
+    suspend fun services() {
         progress.value = 0.2f
-        accountSvc?.let {
-            accountSvc.getAll()?.takeIf { it.isNotEmpty() }?.let {
+        accountSvc?.let { svc ->
+            val result = withContext(Dispatchers.IO) {
+                svc.getAll()
+            }
+            result?.takeIf { it.isNotEmpty() }?.let {
                 list.clear()
                 list.addAll(it)
                 loading.value = false

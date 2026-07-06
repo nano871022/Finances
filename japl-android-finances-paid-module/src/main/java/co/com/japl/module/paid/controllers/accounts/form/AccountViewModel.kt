@@ -12,7 +12,10 @@ import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.runBlocking
+import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.time.LocalDate
 
 @HiltViewModel(assistedFactory = AccountViewModel.Factory::class)
@@ -69,16 +72,21 @@ class AccountViewModel @AssistedInject constructor(@Assisted private val codeAcc
         }
     }
 
-    fun main() = runBlocking {
-        progress.value = 0.1f
-        execution()
-        progress.value = 1f
+    fun main() {
+        viewModelScope.launch {
+            progress.value = 0.1f
+            execution()
+            progress.value = 1f
+        }
     }
 
-    suspend fun execution(){
+    suspend fun execution() {
         progress.value = 0.2f
-        codeAccount?.takeIf { it > 0 }?.let{
-            accountSvc.getById(codeAccount)?.let{
+        codeAccount?.takeIf { it > 0 }?.let { code ->
+            val result = withContext(Dispatchers.IO) {
+                accountSvc.getById(code)
+            }
+            result?.let {
                 progress.value = 0.6f
                 _item = it
                 name.value = it.name

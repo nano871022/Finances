@@ -13,7 +13,10 @@ import co.com.japl.module.creditcard.navigations.ListCreditCardSettings
 import co.com.japl.ui.utils.NumbersUtil
 import co.com.japl.module.creditcard.params.CreditCardParams
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.runBlocking
+import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.math.BigDecimal
 import java.time.LocalDateTime
 import androidx.lifecycle.SavedStateHandle
@@ -119,27 +122,31 @@ class CreditCardViewModel @Inject constructor(
         }
     }
 
-    fun main() = runBlocking {
-        progress.floatValue = 0.1f
+    fun main() {
+        viewModelScope.launch {
+            progress.floatValue = 0.1f
 
-        execute()
+            execute()
 
-        progress.floatValue = 1f
+            progress.floatValue = 1f
+        }
     }
 
-    suspend fun execute(){
+    suspend fun execute() {
         progress.floatValue = 0.3f
-        codeCreditCard?.let {
-            creditCardSvc.getCreditCard(codeCreditCard)?.let{
+        codeCreditCard?.let { code ->
+            withContext(Dispatchers.IO) {
+                creditCardSvc.getCreditCard(code)
+            }?.let {
                 _creditCardDto = it
                 showButtonUpdate.value = it.id > 0
 
                 name.value = it.name
                 maxQuotes.value = it.maxQuotes.toString()
                 cutOffDay.value = it.cutOffDay.toString()
-                warningValue.value = if(it.warningValue > BigDecimal.ZERO) {
+                warningValue.value = if (it.warningValue > BigDecimal.ZERO) {
                     NumbersUtil.toString(it.warningValue.toDouble())
-                }else{
+                } else {
                     ""
                 }
                 state.value = it.status

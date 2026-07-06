@@ -14,6 +14,7 @@ import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.Cancel
 import androidx.compose.material.icons.rounded.CleaningServices
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -39,7 +40,7 @@ fun Paid(viewModel:PaidViewModel) {
     val progresStatus  = remember{viewModel.progressStatus}
     val loaderState = remember {viewModel.loading}
 
-    CoroutineScope(Dispatchers.IO).launch {
+    LaunchedEffect(Unit) {
         viewModel.main()
     }
 

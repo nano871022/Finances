@@ -8,9 +8,10 @@ import co.com.japl.finances.iports.dtos.RecapCreditDTO
 import co.com.japl.finances.iports.inbounds.credit.ICreditPort
 import co.com.japl.module.credit.navigations.CreditList
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.CoroutineScope
+import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.time.YearMonth
 import androidx.lifecycle.SavedStateHandle
 import javax.inject.Inject
@@ -40,16 +41,18 @@ class RecapViewModel @Inject constructor(
         navController?.let(CreditList::periodCredits)
     }
 
-    fun execute() = CoroutineScope(Dispatchers.IO).launch {
+    fun execute() = viewModelScope.launch {
         progress.floatValue = 0.1f
         load()
         progress.floatValue = 1f
     }
 
-    suspend fun load(){
-        creditsSvc?.let{
+    suspend fun load() {
+        creditsSvc?.let { svc ->
             progress.floatValue = 0.2f
-            it.getCreditsEnables(yearMonth).takeIf { it.isNotEmpty() }?.let{
+            withContext(Dispatchers.IO) {
+                svc.getCreditsEnables(yearMonth)
+            }.takeIf { it.isNotEmpty() }?.let {
                 progress.floatValue = 0.7f
                 listCredits.clear()
                 progress.floatValue = 0.8f

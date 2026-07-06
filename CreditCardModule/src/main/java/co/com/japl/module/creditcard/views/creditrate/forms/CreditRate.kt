@@ -19,6 +19,7 @@ import androidx.compose.material.FloatingActionButtonDefaults
 import androidx.compose.material.icons.rounded.Cancel
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringArrayResource
@@ -48,7 +49,7 @@ fun CreditRate(viewModel:CreateRateViewModel){
     var progress = remember {
         viewModel.progress
     }
-    CoroutineScope(Dispatchers.IO).launch {
+    LaunchedEffect(Unit) {
         viewModel.main()
     }
 

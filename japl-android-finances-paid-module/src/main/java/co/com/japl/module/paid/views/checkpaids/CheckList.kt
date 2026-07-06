@@ -20,6 +20,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -58,7 +59,7 @@ fun CheckList(viewModel:CheckListViewModel){
     val loaderProgressStatus = remember { viewModel.loaderProgressStatus }
     val progressState = remember { viewModel.progression }
 
-    CoroutineScope(Dispatchers.IO).launch {
+    LaunchedEffect(Unit) {
         viewModel.main()
     }
 

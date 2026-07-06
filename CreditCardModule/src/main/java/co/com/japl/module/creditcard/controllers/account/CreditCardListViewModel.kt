@@ -12,7 +12,10 @@ import co.com.japl.module.creditcard.R
 import co.com.japl.module.creditcard.navigations.CreditCard
 import co.com.japl.module.creditcard.navigations.ListCreditCardSettings
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.runBlocking
+import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
@@ -52,17 +55,22 @@ class CreditCardListViewModel @Inject constructor(private val creditCardSvc:ICre
         }
     }
 
-    fun main() = runBlocking {
-        progress.floatValue = 0.1f
-        execute()
-        progress.floatValue = 1f
+    fun main() {
+        viewModelScope.launch {
+            progress.floatValue = 0.1f
+            execute()
+            progress.floatValue = 1f
+        }
     }
 
-    suspend fun execute(){
+    suspend fun execute() {
         progress.floatValue = 0.4f
-        creditCardSvc?.let{
+        creditCardSvc?.let { svc ->
+            val result = withContext(Dispatchers.IO) {
+                svc.getAll()
+            }
             list.clear()
-            it.getAll()?.let(list::addAll)
+            result?.let(list::addAll)
             showProgress.value = false
         }
         progress.floatValue = 0.8f

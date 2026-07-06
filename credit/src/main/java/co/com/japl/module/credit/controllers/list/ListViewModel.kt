@@ -12,9 +12,10 @@ import co.com.japl.module.credit.R
 import co.com.japl.module.credit.navigations.CreditList
 import co.com.japl.module.credit.pojo.CreditPeriodGraceDTO
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.CoroutineScope
+import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.time.LocalDate
 import java.time.YearMonth
 import androidx.lifecycle.SavedStateHandle
@@ -105,17 +106,21 @@ class ListViewModel @Inject constructor(
     }
 
     fun execute() {
-        CoroutineScope(Dispatchers.IO).launch {
+        viewModelScope.launch {
             load()
         }
     }
 
-    suspend fun load(){
+    suspend fun load() {
         progress.value = true
-        creditsSvc?.getCreditEnable(period)?.takeIf { it.isNotEmpty() }?.let{
+        withContext(Dispatchers.IO) {
+            creditsSvc?.getCreditEnable(period)
+        }?.takeIf { it.isNotEmpty() }?.let {
             list.clear()
             val credits = it.map {
-                CreditPeriodGraceDTO(it, periodGraceSvc?.hasGracePeriod(it.id) ?: false)
+                CreditPeriodGraceDTO(
+                    it,
+                    withContext(Dispatchers.IO) { periodGraceSvc?.hasGracePeriod(it.id) } ?: false)
             }.sortedByDescending { it.credit.date }
             list.addAll(credits)
         }
