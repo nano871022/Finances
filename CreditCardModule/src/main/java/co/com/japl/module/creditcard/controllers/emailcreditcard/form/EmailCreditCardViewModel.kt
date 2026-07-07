@@ -65,6 +65,9 @@ class EmailCreditCardViewModel @AssistedInject constructor(
     val showPopup = mutableStateOf(false)
     val validating = mutableStateOf(false)
     val validationResults = mutableStateListOf<EmailValidationDTO>()
+    val numDaysRead = mutableStateOf("30")
+    val errorNumDaysRead = mutableStateOf(false)
+    val showDaysField = mutableStateOf(false)
 
     val aiFailed = mutableStateOf(false)
     val emailSamples = mutableStateListOf<Pair<String, Boolean>>()
@@ -76,7 +79,7 @@ class EmailCreditCardViewModel @AssistedInject constructor(
         if (sender.value.isNotEmpty()) {
             viewModelScope.launch {
                 withContext(Dispatchers.IO) {
-                    svc?.getEmailList(sender.value, subjectPattern.value, 30)
+                    svc?.getEmailList(sender.value, subjectPattern.value, numDaysRead.value.toIntOrNull() ?: 30)
                 }?.let { list ->
                     emailSamples.clear()
                     list.map { Pair(it, false) }.forEach(emailSamples::add)
@@ -178,9 +181,15 @@ class EmailCreditCardViewModel @AssistedInject constructor(
         showPopup.value = false
         validating.value = false
         validationResults.clear()
+        numDaysRead.value = "30"
+        errorNumDaysRead.value = false
+        showDaysField.value = false
     }
 
     fun validatePatternWithMessages() {
+        errorNumDaysRead.value = numDaysRead.value.toIntOrNull() == null
+        if (errorNumDaysRead.value) return
+
         validate()
         emailCreditCard?.let { dto ->
             viewModelScope.launch {
@@ -189,7 +198,7 @@ class EmailCreditCardViewModel @AssistedInject constructor(
                 validationResults.clear()
                 runCatching {
                     withContext(Dispatchers.IO) {
-                        svc?.validateMessagePattern(dto, 30) ?: emptyList()
+                        svc?.validateMessagePattern(dto, numDaysRead.value.toIntOrNull() ?: 30) ?: emptyList()
                     }
                 }.onFailure { e ->
                     validating.value = false

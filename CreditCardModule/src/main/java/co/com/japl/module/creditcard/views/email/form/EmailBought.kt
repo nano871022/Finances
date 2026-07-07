@@ -1,12 +1,15 @@
 package co.com.japl.module.creditcard.views.email.form
 
 import android.content.res.Configuration
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.DirectionsRun
 import androidx.compose.material.icons.rounded.Add
@@ -21,6 +24,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
@@ -37,6 +41,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -282,6 +287,9 @@ private fun ValidationPopup(viewModel: EmailCreditCardViewModel) {
     val showPopup = viewModel.showPopup
     val validating = viewModel.validating.value
     val validationResults = viewModel.validationResults
+    val numDaysRead = viewModel.numDaysRead
+    val errorNumDaysRead = viewModel.errorNumDaysRead
+    val showDaysField = viewModel.showDaysField
 
     Popup(title = R.string.validation_results_title, state = showPopup) {
         Column(
@@ -302,10 +310,53 @@ private fun ValidationPopup(viewModel: EmailCreditCardViewModel) {
                     )
                 }
             } else {
-                Text(text=viewModel.bodyPattern.value,
-                    color = MaterialTheme.colorScheme.onPrimary,
-                    fontSize = MaterialTheme.typography.bodySmall.fontSize,
-                    modifier = Modifier.fillMaxWidth())
+                Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.clickable { showDaysField.value = !showDaysField.value }) {
+                    Text(text=viewModel.bodyPattern.value,
+                        color = MaterialTheme.colorScheme.onPrimary,
+                        fontSize = MaterialTheme.typography.bodySmall.fontSize,
+                        modifier = Modifier.weight(1f))
+
+                    Box(modifier = Modifier
+                        .padding(horizontal = Dimensions.PADDING_SHORT)
+                        .width(Dimensions.DIVIDER_THICKNESS)
+                        .height(Dimensions.ICON_SIZE_MEDIUM)
+                        .background(MaterialTheme.colorScheme.onPrimary)
+                    )
+
+                    Icon(imageVector = Icons.Rounded.ArrowDownward, contentDescription = null, tint = MaterialTheme.colorScheme.onPrimary)
+                }
+
+                if (showDaysField.value) {
+                    FieldText(
+                        title = stringResource(R.string.days_email_read),
+                        value = numDaysRead.value,
+                        hasErrorState = errorNumDaysRead,
+                        keyboardType = KeyboardOptions(keyboardType = KeyboardType.Number),
+                        modifier = Modifier.fillMaxWidth().padding(top = Dimensions.PADDING_SHORT)
+                    ) {
+                        numDaysRead.value = it
+                    }
+
+                    OutlinedButton(
+                        onClick = { viewModel.validatePatternWithMessages() },
+                        modifier = Modifier
+                            .align(alignment = Alignment.End)
+                            .padding(top = Dimensions.PADDING_TOP)
+                    ) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Rounded.DirectionsRun,
+                            contentDescription = stringResource(id = R.string.validate),
+                            tint = MaterialTheme.colorScheme.onPrimary
+                        )
+
+                        Text(
+                            text = stringResource(id = R.string.validate),
+                            color = MaterialTheme.colorScheme.onPrimary,
+                            textAlign = TextAlign.Center,
+                            modifier = Modifier.weight(1f)
+                        )
+                    }
+                }
 
                 Carousel(
                     size = validationResults.size,
