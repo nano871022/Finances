@@ -19,7 +19,6 @@ class GoogleLoginService(private val activity:Activity, override val RC_SIGN_IN:
         .requestEmail()
         .requestScopes(
             Scope(GmailScopes.GMAIL_READONLY),
-            Scope(DriveScopes.DRIVE_FILE),
             Scope(DriveScopes.DRIVE_APPDATA)
         )
         .build()
@@ -45,7 +44,6 @@ class GoogleLoginService(private val activity:Activity, override val RC_SIGN_IN:
     override fun getConnection(): Any? = getIntent()
     override fun requestPermissions(activity: Activity) {
         val scopes = arrayOf(
-            Scope(DriveScopes.DRIVE_FILE),
             Scope(DriveScopes.DRIVE_APPDATA),
             Scope(GmailScopes.GMAIL_READONLY)
         )
