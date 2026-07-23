@@ -31,7 +31,7 @@ import javax.inject.Inject
 class GoogleDriveServiceImpl @Inject constructor(private val context:Context, private val dbConnect: ConnectDB) : IGoogleDriveService {
     companion object {
         const val PARAMETER_FOLDER = "appDataFolder"
-        private val SCOPES = listOf(DriveScopes.DRIVE_FILE, DriveScopes.DRIVE_APPDATA)
+        private val SCOPES = listOf(DriveScopes.DRIVE_APPDATA)
     }
 
     override suspend fun stats(): List<Pair<String, Long>> {
