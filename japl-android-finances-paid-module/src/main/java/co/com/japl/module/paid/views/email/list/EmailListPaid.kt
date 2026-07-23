@@ -3,6 +3,11 @@ package co.com.japl.module.paid.views.email.list
 import android.content.res.Configuration
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.*
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.style.TextAlign
+import androidx.navigation.NavDeepLinkRequest
+import androidx.core.net.toUri
+import com.google.android.gms.auth.api.signin.GoogleSignIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
@@ -36,16 +41,47 @@ import co.com.japl.ui.theme.values.Dimensions
 @Composable
 fun EmailListPaid(viewModel: EmailListPaidViewModel) {
     val load by viewModel.load
+    val context = LocalContext.current
+    val account = remember { GoogleSignIn.getLastSignedInAccount(context) }
+    val hasGmailPermission = remember { account?.grantedScopes?.any { it.scopeUri.contains("gmail") } ?: false }
 
-    LaunchedEffect(Unit) {
-        viewModel.main()
-    }
-    Column{
-        if (load) {
-            LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
-            Text(text=stringResource(R.string.loading_data))
-        } else {
-            Body(viewModel)
+    if (!hasGmailPermission) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(
+                text = "No tienes permisos para usar esta funcionalidad activala en la interface de inicio de sesion",
+                style = MaterialTheme.typography.bodyLarge,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.padding(bottom = 16.dp),
+                color = MaterialTheme.colorScheme.onBackground
+            )
+            Button(onClick = {
+                viewModel.getNavController()?.let { nav ->
+                    val request = NavDeepLinkRequest.Builder
+                        .fromUri("android-app://co.com.japl.finanzas.module.app/google_login".toUri())
+                        .build()
+                    nav.navigate(request)
+                }
+            }) {
+                Text(text = "Ir a Inicio de Sesión")
+            }
+        }
+    } else {
+        LaunchedEffect(Unit) {
+            viewModel.main()
+        }
+        Column{
+            if (load) {
+                LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
+                Text(text=stringResource(R.string.loading_data))
+            } else {
+                Body(viewModel)
+            }
         }
     }
 }

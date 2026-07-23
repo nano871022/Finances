@@ -18,6 +18,8 @@ class EmailListPaidViewModel(
 ) : ViewModel() {
 
     val load = mutableStateOf(true)
+
+    fun getNavController(): NavController? = navController
     val list = mutableStateListOf<EmailPaidDTO>()
 
     fun main() {

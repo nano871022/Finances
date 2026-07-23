@@ -191,7 +191,9 @@
         android:id="@+id/item_menu_setting_google_login"
         android:name="co.japl.android.myapplication.finanzas.fragment.GDriveConnectFragment"
         android:label="@string/title_toolbar_account_google"
-        tools:layout="@layout/fragment_g_drive_connect" />
+        tools:layout="@layout/fragment_g_drive_connect" >
+        <deepLink app:uri="android-app://co.com.japl.finanzas.module.app/google_login" />
+    </fragment>
     <fragment
         android:id="@+id/creditCardSettingFragment"
         android:name="co.com.japl.module.creditcard.fragments.CreditCardSettingFragment"

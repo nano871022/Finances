@@ -6,6 +6,14 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.text.style.TextAlign
+import androidx.navigation.NavDeepLinkRequest
+import androidx.core.net.toUri
+import com.google.android.gms.auth.api.signin.GoogleSignIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.Button
 import androidx.compose.material3.Card
@@ -24,7 +32,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.res.stringResource
@@ -49,15 +56,45 @@ import co.com.japl.ui.theme.values.Dimensions
 @Composable
 fun EmailList(viewModel: EmailListCreditCardViewModel){
     val load = remember { viewModel.load}
+    val context = LocalContext.current
+    val account = remember { GoogleSignIn.getLastSignedInAccount(context) }
+    val hasGmailPermission = remember { account?.grantedScopes?.any { it.scopeUri.contains("gmail") } ?: false }
 
-    LoadingProgress(
-        message = R.string.loading_data,
-        showProgress = load,
-        execute = viewModel::execution
-    ) {
-        BodyMain(viewModel)
+    if (!hasGmailPermission) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(
+                text = "No tienes permisos para usar esta funcionalidad activala en la interface de inicio de sesion",
+                style = MaterialTheme.typography.bodyLarge,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.padding(bottom = 16.dp),
+                color = MaterialTheme.colorScheme.onBackground
+            )
+            Button(onClick = {
+                viewModel.navController?.let { nav ->
+                    val request = NavDeepLinkRequest.Builder
+                        .fromUri("android-app://co.com.japl.finanzas.module.app/google_login".toUri())
+                        .build()
+                    nav.navigate(request)
+                }
+            }) {
+                Text(text = "Ir a Inicio de Sesión")
+            }
+        }
+    } else {
+        LoadingProgress(
+            message = R.string.loading_data,
+            showProgress = load,
+            execute = viewModel::execution
+        ) {
+            BodyMain(viewModel)
+        }
     }
-
 }
 
 @Composable
