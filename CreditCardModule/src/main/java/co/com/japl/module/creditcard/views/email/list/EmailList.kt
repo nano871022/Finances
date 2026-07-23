@@ -57,8 +57,7 @@ import co.com.japl.ui.theme.values.Dimensions
 fun EmailList(viewModel: EmailListCreditCardViewModel){
     val load = remember { viewModel.load}
     val context = LocalContext.current
-    val account = remember { GoogleSignIn.getLastSignedInAccount(context) }
-    val hasGmailPermission = remember { account?.grantedScopes?.any { it.scopeUri.contains("gmail") } ?: false }
+    val hasGmailPermission = remember { viewModel.hasGmailPermission(context) }
 
     if (!hasGmailPermission) {
         Column(
@@ -69,21 +68,16 @@ fun EmailList(viewModel: EmailListCreditCardViewModel){
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
-                text = "No tienes permisos para usar esta funcionalidad activala en la interface de inicio de sesion",
+                text = stringResource(id = R.string.no_gmail_permission_error),
                 style = MaterialTheme.typography.bodyLarge,
                 textAlign = TextAlign.Center,
                 modifier = Modifier.padding(bottom = 16.dp),
                 color = MaterialTheme.colorScheme.onBackground
             )
             Button(onClick = {
-                viewModel.navController?.let { nav ->
-                    val request = NavDeepLinkRequest.Builder
-                        .fromUri("android-app://co.com.japl.finanzas.module.app/google_login".toUri())
-                        .build()
-                    nav.navigate(request)
-                }
+                viewModel.navigateToLogin()
             }) {
-                Text(text = "Ir a Inicio de Sesión")
+                Text(text = stringResource(id = R.string.go_to_login_button))
             }
         }
     } else {

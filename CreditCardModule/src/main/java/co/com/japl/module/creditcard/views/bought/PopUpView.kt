@@ -213,8 +213,7 @@ fun PopupSetting(viewModel: SettingsViewModel,state: MutableState<Boolean>) {
     val daysEmailRead = remember { viewModel.daysEmailRead }
     val errorDaysEmailRead = remember { viewModel.errorDaysEmailRead }
     val context = LocalContext.current
-    val account = remember { com.google.android.gms.auth.api.signin.GoogleSignIn.getLastSignedInAccount(context) }
-    val hasGmailPermission = remember { account?.grantedScopes?.any { it.scopeUri.contains("gmail") } ?: false }
+    val hasGmailPermission = remember { viewModel.hasGmailPermission(context) }
 
     Popup(title = R.string.settings_credit_card_boughts, state = state) {
         Scaffold(

@@ -16,6 +16,17 @@ import kotlinx.coroutines.withContext
 class EmailListCreditCardViewModel(val svc: IEmailCreditCardPort?, val navController: NavController?) : ViewModel(){
 
     val load = mutableStateOf(true)
+
+    fun hasGmailPermission(context: android.content.Context): Boolean {
+        val account = com.google.android.gms.auth.api.signin.GoogleSignIn.getLastSignedInAccount(context)
+        return account?.grantedScopes?.any { it.scopeUri.contains("gmail") } ?: false
+    }
+
+    fun navigateToLogin() {
+        navController?.let {
+            co.com.japl.module.creditcard.navigations.LoginNavigation.navigateToLogin(it)
+        }
+    }
     val list = mutableListOf<EmailCreditCardDTO>()
 
     fun create(){

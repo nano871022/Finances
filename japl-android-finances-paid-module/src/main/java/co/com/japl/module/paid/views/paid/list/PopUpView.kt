@@ -34,8 +34,7 @@ fun PopupSetting(viewModel: PaidViewModel, state: MutableState<Boolean>) {
     val paidSMSDaysRead = remember { viewModel.paidSMSDaysRead }
     val errorPaidSMSDaysRead = remember { viewModel.errorPaidSMSDaysRead }
     val context = LocalContext.current
-    val account = remember { com.google.android.gms.auth.api.signin.GoogleSignIn.getLastSignedInAccount(context) }
-    val hasGmailPermission = remember { account?.grantedScopes?.any { it.scopeUri.contains("gmail") } ?: false }
+    val hasGmailPermission = remember { viewModel.hasGmailPermission(context) }
 
     Popup(title = R.string.setting, state = state) {
         Scaffold(
