@@ -17,8 +17,8 @@ class EmailListCreditCardViewModel(val svc: IEmailCreditCardPort?, val navContro
 
     val load = mutableStateOf(true)
 
-    fun hasGmailPermission(): Boolean {
-        return svc?.hasGmailPermission() ?: false
+    fun hasGmailPermission(context: android.content.Context): Boolean {
+        return svc?.isEmailAccessGranted() ?: false
     }
 
     fun navigateToLogin() {

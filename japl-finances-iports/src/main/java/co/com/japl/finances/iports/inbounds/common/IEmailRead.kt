@@ -4,5 +4,5 @@ import java.time.LocalDateTime
 
 interface IEmailRead {
     fun getEmails(sender: String, subject: String, numDaysRead: Int): List<Pair<String, LocalDateTime>>
-    fun hasGmailPermission(): Boolean
+    fun isEmailAccessGranted(): Boolean
 }

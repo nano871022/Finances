@@ -30,4 +30,8 @@ class EmailPaid @Inject constructor(val svc: IEmailPaid) : IEmailPaidPort {
     override fun read(numDaysRead: Int) {
         svc.read(numDaysRead)
     }
+
+    override fun isEmailAccessGranted(): Boolean {
+        return svc.isEmailAccessGranted()
+    }
 }

@@ -17,8 +17,8 @@ class SettingsViewModel(private val prefs: Prefs,private val emailCCSvc: IEmailC
 
     val state = mutableStateOf(false)
 
-    fun hasGmailPermission(): Boolean {
-        return emailCCSvc.hasGmailPermission()
+    fun hasGmailPermission(context: android.content.Context): Boolean {
+        return emailCCSvc.isEmailAccessGranted()
     }
 
     val daysSmsRead = mutableStateOf("${prefs.creditCardSMSDaysRead}")

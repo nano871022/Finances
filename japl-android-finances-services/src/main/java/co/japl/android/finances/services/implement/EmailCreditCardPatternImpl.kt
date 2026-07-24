@@ -37,4 +37,8 @@ class EmailCreditCardPatternImpl @Inject constructor(private val emailRead: IEma
     override fun getEmailList(sender: String, subject: String, numDaysRead: Int): List<Pair<String, LocalDateTime>> {
         return emailRead.getEmails(sender, subject, numDaysRead)
     }
+
+    override fun isEmailAccessGranted(): Boolean {
+        return emailRead.isEmailAccessGranted()
+    }
 }

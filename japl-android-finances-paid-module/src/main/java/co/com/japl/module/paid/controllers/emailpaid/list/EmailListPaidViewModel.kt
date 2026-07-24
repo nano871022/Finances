@@ -21,8 +21,8 @@ class EmailListPaidViewModel(
 
     fun getNavController(): NavController? = navController
 
-    fun hasGmailPermission(): Boolean {
-        return svc?.hasGmailPermission() ?: false
+    fun hasGmailPermission(context: android.content.Context): Boolean {
+        return svc?.isEmailAccessGranted() ?: false
     }
 
     fun navigateToLogin() {

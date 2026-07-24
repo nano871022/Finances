@@ -32,6 +32,10 @@ class EmailPaidImpl @Inject constructor(val svc: IEmailPaidPort, val messageSvc:
 
     override fun getEmailList(sender: String, subject: String, numDaysRead: Int): List<Pair<String, LocalDateTime>> = messageSvc.getEmailList(sender, subject, numDaysRead)
 
+    override fun isEmailAccessGranted(): Boolean {
+        return messageSvc.isEmailAccessGranted()
+    }
+
     override fun read(numDaysRead: Int) {
         svc.getAll().filter { it.active }.forEach { emailConfig ->
             messageSvc.validateMessagePattern(emailConfig, numDaysRead).filter { it.matched }.forEach { validation ->

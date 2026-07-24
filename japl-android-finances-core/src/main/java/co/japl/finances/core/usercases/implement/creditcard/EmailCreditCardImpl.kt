@@ -33,6 +33,10 @@ class EmailCreditCardImpl @Inject constructor(val svc: IEmailCreditCardPort, val
 
     override fun getEmailList(sender: String, subject: String, numDaysRead: Int): List<Pair<String, LocalDateTime>> = messageSvc.getEmailList(sender, subject, numDaysRead)
 
+    override fun isEmailAccessGranted(): Boolean {
+        return messageSvc.isEmailAccessGranted()
+    }
+
     override fun read(numDaysRead: Int) {
         val startDate = LocalDate.now().minusDays(numDaysRead.toLong())
         svc.getAll().filter { it.active }.forEach { emailConfig ->

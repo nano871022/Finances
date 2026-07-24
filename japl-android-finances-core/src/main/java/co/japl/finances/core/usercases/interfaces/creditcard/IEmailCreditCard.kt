@@ -27,4 +27,6 @@ interface IEmailCreditCard {
     fun clone(id: Int): Boolean
 
     fun read(numDaysRead: Int)
+
+    fun isEmailAccessGranted(): Boolean
 }

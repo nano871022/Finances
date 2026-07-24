@@ -21,6 +21,11 @@ class GmailReadImpl @Inject constructor(
     private val context: Context
 ) : IEmailRead {
 
+    override fun isEmailAccessGranted(): Boolean {
+        val account = GoogleSignIn.getLastSignedInAccount(context)
+        return account?.grantedScopes?.any { it.scopeUri.contains("gmail") } ?: false
+    }
+
     private val jsonFactory = GsonFactory.getDefaultInstance()
     private val httpTransport = NetHttpTransport()
 

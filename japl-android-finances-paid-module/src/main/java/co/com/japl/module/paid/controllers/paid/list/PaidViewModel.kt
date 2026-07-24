@@ -54,8 +54,8 @@ class PaidViewModel @AssistedInject constructor(@Assisted private val accountCod
 
     val settingState = mutableStateOf(false)
 
-    fun hasGmailPermission(): Boolean {
-        return emailSvc?.hasGmailPermission() ?: false
+    fun hasGmailPermission(context: android.content.Context): Boolean {
+        return emailSvc?.isEmailAccessGranted() ?: false
     }
 
     fun newOne(){
