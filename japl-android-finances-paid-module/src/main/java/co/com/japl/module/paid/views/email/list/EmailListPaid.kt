@@ -3,6 +3,11 @@ package co.com.japl.module.paid.views.email.list
 import android.content.res.Configuration
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.*
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.style.TextAlign
+import androidx.navigation.NavDeepLinkRequest
+import androidx.core.net.toUri
+import com.google.android.gms.auth.api.signin.GoogleSignIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
@@ -36,16 +41,41 @@ import co.com.japl.ui.theme.values.Dimensions
 @Composable
 fun EmailListPaid(viewModel: EmailListPaidViewModel) {
     val load by viewModel.load
+    val context = LocalContext.current
+    val hasGmailPermission = remember { viewModel.hasGmailPermission(context) }
 
-    LaunchedEffect(Unit) {
-        viewModel.main()
-    }
-    Column{
-        if (load) {
-            LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
-            Text(text=stringResource(R.string.loading_data))
-        } else {
-            Body(viewModel)
+    if (!hasGmailPermission) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(
+                text = stringResource(id = R.string.no_gmail_permission_error),
+                style = MaterialTheme.typography.bodyLarge,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.padding(bottom = 16.dp),
+                color = MaterialTheme.colorScheme.onBackground
+            )
+            Button(onClick = {
+                viewModel.navigateToLogin()
+            }) {
+                Text(text = stringResource(id = R.string.go_to_login_button))
+            }
+        }
+    } else {
+        LaunchedEffect(Unit) {
+            viewModel.main()
+        }
+        Column{
+            if (load) {
+                LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
+                Text(text=stringResource(R.string.loading_data))
+            } else {
+                Body(viewModel)
+            }
         }
     }
 }

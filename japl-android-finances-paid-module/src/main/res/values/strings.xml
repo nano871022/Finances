@@ -139,4 +139,7 @@ Email Samples:
     <string name="num_paids">#</string>
     <string name="quote_value_short">Cuota</string>
     <string name="subject_email">Asunto</string>
+    <string name="navigate_to_login">android-app://co.com.japl.finanzas.module.app/google_login</string>
+    <string name="no_gmail_permission_error">No tienes permisos para usar esta funcionalidad activala en la interface de inicio de sesion</string>
+    <string name="go_to_login_button">Ir a Inicio de Sesión</string>
 </resources>

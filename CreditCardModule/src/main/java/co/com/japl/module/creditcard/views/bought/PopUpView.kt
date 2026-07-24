@@ -213,13 +213,17 @@ fun PopupSetting(viewModel: SettingsViewModel,state: MutableState<Boolean>) {
     val daysEmailRead = remember { viewModel.daysEmailRead }
     val errorDaysEmailRead = remember { viewModel.errorDaysEmailRead }
     val context = LocalContext.current
+    val hasGmailPermission = remember { viewModel.hasGmailPermission(context) }
+
     Popup(title = R.string.settings_credit_card_boughts, state = state) {
         Scaffold(
             floatingActionButton = {
                 Row {
-                    FloatButton(imageVector = Icons.Rounded.ForwardToInbox, descriptionIcon = R.string.read_email) {
-                        viewModel.readEmail(context)
-                        state.value = false
+                    if (hasGmailPermission) {
+                        FloatButton(imageVector = Icons.Rounded.ForwardToInbox, descriptionIcon = R.string.read_email) {
+                            viewModel.readEmail(context)
+                            state.value = false
+                        }
                     }
                     FloatButton(imageVector = Icons.Rounded.Save, descriptionIcon = R.string.save) {
                         viewModel.save(context)
@@ -257,15 +261,17 @@ fun PopupSetting(viewModel: SettingsViewModel,state: MutableState<Boolean>) {
                         daysSmsRead.value = it
                     },modifier= Modifier.padding(top=Dimensions.PADDING_SHORT).fillMaxWidth())
 
-                FieldText(title = stringResource(id = R.string.days_email_read),
-                    value = "${daysEmailRead.value}",
-                    hasErrorState = errorDaysEmailRead,
-                    keyboardType = KeyboardOptions(keyboardType = KeyboardType.Number),
-                    icon = Icons.Rounded.Cancel,
-                    validation = {viewModel.validation()},
-                    callback = {
-                        daysEmailRead.value = it
-                    },modifier= Modifier.padding(top=Dimensions.PADDING_SHORT).fillMaxWidth())
+                if (hasGmailPermission) {
+                    FieldText(title = stringResource(id = R.string.days_email_read),
+                        value = "${daysEmailRead.value}",
+                        hasErrorState = errorDaysEmailRead,
+                        keyboardType = KeyboardOptions(keyboardType = KeyboardType.Number),
+                        icon = Icons.Rounded.Cancel,
+                        validation = {viewModel.validation()},
+                        callback = {
+                            daysEmailRead.value = it
+                        },modifier= Modifier.padding(top=Dimensions.PADDING_SHORT).fillMaxWidth())
+                }
             }
         }
     }

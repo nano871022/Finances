@@ -34,13 +34,16 @@ fun PopupSetting(viewModel: PaidViewModel, state: MutableState<Boolean>) {
     val paidSMSDaysRead = remember { viewModel.paidSMSDaysRead }
     val errorPaidSMSDaysRead = remember { viewModel.errorPaidSMSDaysRead }
     val context = LocalContext.current
+    val hasGmailPermission = remember { viewModel.hasGmailPermission(context) }
 
     Popup(title = R.string.setting, state = state) {
         Scaffold(
             floatingActionButton = {
                 Row {
-                    FloatButton(imageVector = Icons.AutoMirrored.Rounded.ForwardToInbox, descriptionIcon = R.string.email_read) {
-                        viewModel.readEmail(context)
+                    if (hasGmailPermission) {
+                        FloatButton(imageVector = Icons.AutoMirrored.Rounded.ForwardToInbox, descriptionIcon = R.string.email_read) {
+                            viewModel.readEmail(context)
+                        }
                     }
                     FloatButton(imageVector = Icons.Rounded.Save, descriptionIcon = R.string.save) {
                         viewModel.saveSettings(context)
@@ -60,15 +63,17 @@ fun PopupSetting(viewModel: PaidViewModel, state: MutableState<Boolean>) {
                         paidSMSDaysRead.value = it
                     }, modifier = Modifier.padding(top = Dimensions.PADDING_SHORT).fillMaxWidth())
 
-                FieldText(title = stringResource(id = R.string.email_read_num),
-                    value = paidEmailDaysRead.value,
-                    hasErrorState = errorPaidEmailDaysRead,
-                    keyboardType = KeyboardOptions(keyboardType = KeyboardType.Number),
-                    icon = Icons.Rounded.Cancel,
-                    validation = { viewModel.validation() },
-                    callback = {
-                        paidEmailDaysRead.value = it
-                    }, modifier = Modifier.padding(top = Dimensions.PADDING_SHORT).fillMaxWidth())
+                if (hasGmailPermission) {
+                    FieldText(title = stringResource(id = R.string.email_read_num),
+                        value = paidEmailDaysRead.value,
+                        hasErrorState = errorPaidEmailDaysRead,
+                        keyboardType = KeyboardOptions(keyboardType = KeyboardType.Number),
+                        icon = Icons.Rounded.Cancel,
+                        validation = { viewModel.validation() },
+                        callback = {
+                            paidEmailDaysRead.value = it
+                        }, modifier = Modifier.padding(top = Dimensions.PADDING_SHORT).fillMaxWidth())
+                }
             }
         }
     }

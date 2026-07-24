@@ -18,6 +18,18 @@ class EmailListPaidViewModel(
 ) : ViewModel() {
 
     val load = mutableStateOf(true)
+
+    fun getNavController(): NavController? = navController
+
+    fun hasGmailPermission(context: android.content.Context): Boolean {
+        return svc?.isEmailAccessGranted() ?: false
+    }
+
+    fun navigateToLogin() {
+        navController?.let {
+            co.com.japl.module.paid.navigations.LoginNavigation.navigateToLogin(it)
+        }
+    }
     val list = mutableStateListOf<EmailPaidDTO>()
 
     fun main() {

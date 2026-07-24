@@ -180,4 +180,7 @@ Messages:
     <string name="description_simulator">Permite realizar simulaciones de cambios de cuotras sin que afecte los registros esto queda en memoria y se eliminan cuando se cambie el boton o se cierre la aplicación</string>
     <string name="days_sms_read">Dias leer SMS</string>
     <string name="days_email_read">Dias leer Correo Electrónico</string>
+    <string name="navigate_to_login">android-app://co.com.japl.finanzas.module.app/google_login</string>
+    <string name="no_gmail_permission_error">No tienes permisos para usar esta funcionalidad activala en la interface de inicio de sesion</string>
+    <string name="go_to_login_button">Ir a Inicio de Sesión</string>
 </resources>
