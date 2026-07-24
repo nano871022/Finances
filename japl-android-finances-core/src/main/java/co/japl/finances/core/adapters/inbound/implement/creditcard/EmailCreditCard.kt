@@ -64,4 +64,8 @@ class EmailCreditCard @Inject constructor(val svc: IEmailCreditCard) : IEmailCre
     override fun read(numDaysRead: Int) {
         svc.read(numDaysRead)
     }
+
+    override fun isEmailAccessGranted(): Boolean {
+        return svc.isEmailAccessGranted()
+    }
 }

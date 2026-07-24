@@ -9,4 +9,6 @@ interface IEmailPaidPattern {
     fun validateMessagePattern(dto: EmailPaidDTO, numDaysRead: Int): List<EmailValidationDTO>
 
     fun getEmailList(sender: String, subject: String, numDaysRead: Int): List<Pair<String, LocalDateTime>>
+
+    fun isEmailAccessGranted(): Boolean
 }

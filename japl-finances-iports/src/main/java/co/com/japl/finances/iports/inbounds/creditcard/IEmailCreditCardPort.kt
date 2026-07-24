@@ -24,4 +24,6 @@ interface IEmailCreditCardPort{
     fun getEmailList(sender: String, subject: String, numDaysRead: Int): List<String>
 
     fun read(numDaysRead: Int)
+
+    fun isEmailAccessGranted(): Boolean
 }

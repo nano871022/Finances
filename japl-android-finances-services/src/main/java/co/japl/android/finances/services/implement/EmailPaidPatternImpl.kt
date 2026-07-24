@@ -46,4 +46,8 @@ class EmailPaidPatternImpl @Inject constructor(private val emailRead: IEmailRead
     override fun getEmailList(sender: String, subject: String, numDaysRead: Int): List<Pair<String, LocalDateTime>> {
         return emailRead.getEmails(sender, subject, numDaysRead)
     }
+
+    override fun isEmailAccessGranted(): Boolean {
+        return emailRead.isEmailAccessGranted()
+    }
 }

@@ -18,7 +18,6 @@ class GoogleLoginService(private val activity:Activity, override val RC_SIGN_IN:
         .Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
         .requestEmail()
         .requestScopes(
-            Scope(GmailScopes.GMAIL_READONLY),
             Scope(DriveScopes.DRIVE_APPDATA)
         )
         .build()
