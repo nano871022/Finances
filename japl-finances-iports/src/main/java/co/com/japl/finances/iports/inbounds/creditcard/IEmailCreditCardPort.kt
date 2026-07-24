@@ -5,6 +5,8 @@ import co.com.japl.finances.iports.dtos.EmailValidationDTO
 
 interface IEmailCreditCardPort{
 
+    fun hasGmailPermission(): Boolean
+
     fun validateMessagePattern(dto: EmailCreditCardDTO, numDaysRead: Int):List<EmailValidationDTO>
 
     fun create(dto: EmailCreditCardDTO): Int

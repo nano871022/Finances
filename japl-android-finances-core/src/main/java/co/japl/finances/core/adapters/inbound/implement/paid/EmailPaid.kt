@@ -7,6 +7,8 @@ import co.japl.finances.core.usercases.interfaces.paid.IEmailPaid
 import javax.inject.Inject
 
 class EmailPaid @Inject constructor(val svc: IEmailPaid) : IEmailPaidPort {
+    override fun hasGmailPermission(): Boolean = svc.hasGmailPermission()
+
     override fun create(dto: EmailPaidDTO): Int = svc.create(dto)
 
     override fun update(dto: EmailPaidDTO): Boolean = svc.update(dto)

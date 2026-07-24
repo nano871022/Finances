@@ -34,7 +34,7 @@ fun PopupSetting(viewModel: PaidViewModel, state: MutableState<Boolean>) {
     val paidSMSDaysRead = remember { viewModel.paidSMSDaysRead }
     val errorPaidSMSDaysRead = remember { viewModel.errorPaidSMSDaysRead }
     val context = LocalContext.current
-    val hasGmailPermission = remember { viewModel.hasGmailPermission(context) }
+    val hasGmailPermission = remember { viewModel.hasGmailPermission() }
 
     Popup(title = R.string.setting, state = state) {
         Scaffold(

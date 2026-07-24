@@ -7,7 +7,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.navigation.NavDeepLinkRequest
 import androidx.core.net.toUri
-import com.google.android.gms.auth.api.signin.GoogleSignIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
@@ -41,8 +40,7 @@ import co.com.japl.ui.theme.values.Dimensions
 @Composable
 fun EmailListPaid(viewModel: EmailListPaidViewModel) {
     val load by viewModel.load
-    val context = LocalContext.current
-    val hasGmailPermission = remember { viewModel.hasGmailPermission(context) }
+    val hasGmailPermission = remember { viewModel.hasGmailPermission() }
 
     if (!hasGmailPermission) {
         Column(

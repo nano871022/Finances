@@ -13,7 +13,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.text.style.TextAlign
 import androidx.navigation.NavDeepLinkRequest
 import androidx.core.net.toUri
-import com.google.android.gms.auth.api.signin.GoogleSignIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.Button
 import androidx.compose.material3.Card
@@ -56,8 +55,7 @@ import co.com.japl.ui.theme.values.Dimensions
 @Composable
 fun EmailList(viewModel: EmailListCreditCardViewModel){
     val load = remember { viewModel.load}
-    val context = LocalContext.current
-    val hasGmailPermission = remember { viewModel.hasGmailPermission(context) }
+    val hasGmailPermission = remember { viewModel.hasGmailPermission() }
 
     if (!hasGmailPermission) {
         Column(

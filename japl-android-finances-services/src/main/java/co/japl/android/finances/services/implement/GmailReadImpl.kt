@@ -24,6 +24,11 @@ class GmailReadImpl @Inject constructor(
     private val jsonFactory = GsonFactory.getDefaultInstance()
     private val httpTransport = NetHttpTransport()
 
+    override fun hasGmailPermission(): Boolean {
+        val account = GoogleSignIn.getLastSignedInAccount(context)
+        return account?.grantedScopes?.any { it.scopeUri.contains("gmail") } ?: false
+    }
+
     override fun getEmails(sender: String, subject: String, numDaysRead: Int): List<Pair<String, LocalDateTime>> {
         val account = GoogleSignIn.getLastSignedInAccount(context) ?: return emptyList()
         val credential =

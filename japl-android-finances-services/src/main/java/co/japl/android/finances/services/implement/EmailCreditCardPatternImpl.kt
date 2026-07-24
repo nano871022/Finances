@@ -13,6 +13,8 @@ import javax.inject.Inject
 
 class EmailCreditCardPatternImpl @Inject constructor(private val emailRead: IEmailRead) : IEmailCreditCardPattern {
 
+    override fun hasGmailPermission(): Boolean = emailRead.hasGmailPermission()
+
     override fun validateMessagePattern(dto: EmailCreditCardDTO, numDaysRead: Int): List<EmailValidationDTO> {
         val emails = emailRead.getEmails(dto.sender, dto.subjectPattern, numDaysRead)
         return emails.map { body ->

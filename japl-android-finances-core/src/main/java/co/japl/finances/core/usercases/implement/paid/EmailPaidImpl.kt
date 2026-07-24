@@ -12,6 +12,8 @@ import java.time.LocalDateTime
 import javax.inject.Inject
 
 class EmailPaidImpl @Inject constructor(val svc: IEmailPaidPort, val messageSvc: IEmailPaidPattern, val paidSmsSvc: ISms2) : IEmailPaid {
+    override fun hasGmailPermission(): Boolean = messageSvc.hasGmailPermission()
+
     override fun create(dto: EmailPaidDTO): Int = svc.create(dto)
 
     override fun update(dto: EmailPaidDTO): Boolean = svc.update(dto)

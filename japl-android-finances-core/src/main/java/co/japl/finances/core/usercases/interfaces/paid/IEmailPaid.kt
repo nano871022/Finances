@@ -5,6 +5,7 @@ import co.com.japl.finances.iports.dtos.EmailValidationDTO
 import java.time.LocalDateTime
 
 interface IEmailPaid {
+    fun hasGmailPermission(): Boolean
     fun create(dto: EmailPaidDTO): Int
     fun update(dto: EmailPaidDTO): Boolean
     fun getById(id: Int): EmailPaidDTO?

@@ -5,6 +5,8 @@ import co.com.japl.finances.iports.dtos.EmailValidationDTO
 
 interface IEmailPaidPort {
 
+    fun hasGmailPermission(): Boolean
+
     fun validateMessagePattern(dto: EmailPaidDTO, numDaysRead: Int): List<EmailValidationDTO>
 
     fun create(dto: EmailPaidDTO): Int

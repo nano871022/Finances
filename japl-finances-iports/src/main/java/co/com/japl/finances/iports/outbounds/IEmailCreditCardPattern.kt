@@ -7,6 +7,8 @@ import java.time.LocalDateTime
 
 interface IEmailCreditCardPattern {
 
+    fun hasGmailPermission(): Boolean
+
     fun validateMessagePattern(dto: EmailCreditCardDTO, numDaysRead: Int): List<EmailValidationDTO>
 
     fun getEmailList(sender: String, subject: String, numDaysRead: Int): List<Pair<String, LocalDateTime>>

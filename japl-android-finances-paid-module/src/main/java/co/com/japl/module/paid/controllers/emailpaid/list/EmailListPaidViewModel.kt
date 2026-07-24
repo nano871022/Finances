@@ -21,9 +21,8 @@ class EmailListPaidViewModel(
 
     fun getNavController(): NavController? = navController
 
-    fun hasGmailPermission(context: android.content.Context): Boolean {
-        val account = com.google.android.gms.auth.api.signin.GoogleSignIn.getLastSignedInAccount(context)
-        return account?.grantedScopes?.any { it.scopeUri.contains("gmail") } ?: false
+    fun hasGmailPermission(): Boolean {
+        return svc?.hasGmailPermission() ?: false
     }
 
     fun navigateToLogin() {

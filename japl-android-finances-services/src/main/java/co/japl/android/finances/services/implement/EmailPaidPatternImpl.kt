@@ -13,6 +13,8 @@ import javax.inject.Inject
 
 class EmailPaidPatternImpl @Inject constructor(private val emailRead: IEmailRead) : IEmailPaidPattern {
 
+    override fun hasGmailPermission(): Boolean = emailRead.hasGmailPermission()
+
     override fun validateMessagePattern(dto: EmailPaidDTO, numDaysRead: Int): List<EmailValidationDTO> {
         try {
             val emails = emailRead.getEmails(dto.sender, dto.subjectPattern, numDaysRead)

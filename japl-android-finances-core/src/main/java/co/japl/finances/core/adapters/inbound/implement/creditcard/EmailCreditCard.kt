@@ -8,6 +8,8 @@ import javax.inject.Inject
 
 class EmailCreditCard @Inject constructor(val svc: IEmailCreditCard) : IEmailCreditCardPort {
 
+    override fun hasGmailPermission(): Boolean = svc.hasGmailPermission()
+
     override fun validateMessagePattern(dto: EmailCreditCardDTO, numDaysRead: Int): List<EmailValidationDTO> {
         require(dto.bodyPattern.isNotEmpty()){"Need pattern for find in message"}
         require(dto.subjectPattern.isNotEmpty()){"Need pattern for find in email"}

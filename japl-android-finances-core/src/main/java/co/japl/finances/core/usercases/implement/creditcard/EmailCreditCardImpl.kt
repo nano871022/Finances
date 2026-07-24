@@ -13,6 +13,8 @@ import java.time.LocalDateTime
 import javax.inject.Inject
 
 class EmailCreditCardImpl @Inject constructor(val svc: IEmailCreditCardPort, val messageSvc: IEmailCreditCardPattern, val boughtSmsSvc: IBoughtSms) : IEmailCreditCard {
+    override fun hasGmailPermission(): Boolean = messageSvc.hasGmailPermission()
+
     override fun create(dto: EmailCreditCardDTO): Int = svc.create(dto)
 
     override fun update(dto: EmailCreditCardDTO): Boolean =svc.update(dto)
