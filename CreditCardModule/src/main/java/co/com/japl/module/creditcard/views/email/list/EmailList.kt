@@ -2,6 +2,7 @@ package co.com.japl.module.creditcard.views.email.list
 
 import android.content.res.Configuration
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -53,6 +54,7 @@ import co.com.japl.ui.enums.IMoreOptions
 import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.com.japl.ui.theme.values.Dimensions
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun EmailList(viewModel: EmailListCreditCardViewModel){
     val load = remember { viewModel.load}
@@ -107,6 +109,7 @@ private fun BodyMain(viewModel: EmailListCreditCardViewModel){
 }
 
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun Banks(viewModel: EmailListCreditCardViewModel,modifier:Modifier){
     val deleteAlert = remember { mutableStateOf<Boolean>(false) }
@@ -217,6 +220,7 @@ private fun AlertDelete(onClick: () -> Unit, onDismiss: () -> Unit){
 }
 
 @Composable
+@OptIn(ExperimentalFoundationApi::class)
 @Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES, showSystemUi = true)
 private fun EmailListPreview(){
     val vm = getViewModel()

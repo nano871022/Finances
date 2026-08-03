@@ -1,8 +1,7 @@
 plugins {
     id("com.android.library")
-    id("org.jetbrains.kotlin.android")
     id("org.jetbrains.kotlin.plugin.compose")
-    id("kotlin-kapt")
+    id("com.android.legacy-kapt")
     id("dagger.hilt.android.plugin")
 }
 
@@ -31,9 +30,6 @@ android {
         targetCompatibility = JavaVersion.VERSION_21
         isCoreLibraryDesugaringEnabled = true
     }
-    composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.12"
-    }
     buildFeatures {
         compose = true
     }
@@ -42,8 +38,11 @@ android {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
-    kotlinOptions {
-        jvmTarget = "21"
+
+    kotlin {
+        compilerOptions {
+            jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_21)
+        }
     }
 }
 
@@ -70,11 +69,12 @@ dependencies {
     implementation("com.google.apis:google-api-services-script:v1-rev20220323-2.0.0")
     implementation("com.google.android.material:material:1.12.0")
     implementation("androidx.loader:loader:1.1.0")
-    implementation("com.google.dagger:hilt-android:2.56.2")
-    kapt("com.google.dagger:hilt-compiler:2.56.2")
+    implementation("com.google.dagger:hilt-android:2.60.1")
+    kapt("com.google.dagger:hilt-compiler:2.60.1")
 
 
 
+    implementation(platform("androidx.compose:compose-bom:2025.06.01"))
     implementation("androidx.compose.material:material-icons-extended")
     implementation("androidx.compose.material:material-icons-core")
     implementation("androidx.compose.material3:material3-window-size-class")

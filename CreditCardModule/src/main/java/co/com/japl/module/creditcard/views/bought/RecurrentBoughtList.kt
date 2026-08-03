@@ -2,6 +2,7 @@ package co.com.japl.module.creditcard.views.bought
 
 import android.content.res.Configuration
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -49,6 +50,7 @@ import java.time.format.TextStyle
 import kotlin.collections.component1
 import kotlin.collections.component2
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun RecurrentBoughtList(
     codeCreditCard: Int,
@@ -69,6 +71,7 @@ fun RecurrentBoughtList(
     }
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun Body( codeCreditCard: Int,
                 viewModel: RecurrentBoughtViewModel,
@@ -262,6 +265,7 @@ private fun RecurrentBoughtItem(
     }
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
 @Composable
 private fun RecurrentPreviewLight() {
@@ -284,6 +288,7 @@ private fun RecurrentPreviewLight() {
     }
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
 @Composable
 private fun RecurrentPreviewNoDataLight() {

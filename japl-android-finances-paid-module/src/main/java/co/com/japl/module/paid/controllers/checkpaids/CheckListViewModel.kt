@@ -33,6 +33,7 @@ class CheckListViewModel @Inject constructor(private val period:YearMonth, priva
 
         Toast.makeText(context, R.string.toast_save_successful, Toast.LENGTH_LONG).show().also {
             loaderStatus.value = true
+            main()
             loaderProgressStatus.value = false
         }
 

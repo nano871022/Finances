@@ -1,6 +1,7 @@
 package co.com.japl.module.creditcard.views.email.form
 
 import android.content.res.Configuration
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -57,6 +58,7 @@ import co.com.japl.ui.components.Popup
 import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.com.japl.ui.theme.values.Dimensions
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun EmailBought(viewModel: EmailCreditCardViewModel){
     val load by viewModel.load
@@ -282,6 +284,7 @@ private fun DialogAIEmail(viewModel: EmailCreditCardViewModel) {
     }
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun ValidationPopup(viewModel: EmailCreditCardViewModel) {
     val showPopup = viewModel.showPopup
@@ -452,6 +455,7 @@ private fun Buttons(addClick: () -> Unit, clear: () -> Unit) {
 }
 
 @Composable
+@OptIn(ExperimentalFoundationApi::class)
 @Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES, showSystemUi = true)
 internal fun EmailBoughtPreview(){
     val vm = getViewModel()

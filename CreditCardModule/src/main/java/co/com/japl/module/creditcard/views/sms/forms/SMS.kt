@@ -3,6 +3,7 @@ package co.com.japl.module.creditcard.views.sms.forms
 import android.content.res.Configuration
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -57,6 +58,7 @@ import co.com.japl.ui.components.LoadingProgress
 import co.com.japl.ui.theme.values.Dimensions
 import co.com.japl.ui.theme.values.ModifiersCustom.Weight1f
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun Sms(viewModel:SmsCreditCardViewModel){
     val load = remember {viewModel.load}
@@ -180,6 +182,7 @@ private fun Body(viewModel: SmsCreditCardViewModel,modifier:Modifier){
 
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun ValidationPopup(viewModel: SmsCreditCardViewModel) {
     val showPopup = remember { viewModel.showPopup }
@@ -399,6 +402,7 @@ private fun Buttons(clean:()->Unit, save:()->Unit){
 
 @RequiresApi(Build.VERSION_CODES.S)
 @Composable
+@OptIn(ExperimentalFoundationApi::class)
 @Preview(showBackground = true, showSystemUi = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
 internal fun SmsPreview(){
     MaterialThemeComposeUI {
@@ -408,6 +412,7 @@ internal fun SmsPreview(){
 
 @RequiresApi(Build.VERSION_CODES.S)
 @Composable
+@OptIn(ExperimentalFoundationApi::class)
 @Preview(showBackground = true, showSystemUi = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
 internal fun SmsDialogAIPreview(){
     val vm = getViewModel()
@@ -419,6 +424,7 @@ internal fun SmsDialogAIPreview(){
 
 @RequiresApi(Build.VERSION_CODES.S)
 @Composable
+@OptIn(ExperimentalFoundationApi::class)
 @Preview(showBackground = true, showSystemUi = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
 internal fun SmsPreviewLight(){
     MaterialThemeComposeUI {

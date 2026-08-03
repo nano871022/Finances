@@ -840,7 +840,7 @@ class SaveCreditCardBoughtImpl @Inject constructor(
                         )
                         db.execSQL(
                             "UPDATE ${CreditCardBoughtDB.CreditCardBoughtEntry.TABLE_NAME} SET ${CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_BOUGHT_DATE} = ? WHERE ${BaseColumns._ID} = ?",
-                            arrayOf(DateUtils.toSeconds(boughtDate), id)
+                            arrayOf<Any?>(DateUtils.toSeconds(boughtDate), id)
                         )
                         value += 1
                     }
@@ -878,7 +878,7 @@ class SaveCreditCardBoughtImpl @Inject constructor(
                         }
                         db.execSQL(
                             "UPDATE ${CreditCardBoughtDB.CreditCardBoughtEntry.TABLE_NAME} SET ${CreditCardBoughtDB.CreditCardBoughtEntry.COLUMN_END_DATE} = ? WHERE ${BaseColumns._ID} = ?",
-                            arrayOf(millis, id)
+                            arrayOf<Any?>(millis, id)
                         )
                         value += 1
                     }

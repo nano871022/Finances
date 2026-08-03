@@ -6,7 +6,6 @@ import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import androidx.annotation.RequiresApi
-import androidx.compose.ui.text.toLowerCase
 import androidx.core.net.toUri
 import androidx.core.os.bundleOf
 import androidx.lifecycle.SavedStateHandle
@@ -77,7 +76,7 @@ class CreditFixParams {
             savedStateHandle.get<Intent>(CreditFixListParams.Params.PARAM_DEEPLINK)?.let { intent ->
                 val uri = intent.dataString?.toUri()
                 return mapOf<String,Any>(
-                    Params.PARAMS_CREDIT_CODE to (uri?.getQueryParameter(Params.PARAMS_CREDIT_CODE.toLowerCase())?.toLongOrNull()?: 0)
+                    Params.PARAMS_CREDIT_CODE to (uri?.getQueryParameter(Params.PARAMS_CREDIT_CODE.lowercase())?.toLongOrNull()?: 0)
                 )
             }
             return emptyMap()

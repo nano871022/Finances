@@ -1,8 +1,7 @@
 plugins {
     id("com.android.library")
-    id("org.jetbrains.kotlin.android")
     id("org.jetbrains.kotlin.plugin.compose")
-    id("kotlin-kapt")
+    id("com.android.legacy-kapt")
     id("com.google.dagger.hilt.android")
 }
 
@@ -36,14 +35,14 @@ android {
         targetCompatibility = JavaVersion.VERSION_21
         isCoreLibraryDesugaringEnabled = true
     }
-    kotlinOptions {
-        jvmTarget = "21"
-    }
     buildFeatures{
         compose = true
     }
-    composeOptions{
-        kotlinCompilerExtensionVersion = "1.5.14"
+
+    kotlin {
+        compilerOptions {
+            jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_21)
+        }
     }
 }
 
@@ -71,8 +70,8 @@ dependencies {
     implementation("com.google.apis:google-api-services-script:v1-rev20220323-2.0.0")
     implementation("com.google.android.material:material:1.12.0")
     implementation("androidx.loader:loader:1.1.0")
-    implementation("com.google.dagger:hilt-android:2.56.2")
-    kapt("com.google.dagger:hilt-compiler:2.56.2")
+    implementation("com.google.dagger:hilt-android:2.60.1")
+    kapt("com.google.dagger:hilt-compiler:2.60.1")
 
 
 
