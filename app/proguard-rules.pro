@@ -22,7 +22,7 @@
 -keepattributes Signature, RuntimeVisibleAnnotations, AnnotationDefault
 -keepattributes EnclosingMethod
 -keepattributes InnerClasses
--dontoptimize
+#-dontoptimize
 
 -if class androidx.credentials.CredentialManager {*;}
 -keep class androidx.credentials.playservices.** {*;}
