@@ -112,7 +112,7 @@ internal fun RecordBoughtCreditCard(bought: CreditCardBoughtItemDTO,
 private fun Content(model:BoughtViewModel, colorPendingValue:Color = Color.Unspecified){
     BoxWithConstraints {
         val widthSize = WindowWidthSize.fromDp(maxWidth)
-        if (widthSize == WindowWidthSize.COMPACT || widthSize == WindowWidthSize.COMPACT_700) {
+        if (widthSize == WindowWidthSize.COMPACT) {
             ContentReduced(model, colorPendingValue = colorPendingValue)
         } else if(WindowWidthSize.MEDIUM.isEqualTo(maxWidth)){
             ContentCompact(model, colorPendingValue = colorPendingValue)
