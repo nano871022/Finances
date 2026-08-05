@@ -111,10 +111,82 @@ internal fun RecordBoughtCreditCard(bought: CreditCardBoughtItemDTO,
 @Composable
 private fun Content(model:BoughtViewModel, colorPendingValue:Color = Color.Unspecified){
     BoxWithConstraints {
-        if(WindowWidthSize.MEDIUM.isEqualTo(maxWidth)){
+        val widthSize = WindowWidthSize.fromDp(maxWidth)
+        if (widthSize == WindowWidthSize.COMPACT) {
+            ContentReduced(model, colorPendingValue = colorPendingValue)
+        } else if(WindowWidthSize.MEDIUM.isEqualTo(maxWidth)){
             ContentCompact(model, colorPendingValue = colorPendingValue)
         }else{
             ContentLarge(model, colorPendingValue = colorPendingValue)
+        }
+    }
+}
+
+@Composable
+private fun ContentReduced(model:BoughtViewModel, paddingEnd:Dp=10.dp, colorPendingValue:Color = Color.Unspecified){
+    Column {
+        Row(
+            modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically
+        ) {
+            LabelValue(
+                label = R.string.product_value_reduced,
+                value = NumbersUtil.formatReduced(model.bought.valueItem),
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(end = paddingEnd)
+            )
+
+            LabelValue(
+                label = R.string.pending_to_pay_reduced,
+                value = NumbersUtil.formatReduced(model.bought.pendingToPay),
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(end = paddingEnd),
+                color = colorPendingValue
+            )
+        }
+        Row(
+            modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically
+        ) {
+            LabelValue(
+                label = R.string.tax,
+                value = "${
+                    (model.bought.interest * 100).toBigDecimal()
+                        .setScale(2, RoundingMode.CEILING)
+                }% ${model.bought.kindOfTax.getName()}",
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(end = paddingEnd)
+            )
+
+            LabelValue(
+                label = R.string.capital_value_reduced,
+                value = NumbersUtil.formatReduced(model.bought.capitalValue),
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(end = paddingEnd)
+            )
+
+        }
+        Row(
+            modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically
+        ) {
+            LabelValue(
+                label = R.string.interest_value_reduced,
+                value = NumbersUtil.formatReduced(model.bought.interestValue),
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(end = paddingEnd)
+            )
+
+            LabelValue(
+                label = R.string.quote_value_reduced,
+                value = NumbersUtil.formatReduced(model.bought.quoteValue),
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(end = paddingEnd)
+            )
+
         }
     }
 }

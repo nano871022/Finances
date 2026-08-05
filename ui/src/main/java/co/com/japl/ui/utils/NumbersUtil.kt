@@ -184,5 +184,39 @@ class NumbersUtil {
             }
             return "${toString(bytes)} B"
         }
+
+        fun formatReduced(value: Double): String {
+            return when {
+                value >= 1_000_000.0 -> {
+                    val divided = value / 1_000_000.0
+                    val rounded = BigDecimal(divided).setScale(2, java.math.RoundingMode.HALF_UP).toDouble()
+                    if (rounded % 1.0 == 0.0) {
+                        "$ ${rounded.toInt()}M"
+                    } else {
+                        val formatted = String.format(java.util.Locale.US, "%.2f", rounded)
+                        val cleaned = if (formatted.endsWith(".00")) formatted.substring(0, formatted.length - 3)
+                                      else if (formatted.contains(".") && formatted.endsWith("0")) formatted.substring(0, formatted.length - 1)
+                                      else formatted
+                        "$ ${cleaned}M"
+                    }
+                }
+                value >= 10_000.0 -> {
+                    val divided = value / 1_000.0
+                    val rounded = BigDecimal(divided).setScale(2, java.math.RoundingMode.HALF_UP).toDouble()
+                    if (rounded % 1.0 == 0.0) {
+                        "$ ${rounded.toInt()}K"
+                    } else {
+                        val formatted = String.format(java.util.Locale.US, "%.2f", rounded)
+                        val cleaned = if (formatted.endsWith(".00")) formatted.substring(0, formatted.length - 3)
+                                      else if (formatted.contains(".") && formatted.endsWith("0")) formatted.substring(0, formatted.length - 1)
+                                      else formatted
+                        "$ ${cleaned}K"
+                    }
+                }
+                else -> {
+                    COPtoString(value)
+                }
+            }
+        }
     }
 }
