@@ -5,7 +5,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.BasicAlertDialog
+import androidx.compose.ui.window.Dialog
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
@@ -27,7 +27,7 @@ import co.com.japl.ui.enums.IMoreOptions
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MoreOptionsDialog(listOptions:List<IMoreOptions>,onDismiss:()->Unit,onClick: (IMoreOptions) -> Unit){
-    BasicAlertDialog(onDismissRequest = onDismiss) {
+    Dialog(onDismissRequest = onDismiss) {
         Surface {
             Column(
                 modifier = Modifier.fillMaxWidth(),
@@ -50,7 +50,7 @@ fun MoreOptionsDialog(listOptions:List<IMoreOptions>,onDismiss:()->Unit,onClick:
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MoreOptionsDialogPair(listOptions:List<Pair<Int,String>>,onDismiss:()->Unit,onClick: (Pair<Int,String>) -> Unit){
-    BasicAlertDialog(onDismissRequest = onDismiss) {
+    Dialog(onDismissRequest = onDismiss) {
         Surface {
             Column(
                 modifier = Modifier.fillMaxWidth(),
@@ -73,7 +73,7 @@ fun MoreOptionsDialogPair(listOptions:List<Pair<Int,String>>,onDismiss:()->Unit,
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MoreOptionsDialogPair(listOptions:SnapshotStateList<Pair<Int,String>>,onDismiss:()->Unit,onClick: (Pair<Int,String>) -> Unit){
-    BasicAlertDialog(onDismissRequest = onDismiss) {
+    Dialog(onDismissRequest = onDismiss) {
         Surface {
             Column(
                 modifier = Modifier.fillMaxWidth(),

@@ -103,7 +103,7 @@ class ProjectionFormViewModel @AssistedInject constructor(
         saveStateHandler!!,
         "FORM_VALUE",
         initialValue = projection.value.value,
-        formatter = { if(NumbersUtil.isNumber(it)) BigDecimal(it) else BigDecimal.ZERO },
+        formatter = { if(NumbersUtil.isNumber(it)) NumbersUtil.toBigDecimal(it) else BigDecimal.ZERO },
         validator = { it > BigDecimal.ZERO },
         onValueChangeCallBack = { newValue ->
             projection.update{
@@ -117,7 +117,7 @@ class ProjectionFormViewModel @AssistedInject constructor(
         saveStateHandler!!,
         "FORM_QUOTE",
         initialValue = projection.value.quote,
-        formatter = { if(NumbersUtil.isNumber(it)) BigDecimal(it) else BigDecimal.ZERO },
+        formatter = { if(NumbersUtil.isNumber(it)) NumbersUtil.toBigDecimal(it) else BigDecimal.ZERO },
         validator = { it > BigDecimal.ZERO },
         onValueChangeCallBack = { newValue ->
             projection.update{
