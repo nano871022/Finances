@@ -200,7 +200,7 @@ class NumbersUtil {
                         "$ ${cleaned}M"
                     }
                 }
-                value >= 100_000.0 -> {
+                value >= 10_000.0 -> {
                     val divided = value / 1_000.0
                     val rounded = BigDecimal(divided).setScale(2, java.math.RoundingMode.HALF_UP).toDouble()
                     if (rounded % 1.0 == 0.0) {

@@ -149,6 +149,17 @@ private fun ContentReduced(model:BoughtViewModel, paddingEnd:Dp=10.dp, colorPend
             modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically
         ) {
             LabelValue(
+                label = R.string.tax,
+                value = "${
+                    (model.bought.interest * 100).toBigDecimal()
+                        .setScale(2, RoundingMode.CEILING)
+                }% ${model.bought.kindOfTax.getName()}",
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(end = paddingEnd)
+            )
+
+            LabelValue(
                 label = R.string.capital_value_reduced,
                 value = NumbersUtil.formatReduced(model.bought.capitalValue),
                 modifier = Modifier
@@ -156,13 +167,6 @@ private fun ContentReduced(model:BoughtViewModel, paddingEnd:Dp=10.dp, colorPend
                     .padding(end = paddingEnd)
             )
 
-            LabelValue(
-                label = R.string.quote_value_reduced,
-                value = NumbersUtil.formatReduced(model.bought.quoteValue),
-                modifier = Modifier
-                    .weight(1f)
-                    .padding(end = paddingEnd)
-            )
         }
         Row(
             modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically
@@ -175,7 +179,14 @@ private fun ContentReduced(model:BoughtViewModel, paddingEnd:Dp=10.dp, colorPend
                     .padding(end = paddingEnd)
             )
 
-            androidx.compose.foundation.layout.Box(modifier = Modifier.weight(1f))
+            LabelValue(
+                label = R.string.quote_value_reduced,
+                value = NumbersUtil.formatReduced(model.bought.quoteValue),
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(end = paddingEnd)
+            )
+
         }
     }
 }
