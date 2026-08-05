@@ -175,9 +175,14 @@ class PieceOfPie(val context:Context):IGraph{
     }
 
     private fun descriptionPieceOfPie(title:String,value:Double,total:Double,canvas: Canvas,paint4:Paint){
-        val percent = calculations.calculatePercent(value!!,total).toBigDecimal().round(
-            MathContext(5)
-        )
+        val percentFloat = calculations.calculatePercent(value!!,total)
+        val percent = if (percentFloat.isNaN() || percentFloat.isInfinite()) {
+            BigDecimal.ZERO
+        } else {
+            percentFloat.toBigDecimal().round(
+                MathContext(5)
+            )
+        }
         val value= DecimalFormat("#,###.###").format(value).toString()
         val longText = getLongText(title,value,percent)
         val longHigh = Paint().fontSpacing

@@ -12,7 +12,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Cancel
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.BasicAlertDialog
+import androidx.compose.ui.window.Dialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -130,7 +130,7 @@ fun MoreOptionsDialog(valueToPay:Double,isRecurrent:Boolean, creditRate:Double,l
                 })
         }
     }
-    BasicAlertDialog(onDismissRequest = onDismiss) {
+    Dialog(onDismissRequest = onDismiss) {
         Surface {
             Column(
                 modifier = Modifier.fillMaxWidth(),
@@ -206,7 +206,7 @@ private fun DifferInstallmentDialog(value:Double,creditRate: Double,onDismiss: (
     val stateInstallment = remember { mutableStateOf("") }
     val newValueInstallment = remember { mutableDoubleStateOf(0.0) }
     val interest = remember {mutableDoubleStateOf(0.0)}
-    BasicAlertDialog(onDismissRequest = onDismiss) {
+    Dialog(onDismissRequest = onDismiss) {
         Surface {
             Column(
                 modifier = Modifier.fillMaxWidth(),

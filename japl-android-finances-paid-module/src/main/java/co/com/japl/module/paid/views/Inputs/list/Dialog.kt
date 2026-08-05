@@ -7,7 +7,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Cancel
-import androidx.compose.material3.BasicAlertDialog
+import androidx.compose.ui.window.Dialog
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
@@ -97,7 +97,7 @@ private fun DeleteConfirm(stateDeleteDialog:MutableState<Boolean>,onDismiss:()->
 @Composable
 private fun UpdateValueDialog(onDismiss: () -> Unit, onClick: (Double) -> Unit) {
     var text by remember { mutableStateOf("") }
-    BasicAlertDialog(onDismissRequest = onDismiss) {
+    Dialog(onDismissRequest = onDismiss) {
         Surface {
             Column(
                 modifier = Modifier.fillMaxWidth(),
