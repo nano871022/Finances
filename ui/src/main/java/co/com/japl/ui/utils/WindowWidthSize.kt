@@ -8,6 +8,7 @@ enum class WindowWidthSize(private val size: Dp?) {
     NANO(200.dp),
     MICRO(250.dp),
     COMPACT(500.dp),
+    COMPACT_700(700.dp),
     MEDIUM(740.dp),
     MEDIUMX(800.dp),
     LARGES(980.dp),
@@ -23,6 +24,7 @@ enum class WindowWidthSize(private val size: Dp?) {
         fun fromDp(dp: Dp): WindowWidthSize {
             return when {
                 COMPACT.isEqualTo(dp) -> COMPACT
+                COMPACT_700.isEqualTo(dp) -> COMPACT_700
                 MEDIUM.isEqualTo(dp) -> MEDIUM
                 MEDIUMX.isEqualTo(dp) -> MEDIUMX
                 LARGES.isEqualTo(dp) -> LARGES

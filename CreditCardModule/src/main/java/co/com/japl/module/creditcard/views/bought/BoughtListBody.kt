@@ -111,7 +111,8 @@ internal fun RecordBoughtCreditCard(bought: CreditCardBoughtItemDTO,
 @Composable
 private fun Content(model:BoughtViewModel, colorPendingValue:Color = Color.Unspecified){
     BoxWithConstraints {
-        if (maxWidth < 700.dp) {
+        val widthSize = WindowWidthSize.fromDp(maxWidth)
+        if (widthSize == WindowWidthSize.COMPACT || widthSize == WindowWidthSize.COMPACT_700) {
             ContentReduced(model, colorPendingValue = colorPendingValue)
         } else if(WindowWidthSize.MEDIUM.isEqualTo(maxWidth)){
             ContentCompact(model, colorPendingValue = colorPendingValue)
@@ -129,7 +130,7 @@ private fun ContentReduced(model:BoughtViewModel, paddingEnd:Dp=10.dp, colorPend
         ) {
             LabelValue(
                 label = R.string.product_value_reduced,
-                value = formatReduced(model.bought.valueItem),
+                value = NumbersUtil.formatReduced(model.bought.valueItem),
                 modifier = Modifier
                     .weight(1f)
                     .padding(end = paddingEnd)
@@ -137,7 +138,7 @@ private fun ContentReduced(model:BoughtViewModel, paddingEnd:Dp=10.dp, colorPend
 
             LabelValue(
                 label = R.string.pending_to_pay_reduced,
-                value = formatReduced(model.bought.pendingToPay),
+                value = NumbersUtil.formatReduced(model.bought.pendingToPay),
                 modifier = Modifier
                     .weight(1f)
                     .padding(end = paddingEnd),
@@ -149,7 +150,7 @@ private fun ContentReduced(model:BoughtViewModel, paddingEnd:Dp=10.dp, colorPend
         ) {
             LabelValue(
                 label = R.string.capital_value_reduced,
-                value = formatReduced(model.bought.capitalValue),
+                value = NumbersUtil.formatReduced(model.bought.capitalValue),
                 modifier = Modifier
                     .weight(1f)
                     .padding(end = paddingEnd)
@@ -157,7 +158,7 @@ private fun ContentReduced(model:BoughtViewModel, paddingEnd:Dp=10.dp, colorPend
 
             LabelValue(
                 label = R.string.quote_value_reduced,
-                value = formatReduced(model.bought.quoteValue),
+                value = NumbersUtil.formatReduced(model.bought.quoteValue),
                 modifier = Modifier
                     .weight(1f)
                     .padding(end = paddingEnd)
@@ -168,7 +169,7 @@ private fun ContentReduced(model:BoughtViewModel, paddingEnd:Dp=10.dp, colorPend
         ) {
             LabelValue(
                 label = R.string.interest_value_reduced,
-                value = formatReduced(model.bought.interestValue),
+                value = NumbersUtil.formatReduced(model.bought.interestValue),
                 modifier = Modifier
                     .weight(1f)
                     .padding(end = paddingEnd)
@@ -390,40 +391,6 @@ private fun getInstallmentColor(month: Int, monthPaid: Long): Color {
 private fun LabelValue(@StringRes label:Int, value:String, modifier:Modifier, color:Color = Color.Unspecified){
     Text(text = stringResource(id = label), modifier = modifier)
     Text(text = value, modifier = modifier, textAlign = TextAlign.End, color = color)
-}
-
-private fun formatReduced(value: Double): String {
-    return when {
-        value >= 1_000_000.0 -> {
-            val divided = value / 1_000_000.0
-            val rounded = java.math.BigDecimal(divided).setScale(2, java.math.RoundingMode.HALF_UP).toDouble()
-            if (rounded % 1.0 == 0.0) {
-                "$ ${rounded.toInt()}M"
-            } else {
-                val formatted = String.format(java.util.Locale.US, "%.2f", rounded)
-                val cleaned = if (formatted.endsWith(".00")) formatted.substring(0, formatted.length - 3)
-                              else if (formatted.contains(".") && formatted.endsWith("0")) formatted.substring(0, formatted.length - 1)
-                              else formatted
-                "$ ${cleaned}M"
-            }
-        }
-        value >= 100_000.0 -> {
-            val divided = value / 1_000.0
-            val rounded = java.math.BigDecimal(divided).setScale(2, java.math.RoundingMode.HALF_UP).toDouble()
-            if (rounded % 1.0 == 0.0) {
-                "$ ${rounded.toInt()}K"
-            } else {
-                val formatted = String.format(java.util.Locale.US, "%.2f", rounded)
-                val cleaned = if (formatted.endsWith(".00")) formatted.substring(0, formatted.length - 3)
-                              else if (formatted.contains(".") && formatted.endsWith("0")) formatted.substring(0, formatted.length - 1)
-                              else formatted
-                "$ ${cleaned}K"
-            }
-        }
-        else -> {
-            NumbersUtil.COPtoString(value)
-        }
-    }
 }
 
 @RequiresApi(Build.VERSION_CODES.S)
