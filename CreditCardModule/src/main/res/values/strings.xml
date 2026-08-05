@@ -148,7 +148,12 @@ Messages:
     <string name="dont_deleted">No se elimino</string>
     <string name="not_save_differ_installment">No se guardo</string>
     <string name="product_value">Valor Producto</string>
+    <string name="product_value_reduced">Producto</string>
     <string name="pending_to_pay">Pendiente por Pagar</string>
+    <string name="pending_to_pay_reduced">Pendiente</string>
+    <string name="capital_value_reduced">Capital</string>
+    <string name="quote_value_reduced">Cuota</string>
+    <string name="interest_value_reduced">Intereses</string>
     <string name="tax">Inbteres</string>
     <string name="do_you_want_to_ending_recurrent_payment">¿Desea finalizar este registro?</string>
     <string name="ending">Finalizar</string>
