@@ -76,3 +76,24 @@
 -keep class **.R$*
 
 -keep class com.fasterxml.** {*;}
+
+# WorkManager and Room database implementation protection for AGP 9
+-keep class androidx.work.impl.** { *; }
+-keep class androidx.room.MultiInstanceInvalidationService { *; }
+-dontwarn androidx.work.impl.**
+
+# Specific implementation classes and Worker persistence
+-keep class androidx.work.impl.WorkDatabase_Impl { *; }
+-keep class androidx.work.impl.background.systemjob.SystemJobService { *; }
+-keep class * extends androidx.work.Worker { *; }
+-keep class * extends androidx.work.ListenableWorker { *; }
+
+# App Startup persistence to prevent obfuscation breaks on start
+-keep class androidx.startup.** { *; }
+-keep class androidx.startup.InitializationProvider
+-keep class * implements androidx.startup.Initializer
+
+# Room/SQLite internal database implementation (Android 15 and AGP 9 compatibility)
+-keep class * extends androidx.room.RoomDatabase { *; }
+-keep class androidx.work.impl.db.WorkDatabase_Impl { *; }
+-keep class androidx.sqlite.db.framework.FrameworkSQLiteOpenHelperFactory
