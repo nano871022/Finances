@@ -90,7 +90,11 @@ class MainActivity : AppCompatActivity(){
 
     private fun onNavigationItemSelected(item: MenuItem): Boolean {
         Log.d(this.javaClass.name,"on navigation item selected $item ")
-        NavigationUI.onNavDestinationSelected(item,navController)
+        try {
+            NavigationUI.onNavDestinationSelected(item, navController)
+        } catch (e: IllegalArgumentException) {
+            Log.e(this.javaClass.name, "on navigation item selected failed: ${e.message}", e)
+        }
         findViewById<DrawerLayout>(R.id.draw_layout).setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
         return true
     }
@@ -113,7 +117,10 @@ class MainActivity : AppCompatActivity(){
                 item,
                 navController
             ) || super.onOptionsItemSelected(item)
-        }catch(e:Exception){
+        } catch (e: IllegalArgumentException) {
+            Log.e(this.javaClass.name, "on options item selected failed: ${e.message}", e)
+            return false
+        } catch (e: Exception) {
             Log.e(this.javaClass.name,"on options item selected $e")
             return false
         }
