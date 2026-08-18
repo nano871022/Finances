@@ -26,7 +26,7 @@ class BoughtImpl @Inject constructor(private val service:IBought, private  val s
         cutOff: LocalDateTime,cache: Boolean
     ): List<Pair<String, Double>>? {
         require(creditCardDTO.id != 0) { "CreditCard Id cannot be 0" }
-        require(cutOff.compareTo(LocalDateTime.now())>0) { "Cutoff cannot be in the future" }
+        require(!cutOff.isAfter(LocalDateTime.now())) { "Cutoff cannot be in the future" }
         return service.getBoughtCurrentPeriodList(creditCardDTO,cutOff,cache)
     }
 
