@@ -4,7 +4,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.LinearProgressIndicator
+import co.com.japl.ui.components.LoadingIndicator
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Cancel
 import androidx.compose.material.icons.rounded.Create
@@ -40,8 +40,8 @@ fun CreditCard(viewModel: CreditCardViewModel){
         viewModel.main()
     }
 
-    if(showProgress.value){
-        LinearProgressIndicator(progress = progression.floatValue)
+    if(showProgress.value) {
+        LoadingIndicator(progress = { progression.floatValue })
     }else{
         Scaffold(
             floatingActionButton = {

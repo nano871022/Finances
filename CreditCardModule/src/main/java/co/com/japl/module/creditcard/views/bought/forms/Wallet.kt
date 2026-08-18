@@ -13,7 +13,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Cancel
 import androidx.compose.material.icons.rounded.CleaningServices
-import androidx.compose.material.LinearProgressIndicator
+import co.com.japl.ui.components.LoadingIndicator
 import androidx.compose.material.icons.rounded.Edit
 import androidx.compose.material.icons.rounded.Save
 import androidx.compose.material3.Scaffold
@@ -44,8 +44,8 @@ fun Wallet (viewModel:WalletViewModel){
     val isLoadingState = remember {viewModel.loading}
     val loadingState = remember { viewModel.progress }
 
-    if(isLoadingState.value){
-        LinearProgressIndicator(progress = loadingState.floatValue,modifier=Modifier.fillMaxWidth())
+    if(isLoadingState.value) {
+        LoadingIndicator(progress = { loadingState.floatValue })
     }else {
         viewModel.creditRateEmpty()
         Scaffold(

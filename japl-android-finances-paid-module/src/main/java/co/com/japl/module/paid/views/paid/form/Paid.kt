@@ -7,7 +7,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.LinearProgressIndicator
+import co.com.japl.ui.components.LoadingIndicator
 import androidx.compose.material3.Scaffold
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add
@@ -44,8 +44,8 @@ fun Paid(viewModel:PaidViewModel) {
         viewModel.main()
     }
 
-    if(loaderState.value){
-        LinearProgressIndicator(progress = progresStatus.value,modifier=Modifier.fillMaxWidth())
+    if(loaderState.value) {
+        LoadingIndicator(progress = { progresStatus.value })
     }else{
         Body(viewModel = viewModel)
     }
