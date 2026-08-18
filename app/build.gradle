@@ -17,8 +17,8 @@ android {
         applicationId "co.japl.android.myapplication"
         minSdk 26
         targetSdk 36
-        versionCode 4_09_02_193
-        versionName "V 4.09.02 build 193 Added request permisison for gmail and drive when is record or one by one"
+        versionCode 4_09_02_194
+        versionName "V 4.09.02 build 194 Added request permisison for gmail and drive when is record or one by one"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
