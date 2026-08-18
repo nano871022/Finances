@@ -8,7 +8,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material3.LinearProgressIndicator
+import co.com.japl.ui.components.LoadingIndicator
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.HorizontalDivider
@@ -31,8 +31,8 @@ import co.com.japl.ui.R
 fun ListSimulator(viewModel: SimulatorListViewModel){
     val progres = remember { viewModel.progres }
 
-    if(progres.value){
-        LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
+    if(progres.value) {
+        LoadingIndicator()
     }else{
         if(viewModel.list.isEmpty()){
             Text(text= stringResource(R.string.no_records),

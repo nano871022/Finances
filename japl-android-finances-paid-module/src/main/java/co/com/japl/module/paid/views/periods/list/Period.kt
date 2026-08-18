@@ -12,7 +12,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
-import androidx.compose.material3.LinearProgressIndicator
+import co.com.japl.ui.components.LoadingIndicator
 import androidx.compose.material3.Surface
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.MoreVert
@@ -60,11 +60,8 @@ fun Period(viewModel:PeriodsViewModel){
         viewModel.main()
     }
 
-    if(loaderState.value){
-        LinearProgressIndicator(
-            progress = { progressState.value },
-            modifier = Modifier.fillMaxWidth(),
-        )
+    if(loaderState.value) {
+        LoadingIndicator(progress = { progressState.value })
     }else{
         Body(viewModel)
     }
