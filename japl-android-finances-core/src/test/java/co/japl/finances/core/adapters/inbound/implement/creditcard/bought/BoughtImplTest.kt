@@ -66,12 +66,17 @@ class BoughtImplTest {
         assertEquals(expectedList, result)
     }
 
-    @Test(expected = IllegalArgumentException::class)
-    fun getBoughtCurrentPeriodList_whenCutOffIsInFuture_throwsException() {
+    @Test
+    fun getBoughtCurrentPeriodList_whenCutOffIsInFuture_returnsList() {
         val creditCard = createCreditCardDTO(1)
         val cutOff = LocalDateTime.now().plusDays(1)
+        val expectedList = listOf("Item 1" to 100.0)
 
-        boughtImpl.getBoughtCurrentPeriodList(creditCard, cutOff, cache = true)
+        `when`(service.getBoughtCurrentPeriodList(creditCard, cutOff, cache = true)).thenReturn(expectedList)
+
+        val result = boughtImpl.getBoughtCurrentPeriodList(creditCard, cutOff, cache = true)
+
+        assertEquals(expectedList, result)
     }
 
     @Test(expected = IllegalArgumentException::class)
