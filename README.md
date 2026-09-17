@@ -5,7 +5,7 @@ clave Nano871022.
 alias finanzas 2.0
 
 
--- current file 
+-- current file  
 File file.pks
 Clave Nano871022.
 alias alejo87
