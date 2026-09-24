@@ -14,7 +14,7 @@ jobs:
         uses: ./.github/actions/setup
 
       - name: Run Lint
-        run: ./gradlew lintDebug -x :about:lintDebug--no-daemon --no-parallel --stacktrace
+        run: ./gradlew lintDebug -x :about:lintDebug --no-daemon --no-parallel --stacktrace
 
       - name: Upload Lint Report
         if: always()
