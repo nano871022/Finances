@@ -31,5 +31,7 @@ interface IBoughtList {
 
     fun reactivateRecurrent(codeBought: Int): Boolean
 
+    fun changeQuotas(codeBought: Int, months: Int, cache: Boolean): Boolean
+
 
 }

@@ -90,6 +90,26 @@ class BoughtViewModel(
             MoreOptionsItemsCreditCard.DELETE ->{deleteDialog()}
             MoreOptionsItemsCreditCard.CLONE ->{clone()}
             MoreOptionsItemsCreditCard.RESTORE ->{restoreDialog()}
+            MoreOptionsItemsCreditCard.CHANGE_QUOTAS ->{changeQuotasDialog(valueDouble.toInt())}
+        }
+    }
+
+    private fun changeQuotasDialog(months: Int) {
+        if (bought.id > 0 && boughtCreditCardSvc.changeQuotas(bought.id, months, cache.value)) {
+            Snackbar.make(
+                view,
+                R.string.quotas_update_success,
+                Snackbar.LENGTH_LONG
+            )
+                .setAction(R.string.close) {}
+                .show().also { loader.value = false }
+        } else {
+            Snackbar.make(
+                view,
+                R.string.quotas_update_failed,
+                Snackbar.LENGTH_LONG
+            )
+                .setAction(R.string.close, null).show()
         }
     }
 

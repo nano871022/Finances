@@ -161,6 +161,23 @@ class BoughtList @Inject constructor(
         }?:false
     }
 
+    override fun changeQuotas(codeBought: Int, months: Int, cache: Boolean): Boolean {
+        require(codeBought > 0) { "Invalid purchase ID" }
+        require(months >= 1) { "Quotas must be at least 1" }
+        val boughtDTO = quoteCCSvc.get(codeBought, cache) ?: return false
+        val creditCard = creditCardSvc.get(boughtDTO.codeCreditCard) ?: return false
+        val maxQuotes = creditCard.maxQuotes.toInt()
+        require(months <= maxQuotes) { "Quotas ($months) cannot exceed credit card maximum limit ($maxQuotes)" }
+
+        val dayOfMonth: Short = creditCard.cutOffDay
+        val newEndDate = DateUtils.cutOffAddMonth(dayOfMonth, boughtDTO.cutOutDate, months.toLong())
+        val updatedDTO = boughtDTO.copy(
+            month = months,
+            endDate = newEndDate
+        )
+        return quoteCCSvc.update(updatedDTO, cache)
+    }
+
     private fun tag(codeBought:Int):TagDTO?{
         return tagsSvc.getTags(codeBought).firstOrNull()
     }

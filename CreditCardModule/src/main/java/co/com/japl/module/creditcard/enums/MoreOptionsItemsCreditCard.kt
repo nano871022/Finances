@@ -13,7 +13,9 @@ enum class MoreOptionsItemsCreditCard(@StringRes val title: Int) : IMoreOptions 
     UPDATE_VALUE(R.string.ccio_update_value),
     DIFFER_INSTALLMENT(R.string.differ_installment),
     CLONE(R.string.ccio_clone)
-    ,RESTORE(R.string.ccio_restore);
+    ,
+    RESTORE(R.string.ccio_restore),
+    CHANGE_QUOTAS(R.string.change_quotas);
 
     override fun getName() = title
 }
