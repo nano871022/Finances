@@ -20,7 +20,7 @@ class CreditFixFragment : Fragment() {
 
     private val viewModel: CreditFormViewModel by viewModels()
 
-    @RequiresApi(Build.VERSION_CODES.VANILLA_ICE_CREAM)
+    @RequiresApi(Build.VERSION_CODES.S)
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?

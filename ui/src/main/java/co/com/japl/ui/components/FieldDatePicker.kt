@@ -40,7 +40,7 @@ import co.com.japl.ui.R
 import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.com.japl.ui.utils.DateUtils
 
-@RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
+@RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FieldDatePicker(@StringRes title:Int,value:String,isEnablePicker:MutableState<Boolean> = mutableStateOf(true),isError:MutableState<Boolean> = mutableStateOf(false),validation:()->Unit,callable:(String)->Unit,modifier:Modifier = Modifier) {
@@ -124,7 +124,7 @@ fun FieldDatePicker(@StringRes title:Int,value:String,isEnablePicker:MutableStat
 
 }
 
-@RequiresApi(Build.VERSION_CODES.S)
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 @Preview(showSystemUi = true, showBackground = true)
 fun FieldDatePickerPreview(){
@@ -140,7 +140,7 @@ fun FieldDatePickerPreview(){
     }
 }
 
-@RequiresApi(Build.VERSION_CODES.S)
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 @Preview(showSystemUi = true, showBackground = true)
 fun FieldDatePickerPreviewNotError(){
@@ -156,7 +156,7 @@ fun FieldDatePickerPreviewNotError(){
     }
 }
 
-@RequiresApi(Build.VERSION_CODES.S)
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 @Preview(showSystemUi = true, showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
 fun FieldDatePickerPreviewDark(){
@@ -172,7 +172,7 @@ fun FieldDatePickerPreviewDark(){
     }
 }
 
-@RequiresApi(Build.VERSION_CODES.S)
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 @Preview(showSystemUi = true, showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
 fun FieldDatePickerPreviewNotErrorDark(){
