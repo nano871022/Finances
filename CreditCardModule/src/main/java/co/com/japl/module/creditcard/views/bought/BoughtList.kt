@@ -369,6 +369,10 @@ private fun BoughListPreview(){
                 override fun reactivateRecurrent(codeBought: Int): Boolean {
                     TODO("Not yet implemented")
                 }
+
+                override fun changeQuotas(codeBought: Int, months: Int, cache: Boolean): Boolean {
+                    TODO("Not yet implemented")
+                }
             },
             simulatorSvc = object: ISimulatorCreditVariablePort{
                 override fun calculate(dto: SimulatorCreditDTO): SimulatorCreditDTO {

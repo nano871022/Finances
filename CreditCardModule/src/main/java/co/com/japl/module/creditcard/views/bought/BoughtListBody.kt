@@ -310,12 +310,15 @@ private fun MainRow(model:BoughtViewModel){
             if(rediferirValue > model.bought.valueItem){
                 rediferirValue =model.bought.valueItem
             }
-            MoreOptionsDialog (rediferirValue,
-                model.bought.recurrent,
-                model.bought.interest,
-                model.getMoreOptionsList(),
+            MoreOptionsDialog(
+                valueToPay = rediferirValue,
+                isRecurrent = model.bought.recurrent,
+                creditRate = model.bought.interest,
+                currentQuotas = model.bought.month,
+                listOptions = model.getMoreOptionsList(),
                 onDismiss = { stateDialogOptionsMore.value = false },
-                onClick = model::moreOption)
+                onClick = model::moreOption
+            )
         }
     }
     Row(modifier = Modifier.fillMaxWidth()
@@ -522,6 +525,10 @@ fun Preview(){
                 }
 
                 override fun reactivateRecurrent(codeBought: Int): Boolean {
+                    TODO("Not yet implemented")
+                }
+
+                override fun changeQuotas(codeBought: Int, months: Int, cache: Boolean): Boolean {
                     TODO("Not yet implemented")
                 }
             },
