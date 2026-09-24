@@ -327,6 +327,7 @@ private fun getBoughtListPort(): IBoughtListPort{
             override fun clone(codeBought: Int, cache: Boolean): Boolean = true
             override fun getAllRecurrent(idCreditCard: Int): List<CreditCardBoughtItemDTO> = emptyList()
             override fun reactivateRecurrent(codeBought: Int): Boolean = true
+            override fun changeQuotas(codeBought: Int, months: Int, cache: Boolean): Boolean = true
         }
     }
     return listPort

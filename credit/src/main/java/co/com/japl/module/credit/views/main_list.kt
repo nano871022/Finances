@@ -58,7 +58,7 @@ import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.util.Locale
 
-@RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun CreditList(viewModel:ListViewModel) {
     val progress by remember { viewModel.progress}
@@ -240,7 +240,7 @@ private fun Item(item: CreditPeriodGraceDTO,delete:(Int)->Unit,amortization:(Int
     }
 }
 
-@RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 private fun Options(dto:CreditPeriodGraceDTO,state:MutableState<Boolean>,delete:(Int)->Unit,amortization:(Int)->Unit,periodGrace:(Int,Int,LocalDate)->Unit,additional:(Int)->Unit,deletePeriodGrace:(Int)->Unit, edit:(Int)->Unit) {
     val stateDelete = remember { mutableStateOf(false) }

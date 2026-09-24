@@ -1,5 +1,7 @@
 package co.com.japl.module.credit.views.creditamortization
 
+import co.com.japl.module.credit.model.CreditAmortizationState
+
 import android.annotation.SuppressLint
 import android.content.res.Configuration
 import android.os.Build
@@ -361,7 +363,6 @@ private fun CreditAmortizationScreenPreviewDarkTablet() {
     }
 }
 
-@Composable
 private fun getViewModel():CreditAmortizationViewModel{
     val creditCode = 1
     val lastDate = LocalDate.now()
@@ -420,87 +421,92 @@ private fun getViewModel():CreditAmortizationViewModel{
             }
         },
     )
-    viewModel.state.value.isLoading=false
-    viewModel.state.value.credit = CreditDTO(
-        id = 1,
-        name = "Test",
-        date = LocalDate.now(),
-        tax = 25.2,
-        periods = 6,
-        value = 10000.toBigDecimal(),
-        quoteValue = 800.toBigDecimal(),
-        kindOf = KindPaymentsEnums.ANNUAL,
-        kindOfTax = KindOfTaxEnum.ANUAL_EFFECTIVE
-    )
-    viewModel.state.value.additional = 100.toBigDecimal()
-    viewModel.state.value.amortization = listOf(
-        AmortizationRowDTO(
+    val field = viewModel::class.java.getDeclaredField("_state")
+    field.isAccessible = true
+    @Suppress("UNCHECKED_CAST")
+    val mutableState = field.get(viewModel) as kotlinx.coroutines.flow.MutableStateFlow<CreditAmortizationState>
+    mutableState.value = CreditAmortizationState(
+        isLoading = false,
+        credit = CreditDTO(
             id = 1,
+            name = "Test",
+            date = LocalDate.now(),
+            tax = 25.2,
             periods = 6,
-            creditRate = 25.5,
-            kindRate = KindOfTaxEnum.ANUAL_EFFECTIVE,
-            creditValue = 10_000.toBigDecimal(),
-            amortizatedValue = 10_000.toBigDecimal(),
-            capitalValue = 800.toBigDecimal(),
-            interestValue = 20.toBigDecimal(),
-            quoteValue = 820.toBigDecimal()
+            value = 10000.toBigDecimal(),
+            quoteValue = 800.toBigDecimal(),
+            kindOf = KindPaymentsEnums.ANNUAL,
+            kindOfTax = KindOfTaxEnum.ANUAL_EFFECTIVE
         ),
-        AmortizationRowDTO(
-            id = 2,
-            periods = 6,
-            creditRate = 25.5,
-            kindRate = KindOfTaxEnum.ANUAL_EFFECTIVE,
-            creditValue = 10_000.toBigDecimal(),
-            amortizatedValue = 9_200.toBigDecimal(),
-            capitalValue = 802.toBigDecimal(),
-            interestValue = 18.toBigDecimal(),
-            quoteValue = 820.toBigDecimal()
-        ),
-        AmortizationRowDTO(
-            id = 3,
-            periods = 6,
-            creditRate = 25.5,
-            kindRate = KindOfTaxEnum.ANUAL_EFFECTIVE,
-            creditValue = 10_000.toBigDecimal(),
-            amortizatedValue = 8_398.toBigDecimal(),
-            capitalValue = 808.toBigDecimal(),
-            interestValue = 16.toBigDecimal(),
-            quoteValue = 820.toBigDecimal()
-        ),
-        AmortizationRowDTO(
-            id = 4,
-            periods = 6,
-            creditRate = 25.5,
-            kindRate = KindOfTaxEnum.ANUAL_EFFECTIVE,
-            creditValue = 10_000.toBigDecimal(),
-            amortizatedValue = 7_390.toBigDecimal(),
-            capitalValue = 810.toBigDecimal(),
-            interestValue = 10.toBigDecimal(),
-            quoteValue = 820.toBigDecimal()
-        ),
-        AmortizationRowDTO(
-            id = 5,
-            periods = 6,
-            creditRate = 25.5,
-            kindRate = KindOfTaxEnum.ANUAL_EFFECTIVE,
-            creditValue = 10_000.toBigDecimal(),
-            amortizatedValue = 6_380.toBigDecimal(),
-            capitalValue = 815.toBigDecimal(),
-            interestValue = 5.toBigDecimal(),
-            quoteValue = 820.toBigDecimal()
-        ),
-        AmortizationRowDTO(
-            id = 6,
-            periods = 6,
-            creditRate = 25.5,
-            kindRate = KindOfTaxEnum.ANUAL_EFFECTIVE,
-            creditValue = 10_000.toBigDecimal(),
-            amortizatedValue = 800.toBigDecimal(),
-            capitalValue = 818.toBigDecimal(),
-            interestValue = 2.toBigDecimal(),
-            quoteValue = 820.toBigDecimal()
+        additional = 100.toBigDecimal(),
+        amortization = listOf(
+            AmortizationRowDTO(
+                id = 1,
+                periods = 6,
+                creditRate = 25.5,
+                kindRate = KindOfTaxEnum.ANUAL_EFFECTIVE,
+                creditValue = 10_000.toBigDecimal(),
+                amortizatedValue = 10_000.toBigDecimal(),
+                capitalValue = 800.toBigDecimal(),
+                interestValue = 20.toBigDecimal(),
+                quoteValue = 820.toBigDecimal()
+            ),
+            AmortizationRowDTO(
+                id = 2,
+                periods = 6,
+                creditRate = 25.5,
+                kindRate = KindOfTaxEnum.ANUAL_EFFECTIVE,
+                creditValue = 10_000.toBigDecimal(),
+                amortizatedValue = 9_200.toBigDecimal(),
+                capitalValue = 802.toBigDecimal(),
+                interestValue = 18.toBigDecimal(),
+                quoteValue = 820.toBigDecimal()
+            ),
+            AmortizationRowDTO(
+                id = 3,
+                periods = 6,
+                creditRate = 25.5,
+                kindRate = KindOfTaxEnum.ANUAL_EFFECTIVE,
+                creditValue = 10_000.toBigDecimal(),
+                amortizatedValue = 8_398.toBigDecimal(),
+                capitalValue = 808.toBigDecimal(),
+                interestValue = 16.toBigDecimal(),
+                quoteValue = 820.toBigDecimal()
+            ),
+            AmortizationRowDTO(
+                id = 4,
+                periods = 6,
+                creditRate = 25.5,
+                kindRate = KindOfTaxEnum.ANUAL_EFFECTIVE,
+                creditValue = 10_000.toBigDecimal(),
+                amortizatedValue = 7_390.toBigDecimal(),
+                capitalValue = 810.toBigDecimal(),
+                interestValue = 10.toBigDecimal(),
+                quoteValue = 820.toBigDecimal()
+            ),
+            AmortizationRowDTO(
+                id = 5,
+                periods = 6,
+                creditRate = 25.5,
+                kindRate = KindOfTaxEnum.ANUAL_EFFECTIVE,
+                creditValue = 10_000.toBigDecimal(),
+                amortizatedValue = 6_380.toBigDecimal(),
+                capitalValue = 815.toBigDecimal(),
+                interestValue = 5.toBigDecimal(),
+                quoteValue = 820.toBigDecimal()
+            ),
+            AmortizationRowDTO(
+                id = 6,
+                periods = 6,
+                creditRate = 25.5,
+                kindRate = KindOfTaxEnum.ANUAL_EFFECTIVE,
+                creditValue = 10_000.toBigDecimal(),
+                amortizatedValue = 800.toBigDecimal(),
+                capitalValue = 818.toBigDecimal(),
+                interestValue = 2.toBigDecimal(),
+                quoteValue = 820.toBigDecimal()
+            )
         )
-
     )
 
     return viewModel

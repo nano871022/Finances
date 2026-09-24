@@ -65,7 +65,7 @@ private fun Buttons(viewModel: CreditFormViewModel){
     }
 }
 
-@RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 private fun Form(viewModel: CreditFormViewModel){
     val name by viewModel.name.value.collectAsState()

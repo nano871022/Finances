@@ -21,7 +21,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
 
-@RequiresApi(Build.VERSION_CODES.S)
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun MaterialThemeComposeUI(
     darkTheme: Boolean = isSystemInDarkTheme(),
@@ -70,10 +70,10 @@ private fun Context.findActivity(): Activity? {
     return null
 }
 
-@RequiresApi(Build.VERSION_CODES.S)
+@RequiresApi(Build.VERSION_CODES.O)
 private fun getColorSchema(darkTheme: Boolean, dynamicColor: Boolean=false, context: Context):ColorScheme{
     return when{
-        dynamicColor  -> {
+        dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
             if(darkTheme){
                 dynamicDarkColorScheme(context)
             }else{
