@@ -32,7 +32,7 @@ import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.com.japl.ui.utils.DateUtils
 import java.time.LocalDate
 
-@RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
+@RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PeriodGrace(popUpState: MutableState<Boolean>, onClick:(Int,LocalDate)->Unit){
@@ -161,7 +161,7 @@ private fun RowScope.OptRadioButton(@StringRes name:Int,selected:MutableState<Bo
 }
 
 
-@RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 @Preview(showBackground = true, showSystemUi = false)
 fun PeriodGracePreviewLight(){
