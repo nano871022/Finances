@@ -48,12 +48,13 @@ import co.com.japl.ui.utils.NumbersUtil
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MoreOptionsDialog(valueToPay:Double,isRecurrent:Boolean, creditRate:Double,listOptions:List<MoreOptionsItemsCreditCard>, onDismiss:()->Unit, onClick:(MoreOptionsItemsCreditCard,Double,String) -> Unit) {
+fun MoreOptionsDialog(valueToPay:Double,isRecurrent:Boolean, creditRate:Double, currentQuotas:Int = 1, listOptions:List<MoreOptionsItemsCreditCard>, onDismiss:()->Unit, onClick:(MoreOptionsItemsCreditCard,Double,String) -> Unit) {
     val stateDeleteDialog = remember { mutableStateOf(false) }
     val stateEndingDialog = remember { mutableStateOf(false) }
     val stateUpdateDialog = remember { mutableStateOf(false) }
     val stateDifferDialog = remember { mutableStateOf(false) }
     val stateRestoreDialog = remember { mutableStateOf(false) }
+    val stateChangeQuotasDialog = remember { mutableStateOf(false) }
     when{
         stateDeleteDialog.value -> {
             AlertDialogOkCancel (
@@ -129,6 +130,20 @@ fun MoreOptionsDialog(valueToPay:Double,isRecurrent:Boolean, creditRate:Double,l
                     onDismiss.invoke()
                 })
         }
+        stateChangeQuotasDialog.value -> {
+            ChangeQuotasDialog(
+                initialQuotas = currentQuotas,
+                onDismiss = {
+                    stateChangeQuotasDialog.value = false
+                    onDismiss.invoke()
+                },
+                onClick = { newQuotas ->
+                    onClick.invoke(MoreOptionsItemsCreditCard.CHANGE_QUOTAS, newQuotas.toDouble(), "")
+                    stateChangeQuotasDialog.value = false
+                    onDismiss.invoke()
+                }
+            )
+        }
     }
     Dialog(onDismissRequest = onDismiss) {
         Surface {
@@ -154,6 +169,7 @@ fun MoreOptionsDialog(valueToPay:Double,isRecurrent:Boolean, creditRate:Double,l
                                 true
 
                             MoreOptionsItemsCreditCard.RESTORE -> stateRestoreDialog.value = true
+                            MoreOptionsItemsCreditCard.CHANGE_QUOTAS -> stateChangeQuotasDialog.value = true
                             else -> onClick.invoke(item, 0.0,"")
                         }
 
@@ -315,5 +331,59 @@ private fun DifferInstallmentDialogPreview(){
 private fun DifferInstallmentDialogPreviewDark(){
     MaterialThemeComposeUI {
         DifferInstallmentDialog(100.0,0.0,{},{})
+    }
+}
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun ChangeQuotasDialog(initialQuotas: Int, onDismiss: () -> Unit, onClick: (Int) -> Unit) {
+    var textState by remember { mutableStateOf(initialQuotas.toString()) }
+    Dialog(onDismissRequest = onDismiss) {
+        Surface {
+            Column(
+                modifier = Modifier.fillMaxWidth().padding(16.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(
+                    text = stringResource(id = R.string.quotas_title),
+                    modifier = Modifier.padding(5.dp),
+                    fontSize = 18.sp
+                )
+                HorizontalDivider()
+                Spacer(modifier = Modifier.height(10.dp))
+                TextField(
+                    value = textState,
+                    onValueChange = { input ->
+                        if (input.all { it.isDigit() }) {
+                            textState = input
+                        }
+                    },
+                    label = { Text(text = stringResource(id = R.string.quotas_title)) },
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                    singleLine = true,
+                    modifier = Modifier.fillMaxWidth()
+                )
+                Spacer(modifier = Modifier.height(10.dp))
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.End
+                ) {
+                    TextButton(onClick = { onDismiss.invoke() }) {
+                        Text(
+                            text = stringResource(id = R.string.cancel),
+                            color = MaterialTheme.colorScheme.onSurface
+                        )
+                    }
+                    TextButton(onClick = {
+                        val quotas = textState.toIntOrNull() ?: 1
+                        onClick.invoke(quotas)
+                    }) {
+                        Text(
+                            text = stringResource(id = R.string.save),
+                            color = MaterialTheme.colorScheme.onSurface
+                        )
+                    }
+                }
+            }
+        }
     }
 }

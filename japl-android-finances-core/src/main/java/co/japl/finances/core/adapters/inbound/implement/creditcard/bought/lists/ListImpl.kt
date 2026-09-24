@@ -61,4 +61,8 @@ class ListImpl @Inject constructor(private val service: IBoughtList,private val 
     override fun reactivateRecurrent(codeBought: Int): Boolean {
         return service.reactivateRecurrent(codeBought)
     }
+
+    override fun changeQuotas(codeBought: Int, months: Int, cache: Boolean): Boolean {
+        return service.changeQuotas(codeBought, months, cache)
+    }
 }
