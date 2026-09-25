@@ -16,7 +16,7 @@ android {
     defaultConfig {
         applicationId "co.japl.android.myapplication"
         minSdk 26
-        targetSdk 36
+        targetSdk 37
         versionCode 4_09_05_199
         versionName "V 4.09.05 build 199 Added new option for just update quotes value in credit card bought"
 
