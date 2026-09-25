@@ -57,7 +57,7 @@ dependencies {
     implementation("com.google.dagger:hilt-android:2.60.1")
     kapt("com.google.dagger:hilt-compiler:2.60.1")
 
-    implementation(platform("androidx.compose:compose-bom:2025.06.01"))
+    implementation(platform("androidx.compose:compose-bom:2026.09.00"))
     implementation("androidx.compose.ui:ui")
     implementation("androidx.compose.ui:ui-graphics")
     implementation("androidx.compose.ui:ui-tooling-preview")

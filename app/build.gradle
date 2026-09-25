@@ -11,14 +11,14 @@ plugins {
 }
 
 android {
-    compileSdk 36
+    compileSdk 37
 
     defaultConfig {
         applicationId "co.japl.android.myapplication"
         minSdk 26
         targetSdk 36
-        versionCode 4_09_04_197
-        versionName "V 4.09.04 build 197 Added new option for just update quotes value in credit card bought"
+        versionCode 4_09_05_198
+        versionName "V 4.09.05 build 198 Added new option for just update quotes value in credit card bought"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -85,7 +85,7 @@ android {
 
 
 dependencies {
-    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.0.4'
+    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.1.5'
 
     implementation(project(':japl-android-finances-core'))
     implementation(project(':japl-android-finances-services'))
@@ -145,7 +145,7 @@ dependencies {
     implementation 'com.squareup.okio:okio:3.6.0'
 
 
-    implementation platform('androidx.compose:compose-bom:2025.06.01')
+    implementation platform('androidx.compose:compose-bom:2026.09.00')
     implementation("androidx.compose.material:material-icons-extended")
     implementation("androidx.compose.material:material-icons-core")
     implementation("androidx.compose.material3:material3-window-size-class")
