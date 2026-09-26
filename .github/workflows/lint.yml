@@ -14,7 +14,29 @@ jobs:
         uses: ./.github/actions/setup
 
       - name: Run Lint
-        run: ./gradlew lintDebug -x :about:lintDebug --no-daemon --no-parallel --stacktrace
+        id: run_lint
+        run: |
+          set -o pipefail
+          ./gradlew lintDebug -x :about:lintDebug --no-daemon --no-parallel --stacktrace | tee build_errors.log
+
+      - name: Read Error Log
+        if: failure()
+        id: error_log
+        run: |
+          ERROR_CONTENT=$(tail -n 50 build_errors.log)
+          echo "log_content<<EOF" >> $GITHUB_ENV
+          echo "$ERROR_CONTENT" >> $GITHUB_ENV
+          echo "EOF" >> $GITHUB_ENV
+
+      - name: Request Jules Fix
+        if: failure()
+        uses: google-labs-code/jules-invoke@v1.0.0
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          prompt: |
+            The CI pipeline failed during the lint/test phase.
+            Please analyze the following error logs and apply a fix to the repository:
+            ${{ env.log_content }}
 
       - name: Upload Lint Report
         if: always()
