@@ -1,11 +1,17 @@
 name: Test Workflow
 on:
   workflow_call:
+    outputs:
+      error_log:
+        description: "Test error log"
+        value: ${{ jobs.test.outputs.error_log }}
 
 jobs:
   test:
     name: Run Unit Tests
     runs-on: ubuntu-latest
+    outputs:
+      error_log: ${{ steps.error_log.outputs.log_content }}
     steps:
 
       - uses: actions/checkout@v4
@@ -23,24 +29,17 @@ jobs:
         if: failure()
         id: error_log
         run: |
-          ERROR_CONTENT=$(tail -n 50 build_errors.log)
-          echo "log_content<<EOF" >> $GITHUB_ENV
-          echo "$ERROR_CONTENT" >> $GITHUB_ENV
-          echo "EOF" >> $GITHUB_ENV
-
-      - name: Request Jules Fix
-        if: failure()
-        uses: google-labs-code/jules-invoke@v1.0.0
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          prompt: |
-            The CI pipeline failed during the lint/test phase.
-            Please analyze the following error logs and apply a fix to the repository:
-            ${{ env.log_content }}
-          jules_api_key: ${{ secrets.API_KEY_JULES }}
-          starting_branch: ${{ github.head_ref || github.ref_name }}
+          if [ -f build_errors.log ]; then
+            ERROR_CONTENT=$(tail -n 50 build_errors.log)
+          else
+            ERROR_CONTENT="No build_errors.log file found."
+          fi
+          echo "log_content<<EOF" >> "$GITHUB_OUTPUT"
+          echo "$ERROR_CONTENT" >> "$GITHUB_OUTPUT"
+          echo "EOF" >> "$GITHUB_OUTPUT"
 
       - name: Upload Test Report
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: test-report

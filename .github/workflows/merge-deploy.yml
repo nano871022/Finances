@@ -1,12 +1,25 @@
 name: Lint, Test, and Deploy App
-description: Run lint, tests, then pull code, merge it, prepare app, and deploy to Play Store
 
 on:
   push:
     branches:
       - main
       - master
+  pull_request:
+    branches:
+      - main
+      - master
   workflow_dispatch:
+    inputs:
+      failure_action:
+        description: 'Action to take when CI fails'
+        required: true
+        type: choice
+        default: comments
+        options:
+          - comments
+          - issues
+          - jules
 concurrency:
   group: ${{ github.workflow }}-${{ github.event }}-${{ github.ref }}
   cancel-in-progress: true
@@ -19,8 +32,43 @@ jobs:
   test:
     uses: ./.github/workflows/test.yml
 
+  comment-request:
+    needs: [lint, test]
+    if: failure() && github.event_name == 'pull_request'
+    permissions:
+      contents: read
+      pull-requests: write
+    uses: ./.github/workflows/comment-request.yml
+    with:
+      error_log_lint: ${{ needs.lint.outputs.error_log }}
+      error_log_test: ${{ needs.test.outputs.error_log }}
+
+  issue-request:
+    needs: [lint, test]
+    if: failure() && github.event_name == 'workflow_dispatch' && inputs.failure_action == 'issues'
+    permissions:
+      contents: read
+      issues: write
+    uses: ./.github/workflows/issue-request.yml
+    with:
+      error_log_lint: ${{ needs.lint.outputs.error_log }}
+      error_log_test: ${{ needs.test.outputs.error_log }}
+
+  jules-request:
+    needs: [lint, test]
+    if: failure() && github.event_name == 'workflow_dispatch' && inputs.failure_action == 'jules' && (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main')
+    permissions:
+      contents: write
+      pull-requests: write
+    uses: ./.github/workflows/jules-request.yml
+    secrets: inherit
+    with:
+      error_log_lint: ${{ needs.lint.outputs.error_log }}
+      error_log_test: ${{ needs.test.outputs.error_log }}
+
   build:
-    needs: [test]
+    needs: [lint, test]
+    if: github.event_name != 'pull_request'
     uses: ./.github/workflows/build.yml
     with:
       environment: PROD
