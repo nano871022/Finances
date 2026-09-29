@@ -27,7 +27,7 @@ Este documento contiene información clave sobre el proyecto para guiar futuras 
 - Para disparar un build de prueba: push a una rama con `[BUILD]` en el comentario.
 
 ## Configuración de SDK (Ajustado)
-- **compileSdk**: 36
+- **compileSdk**: 37
 - **targetSdk**: 36
 - **minSdk**: 26 (Android 8.0)
 - **Edge-to-Edge**: Habilitado en `MainActivity`. Los layouts XML usan `fitsSystemWindows="true"` en la Toolbar para integración perfecta con la barra de sistema.

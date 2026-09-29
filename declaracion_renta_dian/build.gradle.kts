@@ -8,7 +8,7 @@ plugins {
 
 android {
     namespace = "co.com.japl.module.declaracion_renta_dian"
-    compileSdk = 36
+    compileSdk = 37
 
     defaultConfig {
         minSdk = 26
