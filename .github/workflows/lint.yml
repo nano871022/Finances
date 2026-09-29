@@ -23,7 +23,7 @@ jobs:
         id: run_lint
         run: |
           set -o pipefail
-          ./gradlew lintDebug -x :about-module:lintDebug -x :about-module:checkDebugAarMetadata -x :about-module:bundleDebugLocalLintAar --no-daemon --no-parallel --stacktrace | tee build_errors.log
+          ./gradlew lintDebug -x :about-module:lintDebug -x :about-module:checkDebugAarMetadata -x :about-module:bundleDebugLocalLintAar -x :about-module:generateDebugUnitTestLintModel --no-daemon --no-parallel --stacktrace | tee build_errors.log
 
       - name: Read Error Log
         if: failure()
