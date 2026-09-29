@@ -17,8 +17,8 @@ android {
         applicationId "co.japl.android.myapplication"
         minSdk 26
         targetSdk 37
-        versionCode 4_09_05_200
-        versionName "V 4.09.05 build 200 Fix issue with about module that make a error and close app"
+        versionCode 4_09_05_201
+        versionName "V 4.09.05 build 201 Update change quote UI"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }

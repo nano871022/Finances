@@ -317,6 +317,7 @@ class BoughtViewModel(
         if(bought.month <= 1){
             items = items.filter { it != MoreOptionsItemsCreditCard.AMORTIZATION}.toTypedArray()
             items = items.filter { it != MoreOptionsItemsCreditCard.DIFFER_INSTALLMENT}.toTypedArray()
+            items = items.filter { it != MoreOptionsItemsCreditCard.ENDING}.toTypedArray()
         }
         if( (bought.createDate.toLocalDate() !in dateFirst.minusMonths(1)..dateLast)){
             items = items.filter{ it != MoreOptionsItemsCreditCard.EDIT}.toTypedArray()
@@ -338,6 +339,10 @@ class BoughtViewModel(
 
         if(!Regex("\\(\\d+\\. [\\d\\.]+\\)").containsMatchIn(bought.nameItem)){
             items = items.filter { it != MoreOptionsItemsCreditCard.RESTORE}.toTypedArray()
+        }
+        if((months > 1 && !bought.recurrent && bought.kind == KindInterestRateEnum.CREDIT_CARD) ||
+            (bought.kind != KindInterestRateEnum.CREDIT_CARD)){
+            items = items.filter { it != MoreOptionsItemsCreditCard.CHANGE_QUOTAS}.toTypedArray()
         }
         return items.toList()
     }
