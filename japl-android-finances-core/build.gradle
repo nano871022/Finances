@@ -5,7 +5,7 @@ plugins {
 }
 
 android {
-    namespace 'co.japl.finances.core'
+    namespace = 'co.japl.finances.core'
     compileSdk 36
 
     defaultConfig {
@@ -24,7 +24,7 @@ android {
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_21
         targetCompatibility JavaVersion.VERSION_21
-        coreLibraryDesugaringEnabled true
+        coreLibraryDesugaringEnabled = true
     }
 
     kotlin {
