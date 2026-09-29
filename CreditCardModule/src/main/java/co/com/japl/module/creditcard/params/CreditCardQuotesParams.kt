@@ -96,9 +96,9 @@ class CreditCardQuotesParams {
                     if(it.containsKey(PeriodsParams.Params.PARAM_DEEPLINK)) {
                         val intent = it.get(PeriodsParams.Params.PARAM_DEEPLINK) as Intent
                         val uri = Uri.parse(intent.dataString)
-                            uri.getQueryParameters(Params.PARAM_CODE_CREDIT_CARD).let {
+                        uri.getQueryParameters(Params.PARAM_CODE_CREDIT_CARD).let {
                             code = it[0]!!.toInt()
-                            }
+                        }
                         uri.getQueryParameters(Params.PARAM_CUTOFF).let {
                             cutOff = DateUtils.toLocalDateTime(it[0]!!)
                         }

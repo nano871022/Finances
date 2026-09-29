@@ -114,6 +114,7 @@ internal  fun DataTablesPreview(){
     }
 }
 
+@Suppress("ViewModelConstructorInComposable")
 @Composable
 private fun getViewModel():GoogleAuthBackupRestoreViewModel{
     val vm = GoogleAuthBackupRestoreViewModel(null, null, null)

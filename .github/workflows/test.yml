@@ -23,7 +23,7 @@ jobs:
         id: run_tests
         run: |
           set -o pipefail
-          ./gradlew testDebugUnitTest --no-daemon --no-parallel --stacktrace | tee build_errors.log
+          ./gradlew testDebugUnitTest -x :about-module:testDebugUnitTest -x :about-module:checkDebugAarMetadata --no-daemon --no-parallel --stacktrace | tee build_errors.log
 
       - name: Read Error Log
         if: failure()

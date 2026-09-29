@@ -70,8 +70,8 @@ class NumbersUtil {
         }
 
         fun toBigDecimal(field:String):BigDecimal{
-            return field?.takeIf { it.trim().isNotBlank() }?.let {
-                val valueClean = it.toString().replace("$", "").replace(",", "").trim()
+            return field.takeIf { it.trim().isNotBlank() }?.let {
+                val valueClean = it.replace("$", "").replace(",", "").trim()
                 try {
                     valueClean.toBigDecimal()
                 }catch (e:Exception){

@@ -23,6 +23,7 @@ class PeriodsPaidFragment : Fragment() {
     @Inject lateinit var service:IPeriodPaidPort
 
 
+    @Suppress("ViewModelConstructorInComposable")
     @RequiresApi(Build.VERSION_CODES.S)
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,

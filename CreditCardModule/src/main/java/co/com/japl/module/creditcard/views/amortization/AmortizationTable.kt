@@ -313,6 +313,7 @@ private fun RowScope.Row(row: AmortizationRowDTO,isCompact:Boolean){
 	)
 }
 
+@Suppress("ViewModelConstructorInComposable")
 @RequiresApi(Build.VERSION_CODES.S)
 @Composable
 @Preview(showBackground = true, showSystemUi = true, backgroundColor = 0xFFFFFFFF, uiMode = Configuration.UI_MODE_NIGHT_NO)
@@ -323,6 +324,7 @@ private fun AmortizationLight(){
 	}
 }
 
+@Suppress("ViewModelConstructorInComposable")
 @RequiresApi(Build.VERSION_CODES.S)
 @Composable
 @Preview(showBackground = true, showSystemUi = true, backgroundColor = 0x00000000, uiMode = Configuration.UI_MODE_NIGHT_YES)
@@ -333,6 +335,7 @@ private fun AmortizationDark(){
 	}
 }
 
+@Suppress("ViewModelConstructorInComposable")
 @RequiresApi(Build.VERSION_CODES.S)
 @Composable
 @Preview(showBackground = true, showSystemUi = true, device = "spec:width=821dp,height=421dp" , backgroundColor = 0xFFFFFFFF, uiMode = Configuration.UI_MODE_NIGHT_NO)
@@ -343,6 +346,7 @@ private fun AmortizationLightVertical(){
 	}
 }
 
+@Suppress("ViewModelConstructorInComposable")
 @RequiresApi(Build.VERSION_CODES.S)
 @Composable
 @Preview(showBackground = true, showSystemUi = true, device = "spec:width=821dp,height=421dp" , backgroundColor = 0x00000000, uiMode = Configuration.UI_MODE_NIGHT_YES)
@@ -353,6 +357,7 @@ private fun AmortizationDarkVertical(){
 	}
 }
 
+@Suppress("ViewModelConstructorInComposable")
 @Composable
 private fun getViewModel(): AmortizationViewModel{
 	return AmortizationViewModel(LocalContext.current, SavedStateHandle().apply { set("CODE", 2L) }, null).also {

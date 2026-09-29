@@ -197,6 +197,7 @@ private fun GraphList(list:List<RecapCreditDTO>){
     }
 }
 
+@Suppress("ViewModelConstructorInComposable")
 @RequiresApi(Build.VERSION_CODES.S)
 @Composable
 @Preview(showBackground = true, showSystemUi = true, backgroundColor = 0x111000)
@@ -206,6 +207,7 @@ fun RecapPreview(){
     }
 }
 
+@Suppress("ViewModelConstructorInComposable")
 @RequiresApi(Build.VERSION_CODES.S)
 @Composable
 @Preview(showBackground = true, showSystemUi = true, backgroundColor = 0xffffff, uiMode = Configuration.UI_MODE_NIGHT_YES)
@@ -215,6 +217,7 @@ fun RecapPreviewDark(){
     }
 }
 
+@Suppress("ViewModelConstructorInComposable")
 @RequiresApi(Build.VERSION_CODES.S)
 @Composable
 @Preview(showBackground = true, showSystemUi = true, backgroundColor = 0xffffff, uiMode = Configuration.UI_MODE_NIGHT_YES)
@@ -227,6 +230,7 @@ fun RecapEmptyPreviewDark(){
     }
 }
 
+@Suppress("ViewModelConstructorInComposable")
 @Composable
 fun viewModel():RecapViewModel{
     val viewModel = RecapViewModel(

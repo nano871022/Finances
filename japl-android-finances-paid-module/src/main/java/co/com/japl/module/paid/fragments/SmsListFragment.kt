@@ -21,6 +21,7 @@ import javax.inject.Inject
 class SmsListFragment : Fragment() {
     @Inject lateinit var smsSvc: ISMSPaidPort
     @Inject lateinit var accountSvc: IAccountPort
+    @Suppress("ViewModelConstructorInComposable")
     @RequiresApi(Build.VERSION_CODES.S)
     override fun onCreateView(
         inflater: LayoutInflater,

@@ -253,6 +253,7 @@ private fun ProjectionListPreviewLight(){
     }
 }
 
+@Suppress("ViewModelConstructorInComposable")
 @Composable
 private fun getViewModelList(): ProjectionListViewModel {
     val vm = ProjectionListViewModel(context = LocalContext.current, projectionListPort = null, navController = null)

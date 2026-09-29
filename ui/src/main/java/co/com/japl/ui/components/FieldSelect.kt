@@ -41,6 +41,7 @@ import co.com.japl.ui.R
 import co.com.japl.ui.enums.IMoreOptions
 import co.com.japl.ui.theme.MaterialThemeComposeUI
 
+@Suppress("LocalContextGetResourceValueCall")
 @Composable
 fun FieldSelect(title:String,
                 value:String?,

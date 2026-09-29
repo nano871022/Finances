@@ -214,6 +214,7 @@ internal fun CheckPaidsPreview2(){
     }
 }
 
+@Suppress("ViewModelConstructorInComposable")
 @Composable
 private fun getViewModel():PeriodCheckPaymentViewModel{
     val viewModel =  PeriodCheckPaymentViewModel(null)

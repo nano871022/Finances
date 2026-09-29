@@ -345,7 +345,8 @@ private fun PopupTags(tagPopupState:MutableState<Boolean>,viewModel: QuoteViewMo
     }
 }
 
-@RequiresApi(Build.VERSION_CODES.S)
+@Suppress("ViewModelConstructorInComposable")
+@RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
 @Composable
 @Preview(showBackground = true, showSystemUi = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
 internal fun QuotePreviewDark(){
@@ -355,7 +356,8 @@ internal fun QuotePreviewDark(){
     }
 }
 
-@RequiresApi(Build.VERSION_CODES.S)
+@Suppress("ViewModelConstructorInComposable")
+@RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
 @Composable
 @Preview(showBackground = true, showSystemUi = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
 internal fun QuotePreview(){
@@ -365,6 +367,7 @@ internal fun QuotePreview(){
     }
 }
 
+@Suppress("ViewModelConstructorInComposable")
 @Composable
 private fun viweModel():QuoteViewModel{
     val prefs = Prefs(LocalContext.current)

@@ -504,6 +504,7 @@ fun ProfileLogedPreview(){
     }
 }
 
+@Suppress("ViewModelConstructorInComposable")
 @Composable
 private fun getViewModel(): GoogleAuthBackupRestoreViewModel{
     return GoogleAuthBackupRestoreViewModel(null,null,null)

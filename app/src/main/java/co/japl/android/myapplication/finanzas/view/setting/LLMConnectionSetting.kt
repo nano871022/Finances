@@ -180,6 +180,7 @@ private fun FormLLMProgressDarkPreview(){
     }
 }
 
+@Suppress("ViewModelConstructorInComposable")
 @Composable
 fun getLLMConnectFViewModel(): LLMConnectionViewModel {
     var context = LocalContext.current

@@ -203,6 +203,7 @@ internal fun SMSPreview(){
     }
 }
 
+@Suppress("ViewModelConstructorInComposable")
 @Composable
 private fun getViewModel():SmsViewModel {
   val viewModel = SmsViewModel(null,null, null)

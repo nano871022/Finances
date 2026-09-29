@@ -216,6 +216,7 @@ fun MonthlyPreviewDark() {
     }
 }
 
+@Suppress("ViewModelConstructorInComposable")
 @Composable
 private fun getViewModel():MonthlyViewModel{
     val viewModel = MonthlyViewModel( period = YearMonth.now(),paidSvc = null,incomesSvc = null,accountSvc = null,smsSvc = null,paidSmsSvc = null,prefs = null,navController = null)

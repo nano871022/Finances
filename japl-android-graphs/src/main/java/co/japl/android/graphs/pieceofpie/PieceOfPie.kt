@@ -74,7 +74,7 @@ class PieceOfPie(val context:Context):IGraph{
         canvas.drawText(
             "$title $ ${NumbersUtil.toString(value)}",
             (context.resources.displayMetrics.density * fontSize),
-            (context.resources.displayMetrics.density * fontSize).toFloat(),
+            (context.resources.displayMetrics.density * fontSize),
             getPaint(color,0.5f)
         )
     }
@@ -161,12 +161,12 @@ class PieceOfPie(val context:Context):IGraph{
                 (withSize / 2).toFloat(),
                 paint3
             )
-            drawPieceOfPie(selected?.start!!, selected?.end!!, paint, canvas)
-            drawPieceOfPie(selected?.start!!, selected?.end!!, paint2, canvas)
+            drawPieceOfPie(selected.start!!, selected.end!!, paint, canvas)
+            drawPieceOfPie(selected.start, selected.end, paint2, canvas)
 
             descriptionPieceOfPie(
-                selected?.title!!,
-                selected?.value!!,
+                selected.title,
+                selected.value,
                 total,
                 canvas,
                 paint4
@@ -175,7 +175,7 @@ class PieceOfPie(val context:Context):IGraph{
     }
 
     private fun descriptionPieceOfPie(title:String,value:Double,total:Double,canvas: Canvas,paint4:Paint){
-        val percentFloat = calculations.calculatePercent(value!!,total)
+        val percentFloat = calculations.calculatePercent(value,total)
         val percent = if (percentFloat.isNaN() || percentFloat.isInfinite()) {
             BigDecimal.ZERO
         } else {
@@ -183,7 +183,7 @@ class PieceOfPie(val context:Context):IGraph{
                 MathContext(5)
             )
         }
-        val value= DecimalFormat("#,###.###").format(value).toString()
+        val value= DecimalFormat("#,###.###").format(value)
         val longText = getLongText(title,value,percent)
         val longHigh = Paint().fontSpacing
 
@@ -199,8 +199,8 @@ class PieceOfPie(val context:Context):IGraph{
             ,paint)
 
         canvas.drawText(" $title ", posX.toFloat(), posY.toFloat(), paint4)
-        canvas.drawText(" $ $value ", posX.toFloat(), (posY + incrementYTitle).toFloat(), paint4)
-        canvas.drawText("  $percent %", posX.toFloat(), (posY + (2*incrementYTitle)).toFloat (), paint4)
+        canvas.drawText(" $ $value ", posX.toFloat(), (posY + incrementYTitle), paint4)
+        canvas.drawText("  $percent %", posX.toFloat(), (posY + (2*incrementYTitle)), paint4)
     }
 
     private fun getLongText(title:String,value:String,percent:BigDecimal):Float{

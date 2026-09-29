@@ -22,6 +22,7 @@ class AccountFragment : Fragment() {
     @Inject lateinit var accountSvc:IAccountPort
     private var idAccount = 0
 
+    @Suppress("ViewModelConstructorInComposable")
     @RequiresApi(Build.VERSION_CODES.S)
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,

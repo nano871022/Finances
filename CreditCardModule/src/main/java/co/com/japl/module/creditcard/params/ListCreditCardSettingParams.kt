@@ -17,9 +17,9 @@ class ListCreditCardSettingParams {
     companion object {
         @JvmStatic
         fun newInstance(codeCreditCard: Int, navController:NavController) {
-        val parameters = bundleOf(
+            val parameters = bundleOf(
                 ARG_CODE_CREDIT_CARD to codeCreditCard,
-                )
+            )
             navController.navigate(R.id.action_createCreditCard_to_listCreditCardSetting,parameters)
         }
 

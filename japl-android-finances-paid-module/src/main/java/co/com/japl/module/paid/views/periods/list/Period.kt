@@ -234,6 +234,7 @@ internal fun PeriodPreviewDark(){
     }
 }
 
+@Suppress("ViewModelConstructorInComposable")
 @Composable
 private fun getViewModel():PeriodsViewModel{
     val viewModel = PeriodsViewModel(

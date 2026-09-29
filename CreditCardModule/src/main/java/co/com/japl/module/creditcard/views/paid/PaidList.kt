@@ -11,6 +11,7 @@ import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -32,8 +33,7 @@ import java.time.LocalDateTime
 fun PaidList(viewModel: BoughtCreditCardViewModel){
     val loaderState = remember {viewModel.progress}
     val loader = remember {viewModel.loader}
-    val scope = rememberCoroutineScope()
-    scope.launch {
+    LaunchedEffect(Unit) {
         withContext(Dispatchers.IO) {
             viewModel.main()
         }

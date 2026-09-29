@@ -174,7 +174,8 @@ private fun Buttons(add:()->Unit,clear:()->Unit){
     }
 }
 
-@RequiresApi(Build.VERSION_CODES.S)
+@Suppress("ViewModelConstructorInComposable")
+@RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
 @Composable
 @Preview(showSystemUi = true, showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
 internal fun PreviewPaidForm(){
@@ -186,7 +187,8 @@ internal fun PreviewPaidForm(){
 
 }
 
-@RequiresApi(Build.VERSION_CODES.S)
+@Suppress("ViewModelConstructorInComposable")
+@RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
 @Composable
 @Preview(showSystemUi = true, showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
 internal fun PreviewPaidFormDark(){
@@ -198,6 +200,7 @@ internal fun PreviewPaidFormDark(){
 
 }
 
+@Suppress("ViewModelConstructorInComposable")
 @Composable
 private fun getViewModel():PaidViewModel{
     val viewModel = PaidViewModel(paidSvc = null, codeAccount = 0 , codePaid =0, accountSvc = null,navController = null)
