@@ -126,6 +126,7 @@ fun ProjectionsPreviewDark(){
     }
 }
 
+@Suppress("ViewModelConstructorInComposable")
 @Composable
 fun getViewModel(): ProjectionsViewModel{
     val vm =  ProjectionsViewModel(SavedStateHandle(), null, null)

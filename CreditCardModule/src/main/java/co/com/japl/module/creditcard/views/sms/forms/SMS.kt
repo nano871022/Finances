@@ -400,6 +400,7 @@ private fun Buttons(clean:()->Unit, save:()->Unit){
     }
 }
 
+@Suppress("ViewModelConstructorInComposable")
 @RequiresApi(Build.VERSION_CODES.S)
 @Composable
 @OptIn(ExperimentalFoundationApi::class)
@@ -410,6 +411,7 @@ internal fun SmsPreview(){
     }
 }
 
+@Suppress("ViewModelConstructorInComposable")
 @RequiresApi(Build.VERSION_CODES.S)
 @Composable
 @OptIn(ExperimentalFoundationApi::class)
@@ -422,6 +424,7 @@ internal fun SmsDialogAIPreview(){
     }
 }
 
+@Suppress("ViewModelConstructorInComposable")
 @RequiresApi(Build.VERSION_CODES.S)
 @Composable
 @OptIn(ExperimentalFoundationApi::class)
@@ -431,6 +434,7 @@ internal fun SmsPreviewLight(){
         Sms(getViewModel())
     }
 }
+@Suppress("ViewModelConstructorInComposable")
 @Composable
 private fun getViewModel():SmsCreditCardViewModel{
     val viewModel = SmsCreditCardViewModel(null,null,null,null)

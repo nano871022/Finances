@@ -98,6 +98,7 @@ private fun Header(viewModel: CreditCardSettingViewModel) {
     }
 }
 
+@Suppress("LocalContextGetResourceValueCall")
 @Composable
 private fun Form(viewModel: CreditCardSettingViewModel) {
     val context = LocalContext.current
@@ -181,6 +182,7 @@ private fun Buttons(viewModel: CreditCardSettingViewModel) {
     }
 }
 
+@Suppress("ViewModelConstructorInComposable")
 @RequiresApi(Build.VERSION_CODES.S)
 @Composable
 @Preview(showBackground = true, showSystemUi = true)

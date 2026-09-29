@@ -278,6 +278,7 @@ internal fun PaidPreviewDark() {
     }
 }
 
+@Suppress("ViewModelConstructorInComposable")
 @Composable
 private fun getViewModel():PaidViewModel{
     val viewModel = PaidViewModel(paidSvc = null, accountCode = 0 , period = YearMonth.now(),prefs= null,navController = null, emailSvc = null, paidSmsSvc = null)

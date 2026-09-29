@@ -8,7 +8,9 @@ import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -31,8 +33,7 @@ fun AccountForm(viewModel: AccountViewModel){
         viewModel.progress
     }
 
-    val scope = rememberCoroutineScope()
-    scope.launch {
+    LaunchedEffect(Unit) {
         withContext(Dispatchers.IO) {
             viewModel.main()
         }

@@ -185,7 +185,8 @@ private fun Body(viewModel: AdvanceViewModel,modifier:Modifier){
 }
 
 
-@RequiresApi(Build.VERSION_CODES.S)
+@Suppress("ViewModelConstructorInComposable")
+@RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
 @Composable
 @Preview(showBackground = true, showSystemUi = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
 internal fun AdvancePreviewDark(){
@@ -195,7 +196,8 @@ internal fun AdvancePreviewDark(){
     }
 }
 
-@RequiresApi(Build.VERSION_CODES.S)
+@Suppress("ViewModelConstructorInComposable")
+@RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
 @Composable
 @Preview(showBackground = true, showSystemUi = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
 internal fun AdvancePreview(){
@@ -205,6 +207,7 @@ internal fun AdvancePreview(){
     }
 }
 
+@Suppress("ViewModelConstructorInComposable")
 @Composable
 private fun viweModel():AdvanceViewModel{
     val prefs = Prefs(LocalContext.current)

@@ -24,7 +24,8 @@ class PaidFragment : Fragment() {
     @Inject lateinit var paidSvc:IPaidPort
     @Inject lateinit var accountSvc:IAccountPort
 
-    @RequiresApi(Build.VERSION_CODES.S)
+    @Suppress("ViewModelConstructorInComposable")
+    @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?

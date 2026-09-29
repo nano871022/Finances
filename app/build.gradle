@@ -17,8 +17,8 @@ android {
         applicationId "co.japl.android.myapplication"
         minSdk 26
         targetSdk 37
-        versionCode 4_09_05_199
-        versionName "V 4.09.05 build 199 Added new option for just update quotes value in credit card bought"
+        versionCode 4_09_05_200
+        versionName "V 4.09.05 build 200 Fix issue with about module that make a error and close app"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -26,14 +26,14 @@ android {
     buildTypes {
 
         release {
-            shrinkResources true
+            shrinkResources = true
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             buildConfigField ("String",'GoogleClientId', prodGoogleClientId)
         }
 
         debug{
-            shrinkResources false
+            shrinkResources = false
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             buildConfigField ("String",'GoogleClientId', debugGoogleClientId)
@@ -44,14 +44,14 @@ android {
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_21
         targetCompatibility JavaVersion.VERSION_21
-        coreLibraryDesugaringEnabled true
+        coreLibraryDesugaringEnabled = true
     }
 
 
     buildFeatures {
-        viewBinding true
-        compose true
-        buildConfig true
+        viewBinding = true
+        compose = true
+        buildConfig = true
     }
 
     kotlin {
@@ -76,9 +76,9 @@ android {
             ]
         }
     }
-    namespace 'co.japl.android.myapplication'
+    namespace = 'co.japl.android.myapplication'
     kapt {
-        correctErrorTypes true
+        correctErrorTypes = true
     }
 }
 

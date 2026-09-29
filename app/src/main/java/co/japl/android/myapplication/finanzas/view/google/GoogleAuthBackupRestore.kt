@@ -108,6 +108,7 @@ internal fun GoogleAuthBackupRestore2Preview(){
     }
 }
 
+@Suppress("ViewModelConstructorInComposable")
 @Composable
 private fun getViewModel():GoogleAuthBackupRestoreViewModel{
     return  GoogleAuthBackupRestoreViewModel(null,null,null)

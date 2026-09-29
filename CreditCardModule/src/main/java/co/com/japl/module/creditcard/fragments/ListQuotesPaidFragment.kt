@@ -26,6 +26,7 @@ class ListQuotesPaidFragment : Fragment() {
 
     @Inject lateinit var port: IBoughtListPort
 
+    @Suppress("ViewModelConstructorInComposable")
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,

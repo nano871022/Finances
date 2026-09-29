@@ -180,6 +180,7 @@ private fun Form(viewModel: CreditFormViewModel){
     }
 }
 
+@Suppress("ViewModelConstructorInComposable")
 @RequiresApi(Build.VERSION_CODES.S)
 @Composable
 @Preview(showBackground = true, showSystemUi = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
@@ -189,6 +190,7 @@ fun CreditFormPreview(){
     }
 }
 
+@Suppress("ViewModelConstructorInComposable")
 @RequiresApi(Build.VERSION_CODES.S)
 @Composable
 @Preview(showBackground = true, showSystemUi = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
@@ -198,6 +200,7 @@ fun CreditFormPreviewDark(){
     }
 }
 
+@Suppress("ViewModelConstructorInComposable")
 @Composable
 fun creditViewModel(): CreditFormViewModel {
     return CreditFormViewModel(

@@ -25,7 +25,8 @@ class InputFragment : Fragment(){
 
     @Inject lateinit var service:IInputPort
 
-    @RequiresApi(Build.VERSION_CODES.S)
+    @Suppress("ViewModelConstructorInComposable")
+    @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?

@@ -254,6 +254,7 @@ private fun CloudSyncStatusCard(isLogged: Boolean, email: String, used:Double,ma
     }
 }
 
+@Suppress("NonObservableLocale")
 @Composable
 private fun LastBackupCard(date: LocalDateTime,spaceKb: Double) {
     Card(
@@ -407,6 +408,7 @@ private fun StatsSpaceLogedPreview(){
     }
 }
 
+@Suppress("ViewModelConstructorInComposable")
 @Composable
 private fun getViewModel():GoogleAuthBackupRestoreViewModel{
     val vm =  GoogleAuthBackupRestoreViewModel(null,null,null)

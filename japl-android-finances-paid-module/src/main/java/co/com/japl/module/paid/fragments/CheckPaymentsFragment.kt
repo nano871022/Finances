@@ -22,6 +22,7 @@ class CheckPaymentsFragment : Fragment() {
 
     @Inject lateinit var svc:ICheckPaymentPort
 
+    @Suppress("ViewModelConstructorInComposable")
     @RequiresApi(Build.VERSION_CODES.S)
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,

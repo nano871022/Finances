@@ -194,6 +194,7 @@ private fun ButtonsFloating(viewModel: AdditionalViewModel ){
     }
 }
 
+@Suppress("ViewModelConstructorInComposable")
 @RequiresApi(Build.VERSION_CODES.S)
 @Composable
 @Preview(showBackground = true, showSystemUi = true,  backgroundColor = 0x000000, uiMode = Configuration.UI_MODE_NIGHT_NO)
@@ -205,6 +206,7 @@ private fun AdditionalPreview(){
     }
 }
 
+@Suppress("ViewModelConstructorInComposable")
 @RequiresApi(Build.VERSION_CODES.S)
 @Composable
 @Preview(showBackground = true, showSystemUi = true, backgroundColor = 0xffffff, uiMode = Configuration.UI_MODE_NIGHT_YES)
@@ -216,6 +218,7 @@ private fun AdditionalPreviewNight(){
     }
 }
 
+@Suppress("ViewModelConstructorInComposable")
 @Composable
 private fun getViewModel(): AdditionalViewModel{
     val vm = AdditionalViewModel(

@@ -219,6 +219,7 @@ private fun AlertDelete(onClick: () -> Unit, onDismiss: () -> Unit){
     )
 }
 
+@Suppress("ViewModelConstructorInComposable")
 @Composable
 @OptIn(ExperimentalFoundationApi::class)
 @Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES, showSystemUi = true)
@@ -229,6 +230,7 @@ private fun EmailListPreview(){
     }
 }
 
+@Suppress("ViewModelConstructorInComposable")
 @Composable
 private fun getViewModel(): EmailListCreditCardViewModel {
    val vm =  EmailListCreditCardViewModel(svc = null, navController = null)

@@ -188,7 +188,8 @@ private fun Body(viewModel: WalletViewModel,modifier:Modifier){
 }
 
 
-@RequiresApi(Build.VERSION_CODES.S)
+@Suppress("ViewModelConstructorInComposable")
+@RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
 @Composable
 @Preview(showBackground = true, showSystemUi = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
 fun WalletPreviewDark(){
@@ -198,7 +199,8 @@ fun WalletPreviewDark(){
     }
 }
 
-@RequiresApi(Build.VERSION_CODES.S)
+@Suppress("ViewModelConstructorInComposable")
+@RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
 @Composable
 @Preview(showBackground = true, showSystemUi = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
 fun WalletPreview(){
@@ -208,6 +210,7 @@ fun WalletPreview(){
     }
 }
 
+@Suppress("ViewModelConstructorInComposable")
 @Composable
 private fun viweModel():WalletViewModel{
     val prefs = Prefs(LocalContext.current)

@@ -43,6 +43,7 @@ import co.com.japl.finances.iports.inbounds.paid.IProjectionsPort
 import java.math.BigDecimal
 import java.time.LocalDate
 
+@RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
 @Composable
 fun ProjectionForm(viewModel: ProjectionFormViewModel){
     val snackbarState = remember { viewModel.hostState}
@@ -146,7 +147,8 @@ private fun Form(viewModel: ProjectionFormViewModel){
     }
 }
 
-@RequiresApi(Build.VERSION_CODES.S)
+@Suppress("ViewModelConstructorInComposable")
+@RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
 @Composable
 @Preview(showBackground = true, showSystemUi = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
 fun ProjectionFormPreview(){
@@ -155,7 +157,8 @@ fun ProjectionFormPreview(){
     }
 }
 
-@RequiresApi(Build.VERSION_CODES.S)
+@Suppress("ViewModelConstructorInComposable")
+@RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
 @Composable
 @Preview(showBackground = true, showSystemUi = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
 fun ProjectionFormPreviewDark(){
@@ -164,6 +167,7 @@ fun ProjectionFormPreviewDark(){
     }
 }
 
+@Suppress("ViewModelConstructorInComposable")
 @Composable
 private fun getViewModel(): ProjectionFormViewModel{
     val context = LocalContext.current

@@ -27,6 +27,7 @@ import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -60,8 +61,7 @@ import java.util.Locale
 @Composable
 fun InputList(modelView: InputListModelView){
     val stateLoader = remember { modelView.stateLoader }
-    val scope = rememberCoroutineScope()
-    scope.launch {
+    LaunchedEffect(Unit) {
         withContext(Dispatchers.IO) {
             modelView.main()
         }
@@ -215,6 +215,7 @@ private fun InputListHeader(numInputs:Long,totalInputs:Double,totalMonthly:Doubl
 
 }
 
+@Suppress("ViewModelConstructorInComposable")
 @RequiresApi(Build.VERSION_CODES.S)
 @Composable
 @Preview(showSystemUi = true, showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
@@ -224,6 +225,7 @@ internal fun InputListPreview(){
     }
 }
 
+@Suppress("ViewModelConstructorInComposable")
 @Composable
 private fun getViewModel():InputListModelView{
     val context = LocalContext.current

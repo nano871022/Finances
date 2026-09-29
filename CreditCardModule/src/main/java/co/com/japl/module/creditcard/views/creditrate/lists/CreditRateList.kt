@@ -252,6 +252,7 @@ private fun getKindInterestRate(kind:KindInterestRateEnum,context: Context):Stri
 
 }
 
+@Suppress("ViewModelConstructorInComposable")
 @RequiresApi(Build.VERSION_CODES.S)
 @Composable
 @Preview(showSystemUi = true, showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
@@ -262,6 +263,7 @@ fun CreditRateListPreview(){
     }
 }
 
+@Suppress("ViewModelConstructorInComposable")
 @RequiresApi(Build.VERSION_CODES.S)
 @Composable
 @Preview(showSystemUi = true, showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
@@ -272,6 +274,7 @@ fun CreditRateListPreviewDark(){
     }
 }
 
+@Suppress("ViewModelConstructorInComposable")
 @Composable
 private fun getViewModel():CreditRateListViewModel{
     val viewModel = CreditRateListViewModel(LocalContext.current, null,null, null)

@@ -104,6 +104,7 @@ fun ExtraValueListScreen(viewModel: ExtraValueListViewModel) {
     }
 }
 
+@Suppress("ViewModelConstructorInComposable")
 @RequiresApi(Build.VERSION_CODES.S)
 @Composable
 @Preview(showSystemUi = true, showBackground = true, backgroundColor = 0x000000, uiMode = Configuration.UI_MODE_NIGHT_NO)
@@ -114,6 +115,7 @@ private fun PreviewViewLight(){
     }
 }
 
+@Suppress("ViewModelConstructorInComposable")
 @RequiresApi(Build.VERSION_CODES.S)
 @Composable
 @Preview(showSystemUi = true, showBackground = true, backgroundColor = 0x000000, uiMode = Configuration.UI_MODE_NIGHT_YES)
@@ -124,6 +126,7 @@ private fun PreviewViewDark(){
     }
 }
 
+@Suppress("ViewModelConstructorInComposable")
 @Composable
 private fun getViewModel():ExtraValueListViewModel{
     val id = 0
