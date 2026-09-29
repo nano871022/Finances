@@ -26,14 +26,14 @@ android {
     buildTypes {
 
         release {
-            shrinkResources true
+            shrinkResources = true
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             buildConfigField ("String",'GoogleClientId', prodGoogleClientId)
         }
 
         debug{
-            shrinkResources false
+            shrinkResources = false
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             buildConfigField ("String",'GoogleClientId', debugGoogleClientId)
@@ -44,14 +44,14 @@ android {
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_21
         targetCompatibility JavaVersion.VERSION_21
-        coreLibraryDesugaringEnabled true
+        coreLibraryDesugaringEnabled = true
     }
 
 
     buildFeatures {
-        viewBinding true
-        compose true
-        buildConfig true
+        viewBinding = true
+        compose = true
+        buildConfig = true
     }
 
     kotlin {
@@ -76,9 +76,9 @@ android {
             ]
         }
     }
-    namespace 'co.japl.android.myapplication'
+    namespace = 'co.japl.android.myapplication'
     kapt {
-        correctErrorTypes true
+        correctErrorTypes = true
     }
 }
 
