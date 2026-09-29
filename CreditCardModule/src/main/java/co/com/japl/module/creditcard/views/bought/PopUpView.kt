@@ -277,6 +277,7 @@ fun PopupSetting(viewModel: SettingsViewModel,state: MutableState<Boolean>) {
     }
 }
 
+@Suppress("ViewModelConstructorInComposable")
 @RequiresApi(Build.VERSION_CODES.S)
 @Composable
 @Preview(showSystemUi = true, showBackground = true)

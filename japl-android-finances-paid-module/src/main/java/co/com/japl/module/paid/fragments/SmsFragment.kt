@@ -25,6 +25,7 @@ class SmsFragment : Fragment() {
     @Inject lateinit var accountSvc: IAccountPort
     @Inject lateinit var prefs: Prefs
 
+    @Suppress("ViewModelConstructorInComposable")
     @RequiresApi(Build.VERSION_CODES.S)
     override fun onCreateView(
         inflater: LayoutInflater,

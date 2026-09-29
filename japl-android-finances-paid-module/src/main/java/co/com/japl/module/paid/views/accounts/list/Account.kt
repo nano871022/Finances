@@ -21,6 +21,7 @@ import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -56,8 +57,7 @@ fun AccountList(viewModel: AccountViewModel) {
     val stateLoader = remember {
         viewModel.loading
     }
-    val scope = rememberCoroutineScope()
-    scope.launch {
+    LaunchedEffect(Unit) {
         withContext(Dispatchers.IO) {
             viewModel.main()
         }
@@ -88,6 +88,7 @@ fun AccountList(viewModel: AccountViewModel) {
         }
     }
 }
+@Suppress("ViewModelConstructorInComposable")
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun Body(viewModel: AccountViewModel, modifier:Modifier) {

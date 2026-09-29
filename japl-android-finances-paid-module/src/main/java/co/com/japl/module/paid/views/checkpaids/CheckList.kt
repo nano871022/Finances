@@ -218,6 +218,7 @@ internal fun CheckListPreviewDarkV2(){
     }
 }
 
+@Suppress("ViewModelConstructorInComposable")
 @Composable
 private fun getViewModel():CheckListViewModel{
     val viewModel = CheckListViewModel(YearMonth.now(),null)

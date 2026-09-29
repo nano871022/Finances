@@ -27,6 +27,7 @@ class GDriveConnectFragment : Fragment() {
     @Inject
     lateinit var dbConnect: SQLiteOpenHelper
 
+    @Suppress("NewApi")
     @RequiresApi(Build.VERSION_CODES.S)
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,

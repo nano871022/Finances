@@ -11,6 +11,7 @@ import androidx.compose.material.icons.rounded.Cancel
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -30,13 +31,13 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
+@Suppress("LocalContextGetResourceValueCall")
 @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
 @Composable
 fun InputForm(viewModel: InputViewModel){
     val stateProcess = remember { viewModel.progress }
     val stateLoader = remember { viewModel.loader }
-    val scope = rememberCoroutineScope()
-    scope.launch {
+    LaunchedEffect(Unit) {
         withContext(Dispatchers.IO) {
             viewModel.main()
         }
@@ -60,6 +61,7 @@ fun InputForm(viewModel: InputViewModel){
     }
 }
 
+@Suppress("LocalContextGetResourceValueCall")
 @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
 @Composable
 private fun Body(viewModel: InputViewModel, modifier: Modifier) {

@@ -220,6 +220,7 @@ private fun EmailListPaidPreview(){
     }
 }
 
+@Suppress("ViewModelConstructorInComposable")
 @Composable
 private fun getViewModel(): EmailListPaidViewModel {
     val vm =  EmailListPaidViewModel(svc = null, navController = null)

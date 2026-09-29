@@ -177,6 +177,7 @@ private fun Buttons(create:()->Unit){
     }
 }
 
+@Suppress("ViewModelConstructorInComposable")
 @RequiresApi(Build.VERSION_CODES.S)
 @Composable
 @Preview(showSystemUi = true, showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
@@ -187,6 +188,7 @@ internal fun SMSPreviewNight(){
     }
 }
 
+@Suppress("ViewModelConstructorInComposable")
 @RequiresApi(Build.VERSION_CODES.S)
 @Composable
 @Preview(showSystemUi = true, showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
@@ -197,6 +199,7 @@ internal fun SMSPreview(){
     }
 }
 
+@Suppress("ViewModelConstructorInComposable")
 @Composable
 private fun getViewModel():SmsCreditCardViewModel {
   val viewModel = SmsCreditCardViewModel(null,null, null)

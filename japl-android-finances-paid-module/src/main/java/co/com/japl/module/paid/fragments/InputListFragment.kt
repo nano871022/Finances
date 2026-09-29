@@ -23,6 +23,7 @@ class InputListFragment : Fragment(){
 
     @Inject lateinit var portSvc:IInputPort
 
+    @Suppress("ViewModelConstructorInComposable")
     @RequiresApi(Build.VERSION_CODES.S)
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,

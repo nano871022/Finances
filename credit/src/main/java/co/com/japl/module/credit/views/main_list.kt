@@ -308,6 +308,7 @@ private fun FloatButtons(create:()->Unit){
 
 }
 
+    @Suppress("ViewModelConstructorInComposable")
     @RequiresApi(Build.VERSION_CODES.S)
     @Composable
     @Preview(uiMode = Configuration.UI_MODE_NIGHT_NO, showSystemUi = true, showBackground = true)
@@ -319,6 +320,7 @@ private fun FloatButtons(create:()->Unit){
         }
     }
 
+    @Suppress("ViewModelConstructorInComposable")
     @RequiresApi(Build.VERSION_CODES.S)
     @Composable
     @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES, showSystemUi = true, showBackground = true, backgroundColor = 0x111000)
@@ -330,6 +332,7 @@ private fun FloatButtons(create:()->Unit){
         }
     }
 
+@Suppress("ViewModelConstructorInComposable")
 @Composable
 fun getViewModel():ListViewModel{
     return ListViewModel(

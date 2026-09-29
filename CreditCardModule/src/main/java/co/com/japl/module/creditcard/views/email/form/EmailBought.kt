@@ -454,6 +454,7 @@ private fun Buttons(addClick: () -> Unit, clear: () -> Unit) {
     }
 }
 
+@Suppress("ViewModelConstructorInComposable")
 @Composable
 @OptIn(ExperimentalFoundationApi::class)
 @Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES, showSystemUi = true)
@@ -465,6 +466,7 @@ internal fun EmailBoughtPreview(){
     }
 }
 
+@Suppress("ViewModelConstructorInComposable")
 @Composable
 private fun getViewModel(): EmailCreditCardViewModel {
     return EmailCreditCardViewModel(
