@@ -46,29 +46,29 @@ class QuoteCreditCardCache @Inject constructor(private val quoteCreditCardSvc:IQ
     }
 
     override fun create(bought: CreditCardBoughtDTO): Int {
-        if(list.any { bought.id == it.id }.not()) {
-            bought.id = 10000+list.size
+        val id = quoteCreditCardSvc.save(bought).toInt()
+        if (id > 0) {
+            bought.id = id
             list.add(bought)
-            return 1
         }
-        return 0
+        return id
     }
 
     override fun update(bought: CreditCardBoughtDTO): Boolean {
-        if(list.any{ bought.id == it.id }) {
+        val result = quoteCreditCardSvc.save(bought) > 0
+        if (result) {
             list.removeIf { it.id == bought.id }
             list.add(bought)
-            return true
         }
-        return false
+        return result
     }
 
     override fun delete(key: Int): Boolean {
-        if(list.any{ key == it.id }) {
+        val result = quoteCreditCardSvc.delete(key)
+        if (result) {
             list.removeIf { it.id == key }
-            return true
         }
-        return false
+        return result
     }
 
     override fun getInterestPendingQuotes(
