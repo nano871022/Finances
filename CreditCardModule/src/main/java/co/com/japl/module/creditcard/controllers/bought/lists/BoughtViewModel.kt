@@ -95,21 +95,36 @@ class BoughtViewModel(
     }
 
     private fun changeQuotasDialog(months: Int) {
-        if (bought.id > 0 && boughtCreditCardSvc.changeQuotas(bought.id, months, cache.value)) {
-            Snackbar.make(
-                view,
-                R.string.quotas_update_success,
-                Snackbar.LENGTH_LONG
-            )
-                .setAction(R.string.close) {}
-                .show().also { loader.value = false }
-        } else {
+        try {
+            loader.value = false
+            if (bought.id > 0 && boughtCreditCardSvc.changeQuotas(bought.id, months, cache.value)) {
+                Snackbar.make(
+                    view,
+                    R.string.quotas_update_success,
+                    Snackbar.LENGTH_LONG
+                )
+                    .setAction(R.string.close) {}
+                    .show()
+                loader.value = true
+            } else {
+                Snackbar.make(
+                    view,
+                    R.string.quotas_update_failed,
+                    Snackbar.LENGTH_LONG
+                )
+                    .setAction(R.string.close, null).show()
+            }
+        } catch (e: Exception) {
             Snackbar.make(
                 view,
                 R.string.quotas_update_failed,
                 Snackbar.LENGTH_LONG
             )
                 .setAction(R.string.close, null).show()
+        } finally {
+            if (loader.value == false) {
+                loader.value = true
+            }
         }
     }
 
