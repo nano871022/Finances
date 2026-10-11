@@ -106,7 +106,10 @@ class BoughtListTest {
 
         `when`(quoteCCSvc.get(10, false)).thenReturn(boughtDTO)
         `when`(creditCardSvc.get(1)).thenReturn(creditCardDTO)
-        `when`(quoteCCSvc.update(anyObject(), eq(false))).thenReturn(true)
+        `when`(quoteCCSvc.update(anyObject(), eq(false))).thenAnswer { invocation ->
+            val updated = invocation.getArgument<CreditCardBoughtDTO>(0)
+            updated.month == 24 && updated.endDate == LocalDateTime.MAX
+        }
 
         val result = boughtList.changeQuotas(codeBought = 10, months = 24, cache = false)
 

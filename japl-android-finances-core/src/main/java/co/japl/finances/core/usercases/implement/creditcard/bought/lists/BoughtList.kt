@@ -169,11 +169,9 @@ class BoughtList @Inject constructor(
         val maxQuotes = creditCard.maxQuotes.toInt()
         require(months <= maxQuotes) { "Quotas ($months) cannot exceed credit card maximum limit ($maxQuotes)" }
 
-        val dayOfMonth: Short = creditCard.cutOffDay
-        val newEndDate = DateUtils.cutOffAddMonth(dayOfMonth, boughtDTO.cutOutDate, months.toLong())
         val updatedDTO = boughtDTO.copy(
             month = months,
-            endDate = newEndDate
+            endDate = LocalDateTime.MAX
         )
         return quoteCCSvc.update(updatedDTO, cache)
     }
