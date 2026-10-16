@@ -174,29 +174,39 @@ class PaidViewModel @AssistedInject constructor(@Assisted private val accountCod
     fun main() {
         periodOfList.value = period.format(DateTimeFormatter.ofPattern("MMMM yyyy", Locale("es", "CO")))
         progressStatus.value = 0.0f
+        loaderState.value = true
         viewModelScope.launch {
-            execute()
-            progressStatus.value = 1.0f
+            try {
+                execute()
+            } catch (e: Exception) {
+                Log.e(javaClass.name, "Error in main: ${e.message}", e)
+            } finally {
+                progressStatus.value = 1.0f
+                loaderState.value = false
+            }
         }
     }
 
     suspend fun execute() {
-        paidSvc?.let{ svcPort ->
-            withContext(Dispatchers.IO) {
-                svcPort.get(accountCode,period)
-            }.takeIf { it.isNotEmpty() }?.let{
-                list.clear()
-                progressStatus.value = 0.3f
+        try {
+            paidSvc?.let { svcPort ->
+                withContext(Dispatchers.IO) {
+                    svcPort.get(accountCode, period)
+                }.takeIf { it.isNotEmpty() }?.let {
+                    list.clear()
+                    progressStatus.value = 0.3f
 
-                list.putAll(it.sortedByDescending { it.datePaid }.groupBy { YearMonth.of(it.datePaid.year, it.datePaid.monthValue) })
-                progressStatus.value = 0.5f
-                it.sumOf { it.itemValue }.let{allValues.value = it}
-                progressStatus.value = 0.8f
-
-
+                    list.putAll(it.sortedByDescending { dto -> dto.datePaid }.groupBy { dto -> YearMonth.of(dto.datePaid.year, dto.datePaid.monthValue) })
+                    progressStatus.value = 0.5f
+                    it.sumOf { dto -> dto.itemValue }.let { sum -> allValues.value = sum }
+                    progressStatus.value = 0.8f
+                }
             }
+        } catch (e: Exception) {
+            Log.e(javaClass.name, "Error in execute: ${e.message}", e)
+        } finally {
+            loaderState.value = false
         }
-        loaderState.value = false
     }
 
 }
