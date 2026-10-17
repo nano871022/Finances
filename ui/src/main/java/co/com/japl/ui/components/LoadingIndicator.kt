@@ -14,7 +14,7 @@ fun LoadingIndicator(
     progress: (() -> Float)? = null
 ) {
     Box(
-        modifier = modifier.fillMaxSize(),
+        modifier = modifier.fillMaxWidth(),
         contentAlignment = Alignment.TopCenter
     ) {
         if (progress != null) {
