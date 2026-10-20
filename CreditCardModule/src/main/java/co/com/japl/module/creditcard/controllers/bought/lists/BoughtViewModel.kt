@@ -95,21 +95,36 @@ class BoughtViewModel(
     }
 
     private fun changeQuotasDialog(months: Int) {
-        if (bought.id > 0 && boughtCreditCardSvc.changeQuotas(bought.id, months, cache.value)) {
-            Snackbar.make(
-                view,
-                R.string.quotas_update_success,
-                Snackbar.LENGTH_LONG
-            )
-                .setAction(R.string.close) {}
-                .show().also { loader.value = false }
-        } else {
+        try {
+            loader.value = false
+            if (bought.id > 0 && boughtCreditCardSvc.changeQuotas(bought.id, months, cache.value)) {
+                Snackbar.make(
+                    view,
+                    R.string.quotas_update_success,
+                    Snackbar.LENGTH_LONG
+                )
+                    .setAction(R.string.close) {}
+                    .show()
+                loader.value = true
+            } else {
+                Snackbar.make(
+                    view,
+                    R.string.quotas_update_failed,
+                    Snackbar.LENGTH_LONG
+                )
+                    .setAction(R.string.close, null).show()
+            }
+        } catch (e: Exception) {
             Snackbar.make(
                 view,
                 R.string.quotas_update_failed,
                 Snackbar.LENGTH_LONG
             )
                 .setAction(R.string.close, null).show()
+        } finally {
+            if (loader.value == false) {
+                loader.value = true
+            }
         }
     }
 
@@ -317,6 +332,7 @@ class BoughtViewModel(
         if(bought.month <= 1){
             items = items.filter { it != MoreOptionsItemsCreditCard.AMORTIZATION}.toTypedArray()
             items = items.filter { it != MoreOptionsItemsCreditCard.DIFFER_INSTALLMENT}.toTypedArray()
+            items = items.filter { it != MoreOptionsItemsCreditCard.ENDING}.toTypedArray()
         }
         if( (bought.createDate.toLocalDate() !in dateFirst.minusMonths(1)..dateLast)){
             items = items.filter{ it != MoreOptionsItemsCreditCard.EDIT}.toTypedArray()
@@ -338,6 +354,10 @@ class BoughtViewModel(
 
         if(!Regex("\\(\\d+\\. [\\d\\.]+\\)").containsMatchIn(bought.nameItem)){
             items = items.filter { it != MoreOptionsItemsCreditCard.RESTORE}.toTypedArray()
+        }
+        if((months > 1 && !bought.recurrent && bought.kind == KindInterestRateEnum.CREDIT_CARD) ||
+            (bought.kind != KindInterestRateEnum.CREDIT_CARD)){
+            items = items.filter { it != MoreOptionsItemsCreditCard.CHANGE_QUOTAS}.toTypedArray()
         }
         return items.toList()
     }

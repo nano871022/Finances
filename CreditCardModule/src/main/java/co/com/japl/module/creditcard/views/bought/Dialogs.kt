@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Cancel
+import androidx.compose.material.icons.rounded.Clear
 import androidx.compose.material3.AlertDialog
 import androidx.compose.ui.window.Dialog
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -136,6 +137,7 @@ fun MoreOptionsDialog(valueToPay:Double,isRecurrent:Boolean, creditRate:Double, 
         stateChangeQuotasDialog.value -> {
             ChangeQuotasDialog(
                 initialQuotas = currentQuotas,
+                valueProduct = valueToPay,
                 onDismiss = {
                     stateChangeQuotasDialog.value = false
                     onDismiss.invoke()
@@ -320,6 +322,96 @@ private fun DifferInstallmentDialog(value:Double,creditRate: Double,onDismiss: (
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun ChangeQuotasDialog(initialQuotas: Int,
+                               valueProduct: Double,
+                               onDismiss: () -> Unit,
+                               onClick: (Int) -> Unit) {
+    var textState by remember { mutableStateOf("$initialQuotas") }
+    var calculateValue by remember { mutableStateOf("${valueProduct /  initialQuotas}") }
+
+    Dialog(onDismissRequest = onDismiss) {
+        Surface {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(
+                    text = stringResource(id = R.string.quotas_title),
+                    modifier = Modifier.padding(5.dp),
+                    fontSize = 18.sp
+                )
+                HorizontalDivider()
+                Spacer(modifier = Modifier.height(10.dp))
+                FieldView(
+                    name = R.string.value_product,
+                    value = valueProduct.toString(),
+                    modifier = Modifier.fillMaxWidth()
+                        .padding(bottom = 5.dp)
+                )
+                TextField(
+                    value = textState,
+                    onValueChange = { input ->
+                        if (input.all { it.isDigit() }) {
+                            textState = input
+                            calculateValue = "${valueProduct /  input.toInt()}"
+                        }
+                    },
+                    placeholder = { Text(text = initialQuotas.toString()) },
+                    label = { Text(text = stringResource(id = R.string.quotas_title)) },
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                    singleLine = true,
+                    modifier = Modifier.fillMaxWidth(),
+                    trailingIcon = {
+                        if (textState.isNotBlank()) {
+                            IconButton(onClick = {
+                                textState = ""
+                            }) {
+                                Icon(
+                                    imageVector = Icons.Rounded.Clear,
+                                    contentDescription = stringResource(id = R.string.cancel)
+                                )
+                            }
+                        }
+                    }
+                )
+                FieldView(
+                    name = R.string.values_first_quote,
+                    value = calculateValue,
+                    modifier = Modifier.fillMaxWidth()
+                        .padding(top = 5.dp)
+                )
+                Spacer(modifier = Modifier.height(10.dp))
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.End
+                ) {
+                    TextButton(onClick = { onDismiss.invoke() }) {
+                        Text(
+                            text = stringResource(id = R.string.cancel),
+                            color = MaterialTheme.colorScheme.onSurface
+                        )
+                    }
+                    TextButton(onClick = {
+                        val quotas = textState.toIntOrNull() ?: initialQuotas ?: 1
+                        onClick.invoke(quotas)
+                    }) {
+                        Text(
+                            text = stringResource(id = R.string.save),
+                            color = MaterialTheme.colorScheme.onSurface
+                        )
+                    }
+                }
+            }
+        }
+    }
+}
+
+
+
 @RequiresApi(Build.VERSION_CODES.S)
 @Composable
 @Preview(showSystemUi = true, showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
@@ -336,57 +428,12 @@ private fun DifferInstallmentDialogPreviewDark(){
         DifferInstallmentDialog(100.0,0.0,{},{})
     }
 }
-@OptIn(ExperimentalMaterial3Api::class)
+
+@RequiresApi(Build.VERSION_CODES.S)
 @Composable
-private fun ChangeQuotasDialog(initialQuotas: Int, onDismiss: () -> Unit, onClick: (Int) -> Unit) {
-    var textState by remember { mutableStateOf(initialQuotas.toString()) }
-    Dialog(onDismissRequest = onDismiss) {
-        Surface {
-            Column(
-                modifier = Modifier.fillMaxWidth().padding(16.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Text(
-                    text = stringResource(id = R.string.quotas_title),
-                    modifier = Modifier.padding(5.dp),
-                    fontSize = 18.sp
-                )
-                HorizontalDivider()
-                Spacer(modifier = Modifier.height(10.dp))
-                TextField(
-                    value = textState,
-                    onValueChange = { input ->
-                        if (input.all { it.isDigit() }) {
-                            textState = input
-                        }
-                    },
-                    label = { Text(text = stringResource(id = R.string.quotas_title)) },
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                    singleLine = true,
-                    modifier = Modifier.fillMaxWidth()
-                )
-                Spacer(modifier = Modifier.height(10.dp))
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.End
-                ) {
-                    TextButton(onClick = { onDismiss.invoke() }) {
-                        Text(
-                            text = stringResource(id = R.string.cancel),
-                            color = MaterialTheme.colorScheme.onSurface
-                        )
-                    }
-                    TextButton(onClick = {
-                        val quotas = textState.toIntOrNull() ?: 1
-                        onClick.invoke(quotas)
-                    }) {
-                        Text(
-                            text = stringResource(id = R.string.save),
-                            color = MaterialTheme.colorScheme.onSurface
-                        )
-                    }
-                }
-            }
-        }
+@Preview(showSystemUi = true, showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
+private fun ChangeQuoteDialogPreviewDark(){
+    MaterialThemeComposeUI {
+        ChangeQuotasDialog (2, 1000.0, { },{})
     }
 }
