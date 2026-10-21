@@ -6,6 +6,7 @@ import android.annotation.SuppressLint
 import android.content.res.Configuration
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -102,7 +103,7 @@ private fun Body(viewModel: CreditAmortizationViewModel) {
 @SuppressLint("UnusedBoxWithConstraintsScope")
 @Composable
 private fun Header(viewModel: CreditAmortizationViewModel) {
-    val show = remember { mutableStateOf(true) }
+    val show = remember { mutableStateOf(false) }
     val btn = if(show.value) Icons.Rounded.KeyboardArrowUp else Icons.Rounded.KeyboardArrowDown
     BoxWithConstraints {
         val size = WindowWidthSize.fromDp(maxWidth)
@@ -114,8 +115,25 @@ private fun Header(viewModel: CreditAmortizationViewModel) {
                 modifier = Modifier.fillMaxWidth()
             )
 
-
             Row(modifier = Modifier.fillMaxWidth()) {
+                FieldView(
+                    title = stringResource(id = R.string.periods),
+                    value = state.credit?.periods.toString(),
+                    modifier = Modifier.weight(1f).align(alignment = Alignment.CenterVertically)
+                )
+                FieldView(
+                    title = stringResource(id = R.string.interest_value_short),
+                    value = "${NumbersUtil.toString4(state.credit?.tax ?: 0.0)} ${state.credit?.kindOfTax?.value ?: KindOfTaxEnum.ANUAL_EFFECTIVE.value}",
+                    modifier = Modifier.weight(1f)
+                )
+            }
+
+
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable { show.value = !show.value }
+            ) {
                 HorizontalDivider(
                     color = MaterialTheme.colorScheme.onBackground,
                     modifier = Modifier.weight(1f).padding(Dimensions.PADDING_SHORT)
@@ -134,19 +152,6 @@ private fun Header(viewModel: CreditAmortizationViewModel) {
             if (show.value) {
                 Row(modifier = Modifier.fillMaxWidth()) {
                     FieldView(
-                        title = stringResource(id = R.string.periods),
-                        value = state.credit?.periods.toString(),
-                        modifier = Modifier.weight(1f).align(alignment = Alignment.CenterVertically)
-                    )
-                    FieldView(
-                        title = stringResource(id = R.string.interest_value_short),
-                        value = "${NumbersUtil.toString4(state.credit?.tax ?: 0.0)} ${state.credit?.kindOfTax?.value ?: KindOfTaxEnum.ANUAL_EFFECTIVE.value}",
-                        modifier = Modifier.weight(1f)
-                    )
-                }
-
-                Row(modifier = Modifier.fillMaxWidth()) {
-                    FieldView(
                         title = stringResource(id = R.string.interest_to_pay_value),
                         value = NumbersUtil.COPtoString(
                             state.credit?.quoteValue ?: BigDecimal.ZERO
@@ -160,15 +165,13 @@ private fun Header(viewModel: CreditAmortizationViewModel) {
                         modifier = Modifier.weight(1f)
                     )
                 }
-                if (size == WindowWidthSize.COMPACT) {
-                    FieldView(
-                        title = stringResource(id = R.string.quote_value),
-                        value = NumbersUtil.COPtoString(
-                            state.credit?.quoteValue ?: BigDecimal.ZERO
-                        ),
-                        modifier = Modifier.fillMaxWidth()
-                    )
-                }
+                FieldView(
+                    title = stringResource(id = R.string.quote_value),
+                    value = NumbersUtil.COPtoString(
+                        state.credit?.quoteValue ?: BigDecimal.ZERO
+                    ),
+                    modifier = Modifier.fillMaxWidth()
+                )
             }
         }
     }

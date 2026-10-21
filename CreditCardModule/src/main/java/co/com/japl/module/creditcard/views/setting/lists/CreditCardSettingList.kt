@@ -26,6 +26,7 @@ import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -57,8 +58,12 @@ import java.time.LocalDateTime
  fun CreditCardSettingList(viewModel: CreditCardSettingListViewModel){
     val stateShow = remember {viewModel.showProgress}
 
-    if(stateShow.value) {
+    LaunchedEffect(Unit) {
+        viewModel.showProgress.value = true
         viewModel.execute()
+    }
+
+    if(stateShow.value) {
         Column {
             LinearProgressIndicator(
                 modifier = Modifier.fillMaxWidth(),

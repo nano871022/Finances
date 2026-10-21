@@ -33,6 +33,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
@@ -52,6 +53,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
 import co.com.japl.module.creditcard.R
 import co.com.japl.module.creditcard.controllers.bought.lists.BoughtMonthlyViewModel
 import co.com.japl.ui.Prefs
@@ -81,8 +84,22 @@ fun BoughtMonthly(viewModel:BoughtMonthlyViewModel?=null) {
     var loaderStatus by remember {viewModel!!.loader}
     var progressStatus by remember {viewModel!!.progress}
 
-    LaunchedEffect(Unit) {
-        viewModel?.mainCreditCard()
+    val lifecycleOwner = androidx.lifecycle.compose.LocalLifecycleOwner.current
+    DisposableEffect(lifecycleOwner) {
+        val observer = LifecycleEventObserver { _, event ->
+            if (event == Lifecycle.Event.ON_RESUME) {
+                viewModel?.mainCreditCard()
+                if (viewModel?.creditCardCode?.intValue != 0) {
+                    CoroutineScope(Dispatchers.IO).launch {
+                        viewModel?.main()
+                    }
+                }
+            }
+        }
+        lifecycleOwner.lifecycle.addObserver(observer)
+        onDispose {
+            lifecycleOwner.lifecycle.removeObserver(observer)
+        }
     }
 
 

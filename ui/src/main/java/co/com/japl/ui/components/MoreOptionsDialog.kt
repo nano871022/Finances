@@ -3,7 +3,10 @@ package co.com.japl.ui.components
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AlertDialog
 import androidx.compose.ui.window.Dialog
 import androidx.compose.material3.Divider
@@ -30,7 +33,10 @@ fun MoreOptionsDialog(listOptions:List<IMoreOptions>,onDismiss:()->Unit,onClick:
     Dialog(onDismissRequest = onDismiss) {
         Surface {
             Column(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .heightIn(max = 400.dp)
+                    .verticalScroll(rememberScrollState()),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
@@ -53,7 +59,10 @@ fun MoreOptionsDialogPair(listOptions:List<Pair<Int,String>>,onDismiss:()->Unit,
     Dialog(onDismissRequest = onDismiss) {
         Surface {
             Column(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .heightIn(max = 400.dp)
+                    .verticalScroll(rememberScrollState()),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
@@ -76,7 +85,10 @@ fun MoreOptionsDialogPair(listOptions:SnapshotStateList<Pair<Int,String>>,onDism
     Dialog(onDismissRequest = onDismiss) {
         Surface {
             Column(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .heightIn(max = 400.dp)
+                    .verticalScroll(rememberScrollState()),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(

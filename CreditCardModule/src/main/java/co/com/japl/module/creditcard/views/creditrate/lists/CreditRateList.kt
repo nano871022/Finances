@@ -98,7 +98,7 @@ fun CreditRateList(viewModel: CreditRateListViewModel){
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun Body(viewModel: CreditRateListViewModel,modifier:Modifier=Modifier){
-    val mapState = remember {viewModel.creditCard}
+    val mapState = viewModel.creditCard
     Column {
         Row(horizontalArrangement = Arrangement.End, modifier = Modifier.fillMaxWidth()) {
             HelpWikiButton(wikiUrl = R.string.wiki_credit_rate_url, descriptionContent = R.string.wiki_credit_rate_description)

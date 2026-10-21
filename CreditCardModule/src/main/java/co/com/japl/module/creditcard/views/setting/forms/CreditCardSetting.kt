@@ -103,7 +103,7 @@ private fun Header(viewModel: CreditCardSettingViewModel) {
 private fun Form(viewModel: CreditCardSettingViewModel) {
     val context = LocalContext.current
     val name = viewModel.name.value.collectAsState()
-    val value = remember { viewModel.value.valueStr}
+    val value = viewModel.value.value.collectAsState()
     val type = viewModel.type.value.collectAsState()
     val active = viewModel.active.value.collectAsState()
 
@@ -134,7 +134,7 @@ private fun Form(viewModel: CreditCardSettingViewModel) {
 
         FieldText(
             title = stringResource(R.string.value),
-            value = value,
+            value = value.value,
             clearTitle = R.string.clear,
             icon=Icons.Rounded.Clear,
             validation = viewModel.value::validate,

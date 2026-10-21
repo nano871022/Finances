@@ -4,6 +4,8 @@ import android.content.Context
 import android.widget.Toast
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.navigation.NavController
 import co.com.japl.finances.iports.dtos.CreditCardDTO
@@ -22,7 +24,7 @@ class CreditRateListViewModel(private val context:Context?, private val creditCa
     var progress = mutableFloatStateOf(0f)
     var showProgress = mutableStateOf(true)
 
-    var creditCard:MutableMap<CreditCardDTO?,List<TaxDTO>>? = HashMap<CreditCardDTO?,List<TaxDTO>>()
+    var creditCard:MutableMap<CreditCardDTO?,List<TaxDTO>>? by mutableStateOf<MutableMap<CreditCardDTO?,List<TaxDTO>>?>(HashMap())
 
     fun add(){
         navController?.let { ListCreditRate.navigate(navigate = it)}
@@ -37,62 +39,73 @@ class CreditRateListViewModel(private val context:Context?, private val creditCa
     }
 
     fun delete(code:Int){
-        creditRateSvc?.let {
-            if (creditRateSvc.delete(code)) {
-                val found =
-                    creditCard?.entries?.first { entry -> entry.value.first { it.id == code } != null }
-                creditCard?.get(found?.key)?.let {
-                    val list = it.filter { it.id != code }
-                    val map = creditCard?.toMutableMap()
-                    map?.set(found?.key, list)
-                    creditCard = map
+        viewModelScope.launch {
+            creditRateSvc?.let { svc ->
+                val success = withContext(Dispatchers.IO) {
+                    svc.delete(code)
                 }
-
-                Toast.makeText(context, R.string.toast_successful_deleted, Toast.LENGTH_SHORT)
-                    .show()
-            } else {
-                Toast.makeText(context, R.string.toast_dont_successful_deleted, Toast.LENGTH_SHORT)
-                    .show()
+                if (success) {
+                    Toast.makeText(context, R.string.toast_successful_deleted, Toast.LENGTH_SHORT)
+                        .show()
+                    main()
+                } else {
+                    Toast.makeText(context, R.string.toast_dont_successful_deleted, Toast.LENGTH_SHORT)
+                        .show()
+                }
             }
         }
     }
 
     fun clone(code:Int){
-        creditRateSvc?.let {
-            if (creditRateSvc.clone(code)) {
-                Toast.makeText(context, R.string.toast_successful_cloned, Toast.LENGTH_SHORT)
-                    .show().also {
-                        showProgress.value = true
-                    }
-            } else {
-                Toast.makeText(context, R.string.toast_dont_successful_cloned, Toast.LENGTH_SHORT)
-                    .show()
+        viewModelScope.launch {
+            creditRateSvc?.let { svc ->
+                val success = withContext(Dispatchers.IO) {
+                    svc.clone(code)
+                }
+                if (success) {
+                    Toast.makeText(context, R.string.toast_successful_cloned, Toast.LENGTH_SHORT)
+                        .show()
+                    main()
+                } else {
+                    Toast.makeText(context, R.string.toast_dont_successful_cloned, Toast.LENGTH_SHORT)
+                        .show()
+                }
             }
         }
     }
 
     fun enable(code:Int){
-        creditRateSvc?.let {
-
-
-            if (creditRateSvc.enable(code)) {
-                Toast.makeText(context, R.string.toast_successful_enabled, Toast.LENGTH_SHORT)
-                    .show()
-            } else {
-                Toast.makeText(context, R.string.toast_dont_successful_enabled, Toast.LENGTH_SHORT)
-                    .show()
+        viewModelScope.launch {
+            creditRateSvc?.let { svc ->
+                val success = withContext(Dispatchers.IO) {
+                    svc.enable(code)
+                }
+                if (success) {
+                    Toast.makeText(context, R.string.toast_successful_enabled, Toast.LENGTH_SHORT)
+                        .show()
+                    main()
+                } else {
+                    Toast.makeText(context, R.string.toast_dont_successful_enabled, Toast.LENGTH_SHORT)
+                        .show()
+                }
             }
         }
     }
 
     fun disable(code:Int){
-        creditRateSvc?.let {
-            if (creditRateSvc.disable(code)) {
-                Toast.makeText(context, R.string.toast_successful_disabled, Toast.LENGTH_SHORT)
-                    .show()
-            } else {
-                Toast.makeText(context, R.string.toast_dont_successful_disabled, Toast.LENGTH_SHORT)
-                    .show()
+        viewModelScope.launch {
+            creditRateSvc?.let { svc ->
+                val success = withContext(Dispatchers.IO) {
+                    svc.disable(code)
+                }
+                if (success) {
+                    Toast.makeText(context, R.string.toast_successful_disabled, Toast.LENGTH_SHORT)
+                        .show()
+                    main()
+                } else {
+                    Toast.makeText(context, R.string.toast_dont_successful_disabled, Toast.LENGTH_SHORT)
+                        .show()
+                }
             }
         }
     }
@@ -103,6 +116,7 @@ class CreditRateListViewModel(private val context:Context?, private val creditCa
 
     fun main() {
         viewModelScope.launch {
+            showProgress.value = true
             progress.floatValue = 0.1f
             execute()
             progress.floatValue = 1f
