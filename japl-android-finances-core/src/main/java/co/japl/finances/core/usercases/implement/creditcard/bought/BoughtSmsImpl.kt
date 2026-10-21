@@ -1,6 +1,7 @@
 package co.japl.finances.core.usercases.implement.creditcard.bought
 
 import co.com.japl.finances.iports.dtos.CreditCardBoughtDTO
+import co.com.japl.finances.iports.enums.KindInterestRateEnum
 import co.com.japl.finances.iports.outbounds.IQuoteCreditCardPort
 import co.japl.finances.core.enums.AutoLoadKind
 import co.japl.finances.core.usercases.interfaces.common.ICreditCard
@@ -18,7 +19,7 @@ class BoughtSmsImpl @Inject constructor(private val creditRateSvc:ITax, private 
             DateUtils.cutOffLastMonth(cc.cutOffDay)?.let{dto.cutOutDate = it}
             creditRateSvc.getLatest(dto.codeCreditCard, dto.kind)?.let {
                 dto.interest = it.value
-                dto.month = it.period.takeIf { it > 1 }?.let{it.toInt()}?:1
+                dto.month = if (dto.kind == KindInterestRateEnum.CREDIT_CARD) 1 else it.period.toInt()
                 it.kindOfTax?.let{dto.kindOfTax = it}
             }
         }
