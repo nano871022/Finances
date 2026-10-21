@@ -57,7 +57,7 @@ class SmsPaidImpl @Inject constructor(override var dbConnect: SQLiteOpenHelper) 
         db.query(SmsPaidDB.Entry.TABLE_NAME, COLUMNS, null, null, null, null, null)
             ?.use { cursor ->
                 with(cursor) {
-                    while (moveToPrevious()) {
+                    while (moveToNext()) {
                         mapper.mapping(cursor).let(list::add)
                     }
                 }
@@ -102,6 +102,17 @@ class SmsPaidImpl @Inject constructor(override var dbConnect: SQLiteOpenHelper) 
             }
         }
         return list
+    }
+
+    override fun hasActive(): Boolean {
+        val db = dbConnect.readableDatabase
+        db.rawQuery("SELECT count(1) FROM ${SmsPaidDB.Entry.TABLE_NAME} WHERE ${SmsPaidDB.Entry.COLUMN_ACTIVE} = 1", null)
+            ?.use { cursor ->
+                if (cursor.moveToFirst()) {
+                    return cursor.getInt(0) > 0
+                }
+            }
+        return false
     }
 
     override fun backup(path: String) {

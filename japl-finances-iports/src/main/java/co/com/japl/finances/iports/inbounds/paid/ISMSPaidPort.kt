@@ -15,9 +15,13 @@ interface ISMSPaidPort{
 
     fun getById(codeSMSPaid: Int):SMSPaidDTO?
 
-    fun validateMessagePattern(dto:SMSPaidDTO):List<EmailValidationDTO>
+    fun validateMessagePattern(dto:SMSPaidDTO, numDaysRead:Int = 30):List<EmailValidationDTO>
 
     fun getAllByCodeAccount(codeAccount: Int):List<SMSPaidDTO>
+
+    fun getAll(): List<SMSPaidDTO>
+
+    fun hasActiveSms(): Boolean
 
     fun getSmsMessages(phoneNumber:String,pattern:String,numDaysRead:Int):List<Triple<String,Double, LocalDateTime>>
 

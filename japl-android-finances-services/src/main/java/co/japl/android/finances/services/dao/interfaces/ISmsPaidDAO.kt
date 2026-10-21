@@ -6,4 +6,5 @@ import co.japl.android.finances.services.interfaces.SaveSvc
 
 interface ISmsPaidDAO : SaveSvc<SmsPaid>, ISaveSvc<SmsPaid> {
     fun getByAccount(codeAccount:Int):List<SmsPaid>
+    fun hasActive(): Boolean
 }

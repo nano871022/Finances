@@ -15,9 +15,13 @@ interface ISMSOld {
 
     fun getById(codeSMSPaidDTO: Int): SMSPaidDTO?
 
-    fun validateMessagePattern(dto: SMSPaidDTO): List<EmailValidationDTO>
+    fun validateMessagePattern(dto: SMSPaidDTO, numDaysRead: Int = 30): List<EmailValidationDTO>
 
     fun getAllByCodeAccount(codeAccount: Int): List<SMSPaidDTO>
+
+    fun getAll(): List<SMSPaidDTO>
+
+    fun hasActiveSms(): Boolean
 
     fun getSmsMessages(
         phoneNumber: String,

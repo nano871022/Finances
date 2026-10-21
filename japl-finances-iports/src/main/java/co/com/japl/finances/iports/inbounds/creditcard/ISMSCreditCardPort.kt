@@ -15,11 +15,15 @@ interface ISMSCreditCardPort{
 
     fun getById(codeSMSCreditCard: Int):SMSCreditCard?
 
-    fun validateMessagePattern(dto:SMSCreditCard):List<EmailValidationDTO>
+    fun validateMessagePattern(dto:SMSCreditCard, numDaysRead:Int = 30):List<EmailValidationDTO>
 
     fun getByCreditCardAndKindInterest(codeCreditCard:Int,kind: KindInterestRateEnum):List<SMSCreditCard>
 
     fun getAllByCodeCreditCard(codeCreditCard: Int):List<SMSCreditCard>
+
+    fun getAll(): List<SMSCreditCard>
+
+    fun hasActiveSms(): Boolean
 
     fun getSmsMessages(phoneNumber:String,pattern:String,numDaysRead:Int):List<Triple<String,Double, LocalDateTime>>
 

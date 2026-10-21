@@ -11,6 +11,7 @@ import androidx.compose.ui.platform.ComposeView
 import androidx.navigation.fragment.findNavController
 import co.com.japl.finances.iports.inbounds.paid.IEmailPaidPort
 import co.com.japl.finances.iports.inbounds.paid.IPaidPort
+import co.com.japl.finances.iports.inbounds.paid.ISMSPaidPort
 import co.com.japl.finances.iports.inbounds.paid.ISmsPort
 import co.com.japl.module.paid.controllers.paid.list.PaidViewModel
 import co.com.japl.module.paid.views.paid.list.Paid
@@ -27,8 +28,7 @@ class PaidListFragment : Fragment()  {
     @Inject lateinit var paidSvc: IPaidPort
     @Inject lateinit var emailSvc:IEmailPaidPort
     @Inject lateinit var paidSmsSvc: ISmsPort
-
-
+    @Inject lateinit var smsSvc: ISMSPaidPort
 
     @Suppress("ViewModelConstructorInComposable")
     @RequiresApi(Build.VERSION_CODES.S)
@@ -46,7 +46,8 @@ class PaidListFragment : Fragment()  {
             prefs = Prefs(requireContext().applicationContext),
             navController = findNavController(),
             emailSvc = emailSvc,
-            paidSmsSvc = paidSmsSvc
+            paidSmsSvc = paidSmsSvc,
+            smsPaidSvc = smsSvc
         )
         return ComposeView(requireContext()).apply {
             setContent {

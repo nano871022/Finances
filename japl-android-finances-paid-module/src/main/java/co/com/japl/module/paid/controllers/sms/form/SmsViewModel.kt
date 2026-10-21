@@ -42,6 +42,9 @@ class SmsViewModel(private val codeSMS:Int?, private val svc:ISMSPaidPort?, priv
     val showPopup = mutableStateOf(false)
     val validating = mutableStateOf(false)
     val validationResults = mutableStateListOf<EmailValidationDTO>()
+    val numDaysRead = mutableStateOf("30")
+    val errorNumDaysRead = mutableStateOf(false)
+    val showDaysField = mutableStateOf(false)
 
     val validate = mutableStateOf("")
 
@@ -133,7 +136,9 @@ class SmsViewModel(private val codeSMS:Int?, private val svc:ISMSPaidPort?, priv
         errorPhoneNumber.value = false
         errorPattern.value = false
         errorAccount.value = false
-
+        numDaysRead.value = "30"
+        errorNumDaysRead.value = false
+        showDaysField.value = false
     }
 
     fun validatePatternWithMessages(){
@@ -146,7 +151,7 @@ class SmsViewModel(private val codeSMS:Int?, private val svc:ISMSPaidPort?, priv
                 validationResult.value = ""
                 runCatching {
                     withContext(Dispatchers.IO) {
-                        svc?.validateMessagePattern(dto) ?: emptyList()
+                        svc?.validateMessagePattern(dto, numDaysRead.value.toIntOrNull() ?: 30) ?: emptyList()
                     }
                 }.onFailure { e ->
                     validating.value = false

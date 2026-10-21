@@ -12,5 +12,7 @@ interface IEmailPaidPort {
 
     fun getAll(): List<EmailPaidDTO>
 
+    fun hasActiveEmail(): Boolean
+
     fun delete(id: Int): Boolean
 }

@@ -7,4 +7,5 @@ import co.japl.android.finances.services.interfaces.SaveSvc
 
 interface ISmsCreditCardDAO : SaveSvc<SmsCreditCard>, ISaveSvc<SmsCreditCard> {
     fun getByCreditCardAndKindInterest(codeCreditCard:Int,kind: KindInterestRateEnum):List<SmsCreditCard>
+    fun hasActive(): Boolean
 }

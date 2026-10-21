@@ -47,6 +47,9 @@ class EmailPaidViewModel(
     val showPopup = mutableStateOf(false)
     val validating = mutableStateOf(false)
     val validationResults = mutableStateListOf<EmailValidationDTO>()
+    val numDaysRead = mutableStateOf("30")
+    val errorNumDaysRead = mutableStateOf(false)
+    val showDaysField = mutableStateOf(false)
 
     val aiFailed = mutableStateOf(false)
     val emailSamples = mutableStateListOf<Pair<String, Boolean>>()
@@ -58,7 +61,7 @@ class EmailPaidViewModel(
         if (sender.value.isNotEmpty()) {
             viewModelScope.launch {
                 withContext(Dispatchers.IO) {
-                    svc?.getEmailList(sender.value, subjectPattern.value, 30)
+                    svc?.getEmailList(sender.value, subjectPattern.value, numDaysRead.value.toIntOrNull() ?: 30)
                 }?.let { list ->
                     emailSamples.clear()
                     list.map { Pair(it, false) }.forEach(emailSamples::add)
@@ -144,6 +147,9 @@ class EmailPaidViewModel(
         errorSubjectPattern.value = false
         errorBodyPattern.value = false
         validationResults.clear()
+        numDaysRead.value = "30"
+        errorNumDaysRead.value = false
+        showDaysField.value = false
     }
 
     fun validatePatternWithMessages() {
@@ -154,7 +160,7 @@ class EmailPaidViewModel(
                 showPopup.value = true
                 validationResults.clear()
                 withContext(Dispatchers.IO) {
-                    svc?.validateMessagePattern(dto, 30)
+                    svc?.validateMessagePattern(dto, numDaysRead.value.toIntOrNull() ?: 30)
                 }?.let { list ->
                     validating.value = false
                     validationResults.addAll(list)

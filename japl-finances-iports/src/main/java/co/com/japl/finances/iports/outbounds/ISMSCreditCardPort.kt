@@ -17,4 +17,8 @@ interface ISMSCreditCardPort {
 
     fun getByCreditCardAndKindInterest(codeCreditCard:Int,kind:KindInterestRateEnum):List<SMSCreditCard>
 
+    fun getAll():List<SMSCreditCard>
+
+    fun hasActiveSms(): Boolean
+
 }

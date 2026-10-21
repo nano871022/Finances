@@ -30,9 +30,9 @@ class SMSImpl @Inject constructor(private val svc:ISMSPaidPort, private val smsS
         return svc.getById(codeSMSPaidDTO)
     }
 
-    override fun validateMessagePattern(dto: SMSPaidDTO): List<EmailValidationDTO> {
+    override fun validateMessagePattern(dto: SMSPaidDTO, numDaysRead: Int): List<EmailValidationDTO> {
         val list = mutableListOf<EmailValidationDTO>()
-        smsSvc.load(dto.phoneNumber,360).takeIf{it.isNotEmpty()}?.forEach{sms->
+        smsSvc.load(dto.phoneNumber,numDaysRead).takeIf{it.isNotEmpty()}?.forEach{sms->
             if(dto.pattern.isNotEmpty() && dto.pattern.toRegex().containsMatchIn(sms.first)){
                 dto.pattern.toRegex().find(sms.first)?.let{
                     val values = ExtractItemPatternUtil.getValues(it.groupValues,sms.second)
@@ -58,6 +58,14 @@ class SMSImpl @Inject constructor(private val svc:ISMSPaidPort, private val smsS
 
     override fun getAllByCodeAccount(codeAccount: Int): List<SMSPaidDTO> {
         return svc.getByCodeAccount(codeAccount)
+    }
+
+    override fun getAll(): List<SMSPaidDTO> {
+        return svc.getAll()
+    }
+
+    override fun hasActiveSms(): Boolean {
+        return svc.hasActiveSms()
     }
 
     override fun getSmsMessages(phoneNumber:String,pattern:String,numDaysRead:Int):List<Triple<String,Double,LocalDateTime>> =

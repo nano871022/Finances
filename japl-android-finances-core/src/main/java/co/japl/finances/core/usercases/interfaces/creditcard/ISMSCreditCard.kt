@@ -15,9 +15,13 @@ interface ISMSCreditCard {
 
     fun getById(codeSMSCreditCard: Int): SMSCreditCard?
 
-    fun validateMessagePattern(dto: SMSCreditCard): List<EmailValidationDTO>
+    fun validateMessagePattern(dto: SMSCreditCard, numDaysRead: Int = 30): List<EmailValidationDTO>
 
     fun getAllByCodeCreditCard(codeCreditCard: Int): List<SMSCreditCard>
+
+    fun getAll(): List<SMSCreditCard>
+
+    fun hasActiveSms(): Boolean
 
     fun getByCreditCardAndKindInterest(
         codeCreditCard: Int,

@@ -1,5 +1,6 @@
 package co.japl.finances.core.adapters.inbound.implement.paid
 
+import co.com.japl.finances.iports.dtos.EmailValidationDTO
 import co.com.japl.finances.iports.dtos.PaidDTO
 import co.com.japl.finances.iports.dtos.SMSPaidDTO
 import co.com.japl.finances.iports.enums.KindInterestRateEnum
@@ -32,12 +33,20 @@ class SMSImpl @Inject constructor(private val svc:ISMSOld, private val smsSvc: I
         return svc.getById(codeSMSPaidDTO)
     }
 
-    override fun validateMessagePattern(dto: SMSPaidDTO): List<co.com.japl.finances.iports.dtos.EmailValidationDTO> {
-        return svc.validateMessagePattern(dto)
+    override fun validateMessagePattern(dto: SMSPaidDTO, numDaysRead: Int): List<EmailValidationDTO> {
+        return svc.validateMessagePattern(dto, numDaysRead)
     }
 
     override fun getAllByCodeAccount(codeCreditCard: Int): List<SMSPaidDTO> {
         return svc.getAllByCodeAccount(codeCreditCard)
+    }
+
+    override fun getAll(): List<SMSPaidDTO> {
+        return svc.getAll()
+    }
+
+    override fun hasActiveSms(): Boolean {
+        return svc.hasActiveSms()
     }
 
     override fun getSmsMessages(

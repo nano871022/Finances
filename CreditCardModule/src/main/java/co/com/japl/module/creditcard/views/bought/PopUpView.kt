@@ -213,13 +213,14 @@ fun PopupSetting(viewModel: SettingsViewModel,state: MutableState<Boolean>) {
     val daysEmailRead = remember { viewModel.daysEmailRead }
     val errorDaysEmailRead = remember { viewModel.errorDaysEmailRead }
     val context = LocalContext.current
-    val hasGmailPermission = remember { viewModel.hasGmailPermission(context) }
+    val hasActiveSms = remember { viewModel.hasActiveSms() }
+    val hasActiveEmail = remember { viewModel.hasActiveEmail() }
 
     Popup(title = R.string.settings_credit_card_boughts, state = state) {
         Scaffold(
             floatingActionButton = {
                 Row {
-                    if (hasGmailPermission) {
+                    if (hasActiveEmail) {
                         FloatButton(imageVector = Icons.Rounded.ForwardToInbox, descriptionIcon = R.string.read_email) {
                             viewModel.readEmail(context)
                             state.value = false
@@ -251,17 +252,19 @@ fun PopupSetting(viewModel: SettingsViewModel,state: MutableState<Boolean>) {
                     ,color=MaterialTheme.colorScheme.onPrimary
                     ,modifier=Modifier.fillMaxWidth())
 
-                FieldText(title = stringResource(id = R.string.days_sms_read),
-                    value = "${daysSmsRead.value}",
-                    hasErrorState = errorDaysSmsRead,
-                    keyboardType = KeyboardOptions(keyboardType = KeyboardType.Number),
-                    icon = Icons.Rounded.Cancel,
-                    validation = {viewModel.validation()},
-                    callback = {
-                        daysSmsRead.value = it
-                    },modifier= Modifier.padding(top=Dimensions.PADDING_SHORT).fillMaxWidth())
+                if (hasActiveSms) {
+                    FieldText(title = stringResource(id = R.string.days_sms_read),
+                        value = "${daysSmsRead.value}",
+                        hasErrorState = errorDaysSmsRead,
+                        keyboardType = KeyboardOptions(keyboardType = KeyboardType.Number),
+                        icon = Icons.Rounded.Cancel,
+                        validation = {viewModel.validation()},
+                        callback = {
+                            daysSmsRead.value = it
+                        },modifier= Modifier.padding(top=Dimensions.PADDING_SHORT).fillMaxWidth())
+                }
 
-                if (hasGmailPermission) {
+                if (hasActiveEmail) {
                     FieldText(title = stringResource(id = R.string.days_email_read),
                         value = "${daysEmailRead.value}",
                         hasErrorState = errorDaysEmailRead,
@@ -283,7 +286,7 @@ fun PopupSetting(viewModel: SettingsViewModel,state: MutableState<Boolean>) {
 @Preview(showSystemUi = true, showBackground = true)
 fun PreviewPopUpSetting() {
     val prefs = Prefs(LocalContext.current)
-    val viewModel = SettingsViewModel(prefs, emailCCSvc = TODO())
+    val viewModel = SettingsViewModel(prefs, emailCCSvc = TODO(), smsSvc = TODO())
     val state = remember { viewModel.state}
     state.value = true
     MaterialThemeComposeUI {

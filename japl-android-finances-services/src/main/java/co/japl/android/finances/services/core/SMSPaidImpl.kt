@@ -30,4 +30,12 @@ class SMSPaidImpl @Inject constructor(private val svc:ISmsPaidDAO): ISMSPaidPort
         return svc.get(values=entity).map { SmsPaidMapper.mapping(it) }
     }
 
+    override fun getAll(): List<SMSPaidDTO> {
+        return svc.getAll().map { SmsPaidMapper.mapping(it) }
+    }
+
+    override fun hasActiveSms(): Boolean {
+        return svc.hasActive()
+    }
+
 }

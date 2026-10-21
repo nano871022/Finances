@@ -12,5 +12,7 @@ interface IEmailCreditCardDAO {
 
     fun getAll(): List<EmailCreditCardDTO>
 
+    fun hasActive(): Boolean
+
     fun delete(id: Int): Boolean
 }

@@ -12,6 +12,7 @@ import androidx.navigation.NavController
 import co.com.japl.finances.iports.dtos.PaidDTO
 import co.com.japl.finances.iports.inbounds.paid.IEmailPaidPort
 import co.com.japl.finances.iports.inbounds.paid.IPaidPort
+import co.com.japl.finances.iports.inbounds.paid.ISMSPaidPort
 import co.com.japl.finances.iports.inbounds.paid.ISmsPort
 import co.com.japl.module.paid.R
 import co.com.japl.module.paid.enums.PaidListOptions
@@ -33,7 +34,7 @@ import java.util.Locale
 
 @HiltViewModel(assistedFactory = PaidViewModel.Factory::class)
 class PaidViewModel @AssistedInject constructor(@Assisted private val accountCode:Int, @Assisted private val period:YearMonth, private val paidSvc:IPaidPort?=null,
-                    val prefs:Prefs?, @Assisted private val navController: NavController? = null, private val emailSvc:IEmailPaidPort? = null, private val paidSmsSvc:ISmsPort?): ViewModel(){
+                    val prefs:Prefs?, @Assisted private val navController: NavController? = null, private val emailSvc:IEmailPaidPort? = null, private val paidSmsSvc:ISmsPort? = null, private val smsPaidSvc:ISMSPaidPort? = null): ViewModel(){
 
     @AssistedFactory
     interface Factory {
@@ -54,8 +55,16 @@ class PaidViewModel @AssistedInject constructor(@Assisted private val accountCod
 
     val settingState = mutableStateOf(false)
 
-    fun hasGmailPermission(context: android.content.Context): Boolean {
+    fun hasGmailPermission(context: Context): Boolean {
         return emailSvc?.isEmailAccessGranted() ?: false
+    }
+
+    fun hasActiveSms(): Boolean {
+        return smsPaidSvc?.hasActiveSms() ?: false
+    }
+
+    fun hasActiveEmail(): Boolean {
+        return emailSvc?.isEmailAccessGranted() == true && (emailSvc?.hasActiveEmail() == true)
     }
 
     fun newOne(){
@@ -119,6 +128,7 @@ class PaidViewModel @AssistedInject constructor(@Assisted private val accountCod
     }
 
     fun readEmail(context: Context){
+        if (!hasActiveEmail()) return
         settingState.value = false
         viewModelScope.launch(Dispatchers.IO) {
             readEmail()
@@ -129,12 +139,16 @@ class PaidViewModel @AssistedInject constructor(@Assisted private val accountCod
     }
 
     fun saveSettings(context: Context) {
-        if(!errorPaidEmailDaysRead.value && !errorPaidSMSDaysRead.value) {
-            paidEmailDaysRead.value.toIntOrNull()?.let {
-                prefs?.paidEmailDaysRead = it
+        if((!hasActiveSms() || !errorPaidSMSDaysRead.value) && (!hasActiveEmail() || !errorPaidEmailDaysRead.value)) {
+            if (hasActiveSms()) {
+                paidSMSDaysRead.value.toIntOrNull()?.let {
+                    prefs?.paidSMSDaysRead = it
+                }
             }
-            paidSMSDaysRead.value.toIntOrNull()?.let {
-                prefs?.paidSMSDaysRead = it
+            if (hasActiveEmail()) {
+                paidEmailDaysRead.value.toIntOrNull()?.let {
+                    prefs?.paidEmailDaysRead = it
+                }
             }
             settingState.value = false
             Toast.makeText(context, R.string.toast_saves_successful, Toast.LENGTH_SHORT).show()
@@ -142,16 +156,21 @@ class PaidViewModel @AssistedInject constructor(@Assisted private val accountCod
     }
 
     fun validation(){
-        paidEmailDaysRead.value.takeIf { it.isNotEmpty() && NumbersUtil.isNumber(it) }?.let{
-            errorPaidEmailDaysRead.value = false
-        }?: errorPaidEmailDaysRead.let{it.value = true}
+        if (hasActiveEmail()) {
+            paidEmailDaysRead.value.takeIf { it.isNotEmpty() && NumbersUtil.isNumber(it) }?.let{
+                errorPaidEmailDaysRead.value = false
+            }?: errorPaidEmailDaysRead.let{it.value = true}
+        }
 
-        paidSMSDaysRead.value.takeIf { it.isNotEmpty() && NumbersUtil.isNumber(it) }?.let{
-            errorPaidSMSDaysRead.value = false
-        }?: errorPaidSMSDaysRead.let{it.value = true}
+        if (hasActiveSms()) {
+            paidSMSDaysRead.value.takeIf { it.isNotEmpty() && NumbersUtil.isNumber(it) }?.let{
+                errorPaidSMSDaysRead.value = false
+            }?: errorPaidSMSDaysRead.let{it.value = true}
+        }
     }
 
     suspend fun readEmail(){
+        if (!hasActiveEmail()) return
         val numDaysRead = paidEmailDaysRead.value.toIntOrNull() ?: prefs?.paidEmailDaysRead ?: 7
         try {
             emailSvc?.read(numDaysRead)

@@ -34,13 +34,14 @@ fun PopupSetting(viewModel: PaidViewModel, state: MutableState<Boolean>) {
     val paidSMSDaysRead = remember { viewModel.paidSMSDaysRead }
     val errorPaidSMSDaysRead = remember { viewModel.errorPaidSMSDaysRead }
     val context = LocalContext.current
-    val hasGmailPermission = remember { viewModel.hasGmailPermission(context) }
+    val hasActiveSms = remember { viewModel.hasActiveSms() }
+    val hasActiveEmail = remember { viewModel.hasActiveEmail() }
 
     Popup(title = R.string.setting, state = state) {
         Scaffold(
             floatingActionButton = {
                 Row {
-                    if (hasGmailPermission) {
+                    if (hasActiveEmail) {
                         FloatButton(imageVector = Icons.AutoMirrored.Rounded.ForwardToInbox, descriptionIcon = R.string.email_read) {
                             viewModel.readEmail(context)
                         }
@@ -53,17 +54,19 @@ fun PopupSetting(viewModel: PaidViewModel, state: MutableState<Boolean>) {
             modifier = Modifier.padding(Dimensions.PADDING_SHORT)
         ) {
             Column(modifier = Modifier.padding(it)) {
-                FieldText(title = stringResource(id = R.string.msm_read_num),
-                    value = paidSMSDaysRead.value,
-                    hasErrorState = errorPaidSMSDaysRead,
-                    keyboardType = KeyboardOptions(keyboardType = KeyboardType.Number),
-                    icon = Icons.Rounded.Cancel,
-                    validation = { viewModel.validation() },
-                    callback = {
-                        paidSMSDaysRead.value = it
-                    }, modifier = Modifier.padding(top = Dimensions.PADDING_SHORT).fillMaxWidth())
+                if (hasActiveSms) {
+                    FieldText(title = stringResource(id = R.string.msm_read_num),
+                        value = paidSMSDaysRead.value,
+                        hasErrorState = errorPaidSMSDaysRead,
+                        keyboardType = KeyboardOptions(keyboardType = KeyboardType.Number),
+                        icon = Icons.Rounded.Cancel,
+                        validation = { viewModel.validation() },
+                        callback = {
+                            paidSMSDaysRead.value = it
+                        }, modifier = Modifier.padding(top = Dimensions.PADDING_SHORT).fillMaxWidth())
+                }
 
-                if (hasGmailPermission) {
+                if (hasActiveEmail) {
                     FieldText(title = stringResource(id = R.string.email_read_num),
                         value = paidEmailDaysRead.value,
                         hasErrorState = errorPaidEmailDaysRead,

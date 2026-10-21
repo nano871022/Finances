@@ -31,7 +31,7 @@ class SmsCreditCardViewModel @AssistedInject constructor(private val svc:ISMSCre
         fun create(navController: NavController?): SmsCreditCardViewModel
     }
 
-    val  load = mutableStateOf(true)
+    val load = mutableStateOf(true)
 
     val list = mutableStateListOf<Map<Int,List<SMSCreditCard>>>()
 
@@ -48,40 +48,61 @@ class SmsCreditCardViewModel @AssistedInject constructor(private val svc:ISMSCre
 
     fun enabled(code:Int){
         require(code > 0){"The code must be greater than 0"}
-        svc?.enable(code).takeIf { it == true }?.let {
-            navController?.let { Toast.makeText(it.context, R.string.toast_successful_enabled, Toast.LENGTH_SHORT).show() }?.also {
-                load.value = true
+        viewModelScope.launch(Dispatchers.IO) {
+            val result = svc?.enable(code) == true
+            withContext(Dispatchers.Main) {
+                if (result) {
+                    navController?.let { Toast.makeText(it.context, R.string.toast_successful_enabled, Toast.LENGTH_SHORT).show() }
+                    load.value = true
+                } else {
+                    navController?.let { Toast.makeText(it.context, R.string.toast_dont_successful_enabled, Toast.LENGTH_SHORT).show() }
+                }
             }
-        }?:navController?.let { Toast.makeText(it.context, R.string.toast_dont_successful_enabled, Toast.LENGTH_SHORT).show() }
+        }
     }
 
     fun duplicate(code:Int){
         require(code > 0){"The code must be greater than 0"}
-        svc?.getById(code)?.let{
-            svc?.create(it.copy( id = 0  ))?.let{
-                load.value = true
+        viewModelScope.launch(Dispatchers.IO) {
+            val item = svc?.getById(code)
+            if (item != null) {
+                svc?.create(item.copy(id = 0))
+                withContext(Dispatchers.Main) {
+                    load.value = true
+                }
             }
         }
     }
 
     fun disabled(code:Int){
         require(code > 0){"The code must be greater than 0"}
-        svc?.disable(code).takeIf { it == true }?.let {
-            navController?.let { Toast.makeText(it.context, R.string.toast_successful_disabled, Toast.LENGTH_SHORT).show() }?.also {
-                load.value = true
+        viewModelScope.launch(Dispatchers.IO) {
+            val result = svc?.disable(code) == true
+            withContext(Dispatchers.Main) {
+                if (result) {
+                    navController?.let { Toast.makeText(it.context, R.string.toast_successful_disabled, Toast.LENGTH_SHORT).show() }
+                    load.value = true
+                } else {
+                    navController?.let { Toast.makeText(it.context, R.string.toast_dont_successful_disabled, Toast.LENGTH_SHORT).show() }
+                }
             }
-        }?:navController?.let { Toast.makeText(it.context, R.string.toast_dont_successful_disabled, Toast.LENGTH_SHORT).show() }
+        }
     }
 
     fun delete(code:Int){
         require(code > 0){"The code must be greater than 0"}
-        svc?.delete(code)?.takeIf { it }?.let{
-            navController?.let { Toast.makeText(it.context, R.string.toast_successful_deleted, Toast.LENGTH_SHORT).show().also {
-                navController.popBackStack()
-            }}
-        }?:navController?.let { Toast.makeText(it.context, R.string.toast_dont_successful_deleted, Toast.LENGTH_SHORT).show() }
+        viewModelScope.launch(Dispatchers.IO) {
+            val result = svc?.delete(code) == true
+            withContext(Dispatchers.Main) {
+                if (result) {
+                    navController?.let { Toast.makeText(it.context, R.string.toast_successful_deleted, Toast.LENGTH_SHORT).show() }
+                    load.value = true
+                } else {
+                    navController?.let { Toast.makeText(it.context, R.string.toast_dont_successful_deleted, Toast.LENGTH_SHORT).show() }
+                }
+            }
+        }
     }
-
 
     fun execute() = viewModelScope.launch{
         svc?.let {
@@ -89,7 +110,7 @@ class SmsCreditCardViewModel @AssistedInject constructor(private val svc:ISMSCre
                 withContext(Dispatchers.IO) {
                     it.getAll()
                 }.takeIf { it.isNotEmpty() }?.map{ dto->
-                    val list = svc.getAllByCodeCreditCard(dto.id)
+                    val list = withContext(Dispatchers.IO) { svc.getAllByCodeCreditCard(dto.id) }
                     list.map { it.copy(nameCreditCard = dto.name) }
                 }?.flatten()?.groupBy{it.codeCreditCard}?.let{
                         it.map {
@@ -104,6 +125,5 @@ class SmsCreditCardViewModel @AssistedInject constructor(private val svc:ISMSCre
         }
         load.value = false
     }
-
 
 }

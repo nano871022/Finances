@@ -12,5 +12,7 @@ interface IEmailPaidDAO {
 
     fun getAll(): List<EmailPaidDTO>
 
+    fun hasActive(): Boolean
+
     fun delete(id: Int): Boolean
 }

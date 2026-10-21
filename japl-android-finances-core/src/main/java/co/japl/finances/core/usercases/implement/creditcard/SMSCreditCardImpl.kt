@@ -30,9 +30,9 @@ class SMSCreditCardImpl @Inject constructor(private val svc:ISMSCreditCardPort, 
         return svc.getById(codeSMSCreditCard)
     }
 
-    override fun validateMessagePattern(dto: SMSCreditCard): List<EmailValidationDTO> {
+    override fun validateMessagePattern(dto: SMSCreditCard, numDaysRead: Int): List<EmailValidationDTO> {
         val list = mutableListOf<EmailValidationDTO>()
-        smsSvc.load(dto.phoneNumber,360).takeIf{it.isNotEmpty()}?.forEach{sms->
+        smsSvc.load(dto.phoneNumber,numDaysRead).takeIf{it.isNotEmpty()}?.forEach{sms->
             if(dto.pattern.isNotEmpty() && dto.pattern.toRegex().containsMatchIn(sms.first)){
                 dto.pattern.toRegex().find(sms.first)?.let{
                     val values = ExtractItemPatternUtil.getValues(it.groupValues,sms.second)
@@ -58,6 +58,14 @@ class SMSCreditCardImpl @Inject constructor(private val svc:ISMSCreditCardPort, 
 
     override fun getAllByCodeCreditCard(codeCreditCard: Int): List<SMSCreditCard> {
         return svc.getByCodeCreditCard(codeCreditCard)
+    }
+
+    override fun getAll(): List<SMSCreditCard> {
+        return svc.getAll()
+    }
+
+    override fun hasActiveSms(): Boolean {
+        return svc.hasActiveSms()
     }
 
     override fun getSmsMessages(phoneNumber:String,pattern:String,numDaysRead:Int):List<Triple<String,Double,LocalDateTime>> =

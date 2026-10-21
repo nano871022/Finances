@@ -121,6 +121,9 @@ Email Samples:
     </string>
     <string name="emails_found">Emails encontrados: %1$d</string>
     <string name="emails_matched">Coincidencias: %1$d</string>
+    <string name="days_email_read">Dias de lectura Email</string>
+    <string name="days_sms_read">Dias de lectura SMS</string>
+    <string name="filter_all">Todos</string>
     <string name="email_read_process_completed">Proceso de lectura de email completado</string>
     <string name="loading_data">Cargando datos...</string>
     <string name="email_read">Leer Email</string>

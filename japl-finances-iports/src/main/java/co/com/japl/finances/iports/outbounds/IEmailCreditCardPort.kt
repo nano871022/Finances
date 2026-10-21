@@ -11,5 +11,7 @@ interface IEmailCreditCardPort {
 
     fun getAll(): List<EmailCreditCardDTO>
 
+    fun hasActiveEmail(): Boolean
+
     fun delete(id: Int): Boolean
 }

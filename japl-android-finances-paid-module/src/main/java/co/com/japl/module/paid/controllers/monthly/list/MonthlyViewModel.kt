@@ -155,7 +155,9 @@ class MonthlyViewModel(private val period:YearMonth, private val paidSvc: IPaidP
     suspend fun readSms() {
         try {
             withContext(Dispatchers.IO) {
-                smsSvc?.read(prefs?.paidSMSDaysRead ?: 0)
+                if (smsSvc?.hasActiveSms() == true) {
+                    smsSvc.read(prefs?.paidSMSDaysRead ?: 0)
+                }
             }
         } catch (e: Exception) {
             Log.e(javaClass.name, e.message, e)

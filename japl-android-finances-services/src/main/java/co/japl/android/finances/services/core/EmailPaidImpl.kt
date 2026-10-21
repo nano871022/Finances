@@ -14,5 +14,7 @@ class EmailPaidImpl @Inject constructor(val svc: IEmailPaidDAO) : IEmailPaidPort
 
     override fun getAll(): List<EmailPaidDTO> = svc.getAll()
 
+    override fun hasActiveEmail(): Boolean = svc.hasActive()
+
     override fun delete(id: Int): Boolean = svc.delete(id)
 }

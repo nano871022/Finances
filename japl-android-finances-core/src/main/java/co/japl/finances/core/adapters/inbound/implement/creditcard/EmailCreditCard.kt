@@ -68,4 +68,8 @@ class EmailCreditCard @Inject constructor(val svc: IEmailCreditCard) : IEmailCre
     override fun isEmailAccessGranted(): Boolean {
         return svc.isEmailAccessGranted()
     }
+
+    override fun hasActiveEmail(): Boolean {
+        return svc.hasActiveEmail()
+    }
 }

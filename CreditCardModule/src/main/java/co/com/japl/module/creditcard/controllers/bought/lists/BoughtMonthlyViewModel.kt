@@ -162,7 +162,9 @@ class BoughtMonthlyViewModel(
     suspend fun readSms() {
         try {
             withContext(Dispatchers.IO) {
-                msmSvc?.read(prefs.creditCardSMSDaysRead)
+                if (msmSvc?.hasActiveSms() == true) {
+                    msmSvc.read(prefs.creditCardSMSDaysRead)
+                }
             }
         } catch (e: Exception) {
             Log.e(javaClass.name, e.message, e)

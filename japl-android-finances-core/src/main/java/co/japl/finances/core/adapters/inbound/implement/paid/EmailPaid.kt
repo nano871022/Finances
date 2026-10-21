@@ -32,4 +32,8 @@ class EmailPaid @Inject constructor(val svc: IEmailPaid) : IEmailPaidPort {
     override fun isEmailAccessGranted(): Boolean {
         return svc.isEmailAccessGranted()
     }
+
+    override fun hasActiveEmail(): Boolean {
+        return svc.hasActiveEmail()
+    }
 }

@@ -40,4 +40,12 @@ class SMSCreditCardImpl @Inject constructor(private val svc:ISmsCreditCardDAO): 
     ): List<SMSCreditCard> {
         return svc.getByCreditCardAndKindInterest(codeCreditCard,kind).map { SmsCreditCardMapper.mapping(it) }
     }
+
+    override fun getAll(): List<SMSCreditCard> {
+        return svc.getAll().map { SmsCreditCardMapper.mapping(it) }
+    }
+
+    override fun hasActiveSms(): Boolean {
+        return svc.hasActive()
+    }
 }

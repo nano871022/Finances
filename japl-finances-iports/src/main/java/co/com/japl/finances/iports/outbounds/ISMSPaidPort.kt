@@ -15,4 +15,8 @@ interface ISMSPaidPort {
 
     fun getByCodeAccount(codeAccount: Int):List<SMSPaidDTO>
 
+    fun getAll():List<SMSPaidDTO>
+
+    fun hasActiveSms(): Boolean
+
 }

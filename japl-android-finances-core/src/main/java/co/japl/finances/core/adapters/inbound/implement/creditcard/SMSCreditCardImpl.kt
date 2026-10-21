@@ -1,5 +1,6 @@
 package co.japl.finances.core.adapters.inbound.implement.creditcard
 
+import co.com.japl.finances.iports.dtos.EmailValidationDTO
 import co.com.japl.finances.iports.dtos.SMSCreditCard
 import co.com.japl.finances.iports.enums.KindInterestRateEnum
 import co.com.japl.finances.iports.inbounds.creditcard.ISMSCreditCardPort
@@ -28,8 +29,8 @@ class SMSCreditCardImpl @Inject constructor(private val svc:ISMSCreditCard) : IS
         return svc.getById(codeSMSCreditCard)
     }
 
-    override fun validateMessagePattern(dto: SMSCreditCard): List<co.com.japl.finances.iports.dtos.EmailValidationDTO> {
-        return svc.validateMessagePattern(dto)
+    override fun validateMessagePattern(dto: SMSCreditCard, numDaysRead: Int): List<EmailValidationDTO> {
+        return svc.validateMessagePattern(dto, numDaysRead)
     }
 
     override fun getByCreditCardAndKindInterest(
@@ -42,6 +43,14 @@ class SMSCreditCardImpl @Inject constructor(private val svc:ISMSCreditCard) : IS
 
     override fun getAllByCodeCreditCard(codeCreditCard: Int): List<SMSCreditCard> {
         return svc.getAllByCodeCreditCard(codeCreditCard)
+    }
+
+    override fun getAll(): List<SMSCreditCard> {
+        return svc.getAll()
+    }
+
+    override fun hasActiveSms(): Boolean {
+        return svc.hasActiveSms()
     }
 
     override fun getSmsMessages(

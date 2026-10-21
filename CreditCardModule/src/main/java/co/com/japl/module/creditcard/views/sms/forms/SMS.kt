@@ -33,6 +33,13 @@ import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.unit.dp
@@ -188,12 +195,22 @@ private fun ValidationPopup(viewModel: SmsCreditCardViewModel) {
     val showPopup = remember { viewModel.showPopup }
     val validating = remember { viewModel.validating }
     val validationResults = remember { viewModel.validationResults }
+    val numDaysRead = viewModel.numDaysRead
+    val errorNumDaysRead = viewModel.errorNumDaysRead
+    val showDaysField = viewModel.showDaysField
+    val filterMatched = remember { mutableStateOf(false) }
+    val displayedResults = if (filterMatched.value) {
+        validationResults.filter { it.matched }
+    } else {
+        validationResults
+    }
 
     Popup(title = R.string.validation_results_title, state = showPopup) {
         Column(
             modifier = Modifier
                 .padding(Dimensions.PADDING_SHORT)
                 .fillMaxWidth()
+                .verticalScroll(rememberScrollState())
         ) {
             if (validating.value) {
                 Box(
@@ -208,6 +225,76 @@ private fun ValidationPopup(viewModel: SmsCreditCardViewModel) {
                     )
                 }
             } else {
+                Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.clickable { showDaysField.value = !showDaysField.value }) {
+                    Text(text=viewModel.pattern.value,
+                        color = MaterialTheme.colorScheme.onPrimary,
+                        fontSize = MaterialTheme.typography.bodySmall.fontSize,
+                        modifier = Modifier.weight(1f))
+
+                    Box(modifier = Modifier
+                        .padding(horizontal = Dimensions.PADDING_SHORT)
+                        .width(Dimensions.DIVIDER_THICKNESS)
+                        .height(Dimensions.ICON_SIZE_MEDIUM)
+                        .background(MaterialTheme.colorScheme.onPrimary)
+                    )
+
+                    Icon(imageVector = Icons.Rounded.ArrowDownward, contentDescription = null, tint = MaterialTheme.colorScheme.onPrimary)
+                }
+
+                if (showDaysField.value) {
+                    FieldText(
+                        title = stringResource(R.string.days_sms_read),
+                        value = numDaysRead.value,
+                        hasErrorState = errorNumDaysRead,
+                        keyboardType = KeyboardOptions(keyboardType = KeyboardType.Number),
+                        modifier = Modifier.fillMaxWidth().padding(top = Dimensions.PADDING_SHORT)
+                    ) {
+                        numDaysRead.value = it
+                    }
+
+                    OutlinedButton(
+                        onClick = { viewModel.validatePatternWithMessages() },
+                        modifier = Modifier
+                            .align(alignment = Alignment.End)
+                            .padding(top = Dimensions.PADDING_TOP)
+                    ) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Rounded.DirectionsRun,
+                            contentDescription = stringResource(id = R.string.validate),
+                            tint = MaterialTheme.colorScheme.onPrimary
+                        )
+
+                        Text(
+                            text = stringResource(id = R.string.validate),
+                            color = MaterialTheme.colorScheme.onPrimary,
+                            textAlign = TextAlign.Center,
+                            modifier = Modifier.weight(1f)
+                        )
+                    }
+                }
+
+                Row(
+                    modifier = Modifier.fillMaxWidth().padding(vertical = Dimensions.PADDING_SHORT),
+                    horizontalArrangement = Arrangement.SpaceEvenly
+                ) {
+                    OutlinedButton(
+                        onClick = { filterMatched.value = false },
+                        colors = ButtonDefaults.outlinedButtonColors(
+                            containerColor = if (!filterMatched.value) MaterialTheme.colorScheme.primaryContainer else Color.Transparent
+                        )
+                    ) {
+                        Text(text = stringResource(id = R.string.filter_all), color = MaterialTheme.colorScheme.onPrimary)
+                    }
+                    OutlinedButton(
+                        onClick = { filterMatched.value = true },
+                        colors = ButtonDefaults.outlinedButtonColors(
+                            containerColor = if (filterMatched.value) MaterialTheme.colorScheme.primaryContainer else Color.Transparent
+                        )
+                    ) {
+                        Text(text = stringResource(id = R.string.sms_matched).substringBefore(":"), color = MaterialTheme.colorScheme.onPrimary)
+                    }
+                }
+
                 if (validationResults.isEmpty() && viewModel.validationResult.value.isNotEmpty()) {
                     Text(
                         text = viewModel.validationResult.value,
@@ -215,18 +302,13 @@ private fun ValidationPopup(viewModel: SmsCreditCardViewModel) {
                         modifier = Modifier.padding(Dimensions.PADDING_SHORT)
                     )
                 } else {
-                    Text(text=viewModel.pattern.value,
-                        color = MaterialTheme.colorScheme.onPrimary,
-                        fontSize = MaterialTheme.typography.bodySmall.fontSize,
-                        modifier = Modifier.fillMaxWidth())
-
                     Carousel(
-                        size = validationResults.size,
+                        size = displayedResults.size,
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(200.dp)
                     ) { index ->
-                        val result = validationResults[index]
+                        val result = displayedResults[index]
                         Column(
                             modifier = Modifier
                                 .fillMaxWidth()

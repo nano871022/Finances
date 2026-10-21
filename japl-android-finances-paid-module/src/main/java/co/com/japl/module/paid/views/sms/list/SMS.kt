@@ -54,8 +54,10 @@ fun SMS(viewModel:SmsViewModel) {
     val loader = remember {viewModel.load}
     val progress = remember {viewModel.progress}
 
-    LaunchedEffect(Unit) {
-        viewModel.main()
+    LaunchedEffect(key1 = loader.value) {
+        if (loader.value) {
+            viewModel.execute()
+        }
     }
 
     if(loader.value){

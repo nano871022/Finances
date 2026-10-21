@@ -72,6 +72,17 @@ class EmailPaidImpl @Inject constructor(private val connect: ConnectDB) : IEmail
         return list
     }
 
+    override fun hasActive(): Boolean {
+        val db = connect.readableDatabase
+        db.rawQuery("SELECT count(1) FROM ${EmailPaidDB.EmailPaidEntry.TABLE_NAME} WHERE ${EmailPaidDB.EmailPaidEntry.COLUMN_ACTIVE} = 1", null)
+            .use { cursor ->
+                if (cursor.moveToFirst()) {
+                    return cursor.getInt(0) > 0
+                }
+            }
+        return false
+    }
+
     override fun delete(id: Int): Boolean {
         val db = connect.writableDatabase
         return db.delete(EmailPaidDB.EmailPaidEntry.TABLE_NAME, "${BaseColumns._ID} = ?", arrayOf(id.toString())) > 0

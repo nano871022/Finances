@@ -86,6 +86,17 @@ class EmailCreditCardImpl @Inject constructor(val dbConnect: SQLiteOpenHelper) :
         return list
     }
 
+    override fun hasActive(): Boolean {
+        val db = dbConnect.readableDatabase
+        db.rawQuery("SELECT count(1) FROM ${EmailCreditCardDB.EmailCreditCardEntry.TABLE_NAME} WHERE ${EmailCreditCardDB.EmailCreditCardEntry.COLUMN_ACTIVE} = 1", null)
+            ?.use { cursor ->
+                if (cursor.moveToFirst()) {
+                    return cursor.getInt(0) > 0
+                }
+            }
+        return false
+    }
+
     override fun delete(id: Int): Boolean {
         Log.d(this.javaClass.name, "<<<== delete - Start $id")
         val db = dbConnect.writableDatabase

@@ -26,4 +26,6 @@ interface IEmailPaidPort {
     fun read(numDaysRead: Int)
 
     fun isEmailAccessGranted(): Boolean
+
+    fun hasActiveEmail(): Boolean
 }

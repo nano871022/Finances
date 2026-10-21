@@ -20,6 +20,7 @@ import co.com.japl.finances.iports.inbounds.creditcard.bought.lists.IBoughtListP
 import co.com.japl.finances.iports.inbounds.creditcard.ICreditCardPort
 import co.com.japl.finances.iports.inbounds.common.IDifferQuotesPort
 import co.com.japl.finances.iports.inbounds.creditcard.IEmailCreditCardPort
+import co.com.japl.finances.iports.inbounds.creditcard.ISMSCreditCardPort
 import co.com.japl.finances.iports.inbounds.creditcard.ISimulatorCreditVariablePort
 import co.com.japl.module.creditcard.controllers.bought.lists.ListBoughtViewModel
 import co.com.japl.module.creditcard.views.bought.BoughList
@@ -35,6 +36,7 @@ class ListBoughtFragment : Fragment() {
     @Inject lateinit var differInstallmentSvc: IDifferQuotesPort
     @Inject lateinit var prefs: Prefs
     @Inject lateinit var emailCCSvc: IEmailCreditCardPort
+    @Inject lateinit var smsSvc: ISMSCreditCardPort
     @Inject lateinit var simulatorSvc: ISimulatorCreditVariablePort
 
     @RequiresApi(Build.VERSION_CODES.S)
@@ -52,7 +54,7 @@ class ListBoughtFragment : Fragment() {
             simulatorSvc = simulatorSvc
         )
 
-        val settingVM = SettingsViewModel(prefs,emailCCSvc)
+        val settingVM = SettingsViewModel(prefs,emailCCSvc,smsSvc)
 
         arguments?.let {
             val params = CreditCardQuotesParams.Companion.Historical.download(it)

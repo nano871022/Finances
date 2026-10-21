@@ -33,6 +33,9 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.ui.graphics.Color
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -293,12 +296,19 @@ private fun ValidationPopup(viewModel: EmailCreditCardViewModel) {
     val numDaysRead = viewModel.numDaysRead
     val errorNumDaysRead = viewModel.errorNumDaysRead
     val showDaysField = viewModel.showDaysField
+    val filterMatched = remember { mutableStateOf(false) }
+    val displayedResults = if (filterMatched.value) {
+        validationResults.filter { it.matched }
+    } else {
+        validationResults
+    }
 
     Popup(title = R.string.validation_results_title, state = showPopup) {
         Column(
             modifier = Modifier
                 .padding(Dimensions.PADDING_SHORT)
                 .fillMaxWidth()
+                .verticalScroll(rememberScrollState())
         ) {
             if (validating) {
                 Box(
@@ -361,13 +371,35 @@ private fun ValidationPopup(viewModel: EmailCreditCardViewModel) {
                     }
                 }
 
+                Row(
+                    modifier = Modifier.fillMaxWidth().padding(vertical = Dimensions.PADDING_SHORT),
+                    horizontalArrangement = Arrangement.SpaceEvenly
+                ) {
+                    OutlinedButton(
+                        onClick = { filterMatched.value = false },
+                        colors = ButtonDefaults.outlinedButtonColors(
+                            containerColor = if (!filterMatched.value) MaterialTheme.colorScheme.primaryContainer else Color.Transparent
+                        )
+                    ) {
+                        Text(text = stringResource(id = R.string.filter_all), color = MaterialTheme.colorScheme.onPrimary)
+                    }
+                    OutlinedButton(
+                        onClick = { filterMatched.value = true },
+                        colors = ButtonDefaults.outlinedButtonColors(
+                            containerColor = if (filterMatched.value) MaterialTheme.colorScheme.primaryContainer else Color.Transparent
+                        )
+                    ) {
+                        Text(text = stringResource(id = R.string.emails_matched).substringBefore(":"), color = MaterialTheme.colorScheme.onPrimary)
+                    }
+                }
+
                 Carousel(
-                    size = validationResults.size,
+                    size = displayedResults.size,
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(200.dp)
                 ) { index ->
-                    val result = validationResults[index]
+                    val result = displayedResults[index]
                     Column(
                         modifier = Modifier
                             .fillMaxWidth()

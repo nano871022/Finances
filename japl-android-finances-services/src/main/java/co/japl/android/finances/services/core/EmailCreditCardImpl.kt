@@ -14,5 +14,7 @@ class EmailCreditCardImpl @Inject constructor(val svc: IEmailCreditCardDAO) : IE
 
     override fun getAll(): List<EmailCreditCardDTO> = svc.getAll()
 
+    override fun hasActiveEmail(): Boolean = svc.hasActive()
+
     override fun delete(id: Int): Boolean = svc.delete(id)
 }

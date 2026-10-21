@@ -34,6 +34,10 @@ class EmailPaidImpl @Inject constructor(val svc: IEmailPaidPort, val messageSvc:
         return messageSvc.isEmailAccessGranted()
     }
 
+    override fun hasActiveEmail(): Boolean {
+        return svc.hasActiveEmail()
+    }
+
     override fun read(numDaysRead: Int) {
         svc.getAll().filter { it.active }.forEach { emailConfig ->
             messageSvc.validateMessagePattern(emailConfig, numDaysRead).filter { it.matched }.forEach { validation ->

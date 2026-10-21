@@ -58,6 +58,9 @@ class SmsCreditCardViewModel @AssistedInject constructor(@Assisted private val c
     val showPopup = mutableStateOf(false)
     val validating = mutableStateOf(false)
     val validationResults = mutableStateListOf<EmailValidationDTO>()
+    val numDaysRead = mutableStateOf("30")
+    val errorNumDaysRead = mutableStateOf(false)
+    val showDaysField = mutableStateOf(false)
 
     val validate = mutableStateOf("")
 
@@ -146,7 +149,9 @@ class SmsCreditCardViewModel @AssistedInject constructor(@Assisted private val c
         errorPhoneNumber.value = false
         errorPattern.value = false
         errorCreditCard.value = false
-
+        numDaysRead.value = "30"
+        errorNumDaysRead.value = false
+        showDaysField.value = false
     }
 
     fun validatePatternWithMessages() {
@@ -159,7 +164,7 @@ class SmsCreditCardViewModel @AssistedInject constructor(@Assisted private val c
                 validationResult.value = ""
                 runCatching {
                     withContext(Dispatchers.IO) {
-                        svc?.validateMessagePattern(dto) ?: emptyList()
+                        svc?.validateMessagePattern(dto, numDaysRead.value.toIntOrNull() ?: 30) ?: emptyList()
                     }
                 }.onFailure { e ->
                     validating.value = false
