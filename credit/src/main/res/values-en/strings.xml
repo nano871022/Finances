@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="total_due">Total Debt</string>
+    <string name="credit_cnt">Number of Credits</string>
+    <string name="total_quote">Total Installment</string>
+    <string name="credit_cnt_short">Amount</string>
+    <string name="quote_date">Installment Date</string>
+    <string name="quote_payment_date_short">Date</string>
+    <string name="quote_payment_name_short">Name</string>
+    <string name="quote_payment_value_short">Installment</string>
+    <string name="quote_payment_date">Installment Payment Date</string>
+    <string name="quote_payment_name">Credit Name</string>
+    <string name="quote_payment_value">Installment Amount</string>
+    <string name="additional">Additional Charge</string>
+    <string name="amortization">Amortization Table</string>
+    <string name="period_grace">Grace Period</string>
+    <string name="delete">Delete</string>
+    <string name="do_you_want_to_delete_this_record">Do you want to delete this record?</string>
+    <string name="navigate_amortization">android-app://co.com.japl.finanzas.module.app/amortization_credit?credit_code=%d&amp;last_date=%s</string>
+    <string name="navigate_additional">android-app://co.com.japl.finanzas.module.app/additionals_credit?CREDIT_CODE=%d</string>
+    <string name="navigate_add_credit">android-app://co.com.japl.finanzas.module.app/add_credit_fix</string>
+    <string name="navigate_upd_credit">android-app://co.com.japl.finanzas.module.app/add_credit_fix?credit_code=%d</string>
+    <string name="navigate_detail_credits">Credit Details</string>
+    <string name="navigate_period_credits">Period Credits</string>
+    <string name="delete_period_grace">Delete Grace Period</string>
+    <string name="do_you_want_to_delete_period_grace">Do you want to delete the grace period?</string>
+    <string name="periods">Periods</string>
+    <string name="last_month">Last Month</string>
+    <string name="current_month">Current Month</string>
+    <string name="next_month">Next Month</string>
+    <string name="start_date">Start Date</string>
+    <string name="end_date">End Date</string>
+    <string name="cancel">Cancel</string>
+    <string name="save">Save</string>
+    <string name="toast_successful_deleted">Record was successfully deleted</string>
+    <string name="toast_dont_successful_deleted">Record was not deleted</string>
+    <string name="toast_period_grace_successful_deleted">Grace period was successfully deleted</string>
+    <string name="toast_period_grace_dont_successful_deleted">Grace period was not deleted</string>
+    <string name="toast_period_grace_successful_added">Grace period added successfully</string>
+    <string name="toast_period_grace_dont_successful_added">Grace period was not added</string>
+    <string name="month_payment">Payment Month</string>
+    <string name="no_data">No data to show</string>
+    <string name="quote_value">Installment Amount</string>
+    <string name="quote_value_short">Installment Amount</string>
+    <string name="additional_value">Additional Amount</string>
+    <string name="pending_payment">Amount Pending Payment</string>
+    <string name="interest_value">Interest Amount</string>
+    <string name="capital_value">Capital Amount</string>
+    <string name="capital_value_short">Capital</string>
+    <string name="add_credit">Add Credit</string>
+    <string name="check_periods">Periods</string>
+    <string name="detail_credits">Details</string>
+    <string name="num_credits">Amount</string>
+    <string name="clean_credit">Clear</string>
+    <string name="kind_payment">Payment Type</string>
+    <string name="name_credit">Name</string>
+    <string name="value_credit">Value</string>
+    <string name="rate_credit">Rate</string>
+    <string name="periods_credit">Months</string>
+    <string name="quote_credit">Installment Amount</string>
+    <string name="date_credit">Credit Date</string>
+    <string name="type_payment_credit">Payment Type</string>
+    <string name="kind_rate">Rate Type</string>
+    <string name="back_view">Go to Previous Page</string>
+    <string name="invalid_option_amortization">You need to create the credit before entering this option</string>
+    <string name="invalid_form">Some fields have not been filled correctly.</string>
+    <string name="save_success">Credit saved successfully</string>
+    <string name="Add">Add</string>
+    <string name="title_name_additional_list">Name</string>
+    <string name="tooltip_name_additional_list">Name of the additional value</string>
+    <string name="title_value_additional_list">Value</string>
+    <string name="tooltip_value_additional_list">Additional value</string>
+    <string name="count">Amount</string>
+    <string name="total_value">Total Value</string>
+    <string name="see_more">See More</string>
+    <string name="edit">Edit</string>
+    <string name="do_you_want_to_delete_additional">Do you want to delete this record?</string>
+    <string name="delete_record">Record deleted successfully</string>
+    <string name="close">Close</string>
+    <string name="error_delete_record">Failed to delete record</string>
+    <string name="navigate_add_additional">android-app://co.com.japl.finanzas.module.app/additional_credit_form?CREDIT_CODE=%d</string>
+    <string name="navigate_edit_additional">android-app://co.com.japl.finanzas.module.app/additional_credit_form?id=%d&amp;CREDIT_CODE=%d</string>
+    <string name="clear_additiona_credit_form">Clear form</string>
+    <string name="add_additiona_credit">Add additional credit</string>
+    <string name="name">Name</string>
+
+    <string name="create_record_success">Record Created Successfully</string>
+    <string name="error_record_success">An error occurred while creating the record</string>
+    <string name="update_record_success">Record updated successfully</string>
+    <string name="error_upd_record_success">Error updating record</string>
+    <string name="calculation_error">"An error occurred in the calculation "</string>
+    <string name="save_unsuccess">"Failed to save "</string>
+    <string name="credit_value">Credit Value</string>
+    <string name="months">Months</string>
+    <string name="interest">Interest Rate</string>
+    <string name="interest_short">Interest</string>
+    <string name="capital">Capital</string>
+    <string name="quote">Installment</string>
+    <string name="year">Year</string>
+    <string name="total">Total</string>
+    <string name="amortization_value">Amortization</string>
+    <string name="saving">Saving</string>
+    <string name="clear">Clear</string>
+    <string name="calculate">Calculate</string>
+    <string name="credit_rate">Interest Rate</string>
+    <string name="kind_credit_rate">Interest Rate Type</string>
+    <string name="navigate_form_simulator_amortization_fix">android-app://co.com.japl.finanzas.module.app/simulator/fix/amortization?code=%d</string>
+    <string name="navigate_list_extra_amortization">android-app://co.com.japl.finanzas.module.creditfix/extraValue?CREDIT_CODE=%d</string>
+    <string name="simulator_quote_fix">Fixed Installment Simulator</string>
+    <string name="first_capital">First Capital</string>
+    <string name="first_interest">First Interest</string>
+    <string name="extra_value_list">Extra value</string>
+    <string name="additional_to_pay">Additional to Pay</string>
+    <string name="additional_monthly">Monthly Additional</string>
+    <string name="interest_to_pay_value">Interest to Pay</string>
+    <string name="interest_value_short">interest</string>
+    <string name="extra_values">Extra Values</string>
+    <string name="add_extra_value">Add Extra Value</string>
+    <string name="number_of_quotes">Number of Quotes</string>
+    <string name="value">Value</string>
+    <string name="quote_num">Installment Number</string>
+    <string name="load_data">Loading Data</string>
+    <string name="can_not_gotto_amortization">You cannot navigate to amortization</string>
+    <string name="cnt_short">#</string>
+    <string name="no_records">No data</string>
+    <string name="value_paid">Value Paid</string>
+
+    <string-array name="months">
+        <item>--- Select --- </item>
+        <item>January</item>
+        <item>February</item>
+        <item>March</item>
+        <item>April</item>
+        <item>May</item>
+        <item>June</item>
+        <item>July</item>
+        <item>August</item>
+        <item>September</item>
+        <item>October</item>
+        <item>November</item>
+        <item>December</item>
+    </string-array>
+</resources>

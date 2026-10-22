@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="duplicate">Duplicar</string>
+    <string name="toast_successful_cloned">Se realizo la clonación correctamente</string>
+    <string name="toast_dont_successful_cloned">No se realizar la clonación</string>
+    <string name="credit_value">Valor del Crédito</string>
+    <string name="kind_credit_rate">Tipo de Tasa</string>
+    <string name="clear">Limpiar</string>
+    <string name="saving">Guardando Simulación</string>
+    <string name="values_first_quote">Valores Primera Cuota</string>
+    <string name="calculate">Calcular</string>
+    <string name="amortization">Ver Amortización</string>
+    <string name="save_success">Guardado Simulador Correctamente</string>
+    <string name="save_unsuccess">No se logró crear el registro</string>
+    <string name="calculation_error">Se presento error en el calculo, revise los valores ingresados</string>
+    <string name="cancel">Cancelar</string>
+    <string name="amortization_value">Valor de Amortizado</string>
+    <string name="interest">Interes</string>
+    <string name="total">Total</string>
+    <string name="simulator_quote_variable">Simulador Cuota Variable</string>
+    <string name="amortization_quote_variable">Amortización Cuota Variable</string>
+    <string name="first_quote_value">Primera Cuota</string>
+    <string name="first_interest">Primer Interes</string>
+    <string name="options">Opciones</string>
+    <string name="active">Activo</string>
+    <string name="recurrent_activate">Activar</string>
+    <string name="recurrent_deactivate">Desactivar</string>
+    <string name="recurrent_alter">Alterar</string>
+    <string name="recurrent_copy">Copiar</string>
+    <string name="edit">Editar</string>
+    <string name="delete">Eliminar</string>
+    <string name="do_you_want_to_delete_this_record">¿Desea eliminar el registro?</string>
+    <string name="total_active_recurrent">Total Recurrentes Activas</string>
+    <string name="navigate_recurrent_list_bought">android-app://co.com.japl.finanzas.module.creditcard/recurrentList?codeCreditCard=%1$d</string>
+    <string name="filter_all">Todos</string>
+    <string name="filter_active">Activos</string>
+    <string name="filter_inactive">Inactivos</string>
+    <string name="no_data">No hay datos</string>
+    <string name="promt_sms_expreg">
+Act as a Java Regex compiler.
+
+Analyze the SMS message and generate a single, linear regular expression that captures: merchant/product name, value, and date.
+
+Technical Escaping Instructions (CRITICAL):
+
+Every dollar sign "$" must be written as "\$".
+Every forward slash "/" must be written as "\/".
+Every dot "." that must be treated as a literal must be written as "\.".
+Every comma "," that must be treated as a literal must be written as "\,".
+Every asteric "*" that must be treated as a literal must be written as "\*".
+
+Use capture groups () with specific character classes:
+        ([\w ]+) for the merchant/product name.
+        ([\d\.\,]+) for the value.
+        (\d{2}\/\d{2}\/\d{4}) for the date but it depend of date format ex. dd/mm/yyyy.
+
+
+Do not use generic wildcards like ".+?"; use text anchors from the message and [\w ]+ connectors.
+
+The structure must be compatible with java.util.regex.Pattern.
+
+Response Rules:
+
+Provide ONLY the raw text string.
+Do not use code blocks (```).
+Do not use quotation marks.
+Do not provide explanations or introductions.
+If the result does not include the escape characters "" before "$" and "/", the response will be considered incorrect.
+
+Message:
+%s
+    </string>
+    <string name="promt_email_expreg">
+Act as a Java Regex compiler and Email Subject analyzer.
+
+Analyze the Email messages provided and generate:
+1. A search string for the email subject (Title Pattern) that is common to all these emails.
+2. A single, linear regular expression for the email body (Message Pattern) that captures: merchant/product name, value, and date.
+
+Technical Escaping Instructions for Body Regex (CRITICAL):
+Every dollar sign "$" must be written as "\$".
+Every forward slash "/" must be written as "\/".
+Every dot "." that must be treated as a literal must be written as "\.".
+Every comma "," that must be treated as a literal must be written as "\,".
+Every asterisk "*" that must be treated as a literal must be written as "\*".
+
+Use capture groups (?&lt;name&gt;...), (?&lt;value&gt;...), (?&lt;date&gt;...) for the Body Regex.
+
+Response Format (MANDATORY):
+SUBJECT: [title pattern]
+BODY: [body regex]
+
+Do not provide explanations or introductions.
+
+Messages:
+%s
+    </string>
+    <string name="generate_by_ai">Generar con IA</string>
+    <string name="select_exaple_sms">Seleccionar Ejemplo de SMS</string>
+    <string name="select_example_email">Seleccionar Ejemplo de Correo</string>
+    <string name="generate">Generar</string>
+    <string name="ai_response">Respuesta IA</string>
+    <string name="ok">OK</string>
+    <string name="add">Agregar</string>
+    <string name="subject_email_pattern">Asunto (Patron)</string>
+    <string name="message_email_pattern">Mensaje (Patrón)</string>
+    <string name="validate_email_patterns">Validar</string>
+    <string name="more_options">Más Opciones</string>
+    <string name="delete_email_record">¿Desea Eliminar este Registro?</string>
+    <string name="sender">Remitente</string>
+    <string name="validation_results_title">Resultados de Validación</string>
+    <string name="emails_found">Correos encontrados: %1$d</string>
+    <string name="emails_matched">Coincidencias: %1$d</string>
+    <string name="sms_found">SMS encontrados: %1$d</string>
+    <string name="sms_matched">Coincidencias: %1$d</string>
+    <string name="extracted_name">Nombre: %1$s</string>
+    <string name="extracted_value">Valor: %1$s</string>
+    <string name="extracted_date">Fecha: %1$s</string>
+    <string name="not_extracted">No se logró extraer datos</string>
+    <string name="validation_close">Cerrar</string>
+    <string name="loading_data">Cargando Data</string>
+    <string name="ai_model">Modelo IA</string>
+    <string name="select_ai_model">Seleccionar Modelo IA</string>
+    <string name="update_success">Registro Actualizado</string>
+    <string name="update_unsuccess">No se logro Actualizar</string>
+    <string name="can_not_goto_amortization">No puede ir a la Amortización</string>
+    <string name="ccio_edit">Editar</string>
+    <string name="ccio_amortization">Amortización</string>
+    <string name="ccio_delete">Eliminar</string>
+    <string name="ccio_ending">Finalizar</string>
+    <string name="ccio_update_value">Actualizar Valor</string>
+    <string name="differ_installment">Diferir el Capital Restante</string>
+    <string name="ccio_clone">Copiar</string>
+    <string name="ccio_restore">Restaurar</string>
+    <string name="type">Tipo</string>
+    <string name="product_value_short">Valor</string>
+    <string name="pending_to_pay_short">Pendiente</string>
+    <string name="ending_recurrent_copy_payment_successfull">Finalizo Correctamente</string>
+    <string name="ending_recurrent_payment_successfull">Finalizo Correctamente</string>
+    <string name="save_differ_installment">Guardado</string>
+    <string name="ending_recurrent_restore_payment_successfull">Restauracion Correctamente</string>
+    <string name="dont_copy_payment_successfull">No se logro copiar</string>
+    <string name="close">Cerrar</string>
+    <string name="dont_restore_payment_successfull">No se logro restaurar</string>
+    <string name="dont_ending_recurrent_payment">No se logro finalizar</string>
+    <string name="dont_ending_payment">No se finalizo</string>
+    <string name="delete_successfull">Eliminado Correctamente</string>
+    <string name="dont_deleted">No se elimino</string>
+    <string name="not_save_differ_installment">No se guardo</string>
+    <string name="product_value">Valor Producto</string>
+    <string name="product_value_reduced">Producto</string>
+    <string name="pending_to_pay">Pendiente por Pagar</string>
+    <string name="pending_to_pay_reduced">Pendiente</string>
+    <string name="capital_value_reduced">Capital</string>
+    <string name="quote_value_reduced">Cuota</string>
+    <string name="interest_value_reduced">Intereses</string>
+    <string name="tax">Inbteres</string>
+    <string name="do_you_want_to_ending_recurrent_payment">¿Desea finalizar este registro?</string>
+    <string name="ending">Finalizar</string>
+    <string name="do_you_want_to_ending_payment">¿Desea finalizar el registro?</string>
+    <string name="message_finish_message">Finalizado</string>
+    <string name="do_you_want_to_restore_this_record">¿Desea resaurar este registro?</string>
+    <string name="restore">Restaurar</string>
+    <string name="update_value_recurrent_paymner">Actualizar</string>
+    <string name="update_value_paymnet">Actualizar</string>
+    <string name="ccio_differ_quotes">Diferir Cuotas</string>
+    <string name="recap_bought_cc">Compra</string>
+    <string name="total_bougth_item">Total</string>
+    <string name="recurrent_item">Recurrente</string>
+    <string name="quote_1_item">Cuota 1</string>
+    <string name="quote_item">Cuota</string>
+    <string name="current_capital_value_short">Capital</string>
+    <string name="quote_capital_value_short">Capital</string>
+    <string name="current_interest_value_short">Interes</string>
+    <string name="quote_interest_value_short">Interes</string>
+    <string name="num_quote_end">#</string>
+    <string name="total_quote_end">Total Fin</string>
+    <string name="num_quote_next_end">#</string>
+    <string name="total_quote_next_end">Total Siguiente</string>
+    <string name="saved">Guardado</string>
+    <string name="email_read_process_completed">Procesos carga datos correo electronico finalizado</string>
+    <string name="settings_credit_card_boughts">Configuración Compras</string>
+    <string name="read_email">Leer Correo Electrónico</string>
+    <string name="simulator">Simulador</string>
+    <string name="description_simulator">Permite realizar simulaciones de cambios de cuotras sin que afecte los registros esto queda en memoria y se eliminan cuando se cambie el boton o se cierre la aplicación</string>
+    <string name="days_sms_read">Dias leer SMS</string>
+    <string name="days_email_read">Dias leer Correo Electrónico</string>
+    <string name="navigate_to_login">android-app://co.com.japl.finanzas.module.app/google_login</string>
+    <string name="no_gmail_permission_error">No tienes permisos para usar esta funcionalidad activala en la interface de inicio de sesion</string>
+    <string name="go_to_login_button">Ir a Inicio de Sesión</string>
+    <string name="change_quotas">Cambiar cuotas</string>
+    <string name="quotas_title">Cuotas</string>
+    <string name="save">Guardar</string>
+    <string name="quotas_update_success">Cuotas actualizadas correctamente</string>
+    <string name="quotas_update_failed">No se logró actualizar las cuotas</string>
+    <string name="advance_value_label">Valor de avance</string>
+    <string name="advance_commission_title">Comisión Avance</string>
+</resources>
