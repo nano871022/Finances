@@ -19,6 +19,11 @@ import androidx.fragment.app.viewModels
 class AccountListFragment : Fragment() {
     private val viewModel: AccountViewModel by viewModels()
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        viewModel.main()
+    }
+
     @RequiresApi(Build.VERSION_CODES.S)
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
