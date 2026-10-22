@@ -81,6 +81,7 @@
     <string name="CREDIT_CARD">Credit Card</string>
     <string name="CASH_ADVANCE">Advance</string>
     <string name="WALLET_BUY">Wallet Purchase</string>
+    <string name="Wallet_BUY">Wallet Purchase</string>
 
     <string name="toast_successful_update">Record updated successfully</string>
     <string name="toast_dont_successful_update">Record not updated</string>
