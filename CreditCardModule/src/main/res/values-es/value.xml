@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="wallet_buy">Compra de Cartera</string>
+    <string name="WALLET_BUY">Compra de Cartera</string>
     <string name="cash_advance">Avance</string>
     <string name="create">Crear</string>
     <string name="update">Actualizar</string>
