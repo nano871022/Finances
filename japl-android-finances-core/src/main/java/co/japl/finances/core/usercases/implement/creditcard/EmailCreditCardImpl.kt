@@ -2,6 +2,7 @@ package co.japl.finances.core.usercases.implement.creditcard
 
 import co.com.japl.finances.iports.dtos.EmailCreditCardDTO
 import co.com.japl.finances.iports.dtos.EmailValidationDTO
+import co.com.japl.finances.iports.enums.KindInterestRateEnum
 import co.com.japl.finances.iports.outbounds.IEmailCreditCardPattern
 import co.com.japl.finances.iports.outbounds.IEmailCreditCardPort
 import co.japl.finances.core.enums.AutoLoadKind
@@ -46,27 +47,39 @@ class EmailCreditCardImpl @Inject constructor(val svc: IEmailCreditCardPort, val
                 val date = validation.date?.let { DateUtils.toLocalDateRegex(it) }
                 val value = validation.value?.toDoubleOrNull()
                 if (date != null && value != null && (date.isAfter(startDate) || date.isEqual(startDate))) {
+                    val dto = getDTO(
+                        value,
+                        date,
+                        emailConfig,
+                        validation
+                    )
                     boughtSmsSvc.createByAutoLoad(
-                        co.com.japl.finances.iports.dtos.CreditCardBoughtDTO(
-                            id = 0,
-                            nameItem = validation.name ?: "",
-                            valueItem = value.toBigDecimal(),
-                            boughtDate = date.atStartOfDay(),
-                            codeCreditCard = emailConfig.codeCreditCard,
-                            kind = emailConfig.kindInterestRateEnum,
-                            endDate = java.time.LocalDateTime.MAX,
-                            cutOutDate = java.time.LocalDateTime.now(),
-                            createDate = java.time.LocalDateTime.now(),
-                            interest = 0.0,
-                            kindOfTax = co.com.japl.finances.iports.enums.KindOfTaxEnum.MONTHLY_EFFECTIVE,
-                            month = 1,
-                            nameCreditCard = "",
-                            recurrent = 0
-                        ),
+                        dto,
                         AutoLoadKind.EMAIL
                     )
                 }
             }
         }
     }
+
+    private fun getDTO(
+        value: Double,
+        date: LocalDate,
+        emailConfig: EmailCreditCardDTO,
+        validation: EmailValidationDTO) = co.com.japl.finances.iports.dtos.CreditCardBoughtDTO(
+        id = 0,
+        nameItem = validation.name ?: "",
+        valueItem = value.toBigDecimal(),
+        boughtDate = date.atStartOfDay(),
+        codeCreditCard = emailConfig.codeCreditCard,
+        kind = emailConfig.kindInterestRateEnum,
+        endDate = java.time.LocalDateTime.MAX,
+        cutOutDate = java.time.LocalDateTime.now(),
+        createDate = java.time.LocalDateTime.now(),
+        interest = 0.0,
+        kindOfTax = co.com.japl.finances.iports.enums.KindOfTaxEnum.MONTHLY_EFFECTIVE,
+        month = 1,
+        nameCreditCard = "",
+        recurrent = 0
+    )
 }

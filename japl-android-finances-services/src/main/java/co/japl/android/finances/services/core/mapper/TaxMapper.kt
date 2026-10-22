@@ -6,7 +6,7 @@ import co.japl.android.finances.services.dto.TaxDTO
 
 object TaxMapper {
 
-    fun mapper(taxDTO: TaxDTO):co.com.japl.finances.iports.dtos.TaxDTO {
+    fun mapper(taxDTO: TaxDTO): co.com.japl.finances.iports.dtos.TaxDTO {
         return co.com.japl.finances.iports.dtos.TaxDTO(
             taxDTO.id,
             taxDTO.month,
@@ -17,11 +17,12 @@ object TaxMapper {
             taxDTO.value,
             KindInterestRateEnum.findByOrdinal(taxDTO.kind),
             taxDTO.period,
-            KindOfTaxEnum.findByValue(taxDTO.kindOfTax)
+            KindOfTaxEnum.findByValue(taxDTO.kindOfTax),
+            taxDTO.cashAdvanceValue
         )
     }
 
-    fun mapper(taxDTO: co.com.japl.finances.iports.dtos.TaxDTO):TaxDTO {
+    fun mapper(taxDTO: co.com.japl.finances.iports.dtos.TaxDTO): TaxDTO {
         return TaxDTO(
             taxDTO.id,
             taxDTO.month,
@@ -32,7 +33,8 @@ object TaxMapper {
             taxDTO.value,
             taxDTO.kind.getCode(),
             taxDTO.period,
-            taxDTO.kindOfTax?.getName()
+            taxDTO.kindOfTax?.getName(),
+            taxDTO.cashAdvanceValue
         )
     }
 }

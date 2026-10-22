@@ -14,13 +14,16 @@ object TaxQuery {
         ${TaxDB.TaxEntry.COLUMN_CREATE_DATE} DATE,
         ${TaxDB.TaxEntry.COLUMN_KIND} SHORT DEFAULT 0,
         ${TaxDB.TaxEntry.COLUMN_PERIOD} SHORT DEFAULT 0,
-        ${TaxDB.TaxEntry.COLUMN_KIND_OF_TAX} TEXT DEFAULT "EM"
+        ${TaxDB.TaxEntry.COLUMN_KIND_OF_TAX} TEXT DEFAULT "EM",
+        ${TaxDB.TaxEntry.COLUMN_CASH_ADVANCE_VALUE} DOUBLE
         )"""
     const val SQL_DELETE_ENTRIES = "DROP TABLE IF EXISTS ${TaxDB.TaxEntry.TABLE_NAME}"
 
     val SQL_ALTER = mapOf(
+        "32" to "ALTER TABLE ${TaxDB.TaxEntry.TABLE_NAME} ADD ${TaxDB.TaxEntry.COLUMN_CASH_ADVANCE_VALUE} DOUBLE",
         "28" to "ALTER TABLE ${TaxDB.TaxEntry.TABLE_NAME} ADD ${TaxDB.TaxEntry.COLUMN_KIND_OF_TAX} TEXT DEFAULT \"EM\"",
         "18" to "ALTER TABLE ${TaxDB.TaxEntry.TABLE_NAME} ADD ${TaxDB.TaxEntry.COLUMN_KIND} SHORT DEFAULT 0",
-                          "17" to "ALTER TABLE ${TaxDB.TaxEntry.TABLE_NAME} ADD ${TaxDB.TaxEntry.COLUMN_PERIOD} SHORT DEFAULT 0;")
+        "17" to "ALTER TABLE ${TaxDB.TaxEntry.TABLE_NAME} ADD ${TaxDB.TaxEntry.COLUMN_PERIOD} SHORT DEFAULT 0;"
+    )
 
 }

@@ -14,5 +14,10 @@ interface ICreditCardSettingPort {
     fun update(dto:CreditCardSettingDTO):Boolean
 
     fun create(dto:CreditCardSettingDTO):Int
+    
+    /**
+     * Fetches the rate setting data for a given month for carry-over logic.
+     */
+    fun getPreviousMonthRateSettings(year: Int, month: Int): List<CreditCardSettingDTO>
 
 }

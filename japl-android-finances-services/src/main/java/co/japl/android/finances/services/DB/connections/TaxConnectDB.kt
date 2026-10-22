@@ -15,6 +15,11 @@ class TaxConnectDB: DBRestore(), IConnectDB{
     override fun onCreate(db: SQLiteDatabase?) {
         Log.i(this.javaClass.name,"<<<=== TaxConnectDB#onCreate - Start")
         db?.execSQL(TaxQuery.SQL_CREATE_ENTRIES)
+        try {
+            db?.execSQL("ALTER TABLE ${TaxDB.TaxEntry.TABLE_NAME} ADD COLUMN ${TaxDB.TaxEntry.COLUMN_CASH_ADVANCE_VALUE} DOUBLE")
+        } catch (e: Exception) {
+            Log.e(this.javaClass.name, "Error adding column cash advance value in onCreate: ${e.message}")
+        }
         Log.i(this.javaClass.name,"<<<=== TaxConnectDB#onCreate - End")
     }
 
@@ -40,7 +45,21 @@ class TaxConnectDB: DBRestore(), IConnectDB{
                 }
             }
         }
+        try {
+            db?.execSQL("ALTER TABLE ${TaxDB.TaxEntry.TABLE_NAME} ADD COLUMN ${TaxDB.TaxEntry.COLUMN_CASH_ADVANCE_VALUE} DOUBLE")
+        } catch (e: Exception) {
+            Log.e(this.javaClass.name, "Error adding column cash advance value in onUpgrade: ${e.message}")
+        }
         Log.i(this.javaClass.name,"<<<=== TaxConnectDB#onUpgrade - End")
+    }
+
+    override fun onOpen(db: SQLiteDatabase?) {
+        super.onOpen(db)
+        try {
+            db?.execSQL("ALTER TABLE ${TaxDB.TaxEntry.TABLE_NAME} ADD COLUMN ${TaxDB.TaxEntry.COLUMN_CASH_ADVANCE_VALUE} DOUBLE")
+        } catch (e: Exception) {
+            // Ignored if column already exists
+        }
     }
 
     override fun onDowngrade(db: SQLiteDatabase?, oldVersion: Int, newVersion: Int) {

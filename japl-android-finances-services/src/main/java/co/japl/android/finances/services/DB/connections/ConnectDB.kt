@@ -13,32 +13,32 @@ class ConnectDB @Inject constructor(context: Context):SQLiteOpenHelper(context,
 
     val list = arrayListOf<IConnectDB>(
         CalculationConnectDB(),
-                CreditCardConnectDB(),
-                CreditCardBoughtConnectDB(),
-                TaxConnectDB(),
-                CreditCardSettingConnectDB(),
-    BuyCreditCardSettingConnectDB(),
-    CreditFixConnectDB(),
-    AdditionalCreditConnectDB(),
-    AddToCapitalConnectDB(),
-    PaidConnectDB(),
-    InputConnectDB(),
-    AccountConnectDB(),
-    ProjectionsDB(),
-    CheckPaymentConnectDB(),
-    CheckQuoteConnectDB(),
-    CheckCreditConnectDB(),
-    DifferInstallmentConnectDB(),
-    GracePeriodConnectDB(),
-    AddValueAmortizationConnectDB(),
-    ExtraValueAmortizationCreditConnectDB(),
-    ExtraValueAmortizationQuoteCreditCardConnectDB(),
-    TagConnectDB(),
-    TagQuoteCreditCardConnectDB(),
-    SmsCreditCardConnectDB(),
-    SmsPaidConnectDB(),
-    EmailCreditCardConnectDB(),
-    EmailPaidConnectDB(),
+        CreditCardConnectDB(),
+        CreditCardBoughtConnectDB(),
+        TaxConnectDB(),
+        CreditCardSettingConnectDB(),
+        BuyCreditCardSettingConnectDB(),
+        CreditFixConnectDB(),
+        AdditionalCreditConnectDB(),
+        AddToCapitalConnectDB(),
+        PaidConnectDB(),
+        InputConnectDB(),
+        AccountConnectDB(),
+        ProjectionsDB(),
+        CheckPaymentConnectDB(),
+        CheckQuoteConnectDB(),
+        CheckCreditConnectDB(),
+        DifferInstallmentConnectDB(),
+        GracePeriodConnectDB(),
+        AddValueAmortizationConnectDB(),
+        ExtraValueAmortizationCreditConnectDB(),
+        ExtraValueAmortizationQuoteCreditCardConnectDB(),
+        TagConnectDB(),
+        TagQuoteCreditCardConnectDB(),
+        SmsCreditCardConnectDB(),
+        SmsPaidConnectDB(),
+        EmailCreditCardConnectDB(),
+        EmailPaidConnectDB(),
         PatrimonyDB(),
         TaxHistoryDB()
     )
@@ -63,6 +63,15 @@ class ConnectDB @Inject constructor(context: Context):SQLiteOpenHelper(context,
             it.onUpgrade(p0, p1, p2)
         }
         Log.i(this.javaClass.name,"<<<=== onUpgrade - End")
+    }
+
+    override fun onOpen(db: SQLiteDatabase?) {
+        super.onOpen(db)
+        Log.i(this.javaClass.name,"<<<=== onOpen - Start")
+        list.forEach {
+            it.onOpen(db)
+        }
+        Log.i(this.javaClass.name, "<<<=== onOpen - End")
     }
 
     override fun onDowngrade(db: SQLiteDatabase?, oldVersion: Int, newVersion: Int) {

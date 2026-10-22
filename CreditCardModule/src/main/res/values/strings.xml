@@ -193,4 +193,6 @@ Messages:
     <string name="save">Guardar</string>
     <string name="quotas_update_success">Cuotas actualizadas correctamente</string>
     <string name="quotas_update_failed">No se logró actualizar las cuotas</string>
+    <string name="advance_value_label">Valor de avance</string>
+    <string name="advance_commission_title">Comisión Avance</string>
 </resources>

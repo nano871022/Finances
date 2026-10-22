@@ -1,8 +1,11 @@
 package co.japl.finances.core.usercases.implement.creditcard
 
+import android.util.Log
+import co.com.japl.finances.iports.dtos.CreditCardBoughtDTO
 import co.com.japl.finances.iports.dtos.EmailValidationDTO
 import co.com.japl.finances.iports.dtos.SMSCreditCard
 import co.com.japl.finances.iports.enums.KindInterestRateEnum
+import co.com.japl.finances.iports.enums.KindOfTaxEnum
 import co.com.japl.finances.iports.inbounds.common.ISMSRead
 import co.com.japl.finances.iports.outbounds.ISMSCreditCardPort
 import co.japl.finances.core.enums.AutoLoadKind
@@ -10,7 +13,10 @@ import co.japl.finances.core.usercases.interfaces.common.ICreditCard
 import co.japl.finances.core.usercases.interfaces.creditcard.ISMSCreditCard
 import co.japl.finances.core.usercases.interfaces.creditcard.bought.lists.IBoughtSms
 import co.japl.finances.core.utils.ExtractItemPatternUtil
+import co.japl.finances.core.utils.DateUtils
+import java.time.LocalDate
 import java.time.LocalDateTime
+import java.time.YearMonth
 import javax.inject.Inject
 
 class SMSCreditCardImpl @Inject constructor(private val svc:ISMSCreditCardPort, private val smsSvc:ISMSRead, private val creditCardSvc: ICreditCard, private val boughtSmsSvc: IBoughtSms): ISMSCreditCard {
@@ -115,28 +121,40 @@ class SMSCreditCardImpl @Inject constructor(private val svc:ISMSCreditCardPort, 
             ).forEach { kind ->
                 svc.getByCreditCardAndKindInterest(ccDto.id, kind).forEach { sms ->
                     getSmsMessages(sms.phoneNumber, sms.pattern, numDaysRead).forEach {
-                        boughtSmsSvc.createByAutoLoad(
-                            co.com.japl.finances.iports.dtos.CreditCardBoughtDTO(
-                                id = 0,
-                                nameItem = it.first,
-                                valueItem = it.second.toBigDecimal(),
-                                boughtDate = it.third,
-                                codeCreditCard = ccDto.id,
-                                kind = kind,
-                                endDate = LocalDateTime.MAX,
-                                cutOutDate = LocalDateTime.now(),
-                                createDate = LocalDateTime.now(),
-                                interest = 0.0,
-                                kindOfTax = co.com.japl.finances.iports.enums.KindOfTaxEnum.MONTHLY_EFFECTIVE,
-                                month = 1,
-                                nameCreditCard = "",
-                                recurrent = 0
-                            ),
-                            AutoLoadKind.SMS
+                        val dto = getDTO(
+                            ccDto.id,
+                            kind,
+                            it.first,
+                            it.second,
+                            it.third
+                        )
+                        boughtSmsSvc.createByAutoLoad(dto,AutoLoadKind.SMS
                         )
                     }
                 }
             }
         }
     }
+
+    private fun getDTO(
+        cdCC:Int,
+        kind: KindInterestRateEnum,
+        item :String,
+        value :Double,
+        boughtDate : LocalDateTime): CreditCardBoughtDTO = CreditCardBoughtDTO(
+        id = 0,
+        nameItem = item,
+        valueItem = value.toBigDecimal(),
+        boughtDate = boughtDate,
+        codeCreditCard = cdCC,
+        kind = kind,
+        endDate = LocalDateTime.MAX,
+        cutOutDate = LocalDateTime.now(),
+        createDate = LocalDateTime.now(),
+        interest = 0.0,
+        kindOfTax = KindOfTaxEnum.MONTHLY_EFFECTIVE,
+        month = 1,
+        nameCreditCard = "",
+        recurrent = 0
+    )
 }

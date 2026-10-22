@@ -13,5 +13,6 @@ data class CreditCardDTO(
     var create:LocalDateTime,
     var status:Boolean,
     var interest1Quote:Boolean,
-    var interest1NotQuote:Boolean
+    var interest1NotQuote:Boolean,
+    var advanceValue:Double? = null
 )

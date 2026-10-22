@@ -14,16 +14,38 @@ class CreditCardSettingConnectDB: DBRestore(), IConnectDB{
     override fun onCreate(db: SQLiteDatabase?) {
         Log.i(this.javaClass.name,"<<<=== CreditCardSetting#onCreate - Start")
         db?.execSQL(CreditCardSettingQuery.SQL_CREATE_ENTRIES)
+        try {
+            db?.execSQL("ALTER TABLE ${CreditCardSettingDB.CreditCardEntry.TABLE_NAME} ADD COLUMN ${CreditCardSettingDB.CreditCardEntry.COLUMN_ADVANCE_VALUE} REAL")
+        } catch (e: Exception) {
+            Log.e(this.javaClass.name, "Error adding column advance value in onCreate: ${e.message}")
+        }
         Log.i(this.javaClass.name,"<<<=== CreditCardSetting#onCreate - End")
     }
 
     override fun onUpgrade(db: SQLiteDatabase?, oldVersion: Int, newVersion: Int) {
         Log.i(this.javaClass.name,"<<<=== CreditCardSetting#onUpgrade - Start $oldVersion - $newVersion")
-        if(oldVersion < DatabaseConstants.DATA_BASE_VERSION_MINUS_SETTING) {
+
+        if(oldVersion < DatabaseConstants.DATA_BASE_VERSION_MINUS) {
             db?.execSQL(CreditCardSettingQuery.SQL_DELETE_ENTRIES)
             onCreate(db)
         }
+        
+        try {
+            db?.execSQL("ALTER TABLE ${CreditCardSettingDB.CreditCardEntry.TABLE_NAME} ADD COLUMN ${CreditCardSettingDB.CreditCardEntry.COLUMN_ADVANCE_VALUE} REAL")
+        } catch (e: Exception) {
+            Log.e(this.javaClass.name, "Error adding column advance value in onUpgrade: ${e.message}")
+        }
+
         Log.i(this.javaClass.name,"<<<=== CreditCardSetting#onUpgrade - End")
+    }
+
+    override fun onOpen(db: SQLiteDatabase?) {
+        super.onOpen(db)
+        try {
+            db?.execSQL("ALTER TABLE ${CreditCardSettingDB.CreditCardEntry.TABLE_NAME} ADD COLUMN ${CreditCardSettingDB.CreditCardEntry.COLUMN_ADVANCE_VALUE} REAL")
+        } catch (e: Exception) {
+            // Ignored if column already exists
+        }
     }
 
     override fun onDowngrade(db: SQLiteDatabase?, oldVersion: Int, newVersion: Int) {

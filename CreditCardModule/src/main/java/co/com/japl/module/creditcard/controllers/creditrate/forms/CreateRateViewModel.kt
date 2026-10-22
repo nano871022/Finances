@@ -50,6 +50,10 @@ class CreateRateViewModel(private val codeCreditCard:Int?, private val codeCredi
     var periodShow = mutableStateOf(false)
 
     var save = false
+    
+    var advanceValue = mutableStateOf("")
+    var advanceValueError = mutableStateOf(false)
+
 
     fun save() {
         validate()
@@ -66,22 +70,22 @@ class CreateRateViewModel(private val codeCreditCard:Int?, private val codeCredi
         }
     }
 
-        private fun create(rate:TaxDTO){
-            if (creditRateSvc?.create(rate)!!) {
-                Toast.makeText(
-                    navCompiler?.context,
-                    R.string.toast_successful_insert,
-                    Toast.LENGTH_SHORT
-                ).show()
-                navCompiler?.navigateUp()
-            } else {
-                Toast.makeText(
-                    navCompiler?.context,
-                    R.string.toast_unsuccessful_insert,
-                    Toast.LENGTH_SHORT
-                ).show()
-            }
+    private fun create(rate:TaxDTO){
+        if (creditRateSvc?.create(rate)!!) {
+            Toast.makeText(
+                navCompiler?.context,
+                R.string.toast_successful_insert,
+                Toast.LENGTH_SHORT
+            ).show()
+            navCompiler?.navigateUp()
+        } else {
+            Toast.makeText(
+                navCompiler?.context,
+                R.string.toast_unsuccessful_insert,
+                Toast.LENGTH_SHORT
+            ).show()
         }
+    }
 
     private fun update(rate:TaxDTO){
         if (creditRateSvc?.update(rate)!!) {
@@ -99,6 +103,7 @@ class CreateRateViewModel(private val codeCreditCard:Int?, private val codeCredi
             ).show()
         }
     }
+
     fun validate(){
        creditCardError.value = creditCard.value.isEmpty()
        creditCardKindError.value = creditCardKind.value.isEmpty()
@@ -106,14 +111,20 @@ class CreateRateViewModel(private val codeCreditCard:Int?, private val codeCredi
        yearError.value = year.value.isEmpty() || !NumbersUtil.isNumber(year.value) || year.value.toInt() <= 2020
        rateError.value = rate.value.isEmpty() || !NumbersUtil.isNumber(rate.value) || rate.value.toDouble() <= 0
        creditRateKindError.value = creditRateKind.value.isEmpty()
-       periodError.value = period.value.isEmpty() || !NumbersUtil.isNumber(period.value) || period.value.toLong() <= 0
-        save = creditCardError.value.not() && creditCardKindError.value.not() && monthError.value.not() && yearError.value.not() && rateError.value.not() && creditRateKindError.value.not()
-        if(periodShow.value){
-            save = save && periodError.value.not()
-        }
+       
+       if (periodShow.value) {
+           advanceValueError.value = advanceValue.value.isNotEmpty() && (!NumbersUtil.isNumber(advanceValue.value) || advanceValue.value.toDouble() < 0.0)
+       } else {
+           advanceValueError.value = false
+           advanceValue.value = ""
+       }
+       
+       save = creditCardError.value.not() && creditCardKindError.value.not() && monthError.value.not() && yearError.value.not() && rateError.value.not() && creditRateKindError.value.not()
+       if(periodShow.value){
+           save = save && periodError.value.not() && advanceValueError.value.not()
+       }
 
        if(save){
-
            _creditRateDto = TaxDTO(
                codCreditCard = creditCard.value.toInt(),
                kind = KindInterestRateEnum.findByOrdinal(creditCardKind.value?.toShort()?:0),
@@ -124,13 +135,11 @@ class CreateRateViewModel(private val codeCreditCard:Int?, private val codeCredi
                period = if(period.value.isNotEmpty())period.value.toShort() else 0.toShort(),
                status = (if(status.value) 1 else 0).toShort(),
                id = _creditRateDto?.id?:0,
-               create = LocalDateTime.now()
+               create = LocalDateTime.now(),
+               cashAdvanceValue = if(periodShow.value && advanceValue.value.isNotEmpty()) advanceValue.value.toDouble() else null
            )
        }
-
     }
-
-
 
     fun main() {
         viewModelScope.launch {
@@ -193,9 +202,10 @@ class CreateRateViewModel(private val codeCreditCard:Int?, private val codeCredi
                         it.kindOfTax?.getName() ?: KindOfTaxEnum.ANUAL_EFFECTIVE.getName()
                     period.value = it.period.toString()
                     status.value = it.status > 0
+                    advanceValue.value = it.cashAdvanceValue?.toString() ?: ""
+                    periodShow.value = creditCardKind.value == KindInterestRateEnum.CASH_ADVANCE.toString() || creditCardKind.value == KindInterestRateEnum.CASH_ADVANCE.getCode().toString()
                 }
             }
         }
     }
-
 }

@@ -30,8 +30,10 @@ class TaxImpl @Inject constructor(override var dbConnect: SQLiteOpenHelper) : IT
                                   TaxDB.TaxEntry.COLUMN_CREATE_DATE,
                                   TaxDB.TaxEntry.COLUMN_KIND,
                                   TaxDB.TaxEntry.COLUMN_PERIOD,
-                                  TaxDB.TaxEntry.COLUMN_KIND_OF_TAX)
-    private val mapper:IMapper<TaxDTO> = TaxMap()
+                                  TaxDB.TaxEntry.COLUMN_KIND_OF_TAX,
+                                  TaxDB.TaxEntry.COLUMN_CASH_ADVANCE_VALUE)
+    private val mapper: IMapper<TaxDTO> = TaxMap()
+
     @RequiresApi(Build.VERSION_CODES.O)
     override fun save(dto: TaxDTO): Long {
         Log.d(this.javaClass.name,"<<<== save - Start")
@@ -41,7 +43,7 @@ class TaxImpl @Inject constructor(override var dbConnect: SQLiteOpenHelper) : IT
             return db?.update(TaxDB.TaxEntry.TABLE_NAME,columns,"${BaseColumns._ID}=?", arrayOf(dto.id.toString()))?.toLong() ?: 0
         }
         return db.insert(TaxDB.TaxEntry.TABLE_NAME,null,columns).also {
-            Log.d(this.javaClass.name,"<<<=== save - resposnse $it $columns End ")
+            Log.d(this.javaClass.name,"<<<=== save - response $it $columns End ")
         }
     }
 
@@ -67,7 +69,7 @@ class TaxImpl @Inject constructor(override var dbConnect: SQLiteOpenHelper) : IT
                 }
             }
             return list
-        }catch(e:SQLiteException){
+        }catch(e: SQLiteException){
             Log.e(this.javaClass.name,e.message,e)
             return list
         }finally {
@@ -104,13 +106,13 @@ class TaxImpl @Inject constructor(override var dbConnect: SQLiteOpenHelper) : IT
     }
 
     @RequiresApi(Build.VERSION_CODES.N)
-    override fun get(codCreditCard:Long,month:Int, year:Int,kind: TaxEnum):Optional<TaxDTO>{
+    override fun get(codCreditCard: Long, month: Int, year: Int, kind: TaxEnum): Optional<TaxDTO>{
             val db = dbConnect.writableDatabase
             db.query(
                 TaxDB.TaxEntry.TABLE_NAME,
                 COLUMNS,
                 " ${TaxDB.TaxEntry.COLUMN_MONTH} = ? and ${TaxDB.TaxEntry.COLUMN_YEAR} = ? and ${TaxDB.TaxEntry.COLUMN_KIND} = ? and ${TaxDB.TaxEntry.COLUMN_COD_CREDIT_CARD} = ?",
-                arrayOf(month.toString(), year.toString(), kind.ordinal.toString(),codCreditCard.toString()),
+                arrayOf(month.toString(), year.toString(), kind.ordinal.toString(), codCreditCard.toString()),
                 null,
                 null,
                 null
@@ -128,8 +130,8 @@ class TaxImpl @Inject constructor(override var dbConnect: SQLiteOpenHelper) : IT
             }
 
             return Optional.empty()
-
     }
+
     @RequiresApi(Build.VERSION_CODES.O)
     override fun backup(pathFile: String) {
         val values = getAll()
@@ -140,7 +142,7 @@ class TaxImpl @Inject constructor(override var dbConnect: SQLiteOpenHelper) : IT
     @RequiresApi(Build.VERSION_CODES.O)
     override fun restoreBackup(pathFile: String) {
         val path = Paths.get(pathFile)
-        val list = Files.newBufferedReader(path, Charset.defaultCharset()).use { Gson().fromJson(it,List::class.java) } as List<TaxDTO>
+        val list = Files.newBufferedReader(path, Charset.defaultCharset()).use { Gson().fromJson(it, List::class.java) } as List<TaxDTO>
         list.forEach(this::save)
     }
 }

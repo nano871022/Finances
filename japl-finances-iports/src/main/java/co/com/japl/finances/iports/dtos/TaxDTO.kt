@@ -5,14 +5,15 @@ import co.com.japl.finances.iports.enums.KindInterestRateEnum
 import java.time.LocalDateTime
 
 data class TaxDTO (
-    var id:Int,
-    var month:Short,
-    var year:Int,
-    var status:Short,
-    var codCreditCard:Int,
-    var create: LocalDateTime,
-    var value: Double,
-    var kind: KindInterestRateEnum,
-    var period: Short,
-    var kindOfTax: KindOfTaxEnum?
-    )
+    var id: Int = 0,
+    var month: Short = 0,
+    var year: Int = 0,
+    var status: Short = 0,
+    var codCreditCard: Int = 0,
+    var create: LocalDateTime = LocalDateTime.now(),
+    var value: Double = 0.0,
+    var kind: KindInterestRateEnum = KindInterestRateEnum.CREDIT_CARD,
+    var period: Short = 0,
+    var kindOfTax: KindOfTaxEnum? = null,
+    var cashAdvanceValue: Double? = null
+)

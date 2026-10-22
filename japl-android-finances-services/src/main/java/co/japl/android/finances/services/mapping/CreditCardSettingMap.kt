@@ -19,6 +19,7 @@ class CreditCardSettingMap {
             put(CreditCardSettingDB.CreditCardEntry.COLUMN_NAME,dto.name)
             put(CreditCardSettingDB.CreditCardEntry.COLUMN_VALUE,dto.value)
             put(CreditCardSettingDB.CreditCardEntry.COLUMN_TYPE,dto.type)
+            put(CreditCardSettingDB.CreditCardEntry.COLUMN_ADVANCE_VALUE,dto.advanceValue)
             put(CreditCardSettingDB.CreditCardEntry.COLUMN_ACTIVE,dto.active)
             put(CreditCardSettingDB.CreditCardEntry.COLUMN_COD_CREDIT_CARD,dto.codeCreditCard)
             put(CreditCardSettingDB.CreditCardEntry.COLUMN_CREATE_DATE,DateUtils.localDateTimeToString(dto.create))
@@ -29,11 +30,12 @@ class CreditCardSettingMap {
     @SuppressLint("Range")
     @RequiresApi(Build.VERSION_CODES.O)
     fun mapping(cursor:Cursor):Optional<CreditCardSettingDTO>{
-        if(cursor.columnCount == 7) {
+        if(cursor.columnCount == 8) {
             val codeCreditCard = cursor.getInt(cursor.getColumnIndex(CreditCardSettingDB.CreditCardEntry.COLUMN_COD_CREDIT_CARD))
             val name = cursor.getString(cursor.getColumnIndex(CreditCardSettingDB.CreditCardEntry.COLUMN_NAME))
             val value = cursor.getString(cursor.getColumnIndex(CreditCardSettingDB.CreditCardEntry.COLUMN_VALUE))
             val type = cursor.getString(cursor.getColumnIndex(CreditCardSettingDB.CreditCardEntry.COLUMN_TYPE))
+            val advanceValue = cursor.getDouble(cursor.getColumnIndex(CreditCardSettingDB.CreditCardEntry.COLUMN_ADVANCE_VALUE))
             val active = cursor.getShort(cursor.getColumnIndex(CreditCardSettingDB.CreditCardEntry.COLUMN_ACTIVE))
             val createDate = DateUtils.toLocalDateTime(cursor.getString(cursor.getColumnIndex(CreditCardSettingDB.CreditCardEntry.COLUMN_CREATE_DATE)))
             val id = cursor.getString(cursor.getColumnIndex(BaseColumns._ID)).toInt()
@@ -43,6 +45,7 @@ class CreditCardSettingMap {
                 name,
                 value,
                 type,
+                advanceValue,
                 createDate,
                 active
             ))

@@ -7,6 +7,7 @@ object CreditCardSettingQuery {
     const val SQL_CREATE_ENTRIES = """CREATE TABLE if not exists ${CreditCardSettingDB.CreditCardEntry.TABLE_NAME}(
         ${BaseColumns._ID} INTEGER PRIMARY KEY,
         ${CreditCardSettingDB.CreditCardEntry.COLUMN_COD_CREDIT_CARD} NUMBER,
+        ${CreditCardSettingDB.CreditCardEntry.COLUMN_ADVANCE_VALUE} REAL,
         ${CreditCardSettingDB.CreditCardEntry.COLUMN_ACTIVE} SHORT DEFAULT 1,
         ${CreditCardSettingDB.CreditCardEntry.COLUMN_CREATE_DATE} DATETIME DEFAULT current_timestamp,
         ${CreditCardSettingDB.CreditCardEntry.COLUMN_NAME} TEXT,

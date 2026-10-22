@@ -189,18 +189,15 @@ class DateUtils {
                 0,
                 0
             )
-            var date = if (start.plusMonths(1).minusDays(1).dayOfMonth < cutOffDay) {
+            var date = (if (start.plusMonths(1).minusDays(1).dayOfMonth < cutOffDay) {
                 start.plusMonths(1)
             } else {
                 cutOff.minusMonths(1)
-            }
+            }).toLocalDate()
 
-            date = when (date.dayOfWeek) {
-                DayOfWeek.SATURDAY -> date.minusDays(1)
-                DayOfWeek.SUNDAY -> date.plusDays(1)
-                else -> date
-            }
-            return date.plusDays(1).also {
+            date = dayOfWeekCheck(date)
+
+            return LocalDateTime.of(date.plusDays(1),cutOff.toLocalTime()).also {
                 Log.d(
                     this::class.java.name,
                     "<<<=== FINISH:startDateFromCutoff Response: $it Month: $month Cutoff Day: $cutOffDay Day: $day CutOff: $cutOff"
@@ -213,16 +210,14 @@ class DateUtils {
 
             val cutOffEndMonth = cutOff.withDayOfMonth(1).minusDays(1)// last day of before month over date provided
             var cutOffResponse = if (cutOffEndMonth.dayOfMonth < cutOffDay) {
-                cutOffEndMonth
+                cutOffEndMonth.toLocalDate()
             } else {
                 cutOff.minusMonths(1)
+                cutOff.toLocalDate()
             }
-            cutOffResponse = when (cutOffResponse.dayOfWeek) {
-                DayOfWeek.SATURDAY -> cutOffResponse.minusDays(1)
-                DayOfWeek.SUNDAY -> cutOffResponse.plusDays(1)
-                else -> cutOffResponse
-            }
-            return cutOffResponse
+            cutOffResponse = dayOfWeekCheck(cutOffResponse)
+
+            return LocalDateTime.of(cutOffResponse,cutOff.toLocalTime())
         }
 
         fun cutOff(cutOffDay: Short,period:YearMonth): LocalDateTime {
@@ -237,11 +232,8 @@ class DateUtils {
             if (month == cutOff.month) {
                 cutOff = cutOff.withDayOfMonth(1).minusDays(1)
             }
-            cutOff = when (cutOff.dayOfWeek) {
-                DayOfWeek.SATURDAY -> cutOff.minusDays(1)
-                DayOfWeek.SUNDAY -> cutOff.plusDays(1)
-                else -> cutOff
-            }
+            cutOff = dayOfWeekCheck(cutOff)
+
             return LocalDateTime.of(cutOff, LocalTime.MAX).also {
                 Log.d(
                     javaClass.name,
@@ -263,11 +255,8 @@ class DateUtils {
             if (month == cutOff.month) {
                 cutOff = cutOff.withDayOfMonth(1).minusDays(1)
             }
-            cutOff = when (cutOff.dayOfWeek) {
-                DayOfWeek.SATURDAY -> cutOff.minusDays(1)
-                DayOfWeek.SUNDAY -> cutOff.plusDays(1)
-                else -> cutOff
-            }
+            cutOff = dayOfWeekCheck(cutOff)
+
             return LocalDateTime.of(cutOff, LocalTime.MAX).also {
                 Log.d(
                     javaClass.name,
@@ -276,6 +265,13 @@ class DateUtils {
             }
         }
 
+        private fun dayOfWeekCheck(cutOff:LocalDate): LocalDate =
+             when (cutOff.dayOfWeek) {
+                DayOfWeek.SATURDAY -> cutOff.minusDays(1)
+                DayOfWeek.SUNDAY -> cutOff.plusDays(1)
+                else -> cutOff
+            }
+
         @RequiresApi(Build.VERSION_CODES.O)
         fun cutOffAddMonth(cutOffDay: Short, cutOff: LocalDateTime, months: Long): LocalDateTime {
             val cutOffEndMonth = cutOff.withDayOfMonth(1).plusMonths(months).minusDays(1)
@@ -283,6 +279,17 @@ class DateUtils {
                 return cutOffEndMonth
             }
             return cutOffEndMonth.withDayOfMonth(cutOffDay.toInt())
+        }
+
+        fun cutOffDate(cutOffDay: Short, boughtDate: LocalDate): LocalDateTime{
+            var cutOffDate = LocalDate.of(boughtDate.year, boughtDate.monthValue, cutOffDay.toInt())
+            Log.d(javaClass.name,"cutOffDate $cutOffDate $boughtDate ${cutOffDate <= boughtDate}")
+            if(cutOffDate <= boughtDate){
+                cutOffDate = cutOffDate.plusMonths(1)
+            }
+            cutOffDate = dayOfWeekCheck(cutOffDate)
+            Log.d(javaClass.name,"cutOffDate $cutOffDate")
+            return LocalDateTime.of(cutOffDate, LocalTime.MAX)
         }
 
         fun isDateValid(value: String): Boolean {

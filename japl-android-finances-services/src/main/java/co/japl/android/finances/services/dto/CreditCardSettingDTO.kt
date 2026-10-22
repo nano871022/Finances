@@ -8,6 +8,7 @@ data class CreditCardSettingDTO (
     var name:String,
     var value: String,
     var type: String,
+    var advanceValue: Double?,
     var create: LocalDateTime,
     var active: Short
     )
@@ -19,6 +20,7 @@ object CreditCardSettingDB{
         const val COLUMN_NAME = "ccs_str_name"
         const val COLUMN_VALUE = "ccs_str_value"
         const val COLUMN_TYPE = "ccs_str_type"
+        const val COLUMN_ADVANCE_VALUE = "ccs_num_advance_value"
         const val COLUMN_CREATE_DATE = "ccs_dt_create"
         const val COLUMN_ACTIVE = "ccs_num_active"
     }

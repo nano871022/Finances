@@ -3,17 +3,18 @@ package co.japl.android.finances.services.dto
 import java.time.LocalDateTime
 
 data class TaxDTO (
-    var id:Int,
-    var month:Short,
-    var year:Int,
-    var status:Short,
-    var codCreditCard:Int,
+    var id: Int,
+    var month: Short,
+    var year: Int,
+    var status: Short,
+    var codCreditCard: Int,
     var create: LocalDateTime,
     var value: Double,
     var kind: Short,
     var period: Short,
-    var kindOfTax: String?
-    )
+    var kindOfTax: String?,
+    var cashAdvanceValue: Double? = null
+)
 
 object TaxDB{
     object TaxEntry{
@@ -27,5 +28,6 @@ object TaxDB{
         const val COLUMN_KIND = "num_kind"
         const val COLUMN_PERIOD = "num_period"
         const val COLUMN_KIND_OF_TAX = "str_kind_of_tax"
+        const val COLUMN_CASH_ADVANCE_VALUE = "num_cash_advance_value"
     }
 }

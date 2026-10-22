@@ -19,7 +19,6 @@ data class CreditCardBoughtItemDTO (
     var recurrent:Boolean,
     var kind:KindInterestRateEnum,
     var kindOfTax:KindOfTaxEnum,
-
     var monthPaid:Long,
     var capitalValue:Double,
     var interestValue:Double,
@@ -27,6 +26,6 @@ data class CreditCardBoughtItemDTO (
     var settingCode:Int,
     var pendingToPay:Double,
     var quoteValue:Double,
-    var tagName:String
-
+    var tagName:String,
+    var advanceValue:Double? = null
 )

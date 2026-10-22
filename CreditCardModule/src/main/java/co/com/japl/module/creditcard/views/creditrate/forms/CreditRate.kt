@@ -37,12 +37,9 @@ import co.com.japl.ui.components.FieldText
 import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.com.japl.ui.theme.values.Dimensions
 import co.com.japl.ui.theme.values.ModifiersCustom.Weight1f
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 
 @Composable
-fun CreditRate(viewModel:CreateRateViewModel){
+fun CreditRate(viewModel: CreateRateViewModel) {
     var statePogress = remember {
         viewModel.loader
     }
@@ -53,17 +50,18 @@ fun CreditRate(viewModel:CreateRateViewModel){
         viewModel.main()
     }
 
-    if(statePogress.value){
+    if (statePogress.value) {
         LinearProgressIndicator(
             progress = { progress.floatValue },
         )
-    }else {
-
+    } else {
         Scaffold(
             floatingActionButton = {
-                FloatingActionButton(onClick = { viewModel.save() },
-                    elevation=FloatingActionButtonDefaults.elevation(10.dp),
-                    backgroundColor= MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.5f)) {
+                FloatingActionButton(
+                    onClick = { viewModel.save() },
+                    elevation = FloatingActionButtonDefaults.elevation(10.dp),
+                    backgroundColor = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.5f)
+                ) {
                     Icon(
                         imageVector = Icons.Rounded.AddCircleOutline,
                         contentDescription = stringResource(id = R.string.add_credit_rate)
@@ -77,82 +75,93 @@ fun CreditRate(viewModel:CreateRateViewModel){
 }
 
 @Composable
-private fun Body(viewModel: CreateRateViewModel,modifier:Modifier){
-    val creditCard = remember { viewModel.creditCard}
-    val creditCardError = remember { viewModel.creditCardError}
-    val kindCreditRate = remember { viewModel.creditCardKind}
-    val kindCreditRateError = remember { viewModel.creditCardKindError}
-    val year = remember { viewModel.year}
-    val yearError = remember { viewModel.yearError}
-    val month = remember { viewModel.month}
-    val monthError = remember { viewModel.monthError}
-    val rate = remember { viewModel.rate}
-    val rateError = remember { viewModel.rateError}
-    val status = remember { viewModel.status}
-    val period = remember { viewModel.period}
-    val periodError = remember { viewModel.periodError}
-    val kindRate = remember { viewModel.creditRateKind}
-    val kindRateError = remember { viewModel.creditRateKindError}
-    val periodShow = remember { viewModel.periodShow}
+private fun Body(viewModel: CreateRateViewModel, modifier: Modifier) {
+    val creditCard = remember { viewModel.creditCard }
+    val creditCardError = remember { viewModel.creditCardError }
+    val kindCreditRate = remember { viewModel.creditCardKind }
+    val kindCreditRateError = remember { viewModel.creditCardKindError }
+    val year = remember { viewModel.year }
+    val yearError = remember { viewModel.yearError }
+    val month = remember { viewModel.month }
+    val monthError = remember { viewModel.monthError }
+    val rate = remember { viewModel.rate }
+    val rateError = remember { viewModel.rateError }
+    val status = remember { viewModel.status }
+    val period = remember { viewModel.period }
+    val periodError = remember { viewModel.periodError }
+    val kindRate = remember { viewModel.creditRateKind }
+    val kindRateError = remember { viewModel.creditRateKindError }
+    val periodShow = remember { viewModel.periodShow }
+    val advanceValue = remember { viewModel.advanceValue }
+    val advanceValueError = remember { viewModel.advanceValueError }
 
-    Column (modifier = modifier.fillMaxWidth()) {
+    Column(modifier = modifier.fillMaxWidth()) {
 
-        FieldSelect(value = viewModel.creditCards.firstOrNull { creditCard.value.isNotEmpty() && it.id == creditCard.value.toInt()}?.name?:"",
-            callable = { creditCard.value =  it?.let{it.first.toString()}?:""}
-            , title = stringResource(id = R.string.credit_card)
-            , list = viewModel.creditCards.map { Pair(it.id,it.name) }
-            , isError = creditCardError
-            , modifier = Modifier
+        FieldSelect(
+            value = viewModel.creditCards.firstOrNull { creditCard.value.isNotEmpty() && it.id == creditCard.value.toInt() }?.name ?: "",
+            callable = { creditCard.value = it?.let { it.first.toString() } ?: "" },
+            title = stringResource(id = R.string.credit_card),
+            list = viewModel.creditCards.map { Pair(it.id, it.name) },
+            isError = creditCardError,
+            modifier = Modifier
                 .fillMaxWidth()
-                .padding(Dimensions.PADDING_SHORT))
+                .padding(Dimensions.PADDING_SHORT)
+        )
 
-       var kindCreditRateV = getKind(value = kindCreditRate.value)
+        var kindCreditRateV = getKind(value = kindCreditRate.value)
         periodShow.value = isCacheAdvance(kindCreditRate.value)
 
-        FieldSelect(value = kindCreditRateV,
+        FieldSelect(
+            value = kindCreditRateV,
             callable = {
-                kindCreditRate.value = it?.let{it.first.toString()}?:""
-                       }
-            , cleanTitle = R.string.clean_kind_credit_rate
-            , title = stringResource(id = R.string.kind_rate)
-            , isError = kindCreditRateError
-            , list = KindInterestRateEnum.values().map { Pair(it.getCode().toInt(), getKind(value = it.name)) }
-            , modifier = Modifier
+                kindCreditRate.value = it?.let { it.first.toString() } ?: ""
+            },
+            cleanTitle = R.string.clean_kind_credit_rate,
+            title = stringResource(id = R.string.kind_rate),
+            isError = kindCreditRateError,
+            list = KindInterestRateEnum.values().map { Pair(it.getCode().toInt(), getKind(value = it.name)) },
+            modifier = Modifier
                 .fillMaxWidth()
-                .padding(Dimensions.PADDING_SHORT))
+                .padding(Dimensions.PADDING_SHORT)
+        )
 
-        FieldText(value = year.value,
-            callback = {year.value = it}
-                , clearTitle = R.string.clean_year
-            , title = stringResource(id = R.string.year),
+        FieldText(
+            value = year.value,
+            callback = { year.value = it },
+            clearTitle = R.string.clean_year,
+            title = stringResource(id = R.string.year),
             keyboardType = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
-             validation = {viewModel.validate()}
-            , hasErrorState = yearError
-
-            , icon = Icons.Rounded.Cancel
-            , modifier = Modifier
+            validation = { viewModel.validate() },
+            hasErrorState = yearError,
+            icon = Icons.Rounded.Cancel,
+            modifier = Modifier
                 .fillMaxWidth()
-                .padding(Dimensions.PADDING_SHORT))
+                .padding(Dimensions.PADDING_SHORT)
+        )
 
-        val months = stringArrayResource(id = R.array.Months).mapIndexed { index, value -> Pair(index,value)}
+        val months = stringArrayResource(id = R.array.Months).mapIndexed { index, value -> Pair(index, value) }
 
-        FieldSelect(value = months.firstOrNull { month.value.isNotEmpty() && it.first == month.value.toInt() }?.second ?:"" ,
+        FieldSelect(
+            value = months.firstOrNull { month.value.isNotEmpty() && it.first == month.value.toInt() }?.second ?: "",
             callable = {
-                    month.value = it?.let{ it.first.toString()} ?: ""
-                       }
-            , title = stringResource(id = R.string.month)
-            , cleanTitle = R.string.clean_month
-            , list = months
-            , isError = monthError
-            , modifier = Modifier
+                month.value = it?.let { it.first.toString() } ?: ""
+            },
+            title = stringResource(id = R.string.month),
+            cleanTitle = R.string.clean_month,
+            list = months,
+            isError = monthError,
+            modifier = Modifier
                 .fillMaxWidth()
-                .padding(Dimensions.PADDING_SHORT))
+                .padding(Dimensions.PADDING_SHORT)
+        )
 
-
-        Row (modifier = Modifier
-            .fillMaxWidth()
-            .padding(Dimensions.PADDING_SHORT)){
-            FieldText(value = rate.value,
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(Dimensions.PADDING_SHORT)
+        ) {
+            FieldText(
+                value = rate.value,
                 callback = { rate.value = it },
                 title = stringResource(id = R.string.credit_rate_),
                 clearTitle = R.string.clear_credit_rate,
@@ -161,65 +170,80 @@ private fun Body(viewModel: CreateRateViewModel,modifier:Modifier){
                 keyboardType = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
                 decimal = true,
                 hasErrorState = rateError.value,
-                modifier = Weight1f().padding(end=Dimensions.PADDING_SHORT))
+                modifier = Weight1f().padding(end = Dimensions.PADDING_SHORT)
+            )
 
-
-            FieldSelect(value = kindRate.value,
-                callable = { kindRate.value = it?.let{it.second} ?: ""},
+            FieldSelect(
+                value = kindRate.value,
+                callable = { kindRate.value = it?.let { it.second } ?: "" },
                 title = stringResource(id = R.string.kind_rate),
                 cleanTitle = R.string.clear_kind_credit_rate,
                 isError = kindRateError,
-                list= KindOfTaxEnum.values().map { Pair(it.ordinal,it.getName()) },
+                list = KindOfTaxEnum.values().map { Pair(it.ordinal, it.getName()) },
                 modifier = Weight1f()
-                    )
+            )
         }
 
-        if(periodShow.value) {
+        if (periodShow.value) {
+            FieldText(
+                value = advanceValue.value,
+                callback = { advanceValue.value = it },
+                title = stringResource(id = R.string.advance_value_label),
+                clearTitle = R.string.advance_value_label,
+                icon = Icons.Rounded.Cancel,
+                keyboardType = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
+                hasErrorState = advanceValueError.value,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(Dimensions.PADDING_SHORT)
+            )
 
-            FieldText(value = period.value,
+            FieldText(
+                value = period.value,
                 callback = { period.value = it },
                 title = stringResource(id = R.string.period),
                 validation = { viewModel.validate() },
                 hasErrorState = periodError,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(Dimensions.PADDING_SHORT))
+                    .padding(Dimensions.PADDING_SHORT)
+            )
         }
 
-        CheckBoxField(value = status.value,
-            callback = {status.value = it}
-            , title = stringResource(id = R.string.status)
-            , modifier = Modifier
+        CheckBoxField(
+            value = status.value,
+            callback = { status.value = it },
+            title = stringResource(id = R.string.status),
+            modifier = Modifier
                 .fillMaxWidth()
-                .padding(Dimensions.PADDING_SHORT))
-
-
+                .padding(Dimensions.PADDING_SHORT)
+        )
     }
-
 }
 
-private fun isCacheAdvance(value:String):Boolean{
+private fun isCacheAdvance(value: String): Boolean {
     return value == KindInterestRateEnum.CASH_ADVANCE.toString() || value == KindInterestRateEnum.CASH_ADVANCE.getCode().toString()
 }
 
 @Composable
-private fun getKind(value:String):String{
-    return when(value){
-        KindInterestRateEnum.CREDIT_CARD.toString()-> stringResource(id = R.string.CREDIT_CARD)
-        KindInterestRateEnum.CASH_ADVANCE.toString()-> stringResource(id =R.string.CASH_ADVANCE)
-        KindInterestRateEnum.WALLET_BUY.toString()-> stringResource(id =R.string.WALLET_BUY)
-        KindInterestRateEnum.CREDIT_CARD.getCode().toString()-> stringResource(id = R.string.CREDIT_CARD)
-        KindInterestRateEnum.CASH_ADVANCE.getCode().toString()-> stringResource(id =R.string.CASH_ADVANCE)
-        KindInterestRateEnum.WALLET_BUY.getCode().toString()-> stringResource(id =R.string.WALLET_BUY)
-        else-> value
+private fun getKind(value: String): String {
+    return when (value) {
+        KindInterestRateEnum.CREDIT_CARD.toString() -> stringResource(id = R.string.CREDIT_CARD)
+        KindInterestRateEnum.CASH_ADVANCE.toString() -> stringResource(id = R.string.CASH_ADVANCE)
+        KindInterestRateEnum.WALLET_BUY.toString() -> stringResource(id = R.string.WALLET_BUY)
+        KindInterestRateEnum.CREDIT_CARD.getCode().toString() -> stringResource(id = R.string.CREDIT_CARD)
+        KindInterestRateEnum.CASH_ADVANCE.getCode().toString() -> stringResource(id = R.string.CASH_ADVANCE)
+        KindInterestRateEnum.WALLET_BUY.getCode().toString() -> stringResource(id = R.string.WALLET_BUY)
+        else -> value
     }
 }
+
 @Suppress("ViewModelConstructorInComposable")
 @RequiresApi(Build.VERSION_CODES.S)
 @Composable
 @Preview(showSystemUi = true, showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
-fun CreditRatePreview(){
-    val viewModel = CreateRateViewModel(null,null,null,null,null)
+fun CreditRatePreview() {
+    val viewModel = CreateRateViewModel(null, null, null, null, null)
     viewModel.loader.value = false
     MaterialThemeComposeUI {
         CreditRate(viewModel)
@@ -230,8 +254,8 @@ fun CreditRatePreview(){
 @RequiresApi(Build.VERSION_CODES.S)
 @Composable
 @Preview(showSystemUi = true, showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
-fun CreditRatePreviewDark(){
-    val viewModel = CreateRateViewModel(null,null,null,null,null)
+fun CreditRatePreviewDark() {
+    val viewModel = CreateRateViewModel(null, null, null, null, null)
     viewModel.loader.value = false
     MaterialThemeComposeUI {
         CreditRate(viewModel)

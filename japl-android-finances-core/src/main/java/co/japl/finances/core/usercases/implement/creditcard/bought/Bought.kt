@@ -1,10 +1,12 @@
 package co.japl.finances.core.usercases.implement.creditcard.bought
 
+import android.util.Log
 import co.com.japl.finances.iports.dtos.CreditCardBoughtDTO
 import co.com.japl.finances.iports.dtos.CreditCardDTO
 import co.com.japl.finances.iports.dtos.RecapCurrentMonthly
 import co.com.japl.finances.iports.dtos.RecapLastMonthly
 import co.com.japl.finances.iports.dtos.RecapMonthly
+import co.com.japl.finances.iports.dtos.TaxDTO
 import co.com.japl.finances.iports.enums.KindInterestRateEnum
 import co.com.japl.finances.iports.enums.KindOfTaxEnum
 import co.com.japl.finances.iports.outbounds.IQuoteCreditCardPort
@@ -13,16 +15,23 @@ import co.japl.finances.core.model.CreditCard
 import co.japl.finances.core.usercases.calculations.InterestCalculations
 import co.japl.finances.core.usercases.calculations.InterestRateCalculation
 import co.japl.finances.core.usercases.calculations.ValuesCalculation
-import co.japl.finances.core.usercases.interfaces.common.ICreditCard
 import co.japl.finances.core.usercases.interfaces.creditcard.ITax
 import co.japl.finances.core.usercases.interfaces.creditcard.bought.lists.IBought
 import co.japl.finances.core.usercases.interfaces.creditcard.bought.lists.IBoughtList
 import co.japl.finances.core.usercases.mapper.CreditCardMap
 import co.japl.finances.core.utils.DateUtils
+import java.math.BigDecimal
 import java.time.LocalDateTime
 import javax.inject.Inject
+import kotlin.collections.emptyList
+import kotlin.compareTo
 
-class Bought @Inject constructor(private val boughtSvc:IQuoteCreditCardPort,private val service:IBoughtList,private val creditRateSvc:ITax, private val interestCalculation:InterestCalculations, private val valuesCalculation:ValuesCalculation):IBought{
+class Bought @Inject constructor(
+        private val boughtSvc:IQuoteCreditCardPort,
+        private val service:IBoughtList,
+        private val creditRateSvc:ITax,
+        private val interestCalculation:InterestCalculations,
+        private val valuesCalculation:ValuesCalculation):IBought{
 
     override fun getRecap(creditCard:CreditCardDTO,cutOffDate:LocalDateTime,cache:Boolean): RecapMonthly {
         return RecapMonthly(current=getCurrentRecap(
@@ -73,8 +82,36 @@ class Bought @Inject constructor(private val boughtSvc:IQuoteCreditCardPort,priv
         }
     }
 
-    override fun create(creditCardBoughtDTO: CreditCardBoughtDTO,cache: Boolean): Int {
-        return boughtSvc.create(creditCardBoughtDTO,cache)
+    override fun create(creditCardBoughtDTO: CreditCardBoughtDTO, cache: Boolean): Int {
+        val id = boughtSvc.create(creditCardBoughtDTO, cache)
+        if (id > 0 && creditCardBoughtDTO.kind == KindInterestRateEnum.CASH_ADVANCE) {
+            commissionAdvance(creditCardBoughtDTO, cache)
+        }
+        return id
+    }
+
+    private fun commissionAdvance(creditCardBoughtDTO: CreditCardBoughtDTO, cache: Boolean) {
+        Log.d(this.javaClass.name, "Comision Advance")
+        val cutOff = creditCardBoughtDTO.cutOutDate 
+
+        val taxDto = creditRateSvc.get(
+            creditCardBoughtDTO.codeCreditCard,
+            cutOff.monthValue,
+            cutOff.year,
+            KindInterestRateEnum.CASH_ADVANCE
+        )
+
+        Log.d(javaClass.name,"Comisison Advance ${cutOff.monthValue} ${cutOff.year} ${taxDto?.month} ${taxDto?.cashAdvanceValue}")
+        taxDto?.cashAdvanceValue?.takeIf { it > 0.0 }?.let { commissionVal ->
+            val commissionDTO = creditCardBoughtDTO.copy(
+                id = 0,
+                nameItem = "Comisión Avance",
+                valueItem = BigDecimal.valueOf(commissionVal),
+                month = 1,
+                interest = 0.0
+            )
+            boughtSvc.create(commissionDTO, cache)
+        }
     }
 
     override fun update(creditCardBoughtDTO: CreditCardBoughtDTO,cache: Boolean): Boolean {

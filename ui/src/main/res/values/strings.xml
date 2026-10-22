@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="no_data">No hay datos</string>
+    <string name="no_data">No data</string>
+    <string name="advance_value_label">Advance Value</string>
+    <string name="advance_commission_title">Advance Commission</string>
 </resources>

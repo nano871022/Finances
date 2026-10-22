@@ -21,6 +21,7 @@ class CreditCardSettingImpl @Inject constructor(override var dbConnect: SQLiteOp
         CreditCardSettingDB.CreditCardEntry.COLUMN_NAME,
         CreditCardSettingDB.CreditCardEntry.COLUMN_VALUE,
         CreditCardSettingDB.CreditCardEntry.COLUMN_TYPE,
+        CreditCardSettingDB.CreditCardEntry.COLUMN_ADVANCE_VALUE,
         CreditCardSettingDB.CreditCardEntry.COLUMN_ACTIVE,
         CreditCardSettingDB.CreditCardEntry.COLUMN_CREATE_DATE)
     private val mapper = CreditCardSettingMap()

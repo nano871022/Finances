@@ -16,7 +16,7 @@ class BoughtSmsImpl @Inject constructor(private val creditRateSvc:ITax, private 
     override fun createByAutoLoad(dto: CreditCardBoughtDTO, kind: AutoLoadKind): Boolean {
         creditCardSvc.get(dto.codeCreditCard)?.let {cc->
             dto.nameCreditCard = cc.name
-            DateUtils.cutOffLastMonth(cc.cutOffDay)?.let{dto.cutOutDate = it}
+            DateUtils.cutOffDate(cc.cutOffDay,dto.boughtDate.toLocalDate()).let{dto.cutOutDate = it}
             creditRateSvc.getLatest(dto.codeCreditCard, dto.kind)?.let {
                 dto.interest = it.value
                 dto.month = if (dto.kind == KindInterestRateEnum.CREDIT_CARD) 1 else it.period.toInt()

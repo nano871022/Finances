@@ -19,5 +19,6 @@ data class CreditCardBoughtDTO (
     var id:Int,
     var recurrent:Short,
     var kind:KindInterestRateEnum,
-    var kindOfTax:KindOfTaxEnum
+    var kindOfTax:KindOfTaxEnum,
+    var advanceValue: Double? = null
 )
