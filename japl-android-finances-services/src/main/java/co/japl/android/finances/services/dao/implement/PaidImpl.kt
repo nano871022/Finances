@@ -116,7 +116,7 @@ class PaidImpl @Inject constructor(override var dbConnect: SQLiteOpenHelper) : I
                 while (moveToNext()) {
                     mapper.mapping(cursor).takeIf {
                         Log.d(javaClass.name, "=== getRecurrent $it")
-                        it.date < date && it.end > date
+                        it.date <= date && it.end >= date
                     }?.let { items.add(it) }
                 }
             }
@@ -132,7 +132,7 @@ class PaidImpl @Inject constructor(override var dbConnect: SQLiteOpenHelper) : I
         db.query(PaidDB.Entry.TABLE_NAME,
             COLUMNS,
             """
-                (${PaidDB.Entry.COLUMN_ACCOUNT} like ? or ${PaidDB.Entry.COLUMN_ACCOUNT} = 0)
+                (${PaidDB.Entry.COLUMN_ACCOUNT} like ? or ${PaidDB.Entry.COLUMN_ACCOUNT} = '0' or ${PaidDB.Entry.COLUMN_ACCOUNT} = 0)
                 AND ${FORMAT_DATE_PAID} between ? and ?
             """.trimMargin(),
             arrayOf("%${codeAccount}%",DateUtils.localDateToStringDate(startPeriod),DateUtils.localDateToStringDate(endPeriod)),
@@ -156,27 +156,24 @@ class PaidImpl @Inject constructor(override var dbConnect: SQLiteOpenHelper) : I
         val cursor = db.query(PaidDB.Entry.TABLE_NAME,
             COLUMNS,
             """
-                ${PaidDB.Entry.COLUMN_ACCOUNT} like ?
+                (${PaidDB.Entry.COLUMN_ACCOUNT} like ? or ${PaidDB.Entry.COLUMN_ACCOUNT} = '0' or ${PaidDB.Entry.COLUMN_ACCOUNT} = 0)
                 AND ${PaidDB.Entry.COLUMN_RECURRENT} = 1
-                AND ${FORMAT_END_DATE} > ?
+                AND ${FORMAT_DATE_PAID} <= ?
+                AND ${FORMAT_END_DATE} >= ?
             """.trimMargin(),
-            arrayOf("%${codeAccount}%",DateUtils.localDateToStringDate(endPeriod)),
+            arrayOf("%${codeAccount}%",DateUtils.localDateToStringDate(endPeriod),DateUtils.localDateToStringDate(startPeriod)),
             null,null,null)
         val items = mutableListOf<PaidDTO>()
         val mapper = PaidMap()
-        with(cursor){
-            while(moveToNext()){
-                mapper.mapping(cursor).takeIf {
-                    it.end >= endPeriod
-                }?.let{
-                    try {
-                        items.add(
-                            it.copy(
-                                date = it.date.withMonth(period.monthValue).withYear(period.year)
-                            )
-                        )
-                    }catch (e:Exception){
-                        items.add(it)
+        cursor?.use {
+            with(it) {
+                while (moveToNext()) {
+                    val dto = mapper.mapping(this)
+                    if (dto.date <= endPeriod && dto.end >= startPeriod) {
+                        val maxDay = period.lengthOfMonth()
+                        val day = dto.date.dayOfMonth.coerceAtMost(maxDay)
+                        val periodDate = LocalDate.of(period.year, period.monthValue, day)
+                        items.add(dto.copy(date = periodDate))
                     }
                 }
             }

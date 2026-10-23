@@ -1,8 +1,6 @@
 package co.com.japl.module.paid.controllers.monthly.list
 
-import android.content.Context
 import android.util.Log
-import android.widget.Toast
 import androidx.compose.runtime.mutableDoubleStateOf
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableIntStateOf
@@ -12,22 +10,16 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import co.com.japl.finances.iports.dtos.AccountDTO
-import co.com.japl.finances.iports.enums.KindInterestRateEnum
-import co.com.japl.finances.iports.inbounds.paid.IPaidPort
 import co.com.japl.finances.iports.inbounds.inputs.IAccountPort
 import co.com.japl.finances.iports.inbounds.inputs.IInputPort
-import co.com.japl.finances.iports.inbounds.paid.IEmailPaidPort
+import co.com.japl.finances.iports.inbounds.paid.IPaidPort
 import co.com.japl.finances.iports.inbounds.paid.ISMSPaidPort
 import co.com.japl.finances.iports.inbounds.paid.ISmsPort
 import co.com.japl.module.paid.navigations.Paid
 import co.com.japl.module.paid.navigations.Paids
 import co.com.japl.module.paid.navigations.Period
-import co.com.japl.module.paid.R
 import co.com.japl.ui.Prefs
-import co.com.japl.ui.utils.DateUtils
-import co.com.japl.ui.utils.NumbersUtil
 import kotlinx.coroutines.Dispatchers
-
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.time.YearMonth
@@ -88,13 +80,13 @@ class MonthlyViewModel(private val period:YearMonth, private val paidSvc: IPaidP
 
     fun main() {
         viewModelScope.launch {
-            progressStatus.value = 0.0f
+            progressStatus.floatValue = 0.0f
             execute()
-            progressStatus.value = 0.6f
+            progressStatus.floatValue = 0.6f
             readSms()
-            progressStatus.value = 0.8f
+            progressStatus.floatValue = 0.8f
 
-            progressStatus.value = 1.0f
+            progressStatus.floatValue = 1.0f
         }
     }
 
@@ -114,9 +106,40 @@ class MonthlyViewModel(private val period:YearMonth, private val paidSvc: IPaidP
                 activeList.takeIf { it.isNotEmpty() && it.size == 1 }?.let {
                     accountState.value = it.first()
                 }
-                progressStatus.value = 0.3f
+                progressStatus.floatValue = 0.3f
             }
         }
+
+        loadAccountData()
+        loaderState.value = false
+    }
+
+    fun selectAccount(accountId: Int) {
+        viewModelScope.launch {
+            loaderState.value = true
+            progressStatus.floatValue = 0.0f
+            _accounts?.firstOrNull { it.id == accountId }?.let {
+                accountState.value = it
+                loadAccountData()
+            }
+            progressStatus.floatValue = 1.0f
+            loaderState.value = false
+        }
+    }
+
+    fun clearAccount() {
+        accountState.value = null
+        countState.intValue = 0
+        paidTotalState.doubleValue = 0.0
+        incomesTotalState.doubleValue = 0.0
+        listGraph.clear()
+    }
+
+    private suspend fun loadAccountData() {
+        listGraph.clear()
+        countState.intValue = 0
+        paidTotalState.doubleValue = 0.0
+        incomesTotalState.doubleValue = 0.0
 
         accountState.value?.let { account ->
             paidSvc?.let { svc ->
@@ -125,14 +148,16 @@ class MonthlyViewModel(private val period:YearMonth, private val paidSvc: IPaidP
                         svc.getRecap(codeAccount = account.id, period = _period)
                     }
                     recap?.let {
-                        countState.value = it.count
-                        paidTotalState.value = it.totalPaid
+                        countState.intValue = it.count
+                        paidTotalState.doubleValue = it.totalPaid
 
-                        progressStatus.value = 0.6f
+                        progressStatus.floatValue = 0.6f
                     }
                     withContext(Dispatchers.IO) {
                         svc.getListGraph(codeAccount = account.id, period = _period)
-                    }.takeIf { it.isNotEmpty() }?.forEach(listGraph::add)
+                    }.takeIf { it.isNotEmpty() }?.let {
+                        listGraph.addAll(it)
+                    }
                 }
 
             }
@@ -142,14 +167,12 @@ class MonthlyViewModel(private val period:YearMonth, private val paidSvc: IPaidP
                         svc.getTotalInputs(account.id, _period)
                     }
                     total?.let {
-                        incomesTotalState.value = it
-                        progressStatus.value = 0.7f
+                        incomesTotalState.doubleValue = it
+                        progressStatus.floatValue = 0.7f
                     }
                 }
             }
-
         }
-        loaderState.value = false
     }
 
     suspend fun readSms() {

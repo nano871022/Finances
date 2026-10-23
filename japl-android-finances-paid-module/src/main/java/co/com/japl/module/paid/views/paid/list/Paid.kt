@@ -74,10 +74,12 @@ fun Paid(viewModel:PaidViewModel) {
     }
 
     if(loaderState.value){
-        LinearProgressIndicator(
-            progress = { progressState.value },
-            modifier = Modifier.fillMaxWidth(),
-        )
+        Column(modifier = Modifier.fillMaxWidth()) {
+            LinearProgressIndicator(
+                progress = { progressState.value },
+                modifier = Modifier.fillMaxWidth(),
+            )
+        }
     }else{
         Body(viewModel)
     }

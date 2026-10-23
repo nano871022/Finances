@@ -39,7 +39,7 @@ class AmortizationViewModel @Inject constructor(
 	fun execute() = viewModelScope.launch{
 		try {
 			withContext(Dispatchers.IO) {
-				svc?.getAmortization(id, KindAmortization.VARIABLE_QUOTE_SIMULATOR, false)
+				svc?.getAmortization(id, KindAmortization.VARIABLE_QUOTE_SIMULATOR, true)
 			}?.let {
 				Log.d(javaClass.simpleName,"Org: ${list.size} New: ${it.size}")
 				list.clear()

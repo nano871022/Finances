@@ -14,13 +14,9 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.CalendarMonth
 import androidx.compose.material.icons.rounded.RemoveRedEye
-import androidx.compose.material.icons.rounded.Settings
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
@@ -36,21 +32,18 @@ import co.com.japl.ui.components.FieldView
 import co.com.japl.ui.components.FloatButton
 import co.com.japl.ui.components.HelpWikiButton
 import co.com.japl.ui.components.PiecePieGraph
-import co.com.japl.ui.components.FieldText
 import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.com.japl.ui.theme.values.Dimensions
 import co.com.japl.ui.utils.NumbersUtil
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.YearMonth
 
 @Composable
 fun Monthly(viewModel:MonthlyViewModel) {
     val loaderState = remember {
-        viewModel.loaderState   }
-    remember {
+        viewModel.loaderState
+    }
+    val progress = remember {
         viewModel.progressStatus
     }
 
@@ -59,8 +52,12 @@ fun Monthly(viewModel:MonthlyViewModel) {
     }
 
     if(loaderState.value){
-        LinearProgressIndicator(modifier = Modifier.fillMaxWidth(),
-        )
+        Column(modifier = Modifier.fillMaxWidth()) {
+            LinearProgressIndicator(
+                progress = { progress.floatValue },
+                modifier = Modifier.fillMaxWidth(),
+            )
+        }
     }else{
         Body(viewModel)
     }
@@ -71,10 +68,11 @@ fun Monthly(viewModel:MonthlyViewModel) {
 @Composable
 private fun Body(viewModel: MonthlyViewModel){
     val accountList = remember {
-viewModel.accountList
+        viewModel.accountList
     }
     val accountState = remember {
-        viewModel.accountState    }
+        viewModel.accountState
+    }
 
     val listGraph = remember {
         viewModel.listGraph
@@ -103,11 +101,8 @@ viewModel.accountList
                     modifier = Modifier.padding(bottom = Dimensions.PADDING_SHORT).weight(1f),
                     callAble = { pair ->
                         pair?.let {
-                            viewModel.listAccount?.first { it.id == pair.first }?.let {
-                                accountState.value = it
-                                viewModel.loaderState.value = true
-                            }
-                        } ?: accountState?.let { it.value = null }
+                            viewModel.selectAccount(it.first)
+                        } ?: viewModel.clearAccount()
                     })
 
                 HelpWikiButton(wikiUrl = R.string.wiki_paid_url, descriptionContent = R.string.wiki_paid_description)
@@ -166,13 +161,13 @@ private fun Accounts(viewModel: MonthlyViewModel) {
                 .padding(end = Dimensions.PADDING_SHORT))
 
         FieldView(name = stringResource(id = R.string.count),
-            value = countState.value.toString(),
+            value = countState.intValue.toString(),
             isMoney=false,
             modifier = Modifier.weight(1f))
 
     }
     FieldView(name = stringResource(id = R.string.paid_total),
-        value = NumbersUtil.toString(paidTotalState.value),
+        value = NumbersUtil.toString(paidTotalState.doubleValue),
 
         modifier = Modifier
             .fillMaxWidth()
@@ -183,14 +178,14 @@ private fun Accounts(viewModel: MonthlyViewModel) {
     ){
 
         FieldView(name = stringResource(id = R.string.incomes_total),
-            value = NumbersUtil.toString(incomesTotalState.value),
+            value = NumbersUtil.toString(incomesTotalState.doubleValue),
             modifier = Modifier
                 .weight(1f)
                 .padding(end = Dimensions.PADDING_SHORT))
 
         FieldView(name = stringResource(id = R.string.incomes_less_paids),
-            value = NumbersUtil.toString(incomesTotalState.value - paidTotalState.value),
-            color = if((incomesTotalState.value - paidTotalState.value) > 0) MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.error
+            value = NumbersUtil.toString(incomesTotalState.doubleValue - paidTotalState.doubleValue),
+            color = if((incomesTotalState.doubleValue - paidTotalState.doubleValue) > 0) MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.error
             , modifier = Modifier.weight(1f))
     }
 }
@@ -223,8 +218,8 @@ private fun getViewModel():MonthlyViewModel{
     viewModel.loaderState.value = false
     viewModel.accountState.value = AccountDTO(id = 0, name = "Cuenta", active = true, create = LocalDate.now())
     viewModel.periodState.value = "Enero 2022"
-    viewModel.countState.value = 1
-    viewModel.incomesTotalState.value = 1000.0
-    viewModel.paidTotalState.value = 1000.0
+    viewModel.countState.intValue = 1
+    viewModel.incomesTotalState.doubleValue = 1000.0
+    viewModel.paidTotalState.doubleValue = 1000.0
     return viewModel
 }

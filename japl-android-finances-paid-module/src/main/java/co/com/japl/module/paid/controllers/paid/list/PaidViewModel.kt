@@ -75,15 +75,17 @@ class PaidViewModel @AssistedInject constructor(@Assisted private val accountCod
 
     fun delete(id:Int) {
         viewModelScope.launch {
+            loaderState.value = true
             val result = withContext(Dispatchers.IO) {
                 paidSvc?.delete(id) ?: false
             }
             if(result){
                 navController?.let{
                     Toast.makeText(it.context, R.string.toast_successful_deleted,Toast.LENGTH_LONG).show()
-                        .also { loaderState.value = true }
                 }
+                execute()
             }else{
+                loaderState.value = false
                 navController?.let{
                     Toast.makeText(it.context, R.string.toast_unsuccessful_deleted,Toast.LENGTH_LONG).show()
                 }
@@ -99,14 +101,15 @@ class PaidViewModel @AssistedInject constructor(@Assisted private val accountCod
 
     fun endRecurrent(id:Int){
         viewModelScope.launch {
+            loaderState.value = true
             val result = withContext(Dispatchers.IO) {
                 paidSvc?.endRecurrent(id) ?: false
             }
             if(result){
-                        navController?.let{ Toast.makeText(it.context, R.string.toast_successful_end_recurrent,Toast.LENGTH_LONG).show().also {
-                            loaderState.value = true
-                        }}
+                navController?.let{ Toast.makeText(it.context, R.string.toast_successful_end_recurrent,Toast.LENGTH_LONG).show() }
+                execute()
             }else{
+                loaderState.value = false
                 navController?.let{ Toast.makeText(it.context, R.string.toast_unsuccessful_end_recurrent,Toast.LENGTH_LONG).show() }
             }
         }
@@ -114,14 +117,15 @@ class PaidViewModel @AssistedInject constructor(@Assisted private val accountCod
 
     fun copy(id:Int){
         viewModelScope.launch {
+            loaderState.value = true
             val result = withContext(Dispatchers.IO) {
                 paidSvc?.copy(id) ?: false
             }
             if(result){
-                navController?.let{ Toast.makeText(it.context, R.string.toast_successful_copy,Toast.LENGTH_LONG).show().also {
-                    loaderState.value = true
-                }}
+                navController?.let{ Toast.makeText(it.context, R.string.toast_successful_copy,Toast.LENGTH_LONG).show() }
+                execute()
             }else{
+                loaderState.value = false
                 navController?.let{ Toast.makeText(it.context, R.string.toast_unsuccessful_copy,Toast.LENGTH_LONG).show() }
             }
         }
@@ -130,11 +134,15 @@ class PaidViewModel @AssistedInject constructor(@Assisted private val accountCod
     fun readEmail(context: Context){
         if (!hasActiveEmail()) return
         settingState.value = false
-        viewModelScope.launch(Dispatchers.IO) {
-            readEmail()
+        viewModelScope.launch {
+            loaderState.value = true
+            withContext(Dispatchers.IO) {
+                readEmail()
+            }
             withContext(Dispatchers.Main) {
                 Toast.makeText(context, R.string.email_read_process_completed, Toast.LENGTH_SHORT).show()
             }
+            execute()
         }
     }
 
@@ -209,16 +217,21 @@ class PaidViewModel @AssistedInject constructor(@Assisted private val accountCod
     suspend fun execute() {
         try {
             paidSvc?.let { svcPort ->
-                withContext(Dispatchers.IO) {
+                val fetched = withContext(Dispatchers.IO) {
                     svcPort.get(accountCode, period)
-                }.takeIf { it.isNotEmpty() }?.let {
-                    list.clear()
-                    progressStatus.value = 0.3f
-
-                    list.putAll(it.sortedByDescending { dto -> dto.datePaid }.groupBy { dto -> YearMonth.of(dto.datePaid.year, dto.datePaid.monthValue) })
-                    progressStatus.value = 0.5f
-                    it.sumOf { dto -> dto.itemValue }.let { sum -> allValues.value = sum }
-                    progressStatus.value = 0.8f
+                }
+                list.clear()
+                if (fetched.isNotEmpty()) {
+                    progressStatus.floatValue = 0.3f
+                    list.putAll(
+                        fetched.sortedByDescending { dto -> dto.datePaid }
+                            .groupBy { dto -> YearMonth.of(dto.datePaid.year, dto.datePaid.monthValue) }
+                    )
+                    progressStatus.floatValue = 0.5f
+                    allValues.value = fetched.sumOf { dto -> dto.itemValue }
+                    progressStatus.floatValue = 0.8f
+                } else {
+                    allValues.value = 0.0
                 }
             }
         } catch (e: Exception) {
