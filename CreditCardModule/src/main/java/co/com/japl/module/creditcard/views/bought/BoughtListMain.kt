@@ -52,8 +52,10 @@ fun BoughtListMain(listBoughtViewModel: ListBoughtViewModel,settingVM:SettingsVi
     val isLoad = remember {  listBoughtViewModel.isLoad }
     val progress = remember { listBoughtViewModel.progress }
 
-    LaunchedEffect(Unit) {
-        listBoughtViewModel.main()
+    LaunchedEffect(isLoad.value) {
+        if (isLoad.value.not()) {
+            listBoughtViewModel.main()
+        }
     }
 
     if (isLoad.value.not()) {
@@ -112,7 +114,8 @@ private fun ListBought(listBoughtViewModel:ListBoughtViewModel,loader:MutableSta
                 loader = loader,
                 colorPendingValue = Color(0xFFFFA500),
                 boughtCCSvc = listBoughtViewModel.boughtListSvc,
-                simulatorSvc = listBoughtViewModel.simulatorSvc
+                simulatorSvc = listBoughtViewModel.simulatorSvc,
+                onRefresh = { listBoughtViewModel.refresh() }
             )
 
 

@@ -58,9 +58,6 @@ class MainActivity : AppCompatActivity(){
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayShowTitleEnabled(false)
         setupActionBarWithNavController(navController,appBarConfiguration)
-        if(isTablet()) {
-            drawLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_OPEN)
-        }
         checkAndRequestSmsPermissions()
 
         subscriberSMS()

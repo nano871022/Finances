@@ -17,8 +17,8 @@ android {
         applicationId "co.japl.android.myapplication"
         minSdk 26
         targetSdk 37
-        versionCode 4_09_06_203
-        versionName "V 4.09.06 build 203 Update change quote UI"
+        versionCode 4_09_07_204
+        versionName "V 4.09.04 build 204 Fix issues with interface"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }

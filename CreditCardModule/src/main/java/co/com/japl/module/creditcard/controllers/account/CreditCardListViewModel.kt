@@ -49,6 +49,7 @@ class CreditCardListViewModel @Inject constructor(private val creditCardSvc:ICre
         creditCardSvc?.let{
             if(it.delete(id)){
                 Toast.makeText(navController?.context, R.string.toast_successful_deleted,Toast.LENGTH_LONG).show()
+                refresh()
             }else{
                 Toast.makeText(navController?.context, R.string.toast_dont_successful_deleted,Toast.LENGTH_LONG).show()
             }
@@ -74,5 +75,11 @@ class CreditCardListViewModel @Inject constructor(private val creditCardSvc:ICre
             showProgress.value = false
         }
         progress.floatValue = 0.8f
+    }
+
+    fun refresh() {
+        viewModelScope.launch {
+            execute()
+        }
     }
 }

@@ -48,7 +48,7 @@ import java.time.LocalDateTime
 import java.time.YearMonth
 
 @Composable
-fun BoughList(data: BoughtCreditCard, prefs:Prefs, loader:MutableState<Boolean>, colorPendingValue:Color = Color.Unspecified, boughtCCSvc: IBoughtListPort,simulatorSvc: ISimulatorCreditVariablePort){
+fun BoughList(data: BoughtCreditCard, prefs:Prefs, loader:MutableState<Boolean>, colorPendingValue:Color = Color.Unspecified, boughtCCSvc: IBoughtListPort,simulatorSvc: ISimulatorCreditVariablePort, onRefresh: () -> Unit = {}){
 
     val map = data.group.entries.groupBy { it.key.year }
 
@@ -68,7 +68,8 @@ fun BoughList(data: BoughtCreditCard, prefs:Prefs, loader:MutableState<Boolean>,
                     loader = loader,
                     colorPendingValue = colorPendingValue,
                     boughtCCSvc = boughtCCSvc,
-                    simulatorSvc = simulatorSvc
+                    simulatorSvc = simulatorSvc,
+                    onRefresh = onRefresh
                 )
             }
         }
@@ -81,7 +82,7 @@ fun BoughList(data: BoughtCreditCard, prefs:Prefs, loader:MutableState<Boolean>,
 }
 
 @Composable
-private fun YearlyBoughtCreditCard(year:Int, list:List<Map.Entry<YearMonth,List<CreditCardBoughtItemDTO>>>, creditCard:CreditCardDTO, differQuotes:List<DifferInstallmentDTO>, cutOff:LocalDateTime, prefs:Prefs, loader: MutableState<Boolean>, colorPendingValue:Color = Color.Unspecified, boughtCCSvc: IBoughtListPort,simulatorSvc: ISimulatorCreditVariablePort) {
+private fun YearlyBoughtCreditCard(year:Int, list:List<Map.Entry<YearMonth,List<CreditCardBoughtItemDTO>>>, creditCard:CreditCardDTO, differQuotes:List<DifferInstallmentDTO>, cutOff:LocalDateTime, prefs:Prefs, loader: MutableState<Boolean>, colorPendingValue:Color = Color.Unspecified, boughtCCSvc: IBoughtListPort,simulatorSvc: ISimulatorCreditVariablePort, onRefresh: () -> Unit = {}) {
 
 
     Surface(onClick={
@@ -115,7 +116,8 @@ private fun YearlyBoughtCreditCard(year:Int, list:List<Map.Entry<YearMonth,List<
                     loader,
                     colorPendingValue,
                     boughtCCSvc = boughtCCSvc,
-                    simulatorSvc = simulatorSvc
+                    simulatorSvc = simulatorSvc,
+                    onRefresh = onRefresh
                 )
             }
 
@@ -124,7 +126,7 @@ private fun YearlyBoughtCreditCard(year:Int, list:List<Map.Entry<YearMonth,List<
     }
 }
 @Composable
-private fun MonthlyBoughtCreditCard(key:YearMonth,list:List<CreditCardBoughtItemDTO>,creditCard:CreditCardDTO,differQuotes:List<DifferInstallmentDTO>,cutOff:LocalDateTime,prefs:Prefs ,loader: MutableState<Boolean>, colorPendingValue:Color = Color.Unspecified, boughtCCSvc: IBoughtListPort,simulatorSvc: ISimulatorCreditVariablePort) {
+private fun MonthlyBoughtCreditCard(key:YearMonth,list:List<CreditCardBoughtItemDTO>,creditCard:CreditCardDTO,differQuotes:List<DifferInstallmentDTO>,cutOff:LocalDateTime,prefs:Prefs ,loader: MutableState<Boolean>, colorPendingValue:Color = Color.Unspecified, boughtCCSvc: IBoughtListPort,simulatorSvc: ISimulatorCreditVariablePort, onRefresh: () -> Unit = {}) {
     val monthlyState = remember {
         BoughtMonthlyListViewModel(key
             ,list
@@ -152,7 +154,8 @@ private fun MonthlyBoughtCreditCard(key:YearMonth,list:List<CreditCardBoughtItem
                         loader = loader,
                         colorPendingValue = colorPendingValue,
                         boughtCCSvc = boughtCCSvc,
-                        simulatorSvc = simulatorSvc
+                        simulatorSvc = simulatorSvc,
+                        onRefresh = onRefresh
                     )
                 }
             }
