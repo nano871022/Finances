@@ -52,8 +52,10 @@ fun BoughtListMain(listBoughtViewModel: ListBoughtViewModel,settingVM:SettingsVi
     val isLoad = remember {  listBoughtViewModel.isLoad }
     val progress = remember { listBoughtViewModel.progress }
 
-    LaunchedEffect(Unit) {
-        listBoughtViewModel.main()
+    LaunchedEffect(isLoad.value) {
+        if (isLoad.value.not()) {
+            listBoughtViewModel.main()
+        }
     }
 
     if (isLoad.value.not()) {

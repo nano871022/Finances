@@ -224,102 +224,157 @@ class BoughtViewModel(
     }
 
     private fun endingDialog(){
-        if (boughtCreditCardSvc.endingRecurrentPayment(bought.id, bought.cutOutDate)) {
-            Snackbar.make(
-                view,
-                R.string.ending_recurrent_payment_successfull,
-                Snackbar.LENGTH_LONG
-            )
-                .setAction(R.string.close) {}
-                .show().also { loader.value = false }
-
-        } else {
+        try {
+            loader.value = false
+            if (boughtCreditCardSvc.endingRecurrentPayment(bought.id, bought.cutOutDate)) {
+                Snackbar.make(
+                    view,
+                    R.string.ending_recurrent_payment_successfull,
+                    Snackbar.LENGTH_LONG
+                )
+                    .setAction(R.string.close) {}
+                    .show()
+            } else {
+                Snackbar.make(
+                    view,
+                    R.string.dont_ending_recurrent_payment,
+                    Snackbar.LENGTH_LONG
+                )
+                    .setAction(R.string.close, null).show()
+            }
+        } catch (e: Exception) {
             Snackbar.make(
                 view,
                 R.string.dont_ending_recurrent_payment,
                 Snackbar.LENGTH_LONG
             )
                 .setAction(R.string.close, null).show()
+        } finally {
+            loader.value = true
         }
     }
 
     private fun endingDialog(value:String){
-        if (boughtCreditCardSvc.endingPayment(bought.id, value, bought.cutOutDate)) {
-            Snackbar.make(
-                view,
-                R.string.ending_recurrent_payment_successfull,
-                Snackbar.LENGTH_LONG
-            )
-                .setAction(R.string.close) {}
-                .show().also { loader.value = false }
-
-        } else {
+        try {
+            loader.value = false
+            if (boughtCreditCardSvc.endingPayment(bought.id, value, bought.cutOutDate)) {
+                Snackbar.make(
+                    view,
+                    R.string.ending_recurrent_payment_successfull,
+                    Snackbar.LENGTH_LONG
+                )
+                    .setAction(R.string.close) {}
+                    .show()
+            } else {
+                Snackbar.make(
+                    view,
+                    R.string.dont_ending_payment,
+                    Snackbar.LENGTH_LONG
+                )
+                    .setAction(R.string.close, null).show()
+            }
+        } catch (e: Exception) {
             Snackbar.make(
                 view,
                 R.string.dont_ending_payment,
                 Snackbar.LENGTH_LONG
             )
                 .setAction(R.string.close, null).show()
+        } finally {
+            loader.value = true
         }
     }
 
     private fun updateRecurrentValueDialog(value:Double){
-        if (boughtCreditCardSvc.updateRecurrentValue(bought.id, value,_cutOff,cache.value)) {
-            Snackbar.make(
-                view,
-                R.string.ending_recurrent_payment_successfull,
-                Snackbar.LENGTH_LONG
-            )
-                .setAction(R.string.close) {}
-                .show().also { loader.value = false }
-        } else {
+        try {
+            loader.value = false
+            if (boughtCreditCardSvc.updateRecurrentValue(bought.id, value,_cutOff,cache.value)) {
+                Snackbar.make(
+                    view,
+                    R.string.ending_recurrent_payment_successfull,
+                    Snackbar.LENGTH_LONG
+                )
+                    .setAction(R.string.close) {}
+                    .show()
+            } else {
+                Snackbar.make(
+                    view,
+                    R.string.dont_ending_recurrent_payment,
+                    Snackbar.LENGTH_LONG
+                )
+                    .setAction(R.string.close, null).show()
+            }
+        } catch (e: Exception) {
             Snackbar.make(
                 view,
                 R.string.dont_ending_recurrent_payment,
                 Snackbar.LENGTH_LONG
             )
                 .setAction(R.string.close, null).show()
+        } finally {
+            loader.value = true
         }
     }
 
     private fun deleteDialog(){
-        if (boughtCreditCardSvc.delete(bought.id,cache.value)) {
-            Snackbar.make(
-                view,
-                R.string.delete_successfull,
-                Snackbar.LENGTH_LONG
-            )
-                .setAction(R.string.close) {}
-                .show().also {
-                    loader.value = false
-                }
-        } else {
+        try {
+            loader.value = false
+            if (boughtCreditCardSvc.delete(bought.id,cache.value)) {
+                Snackbar.make(
+                    view,
+                    R.string.delete_successfull,
+                    Snackbar.LENGTH_LONG
+                )
+                    .setAction(R.string.close) {}
+                    .show()
+            } else {
+                Snackbar.make(
+                    view,
+                    R.string.dont_deleted,
+                    Snackbar.LENGTH_LONG
+                )
+                    .setAction(R.string.close, null).show()
+            }
+        } catch (e: Exception) {
             Snackbar.make(
                 view,
                 R.string.dont_deleted,
                 Snackbar.LENGTH_LONG
             )
                 .setAction(R.string.close, null).show()
+        } finally {
+            loader.value = true
         }
     }
 
     private fun differntInstallmentDialog(value:Long){
-        if(boughtCreditCardSvc.differntInstallment(bought.id, value,_cutOff,cache.value)){
-            Snackbar.make(
-                view,
-                R.string.save_differ_installment,
-                Snackbar.LENGTH_LONG
-            )
-                .setAction(R.string.close) {}
-                .show().also { loader.value = false }
-        } else {
+        try {
+            loader.value = false
+            if(boughtCreditCardSvc.differntInstallment(bought.id, value,_cutOff,cache.value)){
+                Snackbar.make(
+                    view,
+                    R.string.save_differ_installment,
+                    Snackbar.LENGTH_LONG
+                )
+                    .setAction(R.string.close) {}
+                    .show()
+            } else {
+                Snackbar.make(
+                    view,
+                    R.string.not_save_differ_installment,
+                    Snackbar.LENGTH_LONG
+                )
+                    .setAction(R.string.close, null).show()
+            }
+        } catch (e: Exception) {
             Snackbar.make(
                 view,
                 R.string.not_save_differ_installment,
                 Snackbar.LENGTH_LONG
             )
                 .setAction(R.string.close, null).show()
-
+        } finally {
+            loader.value = true
         }
     }
 

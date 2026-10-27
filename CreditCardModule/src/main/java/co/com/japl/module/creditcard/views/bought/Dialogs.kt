@@ -36,15 +36,16 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.text.input.KeyboardType
 import co.com.japl.module.creditcard.enums.MoreOptionsItemsCreditCard
 import co.com.japl.ui.components.AlertDialogInputValue
 import co.com.japl.module.creditcard.R
 
 import co.com.japl.ui.components.AlertDialogOkCancel
+import co.com.japl.ui.components.FieldEditValue
 import co.com.japl.ui.components.FieldView
 import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.com.japl.ui.utils.NumbersUtil
@@ -99,12 +100,13 @@ fun MoreOptionsDialog(valueToPay:Double,isRecurrent:Boolean, creditRate:Double, 
         }
         stateUpdateDialog.value -> {
             UpdateValueDialog(
+                value = valueToPay,
                 onDismiss = {
                     stateUpdateDialog.value = false
                     onDismiss.invoke()
                 },
                 onClick = {
-                    onClick.invoke(MoreOptionsItemsCreditCard.UPDATE_VALUE,it,"")
+                    onClick.invoke(MoreOptionsItemsCreditCard.UPDATE_VALUE, it, "")
                     stateUpdateDialog.value = false
                     onDismiss.invoke()
                 }
@@ -193,27 +195,49 @@ fun MoreOptionsDialog(valueToPay:Double,isRecurrent:Boolean, creditRate:Double, 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun UpdateValueDialog(onDismiss: () -> Unit, onClick: (Double) -> Unit) {
-    var text by remember { mutableDoubleStateOf(0.0) }
-    AlertDialog(
-        onDismissRequest = onDismiss){
-        Surface{
-            Column(modifier = Modifier.fillMaxWidth()
-                , horizontalAlignment = Alignment.CenterHorizontally) {
-                Text(text = stringResource(id = R.string.update_value_recurrent_paymner), modifier = Modifier.padding(5.dp), fontSize = 18.sp)
+private fun UpdateValueDialog(value: Double, onDismiss: () -> Unit, onClick: (Double) -> Unit) {
+    val initialString = NumbersUtil.toString(value)
+    var text by remember { mutableStateOf(initialString) }
+
+    Dialog(onDismissRequest = onDismiss) {
+        Surface {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(
+                    text = stringResource(id = R.string.update_value_recurrent_paymner),
+                    modifier = Modifier.padding(5.dp),
+                    fontSize = 18.sp
+                )
                 HorizontalDivider()
-                TextField(value = NumbersUtil.toString(text)
-                    , onValueChange = { text = NumbersUtil.toDouble(it) }
-                    , label = { Text(text = stringResource(id = R.string.value)) }
-                    , prefix = { Text(text = "$") })
-
-                Row{
+                Spacer(modifier = Modifier.height(10.dp))
+                FieldEditValue(
+                    initialValue = initialString,
+                    title = stringResource(id = R.string.value),
+                    modifier = Modifier.fillMaxWidth(),
+                    onValueChange = { text = it }
+                )
+                Spacer(modifier = Modifier.height(10.dp))
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.End
+                ) {
                     TextButton(onClick = { onDismiss.invoke() }) {
-                        Text(text = stringResource(id = R.string.cancel),color= MaterialTheme.colorScheme.onSurface) }
+                        Text(text = stringResource(id = R.string.cancel), color = MaterialTheme.colorScheme.onSurface)
+                    }
 
-                    TextButton(onClick = { onClick.invoke(text) }) {
-                        Text(text = stringResource(id = R.string.update_value_paymnet),color= MaterialTheme.colorScheme.onSurface)
-
+                    TextButton(onClick = {
+                        val finalValue = if (text.isNotBlank()) {
+                            NumbersUtil.toDouble(text)
+                        } else {
+                            value
+                        }
+                        onClick.invoke(finalValue)
+                    }) {
+                        Text(text = stringResource(id = R.string.update_value_paymnet), color = MaterialTheme.colorScheme.onSurface)
                     }
                 }
             }
