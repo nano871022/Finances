@@ -116,9 +116,10 @@ fun MoreOptionsDialog(valueToPay:Double,isRecurrent:Boolean, creditRate:Double, 
         stateDifferDialog.value -> {
             DifferInstallmentDialog(
                 value = valueToPay,
-                creditRate = creditRate
-                , onDismiss = {  stateDifferDialog.value = false}
-                , onClick = {
+                creditRate = creditRate,
+                initialQuotas = currentQuotas,
+                onDismiss = {  stateDifferDialog.value = false},
+                onClick = {
                     onClick.invoke( MoreOptionsItemsCreditCard.DIFFER_INSTALLMENT, it.toDouble(),"")
                     stateDifferDialog.value = false
                     onDismiss.invoke()
@@ -247,14 +248,15 @@ private fun UpdateValueDialog(value: Double, onDismiss: () -> Unit, onClick: (Do
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun DifferInstallmentDialog(value:Double,creditRate: Double,onDismiss: () -> Unit, onClick: (Long) -> Unit) {
-    val stateInstallment = remember { mutableStateOf("") }
-    val newValueInstallment = remember { mutableDoubleStateOf(0.0) }
-    val interest = remember {mutableDoubleStateOf(0.0)}
+private fun DifferInstallmentDialog(value:Double,creditRate: Double, initialQuotas: Int, onDismiss: () -> Unit, onClick: (Long) -> Unit) {
+    val stateInstallment = remember { mutableStateOf(initialQuotas.toString()) }
+    val initialCapital = if (initialQuotas > 0) value / initialQuotas else 0.0
+    val newValueInstallment = remember { mutableDoubleStateOf(initialCapital) }
+    val interest = remember {mutableDoubleStateOf(value * creditRate)}
     Dialog(onDismissRequest = onDismiss) {
         Surface {
             Column(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth().padding(16.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
@@ -262,66 +264,55 @@ private fun DifferInstallmentDialog(value:Double,creditRate: Double,onDismiss: (
                     modifier = Modifier.padding(5.dp),
                     fontSize = 18.sp
                 )
-
+                HorizontalDivider()
+                Spacer(modifier = Modifier.height(10.dp))
                 FieldView(
                     name = R.string.pending_to_pay,
                     value = NumbersUtil.toString(value),
-                    modifier = Modifier.defaultMinSize(
-                        minWidth = TextFieldDefaults.MinWidth,
-                        minHeight = TextFieldDefaults.MinHeight
-                    )
+                    modifier = Modifier.fillMaxWidth().padding(bottom = 5.dp)
                 )
 
-                TextField(value = stateInstallment.value.toString(),
-                    onValueChange = {
-                        stateInstallment.value = it
-                        newValueInstallment.doubleValue = value / NumbersUtil.toDouble(it)
-                        interest.doubleValue = value * creditRate
-                    },
-                    placeholder = { Text(text = "0") },
-                    label = { Text(text = stringResource(id = R.string.periods)) },
+                FieldEditValue(
+                    initialValue = initialQuotas.toString(),
+                    title = stringResource(id = R.string.periods),
+                    modifier = Modifier.fillMaxWidth(),
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                    trailingIcon = {
-                        IconButton(onClick = {
-                            stateInstallment.value = ""
-                        }) {
-                            Icon(
-                                imageVector = Icons.Rounded.Cancel,
-                                contentDescription = stringResource(id = R.string.cancel)
-                            )
+                    prefix = null,
+                    onValueChange = { input ->
+                        stateInstallment.value = input
+                        val num = NumbersUtil.toDouble(input)
+                        if (num > 0.0) {
+                            newValueInstallment.doubleValue = value / num
+                            interest.doubleValue = value * creditRate
+                        } else {
+                            newValueInstallment.doubleValue = 0.0
+                            interest.doubleValue = 0.0
                         }
                     }
-
                 )
-
+                Spacer(modifier = Modifier.height(5.dp))
                 FieldView(
                     name = R.string.capital_quotes,
                     value = NumbersUtil.toString(newValueInstallment.doubleValue),
-                    modifier = Modifier.defaultMinSize(
-                        minWidth = TextFieldDefaults.MinWidth,
-                        minHeight = TextFieldDefaults.MinHeight
-                    )
+                    modifier = Modifier.fillMaxWidth().padding(vertical = 5.dp)
                 )
 
                 FieldView(
                     name = R.string.interest_value,
                     value = NumbersUtil.toString(interest.doubleValue),
-                    modifier = Modifier.defaultMinSize(
-                        minWidth = TextFieldDefaults.MinWidth,
-                        minHeight = TextFieldDefaults.MinHeight
-                    )
+                    modifier = Modifier.fillMaxWidth().padding(vertical = 5.dp)
                 )
 
                 FieldView(
                     name = R.string.total_quote,
                     value = NumbersUtil.toString(newValueInstallment.doubleValue + interest.doubleValue),
-                    modifier = Modifier.defaultMinSize(
-                        minWidth = TextFieldDefaults.MinWidth,
-                        minHeight = TextFieldDefaults.MinHeight
-                    )
+                    modifier = Modifier.fillMaxWidth().padding(vertical = 5.dp)
                 )
-
-                Row {
+                Spacer(modifier = Modifier.height(10.dp))
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.End
+                ) {
                     TextButton(onClick = { onDismiss.invoke() }) {
                         Text(
                             text = stringResource(id = R.string.cancel),
@@ -441,7 +432,7 @@ private fun ChangeQuotasDialog(initialQuotas: Int,
 @Preview(showSystemUi = true, showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
 private fun DifferInstallmentDialogPreview(){
     MaterialThemeComposeUI {
-        DifferInstallmentDialog(100.0,0.0,{},{})
+        DifferInstallmentDialog(100.0,0.0, 12, {},{})
     }
 }
 @RequiresApi(Build.VERSION_CODES.S)
@@ -449,7 +440,7 @@ private fun DifferInstallmentDialogPreview(){
 @Preview(showSystemUi = true, showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
 private fun DifferInstallmentDialogPreviewDark(){
     MaterialThemeComposeUI {
-        DifferInstallmentDialog(100.0,0.0,{},{})
+        DifferInstallmentDialog(100.0,0.0, 12, {},{})
     }
 }
 

@@ -111,19 +111,15 @@ class BoughtList @Inject constructor(
             val creditCard = creditCardSvc.get(it.codeCreditCard)
             val dayOfMonth:Short = creditCard?.cutOffDay ?:it.cutOutDate.dayOfMonth.toShort()
             val months = DateUtils.getMonths(it.boughtDate,cutOff)
-            val date = if(it.boughtDate.dayOfMonth <= dayOfMonth){
-                DateUtils.withDayOfMonth(LocalDateTime.now(),it.boughtDate.dayOfMonth)
-            }else{
-                DateUtils.withDayOfMonth(LocalDateTime.now(),dayOfMonth.toInt()).minusDays(2)
-            }
-            val differBought =  it.copy(month = (value).toInt()
+            val totalMonths = months.toInt() + value.toInt()
+            val differBought =  it.copy(month = totalMonths
                 , createDate = LocalDateTime.now()
-                , endDate =  DateUtils.cutOffAddMonth(dayOfMonth, cutOff, value)
-                , boughtDate =  date
+                , endDate =  DateUtils.cutOffAddMonth(dayOfMonth, cutOff, totalMonths.toLong())
+                , boughtDate =  it.boughtDate
                 , valueItem = (it.valueItem.toDouble() - ((it.valueItem.toDouble() / it.month) * months)).toBigDecimal()
                 , nameItem = it.nameItem.plus(" (${it.id}. ${it.valueItem.toDouble()})")
                 , id = 0)
-            val origin = it.copy(endDate = DateUtils.cutOffLastMonth(dayOfMonth,cutOff))
+            val origin = it.copy(endDate = DateUtils.startDateFromCutoff(dayOfMonth, cutOff).minusDays(2))
             Log.d("differinstallmentquote","$differBought $origin")
             return quoteCCSvc.create(differBought,cache).takeIf { response->response > 0}?.let{id->
                     if(quoteCCSvc.update(origin,cache)){

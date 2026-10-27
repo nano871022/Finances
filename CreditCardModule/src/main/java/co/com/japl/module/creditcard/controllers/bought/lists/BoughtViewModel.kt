@@ -43,6 +43,7 @@ class BoughtViewModel(
     private lateinit var _cutOff:LocalDateTime
     private lateinit var navController: NavController
     private lateinit var view: View
+    private var onRefresh: (() -> Unit)? = null
     val bought:CreditCardBoughtItemDTO get() = _bought
 
     fun setCutOff(cutOff:LocalDateTime):BoughtViewModel {
@@ -61,6 +62,11 @@ class BoughtViewModel(
                 this.navController = it
             }
         }
+        return this
+    }
+
+    fun setOnRefresh(callback: () -> Unit): BoughtViewModel {
+        this.onRefresh = callback
         return this
     }
 
@@ -105,7 +111,7 @@ class BoughtViewModel(
                 )
                     .setAction(R.string.close) {}
                     .show()
-                loader.value = true
+                onRefresh?.invoke()
             } else {
                 Snackbar.make(
                     view,
@@ -113,6 +119,7 @@ class BoughtViewModel(
                     Snackbar.LENGTH_LONG
                 )
                     .setAction(R.string.close, null).show()
+                loader.value = true
             }
         } catch (e: Exception) {
             Snackbar.make(
@@ -121,48 +128,59 @@ class BoughtViewModel(
                 Snackbar.LENGTH_LONG
             )
                 .setAction(R.string.close, null).show()
-        } finally {
-            if (loader.value == false) {
-                loader.value = true
-            }
+            loader.value = true
         }
     }
 
     private fun restoreDialog(){
-        if(bought.id > 0 && boughtCreditCardSvc.restore(bought.id,cache.value)){
-            Snackbar.make(
-                view,
-                R.string.ending_recurrent_restore_payment_successfull,
-                Snackbar.LENGTH_LONG
-            )
-                .setAction(R.string.close) {}
-                .show().also { loader.value = false }
-        }else{
-            Snackbar.make(
-                view,
-                R.string.dont_restore_payment_successfull,
-                Snackbar.LENGTH_LONG
-            )
-                .setAction(R.string.close, null).show()
+        try {
+            loader.value = false
+            if(bought.id > 0 && boughtCreditCardSvc.restore(bought.id,cache.value)){
+                Snackbar.make(
+                    view,
+                    R.string.ending_recurrent_restore_payment_successfull,
+                    Snackbar.LENGTH_LONG
+                )
+                    .setAction(R.string.close) {}
+                    .show()
+                onRefresh?.invoke()
+            }else{
+                Snackbar.make(
+                    view,
+                    R.string.dont_restore_payment_successfull,
+                    Snackbar.LENGTH_LONG
+                )
+                    .setAction(R.string.close, null).show()
+                loader.value = true
+            }
+        } catch (e: Exception) {
+            loader.value = true
         }
     }
 
     private fun clone(){
-        if(bought.id > 0 && boughtCreditCardSvc.clone(bought.id,cache.value)){
-            Snackbar.make(
-                view,
-                R.string.ending_recurrent_copy_payment_successfull,
-                Snackbar.LENGTH_LONG
-            )
-                .setAction(R.string.close) {}
-                .show().also { loader.value = false }
-        }else{
-            Snackbar.make(
-                view,
-                R.string.dont_copy_payment_successfull,
-                Snackbar.LENGTH_LONG
-            )
-                .setAction(R.string.close, null).show()
+        try {
+            loader.value = false
+            if(bought.id > 0 && boughtCreditCardSvc.clone(bought.id,cache.value)){
+                Snackbar.make(
+                    view,
+                    R.string.ending_recurrent_copy_payment_successfull,
+                    Snackbar.LENGTH_LONG
+                )
+                    .setAction(R.string.close) {}
+                    .show()
+                onRefresh?.invoke()
+            }else{
+                Snackbar.make(
+                    view,
+                    R.string.dont_copy_payment_successfull,
+                    Snackbar.LENGTH_LONG
+                )
+                    .setAction(R.string.close, null).show()
+                loader.value = true
+            }
+        } catch (e: Exception) {
+            loader.value = true
         }
     }
 
@@ -234,6 +252,7 @@ class BoughtViewModel(
                 )
                     .setAction(R.string.close) {}
                     .show()
+                onRefresh?.invoke()
             } else {
                 Snackbar.make(
                     view,
@@ -241,6 +260,7 @@ class BoughtViewModel(
                     Snackbar.LENGTH_LONG
                 )
                     .setAction(R.string.close, null).show()
+                loader.value = true
             }
         } catch (e: Exception) {
             Snackbar.make(
@@ -249,7 +269,6 @@ class BoughtViewModel(
                 Snackbar.LENGTH_LONG
             )
                 .setAction(R.string.close, null).show()
-        } finally {
             loader.value = true
         }
     }
@@ -265,6 +284,7 @@ class BoughtViewModel(
                 )
                     .setAction(R.string.close) {}
                     .show()
+                onRefresh?.invoke()
             } else {
                 Snackbar.make(
                     view,
@@ -272,6 +292,7 @@ class BoughtViewModel(
                     Snackbar.LENGTH_LONG
                 )
                     .setAction(R.string.close, null).show()
+                loader.value = true
             }
         } catch (e: Exception) {
             Snackbar.make(
@@ -280,7 +301,6 @@ class BoughtViewModel(
                 Snackbar.LENGTH_LONG
             )
                 .setAction(R.string.close, null).show()
-        } finally {
             loader.value = true
         }
     }
@@ -296,6 +316,7 @@ class BoughtViewModel(
                 )
                     .setAction(R.string.close) {}
                     .show()
+                onRefresh?.invoke()
             } else {
                 Snackbar.make(
                     view,
@@ -303,6 +324,7 @@ class BoughtViewModel(
                     Snackbar.LENGTH_LONG
                 )
                     .setAction(R.string.close, null).show()
+                loader.value = true
             }
         } catch (e: Exception) {
             Snackbar.make(
@@ -311,7 +333,6 @@ class BoughtViewModel(
                 Snackbar.LENGTH_LONG
             )
                 .setAction(R.string.close, null).show()
-        } finally {
             loader.value = true
         }
     }
@@ -327,6 +348,7 @@ class BoughtViewModel(
                 )
                     .setAction(R.string.close) {}
                     .show()
+                onRefresh?.invoke()
             } else {
                 Snackbar.make(
                     view,
@@ -334,6 +356,7 @@ class BoughtViewModel(
                     Snackbar.LENGTH_LONG
                 )
                     .setAction(R.string.close, null).show()
+                loader.value = true
             }
         } catch (e: Exception) {
             Snackbar.make(
@@ -342,7 +365,6 @@ class BoughtViewModel(
                 Snackbar.LENGTH_LONG
             )
                 .setAction(R.string.close, null).show()
-        } finally {
             loader.value = true
         }
     }
@@ -358,6 +380,7 @@ class BoughtViewModel(
                 )
                     .setAction(R.string.close) {}
                     .show()
+                onRefresh?.invoke()
             } else {
                 Snackbar.make(
                     view,
@@ -365,6 +388,7 @@ class BoughtViewModel(
                     Snackbar.LENGTH_LONG
                 )
                     .setAction(R.string.close, null).show()
+                loader.value = true
             }
         } catch (e: Exception) {
             Snackbar.make(
@@ -373,7 +397,6 @@ class BoughtViewModel(
                 Snackbar.LENGTH_LONG
             )
                 .setAction(R.string.close, null).show()
-        } finally {
             loader.value = true
         }
     }
@@ -404,15 +427,13 @@ class BoughtViewModel(
         }
 
         if(bought.recurrent ){
-            items = items.filter{ it != MoreOptionsItemsCreditCard.DIFFER_INSTALLMENT}.toTypedArray()
+            items = items.filter{ it != MoreOptionsItemsCreditCard.DIFFER_INSTALLMENT }.toTypedArray()
         }
-
-        if(!Regex("\\(\\d+\\. [\\d\\.]+\\)").containsMatchIn(bought.nameItem)){
-            items = items.filter { it != MoreOptionsItemsCreditCard.RESTORE}.toTypedArray()
+        if(!Regex("\\([0-9]+\\. [0-9]+\\.[0-9]+\\)").containsMatchIn(bought.nameItem)){
+            items = items.filter{ it != MoreOptionsItemsCreditCard.RESTORE }.toTypedArray()
         }
-        if((months > 1 && !bought.recurrent && bought.kind == KindInterestRateEnum.CREDIT_CARD) ||
-            (bought.kind != KindInterestRateEnum.CREDIT_CARD)){
-            items = items.filter { it != MoreOptionsItemsCreditCard.CHANGE_QUOTAS}.toTypedArray()
+        if((months > 1 && !bought.recurrent && bought.kind == KindInterestRateEnum.CREDIT_CARD) || (bought.kind != KindInterestRateEnum.CREDIT_CARD)){
+            items = items.filter{ it != MoreOptionsItemsCreditCard.CHANGE_QUOTAS }.toTypedArray()
         }
         return items.toList()
     }

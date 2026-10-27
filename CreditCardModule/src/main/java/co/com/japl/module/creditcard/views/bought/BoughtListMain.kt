@@ -114,7 +114,8 @@ private fun ListBought(listBoughtViewModel:ListBoughtViewModel,loader:MutableSta
                 loader = loader,
                 colorPendingValue = Color(0xFFFFA500),
                 boughtCCSvc = listBoughtViewModel.boughtListSvc,
-                simulatorSvc = listBoughtViewModel.simulatorSvc
+                simulatorSvc = listBoughtViewModel.simulatorSvc,
+                onRefresh = { listBoughtViewModel.refresh() }
             )
 
 

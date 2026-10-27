@@ -4,6 +4,7 @@ import android.app.Application
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import co.com.japl.finances.iports.enums.KindInterestRateEnum
 import co.com.japl.finances.iports.inbounds.common.IDifferQuotesPort
@@ -16,6 +17,7 @@ import co.com.japl.module.creditcard.params.CashAdvanceParams
 import co.com.japl.module.creditcard.params.CreditCardQuotesParams
 import co.com.japl.ui.Prefs
 import co.japl.android.myapplication.pojo.CreditCard
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import java.time.LocalDateTime
 import java.time.YearMonth
@@ -72,6 +74,13 @@ class ListBoughtViewModel @Inject constructor(
 
     fun main() = runBlocking {
         getQuotes()
+    }
+
+    fun refresh() {
+        viewModelScope.launch {
+            isLoad.value = false
+            getQuotes()
+        }
     }
 
     suspend fun getQuotes(){
