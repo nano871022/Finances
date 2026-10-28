@@ -6,6 +6,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
+import co.com.japl.finances.iports.dtos.CreditCardBoughtItemDTO
 import co.com.japl.finances.iports.enums.KindInterestRateEnum
 import co.com.japl.finances.iports.inbounds.common.IDifferQuotesPort
 import co.com.japl.finances.iports.inbounds.creditcard.ICreditCardPort
@@ -13,10 +14,10 @@ import co.com.japl.finances.iports.inbounds.creditcard.ISimulatorCreditVariableP
 import co.com.japl.finances.iports.inbounds.creditcard.ITaxPort
 import co.com.japl.finances.iports.inbounds.creditcard.bought.lists.IBoughtListPort
 import co.com.japl.finances.iports.pojo.BoughtCreditCard
+import co.japl.android.myapplication.pojo.CreditCard
 import co.com.japl.module.creditcard.params.CashAdvanceParams
 import co.com.japl.module.creditcard.params.CreditCardQuotesParams
 import co.com.japl.ui.Prefs
-import co.japl.android.myapplication.pojo.CreditCard
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import java.time.LocalDateTime
@@ -39,6 +40,9 @@ class ListBoughtViewModel @Inject constructor(
     val creditCard = mutableStateOf(false)
     private lateinit var _boughtCreditCard: BoughtCreditCard
     val boughtCreditCard get() = _boughtCreditCard
+
+    private lateinit var originalGroup: Map<YearMonth, List<CreditCardBoughtItemDTO>>
+    val searchQuery = mutableStateOf("")
 
     private lateinit var _params: Triple<Int, LocalDateTime, Short>
     private lateinit var _creditCard: CreditCard
@@ -83,6 +87,33 @@ class ListBoughtViewModel @Inject constructor(
         }
     }
 
+    fun onSearchQueryChange(query: String) {
+        searchQuery.value = query
+        applyFilter()
+    }
+
+    private fun applyFilter() {
+        if (!::originalGroup.isInitialized) return
+        val query = searchQuery.value.trim().lowercase()
+        val group = if (query.isBlank()) {
+            originalGroup
+        } else {
+            originalGroup.mapValues { (_, items) ->
+                items.filter {
+                    it.nameItem.lowercase().contains(query) ||
+                            it.nameCreditCard.lowercase().contains(query)
+                }
+            }.filterValues { it.isNotEmpty() }
+        }
+        _boughtCreditCard = BoughtCreditCard(
+            _boughtCreditCard.recap,
+            group,
+            _boughtCreditCard.creditCard,
+            _boughtCreditCard.differQuotes,
+            _boughtCreditCard.cutOff
+        )
+    }
+
     suspend fun getQuotes(){
         progress.floatValue = 0.1f
         taxSvc.get(_params.first,_params.second.monthValue,_params.second.year,
@@ -101,15 +132,15 @@ class ListBoughtViewModel @Inject constructor(
         progress.floatValue = 0.5f
         val bought = boughtListSvc.getBoughtList(creditCardDto!!,_creditCard.cutOff.get(),cache.value)
         progress.floatValue = 0.8f
-        val group = bought.list.takeIf { it.isNotEmpty() }
+        originalGroup = bought.list.takeIf { it.isNotEmpty() }
             ?.sortedByDescending { it.boughtDate }
             ?.groupBy {
                 YearMonth.from(it.boughtDate)
         }?: emptyMap()
-        progress.floatValue = 0.9f
+        searchQuery.value = ""
         _boughtCreditCard= BoughtCreditCard(
             bought.recap,
-            group,
+            originalGroup,
             creditCardDto,
             differ,
             cutOff = _creditCard.cutOff.get()

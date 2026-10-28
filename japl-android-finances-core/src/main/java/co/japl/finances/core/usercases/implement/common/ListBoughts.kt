@@ -86,7 +86,7 @@ class ListBoughts @Inject constructor(
             }
             NAME_DIFFER_RECHECK.toRegex().find(dto.nameItem)?.let{
                 quoteCCSvc.get(it.groupValues[1].toInt(),false)?.let{
-                    monthDifer = DateUtils.getMonths(it.boughtDate,boughtDateDiffer!!)
+                    monthDifer = DateUtils.getMonths(it.boughtDate,boughtDateDiffer ?: dto.boughtDate)
                     originDate = it.boughtDate
                     DateUtils.getMonths(it.boughtDate,cutoff)?.let{
                         if ( it == "1".toLong() ) {
