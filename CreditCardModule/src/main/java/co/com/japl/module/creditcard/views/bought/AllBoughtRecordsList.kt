@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.IconToggleButton
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Card
@@ -129,11 +130,26 @@ fun AllBoughtRecordsList(viewModel: AllBoughtRecordsViewModel, initialExpanded: 
 
             Spacer(modifier = Modifier.height(8.dp))
 
-            Text(
-                text = "${stringResource(id = R.string.total_records)}: ${filteredList.size}",
-                style = MaterialTheme.typography.labelMedium,
-                modifier = Modifier.padding(bottom = 4.dp, start = 4.dp)
-            )
+            Row {
+
+                Text(
+                    text = "${stringResource(id = R.string.total_records)}: ${filteredList.size}",
+                    style = MaterialTheme.typography.labelMedium,
+                    color = MaterialTheme.colorScheme.onPrimary,
+                    modifier = Modifier.weight(1f).padding(bottom = 4.dp, start = 4.dp)
+                )
+
+                Text(
+                    text = "${
+                        NumbersUtil.COPtoString(
+                            filteredList.toList().sumOf { it.valueItem })
+                    }",
+                    style = MaterialTheme.typography.labelMedium,
+                    color = MaterialTheme.colorScheme.onPrimary,
+                    textAlign = TextAlign.End,
+                    modifier = Modifier.weight(1f).padding(bottom = 4.dp, start = 4.dp)
+                )
+            }
 
             val groupedByYear = remember(filteredList) {
                 filteredList.sortedByDescending { it.boughtDate }
