@@ -23,6 +23,7 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.YearMonth
+import java.util.Date
 import javax.inject.Inject
 
 class BoughtList @Inject constructor(
@@ -112,26 +113,35 @@ class BoughtList @Inject constructor(
             val creditCard = creditCardSvc.get(it.codeCreditCard)
             val dayOfMonth:Short = creditCard?.cutOffDay ?:it.cutOutDate.dayOfMonth.toShort()
             val months = DateUtils.getMonths(it.boughtDate,cutOff)
-            val totalMonths = months.toInt() + value.toInt()
-            val differBought =  it.copy(month = totalMonths
+            val date = getBoughtDateByDiffer(dayOfMonth, it.boughtDate)
+            val differBought =  it.copy(
+                  month = value.toInt()
                 , createDate = LocalDateTime.now()
-                , endDate =  DateUtils.cutOffAddMonth(dayOfMonth, cutOff, totalMonths.toLong())
-                , boughtDate =  it.boughtDate
+                , endDate =  DateUtils.cutOffAddMonth(dayOfMonth, cutOff, value)
+                , boughtDate =  date
                 , valueItem = (it.valueItem.toDouble() - ((it.valueItem.toDouble() / it.month) * months)).toBigDecimal()
                 , nameItem = it.nameItem.plus(" (${it.id}. ${it.valueItem.toDouble()})")
                 , id = 0)
             val origin = it.copy(endDate = DateUtils.startDateFromCutoff(dayOfMonth, cutOff).minusDays(2))
             Log.d("differinstallmentquote","$differBought $origin")
-            return quoteCCSvc.create(differBought,cache).takeIf { response->response > 0}?.let{id->
+            return quoteCCSvc.create(differBought,cache).takeIf { it > 0}?.let{
                     if(quoteCCSvc.update(origin,cache)){
                         return true
                     }else{
-                        quoteCCSvc.delete(id,cache)
+                        quoteCCSvc.delete(it, cache)
                         return false
                     }
             }?: false
         }
         return false
+    }
+
+    private fun getBoughtDateByDiffer(dayOfMonth: Short, boughtDate: LocalDateTime): LocalDateTime{
+        val date = LocalDateTime.now()
+        if(boughtDate.dayOfMonth <= dayOfMonth){
+            return DateUtils.withDayOfMonth(date, boughtDate.dayOfMonth)
+        }
+        return DateUtils.withDayOfMonth(date, dayOfMonth.toInt()).minusDays(2)
     }
 
     override fun clone(codeBought: Int, cache: Boolean): Boolean {
