@@ -78,6 +78,14 @@ class BoughtList @Inject constructor(
         }?:false
     }
 
+    override fun restoreEndDate(codeBought: Int, cache: Boolean): Boolean {
+        return quoteCCSvc.get(codeBought, cache)?.let { dto ->
+            val newEndDate = dto.boughtDate.plusMonths(dto.month.toLong())
+            val updated = dto.copy(endDate = newEndDate)
+            quoteCCSvc.update(updated, cache)
+        } ?: false
+    }
+
     override fun endingRecurrentPayment(codeBought: Int, cutoff: LocalDateTime): Boolean {
         return quoteCCSvc.endingRecurrentPayment(codeBought,cutoff)
     }
@@ -205,6 +213,11 @@ class BoughtList @Inject constructor(
             val capitalPerMonth = dto.valueItem.toDouble() / totalMonths
             val pending = (dto.valueItem.toDouble() - (capitalPerMonth * monthPaid)).coerceAtLeast(0.0)
             item.pendingToPay = if (monthPaid >= totalMonths) 0.0 else pending
+
+            val expectedEndDate = dto.boughtDate.plusMonths(totalMonths.toLong())
+            item.restorable = (totalMonths.toLong() != item.monthPaid) &&
+                    (item.monthPaid < totalMonths.toLong()) &&
+                    expectedEndDate.isAfter(dto.endDate)
 
             item
         }.sortedByDescending { it.boughtDate }

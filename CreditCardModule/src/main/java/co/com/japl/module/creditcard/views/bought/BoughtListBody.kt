@@ -490,6 +490,13 @@ fun Preview(){
                     TODO("Not yet implemented")
                 }
 
+                override fun restoreEndDate(
+                    codeBought: Int,
+                    cache: Boolean
+                ): Boolean {
+                    TODO("Not yet implemented")
+                }
+
                 override fun endingRecurrentPayment(
                     codeBought: Int,
                     cutOff: LocalDateTime

@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.Fragment
+import co.com.japl.finances.iports.inbounds.creditcard.ICreditCardPort
 import co.com.japl.finances.iports.inbounds.creditcard.bought.lists.IBoughtListPort
 import co.com.japl.module.creditcard.controllers.bought.lists.AllBoughtRecordsViewModel
 import co.com.japl.module.creditcard.views.bought.AllBoughtRecordsList
@@ -17,6 +18,7 @@ import javax.inject.Inject
 class AllBoughtRecordsFragment : Fragment() {
 
     @Inject lateinit var boughtSvc: IBoughtListPort
+    @Inject lateinit var creditCardSvc: ICreditCardPort
     private lateinit var viewModel: AllBoughtRecordsViewModel
 
     override fun onCreateView(
@@ -24,7 +26,7 @@ class AllBoughtRecordsFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        viewModel = AllBoughtRecordsViewModel(boughtSvc)
+        viewModel = AllBoughtRecordsViewModel(boughtSvc, creditCardSvc)
 
         return ComposeView(requireContext()).apply {
             setContent {
