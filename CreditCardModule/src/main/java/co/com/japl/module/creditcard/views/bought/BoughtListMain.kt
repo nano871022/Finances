@@ -7,21 +7,28 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.FloatingActionButton
 import androidx.compose.material.FloatingActionButtonDefaults
 import androidx.compose.material.IconButton
+import androidx.compose.material.Surface
 import androidx.compose.material.Text
+import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.AddBox
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.rounded.SettingsSuggest
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.TooltipBox
 import androidx.compose.material3.TooltipDefaults
@@ -29,6 +36,7 @@ import androidx.compose.material3.rememberTooltipState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -75,6 +83,8 @@ fun BoughtListMain(listBoughtViewModel: ListBoughtViewModel,settingVM:SettingsVi
 private fun ListBought(listBoughtViewModel:ListBoughtViewModel,loader:MutableState<Boolean>,settingVM: SettingsViewModel){
 
     val popupState = remember { mutableStateOf(false) }
+    val searchQuery by remember { listBoughtViewModel.searchQuery }
+
     Scaffold(
         floatingActionButton = {
             Buttons(listBoughtViewModel = listBoughtViewModel)
@@ -85,28 +95,41 @@ private fun ListBought(listBoughtViewModel:ListBoughtViewModel,loader:MutableSta
         Column(modifier = Modifier
             .fillMaxWidth()
             .padding(it)) {
-            BoxWithConstraints {
-                if (WindowWidthSize.MEDIUM.isEqualTo(maxWidth)) {
-                    Column {
-                        MainCompact(
-                            listBoughtViewModel.boughtCreditCard, popupState,
-                            modifier = Modifier,
-                            modifierHeader = Modifier,
-                            settingViewModel = settingVM
-                        )
-                    }
-                } else {
-                    Row {
-                        MainCompact(
-                            listBoughtViewModel.boughtCreditCard,
-                            popupState,
-                            modifier = Modifier.weight(1f),
-                            modifierHeader = Modifier.weight(2f),
-                            settingViewModel = settingVM
-                        )
+
+                BoxWithConstraints {
+                    if (WindowWidthSize.MEDIUM.isEqualTo(maxWidth)) {
+                        Column {
+                            MainCompact(
+                                listBoughtViewModel.boughtCreditCard, popupState,
+                                modifier = Modifier,
+                                modifierHeader = Modifier,
+                                settingViewModel = settingVM
+                            )
+                        }
+                    } else {
+                        Row {
+                            MainCompact(
+                                listBoughtViewModel.boughtCreditCard,
+                                popupState,
+                                modifier = Modifier.weight(1f),
+                                modifierHeader = Modifier.weight(2f),
+                                settingViewModel = settingVM
+                            )
+                        }
                     }
                 }
-            }
+
+                OutlinedTextField(
+                    value = searchQuery,
+                    onValueChange = listBoughtViewModel::onSearchQueryChange,
+                    label = { Text(text = stringResource(id = R.string.search_placeholder)) },
+                    leadingIcon = { Icon(Icons.Default.Search, contentDescription = null) },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 4.dp, vertical = 2.dp),
+                    singleLine = true
+                )
+            
 
             BoughList(
                 data = listBoughtViewModel.boughtCreditCard,
@@ -164,6 +187,7 @@ private fun Buttons(listBoughtViewModel:ListBoughtViewModel){
     }
 }
 
+@SuppressLint("UnusedBoxWithConstraintsScope")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun MainCompact(data: BoughtCreditCard, popupState: MutableState<Boolean>,
@@ -171,7 +195,24 @@ private fun MainCompact(data: BoughtCreditCard, popupState: MutableState<Boolean
                         modifierHeader:Modifier=Modifier,
                         settingViewModel: SettingsViewModel){
     val settingState = remember { settingViewModel.state }
-    Header(data.recap.totalCapital, data.recap.totalInterest, data.recap.quoteValue,modifierHeader)
+
+    BoxWithConstraints {
+        if (WindowWidthSize.MEDIUM.isEqualTo(maxWidth)) {
+            HeaderCompact(
+                data.recap.totalCapital,
+                data.recap.totalInterest,
+                data.recap.quoteValue,
+                modifierHeader
+            )
+        }else{
+            Header(
+                data.recap.totalCapital,
+                data.recap.totalInterest,
+                data.recap.quoteValue,
+                modifierHeader
+            )
+        }
+    }
 
     Row(modifier=modifier) {
 
@@ -180,7 +221,7 @@ private fun MainCompact(data: BoughtCreditCard, popupState: MutableState<Boolean
             onClick = { popupState.value = !popupState.value },
             border = BorderStroke(1.dp, MaterialTheme.colorScheme.onPrimaryContainer),
             modifier = modifier
-                .padding(top = 5.dp, start = 10.dp, end = 10.dp, bottom = 5.dp)
+                .padding(top = 2.dp, start = 8.dp, end = 8.dp, bottom = 2.dp)
                 .weight(2f)
         ) {
             Text(
@@ -230,3 +271,20 @@ private fun Header(capital:Double, interest:Double, quote:Double,modifier:Modifi
     }
 }
 
+@Composable
+private fun HeaderCompact(capital:Double, interest:Double, quote:Double,modifier:Modifier=Modifier.fillMaxWidth()){
+    Row(modifier=modifier) {
+
+        FieldView(name = stringResource(id = R.string.capital_value_short)
+            , value = NumbersUtil.formatReduced(capital).replace("$","")
+            , modifier = Modifier.weight(1f))
+
+        FieldView(name = stringResource(id = R.string.interest_value_short)
+            , value = NumbersUtil.formatReduced(interest).replace("$","")
+            , modifier = Modifier.weight(1f))
+
+        FieldView(name = stringResource(id = R.string.total_quote)
+            , value = NumbersUtil.formatReduced(quote).replace("$","")
+            , modifier = Modifier.weight(1f))
+    }
+}

@@ -37,6 +37,8 @@ class BoughtList @Inject constructor(
 
 ): IBoughtList {
 
+    private val NAME_DIFFER_PATTERN = "\\((\\d+)\\. [\\d\\.]+\\)"
+
     override fun getBoughtList(creditCard:CreditCard,cutoff:LocalDateTime,cache:Boolean): CreditCardBoughtListDTO {
         val recap = RecapCreditCardBoughtListDTO()
         val period = YearMonth.of(cutoff.year,cutoff.month)
@@ -63,19 +65,21 @@ class BoughtList @Inject constructor(
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun restore(codeBought: Int, cache: Boolean): Boolean {
-        return quoteCCSvc.get(codeBought,cache)?.let {
-            Regex("\\((\\d+)\\. [\\d\\.]+\\)").find(it.nameItem)
-                ?.takeIf { it.groupValues.size > 1 }?.let {
-                    val id = it.groupValues[1].toInt()
-                    quoteCCSvc.get(id,cache)?.let{
-                        quoteCCSvc.update(it.copy(endDate = it.createDate.plusMonths((it.month + 1).toLong())),cache)
-                            .takeIf { it}
-                            ?.let {
-                            quoteCCSvc.delete(codeBought,cache)
-                        }
+        return quoteCCSvc.get(codeBought, cache)?.let { currentDto ->
+            val match = Regex(NAME_DIFFER_PATTERN).findAll(currentDto.nameItem).lastOrNull()
+            match?.takeIf { it.groupValues.size > 1 }?.let {
+                val previousId = it.groupValues[1].toInt()
+                quoteCCSvc.get(previousId, cache)?.let { prevDto ->
+                    val newEndDate = prevDto.boughtDate.plusMonths(prevDto.month.toLong())
+                    val updatedPrev = prevDto.copy(endDate = newEndDate)
+                    if (quoteCCSvc.update(updatedPrev, cache)) {
+                        quoteCCSvc.delete(codeBought, cache)
+                    } else {
+                        false
                     }
                 }
-        }?:false
+            }
+        } ?: false
     }
 
     override fun restoreEndDate(codeBought: Int, cache: Boolean): Boolean {
