@@ -42,6 +42,11 @@
             android:id="@+id/email_list_credit_card"
             android:icon="@android:drawable/ic_menu_send"
             android:title="@string/email_credit_card"/>
+
+        <item
+            android:id="@+id/item_menu_setting_all_bought_records"
+            android:icon="@android:drawable/ic_menu_agenda"
+            android:title="@string/all_bought_records"/>
 </group>
 
     <group>

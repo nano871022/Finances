@@ -320,6 +320,7 @@ private fun getBoughtListPort(): IBoughtListPort{
             override fun getBoughtPeriodList(idCreditCard: Int, cache: Boolean): List<BoughtCreditCardPeriodDTO> = emptyList()
             override fun delete(codeBought: Int, cache: Boolean): Boolean = true
             override fun restore(codeBought: Int, cache: Boolean): Boolean = true
+            override fun restoreEndDate(codeBought: Int, cache: Boolean): Boolean = true
             override fun endingRecurrentPayment(codeBought: Int, cutOff: LocalDateTime): Boolean = true
             override fun endingPayment(codeBought: Int, message: String, cutOff: LocalDateTime): Boolean = true
             override fun updateRecurrentValue(codeBought: Int, value: Double, cutOff: LocalDateTime, cache: Boolean): Boolean = true

@@ -27,5 +27,6 @@ data class CreditCardBoughtItemDTO (
     var pendingToPay:Double,
     var quoteValue:Double,
     var tagName:String,
-    var advanceValue:Double? = null
+    var advanceValue:Double? = null,
+    var restorable: Boolean = false
 )

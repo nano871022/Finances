@@ -17,6 +17,8 @@ interface IBoughtList {
 
     fun restore(codeBought: Int,cache: Boolean):Boolean
 
+    fun restoreEndDate(codeBought: Int,cache: Boolean):Boolean
+
     fun endingRecurrentPayment(codeBought:Int,cutoff:LocalDateTime):Boolean
 
     fun endingPayment(codeBought:Int,message:String,cutoff:LocalDateTime):Boolean
@@ -33,5 +35,6 @@ interface IBoughtList {
 
     fun changeQuotas(codeBought: Int, months: Int, cache: Boolean): Boolean
 
+    fun getAllBoughts(): List<CreditCardBoughtItemDTO>
 
 }

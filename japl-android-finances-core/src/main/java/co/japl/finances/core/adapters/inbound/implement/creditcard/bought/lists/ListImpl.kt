@@ -33,6 +33,10 @@ class ListImpl @Inject constructor(private val service: IBoughtList,private val 
         return service.restore(codeBought,cache)
     }
 
+    override fun restoreEndDate(codeBought: Int, cache: Boolean): Boolean {
+        return service.restoreEndDate(codeBought, cache)
+    }
+
     override fun endingRecurrentPayment(codeBought: Int, cutOff: LocalDateTime): Boolean {
         return service.endingRecurrentPayment(codeBought,cutOff)
     }
@@ -64,5 +68,9 @@ class ListImpl @Inject constructor(private val service: IBoughtList,private val 
 
     override fun changeQuotas(codeBought: Int, months: Int, cache: Boolean): Boolean {
         return service.changeQuotas(codeBought, months, cache)
+    }
+
+    override fun getAllBoughts(): List<CreditCardBoughtItemDTO> {
+        return service.getAllBoughts()
     }
 }

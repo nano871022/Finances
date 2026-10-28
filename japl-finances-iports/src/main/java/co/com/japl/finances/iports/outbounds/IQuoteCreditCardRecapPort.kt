@@ -39,4 +39,6 @@ interface IQuoteCreditCardPort {
 
     fun fixDataProcess()
 
+    fun getAll(): List<CreditCardBoughtDTO> = emptyList()
+
 }

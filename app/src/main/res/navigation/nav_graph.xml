@@ -556,4 +556,10 @@
         tools:layout="@layout/fragment_tax_declaration" >
         <deepLink app:uri="android-app://co.com.japl.finanzas.module.app/dian_tax_declaration"/>
     </fragment>
+
+    <fragment
+        android:id="@+id/item_menu_setting_all_bought_records"
+        android:name="co.com.japl.module.creditcard.fragments.AllBoughtRecordsFragment"
+        android:label="@string/all_bought_records"
+        tools:layout="@layout/fragment_list_bought" />
 </navigation>

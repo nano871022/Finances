@@ -17,11 +17,13 @@ import co.japl.finances.core.usercases.calculations.InterestCalculations
 import co.japl.finances.core.usercases.calculations.RecapCalculation
 import co.japl.finances.core.usercases.implement.common.ListBoughts
 import co.japl.finances.core.usercases.interfaces.creditcard.bought.lists.IBoughtList
+import co.japl.finances.core.usercases.mapper.CreditCardBoughtItemMapper
 import co.japl.finances.core.utils.DateUtils
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.YearMonth
+import java.util.Date
 import javax.inject.Inject
 
 class BoughtList @Inject constructor(
@@ -76,6 +78,14 @@ class BoughtList @Inject constructor(
         }?:false
     }
 
+    override fun restoreEndDate(codeBought: Int, cache: Boolean): Boolean {
+        return quoteCCSvc.get(codeBought, cache)?.let { dto ->
+            val newEndDate = dto.boughtDate.plusMonths(dto.month.toLong())
+            val updated = dto.copy(endDate = newEndDate)
+            quoteCCSvc.update(updated, cache)
+        } ?: false
+    }
+
     override fun endingRecurrentPayment(codeBought: Int, cutoff: LocalDateTime): Boolean {
         return quoteCCSvc.endingRecurrentPayment(codeBought,cutoff)
     }
@@ -111,26 +121,35 @@ class BoughtList @Inject constructor(
             val creditCard = creditCardSvc.get(it.codeCreditCard)
             val dayOfMonth:Short = creditCard?.cutOffDay ?:it.cutOutDate.dayOfMonth.toShort()
             val months = DateUtils.getMonths(it.boughtDate,cutOff)
-            val totalMonths = months.toInt() + value.toInt()
-            val differBought =  it.copy(month = totalMonths
+            val date = getBoughtDateByDiffer(dayOfMonth, it.boughtDate)
+            val differBought =  it.copy(
+                  month = value.toInt()
                 , createDate = LocalDateTime.now()
-                , endDate =  DateUtils.cutOffAddMonth(dayOfMonth, cutOff, totalMonths.toLong())
-                , boughtDate =  it.boughtDate
+                , endDate =  DateUtils.cutOffAddMonth(dayOfMonth, cutOff, value)
+                , boughtDate =  date
                 , valueItem = (it.valueItem.toDouble() - ((it.valueItem.toDouble() / it.month) * months)).toBigDecimal()
                 , nameItem = it.nameItem.plus(" (${it.id}. ${it.valueItem.toDouble()})")
                 , id = 0)
             val origin = it.copy(endDate = DateUtils.startDateFromCutoff(dayOfMonth, cutOff).minusDays(2))
             Log.d("differinstallmentquote","$differBought $origin")
-            return quoteCCSvc.create(differBought,cache).takeIf { response->response > 0}?.let{id->
+            return quoteCCSvc.create(differBought,cache).takeIf { it > 0}?.let{
                     if(quoteCCSvc.update(origin,cache)){
                         return true
                     }else{
-                        quoteCCSvc.delete(id,cache)
+                        quoteCCSvc.delete(it, cache)
                         return false
                     }
             }?: false
         }
         return false
+    }
+
+    private fun getBoughtDateByDiffer(dayOfMonth: Short, boughtDate: LocalDateTime): LocalDateTime{
+        val date = LocalDateTime.now()
+        if(boughtDate.dayOfMonth <= dayOfMonth){
+            return DateUtils.withDayOfMonth(date, boughtDate.dayOfMonth)
+        }
+        return DateUtils.withDayOfMonth(date, dayOfMonth.toInt()).minusDays(2)
     }
 
     override fun clone(codeBought: Int, cache: Boolean): Boolean {
@@ -170,6 +189,38 @@ class BoughtList @Inject constructor(
             endDate = LocalDateTime.MAX
         )
         return quoteCCSvc.update(updatedDTO, cache)
+    }
+
+    override fun getAllBoughts(): List<CreditCardBoughtItemDTO> {
+        val creditCards = creditCardSvc.getAll().associateBy { it.id }
+        val now = LocalDateTime.now()
+        val allBoughts = quoteCCSvc.getAll()
+
+        return allBoughts.map { dto ->
+            val item = CreditCardBoughtItemMapper.mapper(dto)
+            creditCards[dto.codeCreditCard]?.let { cc ->
+                item.nameCreditCard = cc.name
+            }
+            val totalMonths = if (dto.month > 0) dto.month else 1
+            val monthsElapsed = if (dto.boughtDate.isBefore(now) || dto.boughtDate.isEqual(now)) {
+                (DateUtils.getMonths(dto.boughtDate, now) + 1).toInt()
+            } else {
+                0
+            }
+            val monthPaid = monthsElapsed.coerceIn(0, totalMonths)
+            item.monthPaid = monthPaid.toLong()
+
+            val capitalPerMonth = dto.valueItem.toDouble() / totalMonths
+            val pending = (dto.valueItem.toDouble() - (capitalPerMonth * monthPaid)).coerceAtLeast(0.0)
+            item.pendingToPay = if (monthPaid >= totalMonths) 0.0 else pending
+
+            val expectedEndDate = dto.boughtDate.plusMonths(totalMonths.toLong())
+            item.restorable = (totalMonths.toLong() != item.monthPaid) &&
+                    (item.monthPaid < totalMonths.toLong()) &&
+                    expectedEndDate.isAfter(dto.endDate)
+
+            item
+        }.sortedByDescending { it.boughtDate }
     }
 
     private fun tag(codeBought:Int):TagDTO?{

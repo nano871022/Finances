@@ -25,6 +25,7 @@ class BoughtCreditCardViewModelTest {
             override fun getBoughtPeriodList(idCreditCard: Int, cache: Boolean): List<BoughtCreditCardPeriodDTO> = emptyList()
             override fun delete(codeBought: Int, cache: Boolean): Boolean = false
             override fun restore(codeBought: Int, cache: Boolean): Boolean = false
+            override fun restoreEndDate(codeBought: Int, cache: Boolean): Boolean = false
             override fun endingRecurrentPayment(codeBought: Int, cutOff: LocalDateTime): Boolean = false
             override fun endingPayment(codeBought: Int, message: String, cutOff: LocalDateTime): Boolean = false
             override fun updateRecurrentValue(codeBought: Int, value: Double, cutOff: LocalDateTime, cache: Boolean): Boolean = false
@@ -62,6 +63,7 @@ class BoughtCreditCardViewModelTest {
             }
             override fun delete(codeBought: Int, cache: Boolean): Boolean = false
             override fun restore(codeBought: Int, cache: Boolean): Boolean = false
+            override fun restoreEndDate(codeBought: Int, cache: Boolean): Boolean = false
             override fun endingRecurrentPayment(codeBought: Int, cutOff: LocalDateTime): Boolean = false
             override fun endingPayment(codeBought: Int, message: String, cutOff: LocalDateTime): Boolean = false
             override fun updateRecurrentValue(codeBought: Int, value: Double, cutOff: LocalDateTime, cache: Boolean): Boolean = false
