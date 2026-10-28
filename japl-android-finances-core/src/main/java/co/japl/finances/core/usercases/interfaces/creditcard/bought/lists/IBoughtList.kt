@@ -33,5 +33,6 @@ interface IBoughtList {
 
     fun changeQuotas(codeBought: Int, months: Int, cache: Boolean): Boolean
 
+    fun getAllBoughts(): List<CreditCardBoughtItemDTO>
 
 }

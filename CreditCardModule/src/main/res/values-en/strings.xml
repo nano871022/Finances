@@ -195,4 +195,11 @@ Messages:
     <string name="quotas_update_failed">Failed to update installments</string>
     <string name="advance_value_label">Advance value</string>
     <string name="advance_commission_title">Advance Commission</string>
+    <string name="all_bought_records">All Records</string>
+    <string name="original_value">Original Value</string>
+    <string name="pending_value">Pending Value</string>
+    <string name="months_remaining">Remaining Months</string>
+    <string name="period_months">Months/Period</string>
+    <string name="search_placeholder">Search by name or card...</string>
+    <string name="total_records">Total records</string>
 </resources>

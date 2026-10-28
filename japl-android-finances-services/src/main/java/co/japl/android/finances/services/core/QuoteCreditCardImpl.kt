@@ -151,4 +151,8 @@ class QuoteCreditCardImpl @Inject constructor(private val quoteCCSvc: IQuoteCred
         quoteCCSvc.fixDataProcess()
     }
 
+    override fun getAll(): List<CreditCardBoughtDTO> {
+        return quoteCCSvc.getAll().map(CreditCardBoughtMapper::mapper)
+    }
+
 }

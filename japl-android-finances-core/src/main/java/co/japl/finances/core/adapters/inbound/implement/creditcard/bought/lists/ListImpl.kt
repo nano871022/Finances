@@ -65,4 +65,8 @@ class ListImpl @Inject constructor(private val service: IBoughtList,private val 
     override fun changeQuotas(codeBought: Int, months: Int, cache: Boolean): Boolean {
         return service.changeQuotas(codeBought, months, cache)
     }
+
+    override fun getAllBoughts(): List<CreditCardBoughtItemDTO> {
+        return service.getAllBoughts()
+    }
 }

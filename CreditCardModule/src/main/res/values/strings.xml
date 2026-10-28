@@ -195,4 +195,11 @@ Messages:
     <string name="quotas_update_failed">No se logró actualizar las cuotas</string>
     <string name="advance_value_label">Valor de avance</string>
     <string name="advance_commission_title">Comisión Avance</string>
+    <string name="all_bought_records">Todos los Registros</string>
+    <string name="original_value">Valor Original</string>
+    <string name="pending_value">Valor Pendiente</string>
+    <string name="months_remaining">Meses Faltantes</string>
+    <string name="period_months">Meses/Período</string>
+    <string name="search_placeholder">Buscar por nombre o tarjeta...</string>
+    <string name="total_records">Total registros</string>
 </resources>

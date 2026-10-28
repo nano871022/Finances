@@ -17,6 +17,7 @@ import co.japl.finances.core.usercases.calculations.InterestCalculations
 import co.japl.finances.core.usercases.calculations.RecapCalculation
 import co.japl.finances.core.usercases.implement.common.ListBoughts
 import co.japl.finances.core.usercases.interfaces.creditcard.bought.lists.IBoughtList
+import co.japl.finances.core.usercases.mapper.CreditCardBoughtItemMapper
 import co.japl.finances.core.utils.DateUtils
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -170,6 +171,33 @@ class BoughtList @Inject constructor(
             endDate = LocalDateTime.MAX
         )
         return quoteCCSvc.update(updatedDTO, cache)
+    }
+
+    override fun getAllBoughts(): List<CreditCardBoughtItemDTO> {
+        val creditCards = creditCardSvc.getAll().associateBy { it.id }
+        val now = LocalDateTime.now()
+        val allBoughts = quoteCCSvc.getAll()
+
+        return allBoughts.map { dto ->
+            val item = CreditCardBoughtItemMapper.mapper(dto)
+            creditCards[dto.codeCreditCard]?.let { cc ->
+                item.nameCreditCard = cc.name
+            }
+            val totalMonths = if (dto.month > 0) dto.month else 1
+            val monthsElapsed = if (dto.boughtDate.isBefore(now) || dto.boughtDate.isEqual(now)) {
+                (DateUtils.getMonths(dto.boughtDate, now) + 1).toInt()
+            } else {
+                0
+            }
+            val monthPaid = monthsElapsed.coerceIn(0, totalMonths)
+            item.monthPaid = monthPaid.toLong()
+
+            val capitalPerMonth = dto.valueItem.toDouble() / totalMonths
+            val pending = (dto.valueItem.toDouble() - (capitalPerMonth * monthPaid)).coerceAtLeast(0.0)
+            item.pendingToPay = if (monthPaid >= totalMonths) 0.0 else pending
+
+            item
+        }.sortedByDescending { it.boughtDate }
     }
 
     private fun tag(codeBought:Int):TagDTO?{
