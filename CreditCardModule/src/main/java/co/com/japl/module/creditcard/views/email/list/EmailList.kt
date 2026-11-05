@@ -3,39 +3,30 @@ package co.com.japl.module.creditcard.views.email.list
 import android.content.res.Configuration
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.text.style.TextAlign
-import androidx.navigation.NavDeepLinkRequest
-import androidx.core.net.toUri
-import com.google.android.gms.auth.api.signin.GoogleSignIn
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material.Button
-import androidx.compose.material3.Card
-import androidx.compose.material.Icon
-import androidx.compose.material.LinearProgressIndicator
-import androidx.compose.material.Text
+import androidx.compose.material3.Button
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.MoreVert
+import androidx.compose.material3.Card
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Shapes
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import co.com.japl.finances.iports.dtos.EmailCreditCardDTO
@@ -50,6 +41,7 @@ import co.com.japl.ui.components.FieldViewCards
 import co.com.japl.ui.components.IconButton
 import co.com.japl.ui.components.LoadingProgress
 import co.com.japl.ui.components.MoreOptionsDialog
+import co.com.japl.ui.components.OnResumeEffect
 import co.com.japl.ui.enums.IMoreOptions
 import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.com.japl.ui.theme.values.Dimensions
@@ -83,10 +75,15 @@ fun EmailList(viewModel: EmailListCreditCardViewModel){
             }
         }
     } else {
-        LoadingProgress(
-            message = R.string.loading_data,
-            showProgress = load,
-            execute = viewModel::execution
+    OnResumeEffect {
+        viewModel.execution()
+    }
+
+    LoadingProgress(
+        message = R.string.loading_data,
+        showProgress = load,
+        validateData = { true },
+        messageNoData = R.string.no_data
         ) {
             BodyMain(viewModel)
         }

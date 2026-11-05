@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.content.res.Configuration
 import android.os.Build
 import androidx.annotation.RequiresApi
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -12,17 +11,16 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.material.FloatingActionButton
 import androidx.compose.material.FloatingActionButtonDefaults
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.FloatingActionButton
-import androidx.compose.material.icons.rounded.Add
-import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
@@ -34,22 +32,20 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.SavedStateHandle
 import co.com.japl.finances.iports.dtos.CreditCardSettingDTO
 import co.com.japl.finances.iports.inbounds.creditcard.ICreditCardSettingPort
 import co.com.japl.module.creditcard.R
 import co.com.japl.module.creditcard.controllers.setting.CreditCardSettingListViewModel
-import co.com.japl.ui.components.LoadingProgress
-import co.com.japl.ui.components.OnResumeEffect
-import androidx.lifecycle.SavedStateHandle
-import co.com.japl.ui.theme.MaterialThemeComposeUI
-import co.com.japl.ui.theme.values.Dimensions
-import co.com.japl.ui.theme.values.ModifiersCustom.Weight1f
-import co.com.japl.ui.theme.values.ModifiersCustom.Weight1fAndAlightCenterVertical
 import co.com.japl.module.creditcard.enums.MoreOptionsItemsSettingsCreditCard
-import co.com.japl.ui.utils.WindowWidthSize
 import co.com.japl.ui.components.AlertDialogOkCancel
 import co.com.japl.ui.components.FieldViewCards
+import co.com.japl.ui.components.LoadingProgress
 import co.com.japl.ui.components.MoreOptionsDialog
+import co.com.japl.ui.components.OnResumeEffect
+import co.com.japl.ui.theme.MaterialThemeComposeUI
+import co.com.japl.ui.theme.values.ModifiersCustom.Weight1fAndAlightCenterVertical
+import co.com.japl.ui.utils.WindowWidthSize
 import java.time.LocalDateTime
 
 @Composable
@@ -62,8 +58,7 @@ import java.time.LocalDateTime
 
     LoadingProgress(
         message = R.string.loading_data,
-        showProgress = stateShow,
-        execute = {}
+        showProgress = stateShow
     ) {
         Body(viewModel = viewModel)
     }

@@ -8,7 +8,7 @@ import co.com.japl.finances.iports.inbounds.creditcard.bought.lists.IBoughtListP
 import co.com.japl.ui.Prefs
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
-import org.junit.Assert.assertTrue
+import org.junit.Assert.assertFalse
 import org.junit.Test
 import org.mockito.Mockito.`when`
 import org.mockito.Mockito.mock
@@ -48,12 +48,12 @@ class BoughtCreditCardViewModelTest {
 
         viewModel.execute()
 
-        assertTrue(viewModel.loader.value)
+        assertFalse(viewModel.loader.value)
         assertEquals(1.0f, viewModel.progress.floatValue, 0.01f)
     }
 
     @Test
-    fun testExecuteException_guaranteesLoaderTrue() = runBlocking {
+    fun testExecuteException_guaranteesLoaderFalse() = runBlocking {
         val throwingService = object : IBoughtListPort {
             override fun getBoughtList(creditCardDTO: CreditCardDTO, cutOff: LocalDateTime, cache: Boolean): CreditCardBoughtListDTO {
                 throw NotImplementedError()
@@ -90,7 +90,7 @@ class BoughtCreditCardViewModelTest {
             // expected
         }
 
-        assertTrue(viewModel.loader.value)
+        assertFalse(viewModel.loader.value)
         assertEquals(1.0f, viewModel.progress.floatValue, 0.01f)
     }
 }

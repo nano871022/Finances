@@ -40,7 +40,7 @@ class BoughtMonthlyViewModel(
 
     val cache = mutableStateOf(prefs.simulator)
     var progress = mutableFloatStateOf(0f)
-    var loader = mutableStateOf(false)
+    var loader = mutableStateOf(true)
 
     var listCreditCard:List<CreditCardDTO> ? = null
     var creditCardSelected :CreditCardDTO ? = null
@@ -128,7 +128,14 @@ class BoughtMonthlyViewModel(
 
     fun mainCreditCard() {
         viewModelScope.launch {
-            executeCreditCard()
+            loader.value = true
+            try {
+                executeCreditCard()
+            } finally {
+                if (creditCardCode.intValue == 0) {
+                    loader.value = false
+                }
+            }
         }
     }
 
@@ -139,9 +146,11 @@ class BoughtMonthlyViewModel(
             listCreditCard = it
             creditCardList.clear()
             creditCardList.addAll(it.map { Pair<Int, String>(it.id, it.name) })
-            if (it.size == 1 && creditCard.value.isBlank()) {
+            if (it.isNotEmpty() && creditCard.value.isBlank()) {
                 creditCardCode.intValue = it.first().id
                 creditCard.value = it.first().name
+                reload()
+            } else if (creditCardCode.intValue != 0) {
                 reload()
             }
         }
@@ -149,11 +158,16 @@ class BoughtMonthlyViewModel(
 
     fun reload() {
         viewModelScope.launch {
-            loader.value = false
-            progress.floatValue = 1f
-            execute()
-            progress.floatValue = 100f
-            loader.value = true
+            try {
+                loader.value = true
+                progress.floatValue = 1f
+                execute()
+                progress.floatValue = 100f
+            } catch (e: Exception) {
+                Log.e(javaClass.name, "Error in reload: ${e.message}", e)
+            } finally {
+                loader.value = false
+            }
             readSms()
         }
     }

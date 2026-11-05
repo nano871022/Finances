@@ -15,8 +15,9 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.CalendarMonth
 import androidx.compose.material.icons.rounded.RemoveRedEye
-import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.Scaffold
+import co.com.japl.ui.components.LoadingProgress
+import co.com.japl.ui.components.OnResumeEffect
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -52,14 +53,16 @@ import co.com.japl.ui.components.FieldView
 @Composable
 fun Recap(viewModel:RecapViewModel){
     val loader = remember { viewModel.loader }
-    val progression = remember { viewModel.progress }
-    if(loader.value){
+    OnResumeEffect {
         viewModel.execute()
-        LinearProgressIndicator(
-            progress = { progression.floatValue },
-            modifier = Modifier.fillMaxWidth(),
-        )
-    }else{
+    }
+
+    LoadingProgress(
+        message = R.string.load_data,
+        showProgress = loader,
+        validateData = { viewModel.listCredits.isNotEmpty() },
+        messageNoData = R.string.no_data
+    ) {
         Body(viewModel)
     }
 }

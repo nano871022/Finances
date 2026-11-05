@@ -14,6 +14,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -24,81 +25,86 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import co.com.japl.ui.components.LoadingProgress
+import co.com.japl.ui.components.OnResumeEffect
+import co.com.japl.ui.theme.MaterialThemeComposeUI
+import co.japl.android.myapplication.R
+import co.japl.android.myapplication.finanzas.controller.google.GoogleAuthBackupRestoreViewModel
+import coil.compose.AsyncImage
 import java.time.Duration
 import java.time.LocalDateTime
-import co.japl.android.myapplication.finanzas.controller.google.GoogleAuthBackupRestoreViewModel
-import co.com.japl.ui.theme.MaterialThemeComposeUI
-import co.com.japl.ui.components.OnResumeEffect
-import co.japl.android.myapplication.R
-import coil.compose.AsyncImage
 
 @Composable
 fun LoginSpace(viewModel: GoogleAuthBackupRestoreViewModel) {
-    val stateResultActivity = rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-        viewModel.isProcessing.value = true
-        viewModel.responseConnection(it)
-    }
-    val loginValue = remember { viewModel.loginValue }
-    val nameValue = remember { viewModel.nameValue }
-    val photoUrlValue = remember { viewModel.photoUrlValue }
-    val isLogged = remember { viewModel.isLogged }
+
     val isProcessing = remember { viewModel.isProcessing }
 
     OnResumeEffect {
         viewModel.checkSmsPermission()
     }
 
+
+        LoadingProgress(
+            message = R.string.loading_data,
+            showProgress = isProcessing,
+            validateData = { viewModel.isLogged.value },
+            messageNoData = R.string.not_data
+        ) {
+            BodyLoad(viewModel = viewModel)
+        }
+}
+
+@Composable
+private fun BodyLoad(
+    viewModel: GoogleAuthBackupRestoreViewModel
+){
     Column(
         modifier = Modifier
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
             .padding(0.dp)
     ) {
-        if (isProcessing.value) {
-            LinearProgressIndicator(modifier = Modifier.fillMaxWidth().padding(bottom = 16.dp))
-
-            Text(
-                text=stringResource(R.string.loading_data),
-                textAlign = TextAlign.Center,
-                modifier=Modifier.fillMaxWidth()
-
+        val stateResultActivity =
+            rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+                viewModel.isProcessing.value = true
+                viewModel.responseConnection(it)
+            }
+        val loginValue = remember { viewModel.loginValue }
+        val nameValue = remember { viewModel.nameValue }
+        val photoUrlValue = remember { viewModel.photoUrlValue }
+        val isLogged = remember { viewModel.isLogged }
+        if (isLogged.value) {
+            ProfileHeader(
+                isLogged.value,
+                loginValue.value,
+                nameValue.value,
+                photoUrlValue.value,
+                viewModel.lastBackup.value
             )
-        }else {
-
-            if (isLogged.value) {
-                ProfileHeader(
-                    isLogged.value,
-                    loginValue.value,
-                    nameValue.value,
-                    photoUrlValue.value,
-                    viewModel.lastBackup.value
-                )
-            }
-
-            Spacer(modifier = Modifier.height(5.dp))
-
-            if (isLogged.value.not()) {
-                CloudConnectionCard(isLogged.value, loginValue.value, onSwitchAccount = {
-                    viewModel.login()?.let { stateResultActivity.launch(it) }
-                })
-            }
-
-            Spacer(modifier = Modifier.height(5.dp))
-
-            // Permissions & Status
-            PermissionsAndStatusSection(viewModel)
-
-            Spacer(modifier = Modifier.height(5.dp))
-
-            // Secondary Actions List
-            AccountManagementList(isLogged.value, onSignOut = { viewModel.logout() })
-
-            Spacer(modifier = Modifier.height(32.dp))
         }
+
+        Spacer(modifier = Modifier.height(5.dp))
+
+        if (isLogged.value.not()) {
+            CloudConnectionCard(isLogged.value, loginValue.value, onSwitchAccount = {
+                viewModel.login()?.let { stateResultActivity.launch(it) }
+            })
+        }
+
+        Spacer(modifier = Modifier.height(5.dp))
+
+        // Permissions & Status
+        PermissionsAndStatusSection(viewModel)
+
+        Spacer(modifier = Modifier.height(5.dp))
+
+        // Secondary Actions List
+        AccountManagementList(isLogged.value, onSignOut = { viewModel.logout() })
+
+        Spacer(modifier = Modifier.height(32.dp))
     }
 }
 

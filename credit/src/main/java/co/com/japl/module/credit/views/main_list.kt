@@ -2,33 +2,29 @@ package co.com.japl.module.credit.views
 
 import android.content.res.Configuration
 import android.os.Build
-import androidx.compose.material3.Surface
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Column
-
 import androidx.compose.foundation.layout.Row
-
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.Divider
+import androidx.compose.material3.Divider
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.MoreVert
 import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -49,11 +45,12 @@ import co.com.japl.module.credit.views.popups.PeriodGrace
 import co.com.japl.ui.components.AlertDialogOkCancel
 import co.com.japl.ui.components.FieldViewCards
 import co.com.japl.ui.components.FloatButton
+import co.com.japl.ui.components.LoadingProgress
+import co.com.japl.ui.components.OnResumeEffect
 import co.com.japl.ui.components.MoreOptionsDialog
 import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.com.japl.ui.theme.values.Dimensions
 import co.japl.android.graphs.utils.NumbersUtil
-import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.util.Locale
@@ -61,18 +58,18 @@ import java.util.Locale
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun CreditList(viewModel:ListViewModel) {
-    val progress by remember { viewModel.progress}
+    val progress = remember { viewModel.progress}
 
-    if(progress){
+    OnResumeEffect {
         viewModel.execute()
-        Column(modifier=Modifier.fillMaxWidth()) {
-            LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
-            Text(text=stringResource(R.string.load_data),
-                textAlign = TextAlign.Center,
-                color = MaterialTheme.colorScheme.onBackground,
-                modifier = Modifier.fillMaxWidth())
-        }
-    }else {
+    }
+
+    LoadingProgress(
+        message = R.string.load_data,
+        showProgress = progress,
+        validateData = { viewModel.list.isNotEmpty() },
+        messageNoData = R.string.no_data
+    ) {
         Body(viewModel)
     }
 }

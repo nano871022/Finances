@@ -1,5 +1,6 @@
 ﻿package co.com.japl.module.creditcard.views.bought
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.res.Configuration
 import android.os.Build
@@ -28,12 +29,10 @@ import androidx.compose.material.icons.rounded.Percent
 import androidx.compose.material.icons.rounded.RemoveRedEye
 import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
-import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -59,6 +58,7 @@ import co.com.japl.ui.components.Carousel
 import co.com.japl.ui.components.FieldSelect
 import co.com.japl.ui.components.FieldView
 import co.com.japl.ui.components.HelpWikiButton
+import co.com.japl.ui.components.LoadingProgress
 import co.com.japl.ui.components.OnResumeEffect
 import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.com.japl.ui.theme.values.Dimensions
@@ -71,24 +71,15 @@ import co.com.japl.ui.utils.WindowWidthSize
 import co.japl.android.graphs.interfaces.IGraph
 import co.japl.android.graphs.pieceofpie.PieceOfPie
 import co.com.japl.ui.utils.NumbersUtil
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import java.time.LocalDate
 
 
 @Composable
 fun BoughtMonthly(viewModel:BoughtMonthlyViewModel?=null) {
-    var loaderStatus by remember {viewModel!!.loader}
-    var progressStatus by remember {viewModel!!.progress}
+    val loaderStatus = remember { viewModel!!.loader }
 
     OnResumeEffect {
         viewModel?.mainCreditCard()
-        if (viewModel?.creditCardCode?.intValue != 0) {
-            CoroutineScope(Dispatchers.IO).launch {
-                viewModel?.reload()
-            }
-        }
     }
 
 
@@ -102,23 +93,22 @@ fun BoughtMonthly(viewModel:BoughtMonthlyViewModel?=null) {
                     it?.let{
                         viewModel.creditCard.value = it.second
                         viewModel.creditCardCode.value = it.first
-                        CoroutineScope(Dispatchers.IO).launch{
-                            viewModel?.reload()
-                        }
+                        viewModel.reload()
                     }
                 })
 
-           if(loaderStatus.not() ) {
-               LinearProgressIndicator(
-                   progress = { progressStatus },
-                   modifier = Modifier.fillMaxWidth(),
-               )
-           }else{
+           LoadingProgress(
+               message = R.string.loading_data,
+               showProgress = loaderStatus,
+               validateData = { viewModel!!.creditCardList.isNotEmpty() },
+               messageNoData = R.string.no_data
+           ) {
                 Loaded(viewModel = viewModel)
            }
     }
 }
 
+@SuppressLint("UnusedBoxWithConstraintsScope")
 @Composable
 private fun Loaded(viewModel:BoughtMonthlyViewModel){
     LocalConfiguration.current

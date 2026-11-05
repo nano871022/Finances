@@ -23,7 +23,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.TextUnit
@@ -31,6 +30,7 @@ import androidx.compose.ui.unit.TextUnitType
 import co.com.japl.finances.iports.dtos.CheckPaymentDTO
 import co.com.japl.finances.iports.enums.CheckPaymentsEnum
 import co.com.japl.module.paid.R
+import co.com.japl.module.paid.controllers.checkpaids.CheckListViewModel
 import co.com.japl.ui.components.AlertDialogOkCancel
 import co.com.japl.ui.components.CheckBoxField
 import co.com.japl.ui.components.FieldView
@@ -39,9 +39,8 @@ import co.com.japl.ui.components.LoadingProgress
 import co.com.japl.ui.components.OnResumeEffect
 import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.com.japl.ui.theme.values.Dimensions
-import co.japl.android.graphs.utils.NumbersUtil
-import co.com.japl.module.paid.controllers.checkpaids.CheckListViewModel
 import co.com.japl.ui.utils.DateUtils
+import co.japl.android.graphs.utils.NumbersUtil
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -62,8 +61,7 @@ fun CheckList(viewModel:CheckListViewModel){
 
     LoadingProgress(
         message = R.string.loading_data,
-        showProgress = loading,
-        execute = {}
+        showProgress = loading
     ) {
         Body(viewModel)
     }

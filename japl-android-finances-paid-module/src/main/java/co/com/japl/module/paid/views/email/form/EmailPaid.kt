@@ -27,16 +27,19 @@ import co.com.japl.ui.theme.values.Dimensions
 
 @Composable
 fun EmailPaid(viewModel: EmailPaidViewModel) {
-    val load by viewModel.load
+    val load = remember { viewModel.load }
 
-    LaunchedEffect(Unit) {
+    OnResumeEffect {
         viewModel.reload()
     }
 
     Column(modifier = Modifier.fillMaxWidth()) {
-        if (load) {
-            LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
-        } else {
+        LoadingProgress(
+            message = R.string.loading_data,
+            showProgress = load,
+            validateData = { true },
+            messageNoData = R.string.no_data
+        ) {
             Body(viewModel)
         }
     }

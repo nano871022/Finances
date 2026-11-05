@@ -56,8 +56,7 @@ fun AccountList(viewModel: AccountViewModel) {
 
     LoadingProgress(
         message = R.string.loading_data,
-        showProgress = stateLoader,
-        execute = {}
+        showProgress = stateLoader
     ) {
         Scaffold(
             floatingActionButton = {

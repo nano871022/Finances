@@ -1,7 +1,5 @@
 package co.com.japl.module.credit.views.creditamortization
 
-import co.com.japl.module.credit.model.CreditAmortizationState
-
 import android.annotation.SuppressLint
 import android.content.res.Configuration
 import android.os.Build
@@ -13,40 +11,32 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.Divider
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.Text
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Addchart
 import androidx.compose.material.icons.rounded.KeyboardArrowDown
 import androidx.compose.material.icons.rounded.KeyboardArrowUp
 import androidx.compose.material.icons.rounded.PlusOne
 import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import kotlinx.coroutines.flow.map
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import co.com.japl.module.credit.R
-import co.com.japl.module.credit.controllers.creditamortization.CreditAmortizationViewModel
-import co.com.japl.ui.components.FieldView
-import co.com.japl.ui.theme.values.Dimensions
-import co.com.japl.finances.iports.dtos.AmortizationRowDTO
-import co.com.japl.ui.components.DataTable
-import co.com.japl.ui.model.datatable.Header
-import java.math.BigDecimal
-import androidx.compose.runtime.remember
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.SavedStateHandle
 import co.com.japl.finances.iports.dtos.AdditionalCreditDTO
+import co.com.japl.finances.iports.dtos.AmortizationRowDTO
 import co.com.japl.finances.iports.dtos.CreditDTO
 import co.com.japl.finances.iports.dtos.GracePeriodDTO
 import co.com.japl.finances.iports.dtos.RecapCreditDTO
@@ -57,10 +47,20 @@ import co.com.japl.finances.iports.inbounds.credit.IAdditional
 import co.com.japl.finances.iports.inbounds.credit.IAmortizationTablePort
 import co.com.japl.finances.iports.inbounds.credit.ICreditPort
 import co.com.japl.finances.iports.inbounds.credit.IPeriodGracePort
+import co.com.japl.module.credit.R
+import co.com.japl.module.credit.controllers.creditamortization.CreditAmortizationViewModel
+import co.com.japl.module.credit.model.CreditAmortizationState
+import co.com.japl.ui.components.DataTable
+import co.com.japl.ui.components.FieldView
 import co.com.japl.ui.components.FloatButton
+import co.com.japl.ui.components.LoadingProgress
+import co.com.japl.ui.components.OnResumeEffect
+import co.com.japl.ui.model.datatable.Header
 import co.com.japl.ui.theme.MaterialThemeComposeUI
-import co.com.japl.ui.utils.WindowWidthSize
+import co.com.japl.ui.theme.values.Dimensions
 import co.com.japl.ui.utils.NumbersUtil
+import co.com.japl.ui.utils.WindowWidthSize
+import java.math.BigDecimal
 import java.time.LocalDate
 import java.time.YearMonth
 
@@ -68,17 +68,18 @@ import java.time.YearMonth
 @Composable
 fun CreditAmortizationScreen(viewModel: CreditAmortizationViewModel){
     val state by viewModel.state.collectAsState()
+    val isLoadingState = viewModel.state.map { it.isLoading }.collectAsState(false)
 
-    if(state.isLoading){
-        Column {
-            LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
-            Text(text=stringResource(R.string.no_data),
-                color= MaterialTheme.colorScheme.onBackground,
-                textAlign = TextAlign.Center,
-                modifier = Modifier.fillMaxWidth().padding(Dimensions.PADDING_TOP)
-            )
-        }
-    }else {
+    OnResumeEffect {
+        viewModel.execute()
+    }
+
+    LoadingProgress(
+        message = R.string.load_data,
+        showProgress = isLoadingState,
+        validateData = { state.amortization?.isNotEmpty() == true },
+        messageNoData = R.string.no_data
+    ) {
         Body(viewModel )
     }
 }

@@ -7,17 +7,10 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.FloatingActionButton
 import androidx.compose.material.FloatingActionButtonDefaults
-import androidx.compose.material.IconButton
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
-import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.AddBox
@@ -25,10 +18,12 @@ import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.rounded.SettingsSuggest
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.material3.TooltipBox
 import androidx.compose.material3.TooltipDefaults
 import androidx.compose.material3.rememberTooltipState
@@ -43,16 +38,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import co.com.japl.finances.iports.pojo.BoughtCreditCard
-import co.com.japl.module.creditcard.controllers.bought.lists.ListBoughtViewModel
 import co.com.japl.module.creditcard.R
-import co.com.japl.ui.utils.WindowWidthSize
+import co.com.japl.module.creditcard.controllers.bought.lists.ListBoughtViewModel
 import co.com.japl.ui.components.FieldView
 import co.com.japl.ui.components.LoadingProgress
 import co.com.japl.ui.components.OnResumeEffect
 import co.com.japl.ui.utils.NumbersUtil
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import co.com.japl.ui.utils.WindowWidthSize
 
 @Composable
 fun BoughtListMain(listBoughtViewModel: ListBoughtViewModel,settingVM:SettingsViewModel){
@@ -68,8 +60,7 @@ fun BoughtListMain(listBoughtViewModel: ListBoughtViewModel,settingVM:SettingsVi
 
     LoadingProgress(
         message = R.string.loading_data,
-        showProgress = progressState,
-        execute = {}
+        showProgress = progressState
     ) {
         ListBought(listBoughtViewModel, isLoad, settingVM)
     }

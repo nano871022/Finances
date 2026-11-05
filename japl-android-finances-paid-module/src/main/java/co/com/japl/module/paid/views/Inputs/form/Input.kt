@@ -8,47 +8,42 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.Cancel
-import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import co.com.japl.module.paid.R
 import co.com.japl.module.paid.controllers.Inputs.form.InputViewModel
+import co.com.japl.module.paid.enums.MoreOptionsKindPaymentInput
 import co.com.japl.ui.components.FieldDatePicker
 import co.com.japl.ui.components.FieldSelect
 import co.com.japl.ui.components.FieldText
 import co.com.japl.ui.components.FloatButton
+import co.com.japl.ui.components.LoadingProgress
 import co.com.japl.ui.components.MoreOptionsDialog
+import co.com.japl.ui.components.OnResumeEffect
 import co.com.japl.ui.theme.values.Dimensions
-import co.com.japl.module.paid.enums.MoreOptionsKindPaymentInput
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+
 
 @Suppress("LocalContextGetResourceValueCall")
 @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
 @Composable
 fun InputForm(viewModel: InputViewModel){
-    val stateProcess = remember { viewModel.progress }
     val stateLoader = remember { viewModel.loader }
-    LaunchedEffect(Unit) {
-        withContext(Dispatchers.IO) {
-            viewModel.reload()
-        }
+
+    OnResumeEffect {
+        viewModel.reload()
     }
 
-    if(stateLoader.value) {
-        LinearProgressIndicator(
-            progress = { stateProcess.value },
-            modifier = Modifier.fillMaxWidth(),
-        )
-    }else {
+    LoadingProgress(
+        message = R.string.loading_data,
+        showProgress = stateLoader,
+        validateData = { true },
+        messageNoData = R.string.no_data
+    ) {
         Scaffold(
             floatingActionButton = {
                 FloatButton(imageVector = Icons.Rounded.Add, descriptionIcon = R.string.add_account) {
@@ -56,7 +51,7 @@ fun InputForm(viewModel: InputViewModel){
                 }
             }
         ) {
-            Body(viewModel = viewModel,Modifier.padding(it))
+            Body(viewModel = viewModel, Modifier.padding(it))
         }
     }
 }

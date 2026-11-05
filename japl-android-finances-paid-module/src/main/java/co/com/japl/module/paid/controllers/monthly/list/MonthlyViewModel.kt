@@ -103,8 +103,8 @@ class MonthlyViewModel(private val period:YearMonth, private val paidSvc: IPaidP
                 activeList.forEach {
                     accountList.add(Pair(it.id, it.name))
                 }
-                activeList.takeIf { it.isNotEmpty() && it.size == 1 }?.let {
-                    accountState.value = it.first()
+                if (accountState.value == null) {
+                    accountState.value = activeList.firstOrNull()
                 }
                 progressStatus.floatValue = 0.3f
             }

@@ -11,12 +11,14 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.Text
+import co.com.japl.ui.components.LoadingProgress
+import co.com.japl.ui.components.OnResumeEffect
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -42,16 +44,18 @@ import java.math.BigDecimal
 @Composable
 fun AmortizationScreen(viewModel: AmortizationViewModel) {
     val state by viewModel.state.collectAsState()
+    val isLoadingState = derivedStateOf { state.isLoading }
 
-    if (state.isLoading) {
-        Column (modifier = Modifier.fillMaxWidth()){
-            LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
-            Text(text=stringResource(R.string.load_data),
-                color= MaterialTheme.colorScheme.onBackground,
-                textAlign = TextAlign.Center,
-                modifier = Modifier.fillMaxWidth().padding(Dimensions.PADDING_TOP))
-        }
-    } else {
+    OnResumeEffect {
+        viewModel.getAmortization()
+    }
+
+    LoadingProgress(
+        message = R.string.load_data,
+        showProgress = isLoadingState,
+        validateData = { state.amortization.isNotEmpty() },
+        messageNoData = R.string.no_data
+    ) {
         Body(state.amortization)
     }
 }

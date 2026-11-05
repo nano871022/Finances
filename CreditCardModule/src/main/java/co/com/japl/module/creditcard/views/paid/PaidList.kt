@@ -7,14 +7,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
-import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.unit.dp
@@ -22,28 +19,25 @@ import co.com.japl.finances.iports.dtos.BoughtCreditCardPeriodDTO
 import co.com.japl.module.creditcard.R
 import co.com.japl.module.creditcard.controllers.paid.BoughtCreditCardViewModel
 import co.com.japl.module.creditcard.enums.MoreOptionsItemPaidPeriodEnum
+import co.com.japl.ui.components.LoadingProgress
 import co.com.japl.ui.components.MoreOptionsDialog
+import co.com.japl.ui.components.OnResumeEffect
 import co.com.japl.ui.theme.values.Dimensions
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import java.time.LocalDateTime
 
 @Composable
 fun PaidList(viewModel: BoughtCreditCardViewModel){
-    val loaderState = remember {viewModel.progress}
     val loader = remember {viewModel.loader}
-    LaunchedEffect(Unit) {
-        withContext(Dispatchers.IO) {
-            viewModel.reload()
-        }
+    OnResumeEffect {
+        viewModel.reload()
     }
 
-    if(loader.value.not() ){
-        LinearProgressIndicator(
-            progress = { loaderState.floatValue },
-        )
-    }else {
+    LoadingProgress(
+        message = R.string.loading_data,
+        showProgress = loader,
+        validateData = { viewModel.periodList.isNotEmpty() },
+        messageNoData = R.string.no_data
+    ) {
         Yearly(viewModel = viewModel)
     }
 

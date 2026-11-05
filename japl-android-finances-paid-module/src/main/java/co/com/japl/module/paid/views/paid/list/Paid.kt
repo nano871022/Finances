@@ -10,50 +10,40 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.Card
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Surface
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.BrightnessHigh
-import androidx.compose.material.icons.rounded.Downloading
 import androidx.compose.material.icons.rounded.MoreVert
+import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import co.com.japl.finances.iports.dtos.PaidDTO
 import co.com.japl.module.paid.R
 import co.com.japl.module.paid.controllers.paid.list.PaidViewModel
 import co.com.japl.module.paid.enums.PaidListOptions
-import co.com.japl.ui.Prefs
 import co.com.japl.ui.components.AlertDialogOkCancel
-import co.com.japl.ui.components.FieldText
 import co.com.japl.ui.components.FieldView
 import co.com.japl.ui.components.FieldViewCards
 import co.com.japl.ui.components.FloatButton
 import co.com.japl.ui.components.IconButton
 import co.com.japl.ui.components.LoadingProgress
-import co.com.japl.ui.components.OnResumeEffect
 import co.com.japl.ui.components.MoreOptionsDialog
-import co.com.japl.ui.components.Popup
+import co.com.japl.ui.components.OnResumeEffect
 import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.com.japl.ui.theme.values.Dimensions
 import co.com.japl.ui.theme.values.ModifiersCustom.Weight1f
 import co.com.japl.ui.utils.NumbersUtil
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import java.time.LocalDateTime
 import java.time.YearMonth
 import java.time.format.DateTimeFormatter
@@ -71,7 +61,7 @@ fun Paid(viewModel:PaidViewModel) {
     LoadingProgress(
         message = R.string.loading_data,
         showProgress = loaderState,
-        execute = {}
+        messageNoData = R.string.no_data
     ) {
         Body(viewModel)
     }

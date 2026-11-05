@@ -5,14 +5,11 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Card
-import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -21,41 +18,38 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import co.com.japl.finances.iports.dtos.PeriodCheckPaymentDTO
+import co.com.japl.module.paid.R
+import co.com.japl.module.paid.fragments.PeriodCheckPaymentViewModel
 import co.com.japl.ui.components.FieldView
 import co.com.japl.ui.components.FieldViewCards
+import co.com.japl.ui.components.LoadingProgress
+import co.com.japl.ui.components.OnResumeEffect
 import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.com.japl.ui.theme.values.Dimensions
 import co.com.japl.ui.theme.values.ModifiersCustom.Weight1f
 import co.japl.android.graphs.utils.NumbersUtil
-import co.com.japl.module.paid.R
-import co.com.japl.module.paid.fragments.PeriodCheckPaymentViewModel
-import co.com.japl.ui.components.LoadingProgress
-
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import java.time.YearMonth
 import java.time.format.DateTimeFormatter
 import java.time.format.TextStyle
 import java.util.Locale
-import kotlin.collections.get
-import kotlin.text.get
 
 @Composable
 fun CheckPaids(viewModel: PeriodCheckPaymentViewModel) {
     val loaderStatus = remember { viewModel.loader }
 
 
+    OnResumeEffect {
+        viewModel.execute()
+    }
+
     LoadingProgress(
         message = R.string.loading_data,
         showProgress = loaderStatus,
-        execute = viewModel::execute,
         validateData = viewModel.map::isNotEmpty,
         messageNoData = R.string.no_data
     ) {
