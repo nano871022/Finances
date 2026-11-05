@@ -203,7 +203,7 @@ class PaidViewModel @AssistedInject constructor(@Assisted private val accountCod
             try {
                 execute()
             } catch (e: Exception) {
-                Log.e(javaClass.name, "Error in main: ${e.message}", e)
+                Log.e(javaClass.name, "Error in reload: ${e.message}", e)
             } finally {
                 loaderState.value = false
             }

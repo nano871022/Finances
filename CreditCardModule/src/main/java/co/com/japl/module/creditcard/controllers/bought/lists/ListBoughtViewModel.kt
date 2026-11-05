@@ -73,15 +73,9 @@ class ListBoughtViewModel @Inject constructor(
         }
     }
 
-    fun reload() = viewModelScope.launch {
-        getQuotes()
-    }
-
-    fun refresh() {
-        viewModelScope.launch {
-            isLoad.value = false
-            getQuotes()
-        }
+    fun refresh() = viewModelScope.launch {
+        isLoad.value = false
+        load()
     }
 
     fun onSearchQueryChange(query: String) {
@@ -111,7 +105,7 @@ class ListBoughtViewModel @Inject constructor(
         )
     }
 
-    suspend fun getQuotes(){
+    suspend fun load(){
         taxSvc.get(_params.first,_params.second.monthValue,_params.second.year,
             KindInterestRateEnum.CASH_ADVANCE)?.let {
             cashAdvance.value = true

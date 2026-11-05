@@ -22,7 +22,6 @@ class AccountViewModel @Inject constructor(private val accountSvc:IAccountPort?,
 
     val loading = mutableStateOf(true)
     var list = mutableStateListOf<AccountDTO>()
-    val save = false
 
     fun add(){
         navController?.let {
