@@ -1,4 +1,4 @@
-package co.com.japl.module.paid.views.periods.list
+﻿package co.com.japl.module.paid.views.periods.list
 
 import android.content.res.Configuration
 import android.os.Build
@@ -7,25 +7,21 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Card
-import co.com.japl.ui.components.LoadingIndicator
-import androidx.compose.material3.Surface
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.MoreVert
+import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.snapshots.SnapshotStateMap
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.capitalize
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import co.com.japl.finances.iports.dtos.PeriodPaidDTO
@@ -35,34 +31,33 @@ import co.com.japl.module.paid.enums.PeriodListOptions
 import co.com.japl.ui.components.FieldView
 import co.com.japl.ui.components.FieldViewCards
 import co.com.japl.ui.components.IconButton
+import co.com.japl.ui.components.LoadingProgress
 import co.com.japl.ui.components.MoreOptionsDialog
+import co.com.japl.ui.components.OnResumeEffect
 import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.com.japl.ui.theme.values.Dimensions
 import co.com.japl.ui.theme.values.ModifiersCustom.Weight1f
 import co.com.japl.ui.utils.NumbersUtil
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import java.time.YearMonth
 import java.time.format.DateTimeFormatter
 import java.util.Locale
 
 @Composable
 fun Period(viewModel:PeriodsViewModel){
-    val progressState = remember {
-        viewModel.progress
-    }
     val loaderState = remember {
         viewModel.loader
     }
 
-    LaunchedEffect(Unit) {
-        viewModel.main()
+    OnResumeEffect {
+        viewModel.reload()
     }
 
-    if(loaderState.value) {
-        LoadingIndicator(progress = { progressState.value })
-    }else{
+    LoadingProgress(
+        message = R.string.loading_data,
+        showProgress = loaderState,
+        validateData = { viewModel.list.isNotEmpty() },
+        messageNoData = R.string.no_data
+    ) {
         Body(viewModel)
     }
 }

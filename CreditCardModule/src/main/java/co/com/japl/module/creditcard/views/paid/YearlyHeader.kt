@@ -1,9 +1,9 @@
 package co.com.japl.module.creditcard.views.paid
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -19,6 +19,7 @@ import co.com.japl.ui.utils.WindowWidthSize
 import co.com.japl.ui.utils.NumbersUtil
 
 
+@SuppressLint("UnusedBoxWithConstraintsScope")
 @Composable
 internal fun YearlyHeader(year:Long, list:List<BoughtCreditCardPeriodDTO>){
     BoxWithConstraints (modifier=Modifier.padding(10.dp)){

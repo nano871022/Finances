@@ -10,8 +10,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
-import co.com.japl.ui.components.LoadingIndicator
 import androidx.compose.material.icons.Icons
+import co.com.japl.ui.components.LoadingProgress
+import co.com.japl.ui.components.OnResumeEffect
 import androidx.compose.material.icons.rounded.Cancel
 import androidx.compose.material.icons.rounded.CleaningServices
 import androidx.compose.material.icons.rounded.Edit
@@ -42,12 +43,17 @@ import java.time.LocalDateTime
 @Composable
 fun Advance (viewModel:AdvanceViewModel){
     val isLoadingState = remember {viewModel.loading}
-    val loadingState = remember { viewModel.progress }
 
-    if(isLoadingState.value) {
-        LoadingIndicator(progress = { loadingState.floatValue })
-    }else {
+    OnResumeEffect {
         viewModel.creditRateEmpty()
+    }
+
+    LoadingProgress(
+        message = R.string.loading_data,
+        showProgress = isLoadingState,
+        validateData = { true },
+        messageNoData = R.string.no_data
+    ) {
         Scaffold(
             floatingActionButton = {
 

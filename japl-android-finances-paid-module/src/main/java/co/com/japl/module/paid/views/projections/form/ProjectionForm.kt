@@ -10,11 +10,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.CleaningServices
 import androidx.compose.material.icons.rounded.Save
 import androidx.compose.material.icons.rounded.Update
-import androidx.compose.material3.LinearProgressIndicator
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -23,23 +20,23 @@ import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.SavedStateHandle
+import androidx.navigation.NavController
+import co.com.japl.finances.iports.dtos.ProjectionDTO
 import co.com.japl.finances.iports.enums.KindPaymentsEnums
+import co.com.japl.finances.iports.inbounds.paid.IProjectionFormPort
 import co.com.japl.module.paid.R
 import co.com.japl.module.paid.controllers.projections.forms.ProjectionFormViewModel
 import co.com.japl.ui.components.FieldDatePicker
 import co.com.japl.ui.components.FieldSelect
 import co.com.japl.ui.components.FieldText
 import co.com.japl.ui.components.FloatButton
+import co.com.japl.ui.components.LoadingProgress
+import co.com.japl.ui.components.OnResumeEffect
 import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.com.japl.ui.theme.values.Dimensions
 import co.com.japl.ui.utils.DateUtils
-import androidx.lifecycle.SavedStateHandle
-import androidx.navigation.NavController
-import co.com.japl.finances.iports.dtos.ProjectionDTO
-import co.com.japl.finances.iports.inbounds.paid.IProjectionFormPort
-import co.com.japl.finances.iports.inbounds.paid.IProjectionsPort
 import java.math.BigDecimal
 import java.time.LocalDate
 
@@ -49,16 +46,16 @@ fun ProjectionForm(viewModel: ProjectionFormViewModel){
     val snackbarState = remember { viewModel.hostState}
     val status = remember { viewModel.loaderStatus }
 
-    if(status.value) {
-        Column(modifier=Modifier.fillMaxWidth()) {
-            LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
-            Text(text=stringResource(R.string.loading_data),
-                textAlign = TextAlign.Center,
-                color= MaterialTheme.colorScheme.onBackground,
-                modifier=Modifier.fillMaxWidth())
-        }
-    }else {
+    OnResumeEffect {
+        viewModel.reload()
+    }
 
+    LoadingProgress(
+        message = R.string.loading_data,
+        showProgress = status,
+        validateData = { true },
+        messageNoData = R.string.no_data
+    ) {
 
         Scaffold(
             floatingActionButton = {

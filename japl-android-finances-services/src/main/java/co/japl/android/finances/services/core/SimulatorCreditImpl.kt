@@ -38,13 +38,14 @@ class SimulatorCreditImpl @Inject constructor(private val simulatorSvc: ISimulat
         code: Int,
         cache: Boolean
     ): SimulatorCreditDTO? {
-        if(cache){
-            return simulatorCache.findById(code.toLong())
-        }else{
-            simulatorSvc.get(code).getOrNull()?.let {
-                return@findByCode SimulatorCreditMapper.mapper(it)
+        if (cache) {
+            return simulatorCache.findById(code.toLong()) ?: simulatorSvc.get(code).getOrNull()?.let {
+                SimulatorCreditMapper.mapper(it)
             }
+        } else {
+            return simulatorSvc.get(code).getOrNull()?.let {
+                SimulatorCreditMapper.mapper(it)
+            } ?: simulatorCache.findById(code.toLong())
         }
-        return null
     }
 }

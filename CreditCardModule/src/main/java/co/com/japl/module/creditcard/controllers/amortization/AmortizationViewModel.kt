@@ -38,6 +38,7 @@ class AmortizationViewModel @Inject constructor(
 	
 	fun execute() = viewModelScope.launch{
 		try {
+			progressStatus.value = true
 			withContext(Dispatchers.IO) {
 				svc?.getAmortization(id, KindAmortization.VARIABLE_QUOTE_SIMULATOR, true)
 			}?.let {
@@ -45,9 +46,10 @@ class AmortizationViewModel @Inject constructor(
 				list.clear()
 				list.addAll(it)
 			}
-			progressStatus.value = false
 		}catch (e: Exception){
 			Toast.makeText(context, e.message, Toast.LENGTH_LONG).show()
+		}finally {
+			progressStatus.value = false
 		}
 	}
 

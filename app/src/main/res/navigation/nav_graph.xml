@@ -229,14 +229,22 @@
         <action
             android:id="@+id/action_amortizationTableFragment_to_extraValueListController"
             app:destination="@id/extraValueListController" />
-        <deepLink app:uri="android-app://co.com.japl.finanzas.module.app/simulator/variable/amortization"/>
+        <argument
+            android:name="code"
+            app:argType="long"
+            android:defaultValue="0L" />
+        <deepLink app:uri="android-app://co.com.japl.finanzas.module.app/simulator/variable/amortization?code={code}"/>
     </fragment>
     <fragment
         android:id="@+id/amortizationTableFixFragment"
         android:name="co.com.japl.module.credit.fragments.AmortizationTableFragment"
         android:label="@string/amortization_table"
         tools:layout="@layout/fragment_amortization_fix_table" >
-        <deepLink app:uri="android-app://co.com.japl.finanzas.module.app/simulator/fix/amortization"/>
+        <argument
+            android:name="code"
+            app:argType="long"
+            android:defaultValue="0L" />
+        <deepLink app:uri="android-app://co.com.japl.finanzas.module.app/simulator/fix/amortization?code={code}"/>
     </fragment>
     <fragment
         android:id="@+id/additionalCreditFragment"

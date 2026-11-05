@@ -1,8 +1,7 @@
-package co.com.japl.module.creditcard.controllers.creditrate.lists
+﻿package co.com.japl.module.creditcard.controllers.creditrate.lists
 
 import android.content.Context
 import android.widget.Toast
-import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
@@ -21,7 +20,6 @@ import kotlinx.coroutines.withContext
 
 class CreditRateListViewModel(private val context:Context?, private val creditCardSvc:ICreditCardPort?, private val creditRateSvc:ITaxPort?, private val navController: NavController?):ViewModel() {
 
-    var progress = mutableFloatStateOf(0f)
     var showProgress = mutableStateOf(true)
 
     var creditCard:MutableMap<CreditCardDTO?,List<TaxDTO>>? by mutableStateOf<MutableMap<CreditCardDTO?,List<TaxDTO>>?>(HashMap())
@@ -47,7 +45,7 @@ class CreditRateListViewModel(private val context:Context?, private val creditCa
                 if (success) {
                     Toast.makeText(context, R.string.toast_successful_deleted, Toast.LENGTH_SHORT)
                         .show()
-                    main()
+                    reload()
                 } else {
                     Toast.makeText(context, R.string.toast_dont_successful_deleted, Toast.LENGTH_SHORT)
                         .show()
@@ -65,7 +63,7 @@ class CreditRateListViewModel(private val context:Context?, private val creditCa
                 if (success) {
                     Toast.makeText(context, R.string.toast_successful_cloned, Toast.LENGTH_SHORT)
                         .show()
-                    main()
+                    reload()
                 } else {
                     Toast.makeText(context, R.string.toast_dont_successful_cloned, Toast.LENGTH_SHORT)
                         .show()
@@ -83,7 +81,7 @@ class CreditRateListViewModel(private val context:Context?, private val creditCa
                 if (success) {
                     Toast.makeText(context, R.string.toast_successful_enabled, Toast.LENGTH_SHORT)
                         .show()
-                    main()
+                    reload()
                 } else {
                     Toast.makeText(context, R.string.toast_dont_successful_enabled, Toast.LENGTH_SHORT)
                         .show()
@@ -101,7 +99,7 @@ class CreditRateListViewModel(private val context:Context?, private val creditCa
                 if (success) {
                     Toast.makeText(context, R.string.toast_successful_disabled, Toast.LENGTH_SHORT)
                         .show()
-                    main()
+                    reload()
                 } else {
                     Toast.makeText(context, R.string.toast_dont_successful_disabled, Toast.LENGTH_SHORT)
                         .show()
@@ -114,12 +112,10 @@ class CreditRateListViewModel(private val context:Context?, private val creditCa
         navController?.let { ListCreditRate.navigate(codeCreditCard,codeCreditRate,navigate = navController)}
     }
 
-    fun main() {
+    fun reload() {
         viewModelScope.launch {
             showProgress.value = true
-            progress.floatValue = 0.1f
             execute()
-            progress.floatValue = 1f
         }
     }
 
@@ -127,7 +123,6 @@ class CreditRateListViewModel(private val context:Context?, private val creditCa
         creditCardSvc?.let { svc ->
             val result = withContext(Dispatchers.IO) {
                 svc.getAll()?.let { list ->
-                    progress.floatValue = 0.5f
                     list.flatMap {
                         creditRateSvc?.let { svcTax ->
                             svcTax.getByCreditCard(it.id)?.sortedByDescending { it.create }
@@ -139,10 +134,11 @@ class CreditRateListViewModel(private val context:Context?, private val creditCa
                     }
                 }
             }
-            progress.floatValue = 0.8f
             creditCard = result?.toMutableMap()
             showProgress.value = false
         }
     }
 
 }
+
+

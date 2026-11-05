@@ -1,4 +1,4 @@
-package co.com.japl.module.creditcard.controllers.bought.forms
+﻿package co.com.japl.module.creditcard.controllers.bought.forms
 
 import android.widget.Toast
 import androidx.compose.runtime.mutableFloatStateOf
@@ -109,7 +109,7 @@ class AdvanceViewModel(private val savedStateHandle: SavedStateHandle?=null, pri
     )
 
     init{
-        main()
+        reload()
     }
 
     fun clear(){
@@ -257,7 +257,7 @@ class AdvanceViewModel(private val savedStateHandle: SavedStateHandle?=null, pri
 
     }
 
-    fun main()= runBlocking {
+    fun reload()= runBlocking {
         progress.floatValue = 0.1f
         execute()
         progress.floatValue = 1.0f
@@ -309,3 +309,4 @@ class AdvanceViewModel(private val savedStateHandle: SavedStateHandle?=null, pri
 
 
 }
+

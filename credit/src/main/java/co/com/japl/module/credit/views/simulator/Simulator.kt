@@ -14,8 +14,9 @@ import androidx.compose.material.icons.rounded.Clear
 import androidx.compose.material.icons.rounded.TableChart
 import androidx.compose.material.icons.rounded.Save
 import androidx.compose.material.icons.rounded.Cancel
-import co.com.japl.ui.components.LoadingIndicator
 import androidx.compose.material3.Scaffold
+import co.com.japl.ui.components.LoadingProgress
+import co.com.japl.ui.components.OnResumeEffect
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
@@ -44,9 +45,15 @@ import java.math.BigDecimal
 fun Simulator(viewModel: SimulatorFixViewModel){
     val hasProgress = remember { viewModel.hasProgress }
 
-    if(hasProgress.value) {
-        LoadingIndicator()
-    }else{
+    OnResumeEffect {
+    }
+
+    LoadingProgress(
+        message = R.string.load_data,
+        showProgress = hasProgress,
+        validateData = { true },
+        messageNoData = R.string.no_data
+    ) {
         Body(viewModel)
     }
 

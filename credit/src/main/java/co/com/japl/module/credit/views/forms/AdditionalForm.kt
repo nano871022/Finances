@@ -1,10 +1,9 @@
 package co.com.japl.module.credit.views.forms
 
-import android.os.Build
 import android.content.res.Configuration
+import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
@@ -19,29 +18,33 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.SavedStateHandle
+import co.com.japl.finances.iports.dtos.AdditionalCreditDTO
+import co.com.japl.finances.iports.outbounds.IAdditionalPort
 import co.com.japl.module.credit.R
 import co.com.japl.module.credit.controllers.forms.AdditionalFormViewModel
 import co.com.japl.ui.components.FieldDatePicker
 import co.com.japl.ui.components.FieldText
 import co.com.japl.ui.components.FloatButton
+import co.com.japl.ui.components.LoadingProgress
+import co.com.japl.ui.components.OnResumeEffect
 import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.com.japl.ui.theme.values.Dimensions
-import co.com.japl.ui.theme.values.ModifiersCustom.Weight1f
-import co.com.japl.ui.theme.values.ModifiersCustom.Weight1fAndPaddintRightSpace
 import co.com.japl.ui.utils.DateUtils
-import androidx.lifecycle.SavedStateHandle
-import co.com.japl.finances.iports.dtos.AdditionalCreditDTO
-import co.com.japl.finances.iports.outbounds.IAdditionalPort
-import co.com.japl.ui.components.LoadingProgress
 import java.math.BigDecimal
 
 @Composable
 fun AdditionalForm(viewModel: AdditionalFormViewModel){
 
+    OnResumeEffect {
+        viewModel.execute()
+    }
+
     LoadingProgress(
         message = R.string.load_data,
         showProgress = viewModel.loading,
-        execute = viewModel::execute
+        validateData = { true },
+        messageNoData = R.string.no_data
     ) {
         Scaffold(
             snackbarHost = {

@@ -1,18 +1,18 @@
-package co.com.japl.module.creditcard.views.account.forms
+﻿package co.com.japl.module.creditcard.views.account.forms
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
-import co.com.japl.ui.components.LoadingIndicator
 import androidx.compose.material.icons.Icons
+import co.com.japl.ui.components.LoadingProgress
+import co.com.japl.ui.components.OnResumeEffect
 import androidx.compose.material.icons.rounded.Cancel
 import androidx.compose.material.icons.rounded.Create
 import androidx.compose.material.icons.rounded.Settings
 import androidx.compose.material.icons.rounded.Update
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -23,26 +23,26 @@ import co.com.japl.module.creditcard.controllers.account.CreditCardViewModel
 import co.com.japl.ui.components.CheckBoxField
 import co.com.japl.ui.components.FieldText
 import co.com.japl.ui.components.FloatButton
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+
 
 @Composable
 fun CreditCard(viewModel: CreditCardViewModel){
 
-    val progression = remember{viewModel.progress}
     val showProgress = remember{viewModel.showProgress}
 
     remember { viewModel.showButtons }
     val buttonUpdateState = remember { viewModel.showButtonUpdate}
 
-    LaunchedEffect(Unit) {
-        viewModel.main()
+    OnResumeEffect {
+        viewModel.reload()
     }
 
-    if(showProgress.value) {
-        LoadingIndicator(progress = { progression.floatValue })
-    }else{
+    LoadingProgress(
+        message = R.string.loading_data,
+        showProgress = showProgress,
+        validateData = { true },
+        messageNoData = R.string.no_data
+    ) {
         Scaffold(
             floatingActionButton = {
                 Column {

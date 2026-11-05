@@ -5,37 +5,39 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
-import co.japl.android.myapplication.finanzas.controller.google.GoogleAuthBackupRestoreViewModel
 import co.com.japl.ui.components.DataTable
+import co.com.japl.ui.components.LoadingProgress
+import co.com.japl.ui.components.OnResumeEffect
 import co.com.japl.ui.model.datatable.Header
 import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.com.japl.ui.theme.values.Dimensions
-import co.japl.android.myapplication.R
 import co.com.japl.ui.utils.NumbersUtil
+import co.japl.android.myapplication.R
+import co.japl.android.myapplication.finanzas.controller.google.GoogleAuthBackupRestoreViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DataTables(viewModel:GoogleAuthBackupRestoreViewModel){
-    val progress by remember {viewModel.statsLocalProgess}
+    val progress = remember {viewModel.statsLocalProgess}
 
-    viewModel.onload()
+    OnResumeEffect {
+        viewModel.onload()
+    }
 
-    if(progress) {
-        LinearProgressIndicator( modifier=Modifier.fillMaxWidth())
-        Text(text= stringResource(R.string.loading_data),
-            textAlign = TextAlign.Center,
-            modifier=Modifier.fillMaxWidth())
-    }else {
+    LoadingProgress(
+        message = R.string.loading_data,
+        showProgress = progress,
+        validateData = { viewModel.statsLocal.isNotEmpty() },
+        messageNoData = R.string.not_data
+    ) {
         DTBody(viewModel)
     }
 }

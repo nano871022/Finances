@@ -12,14 +12,12 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.LinearProgressIndicator
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ShapeDefaults
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -31,9 +29,9 @@ import co.com.japl.module.credit.R
 import co.com.japl.module.credit.controllers.list.PeriodsViewModel
 import co.com.japl.ui.components.FieldView
 import co.com.japl.ui.components.LoadingProgress
+import co.com.japl.ui.components.OnResumeEffect
 import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.com.japl.ui.theme.values.Dimensions
-import co.com.japl.ui.utils.FormUIState
 import co.japl.android.graphs.utils.NumbersUtil
 import java.math.BigDecimal
 import java.text.SimpleDateFormat
@@ -44,10 +42,13 @@ import java.util.Locale
 @Composable
 fun Periods(viewModel: PeriodsViewModel){
     val viewState = remember {viewModel.loading}
+    OnResumeEffect {
+        viewModel.execute()
+    }
+
     LoadingProgress(
         message = R.string.load_data,
         showProgress = viewState,
-        execute = viewModel::execute,
         validateData = viewModel.records::isNotEmpty,
         messageNoData = R.string.no_data
     ) { Body(viewModel)}

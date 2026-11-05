@@ -1,4 +1,4 @@
-package co.com.japl.module.paid.controllers.sms.form
+﻿package co.com.japl.module.paid.controllers.sms.form
 
 import android.widget.Toast
 import androidx.compose.runtime.mutableFloatStateOf
@@ -201,7 +201,7 @@ class SmsViewModel(private val codeSMS:Int?, private val svc:ISMSPaidPort?, priv
         }
     }
 
-    fun main() {
+    fun reload() {
         viewModelScope.launch {
             progress.floatValue = 0.1f
             execute()
@@ -257,3 +257,4 @@ class SmsViewModel(private val codeSMS:Int?, private val svc:ISMSPaidPort?, priv
 
 
 }
+

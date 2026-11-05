@@ -1,4 +1,4 @@
-package co.com.japl.module.creditcard.controllers.bought.forms
+﻿package co.com.japl.module.creditcard.controllers.bought.forms
 
 import android.widget.Toast
 import androidx.compose.runtime.mutableFloatStateOf
@@ -182,7 +182,7 @@ class QuoteViewModel(private val codeCreditCard:Int,
 
     init{
         viewModelScope.launch {
-            main()
+            reload()
         }
 
     }
@@ -517,7 +517,7 @@ class QuoteViewModel(private val codeCreditCard:Int,
         }
     }
 
-    fun main() = viewModelScope.launch {
+    fun reload() = viewModelScope.launch {
         progress.floatValue = 0.1f
         execute()
         progress.floatValue = 1.0f
@@ -640,4 +640,6 @@ class QuoteViewModel(private val codeCreditCard:Int,
     }
 
 }
+
+
 

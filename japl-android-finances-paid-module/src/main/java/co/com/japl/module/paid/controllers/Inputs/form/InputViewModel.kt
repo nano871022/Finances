@@ -1,4 +1,4 @@
-package co.com.japl.module.paid.controllers.Inputs.form
+﻿package co.com.japl.module.paid.controllers.Inputs.form
 
 import android.widget.Toast
 import androidx.compose.runtime.mutableFloatStateOf
@@ -90,7 +90,7 @@ class InputViewModel @AssistedInject constructor(@Assisted private val codeAccou
         }
     }
 
-    fun main() {
+    fun reload() {
         viewModelScope.launch {
             progress.value = 0.1f
             execution()

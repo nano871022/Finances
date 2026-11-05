@@ -1,4 +1,4 @@
-package co.japl.android.myapplication.finanzas.controller.recap
+﻿package co.japl.android.myapplication.finanzas.controller.recap
 
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -43,7 +43,7 @@ class RecapViewModel @Inject constructor(private var recapSvc:IRecapPort?,privat
         _recap = recap
     }
 
-    fun main() = runBlocking {
+    fun reload() = runBlocking {
         getRecap()
         _loading.value = false
         _currentProgress.value = 1f

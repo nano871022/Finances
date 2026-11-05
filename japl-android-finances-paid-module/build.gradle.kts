@@ -89,6 +89,7 @@ dependencies {
     implementation("androidx.compose.material:material")
 
     testImplementation("junit:junit:4.13.2")
+    testImplementation(testFixtures(project(":ui")))
     testImplementation("org.mockito:mockito-core:5.11.0")
     testImplementation("org.mockito.kotlin:mockito-kotlin:5.2.1")
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.8.1")

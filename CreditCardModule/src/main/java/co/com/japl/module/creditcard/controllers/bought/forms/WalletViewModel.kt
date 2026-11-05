@@ -1,4 +1,4 @@
-package co.com.japl.module.creditcard.controllers.bought.forms
+﻿package co.com.japl.module.creditcard.controllers.bought.forms
 
 import android.widget.Toast
 import androidx.compose.runtime.mutableFloatStateOf
@@ -109,7 +109,7 @@ class WalletViewModel(private val savedStateHolder: SavedStateHandle?=null, priv
     )
 
     init{
-        main()
+        reload()
     }
 
     fun clear(){
@@ -261,7 +261,7 @@ class WalletViewModel(private val savedStateHolder: SavedStateHandle?=null, priv
         }
     }
 
-    fun main()= runBlocking {
+    fun reload()= runBlocking {
         progress.floatValue = 0.1f
         execute()
         progress.floatValue = 1.0f
@@ -313,3 +313,4 @@ class WalletViewModel(private val savedStateHolder: SavedStateHandle?=null, priv
 
 
 }
+

@@ -1,4 +1,4 @@
-package co.com.japl.module.creditcard.controllers.creditrate.forms
+﻿package co.com.japl.module.creditcard.controllers.creditrate.forms
 
 import android.util.Log
 import android.widget.Toast
@@ -141,7 +141,7 @@ class CreateRateViewModel(private val codeCreditCard:Int?, private val codeCredi
        }
     }
 
-    fun main() {
+    fun reload() {
         viewModelScope.launch {
             progress.floatValue = 0.1f
             execute()
@@ -209,3 +209,4 @@ class CreateRateViewModel(private val codeCreditCard:Int?, private val codeCredi
         }
     }
 }
+

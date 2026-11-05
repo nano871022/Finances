@@ -1,4 +1,4 @@
-package co.com.japl.module.creditcard.views.creditrate.forms
+﻿package co.com.japl.module.creditcard.views.creditrate.forms
 
 import android.content.res.Configuration
 import android.os.Build
@@ -9,17 +9,14 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.FloatingActionButton
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material3.LinearProgressIndicator
-import androidx.compose.material3.Scaffold
+import androidx.compose.material.FloatingActionButtonDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.AddCircleOutline
-import androidx.compose.material.FloatingActionButtonDefaults
 import androidx.compose.material.icons.rounded.Cancel
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringArrayResource
@@ -34,6 +31,8 @@ import co.com.japl.module.creditcard.controllers.creditrate.forms.CreateRateView
 import co.com.japl.ui.components.CheckBoxField
 import co.com.japl.ui.components.FieldSelect
 import co.com.japl.ui.components.FieldText
+import co.com.japl.ui.components.LoadingProgress
+import co.com.japl.ui.components.OnResumeEffect
 import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.com.japl.ui.theme.values.Dimensions
 import co.com.japl.ui.theme.values.ModifiersCustom.Weight1f
@@ -43,18 +42,17 @@ fun CreditRate(viewModel: CreateRateViewModel) {
     var statePogress = remember {
         viewModel.loader
     }
-    var progress = remember {
-        viewModel.progress
-    }
-    LaunchedEffect(Unit) {
-        viewModel.main()
+
+    OnResumeEffect {
+        viewModel.reload()
     }
 
-    if (statePogress.value) {
-        LinearProgressIndicator(
-            progress = { progress.floatValue },
-        )
-    } else {
+    LoadingProgress(
+        message = R.string.loading_data,
+        showProgress = statePogress,
+        validateData = { true },
+        messageNoData = R.string.no_data
+    ) {
         Scaffold(
             floatingActionButton = {
                 FloatingActionButton(
@@ -261,3 +259,4 @@ fun CreditRatePreviewDark() {
         CreditRate(viewModel)
     }
 }
+

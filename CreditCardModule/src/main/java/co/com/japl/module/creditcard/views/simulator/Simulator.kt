@@ -16,8 +16,6 @@ import androidx.compose.material.icons.rounded.Save
 import androidx.compose.material.icons.rounded.TableChart
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
-import androidx.compose.material3.LinearProgressIndicator
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -27,41 +25,41 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.SavedStateHandle
+import androidx.navigation.NavController
+import co.com.japl.finances.iports.dtos.SimulatorCreditDTO
 import co.com.japl.finances.iports.enums.KindOfTaxEnum
+import co.com.japl.finances.iports.inbounds.creditcard.ISimulatorCreditVariablePort
 import co.com.japl.module.creditcard.R
 import co.com.japl.module.creditcard.controllers.simulator.FormViewModel
 import co.com.japl.ui.components.FieldSelect
 import co.com.japl.ui.components.FieldText
 import co.com.japl.ui.components.FieldView
 import co.com.japl.ui.components.FloatButton
+import co.com.japl.ui.components.LoadingProgress
+import co.com.japl.ui.components.OnResumeEffect
 import co.com.japl.ui.components.Popup
 import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.com.japl.ui.theme.values.Dimensions
 import co.japl.android.graphs.utils.NumbersUtil
 import java.math.BigDecimal
-import androidx.compose.ui.platform.LocalContext
-import androidx.lifecycle.SavedStateHandle
-import androidx.navigation.NavController
-import co.com.japl.finances.iports.inbounds.creditcard.ISimulatorCreditVariablePort
-import co.com.japl.finances.iports.dtos.SimulatorCreditDTO
-import java.util.Optional
 
 @Composable
 fun Simulator(viewModel: FormViewModel){
     val hasProgress = remember { mutableStateOf(false) }
 
-    if(hasProgress.value){
-        Column(modifier= Modifier.fillMaxWidth()) {
-            LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
-            Text(text=stringResource(R.string.loading_data),
-                color= MaterialTheme.colorScheme.onBackground,
-                textAlign = TextAlign.Center,
-                modifier = Modifier.fillMaxWidth().padding(Dimensions.PADDING_TOP))
-        }
-    }else{
+    OnResumeEffect {
+    }
+
+    LoadingProgress(
+        message = R.string.loading_data,
+        showProgress = hasProgress,
+        validateData = { true },
+        messageNoData = R.string.no_data
+    ) {
         Body(viewModel)
     }
 

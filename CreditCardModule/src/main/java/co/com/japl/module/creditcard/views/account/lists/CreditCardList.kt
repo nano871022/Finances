@@ -1,5 +1,6 @@
-package co.com.japl.module.creditcard.views.account.lists
+﻿package co.com.japl.module.creditcard.views.account.lists
 
+import android.annotation.SuppressLint
 import android.content.res.Configuration
 import android.os.Build
 import androidx.annotation.RequiresApi
@@ -9,21 +10,18 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.FloatingActionButton
 import androidx.compose.material.FloatingActionButtonDefaults
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.AddCircleOutline
 import androidx.compose.material3.Card
-import androidx.compose.material3.Divider
-import androidx.compose.material.FloatingActionButton
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import co.com.japl.ui.components.LoadingIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -36,7 +34,12 @@ import androidx.compose.ui.unit.dp
 import co.com.japl.finances.iports.dtos.CreditCardDTO
 import co.com.japl.module.creditcard.R
 import co.com.japl.module.creditcard.controllers.account.CreditCardListViewModel
-import co.com.japl.module.creditcard.controllers.account.CreditCardViewModel
+import co.com.japl.module.creditcard.enums.MoreOptionsItemsCreditCardList
+import co.com.japl.ui.components.AlertDialogOkCancel
+import co.com.japl.ui.components.HelpWikiButton
+import co.com.japl.ui.components.LoadingProgress
+import co.com.japl.ui.components.MoreOptionsDialog
+import co.com.japl.ui.components.OnResumeEffect
 import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.com.japl.ui.theme.values.Dimensions
 import co.com.japl.ui.theme.values.ModifiersCustom.AlignCenterVerticalAndPaddingRightSpace
@@ -44,33 +47,24 @@ import co.com.japl.ui.theme.values.ModifiersCustom.Weight1f
 import co.com.japl.ui.theme.values.ModifiersCustom.Weight1fAndAlightCenterVertical
 import co.com.japl.ui.theme.values.ModifiersCustom.Weight1fAndAlightCenterVerticalAndPaddingRightSpace
 import co.com.japl.ui.theme.values.ModifiersCustom.Weight1fAndPaddintRightSpace
-import co.com.japl.module.creditcard.enums.MoreOptionsItemsCreditCardList
-import co.com.japl.ui.utils.WindowWidthSize
-import co.com.japl.ui.components.AlertDialogOkCancel
-import co.com.japl.ui.components.HelpWikiButton
-import co.com.japl.ui.components.MoreOptionsDialog
 import co.com.japl.ui.utils.NumbersUtil
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import co.com.japl.ui.utils.WindowWidthSize
 
 
 @Composable
 fun CreditCardList(creditCardViewModel:CreditCardListViewModel){
-    val progress = remember {
-        creditCardViewModel.progress
-    }
     val status = remember{
         creditCardViewModel.showProgress
     }
 
-    LaunchedEffect(Unit) {
-        creditCardViewModel.main()
+    OnResumeEffect {
+        creditCardViewModel.reload()
     }
 
-    if(status.value) {
-        LoadingIndicator(progress = { progress.floatValue })
-    }else {
+    LoadingProgress(
+        message = R.string.loading_data,
+        showProgress = status
+    ) {
         Body(creditCardViewModel = creditCardViewModel)
     }
 }
@@ -100,6 +94,7 @@ private fun Body(creditCardViewModel:CreditCardListViewModel){
     }
 }
 
+@SuppressLint("UnusedBoxWithConstraintsScope")
 @Composable
 private fun Item(dto:CreditCardDTO,edit:(Int)->Unit,delete:(Int)->Unit,goToSettings:(Int)->Unit){
     val state = remember{ mutableStateOf(false) }
@@ -228,6 +223,5 @@ fun CreditCardListPreviewDark(){
 fun getViewModel():CreditCardListViewModel{
  val viewModel = CreditCardListViewModel(creditCardSvc = null)
     viewModel.showProgress.value = false
-    viewModel.progress.floatValue = 0.7f
     return viewModel
 }

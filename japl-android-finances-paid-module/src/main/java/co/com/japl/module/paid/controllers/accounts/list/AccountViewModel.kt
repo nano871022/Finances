@@ -1,6 +1,5 @@
-package co.com.japl.module.paid.controllers.accounts.list
+﻿package co.com.japl.module.paid.controllers.accounts.list
 
-import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
@@ -21,10 +20,8 @@ class AccountViewModel @Inject constructor(private val accountSvc:IAccountPort?,
 
     var navController: NavController? = null
 
-    val progress = mutableFloatStateOf(0f)
     val loading = mutableStateOf(true)
     var list = mutableStateListOf<AccountDTO>()
-    val save = false
 
     fun add(){
         navController?.let {
@@ -39,23 +36,20 @@ class AccountViewModel @Inject constructor(private val accountSvc:IAccountPort?,
     }
 
     fun delete(codeAccount:Int){
-        accountSvc?.let {
-
-            accountSvc.delete(codeAccount)
+        if (accountSvc?.delete(codeAccount) == true) {
+            reload()
         }
     }
 
 
-    fun main() {
+    fun reload() {
+        loading.value = true
         viewModelScope.launch {
-            progress.value = 0.1f
             services()
-            progress.value = 1f
         }
     }
 
     suspend fun services() {
-        progress.value = 0.2f
         accountSvc?.let { svc ->
             val result = withContext(Dispatchers.IO) {
                 svc.getAll()
@@ -66,8 +60,8 @@ class AccountViewModel @Inject constructor(private val accountSvc:IAccountPort?,
                 loading.value = false
             }
         }
-        progress.value = 0.8f
         loading.value = false
     }
 
 }
+

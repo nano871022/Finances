@@ -19,7 +19,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import co.com.japl.module.paid.R
-import co.com.japl.module.paid.controllers.monthly.list.MonthlyViewModel
 import co.com.japl.module.paid.controllers.paid.list.PaidViewModel
 import co.com.japl.ui.components.FieldText
 import co.com.japl.ui.components.FloatButton

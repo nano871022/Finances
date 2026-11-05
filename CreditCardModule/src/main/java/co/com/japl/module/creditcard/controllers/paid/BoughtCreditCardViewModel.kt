@@ -1,4 +1,4 @@
-package co.com.japl.module.creditcard.controllers.paid
+﻿package co.com.japl.module.creditcard.controllers.paid
 
 import android.util.Log
 import androidx.compose.runtime.mutableFloatStateOf
@@ -23,13 +23,13 @@ class BoughtCreditCardViewModel(
 ) : ViewModel() {
     val cache = mutableStateOf(prefs.simulator)
     val progress = mutableFloatStateOf(0f)
-    val loader = mutableStateOf(false)
+    val loader = mutableStateOf(true)
     private var _list: Map<Long, List<BoughtCreditCardPeriodDTO>> = mapOf()
     val periodList get() = _list
 
-    fun main() {
+    fun reload() {
         progress.floatValue = 0.2f
-        loader.value = false
+        loader.value = true
         viewModelScope.launch {
             try {
                 withContext(Dispatchers.IO) {
@@ -39,12 +39,13 @@ class BoughtCreditCardViewModel(
                 Log.e(javaClass.name, "Error in BoughtCreditCardViewModel main: ${e.message}", e)
             } finally {
                 progress.floatValue = 1.0f
-                loader.value = true
+                loader.value = false
             }
         }
     }
 
     suspend fun execute() {
+        loader.value = true
         try {
             service?.getBoughtPeriodList(idCreditCard, cache.value)?.takeIf { it.isNotEmpty() }?.let {
                 progress.floatValue = 0.7f
@@ -54,7 +55,7 @@ class BoughtCreditCardViewModel(
             Log.e(javaClass.name, "Error in execute: ${e.message}", e)
         } finally {
             progress.floatValue = 1.0f
-            loader.value = true
+            loader.value = false
         }
     }
 
@@ -62,3 +63,4 @@ class BoughtCreditCardViewModel(
         navController?.let { Bought.navigate(idCreditCard, cutOffDay, cutOff, it) }
     }
 }
+

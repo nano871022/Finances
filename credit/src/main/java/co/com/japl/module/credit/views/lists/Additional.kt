@@ -5,18 +5,15 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.RowScope
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.LinearProgressIndicator
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SnackbarHost
-import androidx.compose.material3.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.MoreVert
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -37,6 +34,7 @@ import co.com.japl.ui.components.FloatButton
 import co.com.japl.ui.components.IconButton
 import co.com.japl.ui.components.LoadingProgress
 import co.com.japl.ui.components.MoreOptionsDialogPair
+import co.com.japl.ui.components.OnResumeEffect
 import co.com.japl.ui.model.datatable.Header
 import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.com.japl.ui.theme.values.Dimensions
@@ -47,11 +45,15 @@ import java.time.LocalDate
 fun Additional(viewModel: AdditionalViewModel = viewModel()){
     val loading = remember {viewModel.loading}
 
+    OnResumeEffect {
+        viewModel.execute()
+    }
+
     LoadingProgress(
         message = R.string.load_data,
         showProgress = loading,
-        execute = viewModel::execute,
-
+        validateData = { true },
+        messageNoData = R.string.no_data
     ) { ScaffoldBody(viewModel=viewModel)}
 }
 

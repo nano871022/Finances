@@ -1,7 +1,6 @@
 package co.com.japl.module.paid.controllers.sms.list
 
 import android.widget.Toast
-import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
@@ -19,9 +18,12 @@ import kotlinx.coroutines.withContext
 class SmsViewModel(private val svc: ISMSPaidPort?, private val accountSvc: IAccountPort?, private val navController: NavController?): ViewModel() {
 
     val load = mutableStateOf(true)
-    val progress = mutableFloatStateOf(0.0f)
 
     val list = mutableStateListOf<Map<Int,List<SMSPaidDTO>>>()
+
+    fun reload() {
+        load.value = true
+    }
 
     fun edit(code:Int){
         require(code > 0){"The code must be greater than 0"}
@@ -56,7 +58,6 @@ class SmsViewModel(private val svc: ISMSPaidPort?, private val accountSvc: IAcco
             if (item != null) {
                 svc?.create(item.copy(id = 0))
                 withContext(Dispatchers.Main) {
-                    progress.floatValue = 0f
                     load.value = true
                 }
             }
@@ -94,7 +95,6 @@ class SmsViewModel(private val svc: ISMSPaidPort?, private val accountSvc: IAcco
     }
 
     fun execute() = viewModelScope.launch {
-        progress.floatValue = 0.1f
         svc?.let {
             accountSvc?.let { accSvc ->
                 val accounts = withContext(Dispatchers.IO) { accSvc.getAll() }
@@ -113,7 +113,6 @@ class SmsViewModel(private val svc: ISMSPaidPort?, private val accountSvc: IAcco
                 }
             }
         }
-        progress.floatValue = 1.0f
         load.value = false
     }
 }

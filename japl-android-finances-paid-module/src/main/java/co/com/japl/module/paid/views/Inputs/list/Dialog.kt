@@ -7,8 +7,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Cancel
-import androidx.compose.ui.window.Dialog
-import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -30,12 +28,13 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
 import co.com.japl.module.paid.R
 import co.com.japl.module.paid.controllers.Inputs.list.InputListModelView
-import co.com.japl.ui.enums.IMoreOptions
 import co.com.japl.module.paid.enums.MoreOptionsItemsInput
 import co.com.japl.ui.components.AlertDialogOkCancel
 import co.com.japl.ui.components.MoreOptionsDialog
+import co.com.japl.ui.enums.IMoreOptions
 import co.com.japl.ui.utils.NumbersUtil
 
 @Composable
