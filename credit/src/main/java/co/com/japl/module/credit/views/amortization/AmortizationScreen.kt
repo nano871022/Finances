@@ -44,7 +44,7 @@ import java.math.BigDecimal
 @Composable
 fun AmortizationScreen(viewModel: AmortizationViewModel) {
     val state by viewModel.state.collectAsState()
-    val isLoadingState = derivedStateOf { state.isLoading }
+    val isLoadingState = remember { derivedStateOf { state.isLoading } }
 
     OnResumeEffect {
         viewModel.getAmortization()
