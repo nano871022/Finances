@@ -1,11 +1,10 @@
-package co.com.japl.module.paid.views.checkpaids
+﻿package co.com.japl.module.paid.views.checkpaids
 
 import android.content.res.Configuration
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.combinedClickable
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -15,19 +14,15 @@ import androidx.compose.material.icons.rounded.DeleteForever
 import androidx.compose.material.icons.rounded.Save
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
-import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.TextUnit
@@ -35,15 +30,17 @@ import androidx.compose.ui.unit.TextUnitType
 import co.com.japl.finances.iports.dtos.CheckPaymentDTO
 import co.com.japl.finances.iports.enums.CheckPaymentsEnum
 import co.com.japl.module.paid.R
+import co.com.japl.module.paid.controllers.checkpaids.CheckListViewModel
 import co.com.japl.ui.components.AlertDialogOkCancel
 import co.com.japl.ui.components.CheckBoxField
 import co.com.japl.ui.components.FieldView
 import co.com.japl.ui.components.FloatButton
+import co.com.japl.ui.components.LoadingProgress
+import co.com.japl.ui.components.OnResumeEffect
 import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.com.japl.ui.theme.values.Dimensions
-import co.japl.android.graphs.utils.NumbersUtil
-import co.com.japl.module.paid.controllers.checkpaids.CheckListViewModel
 import co.com.japl.ui.utils.DateUtils
+import co.japl.android.graphs.utils.NumbersUtil
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -57,31 +54,15 @@ import java.time.YearMonth
 fun CheckList(viewModel:CheckListViewModel){
     val loaderStatus = remember { viewModel.loaderStatus }
     val loaderProgressStatus = remember { viewModel.loaderProgressStatus }
-    val progressState = remember { viewModel.progression }
-
-    LaunchedEffect(Unit) {
-        viewModel.main()
+    val loading = remember { derivedStateOf { loaderStatus.value || loaderProgressStatus.value } }
+    OnResumeEffect {
+        viewModel.reload()
     }
 
-    if(loaderStatus.value){
-        Column (modifier = Modifier.fillMaxWidth()) {
-            LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
-            Text(text= stringResource(R.string.loading_data),
-                textAlign = TextAlign.Center,
-                color = MaterialTheme.colorScheme.onBackground,
-                modifier = Modifier.fillMaxWidth())
-        }
-    }else if(loaderProgressStatus.value){
-        Column(modifier=Modifier.fillMaxWidth()) {
-            LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
-            Text(
-                text = stringResource(R.string.loading_data),
-                textAlign = TextAlign.Center,
-                color = MaterialTheme.colorScheme.onBackground,
-                modifier = Modifier.fillMaxWidth()
-            )
-        }
-    }else{
+    LoadingProgress(
+        message = R.string.loading_data,
+        showProgress = loading
+    ) {
         Body(viewModel)
     }
 }

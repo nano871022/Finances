@@ -8,39 +8,37 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import co.com.japl.ui.components.LoadingIndicator
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import co.com.japl.finances.iports.dtos.SimulatorCreditDTO
 import co.com.japl.finances.iports.enums.KindOfTaxEnum
 import co.com.japl.module.credit.controllers.simulator.SimulatorListViewModel
+import co.com.japl.module.credit.R
+import co.com.japl.ui.components.LoadingProgress
+import co.com.japl.ui.components.OnResumeEffect
 import co.com.japl.ui.theme.MaterialThemeComposeUI
-import co.com.japl.ui.R
-
 
 
 @Composable
 fun ListSimulator(viewModel: SimulatorListViewModel){
     val progres = remember { viewModel.progres }
 
-    if(progres.value) {
-        LoadingIndicator()
-    }else{
-        if(viewModel.list.isEmpty()){
-            Text(text= stringResource(R.string.no_records),
-                textAlign = TextAlign.Center,
-                modifier = Modifier.fillMaxWidth())
-        }else {
-            BodyList(viewModel)
-        }
+    OnResumeEffect {
+        viewModel.execute()
+    }
+
+    LoadingProgress(
+        message = R.string.load_data,
+        showProgress = progres,
+        validateData = { viewModel.list.isNotEmpty() },
+        messageNoData = R.string.no_records
+    ) {
+        BodyList(viewModel)
     }
 
 }

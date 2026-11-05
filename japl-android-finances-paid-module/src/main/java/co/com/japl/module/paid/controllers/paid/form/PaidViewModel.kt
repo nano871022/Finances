@@ -1,4 +1,4 @@
-package co.com.japl.module.paid.controllers.paid.form
+﻿package co.com.japl.module.paid.controllers.paid.form
 
 import android.util.Log
 import android.widget.Toast
@@ -145,7 +145,7 @@ class PaidViewModel @AssistedInject constructor(
         }
     }
 
-    fun main() {
+    fun reload() {
         progressStatus.value = 0.0f
         loading.value = true
         viewModelScope.launch {
@@ -199,3 +199,4 @@ class PaidViewModel @AssistedInject constructor(
         }
     }
 }
+

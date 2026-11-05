@@ -1,5 +1,6 @@
-package co.japl.android.myapplication.finanzas.view.recap
+﻿package co.japl.android.myapplication.finanzas.view.recap
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.res.Configuration
 import android.os.Build
@@ -16,12 +17,14 @@ import androidx.compose.material.icons.rounded.Close
 import androidx.compose.material3.Button
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
-import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
+import co.com.japl.ui.components.LoadingProgress
+import co.com.japl.ui.components.OnResumeEffect
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -42,25 +45,27 @@ import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.com.japl.ui.theme.values.Dimensions
 import co.japl.android.myapplication.finanzas.view.components.PieceOfPieDraw
 
+@SuppressLint("UnrememberedMutableState")
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun Recap(model:RecapViewModel= viewModel()) {
-    model.main()
-    val currentProgress = remember { model.currentProgress }
-    val loading = remember {model.loading }
+    val loading = model.loading
+    val showProgress = mutableStateOf(loading)
 
-    Column {
-        if(loading) {
-            LinearProgressIndicator(
-                progress = currentProgress,
-                modifier = Modifier.fillMaxWidth()
-            )
-        }else{
+    OnResumeEffect {
+        model.reload()
+    }
+
+    LoadingProgress(
+        message = R.string.loading_data,
+        showProgress = showProgress,
+        validateData = { true },
+        messageNoData = R.string.not_data
+    ) {
+        Column {
             CarouselView(model = model)
-
             PieceOfPieDraw(model.recap)
         }
-
     }
 
     DialogStart(model)

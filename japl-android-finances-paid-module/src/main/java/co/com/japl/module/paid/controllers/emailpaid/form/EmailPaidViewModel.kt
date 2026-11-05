@@ -1,4 +1,4 @@
-package co.com.japl.module.paid.controllers.emailpaid.form
+﻿package co.com.japl.module.paid.controllers.emailpaid.form
 
 import android.content.Context
 import android.widget.Toast
@@ -189,7 +189,7 @@ class EmailPaidViewModel(
         }
     }
 
-    fun main() {
+    fun reload() {
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
                 accountSvc?.getAll()
@@ -220,3 +220,4 @@ class EmailPaidViewModel(
         }
     }
 }
+

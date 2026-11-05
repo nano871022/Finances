@@ -12,57 +12,48 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Clear
 import androidx.compose.material.icons.rounded.Create
 import androidx.compose.material.icons.rounded.Save
-import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
-import co.com.japl.module.creditcard.R
-import co.com.japl.module.creditcard.controllers.setting.CreditCardSettingViewModel
-import co.com.japl.ui.components.FieldText
-import co.com.japl.ui.components.FieldView
-import co.com.japl.ui.components.FloatButton
-import co.com.japl.ui.theme.MaterialThemeComposeUI
-import co.com.japl.ui.theme.values.Dimensions
-import co.com.japl.ui.theme.values.ModifiersCustom.Weight1f
-import androidx.lifecycle.SavedStateHandle
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Switch
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.SavedStateHandle
 import co.com.japl.finances.iports.dtos.CreditCardDTO
 import co.com.japl.finances.iports.dtos.CreditCardSettingDTO
 import co.com.japl.finances.iports.inbounds.creditcard.ICreditCardPort
 import co.com.japl.finances.iports.inbounds.creditcard.ICreditCardSettingPort
+import co.com.japl.module.creditcard.R
+import co.com.japl.module.creditcard.controllers.setting.CreditCardSettingViewModel
 import co.com.japl.module.creditcard.enums.MoreOptionsItemsTypeSettings
 import co.com.japl.ui.components.FieldSelect
+import co.com.japl.ui.components.FieldText
+import co.com.japl.ui.components.FieldView
+import co.com.japl.ui.components.FloatButton
+import co.com.japl.ui.components.LoadingProgress
+import co.com.japl.ui.components.OnResumeEffect
+import co.com.japl.ui.theme.MaterialThemeComposeUI
+import co.com.japl.ui.theme.values.Dimensions
+import co.com.japl.ui.theme.values.ModifiersCustom.Weight1f
 
 @Composable
 fun CreditCardSetting(viewModel: CreditCardSettingViewModel) {
     val showProgress = remember { viewModel.showProgress }
 
-    if (showProgress.value) {
-
+    OnResumeEffect {
         viewModel.execute()
+    }
 
-        Column(modifier = Modifier.fillMaxWidth()) {
-            LinearProgressIndicator(
-
-                modifier = Modifier.fillMaxWidth()
-            )
-            Text(
-                text = stringResource(R.string.loading_data),
-                textAlign = TextAlign.Center,
-                modifier = Modifier.fillMaxWidth()
-            )
-        }
-    } else {
+    LoadingProgress(
+        message = R.string.loading_data,
+        showProgress = showProgress,
+        validateData = { true },
+        messageNoData = R.string.no_data
+    ) {
         Body(viewModel)
     }
 }

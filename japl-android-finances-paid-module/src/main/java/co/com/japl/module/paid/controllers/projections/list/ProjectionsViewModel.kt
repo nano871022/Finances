@@ -1,4 +1,4 @@
-package co.com.japl.module.paid.controllers.projections.list
+﻿package co.com.japl.module.paid.controllers.projections.list
 
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
@@ -45,7 +45,7 @@ class ProjectionsViewModel @AssistedInject constructor(@Assisted private val sav
 
     init{
         viewModelScope.launch {
-            main()
+            reload()
         }
     }
 
@@ -61,7 +61,7 @@ class ProjectionsViewModel @AssistedInject constructor(@Assisted private val sav
         }
     }
 
-    fun main() = viewModelScope.launch {
+    fun reload() = viewModelScope.launch {
         loadingStatus.value = true
         execute()
     }
@@ -83,3 +83,4 @@ class ProjectionsViewModel @AssistedInject constructor(@Assisted private val sav
     }
 
 }
+

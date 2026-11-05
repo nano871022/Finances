@@ -1,4 +1,4 @@
-package co.com.japl.module.creditcard.views.creditrate.lists
+﻿package co.com.japl.module.creditcard.views.creditrate.lists
 
 import android.content.Context
 import android.content.res.Configuration
@@ -13,24 +13,19 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.FloatingActionButton
+import androidx.compose.material.FloatingActionButtonDefaults
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.AddCircleOutline
 import androidx.compose.material3.Card
-import androidx.compose.material3.Divider
-import androidx.compose.material.FloatingActionButton
-import androidx.compose.material.FloatingActionButtonDefaults
 import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.LinearProgressIndicator
-import androidx.compose.material3.Text
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -51,13 +46,12 @@ import co.com.japl.ui.components.AlertDialogOkCancel
 import co.com.japl.ui.components.Carousel
 import co.com.japl.ui.components.FieldView
 import co.com.japl.ui.components.HelpWikiButton
+import co.com.japl.ui.components.LoadingProgress
 import co.com.japl.ui.components.MoreOptionsDialog
+import co.com.japl.ui.components.OnResumeEffect
 import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.com.japl.ui.theme.values.Dimensions
 import co.com.japl.ui.theme.values.ModifiersCustom.Weight1fAndAlightCenterVertical
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import java.math.BigDecimal
 import java.time.LocalDateTime
 
@@ -66,19 +60,15 @@ fun CreditRateList(viewModel: CreditRateListViewModel){
     val showProgress = remember {
         viewModel.showProgress
     }
-    val progress = remember {
-        viewModel.progress
-    }
-    LaunchedEffect(Unit) {
-        viewModel.main()
+
+    OnResumeEffect {
+        viewModel.reload()
     }
 
-    if(showProgress.value){
-        LinearProgressIndicator(
-            progress = { progress.floatValue },
-            modifier = Modifier.fillMaxWidth(),
-        )
-    }else{
+    LoadingProgress(
+        message = R.string.loading_data,
+        showProgress = showProgress
+    ) {
         Scaffold(
             floatingActionButton = {
                 FloatingActionButton(onClick = {
@@ -91,7 +81,6 @@ fun CreditRateList(viewModel: CreditRateListViewModel){
         ) {
             Body(viewModel,Modifier.padding(it))
         }
-
     }
 }
 

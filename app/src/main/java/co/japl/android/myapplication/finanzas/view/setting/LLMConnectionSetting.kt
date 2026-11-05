@@ -6,13 +6,10 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Refresh
 import androidx.compose.material.icons.rounded.Save
 import androidx.compose.material3.*
-import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import co.com.japl.finances.iports.inbounds.common.ILLMService
 import co.com.japl.ui.Prefs
@@ -25,26 +22,19 @@ import co.japl.android.myapplication.finanzas.controller.setting.LLMConnectionVi
 
 @Composable
 fun LLMConnectionForm(viewModel: LLMConnectionViewModel) {
-    val progress = remember { viewModel.loadProgress }
     val loading = remember { viewModel.isLoadingModels }
 
-    LaunchedEffect(Unit) {
+    OnResumeEffect {
         viewModel.loadModels()
     }
 
     Column(modifier=Modifier.fillMaxWidth()) {
-
-        if (loading.value) {
-            LinearProgressIndicator(
-                progress = { progress.value },
-                modifier = Modifier.fillMaxWidth(),
-            )
-            Text(text= stringResource( R.string.loading_data),
-                textAlign = TextAlign.Center,
-                color= MaterialTheme.colorScheme.onBackground,
-                modifier=Modifier.fillMaxWidth()
-            )
-        } else {
+        LoadingProgress(
+            message = R.string.loading_data,
+            showProgress = loading,
+            validateData = { true },
+            messageNoData = R.string.not_data
+        ) {
             Body(viewModel)
         }
     }

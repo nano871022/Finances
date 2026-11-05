@@ -1,0 +1,262 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="loading_data">Loading Data</string>
+
+    <string name="products_count">#</string>
+    <string name="products_cost">Total to save</string>
+    <string name="list_projection">Projections</string>
+    <string name="add_projection">Create Projection</string>
+    <string name="limite_date">Due date</string>
+    <string name="months_left_to_pay">Months left</string>
+    <string name="saved_cash">Saved cash</string>
+    <string name="projection_closed">Upcoming</string>
+    <string name="projection_far">Distant</string>
+    <string name="create_projection">Create Projection</string>
+    <string name="count_projection">Total Projections</string>
+    <string name="total_saved">Total Saved</string>
+    <string name="options_projection">Options</string>
+    <string name="not_record_available">No data to display</string>
+    <string name="do_you_want_remove_this_projection">Remove this projection?</string>
+    <string name="record_was_remove_success">The record was removed successfully</string>
+    <string name="record_was_remove_error">The record could not be removed</string>
+    <string name="close">Close</string>
+    <string name="quote_value">Installment amount</string>
+    <string name="months_left_to_pay_short">Remaining</string>
+    <string name="clean_form">Clear</string>
+    <string name="date_of_projection">Payment date</string>
+    <string name="period_projection">Savings period</string>
+    <string name="name_projection">Name</string>
+    <string name="value_projection">Amount to save</string>
+    <string name="quote_projection">Projection installment amount</string>
+    <string name="save_project_success">Record created successfully</string>
+    <string name="save_project_error">Error creating the projection</string>
+    <string name="update_project_error">The projection could not be updated</string>
+    <string name="update_project_success">The projection was updated</string>
+    <string name="clean_period">Clear period</string>
+    <string name="generate_by_ai">Generate with AI</string>
+    <string name="select_example_sms">Select sample SMS</string>
+    <string name="generate">Generate</string>
+    <string name="ai_response">AI response generated</string>
+    <string name="no_data">No data</string>
+    <string name="ok">OK</string>
+    <string name="promt_sms_expreg">
+Act as a Java Regex compiler.
+
+Analyze the SMS message and generate a single, linear regular expression that captures: merchant/product name, value, and date.
+
+Technical Escaping Instructions (CRITICAL):
+
+Every dollar sign "$" must be written as "\$".
+Every forward slash "/" must be written as "\/".
+Every dot "." that must be treated as a literal must be written as "\.".
+Every comma "," that must be treated as a literal must be written as "\,".
+Every asteric "*" that must be treated as a literal must be written as "\*".
+
+Use capture groups () with specific character classes:
+        ([\w ]+) for the merchant/product name.
+        ([\d\.\,]+) for the value.
+        (\d{2}\/\d{2}\/\d{4}) for the date but it depend of date format ex. dd/mm/yyyy.
+
+
+Do not use generic wildcards like ".+?"; use text anchors from the message and [\w ]+ connectors.
+
+The structure must be compatible with java.util.regex.Pattern.
+
+Response Rules:
+
+Provide ONLY the raw text string.
+Do not use code blocks (```).
+Do not use quotation marks.
+Do not provide explanations or introductions.
+If the result does not include the escape characters "" before "$" and "/", the response will be considered incorrect.
+
+Message:
+%s
+    </string>
+    <string name="download_sms">Download SMS</string>
+    <string name="validation_results_title">Validation results</string>
+    <string name="sms_found">SMS found: %1$d</string>
+    <string name="sms_matched">Matches: %1$d</string>
+    <string name="extracted_name">Name: %1$s</string>
+    <string name="extracted_value">Value: %1$s</string>
+    <string name="extracted_date">Date: %1$s</string>
+    <string name="not_extracted">No data could be extracted</string>
+    <string name="validation_close">Close</string>
+    <string name="sender">Sender</string>
+    <string name="subject_email_pattern">Subject pattern</string>
+    <string name="message_email_pattern">Message pattern</string>
+    <string name="select_example_email">Select sample emails</string>
+    <string name="promt_email_expreg">
+Act as a Java Regex compiler.
+
+Analyze the Email body and generate a single, linear regular expression that captures: merchant/product name, value, and date.
+
+Technical Escaping Instructions (CRITICAL):
+
+Every dollar sign "$" must be written as "\$".
+Every forward slash "/" must be written as "\/".
+Every dot "." that must be treated as a literal must be written as "\.".
+Every comma "," that must be treated as a literal must be written as "\,".
+Every asteric "*" that must be treated as a literal must be written as "\*".
+
+Use capture groups () with specific names:
+        (?&lt;name&gt;[\w ]+) for the merchant/product name.
+        (?&lt;value&gt;[\d\.\,]+) for the value.
+        (?&lt;date&gt;\d{2}\/\d{2}\/\d{4}) for the date but it depend of date format ex. dd/mm/yyyy.
+
+Do not use generic wildcards like ".+?"; use text anchors from the message and [\w ]+ connectors.
+
+The structure must be compatible with java.util.regex.Pattern.
+
+Response Rules:
+
+Provide ONLY the raw text string for SUBJECT and BODY.
+SUBJECT: (regex for email subject)
+BODY: (regex for email body)
+Do not use code blocks (```).
+Do not use quotation marks.
+Do not provide explanations or introductions.
+If the result does not include the escape characters "" before "$" and "/", the response will be considered incorrect.
+
+Email Samples:
+%s
+    </string>
+    <string name="emails_found">Emails found: %1$d</string>
+    <string name="emails_matched">Matches: %1$d</string>
+    <string name="days_email_read">Email read days</string>
+    <string name="days_sms_read">SMS read days</string>
+    <string name="filter_all">All</string>
+    <string name="email_read_process_completed">Email reading process completed</string>
+    <string name="email_read">Read Email</string>
+    <string name="email_list">Email list</string>
+    <string name="email_address">Email</string>
+    <string name="clone">Duplicate</string>
+    <string name="do_you_wnat_to_delete_email_record">Do you want to delete the record?</string>
+    <string name="ai_model">AI model</string>
+    <string name="select_ai_model">Select AI model</string>
+    <string name="update">Update</string>
+    <string name="to_pay">To pay</string>
+    <string name="paid">Paid</string>
+    <string name="not_data">No data found</string>
+    <string name="total_paids">Total Paid</string>
+    <string name="total">Total</string>
+    <string name="num_paids">#</string>
+    <string name="quote_value_short">Installment</string>
+    <string name="subject_email">Subject</string>
+    <string name="navigate_to_login">android-app://co.com.japl.finanzas.module.app/google_login</string>
+    <string name="no_gmail_permission_error">You do not have permission for this feature. Enable it in the sign-in interface</string>
+    <string name="go_to_login_button">Go to sign-in</string>
+
+    <string name="go_to_list">View income list</string>
+    <string name="go_to_periods">View months list</string>
+    <string name="go_to_add">Create new record</string>
+    <string name="account">Account</string>
+    <string name="period">Period</string>
+    <string name="count">Count</string>
+    <string name="paid_total">Total Paid</string>
+    <string name="incomes_total">Total Income</string>
+    <string name="incomes_less_paids">Income - Payments</string>
+    <string name="add_paid">Add payment</string>
+    <string name="value">Amount</string>
+    <string name="date_paid">Payment date</string>
+    <string name="name_item">Name</string>
+    <string name="value_item">Amount</string>
+    <string name="delete">Delete</string>
+    <string name="edit">Update</string>
+    <string name="recurrent">Recurring</string>
+    <string name="copy">Copy</string>
+    <string name="end">Finish</string>
+    <string name="setting">Settings</string>
+    <string name="msm_read_num">SMS read days</string>
+    <string name="email_read_num">Email read days</string>
+    <string name="year">Year</string>
+    <string name="month">Month</string>
+    <string name="see">View</string>
+    <string name="create">Create</string>
+    <string name="name">Name</string>
+    <string name="add_input_account">Add income</string>
+    <string name="active">Active</string>
+    <string name="monthly">Monthly</string>
+    <string name="bi_monthly">Bi-monthly</string>
+    <string name="trimesterly">Quarterly</string>
+    <string name="quarterly">Four-monthly</string>
+    <string name="semesterly">Semiannual</string>
+    <string name="yearly">Yearly</string>
+    <string name="delete_input">Delete income</string>
+    <string name="update_input_value">Update amount</string>
+    <string name="add_account">Add account</string>
+    <string name="kind_of_pay">Payment type</string>
+    <string name="date_input">Income date</string>
+    <string name="update_value_paymnet">Update payment amount</string>
+    <string name="cancel">Cancel</string>
+    <string name="num_inputs">Quantity</string>
+    <string name="input_total">Total</string>
+    <string name="monthly_input_total">Monthly total</string>
+    <string name="yearly_input_total">Annual total</string>
+    <string name="save">Save</string>
+    <string name="validate">Validate</string>
+    <string name="pattern">Pattern</string>
+    <string name="phone_number">Phone number</string>
+    <string name="kind_rate">Rate type</string>
+    <string name="enabled">Enable</string>
+    <string name="disabled">Disable</string>
+    <string name="duplicate">Duplicate</string>
+    <string name="wiki_paid_url">https://github.com/nano871022/Finances/wiki/Pagos</string>
+    <string name="wiki_paid_description">Information about payments by debit card or cash</string>
+    <string name="wiki_sms_paid_url">https://github.com/nano871022/Finances/wiki/SMS</string>
+    <string name="wiki_sms_paid_description">Information about SMS read setup for debit/cash payments</string>
+    <string name="wiki_account_url">https://github.com/nano871022/Finances/wiki/Cuentas</string>
+    <string name="wiki_account_description">Information about account setup for payments</string>
+
+    <array name="months_short">
+        <item>January</item>
+        <item>February</item>
+        <item>March</item>
+        <item>April</item>
+        <item>May</item>
+        <item>June</item>
+        <item>July</item>
+        <item>August</item>
+        <item>September</item>
+        <item>October</item>
+        <item>November</item>
+        <item>December</item>
+    </array>
+
+    <string name="navigate_account_code">android-app://co.com.japl.finanzas.module.app/accounts/inputs?code_paid=%d</string>
+    <string name="navigate_account">android-app://co.com.japl.finanzas.module.app/accounts/inputs</string>
+    <string name="navigate_input">android-app://co.com.japl.finanzas.module.app/accounts/input?account_code=%d</string>
+    <string name="navigate_input_edit">android-app://co.com.japl.finanzas.module.app/accounts/input?account_code=%d&amp;input_code=%d</string>
+    <string name="navigate_paid">android-app://co.com.japl.finanzas.module.app/paid/form?code_paid=%d&amp;code_account=%d</string>
+    <string name="navigate_paid_create">android-app://co.com.japl.finanzas.module.app/paid/form?code_account=%d</string>
+    <string name="navigate_paids">android-app://co.com.japl.finanzas.module.app/paid/list?code_account=%d&amp;period=%s</string>
+    <string name="navigate_period">android-app://co.com.japl.finanzas.module.app/paid/period?code_account=%d</string>
+    <string name="navigate_monthly">android-app://co.com.japl.finanzas.module.app/paid/monthly?period=%s</string>
+    <string name="navigate_sms_form">android-app://co.com.japl.finanzas.module.app/paid/sms</string>
+    <string name="navigate_sms_form_code">android-app://co.com.japl.finanzas.module.app/paid/sms?code_sms_paid=%d</string>
+    <string name="navigate_email_paid_list">android-app://co.com.japl.finanzas.module.app/paid/email/list</string>
+    <string name="navigate_email_paid_form">android-app://co.com.japl.finanzas.module.app/paid/email/form</string>
+    <string name="navigate_email_paid_form_code">android-app://co.com.japl.finanzas.module.app/paid/email/form?code_email_paid=%d</string>
+    <string name="navigate_projection_list">android-app://co.com.japl.finanzas.module.app/paid/projection/list</string>
+    <string name="navigate_projection_form">android-app://co.com.japl.finanzas.module.app/paid/projection/form</string>
+    <string name="navigate_projection_form_edit">android-app://co.com.japl.finanzas.module.app/paid/projection/form?id=%d</string>
+
+    <string name="dialog_delete">Delete the record?</string>
+
+    <string name="toast_update_successful">Updated successfully</string>
+    <string name="toast_update_error">The update could not be completed</string>
+    <string name="toast_save_successful">Record created successfully</string>
+    <string name="toast_save_error">The record could not be created</string>
+    <string name="toast_successful_deleted">Deleted successfully</string>
+    <string name="toast_unsuccessful_deleted">The record could not be deleted</string>
+    <string name="toast_successful_end_recurrent">The recurring payment was ended successfully</string>
+    <string name="toast_unsuccessful_end_recurrent">The recurring payment could not be ended</string>
+    <string name="toast_successful_copy">Copied successfully</string>
+    <string name="toast_unsuccessful_copy">The copy could not be completed</string>
+    <string name="toast_do_you_want_to_delete_this_record">Delete this record?</string>
+    <string name="toast_successful_enabled">Enabled successfully</string>
+    <string name="toast_dont_successful_enabled">The record could not be enabled</string>
+    <string name="toast_successful_disabled">Disabled successfully</string>
+    <string name="toast_dont_successful_disabled">The record could not be disabled</string>
+    <string name="toast_saves_successful">Saved successfully</string>
+</resources>

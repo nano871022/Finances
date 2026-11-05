@@ -20,8 +20,8 @@
     <string name="navigate_additional">android-app://co.com.japl.finanzas.module.app/additionals_credit?CREDIT_CODE=%d</string>
     <string name="navigate_add_credit">android-app://co.com.japl.finanzas.module.app/add_credit_fix</string>
     <string name="navigate_upd_credit">android-app://co.com.japl.finanzas.module.app/add_credit_fix?credit_code=%d</string>
-    <string name="navigate_detail_credits">Credit Details</string>
-    <string name="navigate_period_credits">Period Credits</string>
+    <string name="navigate_detail_credits">android-app://co.com.japl.finanzas.module.app/monthly_credit_list</string>
+    <string name="navigate_period_credits">android-app://co.com.japl.finanzas.module.app/period_credits</string>
     <string name="delete_period_grace">Delete Grace Period</string>
     <string name="do_you_want_to_delete_period_grace">Do you want to delete the grace period?</string>
     <string name="periods">Periods</string>

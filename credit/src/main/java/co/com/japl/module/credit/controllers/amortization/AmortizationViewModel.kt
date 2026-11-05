@@ -37,22 +37,18 @@ class AmortizationViewModel @Inject constructor(
         getAmortization()
     }
 
-    private fun getAmortization() = viewModelScope.launch {
+    fun getAmortization() = viewModelScope.launch {
         try {
             _state.value = _state.value.copy(isLoading = true)
-            withContext(Dispatchers.IO) {
+            val result = withContext(Dispatchers.IO) {
                 amortizationSvc?.getAmortization(code, KindAmortization.FIXED_QUOTE_SIMULATOR, false)
-            }?.let {
-                it.takeIf { it.isEmpty() }?.let{
-
-                }
-                    _state.value = _state.value.copy(
-                        amortization = it,
-                        isLoading = false
-                    )
-                }
-
+            }
+            _state.value = _state.value.copy(
+                amortization = result ?: emptyList(),
+                isLoading = false
+            )
         } catch (e: Exception) {
+            _state.value = _state.value.copy(isLoading = false)
             Toast.makeText(context, e.message, Toast.LENGTH_LONG).show()
         }
     }

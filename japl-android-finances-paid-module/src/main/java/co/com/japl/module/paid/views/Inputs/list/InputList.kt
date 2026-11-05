@@ -1,4 +1,4 @@
-package co.com.japl.module.paid.views.Inputs.list
+﻿package co.com.japl.module.paid.views.Inputs.list
 
 import android.content.res.Configuration
 import android.os.Build
@@ -7,35 +7,28 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.FloatingActionButton
-import androidx.compose.material.FloatingActionButtonDefaults
-import androidx.compose.material3.Surface
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.AttachMoney
 import androidx.compose.material.icons.rounded.MoreVert
-import androidx.compose.material3.Text
 import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -46,13 +39,12 @@ import co.com.japl.module.paid.controllers.Inputs.list.InputListModelView
 import co.com.japl.ui.components.Carousel
 import co.com.japl.ui.components.FieldView
 import co.com.japl.ui.components.FieldViewCards
+import co.com.japl.ui.components.LoadingProgress
+import co.com.japl.ui.components.OnResumeEffect
 import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.com.japl.ui.theme.values.Dimensions
 import co.com.japl.ui.theme.values.ModifiersCustom.Weight1f
 import co.com.japl.ui.utils.NumbersUtil
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import java.math.BigDecimal
 import java.time.LocalDate
 import java.time.format.TextStyle
@@ -61,39 +53,27 @@ import java.util.Locale
 @Composable
 fun InputList(modelView: InputListModelView){
     val stateLoader = remember { modelView.stateLoader }
-    LaunchedEffect(Unit) {
-        withContext(Dispatchers.IO) {
-            modelView.main()
+    OnResumeEffect {
+        modelView.reload()
+    }
+    LoadingProgress(
+        message = R.string.loading_data,
+        showProgress = stateLoader
+    ) {
+        Scaffold (
+            floatingActionButton = {
+                FloatingActionButton(onClick = {
+                    modelView.goToInputForm()
+                }, elevation = FloatingActionButtonDefaults.elevation(10.dp),
+                    containerColor =  MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.5f),
+                    modifier=Modifier.padding(bottom=Dimensions.PADDING_BOTTOM_SPACE_FLOATING_BUTTON)){
+                    Icon(imageVector = Icons.Rounded.AttachMoney, contentDescription = "Add input to account")
+                }
+            }
+        ){
+            Content(modelView = modelView,modifier=Modifier.padding(it))
         }
     }
-        if(stateLoader.value) {
-            Column(modifier = Modifier.fillMaxWidth()) {
-                LinearProgressIndicator(
-                    modifier = Modifier.fillMaxWidth()
-                )
-                Text(
-                    text = stringResource(id = R.string.loading_data),
-                    color=MaterialTheme.colorScheme.onSurface,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier.fillMaxWidth().padding(Dimensions.PADDING_TOP)
-                )
-            }
-        }else {
-            Scaffold (
-                floatingActionButton = {
-                    FloatingActionButton(onClick = {
-                        modelView.goToInputForm()
-                    }, elevation = FloatingActionButtonDefaults.elevation(10.dp),
-                        backgroundColor =  MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.5f),
-                        modifier=Modifier.padding(bottom=Dimensions.PADDING_BOTTOM_SPACE_FLOATING_BUTTON)){
-                        Icon(imageVector = Icons.Rounded.AttachMoney, contentDescription = "Add input to account")
-                    }
-                }
-            ){
-                Content(modelView = modelView,modifier=Modifier.padding(it))
-            }
-
-        }
 }
 
 @Composable
@@ -244,3 +224,4 @@ private fun getViewModel():InputListModelView{
     ))
     return viewModel
 }
+

@@ -13,10 +13,9 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.AddCircleOutline
 import androidx.compose.material.icons.rounded.Cancel
 import androidx.compose.material.icons.rounded.CleaningServices
-import androidx.compose.material.LinearProgressIndicator
-import androidx.compose.material.icons.rounded.AddCircleOutline
 import androidx.compose.material.icons.rounded.Delete
 import androidx.compose.material.icons.rounded.Edit
 import androidx.compose.material.icons.rounded.Save
@@ -31,6 +30,7 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.Alignment
@@ -50,13 +50,12 @@ import co.com.japl.ui.components.FieldText
 import co.com.japl.ui.components.FieldView
 import co.com.japl.ui.components.FloatButton
 import co.com.japl.ui.components.IconButton
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.ui.text.style.TextAlign
+import co.com.japl.ui.components.LoadingProgress
 import co.com.japl.ui.components.Popup
 import co.com.japl.ui.theme.MaterialThemeComposeUI
-import kotlinx.coroutines.launch
 import co.com.japl.ui.theme.values.Dimensions
 import co.com.japl.ui.theme.values.ModifiersCustom
+import kotlinx.coroutines.launch
 import java.time.LocalDateTime
 
 @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
@@ -64,29 +63,30 @@ import java.time.LocalDateTime
 fun Quote (viewModel:QuoteViewModel){
 
     val isLoadingState = remember {viewModel.loading}
-    val loadingState = remember { viewModel.progress }
 
-    if(isLoadingState.value){
-        Column(modifier=Modifier.fillMaxWidth()) {
-            LinearProgressIndicator(
-                modifier = Modifier.fillMaxWidth()
-            )
-            Text(text=stringResource(R.string.loading_data),
-                textAlign = TextAlign.Center,
-                color= MaterialTheme.colorScheme.onBackground,
-                modifier = Modifier.fillMaxWidth())
-        }
-    }else {
-        viewModel.creditRateEmpty()
-        Scaffold(
-            floatingActionButton = {
+    LoadingProgress(
+        message = R.string.loading_data,
+        showProgress = isLoadingState,
+        validateData = { true },
+        messageNoData = R.string.no_data
+    ) {
+        BodyLoad(viewModel)
+    }
+}
 
-                FloatingButtons(viewModel)
-
-            },
-        ) {
-            Body(viewModel,modifier = Modifier.padding(it).background(MaterialTheme.colorScheme.background))
-        }
+@RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
+@Composable
+private fun BodyLoad(viewModel:QuoteViewModel){
+    Scaffold(
+        floatingActionButton = {
+            FloatingButtons(viewModel)
+        },
+    ) {
+        Body(
+            viewModel,
+            modifier = Modifier.padding(it)
+                               .background(MaterialTheme.colorScheme.background)
+        )
     }
 }
 

@@ -1,7 +1,6 @@
-package co.com.japl.module.creditcard.controllers.account
+﻿package co.com.japl.module.creditcard.controllers.account
 
 import android.widget.Toast
-import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
@@ -30,7 +29,6 @@ class CreditCardListViewModel @Inject constructor(private val creditCardSvc:ICre
 
     val list = mutableStateListOf<CreditCardDTO?>()
 
-    var progress = mutableFloatStateOf(0f)
     var showProgress = mutableStateOf(true)
 
     fun onClick(){
@@ -49,37 +47,30 @@ class CreditCardListViewModel @Inject constructor(private val creditCardSvc:ICre
         creditCardSvc?.let{
             if(it.delete(id)){
                 Toast.makeText(navController?.context, R.string.toast_successful_deleted,Toast.LENGTH_LONG).show()
-                refresh()
+                reload()
             }else{
                 Toast.makeText(navController?.context, R.string.toast_dont_successful_deleted,Toast.LENGTH_LONG).show()
             }
         }
     }
 
-    fun main() {
+    fun reload() {
         viewModelScope.launch {
-            progress.floatValue = 0.1f
             execute()
-            progress.floatValue = 1f
         }
     }
 
     suspend fun execute() {
-        progress.floatValue = 0.4f
+        showProgress.value = true
         creditCardSvc?.let { svc ->
             val result = withContext(Dispatchers.IO) {
                 svc.getAll()
             }
             list.clear()
             result?.let(list::addAll)
-            showProgress.value = false
         }
-        progress.floatValue = 0.8f
+        showProgress.value = false
     }
 
-    fun refresh() {
-        viewModelScope.launch {
-            execute()
-        }
-    }
 }
+

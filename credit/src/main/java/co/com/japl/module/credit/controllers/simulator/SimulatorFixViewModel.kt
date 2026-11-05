@@ -150,9 +150,28 @@ class SimulatorFixViewModel(
     }
 
     fun amortization(){
-        navigator?.let{
-            simuladorSvc?.save(_simulator.value.copy(code=0,name="In simulator"),true)?.let {
-                Simulator.navigate(it.toInt(),navigator)
+        navigator?.let{ nav ->
+            viewModelScope.launch {
+                var current = _simulator.value
+                if (current.quoteValue == null || current.quoteValue == BigDecimal.ZERO) {
+                    val calc = withContext(Dispatchers.IO) {
+                        simuladorSvc?.calculate(current)
+                    }
+                    if (calc != null) {
+                        current = current.copy(
+                            capitalValue = calc.capitalValue,
+                            interestValue = calc.interestValue,
+                            quoteValue = calc.quoteValue
+                        )
+                        _simulator.value = current
+                    }
+                }
+                val code = withContext(Dispatchers.IO) {
+                    simuladorSvc?.save(current.copy(code = 0, name = "In simulator"), true)
+                }
+                code?.let { id ->
+                    Simulator.navigate(id.toInt(), nav)
+                }
             }
         }
     }

@@ -11,48 +11,49 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.material3.LinearProgressIndicator
-import androidx.compose.material3.Text
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.SavedStateHandle
 import co.com.japl.finances.iports.dtos.AmortizationRowDTO
 import co.com.japl.finances.iports.enums.KindOfTaxEnum
 import co.com.japl.module.creditcard.R
 import co.com.japl.module.creditcard.controllers.amortization.AmortizationViewModel
 import co.com.japl.ui.components.DataTable
 import co.com.japl.ui.components.FieldView
+import co.com.japl.ui.components.LoadingProgress
+import co.com.japl.ui.components.OnResumeEffect
 import co.com.japl.ui.model.datatable.Header
 import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.com.japl.ui.theme.values.Dimensions
-import co.com.japl.ui.utils.WindowWidthSize
 import co.com.japl.ui.utils.NumbersUtil
+import co.com.japl.ui.utils.WindowWidthSize
 import java.math.BigDecimal
-import androidx.lifecycle.SavedStateHandle
 
 @Composable
 fun  AmortizationTable (viewModel:AmortizationViewModel){
 	val progressState = remember { viewModel.progressStatus }
 
-	if(progressState.value){
-		Column(modifier = Modifier.fillMaxWidth()) {
-			LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
-			Text(text=stringResource(R.string.loading_data),
-				color= MaterialTheme.colorScheme.onBackground,
-				textAlign = TextAlign.Center,
-				modifier = Modifier.fillMaxWidth().padding(Dimensions.PADDING_TOP))
-		}
-	}else{
+	OnResumeEffect {
+		viewModel.execute()
+	}
+
+	LoadingProgress(
+		message = R.string.loading_data,
+		showProgress = progressState,
+		validateData = { true },
+		messageNoData = R.string.no_data
+	) {
 		Body(viewModel)
 	}
 }

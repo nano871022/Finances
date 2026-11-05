@@ -6,18 +6,16 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
 import androidx.navigation.NavController
 import co.com.japl.finances.iports.dtos.SimulatorCreditDTO
+import co.japl.android.myapplication.R
+import co.com.japl.ui.components.LoadingProgress
+import co.com.japl.ui.components.OnResumeEffect
 import co.com.japl.module.credit.views.simulator.SimulatorList as SimulatorListCredit
 import co.com.japl.module.creditcard.views.simulator.SimulatorList as SimulatorListCreditCard
 
@@ -26,22 +24,17 @@ fun ListSimulator(viewModel: ListSimulatorViewModel, navController: NavControlle
     val progress = remember { viewModel.progress }
     val context = LocalContext.current
 
-    LaunchedEffect(Unit) {
+    OnResumeEffect {
         viewModel.load()
     }
 
-    if (progress.value) {
-        LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
-    } else {
-        if (viewModel.list.isEmpty()) {
-            Text(
-                text = stringResource(co.com.japl.ui.R.string.no_records),
-                textAlign = TextAlign.Center,
-                modifier = Modifier.fillMaxWidth()
-            )
-        } else {
-            BodyList(viewModel, navController)
-        }
+    LoadingProgress(
+        message = R.string.loading_data,
+        showProgress = progress,
+        validateData = { viewModel.list.isNotEmpty() },
+        messageNoData = co.com.japl.ui.R.string.no_records
+    ) {
+        BodyList(viewModel, navController)
     }
 }
 

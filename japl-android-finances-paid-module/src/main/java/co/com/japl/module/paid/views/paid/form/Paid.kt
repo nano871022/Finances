@@ -1,4 +1,4 @@
-package co.com.japl.module.paid.views.paid.form
+﻿package co.com.japl.module.paid.views.paid.form
 
 import android.content.res.Configuration
 import android.os.Build
@@ -7,14 +7,14 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
-import co.com.japl.ui.components.LoadingIndicator
 import androidx.compose.material3.Scaffold
+import co.com.japl.ui.components.LoadingProgress
+import co.com.japl.ui.components.OnResumeEffect
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.Cancel
 import androidx.compose.material.icons.rounded.CleaningServices
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -30,23 +30,23 @@ import co.com.japl.ui.components.FloatButton
 import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.com.japl.ui.theme.values.Dimensions
 import co.com.japl.ui.utils.DateUtils
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+
 
 @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
 @Composable
 fun Paid(viewModel:PaidViewModel) {
-    val progresStatus  = remember{viewModel.progressStatus}
     val loaderState = remember {viewModel.loading}
 
-    LaunchedEffect(Unit) {
-        viewModel.main()
+    OnResumeEffect {
+        viewModel.reload()
     }
 
-    if(loaderState.value) {
-        LoadingIndicator(progress = { progresStatus.value })
-    }else{
+    LoadingProgress(
+        message = R.string.loading_data,
+        showProgress = loaderState,
+        validateData = { true },
+        messageNoData = R.string.no_data
+    ) {
         Body(viewModel = viewModel)
     }
 }

@@ -25,6 +25,7 @@ include ':japl-android-finances-services'
 include ':japl-android-graphs'
 include ':ui'
 include ':about-module'
+project(':about-module').projectDir = new File(settingsDir, '../japl-android-about-module')
 include ':japl-finances-iports'
 include ':CreditCardModule'
 include ':japl-android-finances-paid-module'

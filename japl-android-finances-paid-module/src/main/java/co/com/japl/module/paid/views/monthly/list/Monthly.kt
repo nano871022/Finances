@@ -1,4 +1,4 @@
-package co.com.japl.module.paid.views.monthly.list
+﻿package co.com.japl.module.paid.views.monthly.list
 
 import android.content.res.Configuration
 import android.os.Build
@@ -14,11 +14,11 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.CalendarMonth
 import androidx.compose.material.icons.rounded.RemoveRedEye
-import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
+import co.com.japl.ui.components.LoadingProgress
+import co.com.japl.ui.components.OnResumeEffect
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -43,22 +43,17 @@ fun Monthly(viewModel:MonthlyViewModel) {
     val loaderState = remember {
         viewModel.loaderState
     }
-    val progress = remember {
-        viewModel.progressStatus
+
+    OnResumeEffect {
+        viewModel.reload()
     }
 
-    LaunchedEffect(Unit) {
-        viewModel.main()
-    }
-
-    if(loaderState.value){
-        Column(modifier = Modifier.fillMaxWidth()) {
-            LinearProgressIndicator(
-                progress = { progress.floatValue },
-                modifier = Modifier.fillMaxWidth(),
-            )
-        }
-    }else{
+    LoadingProgress(
+        message = R.string.loading_data,
+        showProgress = loaderState,
+        validateData = { viewModel.accountList.isNotEmpty() },
+        messageNoData = R.string.no_data
+    ) {
         Body(viewModel)
     }
 

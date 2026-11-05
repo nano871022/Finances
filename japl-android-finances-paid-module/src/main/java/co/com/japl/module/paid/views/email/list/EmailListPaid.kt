@@ -1,25 +1,37 @@
-package co.com.japl.module.paid.views.email.list
+﻿package co.com.japl.module.paid.views.email.list
 
 import android.content.res.Configuration
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.layout.*
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.style.TextAlign
-import androidx.navigation.NavDeepLinkRequest
-import androidx.core.net.toUri
-import com.google.android.gms.auth.api.signin.GoogleSignIn
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add
-import androidx.compose.material.icons.rounded.ContentCopy
-import androidx.compose.material.icons.rounded.Delete
 import androidx.compose.material.icons.rounded.MoreVert
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.Button
+import androidx.compose.material3.Card
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import co.com.japl.finances.iports.dtos.EmailPaidDTO
@@ -28,11 +40,12 @@ import co.com.japl.module.paid.controllers.emailpaid.list.EmailListPaidViewModel
 import co.com.japl.module.paid.enums.MoreOptionsItemsEmail
 import co.com.japl.ui.components.AlertDialogOkCancel
 import co.com.japl.ui.components.Carousel
-import co.com.japl.ui.components.FieldText
 import co.com.japl.ui.components.FieldView
 import co.com.japl.ui.components.FieldViewCards
 import co.com.japl.ui.components.FloatButton
+import co.com.japl.ui.components.LoadingProgress
 import co.com.japl.ui.components.MoreOptionsDialog
+import co.com.japl.ui.components.OnResumeEffect
 import co.com.japl.ui.enums.IMoreOptions
 import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.com.japl.ui.theme.values.Dimensions
@@ -40,7 +53,6 @@ import co.com.japl.ui.theme.values.Dimensions
 
 @Composable
 fun EmailListPaid(viewModel: EmailListPaidViewModel) {
-    val load by viewModel.load
     val context = LocalContext.current
     val hasGmailPermission = remember { viewModel.hasGmailPermission(context) }
 
@@ -66,16 +78,14 @@ fun EmailListPaid(viewModel: EmailListPaidViewModel) {
             }
         }
     } else {
-        LaunchedEffect(Unit) {
-            viewModel.main()
+        OnResumeEffect {
+            viewModel.reload()
         }
-        Column{
-            if (load) {
-                LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
-                Text(text=stringResource(R.string.loading_data))
-            } else {
-                Body(viewModel)
-            }
+        LoadingProgress(
+            message = R.string.loading_data,
+            showProgress = viewModel.load
+        ) {
+            Body(viewModel)
         }
     }
 }
@@ -238,5 +248,6 @@ private fun getViewModel(): EmailListPaidViewModel {
     vm.load.value = false
     return vm
 }
+
 
 

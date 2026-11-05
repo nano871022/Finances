@@ -1,4 +1,4 @@
-package co.com.japl.module.creditcard.controllers.emailcreditcard.form
+﻿package co.com.japl.module.creditcard.controllers.emailcreditcard.form
 
 import android.widget.Toast
 import androidx.compose.runtime.mutableFloatStateOf
@@ -237,7 +237,7 @@ class EmailCreditCardViewModel @AssistedInject constructor(
         }
     }
 
-    fun main() {
+    fun reload() {
         viewModelScope.launch {
             progress.floatValue = 0.1f
             execute()
@@ -297,3 +297,4 @@ class EmailCreditCardViewModel @AssistedInject constructor(
         progress.floatValue = 0.8f
     }
 }
+

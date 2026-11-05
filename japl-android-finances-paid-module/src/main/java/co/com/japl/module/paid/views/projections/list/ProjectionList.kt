@@ -9,10 +9,9 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material.LinearProgressIndicator
-import androidx.compose.material.Scaffold
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.MoreVert
@@ -37,6 +36,8 @@ import co.com.japl.ui.components.FieldView
 import co.com.japl.ui.components.FieldViewCards
 import co.com.japl.ui.components.FloatButton
 import co.com.japl.ui.components.IconButton
+import co.com.japl.ui.components.LoadingProgress
+import co.com.japl.ui.components.OnResumeEffect
 import co.com.japl.ui.components.MoreOptionsDialogPair
 import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.com.japl.ui.theme.values.Dimensions
@@ -49,10 +50,14 @@ import java.util.Locale
 @Composable
 fun ProjectionList(viewModel: ProjectionListViewModel) {
     val loadingStatus = remember { viewModel.loader }
+    OnResumeEffect {
+        viewModel.reload()
+    }
 
-    if(loadingStatus.value){
-        LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
-    }else{
+    LoadingProgress(
+        message = R.string.loading_data,
+        showProgress = loadingStatus
+    ) {
         Scafold(viewModel)
     }
 }

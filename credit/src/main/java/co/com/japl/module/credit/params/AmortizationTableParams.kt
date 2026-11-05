@@ -33,33 +33,68 @@ class AmortizationTableParams {
             navController.navigate(R.id.action_list_bought_to_amortizationTableFragment,parameters)
         }
 
-        fun download(argument: Bundle):Map<String,Any>{
+        fun download(argument: Bundle): Map<String, Any> {
             argument.let {
-                if( it.containsKey(Params.PARAM_DEEPLINK) ){
+                if (it.containsKey(Params.PARAM_DEEPLINK)) {
                     val intent = (it.get(Params.PARAM_DEEPLINK) as Intent).dataString?.toUri()
-                    val date = intent?.getQueryParameter("last_date")?.let{ DateUtils.toLocalDate(it) }
-                    return@download mapOf<String,Any>(
-                        "CREDIT_CODE" to (intent?.getQueryParameter("credit_code")?.toLong()?:0.toLong()),
-                        "CODE" to (intent?.getQueryParameter("code")?.toLong()?:0.toLong()),
-                        "LAST_DATE" to (date?: LocalDate.now())
+                    val date = intent?.getQueryParameter("last_date")?.let { DateUtils.toLocalDate(it) }
+                    return@download mapOf<String, Any>(
+                        "CREDIT_CODE" to (intent?.getQueryParameter("credit_code")?.toLongOrNull() ?: 0L),
+                        "CODE" to (intent?.getQueryParameter("code")?.toLongOrNull() ?: 0L),
+                        "LAST_DATE" to (date ?: LocalDate.now())
                     )
-                }else{
-                    val code = it.getLong("CODE")
-                    return@download mapOf<String,Any>(
-                        "CODE" to code
+                } else {
+                    val rawCode = it.get("CODE") ?: it.get("code")
+                    val code = when (rawCode) {
+                        is Long -> rawCode
+                        is Int -> rawCode.toLong()
+                        is String -> rawCode.toLongOrNull() ?: 0L
+                        else -> 0L
+                    }
+                    val rawCreditCode = it.get("CREDIT_CODE") ?: it.get("credit_code")
+                    val creditCode = when (rawCreditCode) {
+                        is Long -> rawCreditCode
+                        is Int -> rawCreditCode.toLong()
+                        is String -> rawCreditCode.toLongOrNull() ?: 0L
+                        else -> 0L
+                    }
+                    return@download mapOf<String, Any>(
+                        "CODE" to code,
+                        "CREDIT_CODE" to creditCode
                     )
                 }
             }
             return mapOf()
         }
 
-        fun download(savedStateHandle: SavedStateHandle):Map<String,Any>{
-            val code = savedStateHandle.get<Long>("CODE")
-            val creditCode = savedStateHandle.get<Long>("CREDIT_CODE")
-            val lastDate = savedStateHandle.get<LocalDate>("LAST_DATE")
+        fun download(savedStateHandle: SavedStateHandle): Map<String, Any> {
+            val rawCode = savedStateHandle.get<Any>("CODE")
+                ?: savedStateHandle.get<Any>("code")
+            val rawCreditCode = savedStateHandle.get<Any>("CREDIT_CODE")
+                ?: savedStateHandle.get<Any>("credit_code")
+            val rawLastDate = savedStateHandle.get<Any>("LAST_DATE")
+                ?: savedStateHandle.get<Any>("last_date")
 
-            if(code != null || creditCode != null){
-                return mapOf<String,Any>(
+            val code = when (rawCode) {
+                is Long -> rawCode
+                is Int -> rawCode.toLong()
+                is String -> rawCode.toLongOrNull()
+                else -> null
+            }
+            val creditCode = when (rawCreditCode) {
+                is Long -> rawCreditCode
+                is Int -> rawCreditCode.toLong()
+                is String -> rawCreditCode.toLongOrNull()
+                else -> null
+            }
+            val lastDate = when (rawLastDate) {
+                is LocalDate -> rawLastDate
+                is String -> DateUtils.toLocalDate(rawLastDate)
+                else -> null
+            }
+
+            if (code != null || creditCode != null) {
+                return mapOf<String, Any>(
                     "CODE" to (code ?: 0L),
                     "CREDIT_CODE" to (creditCode ?: 0L),
                     "LAST_DATE" to (lastDate ?: LocalDate.now())
@@ -67,13 +102,13 @@ class AmortizationTableParams {
             }
 
             savedStateHandle.get<Intent>(Params.PARAM_DEEPLINK)?.let { intent ->
-                 val uri = intent.dataString?.toUri()
-                 val date = uri?.getQueryParameter("last_date")?.let{ DateUtils.toLocalDate(it) }
-                 return mapOf<String,Any>(
-                        "CREDIT_CODE" to (uri?.getQueryParameter("credit_code")?.toLongOrNull()?:0.toLong()),
-                        "CODE" to (uri?.getQueryParameter("code")?.toLongOrNull()?:0.toLong()),
-                        "LAST_DATE" to (date?: LocalDate.now())
-                    )
+                val uri = intent.dataString?.toUri()
+                val date = uri?.getQueryParameter("last_date")?.let { DateUtils.toLocalDate(it) }
+                return mapOf<String, Any>(
+                    "CREDIT_CODE" to (uri?.getQueryParameter("credit_code")?.toLongOrNull() ?: 0L),
+                    "CODE" to (uri?.getQueryParameter("code")?.toLongOrNull() ?: 0L),
+                    "LAST_DATE" to (date ?: LocalDate.now())
+                )
             }
             return mapOf()
         }

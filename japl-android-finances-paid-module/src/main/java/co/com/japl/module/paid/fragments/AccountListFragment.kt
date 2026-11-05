@@ -1,4 +1,4 @@
-package co.com.japl.module.paid.fragments
+﻿package co.com.japl.module.paid.fragments
 
 import android.os.Build
 import android.os.Bundle
@@ -21,7 +21,7 @@ class AccountListFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel.main()
+        viewModel.reload()
     }
 
     @RequiresApi(Build.VERSION_CODES.S)
@@ -39,3 +39,4 @@ class AccountListFragment : Fragment() {
         }
     }
 }
+

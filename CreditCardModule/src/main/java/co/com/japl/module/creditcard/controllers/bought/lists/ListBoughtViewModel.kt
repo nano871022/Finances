@@ -1,7 +1,6 @@
-package co.com.japl.module.creditcard.controllers.bought.lists
+﻿package co.com.japl.module.creditcard.controllers.bought.lists
 
 import android.app.Application
-import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -19,7 +18,6 @@ import co.com.japl.module.creditcard.params.CashAdvanceParams
 import co.com.japl.module.creditcard.params.CreditCardQuotesParams
 import co.com.japl.ui.Prefs
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import java.time.LocalDateTime
 import java.time.YearMonth
 import java.util.Optional
@@ -47,7 +45,6 @@ class ListBoughtViewModel @Inject constructor(
     private lateinit var _params: Triple<Int, LocalDateTime, Short>
     private lateinit var _creditCard: CreditCard
 
-    var progress = mutableFloatStateOf(0f)
     var isLoad = mutableStateOf(false)
 
     fun setParams(params: Triple<Int, LocalDateTime, Short>?){
@@ -76,15 +73,9 @@ class ListBoughtViewModel @Inject constructor(
         }
     }
 
-    fun main() = runBlocking {
-        getQuotes()
-    }
-
-    fun refresh() {
-        viewModelScope.launch {
-            isLoad.value = false
-            getQuotes()
-        }
+    fun refresh() = viewModelScope.launch {
+        isLoad.value = false
+        load()
     }
 
     fun onSearchQueryChange(query: String) {
@@ -114,24 +105,18 @@ class ListBoughtViewModel @Inject constructor(
         )
     }
 
-    suspend fun getQuotes(){
-        progress.floatValue = 0.1f
+    suspend fun load(){
         taxSvc.get(_params.first,_params.second.monthValue,_params.second.year,
             KindInterestRateEnum.CASH_ADVANCE)?.let {
             cashAdvance.value = true
         }
-        progress.floatValue = 0.2f
         taxSvc.get(_params.first,_params.second.monthValue,_params.second.year,
             KindInterestRateEnum.CREDIT_CARD)?.let {
             creditCard.value = true
         }
-        progress.floatValue = 0.3f
         val creditCardDto = creditCardSvc.getCreditCard(_creditCard.codeCreditCard.get())
-        progress.floatValue = 0.4f
         val differ = differInstallmentSvc.getDifferQuote(_creditCard.cutOff.get().toLocalDate())
-        progress.floatValue = 0.5f
         val bought = boughtListSvc.getBoughtList(creditCardDto!!,_creditCard.cutOff.get(),cache.value)
-        progress.floatValue = 0.8f
         originalGroup = bought.list.takeIf { it.isNotEmpty() }
             ?.sortedByDescending { it.boughtDate }
             ?.groupBy {
@@ -145,7 +130,7 @@ class ListBoughtViewModel @Inject constructor(
             differ,
             cutOff = _creditCard.cutOff.get()
         )
-        progress.floatValue = 1f
         isLoad.value = true
     }
 }
+

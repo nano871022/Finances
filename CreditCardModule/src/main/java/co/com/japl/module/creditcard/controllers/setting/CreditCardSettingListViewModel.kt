@@ -57,6 +57,7 @@ class CreditCardSettingListViewModel @Inject constructor(
 
 
     fun execute() = viewModelScope.launch{
+        showProgress.value = true
         creditCardSettingSvc?.let{
             withContext(Dispatchers.IO){
                 it.getAll(codCreditCard)
