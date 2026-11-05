@@ -18,12 +18,11 @@ import androidx.compose.material.FloatingActionButton
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import co.com.japl.ui.components.LoadingIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -33,10 +32,14 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import co.com.japl.finances.iports.dtos.CreditCardDTO
 import co.com.japl.module.creditcard.R
 import co.com.japl.module.creditcard.controllers.account.CreditCardListViewModel
 import co.com.japl.module.creditcard.controllers.account.CreditCardViewModel
+import co.com.japl.ui.components.LoadingProgress
 import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.com.japl.ui.theme.values.Dimensions
 import co.com.japl.ui.theme.values.ModifiersCustom.AlignCenterVerticalAndPaddingRightSpace
@@ -57,20 +60,28 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun CreditCardList(creditCardViewModel:CreditCardListViewModel){
-    val progress = remember {
-        creditCardViewModel.progress
-    }
     val status = remember{
         creditCardViewModel.showProgress
     }
 
-    LaunchedEffect(Unit) {
-        creditCardViewModel.main()
+    val lifecycleOwner = LocalLifecycleOwner.current
+    DisposableEffect(lifecycleOwner) {
+        val observer = LifecycleEventObserver { _, event ->
+            if (event == Lifecycle.Event.ON_RESUME) {
+                creditCardViewModel.main()
+            }
+        }
+        lifecycleOwner.lifecycle.addObserver(observer)
+        onDispose {
+            lifecycleOwner.lifecycle.removeObserver(observer)
+        }
     }
 
-    if(status.value) {
-        LoadingIndicator(progress = { progress.floatValue })
-    }else {
+    LoadingProgress(
+        message = R.string.loading_data,
+        showProgress = status,
+        execute = {}
+    ) {
         Body(creditCardViewModel = creditCardViewModel)
     }
 }

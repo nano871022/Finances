@@ -31,6 +31,7 @@ class RecurrentBoughtViewModel(
     private var codeCreditCard: Int = 0
 
     fun load(codeCC: Int) = viewModelScope.launch {
+        loader.value = true
         codeCreditCard = codeCC
         withContext(Dispatchers.IO){
             boughtCreditCardSvc.getAllRecurrent(codeCreditCard)

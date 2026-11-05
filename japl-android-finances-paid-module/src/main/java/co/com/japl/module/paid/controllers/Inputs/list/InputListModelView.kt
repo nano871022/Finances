@@ -74,6 +74,7 @@ class InputListModelView @AssistedInject constructor(@Assisted private val conte
     }
 
     fun main() {
+        stateLoader.value = true
         viewModelScope.launch {
             progress.value = 0.1f
             getItems()

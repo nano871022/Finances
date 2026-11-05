@@ -65,6 +65,7 @@ class CreditCardListViewModel @Inject constructor(private val creditCardSvc:ICre
     }
 
     suspend fun execute() {
+        showProgress.value = true
         progress.floatValue = 0.4f
         creditCardSvc?.let { svc ->
             val result = withContext(Dispatchers.IO) {
@@ -72,8 +73,8 @@ class CreditCardListViewModel @Inject constructor(private val creditCardSvc:ICre
             }
             list.clear()
             result?.let(list::addAll)
-            showProgress.value = false
         }
+        showProgress.value = false
         progress.floatValue = 0.8f
     }
 

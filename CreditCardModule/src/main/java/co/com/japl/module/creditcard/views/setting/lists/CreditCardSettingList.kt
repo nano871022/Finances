@@ -17,7 +17,6 @@ import androidx.compose.material.FloatingActionButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material.icons.Icons
@@ -26,7 +25,7 @@ import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -35,14 +34,17 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.SavedStateHandle
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import co.com.japl.finances.iports.dtos.CreditCardSettingDTO
 import co.com.japl.finances.iports.inbounds.creditcard.ICreditCardSettingPort
 import co.com.japl.module.creditcard.R
 import co.com.japl.module.creditcard.controllers.setting.CreditCardSettingListViewModel
+import co.com.japl.ui.components.LoadingProgress
 import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.com.japl.ui.theme.values.Dimensions
 import co.com.japl.ui.theme.values.ModifiersCustom.Weight1f
@@ -58,22 +60,24 @@ import java.time.LocalDateTime
  fun CreditCardSettingList(viewModel: CreditCardSettingListViewModel){
     val stateShow = remember {viewModel.showProgress}
 
-    LaunchedEffect(Unit) {
-        viewModel.showProgress.value = true
-        viewModel.execute()
+    val lifecycleOwner = LocalLifecycleOwner.current
+    DisposableEffect(lifecycleOwner) {
+        val observer = LifecycleEventObserver { _, event ->
+            if (event == Lifecycle.Event.ON_RESUME) {
+                viewModel.execute()
+            }
+        }
+        lifecycleOwner.lifecycle.addObserver(observer)
+        onDispose {
+            lifecycleOwner.lifecycle.removeObserver(observer)
+        }
     }
 
-    if(stateShow.value) {
-        Column {
-            LinearProgressIndicator(
-                modifier = Modifier.fillMaxWidth(),
-            )
-            Text(text=stringResource(R.string.loading_data),
-                textAlign = TextAlign.Center,
-                color= MaterialTheme.colorScheme.onBackground,
-                modifier = Modifier.fillMaxWidth())
-        }
-    }else {
+    LoadingProgress(
+        message = R.string.loading_data,
+        showProgress = stateShow,
+        execute = {}
+    ) {
         Body(viewModel = viewModel)
     }
 }

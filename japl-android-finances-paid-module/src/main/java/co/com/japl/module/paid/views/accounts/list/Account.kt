@@ -17,14 +17,12 @@ import androidx.compose.material.FloatingActionButton
 import androidx.compose.material.icons.rounded.MoreVert
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -41,35 +39,35 @@ import co.com.japl.ui.components.AlertDialogOkCancel
 import co.com.japl.ui.components.Carousel
 import co.com.japl.ui.components.FieldView
 import co.com.japl.ui.components.HelpWikiButton
+import co.com.japl.ui.components.LoadingProgress
 import co.com.japl.ui.components.MoreOptionsDialog
 import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.com.japl.ui.theme.values.Dimensions
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import java.time.LocalDate
 
 @Composable
 fun AccountList(viewModel: AccountViewModel) {
-    val stateProgress = remember {
-        viewModel.progress
-    }
     val stateLoader = remember {
         viewModel.loading
     }
-    LaunchedEffect(Unit) {
-        withContext(Dispatchers.IO) {
-            viewModel.main()
+    val lifecycleOwner = androidx.lifecycle.compose.LocalLifecycleOwner.current
+    DisposableEffect(lifecycleOwner) {
+        val observer = androidx.lifecycle.LifecycleEventObserver { _, event ->
+            if (event == androidx.lifecycle.Lifecycle.Event.ON_RESUME) {
+                viewModel.main()
+            }
+        }
+        lifecycleOwner.lifecycle.addObserver(observer)
+        onDispose {
+            lifecycleOwner.lifecycle.removeObserver(observer)
         }
     }
 
-    if(stateLoader.value) {
-        LinearProgressIndicator(
-            progress = { stateProgress.value },
-            modifier = Modifier.fillMaxWidth(),
-        )
-    }else {
-
+    LoadingProgress(
+        message = R.string.loading_data,
+        showProgress = stateLoader,
+        execute = {}
+    ) {
         Scaffold(
             floatingActionButton = {
                 FloatingActionButton(onClick = { viewModel.add() },

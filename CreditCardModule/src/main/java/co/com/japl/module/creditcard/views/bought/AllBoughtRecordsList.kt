@@ -29,6 +29,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -41,6 +42,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import co.com.japl.finances.iports.dtos.BoughtCreditCardPeriodDTO
 import co.com.japl.finances.iports.dtos.CreditCardBoughtItemDTO
 import co.com.japl.finances.iports.dtos.CreditCardBoughtListDTO
@@ -68,6 +72,19 @@ fun AllBoughtRecordsList(viewModel: AllBoughtRecordsViewModel, initialExpanded: 
     val filteredList by remember { viewModel.filteredList }
     val banksList by remember { viewModel.banksList }
     val selectedBank by remember { viewModel.selectedBank }
+
+    val lifecycleOwner = LocalLifecycleOwner.current
+    DisposableEffect(lifecycleOwner) {
+        val observer = LifecycleEventObserver { _, event ->
+            if (event == Lifecycle.Event.ON_RESUME) {
+                viewModel.selectedBank.value?.let { bank -> viewModel.load(bank.first) }
+            }
+        }
+        lifecycleOwner.lifecycle.addObserver(observer)
+        onDispose {
+            lifecycleOwner.lifecycle.removeObserver(observer)
+        }
+    }
 
     Column(
         modifier = Modifier
@@ -100,7 +117,19 @@ fun AllBoughtRecordsList(viewModel: AllBoughtRecordsViewModel, initialExpanded: 
                 )
             }
         } else if (loader) {
-            LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
+            Column(modifier = Modifier.fillMaxSize()) {
+                LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
+                Box(
+                    modifier = Modifier.weight(1f).fillMaxWidth(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = stringResource(R.string.loading_data),
+                        textAlign = TextAlign.Center,
+                        color = MaterialTheme.colorScheme.onBackground
+                    )
+                }
+            }
         } else if (filteredList.isEmpty()) {
             Text(
                 text = stringResource(id = R.string.no_data),

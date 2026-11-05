@@ -13,7 +13,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Card
-import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material.icons.Icons
@@ -24,7 +23,7 @@ import androidx.compose.material.icons.rounded.MoreVert
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -46,6 +45,7 @@ import co.com.japl.ui.components.FieldView
 import co.com.japl.ui.components.FieldViewCards
 import co.com.japl.ui.components.FloatButton
 import co.com.japl.ui.components.IconButton
+import co.com.japl.ui.components.LoadingProgress
 import co.com.japl.ui.components.MoreOptionsDialog
 import co.com.japl.ui.components.Popup
 import co.com.japl.ui.theme.MaterialThemeComposeUI
@@ -62,25 +62,27 @@ import java.util.Locale
 
 @Composable
 fun Paid(viewModel:PaidViewModel) {
-    val progressState = remember {
-        viewModel.progressStatus
-    }
     val loaderState = remember {
         viewModel.loaderState
     }
-
-    LaunchedEffect(Unit) {
-        viewModel.main()
+    val lifecycleOwner = androidx.lifecycle.compose.LocalLifecycleOwner.current
+    DisposableEffect(lifecycleOwner) {
+        val observer = androidx.lifecycle.LifecycleEventObserver { _, event ->
+            if (event == androidx.lifecycle.Lifecycle.Event.ON_RESUME) {
+                viewModel.main()
+            }
+        }
+        lifecycleOwner.lifecycle.addObserver(observer)
+        onDispose {
+            lifecycleOwner.lifecycle.removeObserver(observer)
+        }
     }
 
-    if(loaderState.value){
-        Column(modifier = Modifier.fillMaxWidth()) {
-            LinearProgressIndicator(
-                progress = { progressState.value },
-                modifier = Modifier.fillMaxWidth(),
-            )
-        }
-    }else{
+    LoadingProgress(
+        message = R.string.loading_data,
+        showProgress = loaderState,
+        execute = {}
+    ) {
         Body(viewModel)
     }
 }

@@ -23,14 +23,12 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -46,13 +44,11 @@ import co.com.japl.module.paid.controllers.Inputs.list.InputListModelView
 import co.com.japl.ui.components.Carousel
 import co.com.japl.ui.components.FieldView
 import co.com.japl.ui.components.FieldViewCards
+import co.com.japl.ui.components.LoadingProgress
 import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.com.japl.ui.theme.values.Dimensions
 import co.com.japl.ui.theme.values.ModifiersCustom.Weight1f
 import co.com.japl.ui.utils.NumbersUtil
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import java.math.BigDecimal
 import java.time.LocalDate
 import java.time.format.TextStyle
@@ -61,39 +57,37 @@ import java.util.Locale
 @Composable
 fun InputList(modelView: InputListModelView){
     val stateLoader = remember { modelView.stateLoader }
-    LaunchedEffect(Unit) {
-        withContext(Dispatchers.IO) {
-            modelView.main()
+    val lifecycleOwner = androidx.lifecycle.compose.LocalLifecycleOwner.current
+    DisposableEffect(lifecycleOwner) {
+        val observer = androidx.lifecycle.LifecycleEventObserver { _, event ->
+            if (event == androidx.lifecycle.Lifecycle.Event.ON_RESUME) {
+                modelView.main()
+            }
+        }
+        lifecycleOwner.lifecycle.addObserver(observer)
+        onDispose {
+            lifecycleOwner.lifecycle.removeObserver(observer)
         }
     }
-        if(stateLoader.value) {
-            Column(modifier = Modifier.fillMaxWidth()) {
-                LinearProgressIndicator(
-                    modifier = Modifier.fillMaxWidth()
-                )
-                Text(
-                    text = stringResource(id = R.string.loading_data),
-                    color=MaterialTheme.colorScheme.onSurface,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier.fillMaxWidth().padding(Dimensions.PADDING_TOP)
-                )
-            }
-        }else {
-            Scaffold (
-                floatingActionButton = {
-                    FloatingActionButton(onClick = {
-                        modelView.goToInputForm()
-                    }, elevation = FloatingActionButtonDefaults.elevation(10.dp),
-                        backgroundColor =  MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.5f),
-                        modifier=Modifier.padding(bottom=Dimensions.PADDING_BOTTOM_SPACE_FLOATING_BUTTON)){
-                        Icon(imageVector = Icons.Rounded.AttachMoney, contentDescription = "Add input to account")
-                    }
+    LoadingProgress(
+        message = R.string.loading_data,
+        showProgress = stateLoader,
+        execute = {}
+    ) {
+        Scaffold (
+            floatingActionButton = {
+                FloatingActionButton(onClick = {
+                    modelView.goToInputForm()
+                }, elevation = FloatingActionButtonDefaults.elevation(10.dp),
+                    backgroundColor =  MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.5f),
+                    modifier=Modifier.padding(bottom=Dimensions.PADDING_BOTTOM_SPACE_FLOATING_BUTTON)){
+                    Icon(imageVector = Icons.Rounded.AttachMoney, contentDescription = "Add input to account")
                 }
-            ){
-                Content(modelView = modelView,modifier=Modifier.padding(it))
             }
-
+        ){
+            Content(modelView = modelView,modifier=Modifier.padding(it))
         }
+    }
 }
 
 @Composable

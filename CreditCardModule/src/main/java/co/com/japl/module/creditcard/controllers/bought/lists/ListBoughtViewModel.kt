@@ -19,7 +19,6 @@ import co.com.japl.module.creditcard.params.CashAdvanceParams
 import co.com.japl.module.creditcard.params.CreditCardQuotesParams
 import co.com.japl.ui.Prefs
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import java.time.LocalDateTime
 import java.time.YearMonth
 import java.util.Optional
@@ -76,7 +75,7 @@ class ListBoughtViewModel @Inject constructor(
         }
     }
 
-    fun main() = runBlocking {
+    fun main() = viewModelScope.launch {
         getQuotes()
     }
 

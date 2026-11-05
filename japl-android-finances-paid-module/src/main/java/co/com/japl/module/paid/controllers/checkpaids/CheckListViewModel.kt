@@ -6,10 +6,13 @@ import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import co.com.japl.finances.iports.dtos.CheckPaymentDTO
 import co.com.japl.finances.iports.inbounds.common.ICheckPaymentPort
 import co.com.japl.module.paid.R
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.YearMonth
@@ -48,7 +51,8 @@ class CheckListViewModel @Inject constructor(private val period:YearMonth, priva
         }
     }
 
-    fun main() = runBlocking {
+    fun main() = viewModelScope.launch {
+        loaderStatus.value = true
         progression.floatValue = 0.1f
         execute()
         progression.floatValue = 1.0f
@@ -57,7 +61,10 @@ class CheckListViewModel @Inject constructor(private val period:YearMonth, priva
     suspend fun execute(){
         val currentDate = LocalDateTime.now()
         progression.floatValue = 0.1f
-        svc?.getCheckPayments(period)?.takeIf { it.isNotEmpty() }?.let {
+        val payments = withContext(Dispatchers.IO) {
+            svc?.getCheckPayments(period)
+        }
+        payments?.takeIf { it.isNotEmpty() }?.let {
             progression.floatValue = 0.5f
             listState.clear()
             progression.floatValue = 0.6f

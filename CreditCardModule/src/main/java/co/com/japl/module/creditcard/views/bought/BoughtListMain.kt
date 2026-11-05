@@ -25,7 +25,6 @@ import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.rounded.SettingsSuggest
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
@@ -35,7 +34,8 @@ import androidx.compose.material3.TooltipDefaults
 import androidx.compose.material3.rememberTooltipState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -43,11 +43,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import co.com.japl.finances.iports.pojo.BoughtCreditCard
 import co.com.japl.module.creditcard.controllers.bought.lists.ListBoughtViewModel
 import co.com.japl.module.creditcard.R
 import co.com.japl.ui.utils.WindowWidthSize
 import co.com.japl.ui.components.FieldView
+import co.com.japl.ui.components.LoadingProgress
 import co.com.japl.ui.utils.NumbersUtil
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -58,22 +62,28 @@ fun BoughtListMain(listBoughtViewModel: ListBoughtViewModel,settingVM:SettingsVi
 
 
     val isLoad = remember {  listBoughtViewModel.isLoad }
-    val progress = remember { listBoughtViewModel.progress }
 
-    LaunchedEffect(isLoad.value) {
-        if (isLoad.value.not()) {
-            listBoughtViewModel.main()
+    val progressState = remember { derivedStateOf { !isLoad.value } }
+
+    val lifecycleOwner = LocalLifecycleOwner.current
+    DisposableEffect(lifecycleOwner) {
+        val observer = LifecycleEventObserver { _, event ->
+            if (event == Lifecycle.Event.ON_RESUME) {
+                listBoughtViewModel.refresh()
+            }
+        }
+        lifecycleOwner.lifecycle.addObserver(observer)
+        onDispose {
+            lifecycleOwner.lifecycle.removeObserver(observer)
         }
     }
 
-    if (isLoad.value.not()) {
-        Column(modifier=Modifier.fillMaxWidth()) {
-            LinearProgressIndicator(
-                modifier = Modifier.fillMaxWidth()
-            )
-        }
-    }else {
-        ListBought(listBoughtViewModel,isLoad, settingVM)
+    LoadingProgress(
+        message = R.string.loading_data,
+        showProgress = progressState,
+        execute = {}
+    ) {
+        ListBought(listBoughtViewModel, isLoad, settingVM)
     }
 }
 

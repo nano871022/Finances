@@ -39,14 +39,15 @@ class AccountViewModel @Inject constructor(private val accountSvc:IAccountPort?,
     }
 
     fun delete(codeAccount:Int){
-        accountSvc?.let {
-
-            accountSvc.delete(codeAccount)
+        if (accountSvc?.delete(codeAccount) == true) {
+            loading.value = true
+            main()
         }
     }
 
 
     fun main() {
+        loading.value = true
         viewModelScope.launch {
             progress.value = 0.1f
             services()

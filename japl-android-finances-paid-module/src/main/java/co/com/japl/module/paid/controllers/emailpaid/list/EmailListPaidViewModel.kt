@@ -33,14 +33,16 @@ class EmailListPaidViewModel(
     val list = mutableStateListOf<EmailPaidDTO>()
 
     fun main() {
+        load.value = true
         viewModelScope.launch {
-            withContext(Dispatchers.IO) {
+            val items = withContext(Dispatchers.IO) {
                 svc?.getAll()
-            }?.let {
-                list.clear()
-                list.addAll(it)
-                load.value = false
             }
+            if (items != null) {
+                list.clear()
+                list.addAll(items)
+            }
+            load.value = false
         }
     }
 
@@ -58,7 +60,8 @@ class EmailListPaidViewModel(
                 svc?.delete(id) == true
             }
             if (result) {
-                list.removeIf { it.id == id }
+                load.value = true
+                main()
             }
         }
     }
@@ -69,10 +72,8 @@ class EmailListPaidViewModel(
                 svc?.activate(id, active) == true
             }
             if (result) {
-                val index = list.indexOfFirst { it.id == id }
-                if (index != -1) {
-                    list[index] = list[index].copy(active = active)
-                }
+                load.value = true
+                main()
             }
         }
     }

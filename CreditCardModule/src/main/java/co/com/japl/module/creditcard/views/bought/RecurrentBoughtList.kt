@@ -19,6 +19,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import co.com.japl.ui.theme.values.ModifiersCustom.Weight1f
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -60,12 +63,23 @@ fun RecurrentBoughtList(
 ) {
     val loader = remember {viewModel.loader}
 
+    val lifecycleOwner = LocalLifecycleOwner.current
+    DisposableEffect(lifecycleOwner) {
+        val observer = LifecycleEventObserver { _, event ->
+            if (event == Lifecycle.Event.ON_RESUME) {
+                viewModel.load(codeCreditCard)
+            }
+        }
+        lifecycleOwner.lifecycle.addObserver(observer)
+        onDispose {
+            lifecycleOwner.lifecycle.removeObserver(observer)
+        }
+    }
+
     LoadingProgress(
         message = R.string.loading_data,
         showProgress = loader,
-        execute = {
-                viewModel.load(codeCreditCard)
-            }
+        execute = {}
     ) {
         Body(codeCreditCard, viewModel, onEdit, onAlter)
     }

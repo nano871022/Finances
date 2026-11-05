@@ -32,6 +32,7 @@ import co.com.japl.ui.components.FieldText
 import co.com.japl.ui.components.FieldView
 import co.com.japl.ui.components.FieldViewCards
 import co.com.japl.ui.components.FloatButton
+import co.com.japl.ui.components.LoadingProgress
 import co.com.japl.ui.components.MoreOptionsDialog
 import co.com.japl.ui.enums.IMoreOptions
 import co.com.japl.ui.theme.MaterialThemeComposeUI
@@ -40,7 +41,6 @@ import co.com.japl.ui.theme.values.Dimensions
 
 @Composable
 fun EmailListPaid(viewModel: EmailListPaidViewModel) {
-    val load by viewModel.load
     val context = LocalContext.current
     val hasGmailPermission = remember { viewModel.hasGmailPermission(context) }
 
@@ -66,16 +66,24 @@ fun EmailListPaid(viewModel: EmailListPaidViewModel) {
             }
         }
     } else {
-        LaunchedEffect(Unit) {
-            viewModel.main()
-        }
-        Column{
-            if (load) {
-                LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
-                Text(text=stringResource(R.string.loading_data))
-            } else {
-                Body(viewModel)
+        val lifecycleOwner = androidx.lifecycle.compose.LocalLifecycleOwner.current
+        DisposableEffect(lifecycleOwner) {
+            val observer = androidx.lifecycle.LifecycleEventObserver { _, event ->
+                if (event == androidx.lifecycle.Lifecycle.Event.ON_RESUME) {
+                    viewModel.main()
+                }
             }
+            lifecycleOwner.lifecycle.addObserver(observer)
+            onDispose {
+                lifecycleOwner.lifecycle.removeObserver(observer)
+            }
+        }
+        LoadingProgress(
+            message = R.string.loading_data,
+            showProgress = viewModel.load,
+            execute = {}
+        ) {
+            Body(viewModel)
         }
     }
 }

@@ -36,9 +36,7 @@ class ProjectionListViewModel @AssistedInject constructor(
     private val _list = mutableStateListOf<ProjectionDTO>()
     val list = _list
 
-    init {
-        load()
-    }
+    fun reload() = load()
 
     fun goToCreate() {
         navController?.let {
