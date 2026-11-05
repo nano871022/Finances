@@ -1,4 +1,4 @@
-package co.com.japl.module.paid.views.sms.form
+﻿package co.com.japl.module.paid.views.sms.form
 
 import android.content.res.Configuration
 import android.os.Build
@@ -68,7 +68,7 @@ fun Sms(viewModel:SmsViewModel){
     val load by remember {viewModel.load}
 
     LaunchedEffect(Unit) {
-        viewModel.main()
+        viewModel.reload()
     }
     if(load){
         LinearProgressIndicator(
@@ -497,3 +497,4 @@ private fun getViewModel():SmsViewModel{
     viewModel.load.value = false
     return viewModel
 }
+

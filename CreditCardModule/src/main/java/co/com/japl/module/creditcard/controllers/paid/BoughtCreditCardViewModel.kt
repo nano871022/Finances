@@ -1,4 +1,4 @@
-package co.com.japl.module.creditcard.controllers.paid
+﻿package co.com.japl.module.creditcard.controllers.paid
 
 import android.util.Log
 import androidx.compose.runtime.mutableFloatStateOf
@@ -27,7 +27,7 @@ class BoughtCreditCardViewModel(
     private var _list: Map<Long, List<BoughtCreditCardPeriodDTO>> = mapOf()
     val periodList get() = _list
 
-    fun main() {
+    fun reload() {
         progress.floatValue = 0.2f
         loader.value = false
         viewModelScope.launch {
@@ -62,3 +62,4 @@ class BoughtCreditCardViewModel(
         navController?.let { Bought.navigate(idCreditCard, cutOffDay, cutOff, it) }
     }
 }
+

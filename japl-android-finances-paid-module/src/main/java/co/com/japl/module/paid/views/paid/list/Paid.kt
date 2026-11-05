@@ -1,4 +1,4 @@
-package co.com.japl.module.paid.views.paid.list
+﻿package co.com.japl.module.paid.views.paid.list
 
 import android.content.res.Configuration
 import android.os.Build
@@ -7,7 +7,6 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -23,7 +22,6 @@ import androidx.compose.material.icons.rounded.MoreVert
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -46,6 +44,7 @@ import co.com.japl.ui.components.FieldViewCards
 import co.com.japl.ui.components.FloatButton
 import co.com.japl.ui.components.IconButton
 import co.com.japl.ui.components.LoadingProgress
+import co.com.japl.ui.components.OnResumeEffect
 import co.com.japl.ui.components.MoreOptionsDialog
 import co.com.japl.ui.components.Popup
 import co.com.japl.ui.theme.MaterialThemeComposeUI
@@ -65,17 +64,8 @@ fun Paid(viewModel:PaidViewModel) {
     val loaderState = remember {
         viewModel.loaderState
     }
-    val lifecycleOwner = androidx.lifecycle.compose.LocalLifecycleOwner.current
-    DisposableEffect(lifecycleOwner) {
-        val observer = androidx.lifecycle.LifecycleEventObserver { _, event ->
-            if (event == androidx.lifecycle.Lifecycle.Event.ON_RESUME) {
-                viewModel.main()
-            }
-        }
-        lifecycleOwner.lifecycle.addObserver(observer)
-        onDispose {
-            lifecycleOwner.lifecycle.removeObserver(observer)
-        }
+    OnResumeEffect {
+        viewModel.reload()
     }
 
     LoadingProgress(

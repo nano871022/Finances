@@ -1,4 +1,4 @@
-package co.com.japl.module.paid.views.periods.list
+﻿package co.com.japl.module.paid.views.periods.list
 
 import android.content.res.Configuration
 import android.os.Build
@@ -57,7 +57,7 @@ fun Period(viewModel:PeriodsViewModel){
     }
 
     LaunchedEffect(Unit) {
-        viewModel.main()
+        viewModel.reload()
     }
 
     if(loaderState.value) {

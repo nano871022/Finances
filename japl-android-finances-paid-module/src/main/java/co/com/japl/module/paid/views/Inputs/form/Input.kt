@@ -1,4 +1,4 @@
-package co.com.japl.module.paid.views.Inputs.form
+﻿package co.com.japl.module.paid.views.Inputs.form
 
 import android.os.Build
 import androidx.annotation.RequiresApi
@@ -39,7 +39,7 @@ fun InputForm(viewModel: InputViewModel){
     val stateLoader = remember { viewModel.loader }
     LaunchedEffect(Unit) {
         withContext(Dispatchers.IO) {
-            viewModel.main()
+            viewModel.reload()
         }
     }
 

@@ -1,8 +1,7 @@
-package co.com.japl.module.paid.controllers.checkpaids
+﻿package co.com.japl.module.paid.controllers.checkpaids
 
 import android.content.Context
 import android.widget.Toast
-import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
@@ -19,7 +18,6 @@ import java.time.YearMonth
 import javax.inject.Inject
 
 class CheckListViewModel @Inject constructor(private val period:YearMonth, private val svc:ICheckPaymentPort?): ViewModel() {
-    val progression = mutableFloatStateOf(0.0f)
     val listState = mutableStateListOf<CheckPaymentDTO>()
     val loaderStatus = mutableStateOf(true)
     val loaderProgressStatus = mutableStateOf(false)
@@ -35,8 +33,7 @@ class CheckListViewModel @Inject constructor(private val period:YearMonth, priva
         }?.forEach { svc?.save(it) }
 
         Toast.makeText(context, R.string.toast_save_successful, Toast.LENGTH_LONG).show().also {
-            loaderStatus.value = true
-            main()
+            reload()
             loaderProgressStatus.value = false
         }
 
@@ -44,32 +41,25 @@ class CheckListViewModel @Inject constructor(private val period:YearMonth, priva
 
     fun remove(dto:CheckPaymentDTO){
         svc?.delete(dto)?.takeIf { it }?.let {
-            loaderStatus.value = true
             loaderProgressStatus.value = true
-            main()
+            reload()
             loaderProgressStatus.value = false
         }
     }
 
-    fun main() = viewModelScope.launch {
+    fun reload() = viewModelScope.launch {
         loaderStatus.value = true
-        progression.floatValue = 0.1f
         execute()
-        progression.floatValue = 1.0f
     }
 
     suspend fun execute(){
         val currentDate = LocalDateTime.now()
-        progression.floatValue = 0.1f
         val payments = withContext(Dispatchers.IO) {
             svc?.getCheckPayments(period)
         }
         payments?.takeIf { it.isNotEmpty() }?.let {
-            progression.floatValue = 0.5f
             listState.clear()
-            progression.floatValue = 0.6f
             listState.addAll(it)
-            progression.floatValue = 0.7f
             listState.forEach {
                 val day = it.date?.dayOfMonth ?: 1
                 it.date = currentDate
@@ -85,9 +75,8 @@ class CheckListViewModel @Inject constructor(private val period:YearMonth, priva
                     it.date = it.date?.withDayOfMonth(day)
                 }
             }
-            progression.floatValue = 0.8f
         }
         loaderStatus.value = false
-        progression.floatValue = 0.9f
     }
 }
+

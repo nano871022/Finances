@@ -1,4 +1,4 @@
-package co.com.japl.module.creditcard.views.bought
+﻿package co.com.japl.module.creditcard.views.bought
 
 import android.content.Context
 import android.content.res.Configuration
@@ -33,7 +33,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
@@ -53,8 +52,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleEventObserver
 import co.com.japl.module.creditcard.R
 import co.com.japl.module.creditcard.controllers.bought.lists.BoughtMonthlyViewModel
 import co.com.japl.ui.Prefs
@@ -62,6 +59,7 @@ import co.com.japl.ui.components.Carousel
 import co.com.japl.ui.components.FieldSelect
 import co.com.japl.ui.components.FieldView
 import co.com.japl.ui.components.HelpWikiButton
+import co.com.japl.ui.components.OnResumeEffect
 import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.com.japl.ui.theme.values.Dimensions
 import co.com.japl.ui.theme.values.ModifiersCustom.Weight1f
@@ -84,21 +82,12 @@ fun BoughtMonthly(viewModel:BoughtMonthlyViewModel?=null) {
     var loaderStatus by remember {viewModel!!.loader}
     var progressStatus by remember {viewModel!!.progress}
 
-    val lifecycleOwner = androidx.lifecycle.compose.LocalLifecycleOwner.current
-    DisposableEffect(lifecycleOwner) {
-        val observer = LifecycleEventObserver { _, event ->
-            if (event == Lifecycle.Event.ON_RESUME) {
-                viewModel?.mainCreditCard()
-                if (viewModel?.creditCardCode?.intValue != 0) {
-                    CoroutineScope(Dispatchers.IO).launch {
-                        viewModel?.main()
-                    }
-                }
+    OnResumeEffect {
+        viewModel?.mainCreditCard()
+        if (viewModel?.creditCardCode?.intValue != 0) {
+            CoroutineScope(Dispatchers.IO).launch {
+                viewModel?.reload()
             }
-        }
-        lifecycleOwner.lifecycle.addObserver(observer)
-        onDispose {
-            lifecycleOwner.lifecycle.removeObserver(observer)
         }
     }
 
@@ -114,7 +103,7 @@ fun BoughtMonthly(viewModel:BoughtMonthlyViewModel?=null) {
                         viewModel.creditCard.value = it.second
                         viewModel.creditCardCode.value = it.first
                         CoroutineScope(Dispatchers.IO).launch{
-                            viewModel?.main()
+                            viewModel?.reload()
                         }
                     }
                 })
@@ -848,4 +837,5 @@ private fun getViewMoel(context:Context):BoughtMonthlyViewModel{
     viewModel.showCreditRate.value = true
     return viewModel
 }
+
 

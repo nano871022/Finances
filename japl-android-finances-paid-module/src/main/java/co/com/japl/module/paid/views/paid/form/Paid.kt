@@ -1,4 +1,4 @@
-package co.com.japl.module.paid.views.paid.form
+﻿package co.com.japl.module.paid.views.paid.form
 
 import android.content.res.Configuration
 import android.os.Build
@@ -41,7 +41,7 @@ fun Paid(viewModel:PaidViewModel) {
     val loaderState = remember {viewModel.loading}
 
     LaunchedEffect(Unit) {
-        viewModel.main()
+        viewModel.reload()
     }
 
     if(loaderState.value) {

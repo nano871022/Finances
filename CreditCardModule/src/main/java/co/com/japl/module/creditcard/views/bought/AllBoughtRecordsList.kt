@@ -42,8 +42,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import co.com.japl.finances.iports.dtos.BoughtCreditCardPeriodDTO
 import co.com.japl.finances.iports.dtos.CreditCardBoughtItemDTO
@@ -58,6 +56,8 @@ import co.com.japl.module.creditcard.controllers.bought.lists.AllBoughtRecordsVi
 import co.com.japl.ui.components.CheckBoxField
 import co.com.japl.ui.components.FieldSelect
 import co.com.japl.ui.components.FieldView
+import co.com.japl.ui.components.LoadingProgress
+import co.com.japl.ui.components.OnResumeEffect
 import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.com.japl.ui.utils.NumbersUtil
 import java.time.LocalDateTime
@@ -66,24 +66,14 @@ import java.time.format.DateTimeFormatter
 
 @Composable
 fun AllBoughtRecordsList(viewModel: AllBoughtRecordsViewModel, initialExpanded: Boolean = false) {
-    val loader by remember { viewModel.loader }
     val searchQuery by remember { viewModel.searchQuery }
     val showOnlyRestorable by remember { viewModel.showOnlyRestorable }
     val filteredList by remember { viewModel.filteredList }
     val banksList by remember { viewModel.banksList }
     val selectedBank by remember { viewModel.selectedBank }
 
-    val lifecycleOwner = LocalLifecycleOwner.current
-    DisposableEffect(lifecycleOwner) {
-        val observer = LifecycleEventObserver { _, event ->
-            if (event == Lifecycle.Event.ON_RESUME) {
-                viewModel.selectedBank.value?.let { bank -> viewModel.load(bank.first) }
-            }
-        }
-        lifecycleOwner.lifecycle.addObserver(observer)
-        onDispose {
-            lifecycleOwner.lifecycle.removeObserver(observer)
-        }
+    OnResumeEffect {
+        viewModel.selectedBank.value?.let { bank -> viewModel.load(bank.first) }
     }
 
     Column(
@@ -116,86 +106,81 @@ fun AllBoughtRecordsList(viewModel: AllBoughtRecordsViewModel, initialExpanded: 
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
-        } else if (loader) {
-            Column(modifier = Modifier.fillMaxSize()) {
-                LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
-                Box(
-                    modifier = Modifier.weight(1f).fillMaxWidth(),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text(
-                        text = stringResource(R.string.loading_data),
-                        textAlign = TextAlign.Center,
-                        color = MaterialTheme.colorScheme.onBackground
-                    )
-                }
-            }
-        } else if (filteredList.isEmpty()) {
-            Text(
-                text = stringResource(id = R.string.no_data),
-                style = MaterialTheme.typography.bodyLarge,
-                modifier = Modifier
-                    .padding(16.dp)
-                    .align(Alignment.CenterHorizontally)
-            )
         } else {
-            Row {
-                OutlinedTextField(
-                    value = searchQuery,
-                    onValueChange = viewModel::onSearchQueryChange,
-                    label = { Text(text = stringResource(id = R.string.search_placeholder)) },
-                    leadingIcon = { Icon(Icons.Default.Search, contentDescription = null) },
-                    modifier = Modifier.fillMaxWidth().weight(2f),
-                    singleLine = true
-                )
-
-                CheckBoxField(
-                    title = stringResource(R.string.restore),
-                    value = showOnlyRestorable,
-                    callback = { viewModel.onShowOnlyRestorableChange(it) },
-                    modifier = Modifier.fillMaxWidth().weight(1f)
-                )
-            }
-
-            Spacer(modifier = Modifier.height(8.dp))
-
-            Row {
-
-                Text(
-                    text = "${stringResource(id = R.string.total_records)}: ${filteredList.size}",
-                    style = MaterialTheme.typography.labelMedium,
-                    color = MaterialTheme.colorScheme.onPrimary,
-                    modifier = Modifier.weight(1f).padding(bottom = 4.dp, start = 4.dp)
-                )
-
-                Text(
-                    text = "${
-                        NumbersUtil.COPtoString(
-                            filteredList.toList().sumOf { it.valueItem })
-                    }",
-                    style = MaterialTheme.typography.labelMedium,
-                    color = MaterialTheme.colorScheme.onPrimary,
-                    textAlign = TextAlign.End,
-                    modifier = Modifier.weight(1f).padding(bottom = 4.dp, start = 4.dp)
-                )
-            }
-
-            val groupedByYear = remember(filteredList) {
-                filteredList.sortedByDescending { it.boughtDate }
-                    .groupBy { it.boughtDate.year }
-                    .entries
-                    .sortedByDescending { it.key }
-            }
-
-            LazyColumn(
-                modifier = Modifier.fillMaxSize(),
-                verticalArrangement = Arrangement.spacedBy(6.dp)
+            LoadingProgress(
+                message = R.string.loading_data,
+                showProgress = viewModel.loader,
+                execute = {}
             ) {
-                items(groupedByYear, key = { it.key }) { (year, yearItems) ->
-                    YearSection(year = year, yearItems = yearItems, initialExpanded = initialExpanded, viewModel = viewModel)
+                if (filteredList.isEmpty()) {
+                    Text(
+                        text = stringResource(id = R.string.no_data),
+                        style = MaterialTheme.typography.bodyLarge,
+                        modifier = Modifier
+                            .padding(16.dp)
+                            .align(Alignment.CenterHorizontally)
+                    )
+                } else {
+                    Row {
+                        OutlinedTextField(
+                            value = searchQuery,
+                            onValueChange = viewModel::onSearchQueryChange,
+                            label = { Text(text = stringResource(id = R.string.search_placeholder)) },
+                            leadingIcon = { Icon(Icons.Default.Search, contentDescription = null) },
+                            modifier = Modifier.fillMaxWidth().weight(2f),
+                            singleLine = true
+                        )
+
+                        CheckBoxField(
+                            title = stringResource(R.string.restore),
+                            value = showOnlyRestorable,
+                            callback = { viewModel.onShowOnlyRestorableChange(it) },
+                            modifier = Modifier.fillMaxWidth().weight(1f)
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    Row {
+
+                        Text(
+                            text = "${stringResource(id = R.string.total_records)}: ${filteredList.size}",
+                            style = MaterialTheme.typography.labelMedium,
+                            color = MaterialTheme.colorScheme.onPrimary,
+                            modifier = Modifier.weight(1f).padding(bottom = 4.dp, start = 4.dp)
+                        )
+
+                        Text(
+                            text = "${
+                                NumbersUtil.COPtoString(
+                                    filteredList.toList().sumOf { it.valueItem })
+                            }",
+                            style = MaterialTheme.typography.labelMedium,
+                            color = MaterialTheme.colorScheme.onPrimary,
+                            textAlign = TextAlign.End,
+                            modifier = Modifier.weight(1f).padding(bottom = 4.dp, start = 4.dp)
+                        )
+                    }
+
+                    val groupedByYear = remember(filteredList) {
+                        filteredList.sortedByDescending { it.boughtDate }
+                            .groupBy { it.boughtDate.year }
+                            .entries
+                            .sortedByDescending { it.key }
+                    }
+
+                    LazyColumn(
+                        modifier = Modifier.fillMaxSize(),
+                        verticalArrangement = Arrangement.spacedBy(6.dp)
+                    ) {
+                        items(groupedByYear, key = { it.key }) { (year, yearItems) ->
+                            YearSection(year = year, yearItems = yearItems, initialExpanded = initialExpanded, viewModel = viewModel)
+                        }
+                    }
                 }
             }
         }
+
     }
 }
 

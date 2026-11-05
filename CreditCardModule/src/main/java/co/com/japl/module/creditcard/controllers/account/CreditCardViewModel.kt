@@ -1,4 +1,4 @@
-package co.com.japl.module.creditcard.controllers.account
+﻿package co.com.japl.module.creditcard.controllers.account
 
 import android.util.Log
 import android.widget.Toast
@@ -122,7 +122,7 @@ class CreditCardViewModel @Inject constructor(
         }
     }
 
-    fun main() {
+    fun reload() {
         viewModelScope.launch {
             progress.floatValue = 0.1f
 
@@ -160,3 +160,4 @@ class CreditCardViewModel @Inject constructor(
         progress.floatValue = 0.8f
     }
 }
+

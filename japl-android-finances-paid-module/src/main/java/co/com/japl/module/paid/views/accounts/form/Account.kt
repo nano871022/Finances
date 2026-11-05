@@ -1,4 +1,4 @@
-package co.com.japl.module.paid.views.accounts.form
+﻿package co.com.japl.module.paid.views.accounts.form
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -35,7 +35,7 @@ fun AccountForm(viewModel: AccountViewModel){
 
     LaunchedEffect(Unit) {
         withContext(Dispatchers.IO) {
-            viewModel.main()
+            viewModel.reload()
         }
     }
 

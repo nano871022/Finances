@@ -1,4 +1,4 @@
-package co.com.japl.module.creditcard.views.account.lists
+﻿package co.com.japl.module.creditcard.views.account.lists
 
 import android.content.res.Configuration
 import android.os.Build
@@ -22,7 +22,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -32,14 +31,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleEventObserver
-import androidx.lifecycle.compose.LocalLifecycleOwner
 import co.com.japl.finances.iports.dtos.CreditCardDTO
 import co.com.japl.module.creditcard.R
 import co.com.japl.module.creditcard.controllers.account.CreditCardListViewModel
 import co.com.japl.module.creditcard.controllers.account.CreditCardViewModel
 import co.com.japl.ui.components.LoadingProgress
+import co.com.japl.ui.components.OnResumeEffect
 import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.com.japl.ui.theme.values.Dimensions
 import co.com.japl.ui.theme.values.ModifiersCustom.AlignCenterVerticalAndPaddingRightSpace
@@ -64,17 +61,8 @@ fun CreditCardList(creditCardViewModel:CreditCardListViewModel){
         creditCardViewModel.showProgress
     }
 
-    val lifecycleOwner = LocalLifecycleOwner.current
-    DisposableEffect(lifecycleOwner) {
-        val observer = LifecycleEventObserver { _, event ->
-            if (event == Lifecycle.Event.ON_RESUME) {
-                creditCardViewModel.main()
-            }
-        }
-        lifecycleOwner.lifecycle.addObserver(observer)
-        onDispose {
-            lifecycleOwner.lifecycle.removeObserver(observer)
-        }
+    OnResumeEffect {
+        creditCardViewModel.reload()
     }
 
     LoadingProgress(
@@ -239,6 +227,5 @@ fun CreditCardListPreviewDark(){
 fun getViewModel():CreditCardListViewModel{
  val viewModel = CreditCardListViewModel(creditCardSvc = null)
     viewModel.showProgress.value = false
-    viewModel.progress.floatValue = 0.7f
     return viewModel
 }

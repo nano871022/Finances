@@ -1,4 +1,4 @@
-package co.com.japl.module.creditcard.views.email.form
+﻿package co.com.japl.module.creditcard.views.email.form
 
 import android.content.res.Configuration
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -67,7 +67,7 @@ fun EmailBought(viewModel: EmailCreditCardViewModel){
     val load by viewModel.load
 
     LaunchedEffect(Unit) {
-        viewModel.main()
+        viewModel.reload()
     }
     Column (modifier =  Modifier.fillMaxWidth()){
         if (load) {
@@ -508,3 +508,4 @@ private fun getViewModel(): EmailCreditCardViewModel {
         navController = null
     )
 }
+

@@ -1,4 +1,4 @@
-package co.com.japl.module.paid.controllers.emailpaid.list
+﻿package co.com.japl.module.paid.controllers.emailpaid.list
 
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
@@ -32,7 +32,7 @@ class EmailListPaidViewModel(
     }
     val list = mutableStateListOf<EmailPaidDTO>()
 
-    fun main() {
+    fun reload() {
         load.value = true
         viewModelScope.launch {
             val items = withContext(Dispatchers.IO) {
@@ -60,8 +60,7 @@ class EmailListPaidViewModel(
                 svc?.delete(id) == true
             }
             if (result) {
-                load.value = true
-                main()
+                reload()
             }
         }
     }
@@ -72,8 +71,7 @@ class EmailListPaidViewModel(
                 svc?.activate(id, active) == true
             }
             if (result) {
-                load.value = true
-                main()
+                reload()
             }
         }
     }
@@ -84,8 +82,10 @@ class EmailListPaidViewModel(
                 svc?.clone(id) == true
             }
             if (result) {
-                main()
+                reload()
             }
         }
     }
 }
+
+

@@ -1,4 +1,4 @@
-package co.com.japl.module.creditcard.views.creditrate.forms
+﻿package co.com.japl.module.creditcard.views.creditrate.forms
 
 import android.content.res.Configuration
 import android.os.Build
@@ -47,7 +47,7 @@ fun CreditRate(viewModel: CreateRateViewModel) {
         viewModel.progress
     }
     LaunchedEffect(Unit) {
-        viewModel.main()
+        viewModel.reload()
     }
 
     if (statePogress.value) {
@@ -261,3 +261,4 @@ fun CreditRatePreviewDark() {
         CreditRate(viewModel)
     }
 }
+

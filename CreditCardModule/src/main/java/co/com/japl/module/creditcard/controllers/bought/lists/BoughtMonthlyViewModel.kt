@@ -1,4 +1,4 @@
-package co.com.japl.module.creditcard.controllers.bought.lists
+﻿package co.com.japl.module.creditcard.controllers.bought.lists
 
 import android.util.Log
 import android.widget.Toast
@@ -142,12 +142,12 @@ class BoughtMonthlyViewModel(
             if (it.size == 1 && creditCard.value.isBlank()) {
                 creditCardCode.intValue = it.first().id
                 creditCard.value = it.first().name
-                main()
+                reload()
             }
         }
     }
 
-    fun main() {
+    fun reload() {
         viewModelScope.launch {
             loader.value = false
             progress.floatValue = 1f
@@ -269,3 +269,4 @@ class BoughtMonthlyViewModel(
     }
 
 }
+

@@ -1,4 +1,4 @@
-package co.com.japl.module.paid.views.email.form
+﻿package co.com.japl.module.paid.views.email.form
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.background
@@ -30,7 +30,7 @@ fun EmailPaid(viewModel: EmailPaidViewModel) {
     val load by viewModel.load
 
     LaunchedEffect(Unit) {
-        viewModel.main()
+        viewModel.reload()
     }
 
     Column(modifier = Modifier.fillMaxWidth()) {
@@ -306,3 +306,4 @@ private fun ValidationPopup(viewModel: EmailPaidViewModel) {
         }
     }
 }
+

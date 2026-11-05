@@ -1,4 +1,4 @@
-package co.com.japl.module.paid.views.accounts.list
+﻿package co.com.japl.module.paid.views.accounts.list
 
 import android.content.res.Configuration
 import android.os.Build
@@ -20,7 +20,6 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -40,6 +39,7 @@ import co.com.japl.ui.components.Carousel
 import co.com.japl.ui.components.FieldView
 import co.com.japl.ui.components.HelpWikiButton
 import co.com.japl.ui.components.LoadingProgress
+import co.com.japl.ui.components.OnResumeEffect
 import co.com.japl.ui.components.MoreOptionsDialog
 import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.com.japl.ui.theme.values.Dimensions
@@ -50,17 +50,8 @@ fun AccountList(viewModel: AccountViewModel) {
     val stateLoader = remember {
         viewModel.loading
     }
-    val lifecycleOwner = androidx.lifecycle.compose.LocalLifecycleOwner.current
-    DisposableEffect(lifecycleOwner) {
-        val observer = androidx.lifecycle.LifecycleEventObserver { _, event ->
-            if (event == androidx.lifecycle.Lifecycle.Event.ON_RESUME) {
-                viewModel.main()
-            }
-        }
-        lifecycleOwner.lifecycle.addObserver(observer)
-        onDispose {
-            lifecycleOwner.lifecycle.removeObserver(observer)
-        }
+    OnResumeEffect {
+        viewModel.reload()
     }
 
     LoadingProgress(

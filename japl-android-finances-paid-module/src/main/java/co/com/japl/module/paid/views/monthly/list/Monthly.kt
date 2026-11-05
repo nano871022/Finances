@@ -1,4 +1,4 @@
-package co.com.japl.module.paid.views.monthly.list
+﻿package co.com.japl.module.paid.views.monthly.list
 
 import android.content.res.Configuration
 import android.os.Build
@@ -48,7 +48,7 @@ fun Monthly(viewModel:MonthlyViewModel) {
     }
 
     LaunchedEffect(Unit) {
-        viewModel.main()
+        viewModel.reload()
     }
 
     if(loaderState.value){

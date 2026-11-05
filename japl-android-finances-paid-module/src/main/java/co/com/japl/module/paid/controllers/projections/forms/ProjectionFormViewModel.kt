@@ -1,4 +1,4 @@
-package co.com.japl.module.paid.controllers.projections.forms
+﻿package co.com.japl.module.paid.controllers.projections.forms
 
 import android.content.Context
 import android.util.Log
@@ -127,7 +127,7 @@ class ProjectionFormViewModel @AssistedInject constructor(
         })
 
     init {
-        main()
+        reload()
     }
 
     fun save()= viewModelScope.launch {
@@ -211,7 +211,7 @@ class ProjectionFormViewModel @AssistedInject constructor(
         period.reset(Pair(0,""))
     }
 
-    fun main() = viewModelScope.launch {
+    fun reload() = viewModelScope.launch {
         Log.d(javaClass.simpleName,"Runing Execution projections get data")
 
         loaderStatus.value = true
@@ -267,3 +267,4 @@ class ProjectionFormViewModel @AssistedInject constructor(
         }
     }
 }
+

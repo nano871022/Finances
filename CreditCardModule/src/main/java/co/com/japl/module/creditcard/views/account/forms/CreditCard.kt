@@ -1,4 +1,4 @@
-package co.com.japl.module.creditcard.views.account.forms
+﻿package co.com.japl.module.creditcard.views.account.forms
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -37,7 +37,7 @@ fun CreditCard(viewModel: CreditCardViewModel){
     val buttonUpdateState = remember { viewModel.showButtonUpdate}
 
     LaunchedEffect(Unit) {
-        viewModel.main()
+        viewModel.reload()
     }
 
     if(showProgress.value) {

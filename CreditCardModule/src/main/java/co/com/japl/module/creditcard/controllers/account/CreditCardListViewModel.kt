@@ -1,7 +1,6 @@
-package co.com.japl.module.creditcard.controllers.account
+﻿package co.com.japl.module.creditcard.controllers.account
 
 import android.widget.Toast
-import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
@@ -30,7 +29,6 @@ class CreditCardListViewModel @Inject constructor(private val creditCardSvc:ICre
 
     val list = mutableStateListOf<CreditCardDTO?>()
 
-    var progress = mutableFloatStateOf(0f)
     var showProgress = mutableStateOf(true)
 
     fun onClick(){
@@ -56,17 +54,14 @@ class CreditCardListViewModel @Inject constructor(private val creditCardSvc:ICre
         }
     }
 
-    fun main() {
+    fun reload() {
         viewModelScope.launch {
-            progress.floatValue = 0.1f
             execute()
-            progress.floatValue = 1f
         }
     }
 
     suspend fun execute() {
         showProgress.value = true
-        progress.floatValue = 0.4f
         creditCardSvc?.let { svc ->
             val result = withContext(Dispatchers.IO) {
                 svc.getAll()
@@ -75,7 +70,6 @@ class CreditCardListViewModel @Inject constructor(private val creditCardSvc:ICre
             result?.let(list::addAll)
         }
         showProgress.value = false
-        progress.floatValue = 0.8f
     }
 
     fun refresh() {
@@ -84,3 +78,4 @@ class CreditCardListViewModel @Inject constructor(private val creditCardSvc:ICre
         }
     }
 }
+

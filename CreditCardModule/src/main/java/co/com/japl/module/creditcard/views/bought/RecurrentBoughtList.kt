@@ -19,9 +19,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleEventObserver
-import androidx.lifecycle.compose.LocalLifecycleOwner
 import co.com.japl.ui.theme.values.ModifiersCustom.Weight1f
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -43,6 +40,7 @@ import co.com.japl.ui.components.Carousel
 import co.com.japl.ui.components.FieldView
 import co.com.japl.ui.components.FieldViewCards
 import co.com.japl.ui.components.LoadingProgress
+import co.com.japl.ui.components.OnResumeEffect
 import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.com.japl.ui.theme.values.Dimensions
 import co.com.japl.ui.utils.NumbersUtil
@@ -63,17 +61,8 @@ fun RecurrentBoughtList(
 ) {
     val loader = remember {viewModel.loader}
 
-    val lifecycleOwner = LocalLifecycleOwner.current
-    DisposableEffect(lifecycleOwner) {
-        val observer = LifecycleEventObserver { _, event ->
-            if (event == Lifecycle.Event.ON_RESUME) {
-                viewModel.load(codeCreditCard)
-            }
-        }
-        lifecycleOwner.lifecycle.addObserver(observer)
-        onDispose {
-            lifecycleOwner.lifecycle.removeObserver(observer)
-        }
+    OnResumeEffect {
+        viewModel.load(codeCreditCard)
     }
 
     LoadingProgress(
@@ -315,7 +304,6 @@ private fun RecurrentPreviewNoDataLight() {
         )
     }
     vm.filteredList.clear()
-    vm.progress.value = 1f
     MaterialThemeComposeUI {
         RecurrentBoughtList(
             codeCreditCard = 1,
@@ -352,7 +340,6 @@ private fun recurrentViewModel(listPort: IBoughtListPort, prefs: Prefs): Recurre
     var vm = RecurrentBoughtViewModel(listPort, prefs)
     vm.totalActive.value = "20.000"
     vm.loader.value=true
-    vm.progress.value = 1f
     vm.filteredList.add(
         CreditCardBoughtItemDTO(
             codeCreditCard= 0,

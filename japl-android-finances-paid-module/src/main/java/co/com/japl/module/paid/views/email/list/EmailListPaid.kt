@@ -1,4 +1,4 @@
-package co.com.japl.module.paid.views.email.list
+﻿package co.com.japl.module.paid.views.email.list
 
 import android.content.res.Configuration
 import androidx.compose.foundation.BorderStroke
@@ -33,6 +33,7 @@ import co.com.japl.ui.components.FieldView
 import co.com.japl.ui.components.FieldViewCards
 import co.com.japl.ui.components.FloatButton
 import co.com.japl.ui.components.LoadingProgress
+import co.com.japl.ui.components.OnResumeEffect
 import co.com.japl.ui.components.MoreOptionsDialog
 import co.com.japl.ui.enums.IMoreOptions
 import co.com.japl.ui.theme.MaterialThemeComposeUI
@@ -66,17 +67,8 @@ fun EmailListPaid(viewModel: EmailListPaidViewModel) {
             }
         }
     } else {
-        val lifecycleOwner = androidx.lifecycle.compose.LocalLifecycleOwner.current
-        DisposableEffect(lifecycleOwner) {
-            val observer = androidx.lifecycle.LifecycleEventObserver { _, event ->
-                if (event == androidx.lifecycle.Lifecycle.Event.ON_RESUME) {
-                    viewModel.main()
-                }
-            }
-            lifecycleOwner.lifecycle.addObserver(observer)
-            onDispose {
-                lifecycleOwner.lifecycle.removeObserver(observer)
-            }
+        OnResumeEffect {
+            viewModel.reload()
         }
         LoadingProgress(
             message = R.string.loading_data,
@@ -246,5 +238,6 @@ private fun getViewModel(): EmailListPaidViewModel {
     vm.load.value = false
     return vm
 }
+
 
 

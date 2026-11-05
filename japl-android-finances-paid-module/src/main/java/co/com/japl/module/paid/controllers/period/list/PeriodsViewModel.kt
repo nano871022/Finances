@@ -1,4 +1,4 @@
-package co.com.japl.module.paid.controllers.period.list
+﻿package co.com.japl.module.paid.controllers.period.list
 
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
@@ -23,7 +23,7 @@ class PeriodsViewModel(private val codeAccount:Int?, private val paidSvc: IPerio
         }
     }
 
-    fun main() = runBlocking{
+    fun reload() = runBlocking{
         progress.value = 0.0f
         execute()
         progress.value = 1.0f

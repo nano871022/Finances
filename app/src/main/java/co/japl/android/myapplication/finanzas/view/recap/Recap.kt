@@ -1,4 +1,4 @@
-package co.japl.android.myapplication.finanzas.view.recap
+﻿package co.japl.android.myapplication.finanzas.view.recap
 
 import android.content.Intent
 import android.content.res.Configuration
@@ -45,7 +45,7 @@ import co.japl.android.myapplication.finanzas.view.components.PieceOfPieDraw
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun Recap(model:RecapViewModel= viewModel()) {
-    model.main()
+    model.reload()
     val currentProgress = remember { model.currentProgress }
     val loading = remember {model.loading }
 

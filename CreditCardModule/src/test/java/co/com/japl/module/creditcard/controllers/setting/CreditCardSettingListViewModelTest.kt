@@ -3,37 +3,20 @@ package co.com.japl.module.creditcard.controllers.setting
 import androidx.lifecycle.SavedStateHandle
 import co.com.japl.finances.iports.dtos.CreditCardSettingDTO
 import co.com.japl.finances.iports.inbounds.creditcard.ICreditCardSettingPort
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.test.UnconfinedTestDispatcher
-import kotlinx.coroutines.test.resetMain
-import kotlinx.coroutines.test.setMain
-import org.junit.After
+import co.com.japl.ui.testutil.MainDispatcherRule
 import org.junit.Assert.assertTrue
-import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
 
-/**
- * 25.1 — execute() must turn showProgress on, so ON_RESUME reloads and
- * post-delete reloads paint the progress bar.
- */
 class CreditCardSettingListViewModelTest {
 
-    private val dispatcher = UnconfinedTestDispatcher()
-
-    @Before
-    fun setUp() {
-        Dispatchers.setMain(dispatcher)
-    }
-
-    @After
-    fun tearDown() {
-        Dispatchers.resetMain()
-    }
+    @get:Rule
+    val mainDispatcherRule = MainDispatcherRule()
 
     @Test
-    fun `execute turns the progress on while the core is consulted`() {
+    fun execute_whenCoreIsConsulted_thenProgressIsOn() {
         val coreStarted = CountDownLatch(1)
         val releaseCore = CountDownLatch(1)
 

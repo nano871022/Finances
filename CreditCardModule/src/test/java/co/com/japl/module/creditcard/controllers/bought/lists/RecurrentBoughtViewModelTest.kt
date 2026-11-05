@@ -6,39 +6,22 @@ import co.com.japl.finances.iports.dtos.CreditCardBoughtListDTO
 import co.com.japl.finances.iports.dtos.CreditCardDTO
 import co.com.japl.finances.iports.inbounds.creditcard.bought.lists.IBoughtListPort
 import co.com.japl.ui.Prefs
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.test.UnconfinedTestDispatcher
-import kotlinx.coroutines.test.resetMain
-import kotlinx.coroutines.test.setMain
-import org.junit.After
+import co.com.japl.ui.testutil.MainDispatcherRule
 import org.junit.Assert.assertTrue
-import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.mockito.Mockito.mock
 import java.time.LocalDateTime
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
 
-/**
- * 3.1 — the loader flag must be turned on at the beginning of every load,
- * so ON_RESUME reloads and row actions both paint the progress bar.
- */
 class RecurrentBoughtViewModelTest {
 
-    private val dispatcher = UnconfinedTestDispatcher()
-
-    @Before
-    fun setUp() {
-        Dispatchers.setMain(dispatcher)
-    }
-
-    @After
-    fun tearDown() {
-        Dispatchers.resetMain()
-    }
+    @get:Rule
+    val mainDispatcherRule = MainDispatcherRule()
 
     @Test
-    fun `load turns the loader on while the core is consulted`() {
+    fun load_whenCoreIsConsulted_thenLoaderIsOn() {
         val coreStarted = CountDownLatch(1)
         val releaseCore = CountDownLatch(1)
 

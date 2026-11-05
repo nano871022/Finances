@@ -1,4 +1,4 @@
-package co.com.japl.module.creditcard.views.paid
+﻿package co.com.japl.module.creditcard.views.paid
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Column
@@ -35,7 +35,7 @@ fun PaidList(viewModel: BoughtCreditCardViewModel){
     val loader = remember {viewModel.loader}
     LaunchedEffect(Unit) {
         withContext(Dispatchers.IO) {
-            viewModel.main()
+            viewModel.reload()
         }
     }
 
@@ -125,3 +125,4 @@ private fun Record(dateStart:String,dateEnd:String,capital:Double = 0.0, interes
             }
     }
 }
+

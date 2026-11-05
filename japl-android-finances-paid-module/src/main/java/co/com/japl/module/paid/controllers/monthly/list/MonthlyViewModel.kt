@@ -1,4 +1,4 @@
-package co.com.japl.module.paid.controllers.monthly.list
+﻿package co.com.japl.module.paid.controllers.monthly.list
 
 import android.util.Log
 import androidx.compose.runtime.mutableDoubleStateOf
@@ -78,7 +78,7 @@ class MonthlyViewModel(private val period:YearMonth, private val paidSvc: IPaidP
     }
 
 
-    fun main() {
+    fun reload() {
         viewModelScope.launch {
             progressStatus.floatValue = 0.0f
             execute()

@@ -1,4 +1,4 @@
-package co.com.japl.module.paid.controllers.accounts.form
+﻿package co.com.japl.module.paid.controllers.accounts.form
 
 import android.widget.Toast
 import androidx.compose.runtime.mutableFloatStateOf
@@ -72,7 +72,7 @@ class AccountViewModel @AssistedInject constructor(@Assisted private val codeAcc
         }
     }
 
-    fun main() {
+    fun reload() {
         viewModelScope.launch {
             progress.value = 0.1f
             execution()

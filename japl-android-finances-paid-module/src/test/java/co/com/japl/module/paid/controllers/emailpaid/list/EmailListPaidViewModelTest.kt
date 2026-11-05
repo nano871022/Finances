@@ -1,40 +1,27 @@
-package co.com.japl.module.paid.controllers.emailpaid.list
+﻿package co.com.japl.module.paid.controllers.emailpaid.list
 
 import co.com.japl.finances.iports.dtos.EmailPaidDTO
 import co.com.japl.finances.iports.dtos.EmailValidationDTO
 import co.com.japl.finances.iports.inbounds.paid.IEmailPaidPort
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.test.UnconfinedTestDispatcher
-import kotlinx.coroutines.test.resetMain
-import kotlinx.coroutines.test.setMain
-import org.junit.After
+import co.com.japl.ui.testutil.MainDispatcherRule
+import co.com.japl.ui.testutil.waitUntil
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
-import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import java.util.concurrent.CountDownLatch
-import java.util.concurrent.TimeUnit
 
 class EmailListPaidViewModelTest {
 
-    private val dispatcher = UnconfinedTestDispatcher()
-
-    @Before
-    fun setUp() {
-        Dispatchers.setMain(dispatcher)
-    }
-
-    @After
-    fun tearDown() {
-        Dispatchers.resetMain()
-    }
+    @get:Rule
+    val mainDispatcherRule = MainDispatcherRule()
 
     @Test
-    fun delete_reloadsListFromCore() {
+    fun delete_whenCoreSucceeds_thenReloadsFromCore() {
         val fake = FakeEmailPaidPort(mutableListOf(dto(1), dto(2)))
         val viewModel = EmailListPaidViewModel(fake, null)
-        viewModel.main()
+        viewModel.reload()
         waitUntil { viewModel.list.size == 2 }
         assertEquals(1, fake.getAllCalls)
 
@@ -46,10 +33,10 @@ class EmailListPaidViewModelTest {
     }
 
     @Test
-    fun activate_reloadsListFromCore() {
+    fun activate_whenCoreSucceeds_thenReloadsFromCore() {
         val fake = FakeEmailPaidPort(mutableListOf(dto(1, active = false)))
         val viewModel = EmailListPaidViewModel(fake, null)
-        viewModel.main()
+        viewModel.reload()
         waitUntil { viewModel.list.size == 1 }
         assertEquals(1, fake.getAllCalls)
 
@@ -61,39 +48,30 @@ class EmailListPaidViewModelTest {
     }
 
     @Test
-    fun main_turnsLoadOffWhenServiceIsNull() {
+    fun reload_whenServiceIsNull_thenLoadIsTurnedOff() {
         val viewModel = EmailListPaidViewModel(null, null)
         assertTrue(viewModel.load.value)
 
-        viewModel.main()
+        viewModel.reload()
 
         waitUntil { !viewModel.load.value }
         assertFalse(viewModel.load.value)
     }
 
     @Test
-    fun main_turnsLoadOnAtStart() {
+    fun reload_whenCalled_thenLoadIsOnAtStart() {
         val fake = FakeEmailPaidPort(mutableListOf(dto(1)))
         val gate = CountDownLatch(1)
         fake.gate = gate
         val viewModel = EmailListPaidViewModel(fake, null)
         viewModel.load.value = false
 
-        viewModel.main()
+        viewModel.reload()
 
         assertTrue(viewModel.load.value)
         gate.countDown()
         waitUntil { viewModel.list.size == 1 }
         assertFalse(viewModel.load.value)
-    }
-
-    private fun waitUntil(timeoutMs: Long = 5_000, condition: () -> Boolean) {
-        val deadline = System.currentTimeMillis() + timeoutMs
-        while (System.currentTimeMillis() < deadline) {
-            if (condition()) return
-            Thread.sleep(10)
-        }
-        throw AssertionError("Condition not met within ${timeoutMs}ms")
     }
 
     private fun dto(id: Int, active: Boolean = true) = EmailPaidDTO(
@@ -125,7 +103,7 @@ class EmailListPaidViewModelTest {
 
         override fun getAll(): List<EmailPaidDTO> {
             getAllCalls++
-            gate?.await(5, TimeUnit.SECONDS)
+            gate?.await(5, java.util.concurrent.TimeUnit.SECONDS)
             return store.toList()
         }
 
@@ -149,3 +127,4 @@ class EmailListPaidViewModelTest {
         override fun hasActiveEmail(): Boolean = true
     }
 }
+

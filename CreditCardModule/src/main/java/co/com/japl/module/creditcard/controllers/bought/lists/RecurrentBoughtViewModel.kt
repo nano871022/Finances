@@ -26,8 +26,6 @@ class RecurrentBoughtViewModel(
     val loader = mutableStateOf(true)
     val filterActive = mutableStateOf<Boolean?>(null) // null: All, true: Active, false: Inactive
 
-    val progress = mutableStateOf<Float>(0f)
-
     private var codeCreditCard: Int = 0
 
     fun load(codeCC: Int) = viewModelScope.launch {

@@ -1,9 +1,8 @@
-package co.com.japl.module.paid.controllers.paid.list
+﻿package co.com.japl.module.paid.controllers.paid.list
 
 import android.content.Context
 import android.util.Log
 import android.widget.Toast
-import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
@@ -41,7 +40,6 @@ class PaidViewModel @AssistedInject constructor(@Assisted private val accountCod
         fun create(accountCode: Int, period: YearMonth, navController: NavController?): PaidViewModel
     }
 
-    val progressStatus = mutableFloatStateOf(0.0f)
     val loaderState = mutableStateOf(true)
 
     val list = mutableStateMapOf<YearMonth,List<PaidDTO>>()
@@ -198,9 +196,8 @@ class PaidViewModel @AssistedInject constructor(@Assisted private val accountCod
         return list
     }
 
-    fun main() {
+    fun reload() {
         periodOfList.value = period.format(DateTimeFormatter.ofPattern("MMMM yyyy", Locale("es", "CO")))
-        progressStatus.value = 0.0f
         loaderState.value = true
         viewModelScope.launch {
             try {
@@ -208,7 +205,6 @@ class PaidViewModel @AssistedInject constructor(@Assisted private val accountCod
             } catch (e: Exception) {
                 Log.e(javaClass.name, "Error in main: ${e.message}", e)
             } finally {
-                progressStatus.value = 1.0f
                 loaderState.value = false
             }
         }
@@ -222,14 +218,11 @@ class PaidViewModel @AssistedInject constructor(@Assisted private val accountCod
                 }
                 list.clear()
                 if (fetched.isNotEmpty()) {
-                    progressStatus.floatValue = 0.3f
                     list.putAll(
                         fetched.sortedByDescending { dto -> dto.datePaid }
                             .groupBy { dto -> YearMonth.of(dto.datePaid.year, dto.datePaid.monthValue) }
                     )
-                    progressStatus.floatValue = 0.5f
                     allValues.value = fetched.sumOf { dto -> dto.itemValue }
-                    progressStatus.floatValue = 0.8f
                 } else {
                     allValues.value = 0.0
                 }
@@ -242,3 +235,4 @@ class PaidViewModel @AssistedInject constructor(@Assisted private val accountCod
     }
 
 }
+

@@ -3,14 +3,11 @@ package co.com.japl.module.paid.controllers.projections.list
 import android.content.Context
 import co.com.japl.finances.iports.dtos.ProjectionDTO
 import co.com.japl.finances.iports.inbounds.paid.IProjectionListPort
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.test.UnconfinedTestDispatcher
-import kotlinx.coroutines.test.resetMain
-import kotlinx.coroutines.test.setMain
-import org.junit.After
+import co.com.japl.ui.testutil.MainDispatcherRule
+import co.com.japl.ui.testutil.waitUntil
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
-import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.mockito.Mockito.mock
 import java.math.BigDecimal
@@ -18,20 +15,11 @@ import java.time.LocalDate
 
 class ProjectionListViewModelTest {
 
-    private val dispatcher = UnconfinedTestDispatcher()
-
-    @Before
-    fun setUp() {
-        Dispatchers.setMain(dispatcher)
-    }
-
-    @After
-    fun tearDown() {
-        Dispatchers.resetMain()
-    }
+    @get:Rule
+    val mainDispatcherRule = MainDispatcherRule()
 
     @Test
-    fun constructor_doesNotLoadFromCore() {
+    fun constructor_whenCreated_thenDoesNotLoadFromCore() {
         val fake = FakeProjectionListPort(mutableListOf(dto(1)))
         val viewModel = ProjectionListViewModel(mock(Context::class.java), fake, null)
 
@@ -42,7 +30,7 @@ class ProjectionListViewModelTest {
     }
 
     @Test
-    fun reload_loadsFromCore() {
+    fun reload_whenCalled_thenLoadsFromCore() {
         val fake = FakeProjectionListPort(mutableListOf(dto(1)))
         val viewModel = ProjectionListViewModel(mock(Context::class.java), fake, null)
 
@@ -51,15 +39,6 @@ class ProjectionListViewModelTest {
         waitUntil { viewModel.list.size == 1 }
         assertEquals(1, fake.getProjectionsCalls)
         assertFalse(viewModel.loader.value)
-    }
-
-    private fun waitUntil(timeoutMs: Long = 5_000, condition: () -> Boolean) {
-        val deadline = System.currentTimeMillis() + timeoutMs
-        while (System.currentTimeMillis() < deadline) {
-            if (condition()) return
-            Thread.sleep(10)
-        }
-        throw AssertionError("Condition not met within ${timeoutMs}ms")
     }
 
     private fun dto(id: Int) = ProjectionDTO(
