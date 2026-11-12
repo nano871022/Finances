@@ -10,6 +10,9 @@ import co.com.japl.ui.testutil.MainDispatcherRule
 import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
+import android.app.Application
+import android.content.SharedPreferences
+import org.mockito.Mockito.`when`
 import org.mockito.Mockito.mock
 import java.time.LocalDateTime
 import java.util.concurrent.CountDownLatch
@@ -45,7 +48,12 @@ class RecurrentBoughtViewModelTest {
             override fun changeQuotas(codeBought: Int, months: Int, cache: Boolean): Boolean = true
         }
 
-        val viewModel = RecurrentBoughtViewModel(port, mock(Prefs::class.java))
+        val sharedPrefs = mock(SharedPreferences::class.java)
+        org.mockito.Mockito.doReturn("false").`when`(sharedPrefs).getString(org.mockito.ArgumentMatchers.anyString(), org.mockito.ArgumentMatchers.anyString())
+        val app = object : Application() {
+            override fun getSharedPreferences(name: String?, mode: Int): SharedPreferences = sharedPrefs
+        }
+        val viewModel = RecurrentBoughtViewModel(port, co.com.japl.ui.Prefs(app))
         viewModel.loader.value = false
 
         viewModel.load(1)
