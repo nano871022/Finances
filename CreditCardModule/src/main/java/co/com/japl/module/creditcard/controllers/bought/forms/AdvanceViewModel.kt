@@ -109,6 +109,24 @@ class AdvanceViewModel(private val savedStateHandle: SavedStateHandle?=null, pri
         onValueChangeCallBack = { }
     )
 
+    var rateMissingHandler: () -> Unit = {
+        navController?.let { navController ->
+            Toast.makeText(navController.context, R.string.toast_credit_rate_is_not_setting, Toast.LENGTH_SHORT)
+                .show().also { navController.popBackStack() }
+        }
+    }
+
+    fun creditRateEmpty(){
+        if(taxDto == null){
+            rateMissingHandler()
+        }
+    }
+
+    @VisibleForTesting
+    internal fun setTaxDtoForTest(dto: TaxDTO?) {
+        taxDto = dto
+    }
+
     init{
         reload()
     }
@@ -175,23 +193,7 @@ class AdvanceViewModel(private val savedStateHandle: SavedStateHandle?=null, pri
         }
     }
 
-    var rateMissingHandler: () -> Unit = {
-        navController?.let { navController ->
-            Toast.makeText(navController.context, R.string.toast_credit_rate_is_not_setting, Toast.LENGTH_SHORT)
-                .show().also { navController.popBackStack() }
-        }
-    }
 
-    fun creditRateEmpty(){
-        if(taxDto == null){
-            rateMissingHandler()
-        }
-    }
-
-    @VisibleForTesting
-    internal fun setTaxDtoForTest(dto: TaxDTO?) {
-        taxDto = dto
-    }
 
     fun validate() {
         var value = true

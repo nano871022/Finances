@@ -109,6 +109,24 @@ class WalletViewModel(private val savedStateHolder: SavedStateHandle?=null, priv
         onValueChangeCallBack = { }
     )
 
+    var rateMissingHandler: () -> Unit = {
+        navController?.let { navController ->
+            Toast.makeText(navController.context, R.string.toast_credit_rate_is_not_setting, Toast.LENGTH_SHORT)
+                .show().also { navController.popBackStack() }
+        }
+    }
+
+    fun creditRateEmpty(){
+        if(taxDto == null){
+            rateMissingHandler()
+        }
+    }
+
+    @VisibleForTesting
+    internal fun setTaxDtoForTest(dto: TaxDTO?) {
+        taxDto = dto
+    }
+
     init{
         reload()
     }
@@ -174,23 +192,7 @@ class WalletViewModel(private val savedStateHolder: SavedStateHandle?=null, priv
         }
     }
 
-    var rateMissingHandler: () -> Unit = {
-        navController?.let { navController ->
-            Toast.makeText(navController.context, R.string.toast_credit_rate_is_not_setting, Toast.LENGTH_SHORT)
-                .show().also { navController.popBackStack() }
-        }
-    }
 
-    fun creditRateEmpty(){
-        if(taxDto == null){
-            rateMissingHandler()
-        }
-    }
-
-    @VisibleForTesting
-    internal fun setTaxDtoForTest(dto: TaxDTO?) {
-        taxDto = dto
-    }
 
     fun validate() {
         var value = true
@@ -292,7 +294,7 @@ class WalletViewModel(private val savedStateHolder: SavedStateHandle?=null, priv
         }
 
         creditRateSvc?.let {
-            it.get(codeCreditCard,cutOffDate?.monthValue!!,cutOffDate?.year!!,KindInterestRateEnum.WALLET_BUY)?.let {
+            it.get(codeCreditCard,cutOffDate?.monthValue ?: period.monthValue,cutOffDate?.year ?: period.year,KindInterestRateEnum.WALLET_BUY)?.let {
                 taxDto = it
                 creditRate.onValueChange(it.value.toString())
                 creditRateKind.onValueChange(it.kindOfTax?.getName()?: KindOfTaxEnum.MONTHLY_EFFECTIVE.value)

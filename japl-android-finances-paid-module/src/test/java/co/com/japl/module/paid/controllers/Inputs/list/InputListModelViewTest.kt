@@ -1,6 +1,6 @@
 ﻿package co.com.japl.module.paid.controllers.Inputs.list
 
-import android.content.Context
+import android.app.Application
 import co.com.japl.finances.iports.dtos.InputDTO
 import co.com.japl.finances.iports.inbounds.inputs.IInputPort
 import co.com.japl.ui.testutil.MainDispatcherRule
@@ -25,7 +25,7 @@ class InputListModelViewTest {
         val fake = FakeInputPort(mutableListOf(dto(1)))
         val gate = CountDownLatch(1)
         fake.gate = gate
-        val viewModel = InputListModelView(mock(Context::class.java), 1, null, fake)
+        val viewModel = InputListModelView(Application(), 1, null, fake)
         viewModel.stateLoader.value = false
 
         viewModel.reload()

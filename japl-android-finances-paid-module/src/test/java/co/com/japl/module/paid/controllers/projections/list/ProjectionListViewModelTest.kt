@@ -1,6 +1,6 @@
 package co.com.japl.module.paid.controllers.projections.list
 
-import android.content.Context
+import android.app.Application
 import co.com.japl.finances.iports.dtos.ProjectionDTO
 import co.com.japl.finances.iports.inbounds.paid.IProjectionListPort
 import co.com.japl.ui.testutil.MainDispatcherRule
@@ -21,7 +21,7 @@ class ProjectionListViewModelTest {
     @Test
     fun constructor_whenCreated_thenDoesNotLoadFromCore() {
         val fake = FakeProjectionListPort(mutableListOf(dto(1)))
-        val viewModel = ProjectionListViewModel(mock(Context::class.java), fake, null)
+        val viewModel = ProjectionListViewModel(Application(), fake, null)
 
         Thread.sleep(100)
 
@@ -32,7 +32,7 @@ class ProjectionListViewModelTest {
     @Test
     fun reload_whenCalled_thenLoadsFromCore() {
         val fake = FakeProjectionListPort(mutableListOf(dto(1)))
-        val viewModel = ProjectionListViewModel(mock(Context::class.java), fake, null)
+        val viewModel = ProjectionListViewModel(Application(), fake, null)
 
         viewModel.reload()
 
