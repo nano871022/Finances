@@ -15,7 +15,6 @@ import androidx.compose.material.icons.rounded.Cancel
 import androidx.compose.material.icons.rounded.CleaningServices
 import androidx.compose.material.icons.rounded.Edit
 import co.com.japl.ui.components.LoadingProgress
-import co.com.japl.ui.components.OnResumeEffect
 import androidx.compose.material.icons.rounded.Save
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
@@ -43,10 +42,6 @@ import java.time.LocalDateTime
 @Composable
 fun Wallet (viewModel:WalletViewModel){
     val isLoadingState = remember {viewModel.loading}
-
-    OnResumeEffect {
-        viewModel.creditRateEmpty()
-    }
 
     LoadingProgress(
         message = R.string.loading_data,

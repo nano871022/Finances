@@ -12,7 +12,6 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import co.com.japl.ui.components.LoadingProgress
-import co.com.japl.ui.components.OnResumeEffect
 import androidx.compose.material.icons.rounded.Cancel
 import androidx.compose.material.icons.rounded.CleaningServices
 import androidx.compose.material.icons.rounded.Edit
@@ -43,10 +42,6 @@ import java.time.LocalDateTime
 @Composable
 fun Advance (viewModel:AdvanceViewModel){
     val isLoadingState = remember {viewModel.loading}
-
-    OnResumeEffect {
-        viewModel.creditRateEmpty()
-    }
 
     LoadingProgress(
         message = R.string.loading_data,

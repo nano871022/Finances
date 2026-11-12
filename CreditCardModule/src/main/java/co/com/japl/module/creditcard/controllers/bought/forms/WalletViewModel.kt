@@ -1,6 +1,7 @@
 ﻿package co.com.japl.module.creditcard.controllers.bought.forms
 
 import android.widget.Toast
+import androidx.annotation.VisibleForTesting
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.SavedStateHandle
@@ -173,14 +174,22 @@ class WalletViewModel(private val savedStateHolder: SavedStateHandle?=null, priv
         }
     }
 
+    var rateMissingHandler: () -> Unit = {
+        navController?.let { navController ->
+            Toast.makeText(navController.context, R.string.toast_credit_rate_is_not_setting, Toast.LENGTH_SHORT)
+                .show().also { navController.popBackStack() }
+        }
+    }
+
     fun creditRateEmpty(){
         if(taxDto == null){
-            navController?.let {navController->
-                Toast.makeText(navController.context,R.string.toast_credit_rate_is_not_setting,Toast.LENGTH_SHORT).show().also {
-                    navController.popBackStack()
-                }
-            }
+            rateMissingHandler()
         }
+    }
+
+    @VisibleForTesting
+    internal fun setTaxDtoForTest(dto: TaxDTO?) {
+        taxDto = dto
     }
 
     fun validate() {
@@ -292,6 +301,7 @@ class WalletViewModel(private val savedStateHolder: SavedStateHandle?=null, priv
                 }
                 progress.floatValue = 0.8f
             }
+            creditRateEmpty()
         }
 
         boughtSvc?.let {

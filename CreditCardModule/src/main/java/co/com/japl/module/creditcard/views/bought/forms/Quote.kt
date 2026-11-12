@@ -51,7 +51,6 @@ import co.com.japl.ui.components.FieldView
 import co.com.japl.ui.components.FloatButton
 import co.com.japl.ui.components.IconButton
 import co.com.japl.ui.components.LoadingProgress
-import co.com.japl.ui.components.OnResumeEffect
 import co.com.japl.ui.components.Popup
 import co.com.japl.ui.theme.MaterialThemeComposeUI
 import co.com.japl.ui.theme.values.Dimensions
@@ -64,10 +63,6 @@ import java.time.LocalDateTime
 fun Quote (viewModel:QuoteViewModel){
 
     val isLoadingState = remember {viewModel.loading}
-
-    OnResumeEffect {
-        viewModel.creditRateEmpty()
-    }
 
     LoadingProgress(
         message = R.string.loading_data,
