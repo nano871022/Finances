@@ -181,6 +181,24 @@ class QuoteViewModel(private val codeCreditCard:Int,
     private val _uiState = MutableStateFlow<FormUIState>(FormUIState.Current)
     val uiState : StateFlow<FormUIState> = _uiState.asStateFlow()
 
+    var rateMissingHandler: () -> Unit = {
+        navController?.let { navController ->
+            Toast.makeText(navController.context, R.string.toast_credit_rate_is_not_setting, Toast.LENGTH_SHORT)
+                .show().also { navController.popBackStack() }
+        }
+    }
+
+    fun creditRateEmpty(){
+        if(taxDto == null){
+            rateMissingHandler()
+        }
+    }
+
+    @VisibleForTesting
+    internal fun setTaxDtoForTest(dto: TaxDTO?) {
+        taxDto = dto
+    }
+
     init{
         viewModelScope.launch {
             reload()
@@ -399,23 +417,7 @@ class QuoteViewModel(private val codeCreditCard:Int,
         }
 
 
-    var rateMissingHandler: () -> Unit = {
-        navController?.let { navController ->
-            Toast.makeText(navController.context, R.string.toast_credit_rate_is_not_setting, Toast.LENGTH_SHORT)
-                .show().also { navController.popBackStack() }
-        }
-    }
 
-    fun creditRateEmpty(){
-        if(taxDto == null){
-            rateMissingHandler()
-        }
-    }
-
-    @VisibleForTesting
-    internal fun setTaxDtoForTest(dto: TaxDTO?) {
-        taxDto = dto
-    }
 
     fun deleteTag(codeTag:Int) = viewModelScope.launch {
         val result = withContext(Dispatchers.IO) {
@@ -551,7 +553,7 @@ class QuoteViewModel(private val codeCreditCard:Int,
 
         creditRateSvc?.let { svcPort ->
             withContext(Dispatchers.IO) {
-                svcPort.get(codeCreditCard, cutOffDate?.monthValue!!, cutOffDate?.year!!, KindInterestRateEnum.CREDIT_CARD)
+                svcPort.get(codeCreditCard, cutOffDate?.monthValue ?: period.monthValue, cutOffDate?.year ?: period.year, KindInterestRateEnum.CREDIT_CARD)
             }?.let {
                 taxDto = it
                 creditRate.onValueChange(it.value.toString())

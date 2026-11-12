@@ -24,7 +24,7 @@ class QuoteViewModelTest {
 
     @Test
     fun when_rate_is_loaded_then_missing_handler_is_not_invoked() {
-        val viewModel = newViewModel(rate = null)
+        val viewModel = newViewModel(rate = testRate(KindInterestRateEnum.CREDIT_CARD))
         awaitInitialLoad(viewModel)
 
         viewModel.setTaxDtoForTest(testRate(KindInterestRateEnum.CREDIT_CARD))
