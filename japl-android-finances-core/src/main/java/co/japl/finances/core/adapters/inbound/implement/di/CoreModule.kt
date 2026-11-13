@@ -1,5 +1,7 @@
 package co.japl.finances.core.adapters.inbound.implement.di
 
+import co.com.japl.finances.iports.inbounds.common.IGoogleDriveService
+import co.com.japl.finances.iports.inbounds.common.IGoogleSignInService
 import co.com.japl.finances.iports.inbounds.creditcard.ICreditCardPort
 import co.com.japl.finances.iports.inbounds.common.IDifferQuotesPort
 import co.com.japl.finances.iports.inbounds.common.ILLMService
@@ -330,5 +332,11 @@ abstract class CoreModule {
 
     @Binds
     abstract fun bindUserCaseEmailPaid(impl: co.japl.finances.core.usercases.implement.paid.EmailPaidImpl): co.japl.finances.core.usercases.interfaces.paid.IEmailPaid
+
+    @Binds
+    abstract fun bindInboundGoogleDriveService(impl: co.japl.finances.core.adapters.inbound.implement.common.GoogleDriveServiceImpl): IGoogleDriveService
+
+    @Binds
+    abstract fun bindInboundGoogleSignInService(impl: co.japl.finances.core.adapters.inbound.implement.common.GoogleSignInServiceImpl): IGoogleSignInService
 
 }

@@ -3,7 +3,7 @@ package co.japl.android.finances.services.implement
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.util.Log
-import co.com.japl.finances.iports.inbounds.common.IGoogleDriveService
+import co.com.japl.finances.iports.outbounds.IGoogleDrivePort
 import co.com.japl.finances.iports.pojo.BackupStorageInfo
 import co.japl.android.finances.services.DB.connections.ConnectDB
 import co.japl.android.finances.services.utils.DatabaseConstants
@@ -28,7 +28,7 @@ import java.time.ZoneId
 import javax.inject.Inject
 
 
-class GoogleDriveServiceImpl @Inject constructor(private val context:Context, private val dbConnect: ConnectDB) : IGoogleDriveService {
+class GoogleDriveServiceImpl @Inject constructor(private val context:Context, private val dbConnect: ConnectDB) : IGoogleDrivePort {
     companion object {
         const val PARAMETER_FOLDER = "appDataFolder"
         private val SCOPES = listOf(DriveScopes.DRIVE_APPDATA)
@@ -219,6 +219,19 @@ class GoogleDriveServiceImpl @Inject constructor(private val context:Context, pr
             Log.e(this.javaClass.name, "General Error: ${e.message}", e)
             null
         }
+    }
+
+    override suspend fun getBackupModifiedTime(account: GoogleSignInAccount?): Long? {
+        val drive = getDrive(account) ?: return null
+        val backupFile = drive.files().list()
+            .setSpaces(PARAMETER_FOLDER)
+            .setFields("files(id, name, modifiedTime)")
+            .execute()
+            ?.files
+            ?.firstOrNull { it.name == DatabaseConstants.DATA_BASE_NAME }
+            ?: return null
+
+        return backupFile.modifiedTime?.value
     }
 
 

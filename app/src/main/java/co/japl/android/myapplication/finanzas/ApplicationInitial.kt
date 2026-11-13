@@ -4,6 +4,7 @@ import android.app.Application
 import android.util.Log
 import co.com.japl.ui.Prefs
 import co.japl.android.finances.services.DB.connections.ConnectDB
+import co.japl.android.myapplication.finanzas.sync.AutoSyncScheduler
 import com.google.android.gms.security.ProviderInstaller
 import dagger.hilt.android.HiltAndroidApp
 import javax.inject.Inject
@@ -18,8 +19,22 @@ class ApplicationInitial:Application() {
     override fun onCreate() {
         super.onCreate()
         prefs = Prefs(applicationContext)
+        scheduleAutoSyncIfEnabled()
         preWarningDB()
         providerInstaller()
+    }
+
+    private fun scheduleAutoSyncIfEnabled() {
+        if (!prefs.autoSyncEnabled) return
+        try {
+            AutoSyncScheduler.schedule(
+                applicationContext,
+                prefs.autoSyncHour,
+                replace = false
+            )
+        } catch (e: Exception) {
+            Log.e(this.javaClass.name, "Auto-sync could not be scheduled at startup", e)
+        }
     }
 
     private fun preWarningDB(){

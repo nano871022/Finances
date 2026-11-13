@@ -553,4 +553,11 @@
     <string name="total_quote_credit_card_sshort">TC</string>
     <string name="total_credits_sshort">Cred</string>
     <string name="total_paid_sshort">Pags</string>
+    <string name="auto_sync_title">Sincronización automática</string>
+    <string name="auto_sync_description">Respalda o restaura la base de datos una vez al día según la fecha de modificación.</string>
+    <string name="auto_sync_role">Rol de este dispositivo</string>
+    <string name="auto_sync_role_master">Maestro: respalda en Drive cuando hay datos locales nuevos</string>
+    <string name="auto_sync_role_slave">Esclavo: restaura desde Drive cuando el respaldo es más reciente</string>
+    <string name="auto_sync_hour">Hora de sincronización</string>
+    <string name="auto_sync_drive_hint">Conceda acceso a Google Drive para activar la sincronización automática.</string>
 </resources>
