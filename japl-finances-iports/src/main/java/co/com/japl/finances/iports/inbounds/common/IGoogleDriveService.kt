@@ -13,4 +13,6 @@ interface IGoogleDriveService {
     suspend fun infoBackup(account: GoogleSignInAccount?):String
 
     suspend fun getStorageInfo(account: GoogleSignInAccount?): BackupStorageInfo?
+
+    suspend fun getBackupModifiedTime(account: GoogleSignInAccount?): Long?
 }

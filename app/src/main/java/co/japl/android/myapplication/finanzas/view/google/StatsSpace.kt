@@ -61,9 +61,7 @@ fun StatsSpace(viewModel: GoogleAuthBackupRestoreViewModel) {
     ) {
         LoadingProgress(
             message = R.string.loading_data,
-            showProgress = isProcessing,
-            validateData = { viewModel.isLogged.value },
-            messageNoData = R.string.not_data
+            showProgress = isProcessing
         ) {
 
             CloudSyncStatusCard(isLogged, email.value, spaceUsed.value, spaceMax.value)

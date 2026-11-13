@@ -17,6 +17,9 @@ class Prefs(private val context:Context){
     val SHARED_NAME_LLM_MODEL = "llm_model"
     val SHARED_NAME_LLM_GEMINI_URL = "llm_gemini_url"
     val SHARED_NAME_LLM_DEEPSEEK_URL = "llm_deepseek_url"
+    val SHARED_NAME_AUTO_SYNC_ENABLED = "auto_sync_enabled"
+    val SHARED_NAME_AUTO_SYNC_MASTER = "auto_sync_master"
+    val SHARED_NAME_AUTO_SYNC_HOUR = "auto_sync_hour"
     val prefs:SharedPreferences = context.getSharedPreferences(PREFS_NAME,0)
 
     var llmType: String
@@ -46,6 +49,20 @@ class Prefs(private val context:Context){
     var simulator: Boolean
         get() = prefs.getString(SHARED_NAME_SIMULATOR,"false").toBoolean()
         set(value) = prefs.edit().putString(SHARED_NAME_SIMULATOR,value.toString()).apply()
+
+    var autoSyncEnabled: Boolean
+        get() = prefs.getString(SHARED_NAME_AUTO_SYNC_ENABLED, "false")?.toBoolean() ?: false
+        set(value) = prefs.edit().putString(SHARED_NAME_AUTO_SYNC_ENABLED, value.toString()).apply()
+
+    var autoSyncMaster: Boolean
+        get() = prefs.getString(SHARED_NAME_AUTO_SYNC_MASTER, "false")?.toBoolean() ?: false
+        set(value) = prefs.edit().putString(SHARED_NAME_AUTO_SYNC_MASTER, value.toString()).apply()
+
+    var autoSyncHour: Int
+        get() = (prefs.getString(SHARED_NAME_AUTO_SYNC_HOUR, "2")?.toIntOrNull() ?: 2).coerceIn(0, 23)
+        set(value) = prefs.edit()
+            .putString(SHARED_NAME_AUTO_SYNC_HOUR, value.coerceIn(0, 23).toString())
+            .apply()
 
     var creditCardSMSDaysRead: Int
         get() = prefs.getString(SHARED_NAME_CREDIT_CARD_SMS_DAYS_READ,"7")?.toInt()?:7

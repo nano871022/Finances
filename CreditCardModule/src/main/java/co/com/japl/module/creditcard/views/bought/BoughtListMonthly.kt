@@ -47,12 +47,12 @@ private fun RowScope.HeaderCompact(key: YearMonth, list:List<CreditCardBoughtIte
     }
     Column(modifier=Modifier.weight(1f)) {
         Text(text = stringResource(id = R.string.total))
-        Text(text = monthlyState.totalBought)
+        Text(text = monthlyState.compactTotalBought())
     }
 
     Column(modifier=Modifier.weight(1f)) {
         Text(text = stringResource(id = R.string.total_quote))
-        Text(text = monthlyState.totalQuote)
+        Text(text = monthlyState.compactTotalQuote())
     }
 }
 

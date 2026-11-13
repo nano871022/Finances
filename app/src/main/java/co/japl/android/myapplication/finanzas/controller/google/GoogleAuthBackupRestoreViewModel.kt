@@ -12,6 +12,8 @@ import co.japl.android.myapplication.R
 import co.com.japl.finances.iports.dtos.StorageInfo
 import co.com.japl.finances.iports.inbounds.common.IGoogleDriveService
 import co.com.japl.finances.iports.inbounds.common.IGoogleSignInService
+import co.com.japl.ui.Prefs
+import co.japl.android.myapplication.finanzas.sync.AutoSyncScheduler
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.api.client.googleapis.json.GoogleJsonResponseException
 import kotlinx.coroutines.Dispatchers
@@ -19,7 +21,12 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.time.LocalDateTime
 
-class GoogleAuthBackupRestoreViewModel(private val activity:Activity?, private val loginSvc: IGoogleSignInService?, private val driveSvc: IGoogleDriveService?): ViewModel() {
+class GoogleAuthBackupRestoreViewModel(
+    private val activity: Activity?,
+    private val loginSvc: IGoogleSignInService?,
+    private val driveSvc: IGoogleDriveService?,
+    private val prefs: Prefs? = activity?.let { Prefs(it.applicationContext) }
+) : ViewModel() {
     var loginValue = mutableStateOf("Powered by Google LogIn")
     var nameValue = mutableStateOf("name")
     var photoUrlValue = mutableStateOf<String?>(null)
@@ -38,6 +45,10 @@ class GoogleAuthBackupRestoreViewModel(private val activity:Activity?, private v
     val isEmailAccessGranted = mutableStateOf(false)
     val isSmsAccessGranted = mutableStateOf(false)
     val isAllPermissionsGranted = derivedStateOf { isGoogleDriveGranted.value && isEmailAccessGranted.value && isSmsAccessGranted.value }
+
+    val autoSyncEnabled = mutableStateOf(prefs?.autoSyncEnabled ?: false)
+    val autoSyncMaster = mutableStateOf(prefs?.autoSyncMaster ?: false)
+    val autoSyncHour = mutableStateOf(prefs?.autoSyncHour ?: 2)
     val showPermissionDialog = mutableStateOf(false)
 
     init{
@@ -113,6 +124,7 @@ class GoogleAuthBackupRestoreViewModel(private val activity:Activity?, private v
                             }
                         }
                     }
+                    ensureAutoSyncSchedule()
                 } else {
                     isLogged.value = false
                     loginValue.value = "Powered by Google LogIn"
@@ -161,6 +173,45 @@ class GoogleAuthBackupRestoreViewModel(private val activity:Activity?, private v
     fun grantSmsPermission() {
         activity?.let {
             loginSvc?.requestSmsPermission(it)
+        }
+    }
+
+    fun setAutoSyncEnabled(enabled: Boolean) {
+        autoSyncEnabled.value = enabled
+        prefs?.let { it.autoSyncEnabled = enabled }
+
+        val context = activity?.applicationContext ?: return
+        if (enabled) {
+            AutoSyncScheduler.schedule(context, autoSyncHour.value, replace = true)
+        } else {
+            AutoSyncScheduler.cancel(context)
+        }
+    }
+
+    fun setAutoSyncMaster(master: Boolean) {
+        autoSyncMaster.value = master
+        prefs?.let { it.autoSyncMaster = master }
+    }
+
+    fun setAutoSyncHour(hour: Int) {
+        val clamped = hour.coerceIn(0, 23)
+        autoSyncHour.value = clamped
+        prefs?.let { it.autoSyncHour = clamped }
+
+        if (autoSyncEnabled.value) {
+            activity?.applicationContext?.let { context ->
+                AutoSyncScheduler.schedule(context, clamped, replace = true)
+            }
+        }
+    }
+
+    private fun ensureAutoSyncSchedule() {
+        val currentPrefs = prefs ?: return
+        if (!currentPrefs.autoSyncEnabled) return
+        val context = activity?.applicationContext ?: return
+
+        runCatching {
+            AutoSyncScheduler.schedule(context, currentPrefs.autoSyncHour, replace = false)
         }
     }
 

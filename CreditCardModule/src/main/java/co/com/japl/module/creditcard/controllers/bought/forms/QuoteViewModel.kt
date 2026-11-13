@@ -225,6 +225,18 @@ class QuoteViewModel(private val codeCreditCard:Int,
 
     }
 
+    /**
+     * Keeps the current form values and only resets the purchase identity so the next
+     * "save and create new" inserts a brand-new record.
+     */
+    private fun prepareForNextCreation() {
+        bought = bought?.copy(id = 0)
+        isNew.value = true
+    }
+
+    @VisibleForTesting
+    internal fun currentBoughtIdForTest(): Int? = bought?.id
+
     private fun getBuyCreditCardSetting(codeBought:Int,codeCreditCardSetting:Int):BuyCreditCardSettingDTO{
         val dto = buySetting?.copy(
             codeBuyCreditCard = codeBought,
@@ -331,10 +343,9 @@ class QuoteViewModel(private val codeCreditCard:Int,
                                 navController.context,
                                 R.string.toast_successful_insert,
                                 Toast.LENGTH_SHORT
-                            ).show().also {
-                                clear()
-                            }
+                            ).show()
                         }
+                        prepareForNextCreation()
                     } else {
                         Toast.makeText(
                             navController?.context,

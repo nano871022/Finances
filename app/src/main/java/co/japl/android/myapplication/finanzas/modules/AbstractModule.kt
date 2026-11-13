@@ -7,8 +7,6 @@ import co.com.japl.ui.Prefs
 import co.com.japl.finances.iports.observables.ISMSObservableSubscriber
 import co.com.japl.finances.iports.observables.ISMSObserver
 import co.com.japl.finances.iports.inbounds.common.ISMSBoadcastReceiver
-import co.com.japl.finances.iports.inbounds.common.IGoogleDriveService
-import co.com.japl.finances.iports.inbounds.common.IGoogleSignInService
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
@@ -31,9 +29,6 @@ abstract class AbstractModule {
 
     @Binds
     abstract fun bindSMSBroadcastReceiver(sms: co.japl.android.finances.services.core.SMS): ISMSBoadcastReceiver
-
-    @Binds
-    abstract fun bindGoogleSignInService(impl: co.japl.android.finances.services.implement.GoogleLoginService): IGoogleSignInService
 
     companion object {
         @Singleton

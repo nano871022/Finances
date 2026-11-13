@@ -28,6 +28,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import co.com.japl.ui.components.FieldSelect
 import co.com.japl.ui.components.LoadingProgress
 import co.com.japl.ui.components.OnResumeEffect
 import co.com.japl.ui.theme.MaterialThemeComposeUI
@@ -36,6 +37,7 @@ import co.japl.android.myapplication.finanzas.controller.google.GoogleAuthBackup
 import coil.compose.AsyncImage
 import java.time.Duration
 import java.time.LocalDateTime
+import java.util.Locale
 
 @Composable
 fun LoginSpace(viewModel: GoogleAuthBackupRestoreViewModel) {
@@ -46,15 +48,12 @@ fun LoginSpace(viewModel: GoogleAuthBackupRestoreViewModel) {
         viewModel.checkSmsPermission()
     }
 
-
-        LoadingProgress(
-            message = R.string.loading_data,
-            showProgress = isProcessing,
-            validateData = { viewModel.isLogged.value },
-            messageNoData = R.string.not_data
-        ) {
-            BodyLoad(viewModel = viewModel)
-        }
+    LoadingProgress(
+        message = R.string.loading_data,
+        showProgress = isProcessing
+    ) {
+        BodyLoad(viewModel = viewModel)
+    }
 }
 
 @Composable
@@ -88,6 +87,10 @@ private fun BodyLoad(
 
         Spacer(modifier = Modifier.height(5.dp))
 
+        if (isLogged.value) {
+            AutoSyncSection(viewModel)
+        }
+
         if (isLogged.value.not()) {
             CloudConnectionCard(isLogged.value, loginValue.value, onSwitchAccount = {
                 viewModel.login()?.let { stateResultActivity.launch(it) }
@@ -105,6 +108,103 @@ private fun BodyLoad(
         AccountManagementList(isLogged.value, onSignOut = { viewModel.logout() })
 
         Spacer(modifier = Modifier.height(32.dp))
+    }
+}
+
+@Composable
+private fun AutoSyncSection(viewModel: GoogleAuthBackupRestoreViewModel) {
+    val enabled = viewModel.autoSyncEnabled
+    val master = viewModel.autoSyncMaster
+    val hour = viewModel.autoSyncHour
+    val driveGranted = viewModel.isGoogleDriveGranted.value
+
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(16.dp),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+    ) {
+        Column(modifier = Modifier.padding(16.dp)) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Icon(
+                    Icons.Rounded.Sync,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.onPrimary
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                Column(modifier = Modifier.weight(1f)) {
+                    Text(
+                        stringResource(R.string.auto_sync_title),
+                        style = MaterialTheme.typography.headlineSmall,
+                        fontWeight = FontWeight.Bold
+                    )
+                    Text(
+                        stringResource(R.string.auto_sync_description),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
+                Switch(
+                    checked = enabled.value,
+                    onCheckedChange = { viewModel.setAutoSyncEnabled(it) },
+                    enabled = driveGranted
+                )
+            }
+
+            if (!driveGranted) {
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(
+                    stringResource(R.string.auto_sync_drive_hint),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.error
+                )
+            }
+
+            if (enabled.value) {
+                Spacer(modifier = Modifier.height(16.dp))
+                HorizontalDivider(
+                    modifier = Modifier.padding(bottom = 12.dp),
+                    color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.3f)
+                )
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Column(modifier = Modifier.weight(1f)) {
+                        Text(
+                            stringResource(R.string.auto_sync_role),
+                            style = MaterialTheme.typography.labelLarge,
+                            fontWeight = FontWeight.Bold
+                        )
+                        Text(
+                            stringResource(
+                                if (master.value) R.string.auto_sync_role_master
+                                else R.string.auto_sync_role_slave
+                            ),
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
+                    Switch(
+                        checked = master.value,
+                        onCheckedChange = { viewModel.setAutoSyncMaster(it) }
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(12.dp))
+
+                FieldSelect(
+                    title = stringResource(R.string.auto_sync_hour),
+                    value = String.format(Locale.US, "%02d:00", hour.value),
+                    list = (0..23).map { Pair(it, String.format(Locale.US, "%02d:00", it)) },
+                    modifier = Modifier.fillMaxWidth(),
+                    callable = { selected -> selected?.let { viewModel.setAutoSyncHour(it.first) } }
+                )
+            }
+        }
     }
 }
 

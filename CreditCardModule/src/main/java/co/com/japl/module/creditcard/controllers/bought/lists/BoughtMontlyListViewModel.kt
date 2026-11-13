@@ -5,6 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.toMutableStateList
 import androidx.lifecycle.ViewModel
 import co.com.japl.finances.iports.dtos.CreditCardBoughtItemDTO
+import co.com.japl.ui.utils.NumbersUtil
 import dagger.hilt.android.lifecycle.HiltViewModel
 
 import java.time.YearMonth
@@ -27,6 +28,12 @@ class BoughtMonthlyListViewModel (
     val totalQuote:String get() = _totalQuote
 
     val totalInterest:String get() = _totalInterest
+
+    val totalBoughtValue:Double get() = _list.sumOf { it.pendingToPay }
+    val totalQuoteValue:Double get() = _list.sumOf { it.quoteValue }
+
+    fun compactTotalBought():String = NumbersUtil.formatReduced(totalBoughtValue)
+    fun compactTotalQuote():String = NumbersUtil.formatReduced(totalQuoteValue)
 
     var state: MutableState<Boolean> = mutableStateOf(false)
 

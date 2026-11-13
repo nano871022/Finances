@@ -11,9 +11,8 @@ import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.Fragment
 import co.com.japl.finances.iports.inbounds.common.IGoogleDriveService
 import co.com.japl.finances.iports.inbounds.common.IGoogleSignInService
+import co.com.japl.ui.Prefs
 import co.com.japl.ui.theme.MaterialThemeComposeUI
-import co.japl.android.finances.services.implement.GoogleDriveServiceImpl
-import co.japl.android.finances.services.implement.GoogleLoginService
 import co.japl.android.myapplication.finanzas.controller.google.GoogleAuthBackupRestoreViewModel
 import co.japl.android.myapplication.finanzas.view.google.GoogleAuthBackupRestore
 import dagger.hilt.android.AndroidEntryPoint
@@ -21,7 +20,7 @@ import javax.inject.Inject
 
 @AndroidEntryPoint
 class GDriveConnectFragment : Fragment() {
-    private var service : IGoogleSignInService?=null
+    @Inject lateinit var loginSvc: IGoogleSignInService
     @Inject lateinit var driveSvc: IGoogleDriveService
 
     @Inject
@@ -33,10 +32,12 @@ class GDriveConnectFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        service = GoogleLoginService(requireActivity(), 101)
-        //driveSvc = GoogleDriveServiceImpl()
-
-        val viewModel = GoogleAuthBackupRestoreViewModel(requireActivity(), service, driveSvc)
+        val viewModel = GoogleAuthBackupRestoreViewModel(
+            requireActivity(),
+            loginSvc,
+            driveSvc,
+            Prefs(requireContext().applicationContext)
+        )
         return ComposeView(requireContext()).apply {
             setContent {
                 MaterialThemeComposeUI {
