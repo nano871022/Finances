@@ -20,6 +20,8 @@ class Prefs(private val context:Context){
     val SHARED_NAME_AUTO_SYNC_ENABLED = "auto_sync_enabled"
     val SHARED_NAME_AUTO_SYNC_MASTER = "auto_sync_master"
     val SHARED_NAME_AUTO_SYNC_HOUR = "auto_sync_hour"
+    val SHARED_NAME_LAST_SYNC_OPERATION = "last_sync_operation"
+    val SHARED_NAME_LAST_SYNC_DRIVE_VERSION = "last_sync_drive_version"
     val prefs:SharedPreferences = context.getSharedPreferences(PREFS_NAME,0)
 
     var llmType: String
@@ -63,6 +65,21 @@ class Prefs(private val context:Context){
         set(value) = prefs.edit()
             .putString(SHARED_NAME_AUTO_SYNC_HOUR, value.coerceIn(0, 23).toString())
             .apply()
+
+    var lastSyncOperation: String
+        get() = prefs.getString(SHARED_NAME_LAST_SYNC_OPERATION, "") ?: ""
+        set(value) = prefs.edit().putString(SHARED_NAME_LAST_SYNC_OPERATION, value).apply()
+
+    var lastSyncDriveVersion: String
+        get() = prefs.getString(SHARED_NAME_LAST_SYNC_DRIVE_VERSION, "") ?: ""
+        set(value) = prefs.edit().putString(SHARED_NAME_LAST_SYNC_DRIVE_VERSION, value).apply()
+
+    fun saveLastSync(operation: String, driveVersion: String) {
+        prefs.edit()
+            .putString(SHARED_NAME_LAST_SYNC_OPERATION, operation)
+            .putString(SHARED_NAME_LAST_SYNC_DRIVE_VERSION, driveVersion)
+            .apply()
+    }
 
     var creditCardSMSDaysRead: Int
         get() = prefs.getString(SHARED_NAME_CREDIT_CARD_SMS_DAYS_READ,"7")?.toInt()?:7

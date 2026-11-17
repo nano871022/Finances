@@ -529,6 +529,10 @@
     <string name="store_space">Almacenamiento %s / %s</string>
     <string name="used_percent">%s %% usado</string>
     <string name="up_do_date">Actualizado</string>
+    <string name="sync_status_updated">Actualizado</string>
+    <string name="sync_status_outdated">Desactualizado</string>
+    <string name="sync_status_not_synced">Sin sincronizar</string>
+    <string name="sync_status_unknown">Sin verificar</string>
     <string name="cloud_sync_status">Estado de Sincronización</string>
     <string name="security_privacy"><![CDATA[Seguridad & Privacidad]]></string>
     <string name="security_privacy_description">

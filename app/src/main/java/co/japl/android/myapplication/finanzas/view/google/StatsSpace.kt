@@ -2,6 +2,7 @@ package co.japl.android.myapplication.finanzas.view.google
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
@@ -27,6 +28,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import co.com.japl.finances.iports.dtos.SyncIcon
+import co.com.japl.finances.iports.dtos.SyncState
+import co.com.japl.finances.iports.dtos.SyncStatus
 import co.com.japl.ui.components.AlertDialogOkCancel
 import co.com.japl.ui.components.LoadingProgress
 import co.com.japl.ui.components.OnResumeEffect
@@ -50,6 +54,7 @@ fun StatsSpace(viewModel: GoogleAuthBackupRestoreViewModel) {
     val spaceMax = remember { viewModel.spaceMax }
     val lastBackup = remember { viewModel.lastBackup }
     val spaceDBKb = remember { viewModel.spaceDBKb }
+    val syncStatus by remember { viewModel.syncStatus }
     val statusRestoreDialog = remember { mutableStateOf(false) }
     val statusBackupDialog = remember { mutableStateOf(false) }
 
@@ -64,7 +69,7 @@ fun StatsSpace(viewModel: GoogleAuthBackupRestoreViewModel) {
             showProgress = isProcessing
         ) {
 
-            CloudSyncStatusCard(isLogged, email.value, spaceUsed.value, spaceMax.value)
+            CloudSyncStatusCard(isLogged, email.value, spaceUsed.value, spaceMax.value, syncStatus)
 
             if (isLogged) {
                 Spacer(modifier = Modifier.height(16.dp))
@@ -133,7 +138,62 @@ fun StatsSpace(viewModel: GoogleAuthBackupRestoreViewModel) {
 }
 
 @Composable
-private fun CloudSyncStatusCard(isLogged: Boolean, email: String, used:Double,max:Double) {
+private fun SyncStatusBadge(
+    status: SyncStatus,
+    modifier: Modifier = Modifier
+) {
+    val icon = when (status.icon) {
+        SyncIcon.UPLOAD -> Icons.Rounded.CloudUpload
+        SyncIcon.DOWNLOAD -> Icons.Rounded.CloudDownload
+        SyncIcon.SYNC -> Icons.Rounded.CloudSync
+    }
+
+    val text = when (status.state) {
+        SyncState.UPDATED -> R.string.sync_status_updated
+        SyncState.OUTDATED -> R.string.sync_status_outdated
+        SyncState.NOT_SYNCED -> R.string.sync_status_not_synced
+        SyncState.UNKNOWN -> R.string.sync_status_unknown
+    }
+
+    val color = when (status.state) {
+        SyncState.UPDATED -> if (isSystemInDarkTheme()) Color(0xFF93C47D) else Color(0xFF2E5D1A)
+        SyncState.OUTDATED -> MaterialTheme.colorScheme.error
+        SyncState.NOT_SYNCED, SyncState.UNKNOWN -> MaterialTheme.colorScheme.onSurfaceVariant
+    }
+
+    Surface(
+        color = MaterialTheme.colorScheme.secondaryContainer,
+        shape = CircleShape,
+        modifier = modifier
+    ) {
+        Row(
+            modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Icon(
+                icon,
+                contentDescription = null,
+                modifier = Modifier.size(16.dp),
+                tint = color
+            )
+            Spacer(modifier = Modifier.width(4.dp))
+            Text(
+                stringResource(text),
+                style = MaterialTheme.typography.labelMedium,
+                color = color
+            )
+        }
+    }
+}
+
+@Composable
+private fun CloudSyncStatusCard(
+    isLogged: Boolean,
+    email: String,
+    used: Double,
+    max: Double,
+    syncStatus: SyncStatus
+) {
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(16.dp),
@@ -148,30 +208,11 @@ private fun CloudSyncStatusCard(isLogged: Boolean, email: String, used:Double,ma
             Column(
                 modifier = Modifier.fillMaxWidth(),
             ) {
-                if(isLogged) {
-                Surface(
-                    color = MaterialTheme.colorScheme.secondaryContainer,
-                    shape = CircleShape,
-                    modifier=Modifier.align(Alignment.End)
-                ) {
-                    Row(
-                        modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Icon(
-                            Icons.Rounded.CheckCircle,
-                            contentDescription = null,
-                            modifier = Modifier.size(16.dp),
-                            tint = MaterialTheme.colorScheme.onSecondaryContainer
-                        )
-                            Spacer(modifier = Modifier.width(4.dp))
-                            Text(
-                                stringResource(R.string.up_do_date),
-                                style = MaterialTheme.typography.labelMedium,
-                                color = MaterialTheme.colorScheme.onSecondaryContainer
-                            )
-                        }
-                    }
+                if (isLogged) {
+                    SyncStatusBadge(
+                        status = syncStatus,
+                        modifier = Modifier.align(Alignment.End)
+                    )
                 }
 
                 Text(
@@ -397,6 +438,7 @@ private fun StatsSpacePreview(){
 private fun StatsSpaceLogedPreview(){
     val vm = getViewModel()
     vm.isLogged.value=true
+    vm.syncStatus.value = SyncStatus(SyncIcon.UPLOAD, SyncState.UPDATED)
     MaterialThemeComposeUI() {
         StatsSpace(vm)
     }

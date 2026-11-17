@@ -7,6 +7,8 @@ import co.com.japl.ui.Prefs
 import co.com.japl.finances.iports.observables.ISMSObservableSubscriber
 import co.com.japl.finances.iports.observables.ISMSObserver
 import co.com.japl.finances.iports.inbounds.common.ISMSBoadcastReceiver
+import co.com.japl.finances.iports.outbounds.ISyncHistoryPort
+import co.japl.android.myapplication.finanzas.sync.SyncHistoryPort
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
@@ -29,6 +31,9 @@ abstract class AbstractModule {
 
     @Binds
     abstract fun bindSMSBroadcastReceiver(sms: co.japl.android.finances.services.core.SMS): ISMSBoadcastReceiver
+
+    @Binds
+    abstract fun bindSyncHistoryPort(syncHistoryPort: SyncHistoryPort): ISyncHistoryPort
 
     companion object {
         @Singleton
