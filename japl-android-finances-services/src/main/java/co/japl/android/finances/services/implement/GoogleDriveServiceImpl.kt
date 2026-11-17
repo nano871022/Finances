@@ -225,13 +225,26 @@ class GoogleDriveServiceImpl @Inject constructor(private val context:Context, pr
         val drive = getDrive(account) ?: return null
         val backupFile = drive.files().list()
             .setSpaces(PARAMETER_FOLDER)
-            .setFields("files(id, name, modifiedTime)")
+            .setFields("files(id, name, version)")
             .execute()
             ?.files
             ?.firstOrNull { it.name == DatabaseConstants.DATA_BASE_NAME }
             ?: return null
 
         return backupFile.modifiedTime?.value
+    }
+
+    override suspend fun getBackupVersion(account: GoogleSignInAccount?): String? {
+        val drive = getDrive(account) ?: return null
+        val backupFile = drive.files().list()
+            .setSpaces(PARAMETER_FOLDER)
+            .setFields("files(id, name, version)")
+            .execute()
+            ?.files
+            ?.firstOrNull { it.name == DatabaseConstants.DATA_BASE_NAME }
+            ?: return null
+
+        return backupFile.version?.toString()
     }
 
 
