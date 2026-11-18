@@ -155,14 +155,20 @@ private fun SyncStatusBadge(
         SyncState.UNKNOWN -> R.string.sync_status_unknown
     }
 
-    val color = when (status.state) {
+    val contentColor = when (status.state) {
         SyncState.UPDATED -> if (isSystemInDarkTheme()) Color(0xFF93C47D) else Color(0xFF2E5D1A)
-        SyncState.OUTDATED -> MaterialTheme.colorScheme.error
-        SyncState.NOT_SYNCED, SyncState.UNKNOWN -> MaterialTheme.colorScheme.onSurfaceVariant
+        SyncState.OUTDATED, SyncState.NOT_SYNCED -> MaterialTheme.colorScheme.error
+        SyncState.UNKNOWN -> MaterialTheme.colorScheme.onSurfaceVariant
+    }
+
+    val containerColor = when (status.state) {
+        SyncState.UPDATED -> if (isSystemInDarkTheme()) Color(0xFF1E3A14) else Color(0xFFE2F0D9)
+        SyncState.OUTDATED, SyncState.NOT_SYNCED -> MaterialTheme.colorScheme.errorContainer.copy(alpha = 0.4f)
+        SyncState.UNKNOWN -> MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
     }
 
     Surface(
-        color = MaterialTheme.colorScheme.secondaryContainer,
+        color = containerColor,
         shape = CircleShape,
         modifier = modifier
     ) {
@@ -174,13 +180,13 @@ private fun SyncStatusBadge(
                 icon,
                 contentDescription = null,
                 modifier = Modifier.size(16.dp),
-                tint = color
+                tint = contentColor
             )
             Spacer(modifier = Modifier.width(4.dp))
             Text(
                 stringResource(text),
                 style = MaterialTheme.typography.labelMedium,
-                color = color
+                color = contentColor
             )
         }
     }

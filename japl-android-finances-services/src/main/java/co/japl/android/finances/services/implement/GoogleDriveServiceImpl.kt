@@ -225,7 +225,7 @@ class GoogleDriveServiceImpl @Inject constructor(private val context:Context, pr
         val drive = getDrive(account) ?: return null
         val backupFile = drive.files().list()
             .setSpaces(PARAMETER_FOLDER)
-            .setFields("files(id, name, version)")
+            .setFields("files(id, name, version, modifiedTime)")
             .execute()
             ?.files
             ?.firstOrNull { it.name == DatabaseConstants.DATA_BASE_NAME }
